@@ -139,6 +139,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -328,11 +329,12 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.nav_header_profile_name)).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
-        hasExtra(
-          ProfileProgressActivity.PROFILE_ID_EXTRA_KEY,
-          internalProfileId
+        hasProtoExtra(
+          PROFILE_ID_INTENT_DECORATOR,
+          profileId
         )
       )
     }

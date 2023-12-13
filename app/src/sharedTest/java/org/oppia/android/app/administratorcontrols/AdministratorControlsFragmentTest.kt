@@ -516,7 +516,7 @@ class AdministratorControlsFragmentTest {
     return AdministratorControlsFragmentTestActivity
       .createAdministratorControlsFragmentTestActivityIntent(
         context = context,
-        profileId = profileId
+       internalProfileId= profileId
       )
   }
 

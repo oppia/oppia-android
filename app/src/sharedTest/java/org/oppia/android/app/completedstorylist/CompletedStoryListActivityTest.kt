@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -111,6 +112,13 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
+import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 
 /** Tests for [CompletedStoryListActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -268,9 +276,11 @@ class CompletedStoryListActivityTest {
           targetViewId = R.id.completed_story_name_text_view
         )
       ).perform(click())
+
+      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
@@ -296,9 +306,11 @@ class CompletedStoryListActivityTest {
           targetViewId = R.id.completed_story_name_text_view
         )
       ).perform(click())
+
+      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
@@ -492,6 +504,20 @@ class CompletedStoryListActivityTest {
           withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
+    }
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
     }
   }
 

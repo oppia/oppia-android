@@ -143,6 +143,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.StoryActivityArguments
+import org.oppia.android.app.story.StoryActivity.Companion.STORY_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -154,21 +157,28 @@ import javax.inject.Singleton
 class TopicLessonsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
+
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject
   lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
@@ -317,8 +327,16 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.story_name_text_view)
+
+
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = StoryActivityArguments.newBuilder().apply {
+        this.storyId = RATIOS_STORY_ID_0
+      }.build()
       intended(hasComponent(StoryActivity::class.java.name))
-      intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, RATIOS_STORY_ID_0))
+      intended(hasProtoExtra(STORY_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+
     }
   }
 

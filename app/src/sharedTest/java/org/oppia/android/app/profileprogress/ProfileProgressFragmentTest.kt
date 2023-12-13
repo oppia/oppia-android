@@ -141,6 +141,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 
 /** Tests for [ProfileProgressFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -660,9 +663,12 @@ class ProfileProgressFragmentTest {
       )
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
+
+      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }

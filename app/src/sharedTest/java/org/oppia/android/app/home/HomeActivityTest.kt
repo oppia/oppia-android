@@ -31,6 +31,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -154,6 +155,11 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Matcher
+import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -953,9 +959,11 @@ class HomeActivityTest {
           targetViewId = R.id.promoted_story_list_recycler_view
         )
       ).perform(click())
+
+      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
@@ -1030,9 +1038,11 @@ class HomeActivityTest {
           R.id.topic_name_text_view
         )
       ).check(matches(withText(containsString("Fractions")))).perform(click())
+
+      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
@@ -1971,6 +1981,20 @@ class HomeActivityTest {
   private fun logIntoUserTwice() {
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

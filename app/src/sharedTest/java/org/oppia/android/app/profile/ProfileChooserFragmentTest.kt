@@ -23,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -108,6 +109,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
+import org.oppia.android.app.model.AdminPinActivityArguments
+import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [ProfileChooserFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -351,8 +358,14 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.add_profile_item
         )
       ).perform(click())
+      val args = AdminPinActivityArguments.newBuilder().apply {
+
+        this.adminPinEnum = adminPinEnum
+      }.build()
+
       intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
+      intended(hasProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args))
+
     }
   }
 
@@ -483,6 +496,20 @@ class ProfileChooserFragmentTest {
         position
       )
     )
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   private fun verifyTextOnProfileListItemAtPosition(
