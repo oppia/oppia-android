@@ -68,6 +68,7 @@ import org.oppia.android.app.model.CompletedStoryListActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
+import org.oppia.android.app.model.TopicActivityArguments
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -137,13 +138,11 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.TopicActivityArguments
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 
 /** Tests for [ProfileProgressFragment]. */
 @RunWith(AndroidJUnit4::class)
