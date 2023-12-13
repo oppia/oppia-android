@@ -50,7 +50,6 @@ import org.oppia.android.app.model.TopicActivityArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
