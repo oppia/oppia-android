@@ -47,8 +47,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AdminAuthActivityArguments
 import org.oppia.android.app.model.AdminPinActivityArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -111,6 +113,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -360,7 +363,7 @@ class ProfileChooserFragmentTest {
       ).perform(click())
       val args = AdminPinActivityArguments.newBuilder().apply {
 
-        this.adminPinEnum = adminPinEnum
+        this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       }.build()
 
       intended(hasComponent(AdminPinActivity::class.java.name))
@@ -382,6 +385,11 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId().internalId
+        ).isEqualTo(0)
+      }
     }
   }
 
@@ -463,13 +471,12 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      val args = AdminPinActivityArguments.newBuilder().apply {
-
+      val args = AdminAuthActivityArguments.newBuilder().apply {
         this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       }.build()
 
-      intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
     }
   }
 
@@ -484,13 +491,11 @@ class ProfileChooserFragmentTest {
           position = 4
         )
       ).perform(click())
-      val args = AdminPinActivityArguments.newBuilder().apply {
-
+      val args = AdminAuthActivityArguments.newBuilder().apply {
         this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       }.build()
-
-      intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
     }
   }
 
