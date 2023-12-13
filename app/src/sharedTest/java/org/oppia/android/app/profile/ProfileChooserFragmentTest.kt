@@ -463,8 +463,13 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
+      val args = AdminPinActivityArguments.newBuilder().apply {
+
+        this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      }.build()
+
+      intended(hasComponent(AdminPinActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args))
     }
   }
 
@@ -479,8 +484,13 @@ class ProfileChooserFragmentTest {
           position = 4
         )
       ).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
+      val args = AdminPinActivityArguments.newBuilder().apply {
+
+        this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      }.build()
+
+      intended(hasComponent(AdminPinActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args))
     }
   }
 

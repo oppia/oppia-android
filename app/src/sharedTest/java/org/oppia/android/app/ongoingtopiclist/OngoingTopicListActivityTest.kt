@@ -256,7 +256,7 @@ class OngoingTopicListActivityTest {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
-      intended(hasProtoExtra(PROFILE_ID_ARGUMENT_KEY, profileId))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }
   }
 
