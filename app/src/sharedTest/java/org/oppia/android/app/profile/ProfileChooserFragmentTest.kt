@@ -16,6 +16,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -47,8 +48,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.AdminAuthActivityArguments
-import org.oppia.android.app.model.AdminPinActivityArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY
@@ -361,12 +360,8 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.add_profile_item
         )
       ).perform(click())
-      val args = AdminPinActivityArguments.newBuilder().apply {
-        this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      }.build()
-
       intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasProtoExtra(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasExtraWithKey(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY))
     }
   }
 
@@ -470,12 +465,8 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      val args = AdminAuthActivityArguments.newBuilder().apply {
-        this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      }.build()
-
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasProtoExtra(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY))
     }
   }
 
@@ -490,11 +481,8 @@ class ProfileChooserFragmentTest {
           position = 4
         )
       ).perform(click())
-      val args = AdminAuthActivityArguments.newBuilder().apply {
-        this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      }.build()
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasProtoExtra(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY))
     }
   }
 

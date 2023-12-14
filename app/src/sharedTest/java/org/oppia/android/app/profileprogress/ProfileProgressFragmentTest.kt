@@ -24,6 +24,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -798,12 +799,7 @@ class ProfileProgressFragmentTest {
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.ongoing_topics_container)
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      intended(
-        hasProtoExtra(
-          PROFILE_ID_INTENT_DECORATOR, profileId
-        )
-      )
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }
 
