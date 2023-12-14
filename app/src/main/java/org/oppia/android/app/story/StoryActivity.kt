@@ -96,6 +96,7 @@ class StoryActivity :
   }
 
   companion object {
+
     /** Arguments key for StoryActivity. */
     const val STORY_ACTIVITY_ARGUMENTS_KEY = "StoryActivity.arguments"
 
