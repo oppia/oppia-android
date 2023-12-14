@@ -26,6 +26,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.TopicActivityArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -71,6 +72,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -82,6 +84,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
@@ -113,10 +116,14 @@ class ActivityIntentFactoriesTest {
       getTopicActivityIntentFactory().createIntent(
         ProfileId.getDefaultInstance(), topicId = "test_topic_id"
       )
+    val args = intent?.getProtoExtra(
+      TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY,
+      TopicActivityArguments.getDefaultInstance()
+    )
 
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assertThat(intent).extras().integer(TOPIC_PROFILE_ID_KEY).isEqualTo(0)
-    assertThat(intent).extras().string(TOPIC_ID_KEY).isEqualTo("test_topic_id")
+    assert(intent.extractCurrentUserProfileId().internalId == 0)
+    assert(args.topicId.equals("test_topic_id"))
     assertThat(intent).extras().doesNotContainKey(STORY_ID_KEY)
   }
 
@@ -126,10 +133,13 @@ class ActivityIntentFactoriesTest {
       getTopicActivityIntentFactory().createIntent(
         ProfileId.getDefaultInstance(), topicId = "test_topic_id", storyId = "test_story_id"
       )
-
+    val args = intent?.getProtoExtra(
+      TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY,
+      TopicActivityArguments.getDefaultInstance()
+    )
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assertThat(intent).extras().integer(TOPIC_PROFILE_ID_KEY).isEqualTo(0)
-    assertThat(intent).extras().string(TOPIC_ID_KEY).isEqualTo("test_topic_id")
+    assert(intent.extractCurrentUserProfileId().internalId == 0)
+    assert(args.topicId.equals("test_topic_id"))
     assertThat(intent).extras().string(STORY_ID_KEY).isEqualTo("test_story_id")
   }
 
