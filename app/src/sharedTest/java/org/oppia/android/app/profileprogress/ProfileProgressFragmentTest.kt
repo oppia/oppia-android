@@ -664,10 +664,8 @@ class ProfileProgressFragmentTest {
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
 
       val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
-      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
@@ -800,10 +798,10 @@ class ProfileProgressFragmentTest {
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.ongoing_topics_container)
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(
-        hasExtra(
-          OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY,
-          internalProfileId
+        hasProtoExtra(
+          PROFILE_ID_INTENT_DECORATOR, profileId
         )
       )
     }
