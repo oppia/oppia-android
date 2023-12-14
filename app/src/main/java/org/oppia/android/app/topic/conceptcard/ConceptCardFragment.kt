@@ -12,7 +12,6 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ConceptCardFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -142,5 +141,10 @@ class ConceptCardFragment : InjectableDialogFragment() {
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  private fun getSkillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
+  private fun getSkillId(): String? {
+    return arguments?.getProto(
+      CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+      ConceptCardFragmentArguments.getDefaultInstance()
+    )?.skillId
+  }
 }

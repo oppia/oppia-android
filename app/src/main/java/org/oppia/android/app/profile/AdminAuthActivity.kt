@@ -11,9 +11,6 @@ import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
-const val ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY = "AdminAuthActivity.admin_auth_admin_pin"
-const val ADMIN_AUTH_ENUM_EXTRA_KEY = "AdminAuthActivity.admin_auth_enum"
-
 /** Activity that authenticates by checking for admin's PIN. */
 class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
@@ -39,10 +36,6 @@ class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
         putProtoExtra(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args)
         decorateWithScreenName(ADMIN_AUTH_ACTIVITY)
       }
-    }
-
-    fun getIntentKey(): String {
-      return ADMIN_AUTH_ENUM_EXTRA_KEY
     }
   }
 

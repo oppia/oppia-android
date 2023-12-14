@@ -276,7 +276,6 @@ class CompletedStoryListActivityTest {
       ).perform(click())
 
       val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
@@ -306,7 +305,6 @@ class CompletedStoryListActivityTest {
       ).perform(click())
 
       val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))

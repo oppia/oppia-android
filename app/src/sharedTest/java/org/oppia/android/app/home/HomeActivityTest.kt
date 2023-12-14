@@ -153,6 +153,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -963,6 +964,9 @@ class HomeActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      it.onActivity { activity ->
+        assert(activity.intent.extractCurrentUserProfileId().internalId.equals(internalProfileId))
+      }
     }
   }
 
@@ -1203,8 +1207,14 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
+
+      val args = TopicActivityArguments.newBuilder().setTopicId(TEST_TOPIC_ID_0).build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+
+      it.onActivity { activity ->
+        assert(activity.intent.extractCurrentUserProfileId().internalId.equals(internalProfileId))
+      }
     }
   }
 
@@ -1860,8 +1870,8 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(profileId).build()
+  private fun createHomeActivityIntent(internalProfileId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
