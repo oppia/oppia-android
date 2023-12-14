@@ -31,6 +31,7 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
   lateinit var resourceHandler: AppLanguageResourceHandler
 
   companion object {
+    /** Arguments key for ProgressDatabaseFullDialogFragment */
     const val PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY =
       "ProgressDatabaseFullDialogFragment.arguments"
 
