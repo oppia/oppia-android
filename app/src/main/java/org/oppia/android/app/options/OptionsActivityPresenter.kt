@@ -72,7 +72,7 @@ class OptionsActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.options_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
-    navigationDrawerFragment!!.setUpDrawer(
+    navigationDrawerFragment!!.initializeDrawer(
       activity.findViewById<View>(R.id.options_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_options
     )
