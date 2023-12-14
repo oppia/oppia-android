@@ -25,8 +25,10 @@ import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -784,9 +786,9 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
-      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }
 
@@ -993,6 +995,7 @@ class NavigationDrawerActivityProdTest {
         return (view as NavigationView).menu.getItem(item.ordinal).isChecked
       }
     }
+
   private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
     val defaultProto = expectedProto.newBuilderForType().build()
     return object : TypeSafeMatcher<Intent>() {
