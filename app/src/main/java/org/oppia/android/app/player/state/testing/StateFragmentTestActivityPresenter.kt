@@ -7,9 +7,11 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StateFragmentTestActivityArguments
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivity.Companion.STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -19,6 +21,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -48,16 +51,19 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       viewModel = getStateFragmentTestViewModel()
     }
 
-    profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
+    val args = activity.intent.getProtoExtra(
+      STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY,
+      StateFragmentTestActivityArguments.getDefaultInstance()
+    )
+    profileId = args?.internalProfileId ?: 1
     topicId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
+      args?.topicId ?: TEST_TOPIC_ID_0
     storyId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY) ?: TEST_STORY_ID_0
+      args?.storyId ?: TEST_STORY_ID_0
     explorationId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
+      args?.explorationId
       ?: TEST_EXPLORATION_ID_2
-    shouldSavePartialProgress =
-      activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
+    shouldSavePartialProgress = args?.shouldSavePartialProgress ?: false
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
     }

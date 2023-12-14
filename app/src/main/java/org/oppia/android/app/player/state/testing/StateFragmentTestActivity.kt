@@ -24,17 +24,6 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
-internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_profile_id"
-internal const val TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_topic_id"
-internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_story_id"
-internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_exploration_id"
-internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_should_save_partial_progress"
-
 /** Test Activity used for testing StateFragment. */
 class StateFragmentTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),

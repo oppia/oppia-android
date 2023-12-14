@@ -362,7 +362,6 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       val args = AdminPinActivityArguments.newBuilder().apply {
-
         this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       }.build()
 

@@ -141,7 +141,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -334,7 +334,10 @@ class TopicLessonsFragmentTest {
       }.build()
       intended(hasComponent(StoryActivity::class.java.name))
       intended(hasProtoExtra(STORY_ACTIVITY_ARGUMENTS_KEY, args))
-      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+      it.onActivity { activity ->
+
+        assert(activity.intent.extractCurrentUserProfileId().internalId.equals(internalProfileId))
+      }
     }
   }
 
