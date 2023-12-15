@@ -46,16 +46,17 @@ class RatioExpressionInputInteractionViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            true
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
 
+    // Initializing with default values so that submit button is enabled by default.
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-      null,
-      true
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
     )
   }
 
