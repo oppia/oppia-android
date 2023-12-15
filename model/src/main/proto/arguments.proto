@@ -324,6 +324,10 @@ message TopicFragmentArguments {
   string story_id = 3;
 }
 
+message QuestionPlayerActivityArguments {
+  repeated string skill_id_list = 1;
+}
+
 message AdministratorControlActivityStateBundle {
   string selected_controls_title = 1;
   string last_loaded_fragment = 2;

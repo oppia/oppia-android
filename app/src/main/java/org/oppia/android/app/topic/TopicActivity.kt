@@ -25,7 +25,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
 /** The activity for displaying [TopicFragment]. */
@@ -157,10 +156,6 @@ class TopicActivity :
   companion object {
     /** Arguments key for TopicActivity. */
     const val TOPIC_ACTIVITY_ARGUMENTS_KEY = "TopicActivity.arguments"
-
-    fun getTopicIdKey(): String {
-      return TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
-    }
 
     fun getStoryIdKey(): String {
       return TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY
