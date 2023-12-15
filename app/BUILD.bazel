@@ -815,8 +815,8 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
-        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
         "//utility/src/main/java/org/oppia/android/util/profile:current_user_profile_id_intent_decorator",
+        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )
 

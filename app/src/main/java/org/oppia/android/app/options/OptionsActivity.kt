@@ -60,10 +60,10 @@ class OptionsActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    /** Arguments key for OptionsActivity */
+    /** Arguments key for OptionsActivity. */
     const val OPTIONS_ACTIVITY_ARGUMENTS_KEY = "OptionsActivity.arguments"
 
-    /** saved state key for OptionsActivity */
+    /** saved state key for OptionsActivity. */
     const val OPTIONS_ACTIVITY_STATE_KEY = "OptionsActivity.state"
 
     /** Returns an [Intent] to start this activity. */

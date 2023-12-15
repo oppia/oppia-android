@@ -21,7 +21,7 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
   lateinit var thirdPartyDependencyListFragmentPresenter: ThirdPartyDependencyListFragmentPresenter
 
   companion object {
-    /** Arguments key for ThirdPartyDependencyListFragment */
+    /** Arguments key for ThirdPartyDependencyListFragment. */
     private const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY =
       "ThirdPartyDependencyListFragment.arguments"
 

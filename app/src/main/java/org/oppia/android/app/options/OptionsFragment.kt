@@ -18,9 +18,6 @@ import javax.inject.Inject
 /** OnActivity result key to access [ReadingTextSize] result. */
 const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_reading_text_size"
 
-/** OnActivity result key to access [OppiaLanguage] result. */
-const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
-
 /** OnActivity result key to access [AudioLanguage] result. */
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
 
@@ -30,11 +27,7 @@ const val REQUEST_CODE_TEXT_SIZE = 1
 /** Request code for [AudioLanguage]. */
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
-private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
-private const val IS_FIRST_OPEN_EXTRA = "IS_FIRST_OPEN_EXTRA"
-private const val SELECTED_FRAGMENT_EXTRA = "SELECTED_FRAGMENT_EXTRA"
-
-/** Arguments key for OptionsFragment */
+/** Arguments key for OptionsFragment. */
 const val OPTIONS_FRAGMENT_ARGUMENTS_KEY = "OptionsFragment.arguments"
 
 /** Fragment that contains an introduction to the app. */

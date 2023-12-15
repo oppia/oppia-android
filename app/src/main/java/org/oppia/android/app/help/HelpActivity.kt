@@ -88,11 +88,11 @@ class HelpActivity :
   }
 
   companion object {
-    /** Arguments key for HelpActivity */
+    /** Arguments key for HelpActivity. */
     const val HELP_ACTIVITY_ARGUMENTS_KEY =
       "HelpActivity.arguments"
 
-    /** Arguments key for HelpActivity saved state */
+    /** Arguments key for HelpActivity saved state. */
     const val HELP_ACTIVITY_STATE_KEY =
       "HelpActivity.state"
 
