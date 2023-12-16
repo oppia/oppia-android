@@ -16,8 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore

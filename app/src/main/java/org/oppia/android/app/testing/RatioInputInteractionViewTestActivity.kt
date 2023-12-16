@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
@@ -21,9 +20,10 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.databinding.ActivityRatioInputInteractionViewTestBinding
+import org.oppia.android.R
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
-import org.oppia.android.R
+import javax.inject.Inject
 
 class RatioInputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
@@ -89,7 +89,8 @@ class RatioInputInteractionViewTestActivity :
   }
 
   companion object {
-    private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY = "RatioInputInteractionViewTestActivity.params"
+    private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
+      "RatioInputInteractionViewTestActivity.params"
 
     fun createIntent(
       context: Context,
