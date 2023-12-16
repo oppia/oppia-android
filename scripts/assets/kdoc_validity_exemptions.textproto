@@ -322,4 +322,3 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/Sca
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterValue.kt"
 exempted_file_path: "utility/src/test/java/org/oppia/android/util/logging/SyncStatusManagerTestBase.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/profile/CurrentUserProfileIdIntentDecorator.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListActivity.kt"
