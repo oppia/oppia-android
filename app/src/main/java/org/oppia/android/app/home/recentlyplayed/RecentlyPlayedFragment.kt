@@ -2,20 +2,16 @@ package org.oppia.android.app.home.recentlyplayed
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.model.RecentlyPlayedFragmentArguments
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Fragment that contains all recently played stories. */
 class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener {

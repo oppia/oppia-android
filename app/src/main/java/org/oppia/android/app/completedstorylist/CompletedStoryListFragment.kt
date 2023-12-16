@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.CompletedStoryListFragmentArguments
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {
@@ -49,7 +46,7 @@ class CompletedStoryListFragment : InjectableFragment() {
     val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to CompletedStoryListFragment"
     }
-   val profileId= arguments.extractCurrentUserProfileId()
+    val profileId = arguments.extractCurrentUserProfileId()
     val internalProfileId = profileId.internalId
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,

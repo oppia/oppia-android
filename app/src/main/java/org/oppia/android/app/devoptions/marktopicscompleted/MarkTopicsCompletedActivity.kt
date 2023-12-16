@@ -8,16 +8,13 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
-import org.oppia.android.app.model.MarkTopicsCompletedActivityArguments
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */
 class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {

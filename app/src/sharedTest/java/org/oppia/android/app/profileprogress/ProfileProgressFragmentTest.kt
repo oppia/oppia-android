@@ -60,12 +60,10 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
-import org.oppia.android.app.completedstorylist.CompletedStoryListActivity.Companion.COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity.Companion.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY
-import org.oppia.android.app.model.CompletedStoryListActivityArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
@@ -825,7 +823,6 @@ class ProfileProgressFragmentTest {
           profileId
         )
       )
-
     }
   }
 
