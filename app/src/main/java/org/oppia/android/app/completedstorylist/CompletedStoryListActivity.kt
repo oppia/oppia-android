@@ -11,6 +11,9 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The arguments key  for [CompletedStoryListActivity]. */
 
@@ -23,27 +26,23 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val args = intent.getProtoExtra(
-      COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY,
-      CompletedStoryListActivityArguments.getDefaultInstance()
-    )
+    val profileId = intent?.extractCurrentUserProfileId()
 
-    val internalProfileId: Int = args?.internalProfileId ?: -1
+    val internalProfileId: Int = profileId?.internalId ?: -1
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY = "CompletedStoryListActivity.arguments"
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, CompletedStoryListActivity::class.java)
-      val args =
-        CompletedStoryListActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
-          .build()
-      intent.putProtoExtra(COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY, args)
-      intent.decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val intent = Intent(context, CompletedStoryListActivity::class.java).apply {
+        decorateWithUserProfileId(profileId)
+        decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
+      }
+
       return intent
     }
   }

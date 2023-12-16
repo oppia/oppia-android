@@ -12,6 +12,9 @@ import org.oppia.android.app.model.MarkTopicsCompletedFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Fragment to display all topics and provide functionality to mark them completed. */
 class MarkTopicsCompletedFragment : InjectableFragment() {
@@ -21,22 +24,16 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   companion object {
     internal const val PROFILE_ID_ARGUMENT_KEY = "MarkTopicsCompletedFragment.profile_id"
 
-    /** Argument key for MarkTopicsCompletedFragment.. */
-    const val MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
-      "MarkTopicsCompletedFragment.arguments"
-
     /** State key for MarkTopicsCompletedFragment.. */
     const val MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY =
       "MarkTopicsCompletedFragment.state"
 
     /** Returns a new [MarkTopicsCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkTopicsCompletedFragment {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return MarkTopicsCompletedFragment().apply {
         arguments = Bundle().apply {
-          val args = MarkTopicsCompletedFragmentArguments.newBuilder().apply {
-            this.internalProfileId = internalProfileId
-          }.build()
-          putProto(MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
@@ -55,12 +52,9 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
 
-    val args = arguments.getProto(
-      MARK_TOPICS_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
-      MarkTopicsCompletedFragmentArguments.getDefaultInstance()
-    )
+    val profileId = arguments.extractCurrentUserProfileId()
+    val internalProfileId = profileId.internalId
 
-    val internalProfileId = args?.internalProfileId ?: -1
     var selectedTopicIdList = ArrayList<String>()
     if (savedInstanceState != null) {
 

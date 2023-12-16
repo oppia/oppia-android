@@ -2,6 +2,7 @@ package org.oppia.android.app.home.recentlyplayed
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +13,21 @@ import org.oppia.android.app.model.RecentlyPlayedFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-
-private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
-  "RecentlyPlayedFragment.internal_profile_id"
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Fragment that contains all recently played stories. */
 class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener {
   companion object {
     const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
 
-    const val RECENTLY_PLAYED_FRAGMENT_ARGUMENTS_KEY = "RecentlyPlayedFragment.arguments"
-
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
-      val args =
-        RecentlyPlayedFragmentArguments.newBuilder().setInternalProfileId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return RecentlyPlayedFragment().apply {
         arguments = Bundle().apply {
-          putProto(RECENTLY_PLAYED_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
@@ -50,13 +48,10 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to RecentlyPlayedFragment" }
-    val args =
-      arguments.getProto(
-        RECENTLY_PLAYED_FRAGMENT_ARGUMENTS_KEY,
-        RecentlyPlayedFragmentArguments.getDefaultInstance()
-      )
+    val profileId =
+      arguments.extractCurrentUserProfileId()
 
-    val internalProfileId = args?.internalProfileId ?: -1
+    val internalProfileId = profileId.internalId
     return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

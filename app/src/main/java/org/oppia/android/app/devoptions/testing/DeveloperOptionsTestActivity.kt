@@ -18,8 +18,11 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.model.DeveloperOptionsTestActivityArguments
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for testing [DeveloperOptionsFragment]. */
 class DeveloperOptionsTestActivity :
@@ -36,11 +39,10 @@ class DeveloperOptionsTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
-    val args = intent.getProtoExtra(
-      DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY,
-      DeveloperOptionsTestActivityArguments.getDefaultInstance()
-    )
-    internalProfileId = args?.internalProfileId ?: -1
+
+    val profileId = intent?.extractCurrentUserProfileId()
+    internalProfileId = profileId?.internalId ?: -1
+
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
         R.id.developer_options_fragment_placeholder,
@@ -86,18 +88,12 @@ class DeveloperOptionsTestActivity :
   }
 
   companion object {
-    /** Argument key for DeveloperOptionsTestActivity. */
-    const val DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY =
-      "DeveloperOptionsTestActivity.arguments"
-
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
-      val args =
-        DeveloperOptionsTestActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
-          .build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
         .apply {
-          putProtoExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       return intent
     }

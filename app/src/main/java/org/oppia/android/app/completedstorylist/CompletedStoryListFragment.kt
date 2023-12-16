@@ -11,6 +11,9 @@ import org.oppia.android.app.model.CompletedStoryListFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {
@@ -19,18 +22,12 @@ class CompletedStoryListFragment : InjectableFragment() {
     /** Key for accessing [CompletedStoryListFragment]. */
     const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
 
-    /** Argument key for [CompletedStoryListFragment]. */
-    const val COMPLETED_STORY_LIST_FRAGMENT_ARGUMENT_KEY =
-      "COMPLETED_STORY_LIST_FRAGMENT_ARGUMENT_KEY"
-
     /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
-      val args =
-        CompletedStoryListFragmentArguments.newBuilder().setInternalProfileId(internalProfileId)
-          .build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return CompletedStoryListFragment().apply {
         arguments = Bundle().apply {
-          putProto(COMPLETED_STORY_LIST_FRAGMENT_ARGUMENT_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
@@ -52,11 +49,8 @@ class CompletedStoryListFragment : InjectableFragment() {
     val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to CompletedStoryListFragment"
     }
-    val args = arguments.getProto(
-      COMPLETED_STORY_LIST_FRAGMENT_ARGUMENT_KEY,
-      CompletedStoryListFragmentArguments.getDefaultInstance()
-    )
-    val internalProfileId = args?.internalProfileId ?: -1
+   val profileId= arguments.extractCurrentUserProfileId()
+    val internalProfileId = profileId.internalId
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,
       container,

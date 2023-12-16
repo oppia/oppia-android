@@ -339,14 +339,6 @@ message AdministratorControlsFragmentArguments {
   bool is_multipane = 1;
 }
 
-message CompletedStoryListActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
-message CompletedStoryListFragmentArguments{
-  int32 internal_profile_id = 1;
-}
-
 message MarkChaptersCompletedTestActivityArguments{
   int32 internal_profile_id = 1;
   bool show_confirmation_notice = 2;
@@ -367,40 +359,12 @@ message MarkChaptersCompletedFragmentStateBundle{
   repeated string exploration_title_list = 2;
 }
 
-message MarkStoriesCompletedTestActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
-message MarkStoriesCompletedActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
-message MarkStoriesCompletedFragmentArguments {
-  int32 internal_profile_id = 1;
-}
-
 message MarkStoriesCompletedFragmentStateBundle{
   repeated string story_id_list = 1;
 }
 
-message MarkTopicsCompletedTestActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
-message MarkTopicsCompletedActivityArguments {
-  int32 internal_profile_id = 1;
-}
-
-message MarkTopicsCompletedFragmentArguments {
-  int32 internal_profile_id = 1;
-}
-
 message MarkTopicsCompletedFragmentStateBundle {
   repeated string topic_id_list = 1;
-}
-
-message DeveloperOptionsTestActivityArguments {
-  int32 internal_profile_id = 1;
 }
 
 message FAQSingleActivityArguments {
@@ -445,10 +409,6 @@ message HelpActivityStateBundle{
 
 message HelpFragmentArguments {
   bool is_multipane = 1;
-}
-
-message RecentlyPlayedFragmentArguments {
-  int32 internal_profile_id = 1;
 }
 
 message OptionsActivityArguments {

@@ -14,6 +14,9 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for Mark Stories Completed. */
 class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -30,11 +33,8 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val args = intent.getProtoExtra(
-      MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY,
-      MarkStoriesCompletedActivityArguments.getDefaultInstance()
-    )
-    internalProfileId = args?.internalProfileId ?: -1
+    val profileId = intent?.extractCurrentUserProfileId()
+    internalProfileId = profileId?.internalId ?: -1
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
   }
@@ -47,17 +47,12 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   }
 
   companion object {
-    /** Argument key for MarkStoriesCompletedActivity.. */
-    const val MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY =
-      "MarkStoriesCompletedActivity.arguments"
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
-        val args =
-          MarkStoriesCompletedActivityArguments.newBuilder().setInternalProfileId(internalProfileId)
-            .build()
-        putProtoExtra(MARK_STORIES_COMPLETED_ACTIVITY_ARGUMENTS_KEY, args)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)
       }
     }

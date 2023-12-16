@@ -817,16 +817,15 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
-      val args = CompletedStoryListActivityArguments.newBuilder().apply {
-        this.internalProfileId = internalProfileId
-      }.build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
         hasProtoExtra(
-          COMPLETED_STORY_LIST_ACTIVITY_ARGUMENTS_KEY,
-          args
+          PROFILE_ID_INTENT_DECORATOR,
+          profileId
         )
       )
+
     }
   }
 

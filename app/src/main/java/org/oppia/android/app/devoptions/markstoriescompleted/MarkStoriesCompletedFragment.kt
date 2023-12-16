@@ -12,6 +12,9 @@ import org.oppia.android.app.model.MarkStoriesCompletedFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Fragment to display all stories and provide functionality to mark them completed. */
 class MarkStoriesCompletedFragment : InjectableFragment() {
@@ -19,9 +22,6 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
 
   companion object {
-    /** Argument key for MarkStoriesCompletedActivity.. */
-    const val MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
-      "MarkStoriesCompletedFragment.arguments"
 
     const val MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.state"
 
@@ -29,12 +29,10 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
     /** Returns a new [MarkStoriesCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return MarkStoriesCompletedFragment().apply {
         arguments = Bundle().apply {
-          val args = MarkStoriesCompletedFragmentArguments.newBuilder().apply {
-            this.internalProfileId = internalProfileId
-          }.build()
-          putProto(MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
@@ -53,12 +51,9 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
 
-    val args = arguments.getProto(
-      MARK_STORIES_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
-      MarkStoriesCompletedFragmentArguments.getDefaultInstance()
-    )
+    val profileId = arguments.extractCurrentUserProfileId()
+    val internalProfileId = profileId.internalId
 
-    val internalProfileId = args?.internalProfileId ?: -1
     var selectedStoryIdList = ArrayList<String>()
     if (savedInstanceState != null) {
 
