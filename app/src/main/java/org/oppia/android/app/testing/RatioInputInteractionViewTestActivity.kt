@@ -16,6 +16,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.databinding.ActivityRatioInputInteractionViewTestBinding
 
@@ -55,15 +56,11 @@ class RatioInputInteractionViewTestActivity :
       .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
-  override fun onAnswerReadyForSubmission(answer: UserAnswer) {
+  override fun onAnswerReadyForSubmission(answer: UserAnswer) { }
 
-  }
+  override fun onEditorAction(actionCode: Int) { }
 
-  override fun onEditorAction(actionCode: Int) {
-
-  }
-
-  private inline fun <reified T : StateItemViewModel> StateItemViewModel.InteractionItemFactory.create(
+  private inline fun <reified T : StateItemViewModel> InteractionItemFactory.create(
     interaction: Interaction = Interaction.getDefaultInstance()
   ): T {
     return create(
