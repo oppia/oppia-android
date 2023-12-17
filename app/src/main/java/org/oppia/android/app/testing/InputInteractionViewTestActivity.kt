@@ -18,7 +18,6 @@ import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathIn
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED
 import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -27,7 +26,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
@@ -59,9 +57,6 @@ class InputInteractionViewTestActivity :
   lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
 
   @Inject
-  lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
-
-  @Inject
   lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
 
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
@@ -70,15 +65,6 @@ class InputInteractionViewTestActivity :
 
   val fractionInteractionViewModel by lazy {
     fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
-  }
-
-  val ratioExpressionInputInteractionViewModel by lazy {
-    ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
-      interaction = Interaction.newBuilder().putCustomizationArgs(
-        "numberOfTerms",
-        SchemaObject.newBuilder().setSignedInt(3).build()
-      ).build()
-    )
   }
 
   lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
@@ -128,15 +114,12 @@ class InputInteractionViewTestActivity :
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.fractionInteractionViewModel = fractionInteractionViewModel
-    binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    ratioExpressionInputInteractionViewModel
-      .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
