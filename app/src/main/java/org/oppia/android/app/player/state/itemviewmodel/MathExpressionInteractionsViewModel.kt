@@ -73,6 +73,9 @@ class MathExpressionInteractionsViewModel private constructor(
    * bound to the corresponding edit text.
    */
   var answerText: CharSequence = ""
+    // The value of ths field is set from the Binding and from the TextWatcher. Any
+    // programmatic modification needs to be done here, so that the Binding and the TextWatcher
+    // do not step on each other.
     set(value) {
       field = value.toString().trim()
     }

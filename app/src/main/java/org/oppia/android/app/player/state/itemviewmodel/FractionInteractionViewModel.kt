@@ -43,16 +43,16 @@ class FractionInteractionViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            true // Allow submit on empty answer
+            true // Allow submit on empty answer.
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    // Apply defaults:
+    // Force-update the UI to reflect the state of the errorMessage and isAnswerAvailable property:
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-      null,
-      true
+      /* pendingAnswerError= */null,
+      /* inputAnswerAvailable= */true
     )
   }
 
