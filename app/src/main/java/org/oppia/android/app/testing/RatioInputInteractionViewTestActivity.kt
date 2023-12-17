@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.customview.interaction.RatioInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.SchemaObject
@@ -25,6 +26,9 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
+/**
+ * This is a dummy activity to test [RatioInputInteractionView].
+ */
 class RatioInputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   StateKeyboardButtonListener,
@@ -35,6 +39,9 @@ class RatioInputInteractionViewTestActivity :
   @Inject
   lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
 
+  /**
+   * Gives access to the [RatioExpressionInputInteractionViewModel].
+   */
   val ratioExpressionInputInteractionViewModel by lazy {
     ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
       interaction = Interaction.newBuilder().putCustomizationArgs(
@@ -44,6 +51,9 @@ class RatioInputInteractionViewTestActivity :
     )
   }
 
+  /**
+   * Gives access to the translation context.
+   */
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +73,9 @@ class RatioInputInteractionViewTestActivity :
     binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
   }
 
+  /**
+   * Checks for submit time errors.
+   */
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     ratioExpressionInputInteractionViewModel
       .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
@@ -92,6 +105,9 @@ class RatioInputInteractionViewTestActivity :
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
       "RatioInputInteractionViewTestActivity.params"
 
+    /**
+     * Creates an intent to open [RatioInputInteractionViewTestActivity].
+     */
     fun createIntent(
       context: Context,
       extras: InputInteractionViewTestActivityParams
