@@ -531,10 +531,6 @@ message StoryFragmentArguments {
   string story_id = 2;
 }
 
-message SurveyFragmentArguments {
-  string topic_id = 1;
-}
-
 message ConceptCardFragmentArguments {
   string skill_id = 2;
 }
@@ -580,5 +576,16 @@ message RevisionCardFragmentArguments {
 
 message TestFontScaleConfigurationUtilActivityArguments {
   ReadingTextSize reading_text_size = 1;
+}
+
+message SurveyFragmentArguments {
+  string topic_id=1;
+  string exploration_id=2;
+}
+
+message SurveyWelcomeDialogFragmentArguments {
+  string topic_id=1;
+  string exploration_id=2;
+  repeated int32 question_no=3;
 }
 

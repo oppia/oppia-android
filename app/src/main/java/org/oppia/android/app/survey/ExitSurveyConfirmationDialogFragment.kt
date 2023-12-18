@@ -9,8 +9,8 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that displays a dialog for survey exit confirmation. */
@@ -20,8 +20,6 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
     ExitSurveyConfirmationDialogFragmentPresenter
 
   companion object {
-    internal const val PROFILE_ID_KEY = "ExitSurveyConfirmationDialogFragment.profile_id"
-
     /**
      * Creates a new instance of a DialogFragment to display an exit confirmation in a survey.
      *
@@ -33,7 +31,7 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
     ): ExitSurveyConfirmationDialogFragment {
       return ExitSurveyConfirmationDialogFragment().apply {
         arguments = Bundle().apply {
-          putProto(PROFILE_ID_KEY, profileId)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
@@ -59,7 +57,7 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
         arguments
       ) { "Expected arguments to be passed to ExitSurveyConfirmationDialogFragment" }
 
-    val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
+    val profileId = args.extractCurrentUserProfileId()
 
     dialog?.setCanceledOnTouchOutside(false)
     dialog?.setCancelable(false)
