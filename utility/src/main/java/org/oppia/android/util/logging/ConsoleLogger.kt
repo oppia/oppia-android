@@ -2,12 +2,11 @@ package org.oppia.android.util.logging
 
 import android.content.Context
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
+import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,14 +14,13 @@ import javax.inject.Singleton
 @Singleton
 class ConsoleLogger @Inject constructor(
   context: Context,
-  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @EnableConsoleLog private val enableConsoleLog: Boolean,
   @EnableFileLog private val enableFileLog: Boolean,
   @GlobalLogLevel private val globalLogLevel: LogLevel,
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
-  private val blockingScope = CoroutineScope(blockingDispatcher)
   private val logDirectory = File(context.filesDir, "oppia_app.log")
+  private val logStream = PrintWriter(OutputStreamWriter(FileOutputStream(logDirectory, true), Charsets.UTF_8))
 
   /** Logs a verbose message with the specified tag. */
   fun v(tag: String, msg: String) {
@@ -94,17 +92,15 @@ class ConsoleLogger @Inject constructor(
       Log.println(logLevel.logLevel, tag, fullLog)
     }
     if (enableFileLog) {
-      logToFileInBackground(
-        "${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog"
-      )
+      logStream.println("${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog")
+      logStream.flush()
     }
   }
 
   /**
-   * Writes the specified text line to file in a background thread to ensure that saving messages don't block the main
-   * thread. A blocking dispatcher is used to ensure messages are written in order.
+   * Closes the log stream when the logger is no longer needed.
    */
-  private fun logToFileInBackground(text: String) {
-    blockingScope.launch { logDirectory.printWriter().use { out -> out.println(text) } }
+  fun close() {
+    logStream.close()
   }
 }
