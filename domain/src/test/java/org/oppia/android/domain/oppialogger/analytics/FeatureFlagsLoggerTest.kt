@@ -68,7 +68,7 @@ class FeatureFlagsLoggerTest {
   }
 
   @Test
-  fun testLogFeatureFlags_logsFeatureFlagsWithCorrectSessionId() {
+  fun testLogFeatureFlags_logFeatureFlags_hasCorrectSessionId() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
 
@@ -87,8 +87,7 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
 
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasNamedFeatureFlagThat(DOWNLOADS_SUPPORT)
-        .isEqualTo(testEnableDownloadsSupportFeatureFlagItem)
+      hasFeatureFlagWithNameThat(DOWNLOADS_SUPPORT).isEqualTo(DOWNLOADS_SUPPORT)
     }
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasNamedFeatureWithEnabledStateThat(DOWNLOADS_SUPPORT).isEqualTo(false)

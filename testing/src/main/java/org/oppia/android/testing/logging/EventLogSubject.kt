@@ -1989,10 +1989,10 @@ class EventLogSubject private constructor(
      * Returns a [Subject] to test the  of the properties of a feature flag with the passed
      * name in the [EventLog.FeatureFlagContext] list.
      */
-    fun hasNamedFeatureFlagThat(name: String): Subject {
-      val filtered = actual.featureFlagList.filter { it.flagName == name }
+    fun hasFeatureFlagWithNameThat(name: String): Subject {
+      val featureFlag = actual.featureFlagsList.firstOrNull { it.flagName == name }
 
-      return assertThat(filtered[0])
+      return assertThat(featureFlag?.flagName)
     }
 
     /**
@@ -2000,7 +2000,7 @@ class EventLogSubject private constructor(
      * name in the [EventLog.FeatureFlagContext] list.
      */
     fun hasNamedFeatureWithEnabledStateThat(name: String): BooleanSubject {
-      val filtered = actual.featureFlagList.filter { it.flagName == name }
+      val filtered = actual.featureFlagsList.filter { it.flagName == name }
       return assertThat(filtered[0].flagEnabledState)
     }
 
@@ -2009,7 +2009,7 @@ class EventLogSubject private constructor(
      * flag with the passed name in the [EventLog.FeatureFlagContext].
      */
     fun hasNamedFeatureWithSyncStatusThat(name: String): ComparableSubject<SyncStatus> {
-      val filtered = actual.featureFlagList.filter { it.flagName == name }
+      val filtered = actual.featureFlagsList.filter { it.flagName == name }
       return assertThat(filtered[0].flagSyncStatus)
     }
 

@@ -570,7 +570,7 @@ class EventBundleCreator @Inject constructor(
       override fun EventLog.FeatureFlagContext.storeValue(store: PropertyStore) {
         store.putSensitiveValue("uuid", uniqueUserUuid)
         store.putSensitiveValue("session_id", sessionId)
-        store.putNonSensitiveValue("feature_flags", featureFlagList)
+        store.putNonSensitiveValue("feature_flags", featureFlagsList)
       }
     }
   }

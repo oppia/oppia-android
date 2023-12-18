@@ -381,7 +381,7 @@ message EventLog {
     string session_id = 2;
 
     // List of Feature Flag items
-    repeated FeatureFlagItem feature_flag = 3;
+    repeated FeatureFlagItem feature_flags = 3;
 
     // Structure for the feature flag log item.
     message FeatureFlagItem {

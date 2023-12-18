@@ -114,9 +114,8 @@ class FeatureFlagsLogger @Inject constructor(
     return EventLog.Context.newBuilder()
       .setFeatureFlagContext(
         FeatureFlagContext.newBuilder()
-          .setUniqueUserUuid("")
           .setSessionId(sessionId)
-          .addAllFeatureFlag(compileFeatureFlagsForLogging())
+          .addAllFeatureFlags(compileFeatureFlagsForLogging())
           .build()
       )
       .build()
