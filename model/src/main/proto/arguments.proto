@@ -579,13 +579,17 @@ message TestFontScaleConfigurationUtilActivityArguments {
 }
 
 message SurveyFragmentArguments {
-  string topic_id=1;
-  string exploration_id=2;
+  string topic_id = 1;
+  string exploration_id = 2;
 }
 
 message SurveyWelcomeDialogFragmentArguments {
-  string topic_id=1;
-  string exploration_id=2;
-  repeated int32 question_no=3;
+  string topic_id = 1;
+  string exploration_id = 2;
+  repeated int32 question_no = 3;
+}
+
+message WalkthroughFinalFragmentArguments {
+  string topic_id = 1;
 }
 
