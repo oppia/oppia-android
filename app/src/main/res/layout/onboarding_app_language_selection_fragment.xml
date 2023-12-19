@@ -103,6 +103,7 @@
     <TextView
       android:id="@+id/onboarding_language_explanation"
       style="@style/OnboardingLanguageExplanationStyle"
+      android:padding="@dimen/onboarding_language_text_padding"
       android:text="@string/onboarding_language_explanation"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

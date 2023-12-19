@@ -788,6 +788,7 @@
   <dimen name="onboarding_language_message_text_size">16sp</dimen>
   <dimen name="onboarding_language_dropdown_elevation">8dp</dimen>
   <dimen name="onboarding_language_dropdown_padding">8dp</dimen>
+  <dimen name="onboarding_language_text_padding">16dp</dimen>
   <dimen name="onboarding_language_dropdown_margin">32dp</dimen>
   <dimen name="onboarding_language_dropdown_margin_top">20dp</dimen>
   <dimen name="onboarding_language_dropdown_icon_margin">8dp</dimen>
