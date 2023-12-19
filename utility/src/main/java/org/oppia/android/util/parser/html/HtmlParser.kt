@@ -75,7 +75,6 @@ class HtmlParser private constructor(
     supportsLinks: Boolean = false,
     supportsConceptCards: Boolean = false
   ): Spannable {
-
     var htmlContent = rawString
 
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
@@ -121,11 +120,17 @@ class HtmlParser private constructor(
     }
 
     val imageGetter = urlImageParserFactory?.create(
-      htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
+      htmlContentTextView,
+      gcsResourceName,
+      entityType,
+      entityId,
+      imageCenterAlign
     )
 
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      htmlContent,
+      imageGetter,
+      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
@@ -219,6 +224,30 @@ class HtmlParser private constructor(
         entityType,
         entityId,
         imageCenterAlign,
+        consoleLogger,
+        cacheLatexRendering = enableCacheLatexRendering.value,
+        customOppiaTagActionListener,
+        null,
+        displayLocale
+      )
+    }
+
+    /**
+     * Returns a new [HtmlParser] with the empty entity type and ID for loading images,
+     * doesn't require GCS properties and imageCenterAlign set to false
+     * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
+     */
+    fun create(
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
+      displayLocale: OppiaLocale.DisplayLocale
+    ): HtmlParser {
+      return HtmlParser(
+        context,
+        urlImageParserFactory,
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener,
