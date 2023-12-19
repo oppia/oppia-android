@@ -4,8 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.text.util.Linkify
+import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
@@ -132,6 +135,16 @@ class HtmlParser private constructor(
       imageGetter,
       computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
+
+    val urlPattern = Patterns.WEB_URL
+    val matcher = urlPattern.matcher(htmlSpannable)
+    while (matcher.find()) {
+      val start = matcher.start()
+      val end = matcher.end()
+      val url = htmlSpannable.subSequence(start, end).toString()
+      val urlSpan = URLSpan(url)
+      htmlSpannable.setSpan(urlSpan, start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+    }
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }

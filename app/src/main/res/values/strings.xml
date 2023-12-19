@@ -201,12 +201,10 @@
   <plurals name="completed_story_count">
     <item quantity="one">1 Story Completed</item>
     <item quantity="other">%s Stories Completed</item>
-    <item quantity="zero">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">1 Topic in Progress</item>
     <item quantity="other">%s Topics in Progress</item>
-    <item quantity="zero">%s Topics in Progress</item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
@@ -454,7 +452,6 @@
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes_ago">
-    <item quantity="zero">0 minutes ago</item>
     <item quantity="one">a minute ago</item>
     <item quantity="other">%s minutes ago</item>
   </plurals>
