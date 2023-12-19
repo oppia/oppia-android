@@ -6,7 +6,27 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_oppia_green">
+    android:background="@color/component_color_onboarding_language_shared_white_color">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toTopOf="@id/onboarding_language_center_guide"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/img_tablet_portrait_onboarding_language_background" />
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_header_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.2" />
 
     <TextView
       android:id="@+id/onboarding_language_title"
@@ -32,55 +52,23 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_subtitle" />
 
-    <ImageView
-      android:id="@+id/onboarding_language_image"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:contentDescription="Otter with glasses"
-      android:elevation="4dp"
-      android:src="@drawable/img_otter"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_language_image_guide" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/onboarding_language_header_guide"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.15" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/onboarding_language_title_guide"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.45" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/onboarding_language_image_guide"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.4" />
-
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.6" />
-
-    <org.oppia.android.app.customview.OppiaCurveBackgroundView
-      android:id="@+id/onboarding_language_background"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_language_title_guide" />
+      app:layout_constraintGuide_percent="0.65" />
 
     <TextView
       android:id="@+id/onboarding_language_label"
-      style="@style/OnboardingLanguageLabelStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/onboarding_language_explanation_text_margin"
+      android:background="@color/color_def_transparent"
+      android:fontFamily="sans-serif"
       android:text="@string/onboarding_language_activity_select_label"
+      android:textColor="@color/component_color_onboarding_language_green_text_color"
+      android:textSize="@dimen/onboarding_language_subtitle_text_size"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_center_guide" />
@@ -89,9 +77,9 @@
       android:id="@+id/onboarding_language_dropdown_background"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/onboarding_language_text_margin"
+      android:layout_marginTop="@dimen/onboarding_language_dropdown_margin"
       android:background="@drawable/dropdown_background"
-      android:elevation="8dp"
+      android:elevation="@dimen/onboarding_language_dropdown_elevation"
       android:padding="@dimen/onboarding_language_dropdown_padding"
       app:layout_constraintEnd_toEndOf="@id/onboarding_language_label"
       app:layout_constraintStart_toStartOf="@id/onboarding_language_label"
@@ -101,8 +89,8 @@
         android:id="@+id/onboarding_language_dropdown_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Dropdown language icon"
-        android:src="@drawable/ic_language_icon_black_24dp" />
+        android:contentDescription="@string/onboarding_dropdown_language_icon_description"
+        app:srcCompat="@drawable/ic_language_icon_black_24dp" />
 
       <Spinner
         android:id="@+id/onboarding_language_dropdown"
@@ -121,8 +109,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:contentDescription="Dropdown arror icon"
-        android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+        android:contentDescription="@string/onboarding_dropdown_arrow_icon_description"
+        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
     </RelativeLayout>
 
     <TextView
@@ -140,8 +128,7 @@
       android:layout_height="wrap_content"
       android:text="@string/onboarding_language_lets_go_button_text"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_language_explanation" />
+      app:layout_constraintEnd_toEndOf="@id/onboarding_language_explanation"
+      app:layout_constraintStart_toStartOf="@id/onboarding_language_explanation" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

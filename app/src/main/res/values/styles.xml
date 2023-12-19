@@ -640,7 +640,7 @@
   <style name="OnboardingLanguageHeaderStyle" parent="TextViewCenterHorizontal">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/component_color_onboarding_language_white_text_color</item>
+    <item name="android:textColor">@color/component_color_onboarding_language_shared_white_color</item>
     <item name="android:textSize">@dimen/onboarding_language_title_text_size</item>
     <item name="android:fontFamily">sans-serif-medium</item>
   </style>
@@ -648,7 +648,7 @@
   <style name="OnboardingLanguageSubtitleStyle" parent="TextViewCenterHorizontal">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/component_color_onboarding_language_white_text_color</item>
+    <item name="android:textColor">@color/component_color_onboarding_language_shared_white_color</item>
     <item name="android:layout_marginTop">@dimen/onboarding_language_subtitle_margin</item>
     <item name="android:textSize">@dimen/onboarding_language_subtitle_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
@@ -658,7 +658,7 @@
   <style name="OnboardingLanguageMessageStyle" parent="TextViewCenterHorizontal">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/component_color_onboarding_language_white_text_color</item>
+    <item name="android:textColor">@color/component_color_onboarding_language_shared_white_color</item>
     <item name="android:layout_marginTop">@dimen/onboarding_language_explanation_text_margin</item>
     <item name="android:textSize">@dimen/onboarding_language_message_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
@@ -668,11 +668,11 @@
   <style name="OnboardingLanguageLetsGoButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:minWidth">@dimen/clickable_item_min_width</item>
     <item name="android:layout_margin">@dimen/onboarding_language_button_margin</item>
-    <item name="android:background">@drawable/rounded_button_white_outline_color</item>
+    <item name="android:background">@drawable/rounded_primary_button_grey_shadow_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/component_color_onboarding_language_white_text_color</item>
+    <item name="android:textColor">@color/component_color_onboarding_language_shared_white_color</item>
     <item name="android:textSize">@dimen/onboarding_language_message_text_size</item>
   </style>
 
@@ -686,7 +686,7 @@
   </style>
 
   <style name="OnboardingLanguageExplanationStyle" parent="TextViewCenterHorizontal">
-  <item name="android:layout_width">match_parent</item>
+  <item name="android:layout_width">wrap_content</item>
   <item name="android:layout_height">wrap_content</item>
   <item name="android:textColor">@color/component_color_onboarding_language_green_text_color</item>
   <item name="android:layout_margin">@dimen/onboarding_language_text_margin</item>

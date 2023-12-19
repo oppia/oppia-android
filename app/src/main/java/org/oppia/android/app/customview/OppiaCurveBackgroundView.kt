@@ -66,10 +66,10 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     val controlPoint1X = width * 0.4f
     val controlPoint1Y = 0f
 
-    val controlPoint2X = width * 0.6f
-    val controlPoint2Y = height * 0.16f
+    val controlPoint2X = width * 0.5f
+    val controlPoint2Y = height * 0.15f
 
-    val controlPoint3X = width * 1f
+    val controlPoint3X = width * 1.2f
     val controlPoint3Y = height * 0.1f
 
     path.reset()
