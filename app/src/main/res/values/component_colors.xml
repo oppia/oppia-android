@@ -306,6 +306,8 @@
   <color name="component_color_button_shadow_color">@color/color_palette_button_shadow_color</color>
   <!-- Onboarding App Language Activity -->
   <color name="component_color_onboarding_language_shared_white_color">@color/color_palette_white_text_color</color>
-  <color name="component_color_onboarding_language_green_text_color">@color/color_palette_primary_color</color>
+  <color name="component_color_onboarding_language_green_text_color">@color/color_palette_onboarding_primary_color</color>
   <color name="component_color_onboarding_language_shadow_color">@color/color_palette_button_shadow_color</color>
+  <color name="component_color_onboarding_language_primary_text_color">@color/color_palette_onboarding_primary_text_color</color>
+
 </resources>

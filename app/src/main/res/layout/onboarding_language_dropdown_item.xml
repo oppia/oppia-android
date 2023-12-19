@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  android:layout_height="match_parent">
+
   <TextView
-    android:id="@+id/language_text_view"
+    android:id="@+id/onboarding_language_text_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="24dp"
+    android:padding="@dimen/onboarding_language_dropdown_padding"
     android:fontFamily="sans-serif"
+    android:textColor="@color/component_color_onboarding_language_primary_text_color"
+    android:textSize="@dimen/onboarding_language_message_text_size"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    android:textColor="@color/component_color_shared_primary_text_color"
-    android:textSize="16sp" />
+    app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
