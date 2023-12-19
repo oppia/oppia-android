@@ -20,7 +20,9 @@ class ConsoleLogger @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private val logDirectory = File(context.filesDir, "oppia_app.log")
-  private val logStream = PrintWriter(OutputStreamWriter(FileOutputStream(logDirectory, true), Charsets.UTF_8))
+  private val logStream = PrintWriter(
+    OutputStreamWriter(FileOutputStream(logDirectory, true), Charsets.UTF_8)
+  )
 
   /** Logs a verbose message with the specified tag. */
   fun v(tag: String, msg: String) {
@@ -92,7 +94,9 @@ class ConsoleLogger @Inject constructor(
       Log.println(logLevel.logLevel, tag, fullLog)
     }
     if (enableFileLog) {
-      logStream.println("${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog")
+      logStream.println(
+        "${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog"
+      )
       logStream.flush()
     }
   }
