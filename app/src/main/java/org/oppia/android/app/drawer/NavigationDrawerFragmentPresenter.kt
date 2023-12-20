@@ -374,6 +374,21 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     this.drawerLayout = drawerLayout
     this.toolbar = toolbar
     this.menuItemId = menuItemId
+
+    /**
+     * [setUpDrawer] is called directly if binding is already initialized.
+     * Otherwise, [setUpDrawer] is called from [handleCreateView].
+     *
+     * Note: [binding] is already initialized when [initializeDrawer] is called via [onRestart]
+     * and [handleCreateView] will not be called in that case.
+     */
+    if (this::binding.isInitialized) {
+      setUpDrawer(
+        this.drawerLayout,
+        this.toolbar,
+        this.menuItemId
+      )
+    }
   }
 
   /**
