@@ -17,6 +17,8 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTestFeatureFlag
+import org.oppia.android.util.platformparameter.EnableTestFeatureFlagWithEnabledDefault
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
@@ -24,6 +26,8 @@ import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
+import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG
+import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,6 +41,10 @@ import javax.inject.Singleton
 @Singleton
 class FeatureFlagsLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
+  @EnableTestFeatureFlag
+  private val testFeatureFlag: PlatformParameterValue<Boolean>,
+  @EnableTestFeatureFlagWithEnabledDefault
+  private val testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>,
   @EnableDownloadsSupport
   private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
   @EnableExtraTopicTabsUi
@@ -78,6 +86,8 @@ class FeatureFlagsLogger @Inject constructor(
    */
   private fun compileFeatureFlagsForLogging(): List<FeatureFlagItem> {
     val featureFlagItemMap = mapOf(
+      TEST_FEATURE_FLAG to testFeatureFlag,
+      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault,
       DOWNLOADS_SUPPORT to enableDownloadsSupport,
       EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
       LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
@@ -27,6 +28,8 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTestFeatureFlag
+import org.oppia.android.util.platformparameter.EnableTestFeatureFlagWithEnabledDefault
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
@@ -58,11 +61,38 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
+import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG
+import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
+import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULT_VALUE
 import javax.inject.Singleton
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
 class TestPlatformParameterModule {
+  @Provides
+  @EnableTestFeatureFlag
+  fun provideEnableTestFeatureFlag(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(TEST_FEATURE_FLAG)
+      ?: PlatformParameterValue.createDefaultParameter(TEST_FEATURE_FLAG_DEFAULT_VALUE)
+  }
+
+  @Provides
+  @EnableTestFeatureFlagWithEnabledDefault
+  fun provideEnableTestFeatureFlagWithEnabledDefault(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(
+      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
+    )
+      ?: PlatformParameterValue.createDefaultParameter(
+        defaultValue = TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULT_VALUE,
+        defaultSyncStatus = PlatformParameter.SyncStatus.SYNCED_FROM_SERVER
+      )
+  }
+
   @Provides
   @EnableDownloadsSupport
   fun provideEnableDownloadsSupport(

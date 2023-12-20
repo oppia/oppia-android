@@ -51,6 +51,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.FeatureFlagContext.FeatureFlagItem
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
@@ -1986,32 +1987,27 @@ class EventLogSubject private constructor(
     fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
 
     /**
-     * Returns a [Subject] to test the  of the properties of a feature flag with the passed
+     * Returns a [FeatureFlagItem] to test the properties of a feature flag with the passed
      * name in the [EventLog.FeatureFlagContext] list.
      */
-    fun hasFeatureFlagWithNameThat(name: String): Subject {
-      val featureFlag = actual.featureFlagsList.firstOrNull { it.flagName == name }
+    fun hasFeatureFlagThat(name: String): FeatureFlagItem? =
+      actual.featureFlagsList.firstOrNull { it.flagName == name }
 
-      return assertThat(featureFlag?.flagName)
-    }
+    /*** Returns a [Subject] to test whether the passed feature flag is null or not. */
+    fun assertFeatureFlag(featureFlagItem: FeatureFlagItem?): Subject = assertThat(featureFlagItem)
 
-    /**
-     * Returns a [BooleanSubject] to test the flagEnabledState of a feature flag with the passed
-     * name in the [EventLog.FeatureFlagContext] list.
-     */
-    fun hasNamedFeatureWithEnabledStateThat(name: String): BooleanSubject {
-      val filtered = actual.featureFlagsList.filter { it.flagName == name }
-      return assertThat(filtered[0].flagEnabledState)
-    }
+    /*** Returns a [BooleanSubject] to test the flagEnabledState of the passed feature flag. */
+    fun featureFlagHasEnabledStateThat(
+      featureFlagItem: FeatureFlagItem?
+    ): BooleanSubject = assertThat(featureFlagItem?.flagEnabledState)
 
     /**
-     * Returns a [ComparableSubject] with a [SyncStatus] to test the flagSyncStatus of a feature
-     * flag with the passed name in the [EventLog.FeatureFlagContext].
+     * Returns a [ComparableSubject] with a [SyncStatus] to test the flagSyncStatus of the passed
+     * feature flag.
      */
-    fun hasNamedFeatureWithSyncStatusThat(name: String): ComparableSubject<SyncStatus> {
-      val filtered = actual.featureFlagsList.filter { it.flagName == name }
-      return assertThat(filtered[0].flagSyncStatus)
-    }
+    fun featureFlagHasSyncStatusThat(
+      featureFlagItem: FeatureFlagItem?
+    ): ComparableSubject<SyncStatus> = assertThat(featureFlagItem?.flagSyncStatus)
 
     companion object {
       /**
