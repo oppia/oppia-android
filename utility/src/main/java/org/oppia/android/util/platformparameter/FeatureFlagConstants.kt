@@ -17,21 +17,19 @@ import javax.inject.Qualifier
  */
 @Qualifier annotation class EnableTestFeatureFlag
 
-/*** Name of the test feature flag */
+/** Name of the test feature flag. */
 const val TEST_FEATURE_FLAG = "android_test_feature_flag"
 
-/** Default value of the test feature flag */
+/** Default value of the test feature flag. */
 const val TEST_FEATURE_FLAG_DEFAULT_VALUE = false
 
-/**
- * Qualifier for a test feature flag with an enabled default value
- */
+/** Qualifier for a test feature flag with an enabled default value. */
 @Qualifier annotation class EnableTestFeatureFlagWithEnabledDefault
 
-/*** Name of the test feature flag with an enabled default value */
+/** Name of the test feature flag with an enabled default value. */
 const val TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS = "android_test_feature_flag_with_enabled_default"
 
-/** Default value of the test feature flag with an enabled default value */
+/** Default value of the test feature flag with an enabled default value. */
 const val TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULT_VALUE = true
 
 /**

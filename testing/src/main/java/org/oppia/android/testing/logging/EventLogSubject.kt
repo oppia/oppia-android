@@ -1993,10 +1993,10 @@ class EventLogSubject private constructor(
     fun hasFeatureFlagThat(name: String): FeatureFlagItem? =
       actual.featureFlagsList.firstOrNull { it.flagName == name }
 
-    /*** Returns a [Subject] to test whether the passed feature flag is null or not. */
+    /** Returns a [Subject] to test whether the passed feature flag is null or not. */
     fun assertFeatureFlag(featureFlagItem: FeatureFlagItem?): Subject = assertThat(featureFlagItem)
 
-    /*** Returns a [BooleanSubject] to test the flagEnabledState of the passed feature flag. */
+    /** Returns a [BooleanSubject] to test the flagEnabledState of the passed feature flag. */
     fun featureFlagHasEnabledStateThat(
       featureFlagItem: FeatureFlagItem?
     ): BooleanSubject = assertThat(featureFlagItem?.flagEnabledState)
