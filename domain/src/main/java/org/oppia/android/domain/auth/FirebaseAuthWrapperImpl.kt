@@ -1,9 +1,6 @@
 package org.oppia.android.domain.auth
 
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,10 +9,21 @@ import javax.inject.Singleton
 class FirebaseAuthWrapperImpl @Inject constructor(
   private val firebaseAuth: FirebaseAuth
 ) : FirebaseAuthWrapper {
-  /** Returns the current signed in user or null if there is no authenticated user. */
-  override val currentUser: FirebaseUser?
-    get() = firebaseAuth.currentUser
+  override val currentUser: FirebaseUserWrapper?
+    get() = firebaseAuth.currentUser?.let {
+      FirebaseUserWrapper(it.uid)
+    }
 
-  /** Returns the result of an authentication task. */
-  override fun signInAnonymously() : Task<AuthResult>  =  firebaseAuth.signInAnonymously()
+  override fun signInAnonymously(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+    firebaseAuth.signInAnonymously()
+      .addOnSuccessListener {
+        onSuccess.invoke()
+      }
+      .addOnFailureListener { task ->
+        val exception = task.cause
+        if (exception != null) {
+          onFailure.invoke(exception)
+        }
+      }
+  }
 }
