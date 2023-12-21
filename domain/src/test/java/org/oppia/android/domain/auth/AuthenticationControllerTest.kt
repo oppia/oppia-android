@@ -11,22 +11,18 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.FakeFirebaseWrapperImpl
 import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -45,6 +41,9 @@ class AuthenticationControllerTest {
   @Inject
   lateinit var authenticationController: AuthenticationController
 
+  @Inject
+  lateinit var firebaseAuthWrapper: FakeFirebaseWrapperImpl
+
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -58,56 +57,56 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  fun testAuthentication_getCurrentSignedInUser_noSignedInUser_returnsNull() {
-    authenticationController.signInAnonymouslyWithFirebase()
+  fun testAuthentication_getCurrentFirebaseUser_noSignedInUser_returnsNull() {
     val user = authenticationController.currentFirebaseUser
 
     assertThat(user).isEqualTo(null)
   }
 
   @Test
-  fun testAuthentication_signInAnonymously_success_returnsSuccessAsyncResult() {
-    val authResult = authenticationController.signInAnonymouslyWithFirebase()
-    testCoroutineDispatchers.runCurrent()
-    assertThat(authResult).isInstanceOf(AsyncResult.Success::class.java)
-    // A successful result is returned
-    runSynchronously { authenticationController.signInAnonymouslyWithFirebase().await() }
+  fun testAuthentication_getCurrentUser_userSignedIn_returnsInstanceOfFirebaseUserWrapper() {
+    firebaseAuthWrapper.simulateSignInSuccess()
+
+    firebaseAuthWrapper.signInAnonymously(
+      onSuccess = {},
+      onFailure = {}
+    )
+
+    val user = authenticationController.currentFirebaseUser
+
+    assertThat(user).isInstanceOf(FirebaseUserWrapper::class.java)
+  }
+
+  @Test
+  fun testAuthentication_signInAnonymously_success_returnsInstanceOfFirebaseUserWrapper() {
+    firebaseAuthWrapper.simulateSignInSuccess()
+
+    firebaseAuthWrapper.signInAnonymously(
+      onSuccess = {},
+      onFailure = {}
+    )
+
+    val user = authenticationController.currentFirebaseUser
+
+    assertThat(user).isInstanceOf(FirebaseUserWrapper::class.java)
+  }
+
+  @Test
+  fun testAuthentication_signInAnonymously_failure_returnsException() {
+    firebaseAuthWrapper.simulateSignInFailure()
+
+    assertThrows(Throwable::class) {
+      firebaseAuthWrapper.signInAnonymously(
+        onSuccess = {},
+        onFailure = {}
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>()
       .inject(this)
   }
-
-  private fun runSynchronously(operation: suspend () -> Unit) =
-    CoroutineScope(backgroundDispatcher).async { operation() }.waitForSuccessfulResult()
-
-  private fun <T> Deferred<T>.waitForSuccessfulResult() {
-    return when (val result = waitForResult()) {
-      is AsyncResult.Pending -> error("Deferred never finished.")
-      is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
-      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
-    }
-  }
-
-  private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
-
-  private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
-    val deferred = this
-    return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      CoroutineScope(backgroundDispatcher).async {
-        try {
-          val result = deferred.await()
-          flow.emit(AsyncResult.Success(result))
-        } catch (e: Throwable) {
-          flow.emit(AsyncResult.Failure(e))
-        }
-      }
-    }
-  }
-
-  private fun <T> StateFlow<T>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.value
 
   @Module
   class TestModule {
