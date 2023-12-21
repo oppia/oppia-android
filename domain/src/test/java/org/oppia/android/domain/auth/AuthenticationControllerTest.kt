@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -118,21 +119,21 @@ class AuthenticationControllerTest {
     }
   }
 
-/*  @Module
+  @Module
   class AuthenticationModule {
     @Provides
     @Singleton
     fun provideAuthenticationController():
       AuthenticationWrapper = AuthenticationController(mock(FirebaseAuth::class.java))
-  }*/
+  }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, TestAuthenticationModule::class,
-      TestLogReportingModule::class,
+      ApplicationLifecycleModule::class, TestDispatcherModule::class,
+      TestLogReportingModule::class, TestAuthenticationModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

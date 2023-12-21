@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth
-import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -13,7 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.auth.AuthenticationWrapper
+import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -32,7 +31,7 @@ import javax.inject.Singleton
 class TestAuthenticationModuleTest {
 
   @Inject
-  lateinit var listener: AuthenticationWrapper
+  lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
 
   @Before
   fun setUp() {
@@ -40,8 +39,8 @@ class TestAuthenticationModuleTest {
   }
 
   @Test
-  fun testModule_injectsInstanceOfAuthenticationWrapper() {
-    Truth.assertThat(listener).isInstanceOf(FakeAuthenticationController::class.java)
+  fun testModule_injectsInstanceOfFirebaseAuthWrapper() {
+    Truth.assertThat(firebaseAuthWrapper).isInstanceOf(FakeFirebaseWrapperImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -55,24 +54,17 @@ class TestAuthenticationModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(): Context {
-      return ApplicationProvider.getApplicationContext()
+    fun provideContext(application: Application): Context {
+      return application
     }
-  }
-
-  @Module
-  interface AuthenticationModule {
-    @Binds
-    fun provideAuthenticationController(fakeAuthenticationController: FakeAuthenticationController):
-      AuthenticationWrapper
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, TestAuthenticationModule::class,
-      RobolectricModule::class, DebugLogReportingModule::class
+      TestModule::class, TestDispatcherModule::class,
+      RobolectricModule::class, DebugLogReportingModule::class, TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
