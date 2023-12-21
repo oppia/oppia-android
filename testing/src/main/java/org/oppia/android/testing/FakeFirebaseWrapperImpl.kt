@@ -1,9 +1,9 @@
 package org.oppia.android.testing
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import org.oppia.android.domain.auth.FirebaseUserWrapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class FakeFirebaseWrapperImpl @Inject constructor() : FirebaseAuthWrapper {

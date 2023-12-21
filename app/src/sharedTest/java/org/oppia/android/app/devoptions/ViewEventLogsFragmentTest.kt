@@ -17,7 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import dagger.Binds
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -47,7 +46,6 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.domain.auth.AuthenticationWrapper
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -83,9 +81,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -699,13 +697,13 @@ class ViewEventLogsFragmentTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
-  @Module
+ /* @Module
   interface TestAuthModule {
     @Binds
     fun bindFakeAuthenticationController(
       fakeAuthenticationController: FakeAuthenticationController
     ): AuthenticationWrapper
-  }
+  }*/
 
   @Module
   class TestLogReportingModule {
@@ -766,7 +764,7 @@ class ViewEventLogsFragmentTest {
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthModule::class,
+      TestAuthenticationModule::class,
     ]
   )
 
