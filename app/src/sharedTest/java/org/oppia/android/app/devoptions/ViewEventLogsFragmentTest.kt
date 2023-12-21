@@ -81,7 +81,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -101,12 +100,11 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
-import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
-import org.oppia.android.util.logging.firebase.FirestoreEventLoggerProdImpl
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -155,7 +153,7 @@ class ViewEventLogsFragmentTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var debugFirestoreEventLogger: DebugFirestoreEventLogger
+  lateinit var firestoreEventLogger: FirestoreEventLogger
 
   @Before
   fun setUp() {
@@ -610,7 +608,7 @@ class ViewEventLogsFragmentTest {
       .setTimestamp(TEST_TIMESTAMP + 50000)
       .build()
 
-    debugFirestoreEventLogger.uploadEvent(eventLog)
+    firestoreEventLogger.uploadEvent(eventLog)
   }
 
   private fun createOptionalSurveyResponseContext(
@@ -697,14 +695,6 @@ class ViewEventLogsFragmentTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
- /* @Module
-  interface TestAuthModule {
-    @Binds
-    fun bindFakeAuthenticationController(
-      fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationWrapper
-  }*/
-
   @Module
   class TestLogReportingModule {
     @Provides
@@ -726,12 +716,9 @@ class ViewEventLogsFragmentTest {
 
     @Provides
     @Singleton
-    fun provideFakeFirestoreEventLogger(): DebugFirestoreEventLogger = FakeFirestoreEventLogger()
-
-    @Provides
-    @Singleton
-    fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl.Factory):
-      FirestoreEventLogger = factory.createFirestoreEventLogger()
+    fun provideDebugFirestoreEventLogger(
+      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
+    ): FirestoreEventLogger = debugFirestoreEventLogger
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

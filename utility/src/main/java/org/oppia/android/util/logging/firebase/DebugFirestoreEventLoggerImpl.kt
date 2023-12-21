@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * An implementation of [DebugFirestoreEventLogger] used in developer-only builds of the app.
+ * A debug implementation of [FirestoreEventLogger] used in developer-only builds of the app.
  *
  * It forwards events to a production [FirestoreEventLogger] for real logging, but it also records logged
  * events for later retrieval (e.g. via [getEventList]).

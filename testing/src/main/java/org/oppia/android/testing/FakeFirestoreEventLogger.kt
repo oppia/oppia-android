@@ -1,7 +1,6 @@
 package org.oppia.android.testing
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
@@ -9,9 +8,7 @@ import javax.inject.Singleton
 
 /** A test specific fake for the FirestoreEventLogger. */
 @Singleton
-class FakeFirestoreEventLogger @Inject constructor() :
-  DebugFirestoreEventLogger,
-  FirestoreEventLogger {
+class FakeFirestoreEventLogger @Inject constructor() : FirestoreEventLogger {
   private val eventList = CopyOnWriteArrayList<EventLog>()
 
   override fun uploadEvent(eventLog: EventLog) {
@@ -41,7 +38,4 @@ class FakeFirestoreEventLogger @Inject constructor() :
 
   /** Returns the number of events logged to date (and not cleared by [clearAllEvents]). */
   fun getEventListCount(): Int = eventList.size
-
-  /** Returns the list of all [EventLog]s logged since the app opened. */
-  override fun getEventList(): List<EventLog> = eventList
 }

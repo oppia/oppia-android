@@ -68,7 +68,6 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
-import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
@@ -592,10 +591,6 @@ class LogUploadWorkerTest {
     fun bindFakeFirestoreEventLogger(
       @MockFirestoreEventLogger delegate: FirestoreEventLogger
     ): FirestoreEventLogger = delegate
-
-    @Provides
-    fun bindFirestoreEventLogger(logger: FakeFirestoreEventLogger):
-      DebugFirestoreEventLogger = logger
   }
 
   @Module
