@@ -93,6 +93,7 @@
 # All domain and utility-specific shared test infrastructure.
 /testing/src/main/java/org/oppia/android/testing/FakeAnalyticsEventLogger.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakeExceptionLogger.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakeFirebaseWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakeFirestoreEventLogger.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricAssessor.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricsEventLogger.kt @oppia/android-app-infrastructure-reviewers
