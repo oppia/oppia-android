@@ -227,7 +227,6 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     Intents.init()
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -1072,7 +1071,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
         .check(doesNotExist())
     }
@@ -1292,6 +1291,43 @@ class ExplorationActivityTest {
         .check(matches(isDisplayed()))
       onView(withText(R.string.unsaved_exploration_dialog_description)).inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testExplorationActivity_loadingAudio_progressbarIsDisplayed() {
+    markAllSpotlightsSeen()
+    setUpAudio()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
+        )
+      )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -1863,6 +1899,38 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExpActivity_pressBack_whenProgressControllerBroken_stillEndsActivity() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingNewExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // Simulate cases when the data controller enters a bad state by pre-finishing the exploration
+    // prior to trying to exit. While this seems impossible, it's been observed in real situations
+    // without a known cause. If it does happen, the user needs to have an escape hatch to actually
+    // leave. See #5233.
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+    testCoroutineDispatchers.runCurrent()
+    pressBack()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
@@ -2268,13 +2336,15 @@ class ExplorationActivityTest {
     explorationId: String,
     shouldSavePartialProgress: Boolean
   ): Intent {
+    // Note that the parent screen is defaulted to TOPIC_SCREEN_LESSONS_TAB since that's the most
+    // typical route to playing an exploration.
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       topicId,
       storyId,
       explorationId,
-      parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
+      parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       shouldSavePartialProgress
     )
   }
