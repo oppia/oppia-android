@@ -1,9 +1,9 @@
 package org.oppia.android.domain.auth
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CompletableDeferred
 import org.oppia.android.util.data.AsyncResult
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Controller for signing in and retrieving a Firebase user. */
 @Singleton

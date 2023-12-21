@@ -6,4 +6,3 @@ import com.google.firebase.auth.FirebaseUser
 data class FirebaseUserWrapper(
   val uid: String,
 )
-

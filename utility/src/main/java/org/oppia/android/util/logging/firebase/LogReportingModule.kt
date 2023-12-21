@@ -32,9 +32,4 @@ class LogReportingModule {
   @Singleton
   fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl.Factory):
     FirestoreEventLogger = factory.createFirestoreEventLogger()
-
-  @Provides
-  @Singleton
-  fun provideDebugFirestoreLogger(debugFirestoreLogger: DebugFirestoreEventLoggerImpl):
-    DebugFirestoreEventLogger = debugFirestoreLogger
 }

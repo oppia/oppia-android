@@ -1,10 +1,10 @@
 package org.oppia.android.testing
 
 import com.google.firebase.auth.FirebaseUser
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CompletableDeferred
 import org.oppia.android.util.data.AsyncResult
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** A test specific fake for the AuthenticationController. */
 @Singleton

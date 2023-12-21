@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -14,14 +13,13 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
-import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
-import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
-import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
@@ -99,17 +97,17 @@ class TopicActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    val questions = listOf(
-      SurveyQuestionName.USER_TYPE,
-      SurveyQuestionName.MARKET_FIT,
-      SurveyQuestionName.NPS
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        profileId,
+        topicId,
+        storyId,
+        explorationId,
+        parentScreen,
+        isCheckpointingEnabled
+      )
     )
-    val fragment =
-      SurveyWelcomeDialogFragment.newInstance(profileId, topicId, explorationId, questions)
-    supportFragmentManager.beginTransaction()
-      .add(fragment, TAG_SURVEY_WELCOME_DIALOG)
-      .addToBackStack(null)
-      .commit()
   }
 
   override fun routeToResumeLesson(

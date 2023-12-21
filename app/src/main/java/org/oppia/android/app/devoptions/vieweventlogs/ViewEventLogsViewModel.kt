@@ -5,7 +5,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
-import org.oppia.android.util.logging.firebase.DebugFirestoreEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
 import javax.inject.Inject
 
 /**
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @FragmentScope
 class ViewEventLogsViewModel @Inject constructor(
   debugAnalyticsEventLogger: DebugAnalyticsEventLogger,
-  debugFirestoreEventLogger: DebugFirestoreEventLogger,
+  debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {

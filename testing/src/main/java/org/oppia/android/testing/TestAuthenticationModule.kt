@@ -9,5 +9,5 @@ import javax.inject.Singleton
 class TestAuthenticationModule {
   @Provides
   @Singleton
-  fun provideAuthenticationController(authController: FakeAuthenticationController) = authController
+  fun provideFirebaseAuthWrapper(authController: FakeAuthenticationController) = authController
 }

@@ -11,6 +11,6 @@ import javax.inject.Singleton
 class AuthenticationModule {
   @Provides
   @Singleton
-  fun provideAuthenticationController():
+  fun provideFirebaseAuthWrapper():
     FirebaseAuthWrapper = FirebaseAuthWrapperImpl(Firebase.auth)
 }

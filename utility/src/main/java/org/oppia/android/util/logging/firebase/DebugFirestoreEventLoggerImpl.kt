@@ -13,8 +13,9 @@ import javax.inject.Singleton
  */
 @Singleton
 class DebugFirestoreEventLoggerImpl @Inject constructor(
-  private val realEventLogger: FirestoreEventLogger
-) : DebugFirestoreEventLogger {
+  factory: FirestoreEventLoggerProdImpl.Factory
+) : FirestoreEventLogger {
+  private val realEventLogger by lazy { factory.createFirestoreEventLogger() }
   private val eventList = CopyOnWriteArrayList<EventLog>()
 
   override fun uploadEvent(eventLog: EventLog) {
@@ -23,7 +24,7 @@ class DebugFirestoreEventLoggerImpl @Inject constructor(
   }
 
   /** Returns the list of all [EventLog]s logged for Firestore. */
-  override fun getEventList(): List<EventLog> = eventList
+  fun getEventList(): List<EventLog> = eventList
 
   /** Returns the most recently logged event. */
   fun getMostRecentEvent(): EventLog = getEventList().last()

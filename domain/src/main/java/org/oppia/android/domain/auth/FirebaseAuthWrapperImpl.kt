@@ -17,7 +17,8 @@ class FirebaseAuthWrapperImpl @Inject constructor(
   override fun signInAnonymously(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
     firebaseAuth.signInAnonymously()
       .addOnSuccessListener {
-        onSuccess.invoke()
+        // onSuccess.invoke()
+        onFailure.invoke(Exception())
       }
       .addOnFailureListener { task ->
         val exception = task.cause
