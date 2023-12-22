@@ -13,11 +13,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -154,14 +154,20 @@ class DebugFirestoreEventLoggerImplTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @Provides
+    @Singleton
+    fun provideDebugFirestoreEventLogger(
+      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
+    ): FirestoreEventLogger = debugFirestoreEventLogger
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, FakeOppiaClockModule::class,
+      TestModule::class, RobolectricModule::class,
+      TestDispatcherModule::class, FakeOppiaClockModule::class, LocaleTestModule::class
     ]
   )
 

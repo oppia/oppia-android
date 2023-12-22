@@ -1,10 +1,10 @@
 package org.oppia.android.testing
 
+import org.oppia.android.domain.auth.FirebaseAuthWrapper
+import org.oppia.android.domain.auth.FirebaseUserWrapper
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.auth.FirebaseAuthWrapper
-import org.oppia.android.domain.auth.FirebaseUserWrapper
 
 /** A test specific fake for the [FirebaseAuthWrapper]. */
 @Singleton
