@@ -8,7 +8,6 @@ import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.DimenRes
@@ -512,7 +511,7 @@ class HtmlParserTest {
 
     // Verify that the image span does not start/end with a space since there is other text present.
     assertThat(htmlResult.toString()).startsWith("A")
-    assertThat(htmlResult.toString()[htmlResult.length-1].toString()).doesNotContain(" ")
+    assertThat(htmlResult.toString()[htmlResult.length - 1].toString()).doesNotContain(" ")
   }
 
   @Test
