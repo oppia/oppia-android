@@ -10,5 +10,5 @@ data class GaeSubtopicPage(
   @Json(name = "page_contents") val pageContents: GaeSubtopicPageContents,
   @Json(name = "page_contents_schema_version") val pageContentsSchemaVersion: Int,
   @Json(name = "language_code") val languageCode: String,
-  @Json(name = "version") override val version: Int
-) : VersionedStructure
+  @Json(name = "version") val version: Int
+)

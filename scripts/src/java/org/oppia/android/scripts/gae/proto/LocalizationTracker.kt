@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.awaitAll
 import org.oppia.android.scripts.gae.gcs.GcsService
-import org.oppia.android.scripts.gae.json.GaeEntityTranslation
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -38,6 +37,7 @@ import org.oppia.proto.v1.structure.SubtopicPageIdDto
 import org.oppia.proto.v1.structure.ThumbnailDto
 import org.oppia.proto.v1.structure.VoiceoverFileDto
 import java.util.Locale
+import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 
 class LocalizationTracker private constructor(
   private val oppiaWebTranslationExtractor: OppiaWebTranslationExtractor,
@@ -150,16 +150,17 @@ class LocalizationTracker private constructor(
     }
   }
 
-  fun trackTranslations(id: ContainerId, entityTranslations: GaeEntityTranslation) {
+  fun trackTranslations(
+    id: ContainerId, languageType: LanguageType, entityTranslations: GaeEntityTranslations
+  ) {
     val container = getExpectedContainer(id)
-    val language = entityTranslations.languageCode.resolveLanguageCode()
-    if (!language.isValid()) return
+    if (!languageType.isValid()) return
     entityTranslations.translations.forEach { (contentId, translatedContent) ->
       when (val translation = translatedContent.contentValue) {
         is GaeTranslatedContent.Translation.SingleString ->
-          container.recordSingleTranslation(language, contentId, translation.value)
+          container.recordSingleTranslation(languageType, contentId, translation.value)
         is GaeTranslatedContent.Translation.StringList ->
-          container.recordMultiTranslation(language, contentId, translation.value)
+          container.recordMultiTranslation(languageType, contentId, translation.value)
       }
     }
   }

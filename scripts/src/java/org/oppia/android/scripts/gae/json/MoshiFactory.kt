@@ -25,6 +25,7 @@ object MoshiFactory {
       add(GaeTranslatedContent.Translation.Adapter(typeResolutionContext))
       add(GaeTranslatableContentFormat.Adapter())
       add(GaeInteractionCustomizationArgsMap.Adapter(typeResolutionContext))
+      add(GaeEntityTranslations.Adapter)
     }.build()
   }
 }

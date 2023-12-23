@@ -20,13 +20,13 @@ data class GaeTopic(
   @Json(name = "subtopic_schema_version") val subtopicSchemaVersion: Int,
   @Json(name = "next_subtopic_id") val nextSubtopicId: Int,
   @Json(name = "language_code") val languageCode: String,
-  @Json(name = "version") override val version: Int,
+  @Json(name = "version") val version: Int,
   @Json(name = "story_reference_schema_version") val storyReferenceSchemaVersion: Int,
   @Json(name = "meta_tag_content") val metaTagContent: String,
   @Json(name = "practice_tab_is_displayed") val practiceTabIsDisplayed: Boolean,
   @Json(name = "page_title_fragment_for_web") val pageTitleFragmentForWeb: String?,
   @Json(name = "skill_ids_for_diagnostic_test") val skillIdsForDiagnosticTest: List<String>
-) : VersionedStructure {
+) {
   fun computeContainedSubtopicMap(): Map<Int, GaeSubtopic> = subtopics.associateBy { it.id }
 
   fun computeReferencedStoryIds(): Set<String> = canonicalStoryRefs.map { it.storyId }.toSet()

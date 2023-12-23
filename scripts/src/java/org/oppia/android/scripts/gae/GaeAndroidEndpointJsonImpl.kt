@@ -13,15 +13,12 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.withIndex
-import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl.StructureFetcher.RevisionCard.fetchAndSet
-import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl.StructureFetcher.RevisionCard.setSkippedFromFailure
 import org.oppia.android.scripts.gae.compat.CompleteExploration
 import org.oppia.android.scripts.gae.compat.CompleteTopicPack
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityConstraints
 import org.oppia.android.scripts.gae.compat.TopicPackRepository
 import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
-import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
@@ -136,7 +133,7 @@ class GaeAndroidEndpointJsonImpl(
       val missingTopicIds = topicIds - availableTopicPacks.keys
       val futureTopics = missingTopicIds.map { topicId ->
         activityService.fetchLatestTopicAsync(topicId)
-      }.awaitAll().associateBy { it.id }
+      }.awaitAll().associate { it.id to it.payload }
 
       contentCache.addPacks(availableTopicPacks)
       jsonConverter.trackTopicTranslations(contentCache.topics)
@@ -680,7 +677,7 @@ class GaeAndroidEndpointJsonImpl(
           LocalizationTracker.ContainerId.createFrom(completedExploration.exploration)
         return if (localizationTracker.isLanguageSupported(containerId, requestedLanguage)) {
           jsonConverter.convertToExplorationLanguagePack(
-            packId, completedExploration.translations.getValue(requestedLanguage)
+            packId, completedExploration.translations.getValue(requestedLanguage).expectedVersion
           ).also {
             this@fetchAndSet.explorationLanguagePack = it
           }.contentVersion

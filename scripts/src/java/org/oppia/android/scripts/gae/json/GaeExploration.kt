@@ -22,8 +22,8 @@ data class GaeExploration(
   @Json(name = "next_content_id_index") val nextContentIdIndex: Int,
   @Json(name = "edits_allowed") val editsAllowed: Boolean,
   @Json(name = "states") val states: Map<String, GaeState>,
-  @Json(name = "version") override val version: Int
-) : VersionedStructure {
+  @Json(name = "version") val version: Int
+) {
   fun computeDirectlyReferencedSkillIds(): Set<String> =
     states.values.flatMap { it.computeReferencedSkillIds() }.toSet()
 }

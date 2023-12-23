@@ -8,60 +8,60 @@ internal interface AndroidActivityEndpointApi {
   @GET("android_data?activity_type=classroom")
   fun fetchLatestClassroom(
     @Query("activities_data") request: AndroidActivityRequests.Latest
-  ): Call<Map<String, GaeClassroom>>
+  ): Call<List<VersionedStructure<GaeClassroom>>>
 
   @GET("android_data?activity_type=exploration")
   fun fetchLatestExploration(
     @Query("activities_data") request: AndroidActivityRequests.Latest
-  ): Call<Map<String, GaeExploration>>
+  ): Call<List<VersionedStructure<GaeExploration>>>
 
   @GET("android_data?activity_type=exploration")
   fun fetchExplorationByVersion(
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
-  ): Call<Map<String, GaeExploration>>
+  ): Call<List<VersionedStructure<GaeExploration>>>
 
   @GET("android_data?activity_type=story")
   fun fetchLatestStory(
     @Query("activities_data") request: AndroidActivityRequests.Latest
-  ): Call<Map<String, GaeStory>>
+  ): Call<List<VersionedStructure<GaeStory>>>
 
   @GET("android_data?activity_type=story")
   fun fetchStoryByVersion(
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
-  ): Call<Map<String, GaeStory>>
+  ): Call<List<VersionedStructure<GaeStory>>>
 
   @GET("android_data?activity_type=skill")
   fun fetchLatestConceptCard(
     @Query("activities_data") request: AndroidActivityRequests.Latest
-  ): Call<Map<String, GaeSkill>>
+  ): Call<List<VersionedStructure<GaeSkill>>>
 
   @GET("android_data?activity_type=skill")
   fun fetchConceptCardByVersion(
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
-  ): Call<Map<String, GaeSkill>>
+  ): Call<List<VersionedStructure<GaeSkill>>>
 
   @GET("android_data?activity_type=subtopic")
   fun fetchLatestRevisionCard(
     @Query("activities_data") request: AndroidActivityRequests.Latest
-  ): Call<Map<String, GaeSubtopicPage>>
+  ): Call<List<VersionedStructure<GaeSubtopicPage>>>
 
   @GET("android_data?activity_type=subtopic")
   fun fetchRevisionCardByVersion(
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
-  ): Call<Map<String, GaeSubtopicPage>>
+  ): Call<List<VersionedStructure<GaeSubtopicPage>>>
 
   @GET("android_data?activity_type=learntopic")
   fun fetchLatestTopic(
     @Query("activities_data") request: AndroidActivityRequests.Latest
-  ): Call<Map<String, GaeTopic>>
+  ): Call<List<VersionedStructure<GaeTopic>>>
 
   @GET("android_data?activity_type=learntopic")
   fun fetchTopicByVersion(
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
-  ): Call<Map<String, GaeTopic>>
+  ): Call<List<VersionedStructure<GaeTopic>>>
 
   @GET("android_data?activity_type=exp_translations")
   fun fetchExplorationTranslations(
     @Query("activities_data") request: AndroidActivityRequests.Localized
-  ): Call<Map<String, GaeEntityTranslation>>
+  ): Call<List<VersionedStructure<GaeEntityTranslations>>>
 }

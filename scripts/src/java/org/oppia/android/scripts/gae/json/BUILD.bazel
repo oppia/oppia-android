@@ -14,7 +14,7 @@ kt_jvm_library(
         "GaeAnswerGroup.kt",
         "GaeClassroom.kt",
         "GaeCustomizationArgValue.kt",
-        "GaeEntityTranslation.kt",
+        "GaeEntityTranslations.kt",
         "GaeExploration.kt",
         "GaeHint.kt",
         "GaeInteractionCustomizationArgsMap.kt",

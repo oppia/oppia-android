@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.gae.compat
 
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue
-import org.oppia.android.scripts.gae.json.GaeEntityTranslation
+import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeHint
 import org.oppia.android.scripts.gae.json.GaeInteractionCustomizationArgsMap
@@ -62,7 +62,7 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
 
   fun collectSubtitles(completeExploration: CompleteExploration): Set<SubtitledText> {
     return completeExploration.exploration.collectSubtitles() +
-      completeExploration.translations.values.flatSet { it.collectSubtitles() }
+      completeExploration.translations.values.flatSet { it.payload.collectSubtitles() }
   }
 
   fun collectSubtitles(gaeSkill: GaeSkill): Set<SubtitledText> {
@@ -128,7 +128,7 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
 
   private fun GaeSolution.collectSubtitles(): Set<SubtitledText> = setOf(explanation.toSubtitle())
 
-  private fun GaeEntityTranslation.collectSubtitles(): Set<SubtitledText> =
+  private fun GaeEntityTranslations.collectSubtitles(): Set<SubtitledText> =
     translations.values.flatSet { it.collectSubtitles() }
 
   private fun GaeTranslatedContent.collectSubtitles(): Set<SubtitledText> {

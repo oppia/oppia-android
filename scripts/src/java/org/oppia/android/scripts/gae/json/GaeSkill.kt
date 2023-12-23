@@ -14,12 +14,12 @@ data class GaeSkill(
   @Json(name = "misconceptions_schema_version") val misconceptionsSchemaVersion: Int,
   @Json(name = "rubric_schema_version") val rubricSchemaVersion: Int,
   @Json(name = "skill_contents_schema_version") val skillContentsSchemaVersion: Int,
-  @Json(name = "version") override val version: Int,
+  @Json(name = "version") val version: Int,
   @Json(name = "next_misconception_id") val nextMisconceptionId: Int,
   @Json(name = "superseding_skill_id") val supersedingSkillId: String?,
   @Json(name = "all_questions_merged") val allQuestionsMerged: Boolean,
   @Json(name = "prerequisite_skill_ids") val prerequisiteSkillIds: List<String>
-) : VersionedStructure {
+) {
   fun computeDirectlyReferencedSkillIds(): Set<String> =
     (listOfNotNull(supersedingSkillId) + prerequisiteSkillIds).toSet()
 }

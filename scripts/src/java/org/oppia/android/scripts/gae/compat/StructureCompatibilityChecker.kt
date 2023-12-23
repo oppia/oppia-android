@@ -18,7 +18,7 @@ import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.Compat
 import org.oppia.android.scripts.gae.compat.SubtitledHtmlCollector.SubtitledText
 import org.oppia.android.scripts.gae.json.GaeAnswerGroup
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue
-import org.oppia.android.scripts.gae.json.GaeEntityTranslation
+import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeHint
 import org.oppia.android.scripts.gae.json.GaeInteractionCustomizationArgsMap
@@ -41,6 +41,7 @@ import org.oppia.android.scripts.gae.json.GaeTranslatedContent
 import org.oppia.android.scripts.gae.json.GaeWorkedExample
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
+import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.parseColorRgb
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
@@ -154,7 +155,7 @@ class StructureCompatibilityChecker(
       subtitledHtmlCollector.collectSubtitles(completeExploration).collectContentIds()
     val defaultLanguage = completeExploration.exploration.languageCode.resolveLanguageCode()
     return CompatibilityResult.createFrom {
-      checkEntityTranslationsCompatibility(
+      checkAllEntityTranslationsCompatibility(
         containerId, completeExploration.translations, expectedTranslatedContentIds, defaultLanguage
       ) + checkExplorationCompatibility(
         containerId, completeExploration.exploration, defaultLanguage
@@ -307,32 +308,32 @@ class StructureCompatibilityChecker(
     }
   }
 
-  private fun checkEntityTranslationsCompatibility(
+  private fun checkAllEntityTranslationsCompatibility(
     origin: ContainerId,
-    translations: Map<LanguageType, GaeEntityTranslation>,
+    translations: Map<LanguageType, VersionedStructure<GaeEntityTranslations>>,
     expectedContentIds: Set<String>,
     defaultLanguage: LanguageType
   ): List<CompatibilityFailure> {
     val allExpectedContentIds =
-      expectedContentIds + translations.values.flatMap { it.translations.keys }
+      expectedContentIds + translations.values.flatMap { it.payload.translations.keys }
     val contentIdLanguages = allExpectedContentIds.associateWith { contentId ->
       translations.filter { (_, entityTranslation) ->
-        contentId in entityTranslation.translations
+        contentId in entityTranslation.payload.translations
       }.keys
     }
-    return translations.flatMap { (languageType, translation) ->
-      checkEntityTranslationCompatibility(origin, languageType, translation)
+    return translations.flatMap { (languageType, translations) ->
+      checkEntityTranslationsCompatibility(origin, languageType, translations.payload)
     } + contentIdLanguages.flatMap { (contentId, languageCodes) ->
       languageCodes.checkHasRequiredTranslations(origin, contentId, defaultLanguage)
     }
   }
 
-  private fun checkEntityTranslationCompatibility(
+  private fun checkEntityTranslationsCompatibility(
     origin: ContainerId,
     languageType: LanguageType,
-    gaeEntityTranslation: GaeEntityTranslation
+    gaeEntityTranslations: GaeEntityTranslations
   ): List<CompatibilityFailure> {
-    return gaeEntityTranslation.translations.flatMap { (contentId, translatedContent) ->
+    return gaeEntityTranslations.translations.flatMap { (contentId, translatedContent) ->
       checkTranslatedContentCompatibility(origin, contentId, languageType, translatedContent)
     }
   }

@@ -6,7 +6,6 @@ import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion.GaeNormalizedRectangle2d
-import org.oppia.android.scripts.gae.json.GaeEntityTranslation
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeHint
 import org.oppia.android.scripts.gae.json.GaeInteractionInstance
@@ -266,8 +265,8 @@ class JsonToProtoConverter(
       }
 
       // Track translations after all default strings have been established.
-      for (translations in allTranslations.values) {
-        localizationTracker.trackTranslations(containerId, translations)
+      for ((language, translations) in allTranslations) {
+        localizationTracker.trackTranslations(containerId, language, translations.payload)
       }
     }
   }
@@ -477,7 +476,7 @@ class JsonToProtoConverter(
 
   suspend fun convertToExplorationLanguagePack(
     id: LocalizedExplorationIdDto,
-    gaeEntityTranslation: GaeEntityTranslation
+    contentVersion: Int
   ): ExplorationLanguagePackDto {
     return ExplorationLanguagePackDto.newBuilder().apply {
       val containerId = LocalizationTracker.ContainerId.createFrom(id)
@@ -485,7 +484,7 @@ class JsonToProtoConverter(
       this.id = id
       this.localization =
         localizationTracker.computeSpecificContentLocalization(containerId, id.language)
-      this.contentVersion = gaeEntityTranslation.version
+      this.contentVersion = contentVersion
     }.build()
   }
 
