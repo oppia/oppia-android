@@ -63,16 +63,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var drawerLayout: DrawerLayout
   private lateinit var binding: DrawerFragmentBinding
   private lateinit var profileId: ProfileId
-  private lateinit var toolbar: Toolbar
   private var previousMenuItemId: Int? = null
   private var internalProfileId: Int = -1
-  private var menuItemId: Int = 0
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
-
-    setUpDrawer(drawerLayout, toolbar, menuItemId)
 
     fragment.setHasOptionsMenu(true)
     profileId = activity.intent.extractCurrentUserProfileId()
@@ -370,32 +366,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     }
   }
 
-  fun initializeDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    this.drawerLayout = drawerLayout
-    this.toolbar = toolbar
-    this.menuItemId = menuItemId
-
-    /**
-     * [setUpDrawer] is called directly if binding is already initialized.
-     * Otherwise, [setUpDrawer] is called from [handleCreateView].
-     *
-     * Note: [binding] is already initialized when [initializeDrawer] is called via [onRestart]
-     * and [handleCreateView] will not be called in that case.
-     */
-    if (this::binding.isInitialized) {
-      setUpDrawer(
-        this.drawerLayout,
-        this.toolbar,
-        this.menuItemId
-      )
-    }
-  }
-
   /**
    * Initializes the navigation drawer for the specified [DrawerLayout] and [Toolbar], which the host activity is
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
    */
-  private fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
+  fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     previousMenuItemId = if (activity is TopicActivity) null else menuItemId
     if (menuItemId != 0 && menuItemId != -1) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
@@ -432,6 +407,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             true
         }
       }
+      this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
         drawerLayout,
@@ -470,6 +446,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       // For showing navigation drawer in DeveloperOptionsActivity
       else if (menuItemId == -1) getFooterViewModel().isDeveloperOptionsSelected.set(true)
       uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+      this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
         drawerLayout,

@@ -202,7 +202,7 @@ class HelpActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.help_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
-    navigationDrawerFragment.initializeDrawer(
+    navigationDrawerFragment.setUpDrawer(
       activity.findViewById<View>(R.id.help_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_help
     )
