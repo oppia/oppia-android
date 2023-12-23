@@ -317,7 +317,7 @@ class UrlImageParser private constructor(
         }
 
         val drawableLeft = if (imageCenterAlign && !isRTLMode()) {
-          calculateInitialMargin(maxAvailableWidth, drawableWidth)
+          calculateInitialMargin(maxAvailableWidth - maxContentItemPadding, drawableWidth)
         } else {
           0f
         }

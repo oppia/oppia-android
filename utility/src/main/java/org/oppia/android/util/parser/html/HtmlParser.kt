@@ -94,6 +94,12 @@ class HtmlParser private constructor(
       htmlContent = modifiedHtmlContent
     } else {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
+      val regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
+      val modifiedHtmlContent = rawString.replace(regex) {
+        val oppiaImageTag = it.value
+        """<div>$oppiaImageTag</div>"""
+      }
+      htmlContent = modifiedHtmlContent
     }
 
     htmlContentTextView.invalidate()
