@@ -3,7 +3,6 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -113,6 +112,5 @@ class ResumeLessonActivity :
     super.onBackPressed()
     resumeLessonActivityPresenter.onBackPressed()
     finish()
-
   }
 }

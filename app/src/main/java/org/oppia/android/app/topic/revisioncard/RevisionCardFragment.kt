@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import org.oppia.android.app.model.ReadingTextSize
 
 /* Fragment that displays revision card */
 class RevisionCardFragment : InjectableDialogFragment() {
@@ -35,16 +35,16 @@ class RevisionCardFragment : InjectableDialogFragment() {
       readingTextSize: ReadingTextSize
     ):
       RevisionCardFragment {
-      return RevisionCardFragment().apply {
-        arguments = Bundle().apply {
-          putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-          putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
-          putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
-          putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
+        return RevisionCardFragment().apply {
+          arguments = Bundle().apply {
+            putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+            putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
+            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+            putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
+            putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
+          }
         }
       }
-    }
   }
 
   @Inject

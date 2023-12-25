@@ -5,32 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import java.io.Serializable
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.revisioncard.RevisionCardFragment.Companion.READING_TEXT_SIZE_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.app.model.ExplorationFragmentArguments
-import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.app.model.ResumeLessonFragmentArguments
-import org.oppia.android.app.player.exploration.ExplorationFragment
-import org.oppia.android.app.player.exploration.ExplorationFragmentPresenter
-import org.oppia.android.app.resumelesson.ResumeLessonFragment
-import org.oppia.android.app.topic.revisioncard.RevisionCardFragment.Companion.READING_TEXT_SIZE_ARGUMENT_KEY
-import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -157,5 +149,4 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private fun updateArguments(readingTextSize: ReadingTextSize) {
     fragment.requireArguments().putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
   }
-
 }

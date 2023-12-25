@@ -24,9 +24,8 @@ private const val RESUME_LESSON_TAG = "ResumeLesson"
 class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-
-  ) {
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
+) {
   private lateinit var profileId: ProfileId
 
   private lateinit var topicId: String

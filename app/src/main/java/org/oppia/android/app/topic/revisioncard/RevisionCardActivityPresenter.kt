@@ -10,24 +10,23 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
-import org.oppia.android.app.resumelesson.ResumeLessonActivity
-import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.domain.profile.ProfileManagementController
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -39,7 +38,7 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  ) {
+) {
   @Inject
   lateinit var accessibilityService: AccessibilityService
 
@@ -84,7 +83,7 @@ class RevisionCardActivityPresenter @Inject constructor(
 
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
-      fontScaleConfigurationUtil.adjustFontScale(activity,ReadingTextSize.MEDIUM_TEXT_SIZE)
+      fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
       activity.onBackPressed()
     }
     if (!accessibilityService.isScreenReaderEnabled()) {
@@ -222,6 +221,6 @@ class RevisionCardActivityPresenter @Inject constructor(
   }
 
   fun onBackpressed() {
-    fontScaleConfigurationUtil.adjustFontScale(activity,ReadingTextSize.MEDIUM_TEXT_SIZE)
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
   }
 }
