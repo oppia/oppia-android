@@ -227,6 +227,5 @@ class RevisionCardActivityPresenter @Inject constructor(
 
   fun setReadingTextSizeMedium() {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
-
   }
 }
