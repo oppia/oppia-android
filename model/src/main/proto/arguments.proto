@@ -194,6 +194,9 @@ message ResumeLessonFragmentArguments {
 
   // The checkpoint that may be used to resume the exploration play session.
   ExplorationCheckpoint checkpoint = 6;
+
+  // The text size at which content in the resume lesson should be rendered.
+  ReadingTextSize reading_text_size = 7;
 }
 
 // Params required when creating a new ReadingTextSizeActivity.

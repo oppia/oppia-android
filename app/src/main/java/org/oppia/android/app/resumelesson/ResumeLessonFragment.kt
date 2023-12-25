@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -18,7 +19,7 @@ import javax.inject.Inject
 /** Fragment that allows the user to resume a saved exploration. */
 class ResumeLessonFragment : InjectableFragment() {
   companion object {
-    private const val ARGUMENTS_KEY = "ResumeExplorationFragment.arguments"
+    const val ARGUMENTS_KEY = "ResumeExplorationFragment.arguments"
 
     /** Creates new instance of [ResumeLessonFragment] for the provided parameters. */
     fun newInstance(
@@ -27,7 +28,8 @@ class ResumeLessonFragment : InjectableFragment() {
       storyId: String,
       explorationId: String,
       parentScreen: ExplorationActivityParams.ParentScreen,
-      checkpoint: ExplorationCheckpoint
+      checkpoint: ExplorationCheckpoint,
+      readingTextSize: ReadingTextSize
     ): ResumeLessonFragment {
       val args = ResumeLessonFragmentArguments.newBuilder().apply {
         this.profileId = profileId
@@ -36,6 +38,7 @@ class ResumeLessonFragment : InjectableFragment() {
         this.explorationId = explorationId
         this.parentScreen = parentScreen
         this.checkpoint = checkpoint
+        this.readingTextSize = readingTextSize
       }.build()
       return ResumeLessonFragment().apply {
         arguments = Bundle().apply {
@@ -51,6 +54,7 @@ class ResumeLessonFragment : InjectableFragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
+    resumeLessonFragmentPresenter.handleAttach(context)
   }
 
   override fun onCreateView(

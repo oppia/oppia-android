@@ -3,14 +3,17 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.ScreenName.RESUME_LESSON_ACTIVITY
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -20,6 +23,7 @@ import javax.inject.Inject
 /** Activity that allows the user to resume a saved exploration. */
 class ResumeLessonActivity :
   InjectableAutoLocalizedAppCompatActivity(),
+  DefaultFontSizeStateListener,
   RouteToExplorationListener {
   @Inject
   lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter
@@ -99,5 +103,10 @@ class ResumeLessonActivity :
       )
     )
     finish()
+  }
+
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    Log.e("#", readingTextSize.toString())
+    resumeLessonActivityPresenter.loadResumeLessonFragment(readingTextSize)
   }
 }
