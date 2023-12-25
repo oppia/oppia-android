@@ -11,6 +11,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ResumeLessonActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -23,6 +24,8 @@ private const val RESUME_LESSON_TAG = "ResumeLesson"
 class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+
 ) {
   private lateinit var profileId: ProfileId
 
@@ -55,13 +58,18 @@ class ResumeLessonActivityPresenter @Inject constructor(
     activity.setSupportActionBar(resumeLessonToolbar)
 
     retrieveReadingTextSize().observe(
-      activity,
+      activity as ResumeLessonActivity,
       { result ->
         (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
       }
     )
 
     resumeLessonToolbar.setNavigationOnClickListener {
+      fontScaleConfigurationUtil.adjustFontScale(
+        context = activity,
+        ReadingTextSize.MEDIUM_TEXT_SIZE
+      )
+
       activity.onBackPressed()
     }
   }

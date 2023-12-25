@@ -21,7 +21,6 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -40,7 +39,6 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val profileManagementController: ProfileManagementController,
   private val htmlParserFactory: HtmlParser.Factory,
   private val translationController: TranslationController,
   @DefaultResourceBucketName private val resourceBucketName: String,
@@ -66,25 +64,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   fun handleAttach(context: Context) {
-    fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
-  }
-
-  fun handleViewCreated() {
-    val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
-    profileDataProvider.toLiveData().observe(
-      fragment
-    ) { result ->
-      val readingTextSize = retrieveArguments().readingTextSize
-      if (result is AsyncResult.Success) {
-        if (result.value.readingTextSize != readingTextSize) {
-
-          // Since text views are based on sp for sizing, the activity needs to be recreated so that
-          // sp can be correctly recomputed.
-          selectNewReadingTextSize(result.value.readingTextSize)
-          fragment.requireActivity().recreate()
-        }
-      }
-    }
+    fontScaleConfigurationUtil.adjustFontScale(fragment.requireContext(), retrieveArguments().readingTextSize)
   }
 
   /** Handles onCreateView() method of the [ResumeLessonFragment]. */
