@@ -1,6 +1,7 @@
 package org.oppia.android.app.resumelesson
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,11 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationFragmentArguments
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.player.exploration.ExplorationFragmentPresenter
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.extensions.putProto
 
 /** The presenter for [ResumeLessonFragment]. */
 class ResumeLessonFragmentPresenter @Inject constructor(
@@ -37,6 +43,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  private val profileManagementController: ProfileManagementController,
   private val htmlParserFactory: HtmlParser.Factory,
   private val translationController: TranslationController,
   @DefaultResourceBucketName private val resourceBucketName: String,
@@ -60,8 +67,27 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val chapterSummaryLiveData: LiveData<EphemeralChapterSummary> by lazy {
     getChapterSummary()
   }
+
   fun handleAttach(context: Context) {
     fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
+  }
+
+  fun handleViewCreated() {
+    val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
+    profileDataProvider.toLiveData().observe(
+      fragment
+    ) { result ->
+      val readingTextSize = retrieveArguments().readingTextSize
+      if (result is AsyncResult.Success) {
+        if (result.value.readingTextSize != readingTextSize) {
+
+          // Since text views are based on sp for sizing, the activity needs to be recreated so that
+          // sp can be correctly recomputed.
+          selectNewReadingTextSize(result.value.readingTextSize)
+          fragment.requireActivity().recreate()
+        }
+      }
+    }
   }
 
   /** Handles onCreateView() method of the [ResumeLessonFragment]. */
@@ -183,6 +209,19 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       is AsyncResult.Pending -> EphemeralChapterSummary.getDefaultInstance()
       is AsyncResult.Success -> ephemeralResult.value
     }
+  }
+
+  private fun selectNewReadingTextSize(readingTextSize: ReadingTextSize) {
+    updateArguments(
+      retrieveArguments().toBuilder().apply {
+        this.readingTextSize = readingTextSize
+      }.build()
+    )
+    fontScaleConfigurationUtil.adjustFontScale(fragment.requireActivity(), readingTextSize)
+  }
+
+  private fun updateArguments(updatedArgs: ResumeLessonFragmentArguments) {
+    fragment.requireArguments().putProto(ResumeLessonFragment.ARGUMENTS_KEY, updatedArgs)
   }
 
   private fun playExploration(

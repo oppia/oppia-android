@@ -76,4 +76,9 @@ class ResumeLessonFragment : InjectableFragment() {
       args.checkpoint
     )
   }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    resumeLessonFragmentPresenter.handleViewCreated()
+  }
 }

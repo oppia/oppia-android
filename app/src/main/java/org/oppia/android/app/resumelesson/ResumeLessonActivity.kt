@@ -106,7 +106,6 @@ class ResumeLessonActivity :
   }
 
   override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
-    Log.e("#", readingTextSize.toString())
     resumeLessonActivityPresenter.loadResumeLessonFragment(readingTextSize)
   }
 }
