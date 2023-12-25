@@ -122,6 +122,7 @@ class RevisionCardActivityPresenter @Inject constructor(
 
   /** Action for onOptionsItemSelected. */
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
+    setReadingTextSizeMedium()
     return when (itemId) {
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
@@ -221,6 +222,11 @@ class RevisionCardActivityPresenter @Inject constructor(
   }
 
   fun onBackpressed() {
+    setReadingTextSizeMedium()
+  }
+
+  fun setReadingTextSizeMedium() {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
+
   }
 }
