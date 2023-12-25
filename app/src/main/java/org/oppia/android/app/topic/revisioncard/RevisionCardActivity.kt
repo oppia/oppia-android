@@ -11,6 +11,8 @@ import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 
 /** Activity for revision card. */
 class RevisionCardActivity :
@@ -18,6 +20,7 @@ class RevisionCardActivity :
   ReturnToTopicClickListener,
   ConceptCardListener,
   RouteToRevisionCardListener,
+  DefaultFontSizeStateListener,
   BottomSheetOptionsMenuItemClickListener {
 
   @Inject
@@ -98,6 +101,11 @@ class RevisionCardActivity :
   }
 
   override fun onBackPressed() {
+    revisionCardActivityPresenter.onBackpressed()
     onReturnToTopicRequested()
+  }
+
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    revisionCardActivityPresenter.loadRevisionCardFragment(readingTextSize)
   }
 }

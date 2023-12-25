@@ -44,7 +44,8 @@ class ExplorationActivity :
   BottomSheetOptionsMenuItemClickListener,
   RequestVoiceOverIconSpotlightListener {
 
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 

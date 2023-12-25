@@ -30,6 +30,7 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.app.player.exploration.ExplorationFragment
 
 /** The presenter for [ResumeLessonFragment]. */
 class ResumeLessonFragmentPresenter @Inject constructor(
@@ -63,6 +64,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     getChapterSummary()
   }
 
+  /** Handles the [Fragment.onAttach] portion of [ResumeLessonFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
     fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
   }
@@ -186,19 +188,6 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       is AsyncResult.Pending -> EphemeralChapterSummary.getDefaultInstance()
       is AsyncResult.Success -> ephemeralResult.value
     }
-  }
-
-  private fun selectNewReadingTextSize(readingTextSize: ReadingTextSize) {
-    updateArguments(
-      retrieveArguments().toBuilder().apply {
-        this.readingTextSize = readingTextSize
-      }.build()
-    )
-    fontScaleConfigurationUtil.adjustFontScale(fragment.requireActivity(), readingTextSize)
-  }
-
-  private fun updateArguments(updatedArgs: ResumeLessonFragmentArguments) {
-    fragment.requireArguments().putProto(ResumeLessonFragment.ARGUMENTS_KEY, updatedArgs)
   }
 
   private fun playExploration(

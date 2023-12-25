@@ -22,6 +22,12 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.domain.profile.ProfileManagementController
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -30,9 +36,12 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val topicController: TopicController,
-  private val translationController: TranslationController
-) {
-  @Inject lateinit var accessibilityService: AccessibilityService
+  private val translationController: TranslationController,
+  private val profileManagementController: ProfileManagementController,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  ) {
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   private lateinit var revisionCardToolbar: Toolbar
   private lateinit var revisionCardToolbarTitle: TextView
@@ -40,6 +49,7 @@ class RevisionCardActivityPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private var subtopicId: Int = 0
+  private var subtopicListSize: Int = 0
 
   fun handleOnCreate(
     internalProfileId: Int,
@@ -54,10 +64,18 @@ class RevisionCardActivityPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.subtopicId = subtopicId
+    this.subtopicListSize = subtopicListSize
 
     binding.apply {
       lifecycleOwner = activity
     }
+
+    retrieveReadingTextSize().observe(
+      activity,
+      { result ->
+        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+      }
+    )
 
     revisionCardToolbar = binding.revisionCardToolbar
     revisionCardToolbarTitle = binding.revisionCardToolbarTitle
@@ -66,6 +84,8 @@ class RevisionCardActivityPresenter @Inject constructor(
 
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
+      fontScaleConfigurationUtil.adjustFontScale(activity,ReadingTextSize.MEDIUM_TEXT_SIZE)
+      activity.onBackPressed()
     }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.revisionCardToolbarTitle.setOnClickListener {
@@ -79,13 +99,26 @@ class RevisionCardActivityPresenter @Inject constructor(
       val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
       bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
     }
+  }
 
-    if (getReviewCardFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.revision_card_fragment_placeholder,
-        RevisionCardFragment.newInstance(topicId, subtopicId, profileId, subtopicListSize)
-      ).commitNow()
-    }
+  private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
+    return Transformations.map(
+      profileManagementController.getProfile(profileId).toLiveData(),
+      ::processReadingTextSizeResult
+    )
+  }
+
+  private fun processReadingTextSizeResult(
+    readingTextSizeResult: AsyncResult<Profile>
+  ): ReadingTextSize {
+    return when (readingTextSizeResult) {
+      is AsyncResult.Failure -> {
+
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> readingTextSizeResult.value
+    }.readingTextSize
   }
 
   /** Action for onOptionsItemSelected. */
@@ -171,5 +204,24 @@ class RevisionCardActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.revision_card_fragment_placeholder
       ) as RevisionCardFragment?
+  }
+
+  fun loadRevisionCardFragment(readingTextSize: ReadingTextSize) {
+    if (getReviewCardFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.revision_card_fragment_placeholder,
+        RevisionCardFragment.newInstance(
+          topicId,
+          subtopicId,
+          profileId,
+          subtopicListSize,
+          readingTextSize
+        )
+      ).commitNow()
+    }
+  }
+
+  fun onBackpressed() {
+    fontScaleConfigurationUtil.adjustFontScale(activity,ReadingTextSize.MEDIUM_TEXT_SIZE)
   }
 }

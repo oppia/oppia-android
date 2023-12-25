@@ -26,7 +26,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
 
-) {
+  ) {
   private lateinit var profileId: ProfileId
 
   private lateinit var topicId: String
@@ -119,5 +119,12 @@ class ResumeLessonActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.resume_lesson_fragment_placeholder
       ) as ResumeLessonFragment?
+  }
+
+  fun onBackPressed() {
+    fontScaleConfigurationUtil.adjustFontScale(
+      context = activity,
+      ReadingTextSize.MEDIUM_TEXT_SIZE
+    )
   }
 }

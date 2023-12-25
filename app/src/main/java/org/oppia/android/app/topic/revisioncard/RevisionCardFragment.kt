@@ -12,6 +12,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.ReadingTextSize
 
 /* Fragment that displays revision card */
 class RevisionCardFragment : InjectableDialogFragment() {
@@ -20,22 +21,30 @@ class RevisionCardFragment : InjectableDialogFragment() {
     private const val SUBTOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.subtopic_id"
     private const val SUBTOPIC_LIST_SIZE_ARGUMENT_KEY = "RevisionCardFragment.subtopic_list_size"
     private const val PROFILE_ID_ARGUMENT_KEY = "RevisionCardFragment.profile_id"
+    const val READING_TEXT_SIZE_ARGUMENT_KEY = "RevisionCardFragment.Reading_text_size"
 
     /**
      * Returns a new [RevisionCardFragment] to display the specific subtopic for the given topic &
      * profile.
      */
-    fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int):
+    fun newInstance(
+      topicId: String,
+      subtopicId: Int,
+      profileId: ProfileId,
+      subtopicListSize: Int,
+      readingTextSize: ReadingTextSize
+    ):
       RevisionCardFragment {
-        return RevisionCardFragment().apply {
-          arguments = Bundle().apply {
-            putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-            putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
-            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
-            putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
-          }
+      return RevisionCardFragment().apply {
+        arguments = Bundle().apply {
+          putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+          putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
+          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+          putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
+          putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
         }
       }
+    }
   }
 
   @Inject
@@ -44,6 +53,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
+    revisionCardFragmentPresenter.handleAttach(context)
   }
 
   override fun onCreateView(
@@ -62,9 +72,15 @@ class RevisionCardFragment : InjectableDialogFragment() {
     val subtopicId = args.getInt(SUBTOPIC_ID_ARGUMENT_KEY, -1)
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     val subtopicListSize = args.getInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, -1)
+
     return revisionCardFragmentPresenter.handleCreateView(
       inflater, container, topicId, subtopicId, profileId, subtopicListSize
     )
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    revisionCardFragmentPresenter.handleViewCreated()
   }
 
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
