@@ -64,7 +64,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   fun handleAttach(context: Context) {
-    fontScaleConfigurationUtil.adjustFontScale(fragment.requireContext(), retrieveArguments().readingTextSize)
+    fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
   }
 
   /** Handles onCreateView() method of the [ResumeLessonFragment]. */
