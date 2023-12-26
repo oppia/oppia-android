@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.widget.AppCompatEditText
+import android.widget.EditText
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
@@ -19,7 +19,7 @@ import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 //  maxLength="200".
 
 /**
- * The custom [AppCompatEditText] class for math expression interactions interaction view.
+ * The custom [EditText] class for math expression interactions interaction view.
  *
  * Note that the hint should be set via [setPlaceholder] to ensure that it's properly initialized if
  * using databinding, otherwise setting the hint through android:hint should work fine.
@@ -28,7 +28,7 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : AppCompatEditText(context, attrs, defStyle), View.OnFocusChangeListener {
+) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private var hintText: CharSequence = ""
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
@@ -84,7 +84,7 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
 
   private fun restoreHint() {
     hint = hintText
-    if (text?.isEmpty() == true) setTypeface(typeface, Typeface.ITALIC)
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
     setSingleLine(false)
   }
 }
