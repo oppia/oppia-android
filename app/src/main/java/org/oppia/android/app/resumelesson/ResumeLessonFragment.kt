@@ -19,6 +19,8 @@ import javax.inject.Inject
 /** Fragment that allows the user to resume a saved exploration. */
 class ResumeLessonFragment : InjectableFragment() {
   companion object {
+
+    /** Arguments key for [ResumeLessonFragment]. */
     const val ARGUMENTS_KEY = "ResumeExplorationFragment.arguments"
 
     /** Creates new instance of [ResumeLessonFragment] for the provided parameters. */

@@ -73,6 +73,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
     }
   }
 
+  /** Loads [ResumeLessonFragment]. */
   fun loadResumeLessonFragment(readingTextSize: ReadingTextSize) {
     if (getResumeLessonFragment() == null) {
       val resumeLessonFragment = ResumeLessonFragment.newInstance(
@@ -120,6 +121,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
       ) as ResumeLessonFragment?
   }
 
+  /** Handles onBacKPressed. */
   fun onBackPressed() {
     fontScaleConfigurationUtil.adjustFontScale(
       context = activity,
