@@ -211,6 +211,9 @@ class RegexPatternValidationCheckTest {
       " should immediately follow the at-clause without any additional linking with brackets."
   private val badSingleLineKdocShouldEndWithPunctuation =
     "Badly formatted KDoc. Single-line KDocs should end with punctuation."
+  private val referenceComputeIfAbsent =
+    "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic" +
+      " Kotlin-specific solution, instead."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2846,6 +2849,28 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $badSingleLineKdocShouldEndWithPunctuation
         $stringFilePath:3: $badSingleLineKdocShouldEndWithPunctuation
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_includesReferenceToComputeIfAbsent_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        someMap.computeIfAbsent(key) { createOtherValue() }
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $referenceComputeIfAbsent
         $wikiReferenceNote
         """.trimIndent()
       )
