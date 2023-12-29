@@ -36,7 +36,7 @@
     </FrameLayout>
   </LinearLayout>
 
-  <androidx.fragment.app.FragmentContainerView
+  <fragment
     android:id="@+id/options_activity_fragment_navigation_drawer"
     android:name="org.oppia.android.app.drawer.NavigationDrawerFragment"
     android:layout_width="wrap_content"
