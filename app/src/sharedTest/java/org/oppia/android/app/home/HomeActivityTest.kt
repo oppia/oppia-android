@@ -958,11 +958,12 @@ class HomeActivityTest {
         )
       ).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
-
+      val args = TopicActivityArguments.newBuilder().apply {
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.storyId = FRACTIONS_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 
@@ -1037,11 +1038,12 @@ class HomeActivityTest {
         )
       ).check(matches(withText(containsString("Fractions")))).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = TopicActivityArguments.newBuilder().apply {
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.storyId = FRACTIONS_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 

@@ -662,10 +662,12 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
 
-      val args = TopicActivityArguments.newBuilder().setTopicId(FRACTIONS_TOPIC_ID).build()
+      val args = TopicActivityArguments.newBuilder().apply {
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.storyId = FRACTIONS_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 

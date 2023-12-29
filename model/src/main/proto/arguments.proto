@@ -317,11 +317,12 @@ message SurveyActivityParams {
 
 message TopicActivityArguments {
   string topic_id = 1;
+  string story_id = 2;
 }
 
 message TopicFragmentArguments {
-  string topic_id = 2;
-  string story_id = 3;
+  string topic_id = 1;
+  string story_id = 2;
 }
 
 message QuestionPlayerActivityArguments {

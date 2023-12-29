@@ -3,6 +3,7 @@ package org.oppia.android.app.topic
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
@@ -24,8 +25,9 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
+import org.oppia.android.app.model.ExplorationFragmentArguments
+import org.oppia.android.app.player.exploration.ExplorationFragmentPresenter
+import org.oppia.android.util.extensions.getProto
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :
@@ -47,15 +49,16 @@ class TopicActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    val args = intent?.getProtoExtra(
+      TOPIC_ACTIVITY_ARGUMENTS_KEY,
+      TopicActivityArguments.getDefaultInstance()
+    )
     topicId = checkNotNull(
-      intent?.getProtoExtra(
-        TOPIC_ACTIVITY_ARGUMENTS_KEY,
-        TopicActivityArguments.getDefaultInstance()
-      )?.topicId
+      args?.topicId
     ) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    storyId = args?.storyId
     topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
@@ -157,10 +160,6 @@ class TopicActivity :
     /** Arguments key for TopicActivity. */
     const val TOPIC_ACTIVITY_ARGUMENTS_KEY = "TopicActivity.arguments"
 
-    fun getStoryIdKey(): String {
-      return TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY
-    }
-
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
       context: Context,
@@ -184,7 +183,10 @@ class TopicActivity :
       storyId: String
     ): Intent {
       return createTopicActivityIntent(context, internalProfileId, topicId).apply {
-        putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+        val args =
+          getProtoExtra(TOPIC_ACTIVITY_ARGUMENTS_KEY, TopicActivityArguments.getDefaultInstance())
+        val updateArg = args.toBuilder().setStoryId(storyId).build()
+        putProtoExtra(TOPIC_ACTIVITY_ARGUMENTS_KEY, updateArg)
       }
     }
   }
