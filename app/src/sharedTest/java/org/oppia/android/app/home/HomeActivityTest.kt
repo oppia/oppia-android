@@ -158,6 +158,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -1206,7 +1207,10 @@ class HomeActivityTest {
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().setTopicId(TEST_TOPIC_ID_0).build()
+      val args = TopicActivityArguments.newBuilder().apply {
+        this.topicId = TEST_TOPIC_ID_0
+        this.storyId = TEST_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
     }

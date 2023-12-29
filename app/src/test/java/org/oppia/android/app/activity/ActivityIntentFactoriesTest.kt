@@ -124,7 +124,7 @@ class ActivityIntentFactoriesTest {
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
     assert(intent.extractCurrentUserProfileId().internalId == 0)
     assert(args.topicId.equals("test_topic_id"))
-    assertThat(intent).extras().doesNotContainKey(STORY_ID_KEY)
+    assert(args.storyId.isEmpty())
   }
 
   @Test
@@ -140,7 +140,7 @@ class ActivityIntentFactoriesTest {
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
     assert(intent.extractCurrentUserProfileId().internalId == 0)
     assert(args.topicId.equals("test_topic_id"))
-    assertThat(intent).extras().string(STORY_ID_KEY).isEqualTo("test_story_id")
+    assert(args.storyId.equals("test_story_id"))
   }
 
   @Test
@@ -235,10 +235,7 @@ class ActivityIntentFactoriesTest {
   }
 
   private companion object {
-    private const val TOPIC_PROFILE_ID_KEY =
-      "NavigationDrawerFragmentPresenter.navigation_profile_id"
-    private const val TOPIC_ID_KEY = "TopicActivity.topic_id"
-    private const val STORY_ID_KEY = "TopicActivity.story_id"
+
     private const val RECENTLY_PLAYED_PROFILE_ID_KEY = "RecentlyPlayedActivity.internal_profile_id"
   }
 }
