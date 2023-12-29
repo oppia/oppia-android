@@ -3,7 +3,6 @@ package org.oppia.android.app.topic
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
@@ -25,9 +24,6 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import org.oppia.android.app.model.ExplorationFragmentArguments
-import org.oppia.android.app.player.exploration.ExplorationFragmentPresenter
-import org.oppia.android.util.extensions.getProto
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :
