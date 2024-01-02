@@ -2,6 +2,11 @@
 
 - [Overview of entities](#overview-of-entities)
 - [Key terms](#key-terms)
+- [How to visit?](#how-to-visit)
+  - [Concept Card](#concept-card)
+  - [Hints & Solution](#hints--solution)
+  - [Completed Stories](#completed-stories)
+  - [Ongoing Topics](#ongoing-topics)  
 
 ## Overview of entities
 
@@ -39,3 +44,27 @@ C4 --> c6("Card-6")
 5. **Exploration/Chapter**: This is a structured learning experience that is part of a story, and provides the learner with an active way to learn new concepts, as well as targeted feedback. It is the core unit of learning in Oppia. The flow/screen that appears when any story is started is known as the Exploration/Chapter.
 6. **Concept Card**: This is a non-story-based explanation of how to perform a particular skill. It serves as a reference/reminder for students who may have encountered the skill before but forgotten how to carry it out. These can be accessed from  the "Revision" tab or are linked within the chapter you are playing.
 7. **Question/QuestionPlayer**: This is a standalone question that may be used by students as part of a practice session.
+
+## How to visit?
+
+### Concept Card
+
+`Home` --> `Choose Topic` --> `Revision Tab` --> `Select revision card` --> `Goto hyperlink present in description text`
+
+<img width="350" height="700" alt="Visit Concept Card" src="https://github.com/oppia/oppia-android/assets/76530270/d71c5fc2-92eb-4087-9660-9f463bb282a2">
+
+### Hints & Solution
+
+`Home` --> `Choose Topic` --> `Start any lesson` --> `Wait for sometime to blue Hints bar popup`
+
+After all hints are opened, Solution will show up.
+
+<img width="350" height="700" alt="Hints and Solution" src="https://github.com/oppia/oppia-android/assets/76530270/3b2cc6ea-335f-439a-80de-05b997dc9c99">
+
+### Completed Stories
+
+<img width="350" height="700" alt="Hints and Solution" src="https://github.com/oppia/oppia-android/assets/76530270/bf4b57b0-f3b3-4177-8ab8-7de69f0f4204">
+
+### Ongoing Topics
+
+<img width="350" height="700" alt="Hints and Solution" src="https://github.com/oppia/oppia-android/assets/76530270/e63f8676-7b81-4237-87e7-06a2ff7d7fcf">
