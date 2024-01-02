@@ -178,6 +178,19 @@ message EventLog {
 
       // The event being logged indicates that the user has reached the home screen for the first time.
       CompleteAppOnboardingContext complete_app_onboarding = 44;
+
+      // The event being logged is related to an error logged on the console logger.
+      ConsoleLoggerContext console_error = 45;
+
+      // The event being logged is a retrofit call.
+      RetrofitCallContext retrofit_call_context = 46;
+
+      // The event being logged is a retrofit call.
+      RetrofitCallFailedContext retrofit_call_failed_context = 47;
+
+      // The event being logged is related to the amount spent by the user with the app in
+      // foreground.
+      ForegroundAppTimeContext app_in_foreground_time = 48;
     }
   }
 
@@ -375,6 +388,63 @@ message EventLog {
   message CompleteAppOnboardingContext {
     // Boolean showing the app onboarding happened. The value will always be true.
     bool complete_app_onboarding = 1;
+  }
+
+  // Structure for the ConsoleLogger context
+  message ConsoleLoggerContext {
+    // String containing the LogLevel of the log.
+    string log_level = 1;
+
+    // String containing the tag of the error.
+    string log_tag = 2;
+
+    // String containing the full error description.
+    string full_error_log = 3;
+  }
+
+  // Structure for the retrofit call context.
+  message RetrofitCallContext {
+    // String of the url being called.
+    string url_called = 1;
+
+    // Headers passed as part of the retrofit call.
+    string headers = 2;
+
+    // Body of the retrofit call.
+    string body = 3;
+
+    // Response code from the call.
+    int32 response_status_code = 4;
+  }
+
+  // Structure for the retrofit call failed context.
+  message RetrofitCallFailedContext {
+    // String of the url being called.
+    string url_called = 1;
+
+    // Headers passed as part of the retrofit call.
+    string headers = 2;
+
+    // Body of the retrofit call.
+    string body = 3;
+
+    // Response code from the call.
+    int32 response_status_code = 4;
+
+    // The error body of the failed network call
+    string error_message = 5;
+  }
+
+  // Structure for the foreground time context.
+  message ForegroundAppTimeContext {
+    // String containing the installation id.
+    string installation_id = 1;
+
+    // String containing the app session id.
+    string app_session_id = 2;
+
+    // Foreground time in millis.
+    int32 foreground_time = 3;
   }
 
   // Supported priority of events for event logging

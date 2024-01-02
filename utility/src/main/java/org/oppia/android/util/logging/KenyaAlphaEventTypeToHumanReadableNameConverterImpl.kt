@@ -53,6 +53,10 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG -> "failed_analytics_log"
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "unknown_activity_context"
       ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
+      ActivityContextCase.CONSOLE_ERROR -> "console_error"
+      ActivityContextCase.RETROFIT_CALL_CONTEXT -> "retrofit_call_context"
+      ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT -> "retrofit_call_failed_context"
+      ActivityContextCase.APP_IN_FOREGROUND_TIME -> "app_in_foreground_time"
     }
   }
 }
