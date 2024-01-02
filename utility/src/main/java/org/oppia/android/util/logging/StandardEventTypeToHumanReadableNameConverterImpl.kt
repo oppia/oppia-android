@@ -62,6 +62,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
+      ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
     }
   }
 }

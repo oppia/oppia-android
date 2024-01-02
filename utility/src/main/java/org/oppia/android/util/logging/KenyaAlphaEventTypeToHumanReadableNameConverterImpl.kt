@@ -52,6 +52,7 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG -> "failed_analytics_log"
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "unknown_activity_context"
+      ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
     }
   }
 }

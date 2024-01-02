@@ -14,6 +14,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_B
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
@@ -60,6 +61,7 @@ import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.AbandonSurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CompleteAppOnboardingContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
@@ -100,6 +102,7 @@ import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardE
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
 import org.oppia.android.app.model.EventLog.SurveyContext as SurveyEventContext
+import org.oppia.android.app.model.EventLog.CompleteAppOnboardingContext as CompleteAppOnboardingEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
 import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
@@ -223,6 +226,7 @@ class EventBundleCreator @Inject constructor(
       ABANDON_SURVEY -> AbandonSurveyContext(activityName, abandonSurvey)
       MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
       OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
+      COMPLETE_APP_ONBOARDING -> CompleteAppOnboardingContext(activityName, completeAppOnboarding)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -555,6 +559,15 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
         store.putSensitiveValue("profile_id", surveyDetails.profileId)
         store.putNonSensitiveValue("question_name", questionName)
+      }
+    }
+
+    class CompleteAppOnboardingContext(
+      activityName: String,
+      value: CompleteAppOnboardingEventContext
+    ) : EventActivityContext<CompleteAppOnboardingEventContext>(activityName, value) {
+      override fun CompleteAppOnboardingEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("complete_app_onboarding", completeAppOnboarding)
       }
     }
   }
