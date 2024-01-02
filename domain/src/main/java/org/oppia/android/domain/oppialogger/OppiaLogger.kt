@@ -4,6 +4,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
+import org.oppia.android.util.logging.LogLevel
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) {
@@ -249,5 +250,75 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
           .build()
       )
       .build()
+  }
+
+  fun createAppOnBoardingContext(): EventLog.Context {
+    return EventLog.Context.newBuilder().setCompleteAppOnboarding(
+      EventLog.CompleteAppOnboardingContext.newBuilder()
+        .setCompleteAppOnboarding(true)
+        .build()
+    ).build()
+  }
+
+  fun createConsoleErrorContext(
+    logLevel: Int,
+    logTag: String,
+    errorLog: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setConsoleError(
+      EventLog.ConsoleLoggerContext.newBuilder()
+        .setLogLevel(logLevel)
+        .setLogTag(logTag)
+        .setFullErrorLog(errorLog)
+        .build()
+    ).build()
+  }
+
+  fun createRetrofitCallContext(
+    url: String,
+    headers: String,
+    body: String,
+    responseCode: Int
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setRetrofitCallContext(
+      EventLog.RetrofitCallContext.newBuilder()
+        .setUrlCalled(url)
+        .setHeaders(headers)
+        .setBody(body)
+        .setResponseStatusCode(responseCode)
+        .build()
+    ).build()
+  }
+
+  fun createRetrofitCallFailedContext(
+    url: String,
+    headers: String,
+    body: String,
+    responseCode: Int,
+    errorMessage: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setRetrofitCallFailedContext(
+      EventLog.RetrofitCallFailedContext.newBuilder()
+        .setUrlCalled(url)
+        .setHeaders(headers)
+        .setBody(body)
+        .setResponseStatusCode(responseCode)
+        .setErrorMessage(errorMessage)
+        .build()
+    ).build()
+  }
+
+  fun createAppInForegroundTimeContext(
+    installationId: String?,
+    appSessionId: String,
+    foregroundTime: Long
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setAppInForegroundTime(
+      EventLog.ForegroundAppTimeContext.newBuilder()
+        .setInstallationId(installationId)
+        .setAppSessionId(appSessionId)
+        .setForegroundTime(foregroundTime.toFloat())
+        .build()
+    ).build()
   }
 }

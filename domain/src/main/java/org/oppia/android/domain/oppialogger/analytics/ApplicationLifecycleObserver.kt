@@ -44,7 +44,8 @@ class ApplicationLifecycleObserver @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnablePerformanceMetricsCollection
   private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
-  private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
+  private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>,
+  private val analyticsController: AnalyticsController,
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**
@@ -115,6 +116,8 @@ class ApplicationLifecycleObserver @Inject constructor(
     }
     performanceMetricsController.setAppInBackground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
+
+    logAppInForegroundTime()
   }
 
   override fun onActivityResumed(activity: Activity) {
@@ -154,6 +157,31 @@ class ApplicationLifecycleObserver @Inject constructor(
     CoroutineScope(backgroundDispatcher).launch {
       performanceMetricsLogger.logApkSize(currentScreen)
       performanceMetricsLogger.logStorageUsage(currentScreen)
+    }.invokeOnCompletion { failure ->
+      if (failure != null) {
+        oppiaLogger.e(
+          "ActivityLifecycleObserver",
+          "Encountered error while trying to log app's performance metrics.",
+          failure
+        )
+      }
+    }
+  }
+
+  private fun logAppInForegroundTime() {
+    CoroutineScope(backgroundDispatcher).launch {
+      // TODO: Add actual session id
+      val sessionId = ""
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      val timeInForeground = oppiaClock.getCurrentTimeMs() - appStartTimeMillis
+      analyticsController.logLowPriorityEvent(
+        oppiaLogger.createAppInForegroundTimeContext(
+          installationId = installationId,
+          appSessionId = sessionId,
+          foregroundTime = timeInForeground
+        ),
+        profileId = null
+      )
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
