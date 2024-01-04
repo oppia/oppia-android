@@ -4,16 +4,15 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import org.oppia.android.app.model.EventLog.ConsoleLoggerContext
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.ConsoleLoggerContext
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton

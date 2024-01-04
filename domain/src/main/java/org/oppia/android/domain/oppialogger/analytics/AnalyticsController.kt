@@ -13,14 +13,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -39,9 +42,6 @@ import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.launch
-import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
-import org.oppia.android.domain.oppialogger.OppiaLogger
 
 private const val UPLOAD_ALL_EVENTS_PROVIDER_ID = "AnalyticsController.upload_all_events"
 
@@ -326,7 +326,7 @@ class AnalyticsController @Inject constructor(
 
   fun listenForConsoleErrorLogs() {
     CoroutineScope(backgroundDispatcher).launch {
-      consoleLogger.logErrorMessagesFlow.collect {consoleLoggerContext ->
+      consoleLogger.logErrorMessagesFlow.collect { consoleLoggerContext ->
         logLowPriorityEvent(
           oppiaLogger.createConsoleLogContext(
             logLevel = consoleLoggerContext.logLevel,

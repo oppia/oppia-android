@@ -4,7 +4,6 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
-import org.oppia.android.util.logging.LogLevel
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) {

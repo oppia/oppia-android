@@ -1,18 +1,19 @@
 package org.oppia.android.data.backends.gae
 
-import okhttp3.Interceptor
-import okhttp3.Response
-import java.io.IOException
-import java.lang.Exception
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import org.oppia.android.app.model.EventLog
+import okhttp3.Interceptor
+import okhttp3.Response
+import org.oppia.android.app.model.EventLog.RetrofitCallContext
+import org.oppia.android.app.model.EventLog.RetrofitCallFailedContext
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.io.IOException
+import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Interceptor on top of Retrofit to log network requests and responses.
@@ -21,11 +22,11 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 class NetworkLoggingInterceptor @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
 ) : Interceptor {
-  private val _logNetworkCallFlow = MutableSharedFlow<EventLog.RetrofitCallContext>()
-  val logNetworkCallFlow: SharedFlow<EventLog.RetrofitCallContext> = _logNetworkCallFlow
+  private val _logNetworkCallFlow = MutableSharedFlow<RetrofitCallContext>()
+  val logNetworkCallFlow: SharedFlow<RetrofitCallContext> = _logNetworkCallFlow
 
-  private val _logFailedNetworkCallFlow = MutableSharedFlow<EventLog.RetrofitCallFailedContext>()
-  val logFailedNetworkCallFlow: SharedFlow<EventLog.RetrofitCallFailedContext> = _logFailedNetworkCallFlow
+  private val _logFailedNetworkCallFlow = MutableSharedFlow<RetrofitCallFailedContext>()
+  val logFailedNetworkCallFlow: SharedFlow<RetrofitCallFailedContext> = _logFailedNetworkCallFlow
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
@@ -35,7 +36,7 @@ class NetworkLoggingInterceptor @Inject constructor(
 
       CoroutineScope(backgroundDispatcher).launch {
         _logNetworkCallFlow.emit(
-          EventLog.RetrofitCallContext.newBuilder()
+          RetrofitCallContext.newBuilder()
             .setUrlCalled(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(response.code)
@@ -46,7 +47,7 @@ class NetworkLoggingInterceptor @Inject constructor(
       if (!response.isSuccessful) {
         CoroutineScope(backgroundDispatcher).launch {
           _logFailedNetworkCallFlow.emit(
-            EventLog.RetrofitCallFailedContext.newBuilder()
+            RetrofitCallFailedContext.newBuilder()
               .setUrlCalled(request.url.toString())
               .setHeaders(request.headers.toString())
               .setResponseStatusCode(response.code)
@@ -62,7 +63,7 @@ class NetworkLoggingInterceptor @Inject constructor(
 
       CoroutineScope(backgroundDispatcher).launch {
         _logFailedNetworkCallFlow.emit(
-          EventLog.RetrofitCallFailedContext.newBuilder()
+          RetrofitCallFailedContext.newBuilder()
             .setUrlCalled(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(0)
