@@ -104,6 +104,10 @@ class ApplicationLifecycleObserver @Inject constructor(
     }
     performanceMetricsController.setAppInForeground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
+
+    analyticsController.listenForConsoleErrorLogs()
+    analyticsController.listenForNetworkCallLogs()
+    analyticsController.listenForFailedNetworkCallLogs()
   }
 
   /** Occurs when application goes to background. */
@@ -170,8 +174,7 @@ class ApplicationLifecycleObserver @Inject constructor(
 
   private fun logAppInForegroundTime() {
     CoroutineScope(backgroundDispatcher).launch {
-      // TODO: Add actual session id
-      val sessionId = ""
+      val sessionId = loggingIdentifierController.getSessionIdFlow().value
       val installationId = loggingIdentifierController.fetchInstallationId()
       val timeInForeground = oppiaClock.getCurrentTimeMs() - appStartTimeMillis
       analyticsController.logLowPriorityEvent(

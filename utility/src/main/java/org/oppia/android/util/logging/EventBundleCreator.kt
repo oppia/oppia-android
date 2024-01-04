@@ -16,7 +16,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_F
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_ERROR
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
@@ -239,7 +239,7 @@ class EventBundleCreator @Inject constructor(
       MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
       OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
       COMPLETE_APP_ONBOARDING -> CompleteAppOnboardingContext(activityName, completeAppOnboarding)
-      CONSOLE_ERROR -> ConsoleLoggerContext(activityName, consoleError)
+      CONSOLE_LOG -> ConsoleLoggerContext(activityName, consoleLog)
       RETROFIT_CALL_CONTEXT -> RetrofitCallContext(activityName, retrofitCallContext)
       RETROFIT_CALL_FAILED_CONTEXT ->
         RetrofitCallFailedContext(activityName, retrofitCallFailedContext)

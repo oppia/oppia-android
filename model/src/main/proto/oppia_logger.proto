@@ -180,7 +180,7 @@ message EventLog {
       CompleteAppOnboardingContext complete_app_onboarding = 44;
 
       // The event being logged is related to an error logged on the console logger.
-      ConsoleLoggerContext console_error = 45;
+      ConsoleLoggerContext console_log = 45;
 
       // The event being logged is a retrofit call.
       RetrofitCallContext retrofit_call_context = 46;
@@ -393,7 +393,7 @@ message EventLog {
   // Structure for the ConsoleLogger context
   message ConsoleLoggerContext {
     // String containing the LogLevel of the log.
-    int32 log_level = 1;
+    string log_level = 1;
 
     // String containing the tag of the error.
     string log_tag = 2;
@@ -412,6 +412,9 @@ message EventLog {
 
     // Body of the retrofit call.
     string body = 3;
+
+    // Response code from the call.
+    int32 response_status_code = 4;
   }
 
   // Structure for the retrofit call failed context.

@@ -260,12 +260,12 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     ).build()
   }
 
-  fun createConsoleErrorContext(
-    logLevel: Int,
+  fun createConsoleLogContext(
+    logLevel: String,
     logTag: String,
     errorLog: String
   ): EventLog.Context {
-    return EventLog.Context.newBuilder().setConsoleError(
+    return EventLog.Context.newBuilder().setConsoleLog(
       EventLog.ConsoleLoggerContext.newBuilder()
         .setLogLevel(logLevel)
         .setLogTag(logTag)

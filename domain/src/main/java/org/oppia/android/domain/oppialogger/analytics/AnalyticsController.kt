@@ -39,6 +39,9 @@ import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.launch
+import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
+import org.oppia.android.domain.oppialogger.OppiaLogger
 
 private const val UPLOAD_ALL_EVENTS_PROVIDER_ID = "AnalyticsController.upload_all_events"
 
@@ -57,8 +60,10 @@ class AnalyticsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   private val syncStatusManager: SyncStatusManager,
   private val oppiaClock: OppiaClock,
+  private val oppiaLogger: OppiaLogger,
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
+  private val networkLoggingInterceptor: NetworkLoggingInterceptor,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
@@ -315,6 +320,54 @@ class AnalyticsController @Inject constructor(
     }.also {
       it.invokeOnCompletion { error ->
         error?.let { consoleLogger.e("AnalyticsController", "Failed to remove event log.", error) }
+      }
+    }
+  }
+
+  fun listenForConsoleErrorLogs() {
+    CoroutineScope(backgroundDispatcher).launch {
+      consoleLogger.logErrorMessagesFlow.collect {consoleLoggerContext ->
+        logLowPriorityEvent(
+          oppiaLogger.createConsoleLogContext(
+            logLevel = consoleLoggerContext.logLevel,
+            logTag = consoleLoggerContext.logTag,
+            errorLog = consoleLoggerContext.fullErrorLog
+          ),
+          profileId = null
+        )
+      }
+    }
+  }
+
+  fun listenForNetworkCallLogs() {
+    CoroutineScope(backgroundDispatcher).launch {
+      networkLoggingInterceptor.logNetworkCallFlow.collect { retrofitCallContext ->
+        logLowPriorityEvent(
+          oppiaLogger.createRetrofitCallContext(
+            url = retrofitCallContext.urlCalled,
+            headers = retrofitCallContext.headers,
+            body = retrofitCallContext.body,
+            responseCode = retrofitCallContext.responseStatusCode,
+          ),
+          profileId = null
+        )
+      }
+    }
+  }
+
+  fun listenForFailedNetworkCallLogs() {
+    CoroutineScope(backgroundDispatcher).launch {
+      networkLoggingInterceptor.logFailedNetworkCallFlow.collect { retrofitFailedCallContext ->
+        logLowPriorityEvent(
+          oppiaLogger.createRetrofitCallFailedContext(
+            url = retrofitFailedCallContext.urlCalled,
+            headers = retrofitFailedCallContext.headers,
+            body = retrofitFailedCallContext.body,
+            responseCode = retrofitFailedCallContext.responseStatusCode,
+            errorMessage = retrofitFailedCallContext.errorMessage,
+          ),
+          profileId = null
+        )
       }
     }
   }
