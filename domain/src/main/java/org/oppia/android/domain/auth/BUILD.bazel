@@ -18,8 +18,10 @@ kt_android_library(
 kt_android_library(
     name = "firebase_auth_wrapper",
     srcs = [
+        "FirebaseAuthInstance.kt",
+        "FirebaseAuthInstanceWrapper.kt",
         "FirebaseAuthWrapper.kt",
-        "FirebaseUserWrapper.kt"
+        "FirebaseUserWrapper.kt",
         ],
     visibility = ["//:oppia_api_visibility"],
     deps = [

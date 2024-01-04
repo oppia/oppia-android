@@ -1,7 +1,5 @@
 package org.oppia.android.domain.auth
 
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -11,6 +9,6 @@ import javax.inject.Singleton
 class AuthenticationModule {
   @Provides
   @Singleton
-  fun provideFirebaseAuthWrapper():
-    FirebaseAuthWrapper = FirebaseAuthWrapperImpl(Firebase.auth)
+  fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapperImpl: FirebaseAuthInstanceWrapperImpl):
+    FirebaseAuthWrapper = FirebaseAuthWrapperImpl(firebaseAuthInstanceWrapperImpl)
 }

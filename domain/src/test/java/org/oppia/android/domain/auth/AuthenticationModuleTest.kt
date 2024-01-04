@@ -5,14 +5,13 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -50,15 +49,18 @@ class AuthenticationModuleTest {
 
   // TODO(#89): Move this to a common test application component.
   @Module
-  interface TestModule {
-    @Binds
-    fun provideContext(application: Application): Context
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
   }
 
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, TestAuthenticationModule::class,
+      TestModule::class, TestDispatcherModule::class, AuthenticationModule::class,
       RobolectricModule::class, DebugLogReportingModule::class
     ]
   )
