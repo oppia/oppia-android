@@ -90,6 +90,7 @@ class ResumeLessonActivity :
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
+    resumeLessonActivityPresenter.setReadingTextSizeNormal()
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,

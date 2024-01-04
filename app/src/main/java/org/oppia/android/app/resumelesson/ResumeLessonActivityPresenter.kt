@@ -123,6 +123,10 @@ class ResumeLessonActivityPresenter @Inject constructor(
 
   /** Handles onBacKPressed. */
   fun onBackPressed() {
+    setReadingTextSizeNormal()
+  }
+
+  fun setReadingTextSizeNormal() {
     fontScaleConfigurationUtil.adjustFontScale(
       context = activity,
       ReadingTextSize.MEDIUM_TEXT_SIZE
