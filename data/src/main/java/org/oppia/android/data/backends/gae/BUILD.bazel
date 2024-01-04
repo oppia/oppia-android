@@ -12,15 +12,23 @@ kt_android_library(
         "JsonPrefixNetworkInterceptor.kt",
         "NetworkApiKey.kt",
         "RemoteAuthNetworkInterceptor.kt",
+        "NetworkLoggingInterceptor.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//:oppia_api_visibility"
+    ],
     deps = [
         ":constants",
+        ":dagger",
         ":network_config_annotations",
         "//model/src/main/proto:arguments_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
