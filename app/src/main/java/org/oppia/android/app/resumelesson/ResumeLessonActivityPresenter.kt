@@ -126,6 +126,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
     setReadingTextSizeNormal()
   }
 
+  /** Set reading text size normal. */
   fun setReadingTextSizeNormal() {
     fontScaleConfigurationUtil.adjustFontScale(
       context = activity,
