@@ -18,8 +18,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** [ViewModel] for [OptionsFragment]. */
@@ -32,7 +30,6 @@ class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
-  @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : OptionsItemViewModel() {
@@ -112,13 +109,12 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   private fun createAppLanguageViewModel(language: OppiaLanguage): OptionsAppLanguageViewModel? {
-    return if (enableLanguageSelectionUi.value) {
-      OptionsAppLanguageViewModel(
-        routeToAppLanguageListListener,
-        loadAppLanguageListListener, language,
-        resourceHandler.computeLocalizedDisplayName(language)
-      )
-    } else null
+    return OptionsAppLanguageViewModel(
+      routeToAppLanguageListListener,
+      loadAppLanguageListListener,
+      language,
+      resourceHandler.computeLocalizedDisplayName(language)
+    )
   }
 
   private fun createAudioLanguageViewModel(profile: Profile): OptionsAudioLanguageViewModel {
