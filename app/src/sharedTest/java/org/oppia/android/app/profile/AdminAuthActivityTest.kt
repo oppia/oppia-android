@@ -691,7 +691,8 @@ class AdminAuthActivityTest {
       this.colorRgb = -10710042
       this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
     }.build()
-
+    testCoroutineDispatchers.runCurrent()
+    intended(hasComponent(AdminAuthActivity::class.java.name))
     intended(hasProtoExtra(AdminAuthActivity.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
   }
 
