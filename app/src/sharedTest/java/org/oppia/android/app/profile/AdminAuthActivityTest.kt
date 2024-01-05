@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -23,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -109,6 +111,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
+import org.oppia.android.app.model.AdminAuthActivityArguments
+import org.oppia.android.util.extensions.getProtoExtra
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -664,6 +671,43 @@ class AdminAuthActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
+  }
+
+  @Test
+  fun testAdminAuthActivity_intent_extras_passed() {
+    activityTestRule.launchActivity(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    )
+
+    val args = AdminAuthActivityArguments.newBuilder().apply {
+      this.adminPin = "12345"
+      this.internalProfileId = this@AdminAuthActivityTest.internalProfileId
+      this.colorRgb = -10710042
+      this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+    }.build()
+
+    intended(hasProtoExtra(AdminAuthActivity.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
+
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
