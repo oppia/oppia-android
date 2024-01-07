@@ -19,6 +19,15 @@ In general, the passage of time is depicted as left to right for LTR languages, 
 
 When a UI is changed from LTR to RTL (or vice-versa), it’s often called mirroring. An RTL layout is the mirror image of an LTR layout, and it affects layout, text, and graphics.
 
+# How to enable RTL?
+
+- **Unlock Developer Options:** Go to your phone's Settings, scroll down to "About Phone," and tap on it. Find the "Build Number" and tap on it 7 times. You'll see a message saying "You are now a developer!"
+- **Access Developer Options:** Go back to the main Settings menu, scroll down, and you should now see "Developer Options" above "About Phone."
+- **Enable Developer Options:** Tap on "Developer Options" and scroll down until you find "Force RTL layout direction."
+- **Enable RTL Mode:** Toggle the switch next to "Force RTL layout direction" to turn it on. Your phone's interface will switch to Right-to-Left mode.
+
+<img width="350" height="700" alt="Enable RTL" src="https://github.com/oppia/oppia-android/assets/76530270/805d8d77-49f6-48e7-8bab-e433085285a3">
+
 # What changes in RTL?
 
 When a UI is mirrored, these changes occur:
