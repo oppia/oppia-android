@@ -1,6 +1,7 @@
 ## Table of Contents
 
 - [What is RTL?](#what-is-rtl)
+- [How to enable RTL](#how-to-enable-rtl)  
 - [What changes in RTL?](#what-changes-in-rtl)
 - [Testing app for RTL Layouts](#testing-app-for-rtl-layouts)
 - [Reference Documentation](#reference-documentation)
