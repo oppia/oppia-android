@@ -251,7 +251,6 @@ class HtmlParser private constructor(
      * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
      */
     fun create(
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
       displayLocale: OppiaLocale.DisplayLocale
     ): HtmlParser {
       return HtmlParser(
@@ -263,7 +262,7 @@ class HtmlParser private constructor(
         imageCenterAlign = false,
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
-        customOppiaTagActionListener,
+        customOppiaTagActionListener = null,
         null,
         displayLocale
       )
