@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -39,8 +39,8 @@ class TestAuthenticationModuleTest {
   }
 
   @Test
-  fun testModule_injectsInstanceOfFirebaseAuthWrapper() {
-    Truth.assertThat(firebaseAuthWrapper).isInstanceOf(FakeFirebaseWrapperImpl::class.java)
+  fun testModule_injectsFakeInstanceOfFirebaseAuthWrapper() {
+    assertThat(firebaseAuthWrapper).isInstanceOf(FakeFirebaseAuthWrapperImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -63,8 +63,8 @@ class TestAuthenticationModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class,
-      RobolectricModule::class, DebugLogReportingModule::class, TestAuthenticationModule::class
+      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      DebugLogReportingModule::class, TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

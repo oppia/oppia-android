@@ -1,14 +1,13 @@
 package org.oppia.android.util.logging.firebase
 
-import com.google.firebase.firestore.FirebaseFirestore
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** Logger for uploading to Firestore. */
 class FirestoreEventLoggerProdImpl private constructor(
-  private val firebaseFirestore: FirebaseFirestore,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val firebaseFirestoreInstance: FirebaseFirestoreInstance
 ) : FirestoreEventLogger {
   /** Converts an event to a document and uploads it to Firebase Firestore. */
   override fun uploadEvent(eventLog: EventLog) {
@@ -23,7 +22,7 @@ class FirestoreEventLoggerProdImpl private constructor(
       "time_submitted" to eventLog.timestamp
     )
 
-    firebaseFirestore.collection("nps_survey_open_feedback")
+    firebaseFirestoreInstance.firebaseFirestore.collection("nps_survey_open_feedback")
       .add(document)
       .addOnSuccessListener {
         consoleLogger.i("FirestoreEventLoggerProdImpl", "Upload to Firestore was successful")
@@ -35,12 +34,13 @@ class FirestoreEventLoggerProdImpl private constructor(
 
   /** Application-scoped injectable factory for creating a new [FirestoreEventLoggerProdImpl]. */
   class Factory @Inject constructor(
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
+    private val firebaseFirestoreInstanceWrapper: FirebaseFirestoreInstanceWrapper
   ) {
-    private val firestoreDatabase by lazy { FirebaseFirestore.getInstance() }
+    private val firestoreDatabase = firebaseFirestoreInstanceWrapper.firebaseFirestoreInstance
 
     /** Returns a new [FirestoreEventLoggerProdImpl] for the current application context. */
     fun createFirestoreEventLogger(): FirestoreEventLoggerProdImpl =
-      FirestoreEventLoggerProdImpl(firestoreDatabase, consoleLogger)
+      FirestoreEventLoggerProdImpl(consoleLogger, firestoreDatabase)
   }
 }

@@ -11,7 +11,7 @@ class AuthenticationController @Inject constructor(
   private val firebaseAuthWrapper: FirebaseAuthWrapper
 ) {
   /** Returns the current signed in user or null if there is no authenticated user. */
-  val currentFirebaseUser = firebaseAuthWrapper.currentUser
+  val currentFirebaseUser: FirebaseUserWrapper? = firebaseAuthWrapper.currentUser
 
   /** Returns the result of an authentication task. */
   fun signInAnonymouslyWithFirebase(): CompletableDeferred<AsyncResult<Any?>> {

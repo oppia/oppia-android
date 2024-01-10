@@ -96,6 +96,7 @@ kt_android_library(
     ],
     deps = [
         ":firestore_logger",
+        ":firestore_wrapper_impl",
         "//third_party:androidx_work_work-runtime",
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_google_firebase_firebase-firestore-ktx",
@@ -124,7 +125,32 @@ kt_android_library(
     ],
     deps = [
         ":firestore_logger_impl",
+        ":firestore_wrapper_impl",
         "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "firestore_wrapper",
+    srcs = [
+        "FirebaseFirestoreInstance.kt",
+        "FirebaseFirestoreInstanceWrapper.kt",
+        ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:com_google_firebase_firebase-firestore-ktx",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+    ],
+)
+
+kt_android_library(
+    name = "firestore_wrapper_impl",
+    srcs = ["FirebaseFirestoreInstanceWrapperImpl.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":firestore_wrapper",
     ],
 )
 

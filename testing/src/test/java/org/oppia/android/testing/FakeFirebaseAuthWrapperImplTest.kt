@@ -1,4 +1,4 @@
-package org.oppia.android.domain.auth
+package org.oppia.android.testing
 
 import android.app.Application
 import android.content.Context
@@ -13,10 +13,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.auth.FirebaseUserWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.FakeFirebaseAuthWrapperImpl
-import org.oppia.android.testing.TestAuthenticationModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -29,27 +27,21 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AuthenticationController]. */
+/** Tests for [FakeFirebaseAuthWrapperImpl]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = AuthenticationControllerTest.TestApplication::class)
-class AuthenticationControllerTest {
-  @Inject
-  lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
-
+@Config(application = FakeFirebaseAuthWrapperImplTest.TestApplication::class)
+class FakeFirebaseAuthWrapperImplTest {
   @Inject
   lateinit var fakeFirebaseAuthWrapperImpl: FakeFirebaseAuthWrapperImpl
 
-  @Inject
-  lateinit var authenticationController: AuthenticationController
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @field:[Inject BackgroundDispatcher]
-  lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Before
   fun setUp() {
@@ -57,54 +49,19 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  fun testAuthentication_getCurrentFirebaseUser_noSignedInUser_returnsNull() {
-    fakeFirebaseAuthWrapperImpl.simulateSignInFailure()
-
-    val user = authenticationController.currentFirebaseUser
-
-    assertThat(user).isEqualTo(null)
-  }
-
-  @Test
-  fun testAuthentication_getCurrentUser_userSignedIn_returnsInstanceOfFirebaseUserWrapper() {
+  fun testFakeAuthWrapper_getCurrentSignedInUser_userIsSignedIn_returnsFirebaseUserWrapper() {
     fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
-    testCoroutineDispatchers.runCurrent()
-
-    firebaseAuthWrapper.signInAnonymously(
-      onSuccess = {},
-      onFailure = {}
-    )
-
-    val user = authenticationController.currentFirebaseUser
-    testCoroutineDispatchers.runCurrent()
+    val user = fakeFirebaseAuthWrapperImpl.currentUser
 
     assertThat(user).isInstanceOf(FirebaseUserWrapper::class.java)
   }
 
   @Test
-  fun testAuthentication_signInAnonymously_succeeds() {
-    fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
-
-    firebaseAuthWrapper.signInAnonymously(
-      onSuccess = {},
-      onFailure = {}
-    )
-
-    val user = authenticationController.currentFirebaseUser
-
-    assertThat(user).isInstanceOf(FirebaseUserWrapper::class.java)
-  }
-
-  @Test
-  fun testAuthentication_signInAnonymously_failure_returnsException() {
+  fun testFakeAuthWrapper_getCurrentSignedInUser_userIsNotSignedIn_returnsNull() {
     fakeFirebaseAuthWrapperImpl.simulateSignInFailure()
+    val user = fakeFirebaseAuthWrapperImpl.currentUser
 
-    assertThrows(Throwable::class) {
-      firebaseAuthWrapper.signInAnonymously(
-        onSuccess = {},
-        onFailure = {}
-      )
-    }
+    assertThat(user).isNull()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -127,7 +84,7 @@ class AuthenticationControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, TestDispatcherModule::class,
-      TestLogReportingModule::class, TestAuthenticationModule::class,
+      TestAuthenticationModule::class, TestLogReportingModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -139,17 +96,17 @@ class AuthenticationControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: AuthenticationControllerTest)
+    fun inject(test: FakeFirebaseAuthWrapperImplTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAuthenticationControllerTest_TestApplicationComponent.builder()
+      DaggerFakeFirebaseAuthWrapperImplTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: AuthenticationControllerTest) {
+    fun inject(test: FakeFirebaseAuthWrapperImplTest) {
       component.inject(test)
     }
 

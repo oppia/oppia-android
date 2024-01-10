@@ -8,8 +8,8 @@ import javax.inject.Singleton
 
 /** A test specific fake for the [FirebaseAuthWrapper]. */
 @Singleton
-class FakeFirebaseWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
-  private var simulateSuccess: Boolean = true
+class FakeFirebaseAuthWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
+  private var simulateSuccess: Boolean = false
 
   /** Fake a successful auth response. */
   fun simulateSignInSuccess() {
@@ -22,7 +22,10 @@ class FakeFirebaseWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
   }
 
   override val currentUser: FirebaseUserWrapper?
-    get() = if (simulateSuccess) FirebaseUserWrapper(uid = UUID.randomUUID().toString()) else null
+    get() = if (simulateSuccess)
+      FirebaseUserWrapper(uid = UUID.randomUUID().toString())
+    else
+      null
 
   override fun signInAnonymously(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
     if (simulateSuccess) {
