@@ -17,6 +17,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.FakeFirebaseAuthWrapperImpl
 import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -68,7 +69,6 @@ class AuthenticationControllerTest {
   @Test
   fun testAuthentication_getCurrentUser_userSignedIn_returnsInstanceOfFirebaseUserWrapper() {
     fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
-    testCoroutineDispatchers.runCurrent()
 
     firebaseAuthWrapper.signInAnonymously(
       onSuccess = {},
@@ -76,7 +76,6 @@ class AuthenticationControllerTest {
     )
 
     val user = authenticationController.currentFirebaseUser
-    testCoroutineDispatchers.runCurrent()
 
     assertThat(user).isInstanceOf(FirebaseUserWrapper::class.java)
   }

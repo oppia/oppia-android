@@ -154,19 +154,13 @@ class DebugFirestoreEventLoggerImplTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @Singleton
-    fun provideDebugFirestoreEventLogger(
-      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
-    ): FirestoreEventLogger = debugFirestoreEventLogger
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
+      TestModule::class, RobolectricModule::class, DebugLogReportingModule::class,
       TestDispatcherModule::class, FakeOppiaClockModule::class, LocaleTestModule::class
     ]
   )

@@ -9,7 +9,7 @@ import javax.inject.Singleton
 /** A test specific fake for the [FirebaseAuthWrapper]. */
 @Singleton
 class FakeFirebaseAuthWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
-  private var simulateSuccess: Boolean = false
+  private var simulateSuccess: Boolean = true
 
   /** Fake a successful auth response. */
   fun simulateSignInSuccess() {
