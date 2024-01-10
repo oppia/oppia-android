@@ -53,9 +53,11 @@ class PoliciesFragmentPresenter @Inject constructor(
       policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
     }
 
+    binding.policyDescriptionTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
     binding.policyDescriptionTextView.text = htmlParserFactory.create(
       policyOppiaTagActionListener = this,
-      displayLocale = resourceHandler.getDisplayLocale()
+      displayLocale = resourceHandler.getDisplayLocale(),
+      supportLtr = true
     ).parseOppiaHtml(
       policyDescription,
       binding.policyDescriptionTextView,
@@ -63,13 +65,15 @@ class PoliciesFragmentPresenter @Inject constructor(
       supportsConceptCards = false
     )
 
+    binding.policyWebLinkTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
     binding.policyWebLinkTextView.text = htmlParserFactory.create(
       gcsResourceName = "",
       entityType = "",
       entityId = "",
       imageCenterAlign = false,
       customOppiaTagActionListener = null,
-      resourceHandler.getDisplayLocale()
+      resourceHandler.getDisplayLocale(),
+      supportLtr = true
     ).parseOppiaHtml(
       policyWebLink,
       binding.policyWebLinkTextView,
