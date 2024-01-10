@@ -135,7 +135,7 @@ kt_android_library(
     srcs = [
         "FirebaseFirestoreInstance.kt",
         "FirebaseFirestoreInstanceWrapper.kt",
-        ],
+    ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:com_google_firebase_firebase-firestore-ktx",

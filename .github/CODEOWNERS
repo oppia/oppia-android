@@ -103,6 +103,7 @@
 /testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeAnalyticsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/FakeFirebaseAuthWrapperImplTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeFirestoreEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricAssessorTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
