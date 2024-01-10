@@ -7,7 +7,9 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "authentication_controller",
-    srcs = ["AuthenticationController.kt"],
+    srcs = [
+        "AuthenticationController.kt",
+    ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":firebase_auth_wrapper",
@@ -21,8 +23,8 @@ kt_android_library(
         "FirebaseAuthInstance.kt",
         "FirebaseAuthInstanceWrapper.kt",
         "FirebaseAuthWrapper.kt",
-        "FirebaseUserWrapper.kt"
-        ],
+        "FirebaseUserWrapper.kt",
+    ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:com_google_firebase_firebase-auth-ktx",
@@ -33,7 +35,9 @@ kt_android_library(
 
 kt_android_library(
     name = "auth_module",
-    srcs = ["AuthenticationModule.kt"],
+    srcs = [
+        "AuthenticationModule.kt",
+    ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":authentication_controller",
@@ -44,7 +48,9 @@ kt_android_library(
 
 kt_android_library(
     name = "firebase_auth_wrapper_impl",
-    srcs = ["FirebaseAuthWrapperImpl.kt"],
+    srcs = [
+        "FirebaseAuthWrapperImpl.kt",
+    ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
@@ -54,7 +60,9 @@ kt_android_library(
 
 kt_android_library(
     name = "firebase_auth_instance_wrapper_impl",
-    srcs = ["FirebaseAuthInstanceWrapperImpl.kt"],
+    srcs = [
+        "FirebaseAuthInstanceWrapperImpl.kt",
+    ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
