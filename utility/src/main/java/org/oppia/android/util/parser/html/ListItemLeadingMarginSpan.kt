@@ -36,7 +36,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     context: Context,
     private val indentationLevel: Int,
     private val displayLocale: OppiaLocale.DisplayLocale,
-    private val supportLtr:Boolean=false
+    private val supportLtr: Boolean = false
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
@@ -122,7 +122,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     private val numberedItemPrefix: String,
     private val longestNumberedItemPrefix: String,
     private val displayLocale: OppiaLocale.DisplayLocale,
-    private val supportLtr: Boolean=false
+    private val supportLtr: Boolean = false
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)
@@ -134,7 +134,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       2 * longestNumberedItemPrefix.length + spacingBeforeText
 
     private val isRtl by lazy {
-      (displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL)&& !supportLtr
+      (displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL) && !supportLtr
     }
 
     override fun drawLeadingMargin(

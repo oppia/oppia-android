@@ -56,7 +56,7 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale,supportLtr) }
+  private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale, supportLtr) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
 
   private val isRtl by lazy {
@@ -225,7 +225,7 @@ class HtmlParser private constructor(
       imageCenterAlign: Boolean,
       customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
       displayLocale: OppiaLocale.DisplayLocale,
-      supportLtr: Boolean=false
+      supportLtr: Boolean = false
     ): HtmlParser {
       return HtmlParser(
         context,
@@ -239,7 +239,7 @@ class HtmlParser private constructor(
         customOppiaTagActionListener,
         null,
         displayLocale,
-        supportLtr=supportLtr
+        supportLtr = supportLtr
       )
     }
 
@@ -252,7 +252,7 @@ class HtmlParser private constructor(
     fun create(
       policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null,
       displayLocale: OppiaLocale.DisplayLocale,
-    supportLtr: Boolean=false
+      supportLtr: Boolean = false
 
     ): HtmlParser {
       return HtmlParser(
@@ -267,7 +267,7 @@ class HtmlParser private constructor(
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = policyOppiaTagActionListener,
         displayLocale = displayLocale,
-        supportLtr=supportLtr
+        supportLtr = supportLtr
       )
     }
   }
