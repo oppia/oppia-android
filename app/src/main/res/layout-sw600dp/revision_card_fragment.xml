@@ -61,14 +61,13 @@
 
           <com.google.android.material.card.MaterialCardView
             android:id="@+id/previous_navigation_card"
-            android:layout_width="wrap_content"
+            android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
             android:clipToPadding="true"
-            android:maxWidth="144dp"
             android:onClick="@{() -> viewModel.onPreviousCardClicked()}"
             android:visibility="@{viewModel.subtopicId == 1 ? View.GONE : View.VISIBLE}"
             app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
@@ -120,14 +119,13 @@
 
           <com.google.android.material.card.MaterialCardView
             android:id="@+id/next_navigation_card"
-            android:layout_width="wrap_content"
+            android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
             android:clipToPadding="true"
-            android:maxWidth="144dp"
             android:onClick="@{() -> viewModel.onNextCardClicked()}"
             android:visibility="@{viewModel.subtopicId &lt; viewModel.subtopicListSize ? View.VISIBLE : View.GONE}"
             app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"

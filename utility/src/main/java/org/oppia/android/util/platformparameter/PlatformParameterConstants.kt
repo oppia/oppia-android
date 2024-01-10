@@ -65,7 +65,6 @@ const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
  * [PlatformParameterSyncUpWorker] will run again.
  */
 const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
-
 /**
  * Qualifier for the platform parameter that controls whether to cache LaTeX rendering using Glide.
  */
