@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -13,11 +12,10 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
-import org.oppia.android.domain.auth.AuthenticationModuleTest.AuthenticationModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -29,11 +27,11 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = AuthenticationModuleTest.TestApplication::class)
 class AuthenticationModuleTest {
 
   @Inject
-  lateinit var wrapper: AuthenticationWrapper
+  lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
 
   @Before
   fun setUp() {
@@ -41,35 +39,24 @@ class AuthenticationModuleTest {
   }
 
   @Test
-  fun testModule_injectsInstanceOfAuthenticationWrapper() {
-    assertThat(wrapper).isInstanceOf(AuthenticationController::class.java)
+  fun testModule_injectsProductionImplementationOfFirebaseAuthWrapper() {
+    assertThat(firebaseAuthWrapper).isInstanceOf(FirebaseAuthWrapperImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAuthenticationModuleTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(): Context {
-      return ApplicationProvider.getApplicationContext()
+    fun provideContext(application: Application): Context {
+      return application
     }
   }
 
-  @Module
-  class AuthenticationModule {
-    @Provides
-    @Singleton
-    fun provideAuthenticationController():
-      AuthenticationWrapper = AuthenticationController(mock(FirebaseAuth::class.java))
-  }
-
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
@@ -87,5 +74,19 @@ class AuthenticationModuleTest {
     }
 
     fun inject(test: AuthenticationModuleTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAuthenticationModuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: AuthenticationModuleTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

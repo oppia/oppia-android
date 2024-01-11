@@ -6,15 +6,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * An implementation of [DebugFirestoreEventLogger] used in developer-only builds of the app.
+ * A debug implementation of [FirestoreEventLogger] used in developer-only builds of the app.
  *
  * It forwards events to a production [FirestoreEventLogger] for real logging, but it also records logged
  * events for later retrieval (e.g. via [getEventList]).
  */
 @Singleton
 class DebugFirestoreEventLoggerImpl @Inject constructor(
-  private val realEventLogger: FirestoreEventLogger
-) : DebugFirestoreEventLogger {
+  private val realEventLogger: FirestoreEventLoggerProdImpl
+) : FirestoreEventLogger {
   private val eventList = CopyOnWriteArrayList<EventLog>()
 
   override fun uploadEvent(eventLog: EventLog) {
@@ -23,7 +23,7 @@ class DebugFirestoreEventLoggerImpl @Inject constructor(
   }
 
   /** Returns the list of all [EventLog]s logged for Firestore. */
-  override fun getEventList(): List<EventLog> = eventList
+  fun getEventList(): List<EventLog> = eventList
 
   /** Returns the most recently logged event. */
   fun getMostRecentEvent(): EventLog = getEventList().last()
