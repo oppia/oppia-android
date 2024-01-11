@@ -22,6 +22,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HtmlParserTe
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ImageRegionSelectionTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ImageViewBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/InputInteractionViewTestActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/RatioInputInteractionViewTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/LessonThumbnailImageViewTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ListItemLeadingMarginSpanTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/MarginBindingAdaptersTestActivity"
