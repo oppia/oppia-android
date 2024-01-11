@@ -1,7 +1,5 @@
-package org.oppia.android.testing
+package org.oppia.android.util.logging.firebase
 
-import org.oppia.android.util.logging.firebase.FirestoreInstance
-import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +10,7 @@ import javax.inject.Singleton
  * of [FirebaseFirestore] is requested.
  */
 @Singleton
-class FakeFirestoreInstanceWrapperImpl @Inject constructor() : FirestoreInstanceWrapper {
+class DebugFirestoreInstanceWrapperImpl @Inject constructor() : FirestoreInstanceWrapper {
 
   override val firestoreInstance: FirestoreInstance?
     get() = null

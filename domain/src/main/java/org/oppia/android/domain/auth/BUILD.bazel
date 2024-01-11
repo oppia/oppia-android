@@ -54,7 +54,7 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
-        ":firebase_auth_instance_wrapper_impl"
+        ":firebase_auth_instance_wrapper_impl",
     ],
 )
 

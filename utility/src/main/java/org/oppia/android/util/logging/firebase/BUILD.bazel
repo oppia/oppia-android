@@ -133,8 +133,8 @@ kt_android_library(
 kt_android_library(
     name = "firestore_wrapper",
     srcs = [
-        "FirebaseFirestoreInstance.kt",
-        "FirebaseFirestoreInstanceWrapper.kt",
+        "FirestoreInstance.kt",
+        "FirestoreInstanceWrapper.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
