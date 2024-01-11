@@ -85,9 +85,9 @@ class FractionParserTest {
   }
 
   @Test
-  fun testSubmitTimeError_emptyString_returnsInvalidFormat() {
+  fun testSubmitTimeError_emptyString_returnsEmptyInput() {
     val error = fractionParser.getSubmitTimeError("")
-    assertThat(error).isEqualTo(FractionParser.FractionParsingError.INVALID_FORMAT)
+    assertThat(error).isEqualTo(FractionParser.FractionParsingError.EMPTY_INPUT)
   }
 
   @Test

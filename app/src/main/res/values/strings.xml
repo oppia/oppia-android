@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
@@ -16,13 +16,13 @@
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
-  <string name="audio_language_select_dialog_okay_button">Ok</string>
+  <string name="audio_language_select_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
-  <string name="audio_dialog_offline_positive">Ok</string>
-  <string name="cellular_data_alert_dialog_okay_button">Ok</string>
+  <string name="audio_dialog_offline_positive" tools:ignore="ButtonCase,Typos">Ok</string>
+  <string name="cellular_data_alert_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
@@ -166,6 +166,7 @@
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
   <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
+  <string name="fraction_error_empty_input">Enter a fraction to continue.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
@@ -377,7 +378,7 @@
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
-  <string name="log_out_dialog_okay_button">Ok</string>
+  <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>
@@ -490,11 +491,11 @@
   <string name="beta_notice_dialog_title">Beta Notice</string>
   <string name="beta_notice_dialog_message">Hello! Your app is now being updated to the Beta version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
   <string name="beta_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
-  <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="beta_notice_dialog_close_button_text" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="general_availability_notice_dialog_title">General Availability Notice</string>
   <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
-  <string name="general_availability_notice_dialog_close_button_text">OK</string>
+  <string name="general_availability_notice_dialog_close_button_text" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to enter text.</string>

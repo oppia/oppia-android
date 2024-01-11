@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
@@ -23,7 +22,6 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -38,7 +36,7 @@ import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractio
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
+ * It contains [NumericInputInteractionView],and [TextInputInteractionView].
  */
 class InputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
@@ -54,18 +52,11 @@ class InputInteractionViewTestActivity :
   lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
-
-  @Inject
   lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
 
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
 
   val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
-
-  val fractionInteractionViewModel by lazy {
-    fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
-  }
 
   lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
   lateinit var writtenTranslationContext: WrittenTranslationContext
@@ -113,12 +104,10 @@ class InputInteractionViewTestActivity :
 
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
-    binding.fractionInteractionViewModel = fractionInteractionViewModel
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
