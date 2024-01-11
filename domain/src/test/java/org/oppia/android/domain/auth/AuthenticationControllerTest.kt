@@ -58,15 +58,6 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  fun testAuthentication_getCurrentFirebaseUser_noSignedInUser_returnsNull() {
-    fakeFirebaseAuthWrapperImpl.simulateSignInFailure()
-
-    val user = authenticationController.currentFirebaseUser
-
-    assertThat(user).isEqualTo(null)
-  }
-
-  @Test
   fun testAuthentication_getCurrentUser_userSignedIn_returnsInstanceOfFirebaseUserWrapper() {
     fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
 

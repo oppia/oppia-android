@@ -82,7 +82,9 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAuthenticationModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -395,7 +397,9 @@ class ViewEventLogsFragmentTest {
     }
   }
 
-  @Test
+  @Test // TODO(#5143): On robolectric, there is a conflict between Firestore's Sqlite and
+  // robolectric's ShadowSQLiteConnection but this is resolved in newer versions of robolectric.
+  @RunOn(TestPlatform.ESPRESSO)
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
     launch(ViewEventLogsTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
