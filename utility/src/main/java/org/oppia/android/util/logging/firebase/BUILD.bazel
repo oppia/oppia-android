@@ -86,6 +86,7 @@ kt_android_library(
         ":debug_event_logger",
         ":debug_firestore_logger_impl",
         ":firebase_exception_logger",
+        ":debug_firestore_wrapper_impl",
     ],
 )
 
@@ -151,6 +152,15 @@ kt_android_library(
     deps = [
         ":dagger",
         ":firestore_wrapper",
+    ],
+)
+
+kt_android_library(
+    name = "debug_firestore_wrapper_impl",
+    srcs = ["DebugFirestoreInstanceWrapperImpl.kt"],
+    visibility = ["//app:__pkg__",],
+    deps = [
+        ":firestore_wrapper_impl",
     ],
 )
 
