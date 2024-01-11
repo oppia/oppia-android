@@ -30,11 +30,11 @@ class LogReportingModule {
 
   @Provides
   @Singleton
-  fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl.Factory):
-    FirestoreEventLogger = factory.createFirestoreEventLogger()
+  fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl):
+    FirestoreEventLogger = factory
 
   @Provides
   @Singleton
-  fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirebaseFirestoreInstanceWrapperImpl):
-    FirebaseFirestoreInstanceWrapper = wrapperImpl
+  fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirestoreInstanceWrapperImpl):
+    FirestoreInstanceWrapper = wrapperImpl
 }

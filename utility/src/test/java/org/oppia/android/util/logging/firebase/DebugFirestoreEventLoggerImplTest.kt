@@ -37,6 +37,9 @@ class DebugFirestoreEventLoggerImplTest {
   @Inject
   lateinit var debugFirestoreLoggerImpl: DebugFirestoreEventLoggerImpl
 
+  @Inject
+  lateinit var eventLogger: FirestoreEventLogger
+
   private val eventLog1 = EventLog.newBuilder().setPriority(EventLog.Priority.ESSENTIAL).build()
   private val eventLog2 = EventLog.newBuilder().setPriority(EventLog.Priority.ESSENTIAL).build()
 
@@ -47,7 +50,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_returnsEvent() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog1)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
     Truth.assertThat(event).isEqualTo(eventLog1)
@@ -56,8 +59,8 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEventTwice_returnsLatestEvent() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
-    debugFirestoreLoggerImpl.uploadEvent(eventLog2)
+    eventLogger.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog2)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
     Truth.assertThat(event).isEqualTo(eventLog2)
@@ -65,7 +68,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
     debugFirestoreLoggerImpl.uploadEvent(eventLog2)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
@@ -80,7 +83,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_clearAllEvents_getMostRecent_returnsFailure() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
 
     val eventException = assertThrows(NoSuchElementException::class) {
@@ -100,7 +103,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_clearAllEvents_returnsEmptyList() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
@@ -109,8 +112,8 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logMultipleEvents_clearAllEvents_returnsEmptyList() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
-    debugFirestoreLoggerImpl.uploadEvent(eventLog2)
+    eventLogger.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog2)
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
@@ -119,7 +122,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logEvent_returnsNonEmptyList() {
-    debugFirestoreLoggerImpl.uploadEvent(eventLog1)
+    eventLogger.uploadEvent(eventLog1)
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
     Truth.assertThat(isListEmpty).isFalse()

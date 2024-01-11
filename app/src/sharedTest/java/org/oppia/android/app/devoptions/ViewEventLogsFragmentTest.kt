@@ -103,10 +103,10 @@ import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
-import org.oppia.android.util.logging.firebase.FirebaseFirestoreInstanceWrapper
-import org.oppia.android.util.logging.firebase.FirebaseFirestoreInstanceWrapperImpl
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
+import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapperImpl
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -724,8 +724,8 @@ class ViewEventLogsFragmentTest {
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirebaseFirestoreInstanceWrapperImpl):
-      FirebaseFirestoreInstanceWrapper = wrapperImpl
+    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirestoreInstanceWrapperImpl):
+      FirestoreInstanceWrapper = wrapperImpl
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

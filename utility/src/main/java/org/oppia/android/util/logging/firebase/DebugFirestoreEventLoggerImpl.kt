@@ -13,9 +13,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class DebugFirestoreEventLoggerImpl @Inject constructor(
-  factory: FirestoreEventLoggerProdImpl.Factory
+  private val realEventLogger: FirestoreEventLoggerProdImpl
 ) : FirestoreEventLogger {
-  private val realEventLogger by lazy { factory.createFirestoreEventLogger() }
   private val eventList = CopyOnWriteArrayList<EventLog>()
 
   override fun uploadEvent(eventLog: EventLog) {

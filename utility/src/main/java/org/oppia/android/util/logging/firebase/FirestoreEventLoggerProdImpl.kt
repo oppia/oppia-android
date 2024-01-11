@@ -5,16 +5,12 @@ import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** Logger for uploading to Firestore. */
-class FirestoreEventLoggerProdImpl private constructor(
+class FirestoreEventLoggerProdImpl @Inject constructor(
   private val consoleLogger: ConsoleLogger,
-  private val firebaseFirestoreInstance: FirebaseFirestoreInstance
+  private val firestoreInstanceWrapper: FirestoreInstanceWrapper
 ) : FirestoreEventLogger {
   /** Converts an event to a document and uploads it to Firebase Firestore. */
   override fun uploadEvent(eventLog: EventLog) {
-    uploadOptionalResponseDocument(eventLog)
-  }
-
-  private fun uploadOptionalResponseDocument(eventLog: EventLog) {
     val eventContext = eventLog.context.optionalResponse
     val document = hashMapOf(
       "survey_id" to eventContext.surveyDetails.surveyId,
@@ -22,25 +18,15 @@ class FirestoreEventLoggerProdImpl private constructor(
       "time_submitted" to eventLog.timestamp
     )
 
-    firebaseFirestoreInstance.firebaseFirestore.collection("nps_survey_open_feedback")
-      .add(document)
-      .addOnSuccessListener {
+    firestoreInstanceWrapper.firestoreInstance?.firebaseFirestore
+      ?.collection("nps_survey_open_feedback")
+      ?.add(document)
+      ?.addOnSuccessListener {
+        println("upload successful")
         consoleLogger.i("FirestoreEventLoggerProdImpl", "Upload to Firestore was successful")
       }
-      .addOnFailureListener { e ->
+      ?.addOnFailureListener { e ->
         consoleLogger.e("FirestoreEventLoggerProdImpl", e.toString(), e)
       }
-  }
-
-  /** Application-scoped injectable factory for creating a new [FirestoreEventLoggerProdImpl]. */
-  class Factory @Inject constructor(
-    private val consoleLogger: ConsoleLogger,
-    private val firebaseFirestoreInstanceWrapper: FirebaseFirestoreInstanceWrapper
-  ) {
-    private val firestoreDatabase = firebaseFirestoreInstanceWrapper.firebaseFirestoreInstance
-
-    /** Returns a new [FirestoreEventLoggerProdImpl] for the current application context. */
-    fun createFirestoreEventLogger(): FirestoreEventLoggerProdImpl =
-      FirestoreEventLoggerProdImpl(consoleLogger, firestoreDatabase)
   }
 }

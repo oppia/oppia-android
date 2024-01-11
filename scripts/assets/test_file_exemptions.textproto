@@ -700,6 +700,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/Ex
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/ExpirationMetaDataRetrieverModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/testing/ExpirationMetaDataRetrieverTestModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/testing/FakeExpirationMetaDataRetriever.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/testing/FakeFirestoreInstanceWrapperImpl.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/ApplicationIdSeed.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/ApplicationStartupListener.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/LogStorageModule.kt"
