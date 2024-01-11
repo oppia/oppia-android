@@ -6,14 +6,19 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
@@ -142,8 +147,8 @@ class RatioInputInteractionViewTestActivityTest {
     )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
     }
   }
 
@@ -152,7 +157,7 @@ class RatioInputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(
       RatioInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+    onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
         setTextToRatioInputInteractionView(
           "1:2:3"
@@ -160,11 +165,11 @@ class RatioInputInteractionViewTestActivityTest {
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
       )
-      Truth.assertThat(pendingAnswer.answer.ratioExpression.ratioComponentList)
+      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentList)
         .isEqualTo(listOf(1, 2, 3))
     }
   }
@@ -175,7 +180,7 @@ class RatioInputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(
       RatioInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+    onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "1:2"
@@ -184,26 +189,26 @@ class RatioInputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
-      .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-      .check(ViewAssertions.matches(ViewMatchers.withText("1:2")))
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .check(matches(isDisplayed()))
+      .check(matches(withText("1:2")))
   }
 
   @Test
   fun testRatioInput_withTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "1::2"
           )
         )
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_invalid_colons
             )
           )
@@ -215,17 +220,17 @@ class RatioInputInteractionViewTestActivityTest {
   fun testRatioInput_withNegativeRatioOfNumber_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "-1:2:3:4"
           )
         )
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_invalid_chars
             )
           )
@@ -240,12 +245,12 @@ class RatioInputInteractionViewTestActivityTest {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToSubmitButton()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_empty_input
             )
           )
@@ -259,7 +264,7 @@ class RatioInputInteractionViewTestActivityTest {
   fun testRatioInput_withZeroRatio_submit_numberWithZerosErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "1:0:4"
@@ -267,12 +272,12 @@ class RatioInputInteractionViewTestActivityTest {
         )
       testCoroutineDispatchers.runCurrent()
       scrollToSubmitButton()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_includes_zero
             )
           )
@@ -286,22 +291,22 @@ class RatioInputInteractionViewTestActivityTest {
   fun testRatioInput_withInvalidRatio_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "1: 1 2 :4"
           )
         )
-      Espresso.closeSoftKeyboard()
+      closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       scrollToSubmitButton()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_invalid_format
             )
           )
@@ -315,21 +320,21 @@ class RatioInputInteractionViewTestActivityTest {
   fun testRatioInput_withRatioHaving4Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "1:2:3:4"
           )
         )
-      Espresso.closeSoftKeyboard()
+      closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       scrollToSubmitButton()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_invalid_size
             )
           )
@@ -343,21 +348,21 @@ class RatioInputInteractionViewTestActivityTest {
   fun testRatioInput_withRatioHaving2Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "1:2"
           )
         )
-      Espresso.closeSoftKeyboard()
+      closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       scrollToSubmitButton()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.ratio_error_invalid_size
             )
           )
@@ -371,23 +376,23 @@ class RatioInputInteractionViewTestActivityTest {
   fun testRatioInput_withRatioHaving3Terms_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(RatioInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.test_ratio_input_interaction_view))
+      onView(withId(R.id.test_ratio_input_interaction_view))
         .perform(
           setTextToRatioInputInteractionView(
             "1:2:3"
           )
         )
-      Espresso.closeSoftKeyboard()
+      closeSoftKeyboard()
       scrollToSubmitButton()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.ratio_input_error))
-        .check(ViewAssertions.matches(ViewMatchers.withText("")))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
+        .check(matches(withText("")))
     }
   }
 
   private fun scrollToSubmitButton() {
-    Espresso.onView(ViewMatchers.withId(R.id.submit_button)).perform(ViewActions.scrollTo())
+    onView(withId(R.id.submit_button)).perform(scrollTo())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -397,8 +402,8 @@ class RatioInputInteractionViewTestActivityTest {
     return object : ViewAction {
       override fun getConstraints(): Matcher<View> {
         return CoreMatchers.allOf(
-          ViewMatchers.isDisplayed(),
-          ViewMatchers.isAssignableFrom(RatioInputInteractionView::class.java)
+          isDisplayed(),
+          isAssignableFrom(RatioInputInteractionView::class.java)
         )
       }
 
