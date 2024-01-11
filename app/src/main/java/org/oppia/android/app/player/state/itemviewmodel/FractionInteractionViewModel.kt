@@ -43,12 +43,17 @@ class FractionInteractionViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            true // Allow submit on empty answer.
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    // Force-update the UI to reflect the state of the errorMessage and isAnswerAvailable property:
+    errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      /* pendingAnswerError= */null,
+      /* inputAnswerAvailable= */true
+    )
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -64,23 +69,25 @@ class FractionInteractionViewModel private constructor(
 
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
-      when (category) {
-        AnswerErrorCategory.REAL_TIME -> {
+    when (category) {
+      AnswerErrorCategory.REAL_TIME -> {
+        if (answerText.isNotEmpty()) {
           pendingAnswerError =
             FractionParsingUiError.createFromParsingError(
               fractionParser.getRealTimeAnswerError(answerText.toString())
             ).getErrorMessageFromStringRes(resourceHandler)
-        }
-        AnswerErrorCategory.SUBMIT_TIME -> {
-          pendingAnswerError =
-            FractionParsingUiError.createFromParsingError(
-              fractionParser.getSubmitTimeError(answerText.toString())
-            ).getErrorMessageFromStringRes(resourceHandler)
+        } else {
+          pendingAnswerError = null
         }
       }
-      errorMessage.set(pendingAnswerError)
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        pendingAnswerError =
+          FractionParsingUiError.createFromParsingError(
+            fractionParser.getSubmitTimeError(answerText.toString())
+          ).getErrorMessageFromStringRes(resourceHandler)
+      }
     }
+    errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
