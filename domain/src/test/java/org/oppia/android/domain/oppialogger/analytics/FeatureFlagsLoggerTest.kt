@@ -20,6 +20,10 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
+import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
+import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
+import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -34,8 +38,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -48,17 +51,24 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FeatureFlagsLoggerTest.TestApplication::class)
 class FeatureFlagsLoggerTest {
-  private companion object {
-    private const val TEST_SESSION_ID = "test_session_id"
-  }
-
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
+  @field:[Inject EnableTestFeatureFlag]
+  lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
+  @field:[Inject EnableTestFeatureFlagWithEnabledDefault]
+  lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
+
   @Before
   fun setup() {
     setUpTestApplicationComponent()
+
+    val mapOfTestFeatureFlags = mapOf(
+      TEST_FEATURE_FLAG to testFeatureFlag,
+      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault
+    )
+    featureFlagsLogger.setFeatureFlagItemMap(mapOfTestFeatureFlags)
   }
 
   @Test
@@ -67,7 +77,6 @@ class FeatureFlagsLoggerTest {
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasSessionIdThat().isEqualTo(TEST_SESSION_ID)
     }
@@ -79,13 +88,13 @@ class FeatureFlagsLoggerTest {
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-
     assertThat(eventLog).hasFeatureFlagContextThat {
-      val testFeatureFlag = hasFeatureFlagThat(TEST_FEATURE_FLAG)
-
-      assertFeatureFlag(testFeatureFlag).isNotNull()
-      featureFlagHasEnabledStateThat(testFeatureFlag).isEqualTo(false)
-      featureFlagHasSyncStatusThat(testFeatureFlag).isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
+      hasFeatureFlagItemContextThatHasName(TEST_FEATURE_FLAG).apply {
+        hasFeatureFlagItemContextThat().isNotNull()
+        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
+        hasFeatureFlagEnabledStateThat().isEqualTo(false)
+        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
+      }
     }
   }
 
@@ -95,18 +104,22 @@ class FeatureFlagsLoggerTest {
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-
     assertThat(eventLog).hasFeatureFlagContextThat {
-      val testFeatureFlag = hasFeatureFlagThat(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
-
-      assertFeatureFlag(testFeatureFlag).isNotNull()
-      featureFlagHasEnabledStateThat(testFeatureFlag).isEqualTo(true)
-      featureFlagHasSyncStatusThat(testFeatureFlag).isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
+      hasFeatureFlagItemContextThatHasName(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS).apply {
+        hasFeatureFlagItemContextThat().isNotNull()
+        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
+        hasFeatureFlagEnabledStateThat().isEqualTo(true)
+        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private companion object {
+    private const val TEST_SESSION_ID = "test_session_id"
   }
 
   // TODO(#89): Move this to a common test application component.

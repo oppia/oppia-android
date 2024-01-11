@@ -381,10 +381,10 @@ message EventLog {
     string session_id = 2;
 
     // List of Feature Flag items
-    repeated FeatureFlagItem feature_flags = 3;
+    repeated FeatureFlagItemContext feature_flags = 3;
 
     // Structure for the feature flag log item.
-    message FeatureFlagItem {
+    message FeatureFlagItemContext {
       // The name of the feature flag or sync status flag.
       string flag_name = 1;
 

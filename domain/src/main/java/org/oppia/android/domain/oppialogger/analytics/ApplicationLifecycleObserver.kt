@@ -45,6 +45,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnablePerformanceMetricsCollection
   private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
+  private val analyticsController: AnalyticsController,
   private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
@@ -170,13 +171,12 @@ class ApplicationLifecycleObserver @Inject constructor(
   private fun logAllFeatureFlags() {
     CoroutineScope(backgroundDispatcher).launch {
       val sessionId = loggingIdentifierController.getSessionIdFlow().value
-
       featureFlagsLogger.logAllFeatureFlags(sessionId)
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
           "ActivityLifecycleObserver",
-          "Encountered error while trying to log app's feature flags.",
+          "Encountered error while logging feature flags.",
           failure
         )
       }

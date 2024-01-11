@@ -26,8 +26,6 @@ import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
-import org.oppia.android.util.platformparameter.EnableTestFeatureFlag
-import org.oppia.android.util.platformparameter.EnableTestFeatureFlagWithEnabledDefault
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
@@ -59,10 +57,6 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
-import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
-import org.oppia.android.util.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULT_VALUE
 import javax.inject.Singleton
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
