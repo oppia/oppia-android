@@ -166,7 +166,7 @@ class FractionParsingUiErrorTest {
         .toUiError()
         .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+        .isEqualTo("Enter a fraction to continue.")
     }
   }
 

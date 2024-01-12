@@ -1078,17 +1078,10 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
-    getApplicationDependencies(
-      internalProfileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    markAllSpotlightsSeen()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1098,23 +1091,28 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
-      waitForTheView(withText("What is a Ratio?"))
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.play_pause_audio_icon),
-          withEffectiveVisibility(Visibility.VISIBLE)
-        )
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
       )
-      onView(allOf(withId(R.id.audio_language_icon), withEffectiveVisibility(Visibility.VISIBLE)))
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
-          withDrawable(
-            R.drawable.ic_pause_circle_filled_white_24dp
-          )
+          withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
         )
       )
+
+      onView(withText("What is a Ratio?")).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -1180,17 +1178,11 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
-    getApplicationDependencies(
-      internalProfileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    markAllSpotlightsSeen()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1200,15 +1192,25 @@ class ExplorationActivityTest {
         shouldSavePartialProgress = false
       )
     ).use {
-      waitForTheView(withText("What is a Ratio?"))
-      // Clicks continue until we reach the first interaction.
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
-      onView(withId(R.id.continue_interaction_button)).perform(click())
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+
+      clickContinueButton()
+      clickContinueButton()
+      clickContinueButton()
+      clickContinueButton()
+      clickContinueButton()
 
       onView(withId(R.id.action_audio_player)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
       onView(withId(R.id.text_input_interaction_view)).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()

@@ -307,7 +307,7 @@ class StateFragmentTest {
 
       clickContinueInteractionButton()
 
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
@@ -4701,6 +4701,11 @@ class StateFragmentTest {
   private fun verifySubmitAnswerButtonIsDisabled() {
     scrollToViewType(SUBMIT_ANSWER_BUTTON)
     onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+  }
+
+  private fun verifySubmitAnswerButtonIsEnabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
   }
 
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {

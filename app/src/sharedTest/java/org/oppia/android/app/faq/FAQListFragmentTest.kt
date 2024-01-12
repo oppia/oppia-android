@@ -147,18 +147,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
+          position = 3
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
+            getResources().getString(R.string.faq_question_3)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
+            getResources().getString(R.string.faq_answer_3)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -173,18 +173,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
+          position = 3
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
+            getResources().getString(R.string.faq_question_3)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
+            getResources().getString(R.string.faq_answer_3)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -198,18 +198,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 4
+          position = 1
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_4, getAppName())
+            getResources().getString(R.string.faq_question_1, getAppName())
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_4, getAppName())
+            getResources().getString(R.string.faq_answer_1, getAppName())
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
