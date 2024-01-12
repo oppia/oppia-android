@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -53,8 +53,8 @@ class DebugFirestoreEventLoggerImplTest {
     eventLogger.uploadEvent(eventLog1)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
-    Truth.assertThat(event).isEqualTo(eventLog1)
-    Truth.assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+    assertThat(event).isEqualTo(eventLog1)
+    assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
   }
 
   @Test
@@ -63,7 +63,7 @@ class DebugFirestoreEventLoggerImplTest {
     eventLogger.uploadEvent(eventLog2)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
-    Truth.assertThat(event).isEqualTo(eventLog2)
+    assertThat(event).isEqualTo(eventLog2)
   }
 
   @Test
@@ -73,7 +73,7 @@ class DebugFirestoreEventLoggerImplTest {
     debugFirestoreLoggerImpl.uploadEvent(eventLog2)
     val event = debugFirestoreLoggerImpl.getMostRecentEvent()
 
-    Truth.assertThat(event).isEqualTo(eventLog2)
+    assertThat(event).isEqualTo(eventLog2)
   }
 
   @Test
@@ -90,7 +90,7 @@ class DebugFirestoreEventLoggerImplTest {
       debugFirestoreLoggerImpl.getMostRecentEvent()
     }
 
-    Truth.assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
+    assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
   }
 
   @Test
@@ -98,7 +98,7 @@ class DebugFirestoreEventLoggerImplTest {
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
-    Truth.assertThat(isListEmpty).isTrue()
+    assertThat(isListEmpty).isTrue()
   }
 
   @Test
@@ -107,7 +107,7 @@ class DebugFirestoreEventLoggerImplTest {
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
-    Truth.assertThat(isListEmpty).isTrue()
+    assertThat(isListEmpty).isTrue()
   }
 
   @Test
@@ -117,7 +117,7 @@ class DebugFirestoreEventLoggerImplTest {
     debugFirestoreLoggerImpl.clearAllEvents()
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
-    Truth.assertThat(isListEmpty).isTrue()
+    assertThat(isListEmpty).isTrue()
   }
 
   @Test
@@ -125,7 +125,7 @@ class DebugFirestoreEventLoggerImplTest {
     eventLogger.uploadEvent(eventLog1)
     val isListEmpty = debugFirestoreLoggerImpl.getEventList().isEmpty()
 
-    Truth.assertThat(isListEmpty).isFalse()
+    assertThat(isListEmpty).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {

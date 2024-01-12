@@ -471,7 +471,7 @@ class LogUploadWorkerTest {
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
 
-    // assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(fakeFirestoreEventLogger.noEventsPresent()).isTrue()
   }
 

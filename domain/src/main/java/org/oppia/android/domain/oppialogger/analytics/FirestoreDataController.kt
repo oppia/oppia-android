@@ -41,13 +41,19 @@ class FirestoreDataController @Inject constructor(
    * error will be thrown if something went wrong during upload.
    */
   suspend fun uploadData() {
-    firestoreEventsStore.readDataAsync().await().eventLogsToUploadList.forEach { eventLog ->
-      authenticateAndUploadToFirestore(eventLog)
+    val eventLogsToUpload = firestoreEventsStore.readDataAsync().await().eventLogsToUploadList
+
+    if (eventLogsToUpload.isNotEmpty()) {
+      eventLogsToUpload.forEach { eventLog ->
+        authenticateAndUploadToFirestore(eventLog)
+      }.also {
+        removeFirstEventLogFromStore()
+      }
     }
   }
 
   /**
-   * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].
+   * Logs an event defined by [eventContext] corresponding to time [timestamp].
    *
    * This will schedule a background upload of the event if there's internet connectivity, otherwise
    * it will cache the event for a later upload.
@@ -158,10 +164,13 @@ class FirestoreDataController @Inject constructor(
   fun getEventLogStore(): DataProvider<OppiaEventLogs> = firestoreEventsStore
 
   /** Removes the first log report that had been recorded for upload. */
-  fun removeFirstEventLogFromStore() {
-    println("removing first event log from store")
+  private fun removeFirstEventLogFromStore() {
     firestoreEventsStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
-      return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
+      if (oppiaEventLogs.eventLogsToUploadCount > 0) {
+        return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
+      } else {
+        return@storeDataAsync oppiaEventLogs // No event logs to remove
+      }
     }.invokeOnCompletion {
       it?.let {
         consoleLogger.e("FirestoreDataController", "Failed to remove event log", it)

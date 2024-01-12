@@ -22,7 +22,6 @@ class FirestoreEventLoggerProdImpl @Inject constructor(
       ?.collection("nps_survey_open_feedback")
       ?.add(document)
       ?.addOnSuccessListener {
-        println("upload successful")
         consoleLogger.i("FirestoreEventLoggerProdImpl", "Upload to Firestore was successful")
       }
       ?.addOnFailureListener { e ->

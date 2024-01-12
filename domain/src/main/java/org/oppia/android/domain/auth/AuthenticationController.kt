@@ -3,10 +3,8 @@ package org.oppia.android.domain.auth
 import kotlinx.coroutines.CompletableDeferred
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Controller for signing in and retrieving a Firebase user. */
-@Singleton
 class AuthenticationController @Inject constructor(
   private val firebaseAuthWrapper: FirebaseAuthWrapper
 ) {

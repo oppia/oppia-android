@@ -30,7 +30,7 @@ import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.logging.EventLogSubject
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -99,9 +99,9 @@ class FirestoreDataControllerTest {
 
     val eventLog = fakeFirestoreEventLogger.getMostRecentEvent()
 
-    EventLogSubject.assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
-    EventLogSubject.assertThat(eventLog).isEssentialPriority()
-    EventLogSubject.assertThat(eventLog).hasOptionalSurveyResponseContext()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOptionalSurveyResponseContext()
   }
 
   @Test
@@ -127,7 +127,7 @@ class FirestoreDataControllerTest {
 
     val eventLog = fakeFirestoreEventLogger.getMostRecentEvent()
     assertThat(eventLog.hasProfileId()).isTrue()
-    EventLogSubject.assertThat(eventLog).hasProfileIdThat().isEqualTo(profileId)
+    assertThat(eventLog).hasProfileIdThat().isEqualTo(profileId)
   }
 
   @Test
@@ -160,8 +160,8 @@ class FirestoreDataControllerTest {
 
     // The pruning will be purely based on timestamp of the event as all the event logs have
     // ESSENTIAL priority.
-    EventLogSubject.assertThat(firstEventLog).hasTimestampThat().isEqualTo(1556094120000)
-    EventLogSubject.assertThat(secondEventLog).hasTimestampThat().isEqualTo(1556094100000)
+    assertThat(firstEventLog).hasTimestampThat().isEqualTo(1556094120000)
+    assertThat(secondEventLog).hasTimestampThat().isEqualTo(1556094100000)
   }
 
   @Test
