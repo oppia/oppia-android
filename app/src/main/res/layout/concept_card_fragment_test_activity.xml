@@ -7,6 +7,7 @@
     android:id="@+id/open_dialog_0"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    style="?android:attr/buttonBarButtonStyle"
     android:text="@string/concept_card_one_button_text"
     android:textAllCaps="false"/>
 
@@ -14,6 +15,7 @@
     android:id="@+id/open_dialog_1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    style="?android:attr/buttonBarButtonStyle"
     android:text="@string/concept_card_two_button_text"
     android:textAllCaps="false" />
 </LinearLayout>

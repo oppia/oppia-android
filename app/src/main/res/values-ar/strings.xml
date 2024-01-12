@@ -7,7 +7,7 @@
 * Sarah zoubida
 * Seanlip
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
   <string name="menu_options">خيارات</string>
   <string name="menu_my_downloads">التنزيلات</string>
@@ -167,7 +167,7 @@
   <string name="fraction_error_larger_than_seven_digits">لا يجب أن يحتوي أي رقم في الكسر العشري على أكثر من 7 أرقام.</string>
   <string name="number_error_starting_with_floating_point">من فضلك إبدأ إجابتك برقم (0 او 0.5 على سبيل المثال)</string>
   <string name="number_error_invalid_format">من فضلك قم بإدخال رقم صالح.</string>
-  <string name="number_error_larger_than_fifteen_characters">يمكن أن تحتوي الإجابة على 15 رقمًا (0-9) على الأكثر أو الرموز (. أو -)</string>
+  <string name="number_error_larger_than_fifteen_characters" tools:ignore="TypographyDashes">(&#8211;يمكن أن تحتوي الإجابة على 15 رقمًا (0-9) على الأكثر أو الرموز (. أو</string>
   <string name="ratio_error_invalid_chars" fuzzy="true">من فضلك قم بكتابة نسبة تتكون من أرقام مفصولة بنقطتين رأسيتين (1:2 أو 1:2:3 على سبيل المثال).</string>
   <string name="ratio_error_invalid_format" fuzzy="true">من فضلك أدخل نسبة صحيحة (1:2 أو 1:2:3 على سبيل المثال)</string>
   <string name="ratio_error_invalid_colons" fuzzy="true">إجابتك تحتوي على نقطتين رأسيتين (:) متتاليتين.</string>
@@ -411,7 +411,7 @@
   <string name="great">عظيم</string>
   <string name="lets_get_started">هيّا نبدأ.</string>
   <string name="yes">نعم</string>
-  <string name="no">لا...</string>
+  <string name="no">&#8230;لا</string>
   <string name="pick_a_different_topic">اختر موضوعًا\nآخرًا.</string>
   <string name="are_you_interested">هل أنت مهتم بـ:\n%s</string>
   <string name="new_hint_available">ملاحظة جديدة متاحة</string>
