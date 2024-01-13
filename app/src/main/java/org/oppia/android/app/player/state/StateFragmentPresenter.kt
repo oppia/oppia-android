@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -266,7 +267,15 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(hintIndex: Int) {
+    Log.e("#", "reveal hint")
+
     subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex))
+  }
+
+  fun viewHint(hintIndex: Int) {
+    Log.e("#", "view hint")
+
+    explorationProgressController.submitHintIsViewed(hintIndex)
   }
 
   fun revealSolution() {

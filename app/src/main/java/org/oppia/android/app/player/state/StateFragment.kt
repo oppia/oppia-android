@@ -129,6 +129,10 @@ class StateFragment :
     stateFragmentPresenter.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    stateFragmentPresenter.viewHint(hintIndex)
+  }
+
   fun revealSolution() = stateFragmentPresenter.revealSolution()
 
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()

@@ -409,6 +409,14 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationFragment.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
+    explorationFragment.viewHint(hintIndex)
+  }
+
   fun revealSolution() {
     val explorationFragment =
       activity.supportFragmentManager.findFragmentByTag(

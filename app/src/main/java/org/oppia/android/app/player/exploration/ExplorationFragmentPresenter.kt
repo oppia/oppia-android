@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -129,6 +130,9 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun revealHint(hintIndex: Int) {
     getStateFragment()?.revealHint(hintIndex)
   }
+  fun viewHint(hintIndex: Int) {
+    getStateFragment()?.viewHint(hintIndex)
+  }
 
   fun revealSolution() {
     getStateFragment()?.revealSolution()
@@ -147,6 +151,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
+    Log.e("#", "llol")
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()

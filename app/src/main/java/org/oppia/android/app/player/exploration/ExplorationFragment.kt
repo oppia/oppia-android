@@ -72,6 +72,9 @@ class ExplorationFragment : InjectableFragment() {
     explorationFragmentPresenter.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    explorationFragmentPresenter.viewHint(hintIndex)
+  }
   fun revealSolution() {
     explorationFragmentPresenter.revealSolution()
   }
