@@ -201,6 +201,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/Re
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/RevealSolutionDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/RevealSolutionInterface.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/ViewHintListener.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/ViewSolutionInterface.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeFragmentPresenter.kt"
