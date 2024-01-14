@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -275,6 +276,10 @@ class StateFragmentPresenter @Inject constructor(
 
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
+  }
+
+  fun viewSolution() {
+    explorationProgressController.submitSolutionIsViewed()
   }
 
   private fun getAudioFragment(): Fragment? {

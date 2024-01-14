@@ -339,6 +339,10 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(EventBuilder::setAccessSolutionContext)
     }
 
+    fun logViewedSolution() {
+      logStateEvent(EventBuilder::setViewSolutionContext)
+    }
+
     /**
      * Logs that the learner submitted an answer, where [isCorrect] indicates whether the answer was
      * labelled as correct, and [userAnswer] was the actual structured answer submitted by the

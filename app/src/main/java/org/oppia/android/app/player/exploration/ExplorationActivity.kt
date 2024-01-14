@@ -26,6 +26,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.hintsandsolution.ViewSolutionInterface
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -40,6 +41,7 @@ class ExplorationActivity :
   RevealHintListener,
   ViewHintListener,
   RevealSolutionInterface,
+  ViewSolutionInterface,
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
@@ -196,5 +198,9 @@ class ExplorationActivity :
 
   override fun viewHint(hintIndex: Int) {
     explorationActivityPresenter.viewHint(hintIndex)
+  }
+
+  override fun viewSolution() {
+    explorationActivityPresenter.viewSolution()
   }
 }

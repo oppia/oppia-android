@@ -135,6 +135,10 @@ class StateFragment :
 
   fun revealSolution() = stateFragmentPresenter.revealSolution()
 
+  fun viewSolution(){
+    stateFragmentPresenter.viewSolution()
+  }
+
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()

@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -305,6 +306,15 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
+   * Notifies the controller that the user wishes to view the answer.
+   */
+  fun submitSolutionIsViewed() {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for viewing the solution." }
+  }
+
+  /**
    * Navigates to the previous state in the graph. If the learner is currently on the initial state,
    * this method will throw an exception. Calling code is responsible for ensuring this method is
    * only called when it's possible to navigate backward.
@@ -498,6 +508,9 @@ class ExplorationProgressController @Inject constructor(
             }
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+            is ControllerMessage.LogSolutionIsViewed -> {
+              controllerState.maybeLogViewedSolution(activeSessionId)
+            }
             is ControllerMessage.MoveToPreviousState ->
               controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
@@ -810,7 +823,16 @@ class ExplorationProgressController @Inject constructor(
   ) {
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
-      saveViewedHint()
+      logViewedHint()
+    }
+  }
+
+  private fun ControllerState.maybeLogViewedSolution(
+    activeSessionId: String
+  ) {
+    // Only log if the current session is active.
+    if (sessionId == activeSessionId) {
+      logViewedSolution()
     }
   }
 
@@ -1244,8 +1266,12 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
-    fun saveViewedHint() {
+    fun logViewedHint() {
       stateAnalyticsLogger?.logViewedHint(helpIndex.nextAvailableHintIndex)
+    }
+
+    fun logViewedSolution() {
+      stateAnalyticsLogger?.logViewedSolution()
     }
 
     /**
@@ -1377,6 +1403,17 @@ class ExplorationProgressController @Inject constructor(
       val hintIndex: Int,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
+
+    /**
+     * [ControllerMessage] to log cases when user viewed solution for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed.
+     */
+    data class LogSolutionIsViewed(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
     /**

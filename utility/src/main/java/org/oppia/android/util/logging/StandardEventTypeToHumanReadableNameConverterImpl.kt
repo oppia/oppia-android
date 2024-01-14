@@ -42,6 +42,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.VIEW_HINT_CONTEXT -> "view_hint"
       ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT -> "unlock_solution"
       ActivityContextCase.ACCESS_SOLUTION_CONTEXT -> "reveal_solution"
+      ActivityContextCase.VIEW_SOLUTION_CONTEXT -> "view_solution"
       ActivityContextCase.SUBMIT_ANSWER_CONTEXT -> "submit_answer"
       ActivityContextCase.PLAY_VOICE_OVER_CONTEXT -> "click_play_voiceover_button"
       ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT -> "click_pause_voiceover_button"

@@ -425,6 +425,14 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationFragment.revealSolution()
   }
 
+  fun viewSolution() {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
+    explorationFragment.viewSolution()
+  }
+
   private fun showProgressDatabaseFullDialogFragment() {
     val previousFragment = activity.supportFragmentManager.findFragmentByTag(
       TAG_PROGRESS_DATABASE_FULL_DIALOG

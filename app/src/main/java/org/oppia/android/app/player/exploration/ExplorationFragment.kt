@@ -78,6 +78,10 @@ class ExplorationFragment : InjectableFragment() {
   fun revealSolution() {
     explorationFragmentPresenter.revealSolution()
   }
+  fun viewSolution()
+  {
+    explorationFragmentPresenter.viewSolution()
+  }
 
   fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
 

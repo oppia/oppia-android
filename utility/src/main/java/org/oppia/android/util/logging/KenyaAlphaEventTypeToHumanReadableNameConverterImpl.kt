@@ -32,6 +32,7 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.VIEW_HINT_CONTEXT -> "view_hint_context"
       ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT -> "solution_offered_context"
       ActivityContextCase.ACCESS_SOLUTION_CONTEXT -> "access_solution_context"
+      ActivityContextCase.VIEW_SOLUTION_CONTEXT -> "view_solution_context"
       ActivityContextCase.SUBMIT_ANSWER_CONTEXT -> "submit_answer_context"
       ActivityContextCase.PLAY_VOICE_OVER_CONTEXT -> "play_voice_over_context"
       ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT -> "pause_voice_over_context"
