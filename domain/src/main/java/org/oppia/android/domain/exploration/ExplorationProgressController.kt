@@ -1265,10 +1265,12 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
+    /** Logs when a user views a hint. */
     fun logViewedHint() {
       stateAnalyticsLogger?.logViewedHint(helpIndex.nextAvailableHintIndex)
     }
 
+    /** Logs when a user views the solution. */
     fun logViewedSolution() {
       stateAnalyticsLogger?.logViewedSolution()
     }

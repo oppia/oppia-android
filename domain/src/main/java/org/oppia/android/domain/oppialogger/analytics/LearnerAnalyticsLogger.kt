@@ -325,6 +325,11 @@ class LearnerAnalyticsLogger @Inject constructor(
     fun logViewHint(hintIndex: Int) {
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setAccessHintContext)
     }
+
+    /**
+     * Logs the event indicating that the learner has viewed a hint corresponding to [hintIndex],
+     * excluding the first-time viewing.
+     */
     fun logViewedHint(hintIndex: Int) {
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setViewHintContext)
     }
@@ -339,6 +344,10 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(EventBuilder::setAccessSolutionContext)
     }
 
+    /**
+     * Logs the event indicating that the learner has viewed the solution to the current card,
+     * excluding the first-time viewing.
+     */
     fun logViewedSolution() {
       logStateEvent(EventBuilder::setViewSolutionContext)
     }
