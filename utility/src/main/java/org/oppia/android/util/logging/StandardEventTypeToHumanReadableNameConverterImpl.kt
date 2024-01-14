@@ -39,6 +39,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.END_CARD_CONTEXT -> "end_exploration_card"
       ActivityContextCase.HINT_UNLOCKED_CONTEXT -> "unlock_hint"
       ActivityContextCase.ACCESS_HINT_CONTEXT -> "reveal_hint"
+      ActivityContextCase.VIEW_HINT_CONTEXT -> "view_hint"
       ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT -> "unlock_solution"
       ActivityContextCase.ACCESS_SOLUTION_CONTEXT -> "reveal_solution"
       ActivityContextCase.SUBMIT_ANSWER_CONTEXT -> "submit_answer"

@@ -43,6 +43,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
@@ -200,6 +201,7 @@ class EventBundleCreator @Inject constructor(
       END_CARD_CONTEXT -> CardContext(activityName, endCardContext)
       HINT_UNLOCKED_CONTEXT -> HintContext(activityName, hintUnlockedContext)
       ACCESS_HINT_CONTEXT -> HintContext(activityName, accessHintContext)
+      VIEW_HINT_CONTEXT -> HintContext(activityName, viewHintContext)
       SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
       ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)

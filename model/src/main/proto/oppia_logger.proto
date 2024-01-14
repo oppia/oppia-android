@@ -175,6 +175,9 @@ message EventLog {
 
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
+
+      // The event being logged is related to accessing a hint.
+      HintContext view_hint_context = 43;
     }
   }
 

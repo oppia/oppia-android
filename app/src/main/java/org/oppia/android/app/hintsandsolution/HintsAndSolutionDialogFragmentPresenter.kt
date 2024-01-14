@@ -1,6 +1,5 @@
 package org.oppia.android.app.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -206,7 +205,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     if (position in expandedItemIndexes) {
       expandedItemIndexes -= position
     } else {
-      Log.e("#", "expand")
       (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
       expandedItemIndexes += position
     }

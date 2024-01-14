@@ -325,6 +325,9 @@ class LearnerAnalyticsLogger @Inject constructor(
     fun logViewHint(hintIndex: Int) {
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setAccessHintContext)
     }
+    fun logViewedHint(hintIndex: Int) {
+      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setViewHintContext)
+    }
 
     /** Logs that the solution to the current card has been unlocked by the learner. */
     fun logSolutionUnlocked() {

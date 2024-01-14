@@ -1,6 +1,5 @@
 package org.oppia.android.domain.hintsandsolution
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -125,14 +124,14 @@ class HintHandlerProdImpl private constructor(
   }
 
   override suspend fun viewHint(hintIndex: Int) {
-    Log.e("#", "hinthandler")
+
     val helpIndex = computeCurrentHelpIndex()
     check(
       helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
         helpIndex.nextAvailableHintIndex == hintIndex
 
     ) {
-      Log.e("#", "eeeww")
+
       "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
         " $hintIndex)"
     }
@@ -176,10 +175,9 @@ class HintHandlerProdImpl private constructor(
   private suspend fun maybeScheduleShowHint(wrongAnswerCount: Int = trackedWrongAnswerCount) {
     if (!pendingState.offersHelp()) {
       // If this state has no help to show, do nothing.
-      Log.e("#", "inside")
       return
     }
-    Log.e("#", "maybeScheduleShowHint")
+
     // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
     // doesn't answer after some duration). Note that if there's already a timer to show a hint,
     // it will be reset for each subsequent answer.
@@ -320,7 +318,6 @@ class HintHandlerProdImpl private constructor(
   private suspend fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
     // Only finish this timer if no other hints were scheduled and no cancellations occurred.
 
-    Log.e("#", "show hint")
     if (targetSequenceNumber == hintSequenceNumber) {
       val previousHelpIndex = computeCurrentHelpIndex()
 
