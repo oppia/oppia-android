@@ -44,6 +44,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
@@ -91,7 +92,6 @@ import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurveyEventContext
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
@@ -235,25 +235,25 @@ class EventBundleCreator @Inject constructor(
 
   private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType():
     PerformanceMetricsLoggableMetricType<*>? {
-    return when (loggableMetricTypeCase) {
-      APK_SIZE_METRIC -> ApkSizeLoggableMetric("apk_size_metric", apkSizeMetric)
-      STORAGE_USAGE_METRIC -> StorageUsageLoggableMetric(
-        "storage_usage_metric",
-        storageUsageMetric
-      )
-      STARTUP_LATENCY_METRIC -> StartupLatencyLoggableMetric(
-        "startup_latency_metric",
-        startupLatencyMetric
-      )
-      MEMORY_USAGE_METRIC -> MemoryUsageLoggableMetric("memory_usage_metric", memoryUsageMetric)
-      NETWORK_USAGE_METRIC -> NetworkUsageLoggableMetric(
-        "network_usage_metric",
-        networkUsageMetric
-      )
-      CPU_USAGE_METRIC -> CpuUsageLoggableMetric("cpu_usage_metric", cpuUsageMetric)
-      LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+      return when (loggableMetricTypeCase) {
+        APK_SIZE_METRIC -> ApkSizeLoggableMetric("apk_size_metric", apkSizeMetric)
+        STORAGE_USAGE_METRIC -> StorageUsageLoggableMetric(
+          "storage_usage_metric",
+          storageUsageMetric
+        )
+        STARTUP_LATENCY_METRIC -> StartupLatencyLoggableMetric(
+          "startup_latency_metric",
+          startupLatencyMetric
+        )
+        MEMORY_USAGE_METRIC -> MemoryUsageLoggableMetric("memory_usage_metric", memoryUsageMetric)
+        NETWORK_USAGE_METRIC -> NetworkUsageLoggableMetric(
+          "network_usage_metric",
+          networkUsageMetric
+        )
+        CPU_USAGE_METRIC -> CpuUsageLoggableMetric("cpu_usage_metric", cpuUsageMetric)
+        LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+      }
     }
-  }
 
   /**
    * Utility for storing properties within a [Bundle] (indicated by [bundle]), omitting those which

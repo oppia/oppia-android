@@ -78,8 +78,7 @@ class ExplorationFragment : InjectableFragment() {
   fun revealSolution() {
     explorationFragmentPresenter.revealSolution()
   }
-  fun viewSolution()
-  {
+  fun viewSolution() {
     explorationFragmentPresenter.viewSolution()
   }
 

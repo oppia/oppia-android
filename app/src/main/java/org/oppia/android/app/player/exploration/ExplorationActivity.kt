@@ -10,6 +10,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.hintsandsolution.ViewHintListener
+import org.oppia.android.app.hintsandsolution.ViewSolutionInterface
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
@@ -26,7 +27,6 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.hintsandsolution.ViewSolutionInterface
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 

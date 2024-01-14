@@ -137,7 +137,7 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.revealSolution()
   }
 
-  fun viewSolution(){
+  fun viewSolution() {
     getStateFragment()?.viewSolution()
   }
 

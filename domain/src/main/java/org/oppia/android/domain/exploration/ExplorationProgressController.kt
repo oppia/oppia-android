@@ -1,6 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel

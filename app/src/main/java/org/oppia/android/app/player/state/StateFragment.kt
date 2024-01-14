@@ -135,7 +135,7 @@ class StateFragment :
 
   fun revealSolution() = stateFragmentPresenter.revealSolution()
 
-  fun viewSolution(){
+  fun viewSolution() {
     stateFragmentPresenter.viewSolution()
   }
 

@@ -1,6 +1,5 @@
 package org.oppia.android.app.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -186,14 +185,14 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       if (hintViewModel.isHintRevealed.get()) {
         expandOrCollapseItem(position)
         if (position in expandedItemIndexes)
-          (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
+        (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
       }
     }
     binding.expandHintListIcon.setOnClickListener {
       if (hintViewModel.isHintRevealed.get()) {
         expandOrCollapseItem(position)
         if (position in expandedItemIndexes)
-          (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
+        (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
       }
     }
 
@@ -267,14 +266,14 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       if (solutionViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
         if (position in expandedItemIndexes)
-          (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
+        (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
       }
     }
     binding.expandSolutionListIcon.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
         if (position in expandedItemIndexes)
-          (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
+        (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
       }
     }
 
