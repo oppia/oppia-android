@@ -9,19 +9,17 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseUserWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.FakeFirebaseAuthWrapperImpl.FakeAuthState
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -36,12 +34,6 @@ import javax.inject.Singleton
 class FakeFirebaseAuthWrapperImplTest {
   @Inject
   lateinit var fakeFirebaseAuthWrapperImpl: FakeFirebaseAuthWrapperImpl
-
-  @field:[Inject BackgroundDispatcher]
-  lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -62,6 +54,21 @@ class FakeFirebaseAuthWrapperImplTest {
     val user = fakeFirebaseAuthWrapperImpl.currentUser
 
     assertThat(user).isNull()
+  }
+
+  @Test
+  fun testFakeAuthWrapper_simulateSignInSuccess_returnsFakeAuthStateSuccess() {
+    fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
+
+    val authState = fakeFirebaseAuthWrapperImpl.getAuthState()
+    assertThat(authState).isInstanceOf(FakeAuthState.Success::class.java)
+  }
+
+  @Test
+  fun testFakeAuthWrapper_simulateSignInSuccess_returnsFakeAuthStateFailure() {
+    fakeFirebaseAuthWrapperImpl.simulateSignInFailure()
+    val authState = fakeFirebaseAuthWrapperImpl.getAuthState()
+    assertThat(authState).isInstanceOf(FakeAuthState.Failure::class.java)
   }
 
   private fun setUpTestApplicationComponent() {

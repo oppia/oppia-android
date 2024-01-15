@@ -85,8 +85,8 @@ kt_android_library(
         ":dagger",
         ":debug_event_logger",
         ":debug_firestore_logger_impl",
-        ":firebase_exception_logger",
         ":debug_firestore_wrapper_impl",
+        ":firebase_exception_logger",
     ],
 )
 
@@ -137,7 +137,6 @@ kt_android_library(
         "FirestoreInstance.kt",
         "FirestoreInstanceWrapper.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:com_google_firebase_firebase-firestore-ktx",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
@@ -147,7 +146,9 @@ kt_android_library(
 
 kt_android_library(
     name = "firestore_wrapper_impl",
-    srcs = ["FirestoreInstanceWrapperImpl.kt"],
+    srcs = [
+        "FirestoreInstanceWrapperImpl.kt",
+    ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
@@ -157,8 +158,12 @@ kt_android_library(
 
 kt_android_library(
     name = "debug_firestore_wrapper_impl",
-    srcs = ["DebugFirestoreInstanceWrapperImpl.kt"],
-    visibility = ["//app:__pkg__",],
+    srcs = [
+        "DebugFirestoreInstanceWrapperImpl.kt",
+    ],
+    visibility = [
+        "//app:__pkg__",
+    ],
     deps = [
         ":firestore_wrapper_impl",
     ],

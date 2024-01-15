@@ -6,19 +6,19 @@ import javax.inject.Singleton
 /** Production implementation of FirebaseAuthWrapper. */
 @Singleton
 class FirebaseAuthWrapperImpl @Inject constructor(
-  private val firebaseWrapper: FirebaseAuthInstanceWrapperImpl
+  private val firebaseWrapper: FirebaseAuthInstanceWrapper
 ) : FirebaseAuthWrapper {
   override val currentUser: FirebaseUserWrapper?
-    get() = firebaseWrapper.firebaseAuthInstance.firebaseAuth.currentUser?.let {
+    get() = firebaseWrapper.firebaseAuthInstance?.firebaseAuth?.currentUser?.let {
       FirebaseUserWrapper(it.uid)
     }
 
   override fun signInAnonymously(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
-    firebaseWrapper.firebaseAuthInstance.firebaseAuth.signInAnonymously()
-      .addOnSuccessListener {
+    firebaseWrapper.firebaseAuthInstance?.firebaseAuth?.signInAnonymously()
+      ?.addOnSuccessListener {
         onSuccess.invoke()
       }
-      .addOnFailureListener { task ->
+      ?.addOnFailureListener { task ->
         val exception = task.cause
         if (exception != null) {
           onFailure.invoke(exception)
