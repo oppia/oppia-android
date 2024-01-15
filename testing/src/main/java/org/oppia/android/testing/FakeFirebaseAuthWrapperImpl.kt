@@ -8,10 +8,7 @@ import javax.inject.Singleton
 
 /** A test specific fake for the [FirebaseAuthWrapper]. */
 @Singleton
-class FakeFirebaseAuthWrapperImpl @Inject constructor(
-  private val fakeAuthInstance: FakeFirebaseAuthInstanceWrapperImpl
-) :
-  FirebaseAuthWrapper {
+class FakeFirebaseAuthWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
   private var fakeAuthState: FakeAuthState = FakeAuthState.Success
 
   /** Fake a successful auth response. */
@@ -41,8 +38,12 @@ class FakeFirebaseAuthWrapperImpl @Inject constructor(
     }
   }
 
+  /** Represents a faked authentication state. */
   sealed class FakeAuthState {
+    /** Represents a faked successful authentication state. */
     object Success : FakeAuthState()
+
+    /** Represents a faked failed authentication state. */
     object Failure : FakeAuthState()
   }
 }

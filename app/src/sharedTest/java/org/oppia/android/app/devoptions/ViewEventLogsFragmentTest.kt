@@ -82,9 +82,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAuthenticationModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -103,12 +101,12 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
+import org.oppia.android.util.logging.firebase.DebugFirestoreInstanceWrapperImpl
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
-import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapperImpl
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -397,9 +395,7 @@ class ViewEventLogsFragmentTest {
     }
   }
 
-  @Test // TODO(#5143): On robolectric, there is a conflict between Firestore's Sqlite and
-  // robolectric's ShadowSQLiteConnection but this is resolved in newer versions of robolectric.
-  @RunOn(TestPlatform.ESPRESSO)
+  @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
     launch(ViewEventLogsTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
@@ -728,7 +724,7 @@ class ViewEventLogsFragmentTest {
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirestoreInstanceWrapperImpl):
+    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: DebugFirestoreInstanceWrapperImpl):
       FirestoreInstanceWrapper = wrapperImpl
   }
 
