@@ -14,7 +14,7 @@
 
 ## Overview & Disclaimer
 
-This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) ior contact us at [gitter](https://gitter.im/oppia/oppia-android).
+This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) or contact us at [github-discussions](https://github.com/oppia/oppia-android/discussions).
 
 Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem. Windows currently only supports a terminal experience in this subsystem (though there is a prerelease version of the software with GUI support) which means Android Studio will not be supported. You will need to continue using the Windows version of Android Studio and only use the Linux subsystem for building & running Robolectric or JUnit-based tests.
 
@@ -58,6 +58,15 @@ JDK 8 is required for the Android build tools, and we suggest installing OpenJDK
 ```sh
 sudo apt install openjdk-8-jdk-headless
 ```
+
+#### For Fedora 25+ 
+- Install JDK 8 by running this command on the terminal:
+```
+sudo dnf install java-1.8.0-openjdk
+```
+- Set the default Java version to jdk-8 by running the following command `sudo update-alternatives --config java` and selecting the number with jdk-8.
+
+#### Follow [these instructions](https://www.java.com/en/download/help/path.html) to correctly set up $JAVA_HOME.
 
 **Python 2**
 
@@ -129,6 +138,15 @@ Follow [these instructions](https://docs.bazel.build/versions/main/install-ubunt
 
 ```sh
 sudo apt install bazel-4.0.0
+```
+
+#### For Fedora 25+
+
+- Install Bazelisk instead of Bazel using the command below in Fedora:
+```
+wget https://github.com/bazelbuild/bazelisk/releases/download/v1.8.1/bazelisk-linux-amd64
+chmod +x bazelisk-linux-amd64
+sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
 ```
 
 ### 5. Preparing build environment for Oppia Android

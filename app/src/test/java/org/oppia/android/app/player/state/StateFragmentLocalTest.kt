@@ -114,6 +114,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -268,7 +269,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       testCoroutineDispatchers.runCurrent()
@@ -338,7 +338,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -352,7 +351,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -367,7 +365,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
@@ -390,7 +387,6 @@ class StateFragmentLocalTest {
   @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
@@ -423,7 +419,6 @@ class StateFragmentLocalTest {
   @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughTestState1()
@@ -1408,7 +1403,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withText("SHOW SOLUTION"))
+      onView(withText("Show solution"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -2949,7 +2944,7 @@ class StateFragmentLocalTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -69,6 +69,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -416,7 +417,7 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val exception = assertThrows(RuntimeException::class) {
+      val exception = assertThrows<RuntimeException>() {
         scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
@@ -431,7 +432,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      val exception = assertThrows(RuntimeException::class) {
+      val exception = assertThrows<RuntimeException>() {
         scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
@@ -661,7 +662,7 @@ class DeveloperOptionsFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

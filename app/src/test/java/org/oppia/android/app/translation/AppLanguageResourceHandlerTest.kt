@@ -49,6 +49,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -240,7 +241,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringInLocale(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringInLocale(-1) }
   }
 
   @Test
@@ -277,7 +278,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringInLocaleWithWrapping(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringInLocaleWithWrapping(-1) }
   }
 
   @Test
@@ -314,7 +315,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getStringInLocaleWithoutWrapping(-1)
     }
   }
@@ -334,7 +335,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringArrayInLocale(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringArrayInLocale(-1) }
   }
 
   @Test
@@ -364,7 +365,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getQuantityStringInLocale(-1, 0) }
+    assertThrows<Resources.NotFoundException>() { handler.getQuantityStringInLocale(-1, 0) }
   }
 
   @Test
@@ -395,7 +396,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getQuantityStringInLocaleWithWrapping(-1, 0)
     }
   }
@@ -430,7 +431,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getQuantityStringInLocaleWithoutWrapping(-1, 0)
     }
   }
@@ -622,7 +623,7 @@ class AppLanguageResourceHandlerTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

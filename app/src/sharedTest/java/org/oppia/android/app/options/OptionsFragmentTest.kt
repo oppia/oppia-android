@@ -15,9 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -74,6 +72,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -145,7 +144,6 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -351,34 +349,6 @@ class OptionsFragmentTest {
       ).check(
         matches(withText("English"))
       )
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    launch<OptionsActivity>(
-      createOptionActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.app_language_text_view)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
-
-    launch<OptionsActivity>(
-      createOptionActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.app_language_text_view)).check(doesNotExist())
     }
   }
 
@@ -674,7 +644,7 @@ class OptionsFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -185,7 +185,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   fun testWholeNumberInputValue_withRealAnswerNumWithUnits_throwsException() {
     val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_9)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
 
       unitsIsEqualsRuleClassifier.matches(
         answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,

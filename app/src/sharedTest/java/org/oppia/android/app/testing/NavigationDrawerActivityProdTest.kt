@@ -89,6 +89,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -255,7 +256,7 @@ class NavigationDrawerActivityProdTest {
   }
 
   @Test
-  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileProgressIsDisplayedCorrectly() {
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileStoryProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
@@ -269,10 +270,32 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(
         allOf(
-          withId(R.id.profile_progress_text_view),
-          isDescendantOfA(withId(R.id.header_linear_layout))
+          withId(R.id.profile_story_progress_text_view),
+          isDescendantOfA(withId(R.id.progress_linear_layout))
         )
-      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
+      ).check(matches(withText("1 Story Completed")))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileTopicProgressIsDisplayedCorrectly() {
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build(),
+      timestampOlderThanOneWeek = false
+    )
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(
+        allOf(
+          withId(R.id.profile_topic_progress_text_view),
+          isDescendantOfA(withId(R.id.progress_linear_layout))
+        )
+      ).check(matches(withText("1 Topic in Progress")))
     }
   }
 
@@ -993,7 +1016,7 @@ class NavigationDrawerActivityProdTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

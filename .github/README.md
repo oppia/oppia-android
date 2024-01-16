@@ -14,21 +14,25 @@ Oppia Android is written using Kotlin and Java, and leverages Bazel, databinding
   * [Oppia.org community site](https://www.oppia.org)
   * [File an issue](https://github.com/oppia/oppia-android/issues/new/choose)
 
+You can also sign up to our [email newsletter](https://shorturl.at/CHPY6) for news and updates about the overall Oppia project.
+
+
 ## Installation
 
-Please refer to the [installation wiki page](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android) for full instructions.
+Please refer to the [Installing Oppia Android](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) page for full instructions on how to install Oppia-Android on your local machine.
 
 ## Contributing
 
 The Oppia project is built by the community for the community. We welcome contributions from everyone, especially new contributors.
 
-You can help with Oppia's development in many ways, including 
-- [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) 
+You can help with Oppia's development in many ways, including
+- [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change)
 - [instructional design & storytelling](https://github.com/oppia/oppia/wiki/Teaching-with-Oppia)
 - [UX research](https://github.com/oppia/oppia/wiki/Conducting-research-with-students)
 - [creating voiceovers](https://github.com/oppia/oppia/wiki/Instructions-for-voice-artists)
 - [design & art](https://github.com/oppia/oppia/wiki/Contributing-to-Oppia%27s-design)
 - [documentation](https://github.com/oppia/oppia-android/issues/1723)
+- [donating to support our work](https://www.oppia.org/donate)
 
 **Mobile developers**: please see [this wiki page](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) for instructions on setting things up and committing changes.
 

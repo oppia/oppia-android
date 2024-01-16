@@ -9,6 +9,11 @@
     <item>@string/faq_question_6</item>
     <item>@string/faq_question_7</item>
     <item>@string/faq_question_9</item>
+    <item>@string/faq_question_10</item>
+    <item>@string/faq_question_11</item>
+    <item>@string/faq_question_12</item>
+    <item>@string/faq_question_13</item>
+    <item>@string/faq_question_14</item>
   </string-array>
 
   <string-array name="faq_answers">
@@ -20,5 +25,10 @@
     <item>@string/faq_answer_6</item>
     <item>@string/faq_answer_7</item>
     <item>@string/faq_answer_9</item>
+    <item>@string/faq_answer_10</item>
+    <item>@string/faq_answer_11</item>
+    <item>@string/faq_answer_12</item>
+    <item>@string/faq_answer_13</item>
+    <item>@string/faq_answer_14</item>
   </string-array>
 </resources>

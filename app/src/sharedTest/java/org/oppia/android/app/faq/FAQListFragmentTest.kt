@@ -62,6 +62,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -145,18 +146,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
+          position = 3
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
+            getResources().getString(R.string.faq_question_3)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
+            getResources().getString(R.string.faq_answer_3)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -171,18 +172,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
+          position = 3
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
+            getResources().getString(R.string.faq_question_3)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
+            getResources().getString(R.string.faq_answer_3)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -196,18 +197,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 4
+          position = 1
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_4, getAppName())
+            getResources().getString(R.string.faq_question_1, getAppName())
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_4, getAppName())
+            getResources().getString(R.string.faq_answer_1, getAppName())
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -252,7 +253,7 @@ class FAQListFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
