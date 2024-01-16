@@ -240,7 +240,7 @@ class HtmlParser private constructor(
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener,
-        null,
+        policyOppiaTagActionListener = null,
         displayLocale
       )
     }
@@ -263,7 +263,7 @@ class HtmlParser private constructor(
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener = null,
-        null,
+        policyOppiaTagActionListener = null,
         displayLocale
       )
     }
