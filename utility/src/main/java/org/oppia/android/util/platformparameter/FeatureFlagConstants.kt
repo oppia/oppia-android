@@ -156,3 +156,13 @@ const val APP_AND_OS_DEPRECATION = "android_enable_app_and_os_deprecation"
  * Default value for the feature flag corresponding to [EnableAppAndOsDeprecation].
  */
 const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
+
+/** Qualifier for the platform parameter that toggles the the NPS Survey. */
+@Qualifier
+annotation class EnableNpsSurvey
+
+/** Name of the  feature flag that toggles the NPS Survey */
+const val ENABLE_NPS_SURVEY = "enable_nps_survey"
+
+/** Default value of the platform parameter corresponding to [EnableNpsSurvey]. */
+const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
