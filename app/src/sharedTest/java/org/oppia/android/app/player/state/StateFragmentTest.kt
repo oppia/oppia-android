@@ -306,7 +306,7 @@ class StateFragmentTest {
 
       clickContinueInteractionButton()
 
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
@@ -439,6 +439,24 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric tests don't rotate like this to recreate activity
+  fun testStateFragment_loadExp_invalidAnswer_changeConfiguration_submitButtonIsDisplayed() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/")
+
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -4684,6 +4702,11 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
   }
 
+  private fun verifySubmitAnswerButtonIsEnabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
@@ -4731,7 +4754,6 @@ class StateFragmentTest {
   }
 
   private fun setUpTest() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
