@@ -77,6 +77,7 @@ import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
+import org.oppia.android.app.testing.RatioInputInteractionViewTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
 import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
@@ -149,6 +150,7 @@ interface ActivityComponentImpl :
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
+  fun inject(ratioInputInteractionViewTestActivity: RatioInputInteractionViewTestActivity)
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
   fun inject(listItemLeadingMarginSpanTestActivity: ListItemLeadingMarginSpanTestActivity)
