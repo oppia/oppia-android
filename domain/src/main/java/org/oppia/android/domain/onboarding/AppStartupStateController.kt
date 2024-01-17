@@ -1,12 +1,9 @@
 package org.oppia.android.domain.onboarding
 
-import android.os.Build
-import kotlinx.coroutines.runBlocking
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
-import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -133,7 +130,8 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun computeAppStartupMode(onboardingState: OnboardingState): StartupMode {
-    // Return old logic if app and os feature flag is not enabled
+    // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
+    // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
     if (!enableAppAndOsDeprecation.value) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
@@ -142,42 +140,7 @@ class AppStartupStateController @Inject constructor(
       }
     }
 
-    val deprecationDataProvider = deprecationController.getDeprecationDatabase()
-
-    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
-
-    runBlocking {
-      deprecationDataProvider.retrieveData().transform {
-        deprecationDatabase = it
-      }
-    }
-
-    val appVersionCode = Build.VERSION.SDK_INT
-
-    val osIsDeprecated = lowestSupportedApiLevel.value > appVersionCode &&
-      deprecationDatabase.osDeprecationResponse.deprecatedVersion != appVersionCode
-    val appUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode ||
-      forcedAppUpdateVersionCode.value > appVersionCode
-
-    if (onboardingState.alreadyOnboardedApp) {
-      if (osIsDeprecated) {
-        return StartupMode.OS_IS_DEPRECATED
-      }
-
-      if (appUpdateIsAvailable) {
-        if (forcedAppUpdateVersionCode.value > appVersionCode) {
-          return StartupMode.APP_IS_DEPRECATED
-        }
-
-        if (deprecationDatabase.appDeprecationResponse.deprecatedVersion !=
-          optionalAppUpdateVersionCode.value
-        ) {
-          return StartupMode.OPTIONAL_UPDATE_AVAILABLE
-        }
-      }
-
-      return StartupMode.USER_IS_ONBOARDED
-    } else return StartupMode.USER_NOT_YET_ONBOARDED
+    return deprecationController.processStartUpMode(onboardingState)
   }
 
   private fun computeBuildNoticeMode(

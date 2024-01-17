@@ -8,10 +8,10 @@ interface DeprecationNoticeActionListener {
 
 /** Enum class for the various deprecation notice actions available to the user. */
 enum class DeprecationNoticeActionType {
-  /** Action for when the user presses the 'Close' option on a deprecation dialog. */
+  /** Action for when the user presses the 'Close' button on a deprecation dialog. */
   CLOSE,
-  /** Action for when the user presses the 'Dismiss' option on a deprecation dialog. */
+  /** Action for when the user presses the 'Dismiss' button on a deprecation dialog. */
   DISMISS,
-  /** Action for when the user presses the 'Update' option on a deprecation dialog. */
+  /** Action for when the user presses the 'Update' button on a deprecation dialog. */
   UPDATE
 }

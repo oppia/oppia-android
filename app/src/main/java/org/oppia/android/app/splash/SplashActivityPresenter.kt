@@ -81,8 +81,8 @@ class SplashActivityPresenter @Inject constructor(
   fun handleOnDeprecationNoticeActionClicked(noticeType: DeprecationNoticeActionType) {
     when (noticeType) {
       DeprecationNoticeActionType.CLOSE -> handleOnDeprecationNoticeCloseAppButtonClicked()
-      DeprecationNoticeActionType.DISMISS -> handleOnDeprecationNoticeUpdateButtonClicked()
-      DeprecationNoticeActionType.UPDATE -> handleOnDeprecationNoticeDialogDismissed()
+      DeprecationNoticeActionType.DISMISS -> handleOnDeprecationNoticeDialogDismissed()
+      DeprecationNoticeActionType.UPDATE -> handleOnDeprecationNoticeUpdateButtonClicked()
     }
   }
 
@@ -93,7 +93,7 @@ class SplashActivityPresenter @Inject constructor(
     activity.finish()
   }
 
-  /** Handles cases where the user clicks the update option on a deprecation notice dialog. */
+  /** Handles cases where the user clicks the update button on a deprecation notice dialog. */
   private fun handleOnDeprecationNoticeUpdateButtonClicked() {
     // If the Update button is clicked for the deprecation notice, launch the Play Store and open
     // the Oppia app's page.
@@ -220,38 +220,42 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun processStartupMode() {
     if (enableAppAndOsDeprecation.value) {
-      when (startupMode) {
-        StartupMode.USER_IS_ONBOARDED -> {
-          activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-          activity.finish()
-        }
-        StartupMode.APP_IS_DEPRECATED -> {
-          showDialog(
-            FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-            ForcedAppDeprecationNoticeDialogFragment::newInstance
-          )
-        }
-        StartupMode.OPTIONAL_UPDATE_AVAILABLE -> {
-          showDialog(
-            OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-            OptionalAppDeprecationNoticeDialogFragment::newInstance
-          )
-        }
-        StartupMode.OS_IS_DEPRECATED -> {
-          showDialog(
-            OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-            OsDeprecationNoticeDialogFragment::newInstance
-          )
-        }
-        else -> {
-          // In all other cases (including errors when the startup state fails to load or is
-          // defaulted), assume the user needs to be onboarded.
-          activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-          activity.finish()
-        }
-      }
+      processAppAndOsDeprecationEnabledStartUpMode()
     } else {
       processLegacyStartupMode()
+    }
+  }
+
+  private fun processAppAndOsDeprecationEnabledStartUpMode() {
+    when (startupMode) {
+      StartupMode.USER_IS_ONBOARDED -> {
+        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+        activity.finish()
+      }
+      StartupMode.APP_IS_DEPRECATED -> {
+        showDialog(
+          FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
+          ForcedAppDeprecationNoticeDialogFragment::newInstance
+        )
+      }
+      StartupMode.OPTIONAL_UPDATE_AVAILABLE -> {
+        showDialog(
+          OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+          OptionalAppDeprecationNoticeDialogFragment::newInstance
+        )
+      }
+      StartupMode.OS_IS_DEPRECATED -> {
+        showDialog(
+          OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+          OsDeprecationNoticeDialogFragment::newInstance
+        )
+      }
+      else -> {
+        // In all other cases (including errors when the startup state fails to load or is
+        // defaulted), assume the user needs to be onboarded.
+        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+        activity.finish()
+      }
     }
   }
 
