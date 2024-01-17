@@ -213,6 +213,7 @@
     <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
+    <activity android:name=".app.testing.FractionInputInteractionViewTestActivity" />
     <activity
       android:name=".app.testing.TestFontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -220,6 +221,7 @@
     <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
+    <activity android:name=".app.testing.RatioInputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.ListItemLeadingMarginSpanTestActivity" />

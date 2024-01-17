@@ -20,7 +20,10 @@ enum class FractionParsingUiError(@StringRes private var error: Int?) {
   DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
 
   /** Corresponds to [FractionParsingError.NUMBER_TOO_LONG]. */
-  NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
+  NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits),
+
+  /** Corresponds to [FractionParsingError.EMPTY_INPUT]. */
+  EMPTY_INPUT(error = R.string.fraction_error_empty_input);
 
   /**
    * Returns the string corresponding to this error's string resources, or null if there is none.
@@ -39,6 +42,7 @@ enum class FractionParsingUiError(@StringRes private var error: Int?) {
         FractionParsingError.INVALID_FORMAT -> INVALID_FORMAT
         FractionParsingError.DIVISION_BY_ZERO -> DIVISION_BY_ZERO
         FractionParsingError.NUMBER_TOO_LONG -> NUMBER_TOO_LONG
+        FractionParsingError.EMPTY_INPUT -> EMPTY_INPUT
       }
     }
   }
