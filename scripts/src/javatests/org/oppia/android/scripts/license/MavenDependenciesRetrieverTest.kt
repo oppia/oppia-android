@@ -1221,7 +1221,7 @@ class MavenDependenciesRetrieverTest {
             }
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }

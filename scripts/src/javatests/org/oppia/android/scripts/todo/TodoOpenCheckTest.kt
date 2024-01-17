@@ -449,9 +449,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
-      runScript(regenerateFile = true)
-    }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
