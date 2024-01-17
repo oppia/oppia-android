@@ -231,17 +231,17 @@ class HtmlParser private constructor(
       displayLocale: OppiaLocale.DisplayLocale
     ): HtmlParser {
       return HtmlParser(
-        context,
-        urlImageParserFactory,
-        gcsResourceName,
-        entityType,
-        entityId,
-        imageCenterAlign,
-        consoleLogger,
+        context = context,
+        urlImageParserFactory = urlImageParserFactory,
+        gcsResourceName = gcsResourceName,
+        entityType = entityType,
+        entityId = entityId,
+        imageCenterAlign = imageCenterAlign,
+        consoleLogger = consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
-        customOppiaTagActionListener,
+        customOppiaTagActionListener = customOppiaTagActionListener,
         policyOppiaTagActionListener = null,
-        displayLocale
+        displayLocale = displayLocale
       )
     }
 
@@ -254,17 +254,17 @@ class HtmlParser private constructor(
       displayLocale: OppiaLocale.DisplayLocale
     ): HtmlParser {
       return HtmlParser(
-        context,
-        urlImageParserFactory,
+        context = context,
+        urlImageParserFactory = urlImageParserFactory,
         gcsResourceName = "",
         entityType = "",
         entityId = "",
         imageCenterAlign = false,
-        consoleLogger,
+        consoleLogger = consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = null,
-        displayLocale
+        displayLocale = displayLocale
       )
     }
 
