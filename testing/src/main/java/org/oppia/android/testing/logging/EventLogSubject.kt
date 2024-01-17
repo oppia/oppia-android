@@ -1996,10 +1996,10 @@ class EventLogSubject private constructor(
     /**
      * Returns a [IterableSubject] to test [EventLog.FeatureFlagContext.getFeatureFlagsList].
      *
-     * This method never fails since the underlying property defaults to empty string if it's not
+     * This method never fails since the underlying property defaults to empty list if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagThatListThat(): IterableSubject = assertThat(actual.featureFlagsList)
+    fun hasFeatureFlagListThat(): IterableSubject = assertThat(actual.featureFlagsList)
 
     /**
      * Returns a [FeatureFlagItemContextSubject] to test

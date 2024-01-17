@@ -177,7 +177,7 @@ message EventLog {
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
 
-      // The event being logged contains the feature flags and their current enabled and sync state
+      // The event being logged contains the feature flags and their current enabled and sync state.
       FeatureFlagContext feature_flag_context = 43;
     }
   }
@@ -380,7 +380,7 @@ message EventLog {
     // The id of the current session.
     string session_id = 2;
 
-    // List of Feature Flag items
+    // List of Feature Flag items.
     repeated FeatureFlagItemContext feature_flags = 3;
 
     // Structure for the feature flag log item.
