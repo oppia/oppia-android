@@ -157,9 +157,8 @@ class TextInputViewModel private constructor(
   }
 
   /**
-   * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
-   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by
-   * this method is guaranteed to be parsed correctly by [parseRegularFraction].
+   * Returns a [TextParsingError] for the specified text input if it's an invalid fraction, or
+   * [TextParsingError.VALID] if no issues are found.
    *
    * This method should only be used when a user tries submitting an answer. Real-time error
    * detection should be done using [getRealTimeAnswerError], instead.
