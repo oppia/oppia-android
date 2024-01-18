@@ -10,15 +10,15 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.parser.FractionParsingUiError
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
-import javax.inject.Inject
-import org.oppia.android.app.parser.FractionParsingUiError
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.util.math.FractionParser
+import javax.inject.Inject
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
@@ -56,22 +56,21 @@ class TextInputViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-        Log.e("#","real time")
+        Log.e("#", "real time")
         if (answerText.isNotEmpty()) {
-
         } else {
           pendingAnswerError = null
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
-        Log.e("#","submit time")
+        Log.e("#", "submit time")
         pendingAnswerError =
           FractionParsingUiError.createFromParsingError(
             FractionParser.FractionParsingError.EMPTY_INPUT
           ).getErrorMessageFromStringRes(resourceHandler)
       }
     }
-    Log.e("#",pendingAnswerError.toString())
+    Log.e("#", pendingAnswerError.toString())
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
@@ -105,8 +104,6 @@ class TextInputViewModel private constructor(
       writtenTranslationContext = this@TextInputViewModel.writtenTranslationContext
     }
   }.build()
-
-
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
