@@ -23,6 +23,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -36,18 +37,18 @@
         android:id="@+id/test_number_input_interaction_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:focusable="true"
         android:hint="@string/test_number_input_interaction_hint"
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         android:longClickable="false"
         android:maxLength="200"
+        android:minHeight="48dp"
         android:padding="8dp"
         android:singleLine="true"
         android:text="@={numericInputViewModel.answerText}"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
 
       <TextView
@@ -68,7 +69,6 @@
         android:id="@+id/test_text_input_interaction_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:focusable="true"
@@ -76,21 +76,36 @@
         android:inputType="text"
         android:longClickable="false"
         android:maxLength="200"
+        android:minHeight="48dp"
         android:padding="8dp"
         android:singleLine="true"
         android:text="@={textInputViewModel.answerText}" />
 
+      <TextView
+        android:id="@+id/text_input_error"
+        style="@style/TextViewStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif"
+        android:minHeight="32dp"
+        android:text="@{textInputViewModel.errorMessage}"
+        android:textColor="@color/component_color_shared_input_error_color"
+        android:textSize="12sp"
+        android:visibility="@{textInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+
       <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
         android:id="@+id/test_math_expression_input_interaction_view"
         style="@style/InputInteractionEditText"
-        android:minHeight="48dp"
-        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
         android:inputType="text"
+        android:minHeight="48dp"
         android:text="@={mathExpressionInteractionsViewModel.answerText}"
-        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
+        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}" />
 
       <Button
         android:id="@+id/submit_button"

@@ -402,6 +402,9 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  @Test
   fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -453,6 +456,24 @@ class InputInteractionViewTestActivityTest {
     }
     onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed()))
       .check(matches(withText("abc")))
+  }
+
+  @Test
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      scrollToSubmitButton()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.text_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.text_error_empty_input
+            )
+          )
+        )
+    }
   }
 
   private fun scrollToSubmitButton() {
