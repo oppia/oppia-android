@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -71,6 +72,7 @@ class FractionInteractionViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
+        Log.e("#","real time")
         if (answerText.isNotEmpty()) {
           pendingAnswerError =
             FractionParsingUiError.createFromParsingError(
@@ -81,12 +83,14 @@ class FractionInteractionViewModel private constructor(
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
+        Log.e("#","submit time")
         pendingAnswerError =
           FractionParsingUiError.createFromParsingError(
             fractionParser.getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
       }
     }
+    Log.e("#",pendingAnswerError.toString())
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }

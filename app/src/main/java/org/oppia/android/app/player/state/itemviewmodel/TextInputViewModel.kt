@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -15,6 +16,9 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.parser.FractionParsingUiError
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.util.math.FractionParser
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
@@ -28,20 +32,48 @@ class TextInputViewModel private constructor(
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
+  private var pendingAnswerError: String? = null
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
-
+  val errorMessage = ObservableField<String>("")
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            /* pendingAnswerError= */ null,
-            answerText.isNotEmpty()
+            /* pendingAnswerError= */ pendingAnswerError,
+            inputAnswerAvailable = true
           )
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    errorMessage.addOnPropertyChangedCallback(callback)
+    interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      /* pendingAnswerError= */ null,
+      inputAnswerAvailable = true
+    )
+  }
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    when (category) {
+      AnswerErrorCategory.REAL_TIME -> {
+        Log.e("#","real time")
+        if (answerText.isNotEmpty()) {
+
+        } else {
+          pendingAnswerError = null
+        }
+      }
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        Log.e("#","submit time")
+        pendingAnswerError =
+          FractionParsingUiError.createFromParsingError(
+            FractionParser.FractionParsingError.EMPTY_INPUT
+          ).getErrorMessageFromStringRes(resourceHandler)
+      }
+    }
+    Log.e("#",pendingAnswerError.toString())
+    errorMessage.set(pendingAnswerError)
+    return pendingAnswerError
   }
 
   fun getAnswerTextWatcher(): TextWatcher {
@@ -55,6 +87,7 @@ class TextInputViewModel private constructor(
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
+        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {
@@ -72,6 +105,8 @@ class TextInputViewModel private constructor(
       writtenTranslationContext = this@TextInputViewModel.writtenTranslationContext
     }
   }.build()
+
+
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
