@@ -2,8 +2,6 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -11,6 +9,8 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.parser.TextParsingError
+import org.oppia.android.app.parser.TextParsingUiError.Companion.createFromParsingError
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -19,8 +19,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.FractionParser.FractionParsingError
 import javax.inject.Inject
-import org.oppia.android.app.parser.TextParsingError
-import org.oppia.android.app.parser.TextParsingUiError.Companion.createFromParsingError
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
@@ -172,5 +170,4 @@ class TextInputViewModel private constructor(
     }
     return TextParsingError.VALID
   }
-
 }

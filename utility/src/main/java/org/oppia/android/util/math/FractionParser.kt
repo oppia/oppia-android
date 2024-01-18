@@ -1,6 +1,5 @@
 package org.oppia.android.util.math
 
-import android.util.Log
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.util.extensions.normalizeWhitespace
 
