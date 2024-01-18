@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -425,6 +426,7 @@ class ExplorationProgressController @Inject constructor(
       backgroundCoroutineDispatcher
     ).actor(capacity = Channel.UNLIMITED) {
       for (message in channel) {
+
         try {
           @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
           val unused = when (message) {

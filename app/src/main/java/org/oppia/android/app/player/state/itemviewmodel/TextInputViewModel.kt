@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -19,6 +20,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.FractionParser
 import javax.inject.Inject
+import org.oppia.android.util.math.FractionParser.FractionParsingError
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
@@ -36,6 +38,7 @@ class TextInputViewModel private constructor(
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
   val errorMessage = ObservableField<String>("")
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
@@ -53,6 +56,7 @@ class TextInputViewModel private constructor(
       inputAnswerAvailable = true
     )
   }
+
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
@@ -65,8 +69,8 @@ class TextInputViewModel private constructor(
       AnswerErrorCategory.SUBMIT_TIME -> {
         Log.e("#", "submit time")
         pendingAnswerError =
-          FractionParsingUiError.createFromParsingError(
-            FractionParser.FractionParsingError.EMPTY_INPUT
+         createFromParsingError(
+            getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
       }
     }
@@ -152,5 +156,43 @@ class TextInputViewModel private constructor(
         translationController
       )
     }
+  }
+
+  /**
+   * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
+   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by
+   * this method is guaranteed to be parsed correctly by [parseRegularFraction].
+   *
+   * This method should only be used when a user tries submitting an answer. Real-time error
+   * detection should be done using [getRealTimeAnswerError], instead.
+   */
+  fun getSubmitTimeError(text: String): TextParsingError {
+    if (text.isNullOrBlank()) {
+      return TextParsingError.EMPTY_INPUT
+    }
+    return TextParsingError.VALID
+  }
+
+  fun createFromParsingError(parsingError: TextParsingError): TextParsingUiError {
+    return when (parsingError) {
+      TextParsingError.VALID-> TextParsingUiError.VALID
+      TextParsingError.EMPTY_INPUT->TextParsingUiError.EMPTY_INPUT
+
+    }
+  }
+
+  /** Represents errors that can occur when parsing a text. */
+  enum class TextParsingError {
+    /** Indicates that the considered string is a valid. */
+    VALID,
+
+    /** Indicates that the input text was empty. */
+    EMPTY_INPUT
+  }
+
+  enum class TextParsingUiError(@StringRes private var error: Int?) {
+    /** Corresponds to [FractionParsingError.VALID]. */
+    VALID(error = null),
+    EMPTY_INPUT(error = R.string.fraction_error_empty_input);
   }
 }

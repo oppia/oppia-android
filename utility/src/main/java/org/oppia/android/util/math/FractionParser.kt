@@ -1,5 +1,6 @@
 package org.oppia.android.util.math
 
+import android.util.Log
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.util.extensions.normalizeWhitespace
 
@@ -34,10 +35,15 @@ class FractionParser {
       return FractionParsingError.INVALID_FORMAT
     }
     val fraction = parseFraction(text)
+
     return when {
+
       fraction == null -> FractionParsingError.INVALID_FORMAT
       fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
-      else -> FractionParsingError.VALID
+      else -> {
+        Log.e("#","Valid")
+        FractionParsingError.VALID
+      }
     }
   }
 
