@@ -19,6 +19,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.FractionParser.FractionParsingError
 import javax.inject.Inject
+import org.oppia.android.app.parser.TextParsingError
+import org.oppia.android.app.parser.TextParsingUiError.Companion.createFromParsingError
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
@@ -58,21 +60,21 @@ class TextInputViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-        Log.e("#", "real time")
+
         if (answerText.isNotEmpty()) {
         } else {
           pendingAnswerError = null
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
-        Log.e("#", "submit time")
+
         pendingAnswerError =
           createFromParsingError(
             getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
       }
     }
-    Log.e("#", pendingAnswerError.toString())
+
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
@@ -171,25 +173,4 @@ class TextInputViewModel private constructor(
     return TextParsingError.VALID
   }
 
-  fun createFromParsingError(parsingError: TextParsingError): TextParsingUiError {
-    return when (parsingError) {
-      TextParsingError.VALID -> TextParsingUiError.VALID
-      TextParsingError.EMPTY_INPUT -> TextParsingUiError.EMPTY_INPUT
-    }
-  }
-
-  /** Represents errors that can occur when parsing a text. */
-  enum class TextParsingError {
-    /** Indicates that the considered string is a valid. */
-    VALID,
-
-    /** Indicates that the input text was empty. */
-    EMPTY_INPUT
-  }
-
-  enum class TextParsingUiError(@StringRes private var error: Int?) {
-    /** Corresponds to [FractionParsingError.VALID]. */
-    VALID(error = null),
-    EMPTY_INPUT(error = R.string.fraction_error_empty_input);
-  }
 }
