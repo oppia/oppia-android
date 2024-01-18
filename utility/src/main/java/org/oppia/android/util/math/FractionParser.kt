@@ -41,7 +41,7 @@ class FractionParser {
       fraction == null -> FractionParsingError.INVALID_FORMAT
       fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
       else -> {
-        Log.e("#","Valid")
+        Log.e("#", "Valid")
         FractionParsingError.VALID
       }
     }

@@ -11,16 +11,14 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.parser.FractionParsingUiError
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.math.FractionParser
-import javax.inject.Inject
 import org.oppia.android.util.math.FractionParser.FractionParsingError
+import javax.inject.Inject
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
@@ -69,7 +67,7 @@ class TextInputViewModel private constructor(
       AnswerErrorCategory.SUBMIT_TIME -> {
         Log.e("#", "submit time")
         pendingAnswerError =
-         createFromParsingError(
+          createFromParsingError(
             getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
       }
@@ -175,9 +173,8 @@ class TextInputViewModel private constructor(
 
   fun createFromParsingError(parsingError: TextParsingError): TextParsingUiError {
     return when (parsingError) {
-      TextParsingError.VALID-> TextParsingUiError.VALID
-      TextParsingError.EMPTY_INPUT->TextParsingUiError.EMPTY_INPUT
-
+      TextParsingError.VALID -> TextParsingUiError.VALID
+      TextParsingError.EMPTY_INPUT -> TextParsingUiError.EMPTY_INPUT
     }
   }
 
