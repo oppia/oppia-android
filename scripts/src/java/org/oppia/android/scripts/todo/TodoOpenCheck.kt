@@ -1,17 +1,17 @@
 package org.oppia.android.scripts.todo
 
-import org.oppia.android.scripts.proto.TodoOpenExemption
-import org.oppia.android.scripts.proto.TodoOpenExemptions
+import com.google.protobuf.TextFormat
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.GitHubClient
 import org.oppia.android.scripts.common.model.GitHubIssue
+import org.oppia.android.scripts.proto.TodoOpenExemption
+import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.scripts.todo.model.Todo
 import java.io.File
 import java.io.FileInputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.runBlocking
-import com.google.protobuf.TextFormat
 
 /**
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
@@ -47,12 +47,12 @@ fun main(vararg args: String) {
   // List of all the open issues on GitHub of this repository.
   // TODO: Use script bg dispatcher here, instead.
   val defaultFactory = Executors.defaultThreadFactory()
-  val daemonFactory = object: ThreadFactory {
+  val daemonFactory = object : ThreadFactory {
     override fun newThread(r: Runnable) = defaultFactory.newThread(r).also { it.setDaemon(true) }
   }
   val dispatcher = Executors.newSingleThreadExecutor(daemonFactory).asCoroutineDispatcher()
   val gitHubClient = GitHubClient(repoRoot, dispatcher)
-  val openIssueList = runBlocking { gitHubClient.fetchAllOpenIssues().await() }
+  val openIssueList = runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
 
   val todoExemptionList =
     loadTodoExemptionsProto(pathToProtoBinary).getTodoOpenExemptionList()
