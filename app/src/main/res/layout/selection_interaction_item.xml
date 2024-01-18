@@ -60,5 +60,15 @@
         app:selectionData="@{viewModel.choiceItems}"
         app:writtenTranslationContext="@{viewModel.writtenTranslationContext}" />
     </LinearLayout>
+
+    <TextView
+      android:id="@+id/selection_input_error"
+      style="@style/InputInteractionErrorTextView"
+      android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/component_color_shared_input_error_color"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/interaction_container_linear_layout" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
