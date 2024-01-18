@@ -404,7 +404,6 @@ class InputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
   // will not be used by user
-  @Test
   fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
