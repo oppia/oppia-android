@@ -17,7 +17,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandle
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.math.FractionParser.FractionParsingError
 import javax.inject.Inject
 
 /** [StateItemViewModel] for the text input interaction. */
