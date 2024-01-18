@@ -2,6 +2,9 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 /**
  * The default amount of time that should be waited before considering a process as 'hung', in
@@ -11,6 +14,7 @@ const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 
 /** Default implementation of [CommandExecutor]. */
 class CommandExecutorImpl(
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   private val processTimeout: Long = WAIT_PROCESS_TIMEOUT_MS,
   private val processTimeoutUnit: TimeUnit = TimeUnit.MILLISECONDS
 ) : CommandExecutor {

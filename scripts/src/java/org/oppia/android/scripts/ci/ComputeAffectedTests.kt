@@ -7,6 +7,9 @@ import org.oppia.android.scripts.proto.AffectedTestsBucket
 import java.io.File
 import java.util.Locale
 import kotlin.system.exitProcess
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
 
 private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
 private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
@@ -57,9 +60,10 @@ fun main(args: Array<String>) {
           " '$computeAllTestsValue'"
       )
   }
-  ComputeAffectedTests().compute(
-    pathToRoot, pathToOutputFile, baseDevelopBranchReference, computeAllTestsSetting
-  )
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    ComputeAffectedTests(scriptBgDispatcher)
+      .compute(pathToRoot, pathToOutputFile, baseDevelopBranchReference, computeAllTestsSetting)
+  }
 }
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
@@ -73,9 +77,11 @@ private fun String.toBooleanStrictOrNull(): Boolean? {
 
 /** Utility used to compute affected test targets. */
 class ComputeAffectedTests(
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
   val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
-  val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD
+  val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
+  val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   private companion object {
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
@@ -105,8 +111,8 @@ class ComputeAffectedTests(
 
     println("Running from directory root: $rootDirectory")
 
-    val gitClient = GitClient(rootDirectory, baseDevelopBranchReference)
-    val bazelClient = BazelClient(rootDirectory)
+    val gitClient = GitClient(rootDirectory, baseDevelopBranchReference, commandExecutor)
+    val bazelClient = BazelClient(rootDirectory, commandExecutor)
     println("Current branch: ${gitClient.currentBranch}")
     println("Most recent common commit: ${gitClient.branchMergeBase}")
 
