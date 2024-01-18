@@ -3,9 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <import type="android.view.View" />
-
     <import type="org.oppia.android.app.model.EventLog" />
 
     <variable
