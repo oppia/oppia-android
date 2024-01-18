@@ -24,7 +24,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:textChangedListener="@{viewModel.answerTextWatcher}" />
+      app:textChangedListener="@{viewModel.answerTextWatcher}"
+      android:autofillHints="@string/survey_free_form_text_hint" />
 
     <Button
       android:id="@+id/submit_button"
