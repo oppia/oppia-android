@@ -21,7 +21,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
@@ -47,7 +46,6 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
   private val applicationLifecycleListeners:
     Set<@JvmSuppressWildcards ApplicationLifecycleListener>,
-  @EnableNpsSurvey private val enableNpsSurvey: PlatformParameterValue<Boolean>,
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**
@@ -96,9 +94,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
-    if (enableNpsSurvey.value) {
-      applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
-    }
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
@@ -113,9 +109,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
-    if (enableNpsSurvey.value) {
-      applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
-    }
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
