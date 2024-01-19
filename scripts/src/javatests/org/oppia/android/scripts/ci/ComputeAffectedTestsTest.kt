@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
 import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for the compute_affected_tests utility.
@@ -28,13 +29,12 @@ import java.io.PrintStream
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class ComputeAffectedTestsTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+
+  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var testGitRepository: TestGitRepository
-
   private lateinit var pendingOutputStream: ByteArrayOutputStream
   private lateinit var originalStandardOutputStream: OutputStream
 
@@ -724,7 +724,8 @@ class ComputeAffectedTestsTest {
     ComputeAffectedTests(
       maxTestCountPerLargeShard = maxTestCountPerLargeShard,
       maxTestCountPerMediumShard = maxTestCountPerMediumShard,
-      maxTestCountPerSmallShard = maxTestCountPerSmallShard
+      maxTestCountPerSmallShard = maxTestCountPerSmallShard,
+      commandExecutor = commandExecutor
     ).compute(
       pathToRoot = tempFolder.root.absolutePath,
       pathToOutputFile = outputLog.absolutePath,
@@ -861,5 +862,9 @@ class ComputeAffectedTestsTest {
     libFile.appendText(";") // Add a character to change the file.
     testGitRepository.stageFileForCommit(libFile)
     testGitRepository.commit(message = "Modified library $name")
+  }
+
+  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
   }
 }
