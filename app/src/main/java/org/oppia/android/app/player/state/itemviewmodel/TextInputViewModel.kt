@@ -10,6 +10,7 @@ import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.TextParsingError
+import org.oppia.android.app.parser.TextParsingUiError
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -17,7 +18,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
-import org.oppia.android.app.parser.TextParsingUiError
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel private constructor(
