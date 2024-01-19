@@ -1,12 +1,18 @@
 package org.oppia.android.app.testing
 
 import android.app.Application
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -85,6 +91,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Ignore
+import org.junit.Test
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [TextInputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -119,6 +129,85 @@ class TextInputInteractionViewTestActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(
+      TextInputInteractionViewTestActivity::class.java
+    )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.normalizedString).isEmpty()
+    }
+  }
+
+
+
+  @Test
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withChar_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      TextInputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_text_input_interaction_view))
+      .perform(
+        editTextInputAction.appendText(
+          "abc"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+        InteractionObject.ObjectTypeCase.NORMALIZED_STRING
+      )
+      assertThat(pendingAnswer.answer.normalizedString).isEqualTo("abc")
+    }
+  }
+
+  @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      TextInputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_text_input_interaction_view))
+      .perform(
+        editTextInputAction.appendText(
+          "abc"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    onView(withId(R.id.test_text_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      .check(ViewAssertions.matches(ViewMatchers.withText("abc")))
+  }
+
+  @Test
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    ActivityScenario.launch(TextInputInteractionViewTestActivity::class.java).use {
+      scrollToSubmitButton()
+      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        .perform(
+          ViewActions.click()
+        )
+      onView(withId(R.id.text_input_error))
+        .check(
+          ViewAssertions.matches(
+            ViewMatchers.withText(
+              R.string.text_error_empty_input
+            )
+          )
+        )
+    }
   }
 
   private fun scrollToSubmitButton() {
@@ -161,7 +250,7 @@ class TextInputInteractionViewTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(inputInteractionViewTestActivityTest: FractionInputInteractionViewTestActivityTest)
+    fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -171,7 +260,7 @@ class TextInputInteractionViewTestActivityTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(inputInteractionViewTestActivityTest: FractionInputInteractionViewTestActivityTest) {
+    fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest) {
       component.inject(inputInteractionViewTestActivityTest)
     }
 

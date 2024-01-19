@@ -18,6 +18,10 @@ import org.oppia.android.databinding.ActivityTextInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 
 class TextInputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
@@ -41,7 +45,7 @@ class TextInputInteractionViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityTextInputInteractionViewTestBinding>(
+    binding = DataBindingUtil.setContentView(
       this, R.layout.activity_text_input_interaction_view_test
     )
 
@@ -88,7 +92,7 @@ class TextInputInteractionViewTestActivity :
 
   companion object {
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
-      "FractionInputInteractionViewTestActivity.params"
+      "TextInputInteractionViewTestActivity.params"
 
     /** Creates an intent to open this activity. */
     fun createIntent(
