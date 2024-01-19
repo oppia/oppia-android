@@ -42,7 +42,7 @@ class TextInputViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             /* pendingAnswerError= */ pendingAnswerError,
-            inputAnswerAvailable = true
+            inputAnswerAvailable = true // Allow submit on empty answer.
           )
         }
       }
