@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -9,8 +10,6 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.parser.TextParsingError
-import org.oppia.android.app.parser.TextParsingUiError
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -167,5 +166,43 @@ class TextInputViewModel private constructor(
       return TextParsingError.EMPTY_INPUT
     }
     return TextParsingError.VALID
+  }
+
+  /** Represents errors that can occur when parsing a text. */
+  enum class TextParsingError {
+
+    /** Indicates that the considered string is a valid. */
+    VALID,
+
+    /** Indicates that the input text was empty. */
+    EMPTY_INPUT
+  }
+
+  enum class TextParsingUiError(@StringRes private var error: Int?) {
+    /** Corresponds to [TextParsingError.VALID]. */
+    VALID(error = null),
+
+    /** Corresponds to [TextParsingError.EMPTY_INPUT]. */
+    EMPTY_INPUT(error = R.string.text_error_empty_input);
+
+    /**
+     * Returns the string corresponding to this error's string resources, or null if there is none.
+     */
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+      error?.let(resourceHandler::getStringInLocale)
+
+    companion object {
+      /**
+       * Returns the [TextParsingUiError] corresponding to the specified [TextParsingError].
+       */
+      fun createFromParsingError(parsingError: TextParsingError): TextParsingUiError {
+        return when (parsingError) {
+
+          TextParsingError.VALID -> VALID
+
+          TextParsingError.EMPTY_INPUT -> EMPTY_INPUT
+        }
+      }
+    }
   }
 }
