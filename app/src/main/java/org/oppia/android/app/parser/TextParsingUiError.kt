@@ -3,6 +3,7 @@ package org.oppia.android.app.parser
 import androidx.annotation.StringRes
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.parser.TextParsingError
 
 /** Enum to store the errors of [TextInputInteractionView]. */
 enum class TextParsingUiError(@StringRes private var error: Int?) {
