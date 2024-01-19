@@ -18,8 +18,8 @@ kt_jvm_test(
 kt_jvm_test(
     name = "MavenDependenciesListCheckTest",
     size = "large",
-    shard_count = 4,
     srcs = ["MavenDependenciesListCheckTest.kt"],
+    shard_count = 4,
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_check_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",

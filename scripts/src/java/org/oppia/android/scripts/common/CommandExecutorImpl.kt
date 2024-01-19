@@ -1,10 +1,10 @@
 package org.oppia.android.scripts.common
 
-import java.io.File
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * The default amount of time that should be waited before considering a process as 'hung', in
@@ -33,7 +33,11 @@ class CommandExecutorImpl(
         .directory(workingDir)
         .redirectErrorStream(includeErrorOutput)
         .start()
-    val finished = process.waitFor(processTimeout, processTimeoutUnit)
+    val finished = runBlocking {
+      CoroutineScope(scriptBgDispatcher).async {
+        process.waitFor(processTimeout, processTimeoutUnit)
+      }.await()
+    }
     check(finished) { "Process did not finish within the expected timeout" }
     return CommandResult(
       process.exitValue(),

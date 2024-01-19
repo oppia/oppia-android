@@ -5,13 +5,11 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 import java.io.File
 import java.util.Locale
 import kotlin.system.exitProcess
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.common.CommandExecutor
-import org.oppia.android.scripts.common.CommandExecutorImpl
 
 private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
 private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50

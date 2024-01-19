@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.scripts.testing.TestGitRepository
@@ -17,7 +18,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
 import java.io.PrintStream
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.util.concurrent.TimeUnit
 
 /**
