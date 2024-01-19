@@ -19,12 +19,11 @@ import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -45,9 +44,6 @@ class AuthenticationControllerTest {
 
   @Inject
   lateinit var authenticationController: AuthenticationController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -116,7 +112,7 @@ class AuthenticationControllerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class,
+      ApplicationLifecycleModule::class, DispatcherModule::class,
       TestLogReportingModule::class, TestAuthenticationModule::class,
     ]
   )
