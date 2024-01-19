@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.ci
 
 import org.oppia.android.scripts.common.BazelClient
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.proto.AffectedTestsBucket
