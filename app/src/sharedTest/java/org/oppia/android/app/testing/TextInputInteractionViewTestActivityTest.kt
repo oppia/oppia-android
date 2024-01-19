@@ -16,7 +16,9 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
@@ -30,6 +32,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -65,6 +68,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -91,10 +95,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Ignore
-import org.junit.Test
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [TextInputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -145,8 +145,6 @@ class TextInputInteractionViewTestActivityTest {
     }
   }
 
-
-
   @Test
   @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
   // will not be used by user
@@ -185,8 +183,12 @@ class TextInputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_text_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-      .check(ViewAssertions.matches(ViewMatchers.withText("abc")))
+    onView(withId(R.id.test_text_input_interaction_view))
+      .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      .check(
+        ViewAssertions
+          .matches(ViewMatchers.withText("abc"))
+      )
   }
 
   @Test
