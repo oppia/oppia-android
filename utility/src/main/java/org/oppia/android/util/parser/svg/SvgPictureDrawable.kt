@@ -100,11 +100,17 @@ abstract class SvgPictureDrawable(
    * when [textPaint] is null and text rendering when otherwise.
    */
   protected fun reinitialize(textPaint: TextPaint?) {
-    picture = textPaint?.let {
-      scalableVectorGraphic.renderToTextPicture(it)
-    } ?: scalableVectorGraphic.renderToBlockPicture()
+    val newPicture = if (textPaint != null) {
+      intrinsicSize = scalableVectorGraphic.computeSizeSpecsForTextPicture(textPaint)
+      scalableVectorGraphic.renderToTextPicture(textPaint)
+    } else {
+      intrinsicSize = scalableVectorGraphic.computeSizeSpecs()
+      scalableVectorGraphic.renderToBlockPicture()
+    }
+
+    picture = newPicture
+
     // TODO(#4246): Fix both SVG rendering performance and upscaling to ensure images aren't blurry.
-    intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
     if (scalableVectorGraphic.shouldBeRenderedAsBitmap()) {
       recomputeBitmap()
     }

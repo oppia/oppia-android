@@ -241,7 +241,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringInLocale(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringInLocale(-1) }
   }
 
   @Test
@@ -278,7 +278,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringInLocaleWithWrapping(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringInLocaleWithWrapping(-1) }
   }
 
   @Test
@@ -315,7 +315,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getStringInLocaleWithoutWrapping(-1)
     }
   }
@@ -335,7 +335,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringArrayInLocale(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringArrayInLocale(-1) }
   }
 
   @Test
@@ -365,7 +365,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getQuantityStringInLocale(-1, 0) }
+    assertThrows<Resources.NotFoundException>() { handler.getQuantityStringInLocale(-1, 0) }
   }
 
   @Test
@@ -396,7 +396,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getQuantityStringInLocaleWithWrapping(-1, 0)
     }
   }
@@ -431,7 +431,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getQuantityStringInLocaleWithoutWrapping(-1, 0)
     }
   }

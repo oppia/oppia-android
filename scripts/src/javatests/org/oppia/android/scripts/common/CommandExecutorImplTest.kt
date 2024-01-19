@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.common
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -19,13 +20,18 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class CommandExecutorImplTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
+  }
 
   @Test
   fun testExecute_echo_oneArgument_succeedsWithOutput() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result = commandExecutor.executeCommand(tempFolder.root, "echo", "value")
 
@@ -35,9 +41,9 @@ class CommandExecutorImplTest {
 
   @Test
   fun testExecute_echo_invalidDirectory_throwsException() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       commandExecutor.executeCommand(File("invaliddirectory"), "echo", "value")
     }
 
@@ -47,13 +53,13 @@ class CommandExecutorImplTest {
   @Test
   fun testExecute_echo_largeOutput_insufficientTimeout_throwsException() {
     val commandExecutor = CommandExecutorImpl(
-      processTimeout = 0L, processTimeoutUnit = TimeUnit.MILLISECONDS
+      scriptBgDispatcher, processTimeout = 0L, processTimeoutUnit = TimeUnit.MILLISECONDS
     )
 
     // Produce a large output so that echo takes a bit longer to reduce the likelihood of this test
     // flaking on faster machines.
     val largeOutput = "a".repeat(100_000)
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       commandExecutor.executeCommand(tempFolder.root, "echo", largeOutput)
     }
 
@@ -63,9 +69,9 @@ class CommandExecutorImplTest {
 
   @Test
   fun testExecute_nonexistentCommand_throwsException() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
-    val exception = assertThrows(IOException::class) {
+    val exception = assertThrows<IOException>() {
       commandExecutor.executeCommand(tempFolder.root, "commanddoesnotexist")
     }
 
@@ -74,7 +80,7 @@ class CommandExecutorImplTest {
 
   @Test
   fun testExecute_echo_multipleArguments_succeedsWithOutput() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result = commandExecutor.executeCommand(tempFolder.root, "echo", "first", "second", "third")
 
@@ -84,7 +90,7 @@ class CommandExecutorImplTest {
 
   @Test
   fun testExecute_echo_multipleArguments_resultHasCorrectCommand() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result = commandExecutor.executeCommand(tempFolder.root, "echo", "first", "second", "third")
 
@@ -93,7 +99,7 @@ class CommandExecutorImplTest {
 
   @Test
   fun testExecute_defaultErrorOutput_rmdir_failed_failsWithCombinedOutput() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result = commandExecutor.executeCommand(tempFolder.root, "rmdir", "filethatdoesnotexist")
 
@@ -105,7 +111,7 @@ class CommandExecutorImplTest {
 
   @Test
   fun testExecute_splitErrorOutput_rmdir_failed_failsWithErrorOutput() {
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result =
       commandExecutor.executeCommand(
@@ -121,7 +127,7 @@ class CommandExecutorImplTest {
   @Test
   fun testExecute_removeDirectoryInLocalDirectory_succeeds() {
     val newFolder = tempFolder.newFolder("newfolder")
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result = commandExecutor.executeCommand(tempFolder.root, "rmdir", "./newfolder")
 
@@ -135,7 +141,7 @@ class CommandExecutorImplTest {
   fun testExecute_removeUnknownDirectoryInOtherDirectory_fails() {
     val newFolder = tempFolder.newFolder("newfolder")
     val alternateRoot = tempFolder.newFolder("alternateroot")
-    val commandExecutor = CommandExecutorImpl()
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
     val result = commandExecutor.executeCommand(alternateRoot, "rmdir", "./newfolder")
 

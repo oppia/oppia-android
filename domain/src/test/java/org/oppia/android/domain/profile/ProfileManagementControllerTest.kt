@@ -156,7 +156,7 @@ class ProfileManagementControllerTest {
 
     val profileDatabase = readProfileDatabase()
     val profile = profileDatabase.profilesMap[0]!!
-    assertThat(profile.learnerId).isEqualTo("bb1ad573")
+    assertThat(profile.learnerId).isEqualTo("26504347")
   }
 
   @Test
@@ -255,7 +255,7 @@ class ProfileManagementControllerTest {
     val profileProvider = profileManagementController.getProfile(profileId)
 
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.learnerId).isEqualTo("68fb0e6f")
+    assertThat(profile.learnerId).isEqualTo("a625db55")
   }
 
   @Test
@@ -430,7 +430,7 @@ class ProfileManagementControllerTest {
 
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
 
-    assertThat(learnerId).isEqualTo("19b89cd8")
+    assertThat(learnerId).isEqualTo("02308fa0")
   }
 
   @Test
@@ -465,7 +465,7 @@ class ProfileManagementControllerTest {
       profileManagementController.fetchLearnerId(PROFILE_ID_2)
     }
 
-    assertThat(learnerId).isEqualTo("68fb0e6f")
+    assertThat(learnerId).isEqualTo("a625db55")
   }
 
   @Test
@@ -1356,9 +1356,9 @@ class ProfileManagementControllerTest {
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
 
     @Provides
@@ -1367,9 +1367,9 @@ class ProfileManagementControllerTest {
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
   }
 

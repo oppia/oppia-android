@@ -56,7 +56,7 @@ abstract class SyncStatusManagerTestBase {
   fun testInitializeEventLogStore_twice_throwsException() {
     impl.initializeEventLogStore(logsCacheStore)
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       impl.initializeEventLogStore(logsCacheStore)
     }
 

@@ -1,5 +1,8 @@
 package org.oppia.android.scripts.common
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -11,6 +14,7 @@ const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 
 /** Default implementation of [CommandExecutor]. */
 class CommandExecutorImpl(
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   private val processTimeout: Long = WAIT_PROCESS_TIMEOUT_MS,
   private val processTimeoutUnit: TimeUnit = TimeUnit.MILLISECONDS
 ) : CommandExecutor {
@@ -29,7 +33,11 @@ class CommandExecutorImpl(
         .directory(workingDir)
         .redirectErrorStream(includeErrorOutput)
         .start()
-    val finished = process.waitFor(processTimeout, processTimeoutUnit)
+    val finished = runBlocking {
+      CoroutineScope(scriptBgDispatcher).async {
+        process.waitFor(processTimeout, processTimeoutUnit)
+      }.await()
+    }
     check(finished) { "Process did not finish within the expected timeout" }
     return CommandResult(
       process.exitValue(),

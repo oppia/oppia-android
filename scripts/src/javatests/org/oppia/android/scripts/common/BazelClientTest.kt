@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.common
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,19 +26,20 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
-  @Mock
-  lateinit var mockCommandExecutor: CommandExecutor
+  @Mock lateinit var mockCommandExecutor: CommandExecutor
+
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
+  }
 
   @Before
   fun setUp() {
@@ -46,9 +48,9 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTestTargets_emptyFolder_fails() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bazelClient.retrieveAllTestTargets()
     }
 
@@ -59,10 +61,10 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTestTargets_emptyWorkspace_fails() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bazelClient.retrieveAllTestTargets()
     }
 
@@ -73,7 +75,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTestTargets_workspaceWithTest_returnsTestTarget() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("ExampleTest")
 
@@ -84,7 +86,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTestTargets_workspaceWithMultipleTests_returnsTestTargets() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
     testBazelWorkspace.createTest("SecondTest")
@@ -106,7 +108,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveBazelTargets_forFileNotInBuildGraph_returnsEmptyList() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     tempFolder.newFile("filenotingraph")
 
@@ -117,7 +119,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveBazelTargets_forTestFile_returnsBazelTarget() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
 
@@ -128,7 +130,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveBazelTargets_forMultipleMixedFiles_returnsBazelTargets() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
     testBazelWorkspace.createTest("SecondTest", withGeneratedDependency = true)
@@ -157,7 +159,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveRelatedTestTargets_forTargetWithNoTestDependency_returnsNoTargets() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createLibrary("SomeDependency")
     testBazelWorkspace.createTest("FirstTest")
@@ -170,7 +172,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveRelatedTestTargets_forTestFileTarget_returnsTestTarget() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
 
@@ -181,7 +183,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveRelatedTestTargets_forDependentFileTarget_returnsTestTarget() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest", withGeneratedDependency = true)
 
@@ -192,7 +194,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveRelatedTestTargets_forMixedFileTargets_returnsRelatedTestTargets() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createLibrary("ExtraDep")
     testBazelWorkspace.createTest("FirstTest", withExtraDependency = "//:ExtraDep_lib")
@@ -227,7 +229,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTransitiveTestTargets_forNoFiles_returnsEmptyList() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
     val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf())
@@ -238,7 +240,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTransitiveTestTargets_forBuildFile_returnsAllTestsInThatBuildFile() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
     testBazelWorkspace.createTest("SecondTest")
@@ -253,7 +255,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTransitiveTestTargets_forMultipleBuildFiles_returnsAllRelatedTests() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
     testBazelWorkspace.createTest("SecondTest", subpackage = "two")
@@ -269,7 +271,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTransitiveTestTargets_forBzlFile_returnsRelatedTests() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     // Generate tests.
     testBazelWorkspace.createTest("FirstTest")
@@ -298,7 +300,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTransitiveTestTargets_forWorkspace_returnsAllTests() {
-    val bazelClient = BazelClient(tempFolder.root)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest("FirstTest")
     testBazelWorkspace.createTest("SecondTest", subpackage = "two")
@@ -341,7 +343,7 @@ class BazelClientTest {
       artifactName = "com.android.support:support-annotations:28.0.0",
       buildFile = thirdPartyBuild
     )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
@@ -350,7 +352,7 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
@@ -371,7 +373,7 @@ class BazelClientTest {
       artifactName = "com.android.support:support-annotations:28.0.0",
       buildFile = testBazelWorkspace.rootBuildFile
     )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
@@ -463,8 +465,10 @@ class BazelClientTest {
     return secondNewFile
   }
 
-  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
   private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {
