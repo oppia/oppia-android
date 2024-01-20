@@ -14,12 +14,18 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import java.io.IOException
 
-// TODO: finish documentation once bg dispatcher is incorporated.
 /**
  * General utility for interfacing with a remote GitHub repository (specifically Oppia Android).
  *
  * Note that this utility expects 'gh' to be available in the local environment and be properly
  * authenticated.
+ *
+ * @property rootDirectory the [File] corresponding to the local repository's root directory
+ * @property scriptBgDispatcher the dispatcher for offloading asynchronous network I/O operations
+ * @property commandExecutor the executor for local commands (e.g. 'gh'). This defaults to a general
+ *     [CommandExecutorImpl] implementation that relies upon [scriptBgDispatcher] for execution.
+ * @property repoOwner the owner of the remote GitHub repository. This defaults to 'oppia'.
+ * @property repoName the name of the remote GitHub repository. This defaults to 'oppia-android'.
  */
 class GitHubClient(
   private val rootDirectory: File,
@@ -97,7 +103,8 @@ class GitHubClient(
   }
 
   companion object {
-    // TODO: Use Dagger instead (need an issue filed).
+    // TODO(#5314): Migrate this over to a Dagger constant.
+    /** The remote URL corresponding to GitHub's REST API. */
     var remoteApiUrl = "https://api.github.com/"
   }
 }

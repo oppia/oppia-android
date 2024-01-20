@@ -21,8 +21,8 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
         "//testing:assertion_helpers",
-        "//third_party:com_squareup_okhttp3_mockwebserver",
         "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

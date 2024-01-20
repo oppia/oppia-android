@@ -1,20 +1,20 @@
 package org.oppia.android.scripts.todo
 
 import com.google.common.truth.Truth.assertThat
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.GitHubClient
 import org.oppia.android.scripts.proto.TodoOpenExemption
 import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.MockResponse
-import org.oppia.android.scripts.common.GitHubClient
 
 /** Tests for [TodoOpenCheck]. */
 class TodoOpenCheckTest {
