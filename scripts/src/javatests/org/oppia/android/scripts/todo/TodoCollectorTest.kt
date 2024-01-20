@@ -625,7 +625,7 @@ class TodoCollectorTest {
       "// TODO(#1548774): some test description."
     )
 
-    assertThat(parsedIssueNumber).isEqualTo("1548774")
+    assertThat(parsedIssueNumber).isEqualTo(1548774)
   }
 
   @Test

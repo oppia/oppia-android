@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.common
 
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +23,11 @@ import java.io.IOException
  */
 class GitHubClient(
   private val rootDirectory: File,
-  private val dispatcher: CoroutineDispatcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl(),
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
   private val repoOwner: String = "oppia",
   private val repoName: String = "oppia-android"
 ) {
-  private val remoteApiUrl by lazy { "https://api.github.com/" }
   private val okHttpClient by lazy { OkHttpClient.Builder().build() }
   private val moshi by lazy { Moshi.Builder().build() }
   private val retrofit by lazy {
@@ -46,7 +44,7 @@ class GitHubClient(
    * Asynchronously returns all [GitHubIssue]s currently open in the Oppia Android GitHub project.
    */
   fun fetchAllOpenIssuesAsync(): Deferred<List<GitHubIssue>> {
-    return CoroutineScope(dispatcher).async {
+    return CoroutineScope(scriptBgDispatcher).async {
       // Fetch issues one page at a time (starting at page 1) until all are found.
       fetchOpenIssuesRecursive(startPageNumber = 1)
     }
@@ -60,7 +58,7 @@ class GitHubClient(
   }
 
   private fun fetchOpenIssues(pageNumber: Int): Deferred<List<GitHubIssue>> {
-    return CoroutineScope(dispatcher).async {
+    return CoroutineScope(scriptBgDispatcher).async {
       val call = gitHubService.fetchOpenIssues(repoOwner, repoName, authorizationBearer, pageNumber)
       // Deferred blocking I/O operation to the dedicated I/O dispatcher.
       val response = withContext(Dispatchers.IO) { call.execute() }
@@ -96,5 +94,10 @@ class GitHubClient(
           "#todo-open-checks. Command output:\n${it.output.joinToString(separator = "\n")}"
       }
     }.output.single()
+  }
+
+  companion object {
+    // TODO: Use Dagger instead (need an issue filed).
+    var remoteApiUrl = "https://api.github.com/"
   }
 }

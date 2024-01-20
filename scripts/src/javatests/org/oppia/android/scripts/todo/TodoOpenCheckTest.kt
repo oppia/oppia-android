@@ -12,6 +12,9 @@ import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.MockResponse
+import org.oppia.android.scripts.common.GitHubClient
 
 /** Tests for [TodoOpenCheck]. */
 class TodoOpenCheckTest {
@@ -23,6 +26,9 @@ class TodoOpenCheckTest {
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#todo-open-checks for more details on how to fix this."
+  private val regenerateNote =
+    "There were failures. Re-run the command with \"regenerate\" at the end to regenerate the " +
+      "exemption file with all failures as exempted."
 
   @Rule
   @JvmField
@@ -42,22 +48,8 @@ class TodoOpenCheckTest {
   }
 
   @Test
-  fun testTodoCheck_noJsonFilePresent_checkShouldFail() {
-    val exception = assertThrows<Exception>() { runScript() }
-
-    assertThat(exception).hasMessageThat().contains(
-      "${retrieveTestFilesDirectoryPath()}/open_issues.json: No such file exists"
-    )
-  }
-
-  @Test
   fun testTodoCheck_multipleTodosPresent_allAreValid_checkShouldPass() {
-    val testJSONContent =
-      """
-      [{"number":11004},{"number":11003},{"number":11002},{"number":11001}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
@@ -84,12 +76,7 @@ class TodoOpenCheckTest {
 
   @Test
   fun testTodoCheck_onlyPoorlyFormattedTodosPresent_checkShouldFail() {
-    val testJSONContent =
-      """
-      []
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = emptyList())
     val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
     val testContent =
       """
@@ -107,25 +94,22 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:4
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:3
+      - TempFile.txt:4
+      - TempFile.txt:5
 
       $wikiReferenceNote
+
+      $regenerateNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
   fun testTodoCheck_onlyOpenIssueFailureTodosPresent_checkShouldFail() {
-    val testJSONContent =
-      """
-      [{"number":10000000},{"number":100000004}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(10000000, 100000004))
     val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
     val testContent =
       """
@@ -143,23 +127,20 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:5
 
       $wikiReferenceNote
+
+      $regenerateNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
   fun testTodoCheck_multipleFailuresPresent_allFailuresShouldBeReported() {
-    val testJSONContent =
-      """
-      [{"number":349888},{"number":349777}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(349888, 349777))
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
@@ -185,26 +166,23 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
+      - TempFile1.kt:2
+      - TempFile2.kt:1
 
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:3
+      - TempFile1.kt:1
+      - TempFile2.kt:3
 
       $wikiReferenceNote
+
+      $regenerateNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
   fun testTodoCheck_multipleFailuresPresent_loggingShouldBeAsPerLexicographicalOrder() {
-    val testJSONContent =
-      """
-      [{"number":349888},{"number":349777}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(349888, 349777))
     val tempFile1 = tempFolder.newFile("testfiles/Presenter.kt")
     val tempFile2 = tempFolder.newFile("testfiles/Fragment.kt")
     val tempFile3 = tempFolder.newFile("testfiles/Activity.kt")
@@ -237,27 +215,24 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/Activity.kt:2
-      - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:2
+      - Activity.kt:2
+      - Fragment.kt:1
+      - Presenter.kt:2
 
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:3
-      - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:1
+      - Fragment.kt:3
+      - Presenter.kt:1
 
       $wikiReferenceNote
+
+      $regenerateNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
   fun testTodoCheck_addExemptions_exemptedTodosAreInvalid_checkShouldPass() {
-    val testJSONContent =
-      """
-      [{"number":11004},{"number":11003},{"number":11002},{"number":11001}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
@@ -294,12 +269,7 @@ class TodoOpenCheckTest {
 
   @Test
   fun testTodoCheck_allTodosAreValid_redundantExemption_checkShouldFail() {
-    val testJSONContent =
-      """
-      [{"number":1000000},{"number":152440222},{"number":152440223},{"number":11001}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(1000000, 152440222, 152440223, 11001))
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
@@ -340,18 +310,15 @@ class TodoOpenCheckTest {
       - TempFile1.kt:2
       - TempFile2.kt:1
       Please remove them from scripts/assets/todo_exemptions.textproto
+
+      $regenerateNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
   fun testTodoCheck_combineMultipleFailures_checkShouldFailWithAllErrorsLogged() {
-    val testJSONContent =
-      """
-      [{"number":1000000},{"number":152440222},{"number":152440223},{"number":11001}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(1000000, 152440222, 152440223, 11001))
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
@@ -389,27 +356,31 @@ class TodoOpenCheckTest {
       Please remove them from scripts/assets/todo_exemptions.textproto
 
       TODOs not in correct format:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
+      - TempFile2.kt:1
 
       TODOs not corresponding to open issues on GitHub:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:3
+      - TempFile1.kt:3
 
       $wikiReferenceNote
+
+      $regenerateNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
-  /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
+  private fun setUpGitHubService(issueNumbers: List<Int>) {
+    val issueJsons = issueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
+    val mockWebServer = MockWebServer()
+    mockWebServer.enqueue(MockResponse().setBody("[$issueJsons]"))
+    mockWebServer.enqueue(MockResponse().setBody("[]")) // No more issues.
+    GitHubClient.remoteApiUrl = mockWebServer.url("/").toString()
   }
 
   /** Runs the todo_open_check. */
   private fun runScript() {
     main(
-      retrieveTestFilesDirectoryPath(),
-      "${tempFolder.root}/$pathToProtoBinary",
-      "open_issues.json"
+      "${tempFolder.root}/testfiles",
+      "${tempFolder.root}/$pathToProtoBinary"
     )
   }
 }
