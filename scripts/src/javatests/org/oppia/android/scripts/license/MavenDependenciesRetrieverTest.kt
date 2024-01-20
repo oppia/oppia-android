@@ -1002,7 +1002,7 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testMavenCoordinate_parseFrom_oneComponent_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle")
     }
 
@@ -1011,7 +1011,7 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testMavenCoordinate_parseFrom_twoComponents_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle:lifecycle-viewmodel")
     }
 
@@ -1062,7 +1062,7 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testMavenCoordinate_parseFrom_sixComponents_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       MavenDependenciesRetriever.MavenCoordinate.parseFrom(
         "androidx.lifecycle:lifecycle-viewmodel:aar:sources:fake:2.2.0"
       )
