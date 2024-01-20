@@ -60,7 +60,7 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(DATA_BINDING_DEP, FIREBASE_ANALYTICS_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -86,14 +86,14 @@ class MavenDependenciesListCheckTest {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-      
+
       artifact_name: "com.google.firebase:firebase-analytics:17.5.0"
       artifact_version: "17.5.0"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -137,7 +137,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -163,7 +163,7 @@ class MavenDependenciesListCheckTest {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -202,7 +202,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -228,14 +228,14 @@ class MavenDependenciesListCheckTest {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -279,7 +279,7 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -359,7 +359,7 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -385,7 +385,7 @@ class MavenDependenciesListCheckTest {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
@@ -436,7 +436,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -464,14 +464,14 @@ class MavenDependenciesListCheckTest {
       }
 
       Missing dependencies that need to be added:
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -515,7 +515,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironmentWithUpdatedFirebaseDependency(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -543,14 +543,14 @@ class MavenDependenciesListCheckTest {
       }
 
       Missing dependencies that need to be added:
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_UPGRADED_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_UPGRADED_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -594,7 +594,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -609,7 +609,7 @@ class MavenDependenciesListCheckTest {
     }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
-      """ 
+      """
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
@@ -622,14 +622,14 @@ class MavenDependenciesListCheckTest {
       }
 
       Missing dependencies that need to be added:
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -729,7 +729,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -779,7 +779,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -835,7 +835,7 @@ class MavenDependenciesListCheckTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockArtifactPropertyFetcher,
         scriptBgDispatcher,
@@ -976,7 +976,7 @@ class MavenDependenciesListCheckTest {
             "com.google.protobuf:protobuf-lite"
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }

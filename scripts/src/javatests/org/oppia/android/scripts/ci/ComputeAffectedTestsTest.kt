@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
 import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for the compute_affected_tests utility.
@@ -43,7 +44,7 @@ class ComputeAffectedTestsTest {
 
   @Before
   fun setUp() {
-    commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+    commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testGitRepository = TestGitRepository(tempFolder, commandExecutor)
 
@@ -61,14 +62,14 @@ class ComputeAffectedTestsTest {
     // Print the status of the git repository to help with debugging in the cases of test failures
     // and to help manually verify the expect git state at the end of each test.
     println("git status (at end of test):")
-    println(testGitRepository.status())
+    println(testGitRepository.status(checkForGitRepository = false))
 
     scriptBgDispatcher.close()
   }
 
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) { main(arrayOf()) }
+    val exception = assertThrows<SecurityException>() { main(arrayOf()) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -78,7 +79,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_oneArgument_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) { main(arrayOf("first")) }
+    val exception = assertThrows<SecurityException>() { main(arrayOf("first")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -88,7 +89,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_twoArguments_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) { main(arrayOf("first", "second")) }
+    val exception = assertThrows<SecurityException>() { main(arrayOf("first", "second")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -98,7 +99,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_threeArguments_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) {
+    val exception = assertThrows<SecurityException>() {
       main(arrayOf("first", "second", "third"))
     }
 
@@ -110,7 +111,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_directoryRootDoesNotExist_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_tests=false"))
     }
 
@@ -119,7 +120,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_invalid_lastArgument_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_testss=false"))
     }
 
@@ -129,7 +130,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_invalid_lastArgumentValue_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_tests=blah"))
     }
 
@@ -139,7 +140,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_emptyDirectory_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) { runScript(currentHeadHash = "ad") }
+    val exception = assertThrows<IllegalStateException>() { runScript(currentHeadHash = "ad") }
 
     assertThat(exception).hasMessageThat().contains("run from the workspace's root directory")
   }
@@ -756,7 +757,8 @@ class ComputeAffectedTestsTest {
       scriptBgDispatcher,
       maxTestCountPerLargeShard = maxTestCountPerLargeShard,
       maxTestCountPerMediumShard = maxTestCountPerMediumShard,
-      maxTestCountPerSmallShard = maxTestCountPerSmallShard
+      maxTestCountPerSmallShard = maxTestCountPerSmallShard,
+      commandExecutor = commandExecutor
     ).compute(
       pathToRoot = tempFolder.root.absolutePath,
       pathToOutputFile = outputLog.absolutePath,
@@ -897,4 +899,10 @@ class ComputeAffectedTestsTest {
 
   private fun computeMergeBase(referenceBranch: String): String =
     GitClient(tempFolder.root, referenceBranch, commandExecutor).branchMergeBase
+
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
+  }
 }

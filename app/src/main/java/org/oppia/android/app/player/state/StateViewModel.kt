@@ -101,12 +101,12 @@ class StateViewModel @Inject constructor(
 
   fun getPendingAnswer(
     retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
-  ): UserAnswer {
+  ): UserAnswer? {
     return getPendingAnswerWithoutError(
       retrieveAnswerHandler(
         getAnswerItemList()
       )
-    ) ?: UserAnswer.getDefaultInstance()
+    )
   }
 
   fun canQuicklyToggleBetweenSwahiliAndEnglish(

@@ -155,6 +155,9 @@ enum ScreenName {
 
   // A generic foreground screen value for logging periodic metrics like CPU usage.
   FOREGROUND_SCREEN = 48;
+
+  // Screen name value for the scenario when the survey activity is visible to the user.
+  SURVEY_ACTIVITY = 49;
 }
 
 // Defines the current visible UI screen of the application.

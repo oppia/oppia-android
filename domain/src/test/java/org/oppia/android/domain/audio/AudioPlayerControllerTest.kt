@@ -41,6 +41,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -432,7 +433,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testController_notInitialized_releasePlayer_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.releaseMediaPlayer()
     }
 
@@ -443,7 +444,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     }
 
@@ -453,7 +454,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokePause_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.pause(isFromExplicitUserAction = true)
     }
 
@@ -463,7 +464,7 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokeSeekTo_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       audioPlayerController.seekTo(500)
     }
 
@@ -840,9 +841,9 @@ class AudioPlayerControllerTest {
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
 
     @Provides
@@ -851,9 +852,9 @@ class AudioPlayerControllerTest {
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
   }
 
@@ -872,7 +873,7 @@ class AudioPlayerControllerTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
-      HintsAndSolutionConfigModule::class, LoggerModule::class
+      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

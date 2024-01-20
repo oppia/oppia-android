@@ -1520,7 +1520,7 @@ class MavenDependenciesRetrieverTest {
             "com.google.protobuf:protobuf-lite"
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }

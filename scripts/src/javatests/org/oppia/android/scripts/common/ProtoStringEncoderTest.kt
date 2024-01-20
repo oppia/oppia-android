@@ -32,14 +32,14 @@ class ProtoStringEncoderTest {
 
   @Test
   fun testDecode_emptyString_throwsException() {
-    assertThrows(EOFException::class) {
+    assertThrows<EOFException>() {
       TestMessage.getDefaultInstance().mergeFromCompressedBase64(base64 = "")
     }
   }
 
   @Test
   fun testDecode_badString_throwsException() {
-    assertThrows(ZipException::class) {
+    assertThrows<ZipException>() {
       TestMessage.getDefaultInstance().mergeFromCompressedBase64(base64 = "asdf")
     }
   }

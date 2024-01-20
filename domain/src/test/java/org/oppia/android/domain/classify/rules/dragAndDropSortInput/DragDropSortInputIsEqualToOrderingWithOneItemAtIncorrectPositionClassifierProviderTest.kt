@@ -69,7 +69,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
         inputs = inputs,
@@ -144,7 +144,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
     val inputs = mapOf("y" to LIST_OF_SETS_12_4_5)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
         inputs = inputs,

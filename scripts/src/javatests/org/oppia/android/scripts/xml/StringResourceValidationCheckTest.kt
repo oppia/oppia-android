@@ -64,7 +64,7 @@ class StringResourceValidationCheckTest {
 
   @Test
   fun testScript_missingPath_throwsException() {
-    val exception = assertThrows(IllegalArgumentException::class) { runScript(/* With no path. */) }
+    val exception = assertThrows<IllegalArgumentException>() { runScript(/* With no path. */) }
 
     assertThat(exception)
       .hasMessageThat()
@@ -73,7 +73,7 @@ class StringResourceValidationCheckTest {
 
   @Test
   fun testScript_validPath_noStringFiles_fails() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(tempFolder.root.absolutePath)
     }
 
@@ -105,7 +105,7 @@ class StringResourceValidationCheckTest {
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
     populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
-    val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -133,7 +133,7 @@ class StringResourceValidationCheckTest {
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
     populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
-    val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -161,7 +161,7 @@ class StringResourceValidationCheckTest {
     )
     populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
-    val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -189,7 +189,7 @@ class StringResourceValidationCheckTest {
       mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES)
     )
 
-    val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -223,7 +223,7 @@ class StringResourceValidationCheckTest {
       mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES)
     )
 
-    val exception = assertThrows(Exception::class) { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.

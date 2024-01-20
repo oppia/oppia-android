@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.survey.surveyitemviewmodel.NpsItemsViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/not_likely_text_view"
+      style="@style/SurveyNpsHintTextStyle"
+      android:fontFamily="sans-serif-light"
+      android:text="@string/survey_nps_not_at_all_likely_label"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <org.oppia.android.app.survey.SurveyNpsItemOptionView
+      android:id="@+id/survey_nps_buttons_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/survey_nps_options_margin"
+      app:layout_constraintTop_toBottomOf="@id/not_likely_text_view"
+      app:selectionData="@{viewModel.optionItems}" />
+
+    <TextView
+      android:id="@+id/extremely_likely_text_view"
+      style="@style/SurveyNpsHintTextStyle"
+      android:text="@string/survey_nps_extremely_likely_label"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/survey_nps_buttons_container" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

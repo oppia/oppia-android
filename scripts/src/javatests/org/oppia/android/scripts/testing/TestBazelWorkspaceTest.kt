@@ -57,7 +57,7 @@ class TestBazelWorkspaceTest {
 
     // Verify that when initializing an empty workspace fails, an AssertionError is thrown (which
     // would fail for calling tests).
-    assertThrows(AssertionError::class) { testBazelWorkspace.initEmptyWorkspace() }
+    assertThrows<AssertionError>() { testBazelWorkspace.initEmptyWorkspace() }
   }
 
   @Test
@@ -72,6 +72,15 @@ class TestBazelWorkspaceTest {
     assertThat(workspaceFile.isRelativeTo(tempFolder.root)).isTrue()
     assertThat(workspaceFile.toRelativeString(tempFolder.root)).isEqualTo("WORKSPACE")
     assertThat(workspaceFile.readLines()).isEmpty()
+  }
+
+  @Test
+  fun testInitEmptyWorkspace_createsBazelVersionFileWithCorrectVersion() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    assertThat(File(tempFolder.root, ".bazelversion").readText().trim()).isEqualTo("4.0.0")
   }
 
   @Test
@@ -213,7 +222,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest(testName = "FirstTest")
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       testBazelWorkspace.addTestToBuildFile(
         testName = "FirstTest",
         testFile = tempFolder.newFile("FirstTestOther.kt")
@@ -490,7 +499,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createTest(testName = "FirstTest")
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       testBazelWorkspace.createTest(testName = "FirstTest")
     }
 
@@ -784,7 +793,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.createLibrary(dependencyName = "FirstLib")
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       testBazelWorkspace.createLibrary(dependencyName = "FirstLib")
     }
 
@@ -820,7 +829,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     // A non-existent test file cannot be retrieved.
-    assertThrows(NoSuchElementException::class) {
+    assertThrows<NoSuchElementException>() {
       testBazelWorkspace.retrieveTestFile(testName = "Invalid")
     }
   }
@@ -842,7 +851,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     // A non-existent library file cannot be retrieved.
-    assertThrows(NoSuchElementException::class) {
+    assertThrows<NoSuchElementException>() {
       testBazelWorkspace.retrieveLibraryFile(dependencyName = "Invalid")
     }
   }
@@ -863,7 +872,7 @@ class TestBazelWorkspaceTest {
   fun testRetrieveTestDependencyFile_noTest_throwsExceptionWithHelpfulMessage() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       testBazelWorkspace.retrieveTestDependencyFile(testName = "Invalid")
     }
 
@@ -876,7 +885,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createTest("ValidWithoutDep")
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       testBazelWorkspace.retrieveTestDependencyFile(testName = "ValidWithoutDep")
     }
 

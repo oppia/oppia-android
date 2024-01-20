@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
+  <string name="play_exploration_button_text">Play exploration</string>
   <string name="help_activity_title">Help</string>
   <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
@@ -15,18 +16,20 @@
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
-  <string name="audio_language_select_dialog_okay_button">OK</string>
+  <string name="audio_language_select_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
-  <string name="audio_dialog_offline_positive">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button">OK</string>
+  <string name="audio_dialog_offline_positive" tools:ignore="ButtonCase,Typos">Ok</string>
+  <string name="cellular_data_alert_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_one_button_text">Concept Card 1</string>
+  <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -60,6 +63,7 @@
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="submit_button_text">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
@@ -68,6 +72,7 @@
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
+  <string name="sample_text_view_text">This is a sample text view</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
@@ -90,6 +95,7 @@
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
+  <string name="chapter_locked_prerequisite_title_label">Chapter %s: %s is currently locked. Please complete chapter %s: %s to unlock this chapter.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Complete the previous chapter to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
@@ -160,24 +166,16 @@
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
   <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
+  <string name="fraction_error_empty_input">Enter a fraction to continue.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
-  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">
-    Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
-  </string>
-  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
-    Please enter a valid ratio (e.g. 1:2 or 1:2:3).
-  </string>
-  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">
-    Your answer has two colons (:) next to each other.
-  </string>
-  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
-    Number of terms is not equal to the required terms.
-  </string>
-  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
-    Ratios cannot have 0 as an element.
-  </string>
+  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
+  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">Your answer has two colons (:) next to each other.</string>
+  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">Number of terms is not equal to the required terms.</string>
+  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">Ratios cannot have 0 as an element.</string>
+  <string name="ratio_error_empty_input" description="The error message for ratio when the answer is empty">Enter a ratio to continue.</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -185,56 +183,30 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
-  <string name="welcome_profile_name">%s!</string>
+  <string name="welcome_profile_name">%s %s!</string>
   <plurals name="chapter_count">
-    <item quantity="one">
-      1 Chapter
-    </item>
-    <item quantity="other">
-      %s Chapters
-    </item>
+    <item quantity="one">1 Chapter</item>
+    <item quantity="other">%s Chapters</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">
-      1 Story
-    </item>
-    <item quantity="other">
-      %s Stories
-    </item>
+    <item quantity="one">1 Story</item>
+    <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s of %s Chapter Completed</item>
     <item quantity="other">%s of %s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">
-      1 Lesson
-    </item>
-    <item quantity="other">
-      %s Lessons
-    </item>
+    <item quantity="one">1 Lesson</item>
+    <item quantity="other">%s Lessons</item>
   </plurals>
   <plurals name="completed_story_count">
-    <item quantity="one">
-      1 Story Completed
-    </item>
-    <item quantity="other">
-      %s Stories Completed
-    </item>
-    <item quantity="zero">
-      %s Stories Completed
-    </item>
+    <item quantity="one">1 Story Completed</item>
+    <item quantity="other">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
-    <item quantity="one">
-      1 Topic in Progress
-    </item>
-    <item quantity="other">
-      %s Topics in Progress
-    </item>
-    <item quantity="zero">
-      %s Topics in Progress
-    </item>
+    <item quantity="one">1 Topic in Progress</item>
+    <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
@@ -375,7 +347,7 @@
   <!-- ProfileRenameActivity -->
   <string name="profile_rename_activity_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
-  <string name="profile_rename_save">save</string>
+  <string name="profile_rename_save">Save</string>
   <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
@@ -389,6 +361,8 @@
   <string name="add_profile_required">Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
+  <!-- ProfileAndDeviceIDsActivity -->
+  <string name="learner_analytics_label_text">Learner Study Analytics</string>
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
@@ -404,7 +378,7 @@
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
-  <string name="log_out_dialog_okay_button">Ok</string>
+  <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>
@@ -412,12 +386,12 @@
   <string name="app_version_activity_title">App Version</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
-  <string name="audio_language_activity_title">Default Audio Language</string>
+  <string name="audio_language_activity_title">Preferred Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language">Default Audio</string>
+  <string name="audio_language">Preferred Audio Language</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="reading_text_size_small">Small</string>
@@ -452,7 +426,7 @@
   <string name="no_new_hint_available">No new hint available</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="hints_andSolution_close_icon_description">Navigate up</string>
+  <string name="hints_and_solution_close_icon_description">Close</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Show Solution</string>
@@ -467,7 +441,6 @@
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="last_logged_in_recently">recently</string>
-  <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
   <string name="return_to_lesson">Return to lesson</string>
@@ -480,17 +453,17 @@
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
-    <item quantity="one">a minute</item>
-    <item quantity="other">%s minutes</item>
+  <plurals name="minutes_ago">
+    <item quantity="one">a minute ago</item>
+    <item quantity="other">%s minutes ago</item>
   </plurals>
-  <plurals name="hours">
-    <item quantity="one">an hour</item>
-    <item quantity="other">%s hours</item>
+  <plurals name="hours_ago">
+    <item quantity="one">an hour ago</item>
+    <item quantity="other">%s hours ago</item>
   </plurals>
-  <plurals name="days">
-    <item quantity="one">a day</item>
-    <item quantity="other">%s days</item>
+  <plurals name="days_ago">
+    <item quantity="one">a day ago</item>
+    <item quantity="other">%s days ago</item>
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
@@ -498,33 +471,36 @@
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <string name="item_selection_text">Please select all correct choices.</string>
   <!-- SplashActivity -->
-  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
-    Unsupported app version
-  </string>
-  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
-    This version of the app is no longer supported. Please update it through the Play Store.
-  </string>
-  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
-    Close app
-  </string>
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">Unsupported app version</string>
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">This version of the app is no longer supported. Please update it through the Play Store.</string>
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="forced_app_update_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">App update required</string>
+  <string name="forced_app_update_dialog_message" description="The main message of the dialog shown when a user's app has expired.">A new version of %s is now available. The new version is more secure, and improves your learning experience.\n\nThis version is no longer supported. To continue using the app, please update to the latest version.</string>
+  <string name="forced_app_update_dialog_update_button_text" description="The update button text of the dialog shown when a user's pre-release app has expired.">Update</string>
+  <string name="forced_app_update_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">Close app</string>
+  <string name="optional_app_update_dialog_title" description="The title of the dialog shown when an optional app update is available.">New update available</string>
+  <string name="optional_app_update_dialog_message" description="The main message of the dialog shown when an optional app update is available.">A new version of %s is now available. We recommend that you update the app for bug fixes and a better learning experience.</string>
+  <string name="optional_app_update_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an optional app update is available.">Dismiss</string>
+  <string name="optional_app_update_dialog_update_button_text" description="The update button text of the dialog shown when an optional app update is available.">Update</string>
+  <string name="os_deprecation_dialog_title" description="The title of the dialog shown when an the OS the user is using is no longer supported.">Update your Android OS</string>
+  <string name="os_deprecation_dialog_message" description="The main message of the dialog shown when an the OS the user is using is no longer supported.">We recommend updating your Android OS to take advantage of %s\'s new features and lessons.\n\nVisit your phone\'s Settings app to update your OS.</string>
+  <string name="os_deprecation_dialog_dismiss_button_text" description="The dismiss button text of the dialog shown when an the OS the user is using is no longer supported.">Dismiss</string>
   <string name="splash_screen_developer_label">Developer Build</string>
   <string name="splash_screen_alpha_label">Alpha</string>
   <string name="splash_screen_beta_label">Beta</string>
   <string name="beta_notice_dialog_title">Beta Notice</string>
   <string name="beta_notice_dialog_message">Hello! Your app is now being updated to the Beta version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
   <string name="beta_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
-  <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="beta_notice_dialog_close_button_text" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="general_availability_notice_dialog_title">General Availability Notice</string>
   <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
-  <string name="general_availability_notice_dialog_close_button_text">OK</string>
-  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
-    \u0020to\u0020
-  </string>
-  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
-    Enter a ratio in the form x:y.
-  </string>
+  <string name="general_availability_notice_dialog_close_button_text" tools:ignore="ButtonCase,Typos">Ok</string>
+  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">\u0020to\u0020</string>
+  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">Enter a ratio in the form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to enter text.</string>
+  <string name="test_number_input_interaction_hint">Write the digit here.</string>
+  <string name="test_text_input_interaction_hint">Write here.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
@@ -565,25 +541,40 @@
   <string name="privacy_policy_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/privacy-policy">this page</a> for the latest version of this privacy policy.]]></string>
   <!-- Terms of Service -->
   <string name="terms_of_service_title">Terms of Service</string>
-  <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">Privacy Policy</oppia-noninteractive-policy>.]]></string>
+  <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link="tos">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link="privacy">Privacy Policy</oppia-noninteractive-policy>.]]></string>
   <string name="terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- Frequently asked questions & generic app help. -->
-  <string name="faq_question_1">How can I create a new profile?</string>
-  <string name="faq_question_2">How can I delete a profile?</string>
-  <string name="faq_question_3">How can I change my email/phone number?</string>
-  <string name="faq_question_4">What is %s?</string>
-  <string name="faq_question_5">Who is an Administrator?</string>
-  <string name="faq_question_6">Why is the Exploration player not loading?</string>
-  <string name="faq_question_7">Why is my audio not playing?</string>
-  <string name="faq_question_9">I can\'t find my question here. What now?</string>
-  <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
-  <string name="faq_answer_2"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
-  <string name="faq_answer_3"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
-  <string name="faq_answer_4"><![CDATA[<p>%1$s <i>\"O-pee-yah\"</i> (Finnish) - \"to learn\"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
-  <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has \"Administrator\" written under their name is the Administrator. </p>]]></string>
-  <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
+
+  <string name="faq_question_1">What is %s?</string>
+  <string name="faq_question_2">Who is an Administrator?</string>
+  <string name="faq_question_3">How can I create a new profile?</string>
+  <string name="faq_question_4">How do I get the app in my language?</string>
+  <string name="faq_question_5">I found a bug. How can I report it?</string>
+  <string name="faq_question_6">Why are there only math lessons?</string>
+  <string name="faq_question_7">Will you be making more lessons?</string>
+  <string name="faq_question_8">Why is the Exploration player not loading?</string>
+  <string name="faq_question_9">Why is my audio not playing?</string>
+  <string name="faq_question_10">How can I delete a profile?</string>
+  <string name="faq_question_11">How can I change my email/phone number?</string>
+  <string name="faq_question_12">How do I update the app?</string>
+  <string name="faq_question_13">How do I update my Android OS?</string>
+  <string name="faq_question_14">I can\'t find my question here. What now?</string>
+
+  <string name="faq_answer_1"><![CDATA[<p>%1$s <i>"O-pee-yah"</i> (Finnish) - "to learn"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
+  <string name="faq_answer_2"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has "Administrator" written under their name is the Administrator. </p>]]></string>
+  <string name="faq_answer_3"><![CDATA[<p>If it is your first time creating a profile and you do not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
+  <string name="faq_answer_4"><![CDATA[<p>The %s app currently supports English, Brazilian Portuguese, Arabic, and Nigerian Pidgin. Choose one of these languages in the menu, under Options. To request the app in your language, please contact us at email address.</p>]]></string>
+  <string name="faq_answer_5"><![CDATA[<p><ol><li>From your %s app home screen, tap the menu in the top left corner.</li><li>Tap <strong>Share feedback</strong>.</li><li>Follow the instructions to report the bug or share feedback.</p>]]></string>
+  <string name="faq_answer_6"><![CDATA[<p>%1$s’s mission is to help learners gain necessary life skills. Math is an essential skill in everyday life. %1$s will be offering new lessons on science and other subjects soon!</p>]]></string>
+  <string name="faq_answer_7"><![CDATA[<p>Yes, %s will be offering new lessons on science and other subjects soon. Please check back for updates!</p>]]></string>
+  <string name="faq_answer_8"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
+  <string name="faq_answer_9"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
+  <string name="faq_answer_10"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
+  <string name="faq_answer_11"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
+  <string name="faq_answer_12"><![CDATA[<p><ol><li>Open the Google Play Store app.</li><li>Search for the %s app.</li><li>Tap Update.</p>]]></string>
+  <string name="faq_answer_13"><![CDATA[<p><ol><li>Tap your phone\'s Settings app.</li><li>Tap System updates.</li><li>Tap System updates and follow the instructions to update your Android operating system.</p>]]></string>
+  <string name="faq_answer_14"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at <strong>admin@oppia.org.<strong></p>]]></string>
+
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
@@ -591,4 +582,53 @@
   <string name="state_fragment_item_selection_no_items_selected_hint_text">Please select all correct choices.</string>
   <string name="state_fragment_item_selection_some_items_selected_hint_text">You may select more choices.</string>
   <string name="state_fragment_item_selection_max_items_selected_hint_text">No more than %s choices may be selected.</string>
+  <string name="survey_activity_title">Survey</string>
+  <string name="survey_previous_button">Previous</string>
+  <string name="survey_submit_button">Submit</string>
+  <string name="survey_free_form_text_hint">Leave your feedback here</string>
+  <string name="survey_continue_survey_button">Continue Survey</string>
+  <string name="survey_exit_button">Exit</string>
+  <string name="survey_exit_button_description">Exit Survey</string>
+  <string name="survey_exit_confirmation_text">Are you sure you want to exit the survey?</string>
+  <string name="survey_onboarding_message_text">Your feedback helps us serve learners like you better. Would you like to complete a short survey about your experience?</string>
+  <string name="survey_begin_survey_button">Begin Survey</string>
+  <string name="survey_maybe_later_button">Maybe Later</string>
+  <string name="survey_thank_you_message_text">Thank you for completing the survey. We hope you\'ve enjoyed using %s!</string>
+  <string name="survey_exit_survey_button">Exit survey</string>
+  <string name="survey_onboarding_title_text">We\'d love your feedback!</string>
+  <string name="survey_thank_you_title_text">Thank you</string>
+  <string name="survey_nps_not_at_all_likely_label">0 - Not at all likely</string>
+  <string name="survey_nps_extremely_likely_label">10 - Extremely likely</string>
+  <string name="user_type_question">Please select one of the following:</string>
+  <string name="user_type_answer_learner">I am a learner</string>
+  <string name="user_type_answer_teacher">I am a teacher</string>
+  <string name="user_type_answer_parent">I am a parent</string>
+  <string name="user_type_answer_other">Other</string>
+  <string name="market_fit_question">How would you feel if you could no longer use %s?</string>
+  <string name="market_fit_answer_very_disappointed">Very disappointed</string>
+  <string name="market_fit_answer_somewhat_disappointed">Somewhat disappointed</string>
+  <string name="market_fit_answer_not_disappointed">Not disappointed</string>
+  <string name="market_fit_answer_wont_use_oppia">N/A - I don\’t use %s anymore</string>
+  <string name="nps_promoter_feedback_question">We are glad you have enjoyed your experience with %s. Please share what helped you the most:</string>
+  <string name="nps_passive_feedback_question">Thanks for responding! How can we provide a better experience?</string>
+  <string name="nps_detractor_feedback_question">Help us improve your experience! Please share  the primary reason for your score:</string>
+  <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
+  <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
+  <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
+
+  <string name="app_info_icon_content_description">App Info</string>
+  <string name="spotlight_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
+  <string name="close_spotlight_button_content_description">Close Spotlight Button</string>
+  <string name="previous_state_navigation_button_content_description">Previous State Navigation Button</string>
+  <string name="developer_options_icon_content_description">Developer Options Icon</string>
+  <string name="administrator_controls_icon_content_description">Administrator Controls Icon</string>
+  <string name="options_menu_content_description">Options Menu</string>
+  <string name="previous_button_content_description">Previous Button</string>
+  <string name="next_button_content_description">Next Button</string>
+  <string name="language_icon_content_description">Language Icon</string>
+  <string name="setting_icon_content_description">Setting Icon</string>
+  <string name="profile_picture_image_view_content_description">Profile Picture Image View</string>
+  <string name="lock_icon_content_description">Lock Icon</string>
+  <string name="download_status_image_content_description">Download Status</string>
+  <string name="font_scale_html_content_text">html Content</string>
 </resources>

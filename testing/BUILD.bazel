@@ -153,10 +153,7 @@ kt_android_library(
     testonly = True,
     srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
     visibility = ["//visibility:public"],
-    deps = [
-        "//third_party:junit_junit",
-        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-    ],
+    deps = ["//third_party:junit_junit"],
 )
 
 filegroup(

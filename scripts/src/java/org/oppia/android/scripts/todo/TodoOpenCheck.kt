@@ -1,13 +1,12 @@
 package org.oppia.android.scripts.todo
 
 import com.google.protobuf.TextFormat
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.runBlocking
+import org.oppia.android.scripts.common.GitHubClient
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.model.GitHubIssue
 import org.oppia.android.scripts.proto.TodoOpenExemption
 import org.oppia.android.scripts.proto.TodoOpenExemptions
-import org.oppia.android.scripts.todo.model.Issue
 import org.oppia.android.scripts.todo.model.Todo
 import java.io.File
 import java.io.FileInputStream
@@ -16,48 +15,38 @@ import java.io.FileInputStream
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
  * corresponds to open issues on GitHub.
  *
+ * Note that the setup instructions at
+ * https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks#todo-open-checks must be
+ * followed in order to ensure that this script works correctly in the local environment.
+ *
  * Usage:
- *   bazel run //scripts:todo_open_check -- <path_to_directory_root> <path_to_proto_binary>
- *   <path_to_json_file>
+ *   bazel run //scripts:todo_open_check -- <path_to_dir_root> <path_to_proto_binary> [regenerate]
  *
  * Arguments:
- * - path_to_directory_root: directory path to the root of the Oppia Android repository.
+ * - path_to_dir_root: directory path to the root of the Oppia Android repository.
  * - path_to_proto_binary: relative path to the exemption .pb file.
- * - path_to_json_file: path to the json file containing the list of all open issues on Github
+ * - regenerate: optional 'regenerate' string to, instead of checking for TODOs, regenerate the
+ *     exemption textproto file and print it to the command output.
  *
- * Example:
+ * Examples:
  *   bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
- *   open_issues.json
- *
- * NOTE TO DEVELOPERS: The script is executed in the CI enviornment. The CI workflow creates a
- * json file from the GitHub api which contains a list of all open issues of the
- * oppia/oppia-android repository. To execute it without the CI, please create open issues json
- * file and provide its path to the script in the format as stated above.
- *
- * Instructions to create the open_issues.json file:
- * 1. Set up Github CLI Tools locally.
- * 2. cd to the oppia-android repository.
- * 3. Run the command: gh issue list --limit 2000 --repo oppia/oppia-android
- * --json number > $(pwd)/open_issues.json
+ *   bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb regenerate
  */
 fun main(vararg args: String) {
-  // The first argument is the path of the repo to be analyzed.
-  val repoRoot = File("${args[0]}/").absoluteFile.normalize()
-  val repoPath = repoRoot.path
+  // Path of the repo to be analyzed.
+  val repoRoot = File(args[0]).absoluteFile.normalize()
+  val repoPath = "${repoRoot.path}/"
 
   val pathToProtoBinary = args[1]
-
-  // Path to the JSON file containing the list of open issues.
-  val openIssuesJsonFile = File(repoRoot, args[2])
-
-  check(openIssuesJsonFile.exists()) { "${openIssuesJsonFile.path}: No such file exists" }
-
-  val regenerateFile = args.getOrNull(3).toBoolean()
+  val regenerateFile = args.getOrNull(2) == "regenerate"
 
   val todoExemptionTextProtoFilePath = "scripts/assets/todo_exemptions"
 
   // List of all the open issues on GitHub of this repository.
-  val openIssueList = retrieveOpenIssueList(openIssuesJsonFile)
+  val openIssueList = ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    val gitHubClient = GitHubClient(repoRoot, scriptBgDispatcher)
+    runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
+  }
 
   val todoExemptionList =
     loadTodoExemptionsProto(pathToProtoBinary).getTodoOpenExemptionList()
@@ -107,23 +96,24 @@ fun main(vararg args: String) {
     )
   }
 
+  if (regenerateFile) {
+    println("Regenerated exemptions:")
+    println()
+    val allProblematicTodos = poorlyFormattedTodos + openIssueFailureTodos
+    val newExemptions = allProblematicTodos.convertToExemptions(repoRoot)
+    println(newExemptions.convertToExemptionTextProto())
+    throw Exception("TODO CHECK SKIPPED")
+  }
+
   if (
     redundantExemptions.isNotEmpty() ||
     poorlyFormattedTodosAfterExemption.isNotEmpty() ||
     openIssueFailureTodosAfterExemption.isNotEmpty()
   ) {
-    if (regenerateFile) {
-      println("Regenerated exemptions:")
-      println()
-      val allProblematicTodos = poorlyFormattedTodos + openIssueFailureTodos
-      val newExemptions = allProblematicTodos.convertToExemptions(repoRoot)
-      println(newExemptions.convertToExemptionTextProto())
-    } else {
-      println(
-        "There were failures. Re-run the command with \"true\" at the end to regenerate the" +
-          " exemption file with all failures as exempted."
-      )
-    }
+    println(
+      "There were failures. Re-run the command with \"regenerate\" at the end to regenerate the" +
+        " exemption file with all failures as exempted."
+    )
     println()
     throw Exception("TODO CHECK FAILED")
   } else {
@@ -189,10 +179,10 @@ private fun retrieveRedundantExemptions(
  */
 private fun checkIfIssueDoesNotMatchOpenIssue(
   codeLine: String,
-  openIssueList: List<Issue>,
+  openIssueList: List<GitHubIssue>,
 ): Boolean {
   val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
-  return openIssueList.none { it -> it.issueNumber == parsedIssueNumberFromTodo }
+  return openIssueList.none { it -> it.number == parsedIssueNumberFromTodo }
 }
 
 /**
@@ -250,25 +240,6 @@ private fun List<TodoOpenExemption>.convertToExemptionTextProto(): String {
     addAllTodoOpenExemption(this@convertToExemptionTextProto)
   }.build()
   return TextFormat.printer().printToString(baseProto)
-}
-
-/**
- * Retrieves the list of all open issues on GitHub by parsing the JSON file generated by the GitHub
- * API.
- *
- * @param openIssuesJsonFile file containing all the open issues of the repository
- * @return list of all open issues
- */
-private fun retrieveOpenIssueList(openIssuesJsonFile: File): List<Issue> {
-  val openIssuesJsonText = openIssuesJsonFile
-    .inputStream()
-    .bufferedReader()
-    .use { it.readText() }
-  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-  val listType = Types.newParameterizedType(List::class.java, Issue::class.java)
-  val adapter: JsonAdapter<List<Issue>> = moshi.adapter(listType)
-  return adapter.fromJson(openIssuesJsonText)
-    ?: throw Exception("Failed to parse $openIssuesJsonFile")
 }
 
 /**
