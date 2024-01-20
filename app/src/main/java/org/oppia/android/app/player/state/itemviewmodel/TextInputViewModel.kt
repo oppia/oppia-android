@@ -56,8 +56,11 @@ class TextInputViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-
         if (answerText.isNotEmpty()) {
+          pendingAnswerError =
+            TextParsingUiError.createFromParsingError(
+              getSubmitTimeError(answerText.toString())
+            ).getErrorMessageFromStringRes(resourceHandler)
         } else {
           pendingAnswerError = null
         }
