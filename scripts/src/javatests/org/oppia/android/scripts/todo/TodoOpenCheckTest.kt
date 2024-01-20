@@ -22,6 +22,7 @@ class TodoOpenCheckTest {
   private val originalOut: PrintStream = System.out
   private val TODO_CHECK_PASSED_OUTPUT_INDICATOR: String = "TODO CHECK PASSED"
   private val TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "TODO CHECK FAILED"
+  private val TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR: String = "TODO CHECK SKIPPED"
   private val pathToProtoBinary = "scripts/assets/todo_exemptions.pb"
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
@@ -317,6 +318,7 @@ class TodoOpenCheckTest {
   @Test
   fun testTodoCheck_combineMultipleFailures_checkShouldFailWithAllErrorsLogged() {
     setUpGitHubService(issueNumbers = listOf(1000000, 152440222, 152440223, 11001))
+    tempFolder.newFolder("testfiles/extra_dir")
     val tempFile1 = tempFolder.newFile("testfiles/extra_dir/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
@@ -368,12 +370,7 @@ class TodoOpenCheckTest {
 
   @Test
   fun testTodoCheck_multipleFailureTypes_withRegenerationEnabled_outputsUpdatedTextProto() {
-    val testJSONContent =
-      """
-      [{"number":1000000},{"number":152440222},{"number":152440223},{"number":11001}]
-      """.trimIndent()
-    val testJSONFile = tempFolder.newFile("testfiles/open_issues.json")
-    testJSONFile.writeText(testJSONContent)
+    setUpGitHubService(issueNumbers = listOf(1000000, 152440222, 152440223, 11001))
     tempFolder.newFolder("testfiles/extra_dir")
     val tempFile1 = tempFolder.newFile("testfiles/extra_dir/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
@@ -402,11 +399,9 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
-      runScript(regenerateFile = true)
-    }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
-    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       Redundant exemptions (there are no TODOs corresponding to these lines):
