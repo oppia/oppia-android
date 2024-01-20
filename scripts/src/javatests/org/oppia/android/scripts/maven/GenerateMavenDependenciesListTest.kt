@@ -1409,7 +1409,7 @@ class GenerateMavenDependenciesListTest {
             }
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }

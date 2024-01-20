@@ -4,8 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.text.util.Linkify
+import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
@@ -75,16 +78,26 @@ class HtmlParser private constructor(
     supportsLinks: Boolean = false,
     supportsConceptCards: Boolean = false
   ): Spannable {
+
+    var htmlContent = rawString
+
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     if (isRtl) {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_RTL
+
+      val regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
+      val modifiedHtmlContent = rawString.replace(regex) {
+        val oppiaImageTag = it.value
+        """<div style="text-align: center;">$oppiaImageTag</div>"""
+      }
+      htmlContent = modifiedHtmlContent
     } else {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
     }
+
     htmlContentTextView.invalidate()
 
-    var htmlContent = rawString
     if ("\n\t" in htmlContent) {
       htmlContent = htmlContent.replace("\n\t", "")
     }
@@ -117,6 +130,16 @@ class HtmlParser private constructor(
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
+
+    val urlPattern = Patterns.WEB_URL
+    val matcher = urlPattern.matcher(htmlSpannable)
+    while (matcher.find()) {
+      val start = matcher.start()
+      val end = matcher.end()
+      val url = htmlSpannable.subSequence(start, end).toString()
+      val urlSpan = URLSpan(url)
+      htmlSpannable.setSpan(urlSpan, start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+    }
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }

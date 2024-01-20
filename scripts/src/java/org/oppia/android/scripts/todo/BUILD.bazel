@@ -25,6 +25,9 @@ kt_jvm_library(
         ":todo_collector",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/todo/model:issue",
+        "//scripts/src/java/org/oppia/android/scripts/common:github_client",
+        "//scripts/src/java/org/oppia/android/scripts/common/model:github_issue",
+        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
     ],
 )

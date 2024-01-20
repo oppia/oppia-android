@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
 import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for the compute_affected_tests utility.
@@ -43,7 +44,7 @@ class ComputeAffectedTestsTest {
 
   @Before
   fun setUp() {
-    commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+    commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testGitRepository = TestGitRepository(tempFolder, commandExecutor)
 
@@ -756,7 +757,8 @@ class ComputeAffectedTestsTest {
       scriptBgDispatcher,
       maxTestCountPerLargeShard = maxTestCountPerLargeShard,
       maxTestCountPerMediumShard = maxTestCountPerMediumShard,
-      maxTestCountPerSmallShard = maxTestCountPerSmallShard
+      maxTestCountPerSmallShard = maxTestCountPerSmallShard,
+      commandExecutor = commandExecutor
     ).compute(
       pathToRoot = tempFolder.root.absolutePath,
       pathToOutputFile = outputLog.absolutePath,
@@ -897,4 +899,10 @@ class ComputeAffectedTestsTest {
 
   private fun computeMergeBase(referenceBranch: String): String =
     GitClient(tempFolder.root, referenceBranch, commandExecutor).branchMergeBase
+
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
+  }
 }

@@ -27,7 +27,7 @@ fun main(vararg args: String) {
   val repoPath = repoRoot.path
 
   // Issue number of the closed issue.
-  val closedIssueNumber = args[1]
+  val closedIssueNumber = args[1].toInt()
 
   val commitSha = args[2]
 
@@ -69,7 +69,7 @@ fun main(vararg args: String) {
  * @param codeLine line content corresponding to the todo
  * @param closedIssueNumber issue number of the closed issue
  */
-private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber: String): Boolean {
+private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber: Int): Boolean {
   val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
   return parsedIssueNumberFromTodo == closedIssueNumber
 }

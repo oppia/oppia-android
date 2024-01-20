@@ -49,7 +49,7 @@ class ScriptBackgroundCoroutineDispatcherTest {
     dispatcher.close()
 
     // The task should fail to schedule since the dispatcher has been closed.
-    assertThrows(CancellationException::class) {
+    assertThrows<CancellationException>() {
       runBlocking { withContext(dispatcher) { mockRunnable.run() } }
     }
   }

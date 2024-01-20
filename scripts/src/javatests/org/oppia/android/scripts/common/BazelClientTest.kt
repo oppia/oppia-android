@@ -352,7 +352,7 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
