@@ -75,6 +75,15 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testInitEmptyWorkspace_createsBazelVersionFileWithCorrectVersion() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    assertThat(File(tempFolder.root, ".bazelversion").readText().trim()).isEqualTo("4.0.0")
+  }
+
+  @Test
   fun testSetupWorkspaceForRulesJvmExternal_withOneDep_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
