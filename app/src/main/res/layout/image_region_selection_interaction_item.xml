@@ -54,6 +54,7 @@
       app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
       app:overlayView="@{interactionContainerFrameLayout}" />
 
+
     <View
       android:id="@+id/default_selected_region"
       android:layout_width="24dp"
