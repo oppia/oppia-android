@@ -84,7 +84,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
-  /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
+  /** It checks the pending error for the current image region input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
