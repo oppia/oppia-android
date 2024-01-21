@@ -53,6 +53,7 @@ class TextInputViewModel private constructor(
     )
   }
 
+  /** It checks the pending error for the current text input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
