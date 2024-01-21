@@ -123,7 +123,6 @@ interface ActivityComponentImpl :
     appCompatCheckBoxBindingAdaptersTestActivity:
       AppCompatCheckBoxBindingAdaptersTestActivity
   )
-
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
