@@ -19,7 +19,6 @@ import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
-import org.oppia.android.util.math.FractionParser
 import javax.inject.Inject
 
 /** [StateItemViewModel] for image region selection. */
@@ -43,7 +42,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     schemaObject?.customSchemaValue?.imageWithRegions?.labelRegionsList ?: listOf()
   }
 
-  private val fractionParser = FractionParser()
   val imagePath: String by lazy {
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
     schemaObject?.customSchemaValue?.imageWithRegions?.imagePath ?: ""
@@ -190,6 +188,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   class FactoryImpl @Inject constructor(
     private val resourceHandler: AppLanguageResourceHandler
   ) : InteractionItemFactory {
+
     override fun create(
       entityId: String,
       hasConversationView: Boolean,

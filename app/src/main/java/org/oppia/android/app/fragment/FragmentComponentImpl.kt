@@ -120,6 +120,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
     automaticAppDeprecationNoticeDialogFragment:
       AutomaticAppDeprecationNoticeDialogFragment
   )
+
   fun inject(betaNoticeDialogFragment: BetaNoticeDialogFragment)
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
