@@ -431,17 +431,17 @@ class MathExpressionInteractionsViewModel private constructor(
           return when (interactionType) {
             NUMERIC_EXPRESSION -> {
               appLanguageResourceHandler.getStringInLocale(
-                interactionType.defaultHintTextStringId
+                R.string.numeric_expression_error_empty_input
               )
             }
             ALGEBRAIC_EXPRESSION -> {
               appLanguageResourceHandler.getStringInLocale(
-                interactionType.defaultHintTextStringId
+                R.string.algebraic_expression_error_empty_input
               )
             }
             MATH_EQUATION -> {
               appLanguageResourceHandler.getStringInLocale(
-                interactionType.defaultHintTextStringId
+                R.string.math_expression_error_empty_input
               )
             }
           }
