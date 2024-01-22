@@ -474,8 +474,9 @@ class ExplorationProgressController @Inject constructor(
                 break
               }
             }
-            is ControllerMessage.SubmitAnswer ->
+            is ControllerMessage.SubmitAnswer -> {
               controllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
+            }
             is ControllerMessage.HintIsRevealed -> {
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }

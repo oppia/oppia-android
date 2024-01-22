@@ -105,12 +105,17 @@ class MathExpressionInteractionsViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            true
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+
+    errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      null,
+      true
+    )
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -147,18 +152,18 @@ class MathExpressionInteractionsViewModel private constructor(
   }.build()
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
-      pendingAnswerError = when (category) {
-        // There's no support for real-time errors.
-        AnswerErrorCategory.REAL_TIME -> null
-        AnswerErrorCategory.SUBMIT_TIME -> {
-          interactionType.computeSubmitTimeError(
-            answerText.toString(), allowedVariables, resourceHandler
-          )
-        }
+
+    pendingAnswerError = when (category) {
+      // There's no support for real-time errors.
+      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        interactionType.computeSubmitTimeError(
+          answerText.toString(), allowedVariables, resourceHandler, interactionType
+        )
       }
-      errorMessage.set(pendingAnswerError)
     }
+    errorMessage.set(pendingAnswerError)
+
     return pendingAnswerError
   }
 
@@ -290,7 +295,7 @@ class MathExpressionInteractionsViewModel private constructor(
   }
 
   private companion object {
-    private enum class InteractionType(
+    enum class InteractionType(
       val viewType: ViewType,
       @StringRes val defaultHintTextStringId: Int,
       val hasPlaceholder: Boolean,
@@ -418,8 +423,29 @@ class MathExpressionInteractionsViewModel private constructor(
       fun computeSubmitTimeError(
         answerText: String,
         allowedVariables: List<String>,
-        appLanguageResourceHandler: AppLanguageResourceHandler
+        appLanguageResourceHandler: AppLanguageResourceHandler,
+        interactionType: InteractionType
       ): String? {
+
+        if (answerText.isBlank()) {
+          return when (interactionType) {
+            NUMERIC_EXPRESSION -> {
+              appLanguageResourceHandler.getStringInLocale(
+                interactionType.defaultHintTextStringId
+              )
+            }
+            ALGEBRAIC_EXPRESSION -> {
+              appLanguageResourceHandler.getStringInLocale(
+                interactionType.defaultHintTextStringId
+              )
+            }
+            MATH_EQUATION -> {
+              appLanguageResourceHandler.getStringInLocale(
+                interactionType.defaultHintTextStringId
+              )
+            }
+          }
+        }
         return when (val parseResult = parseAnswer(answerText, allowedVariables)) {
           is MathParsingResult.Failure -> when (val error = parseResult.error) {
             is DisabledVariablesInUseError -> {
