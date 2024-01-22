@@ -109,6 +109,7 @@ class InputInteractionViewTestActivity :
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    mathExpressionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(

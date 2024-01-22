@@ -7,7 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.common.truth.Truth.assertThat
@@ -133,17 +136,32 @@ class MathExpressionInteractionsViewTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
-  @Parameter lateinit var type: String
-  @Parameter lateinit var lang: String
-  @Parameter lateinit var text: String
-  @Parameter lateinit var expHintText: String
-  @Parameter lateinit var expLatex: String
-  @Parameter lateinit var expA11y: String
-  @Parameter lateinit var expErr: String
+  @Parameter
+  lateinit var type: String
+
+  @Parameter
+  lateinit var lang: String
+
+  @Parameter
+  lateinit var text: String
+
+  @Parameter
+  lateinit var expHintText: String
+
+  @Parameter
+  lateinit var expLatex: String
+
+  @Parameter
+  lateinit var expA11y: String
+
+  @Parameter
+  lateinit var expErr: String
 
   @Before
   fun setUp() {
@@ -253,6 +271,78 @@ class MathExpressionInteractionsViewTest {
 
       // There should be no hint since the text view has been focused.
       onView(withId(R.id.test_math_expression_input_interaction_view)).check(matches(withHint("")))
+    }
+  }
+
+  @Test
+  fun testNumericExpression_Input_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    val interaction = createInteractionWithPlaceholder("test placeholder")
+    launchForNumericExpressions(interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        .perform(
+          ViewActions.click()
+        )
+      onView(withId(R.id.math_expression_input_error))
+        .check(
+          ViewAssertions.matches(
+            ViewMatchers.withText(
+              R.string.numeric_expression_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testAlgebraicExpression_Input_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    val interaction = createInteractionWithPlaceholder("test placeholder")
+    launchForAlgebraicExpressions(interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        .perform(
+          ViewActions.click()
+        )
+      onView(withId(R.id.math_expression_input_error))
+        .check(
+          ViewAssertions.matches(
+            ViewMatchers.withText(
+              R.string.algebraic_expression_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testMathEquation_Input_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    val interaction = createInteractionWithPlaceholder("test placeholder")
+    launchForMathEquations(interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        .perform(
+          ViewActions.click()
+        )
+      onView(withId(R.id.math_expression_input_error))
+        .check(
+          ViewAssertions.matches(
+            ViewMatchers.withText(
+              R.string.math_equation_error_empty_input
+            )
+          )
+        )
     }
   }
 
@@ -1603,6 +1693,28 @@ class MathExpressionInteractionsViewTest {
 
   @Test
   @RunParameterized(
+    Iteration("numeric_expression", "type=NUMERIC_EXPRESSION", "text="),
+    Iteration("algebraic_expression", "type=ALGEBRAIC_EXPRESSION", "text="),
+    Iteration("math_equation", "type=MATH_EQUATION", "text=")
+  )
+  fun testView_allInteractions_blankInput_ProduceSubmitTimeError() {
+    val interactionType = MathInteractionType.valueOf(type)
+    val interaction = createInteraction()
+    launch(interactionType, interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      typeExpressionInput(text)
+
+      // Using not-allowed-listed variables should result in a failure.
+      scenario.onActivity { activity ->
+        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
+        assertThat(answerError).isNotEmpty()
+      }
+    }
+  }
+
+  @Test
+  @RunParameterized(
     Iteration("numeric_expression_valid", "type=NUMERIC_EXPRESSION", "text=0/1"),
     Iteration("numeric_expression_invalid", "type=NUMERIC_EXPRESSION", "text=1/0"),
     Iteration("algebraic_expression_valid", "type=ALGEBRAIC_EXPRESSION", "text=x^2"),
@@ -1638,6 +1750,13 @@ class MathExpressionInteractionsViewTest {
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
   ): ActivityScenario<InputInteractionViewTestActivity> {
     return launch(MathInteractionType.MATH_EQUATION, interaction, translationContext)
+  }
+
+  private fun launchForAlgebraicExpressions(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+    translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+  ): ActivityScenario<InputInteractionViewTestActivity> {
+    return launch(MathInteractionType.ALGEBRAIC_EXPRESSION, interaction, translationContext)
   }
 
   private fun launch(

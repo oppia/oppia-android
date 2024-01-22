@@ -107,7 +107,7 @@
   <string name="algebraic_expression_default_hint_text">Type an expression here.</string>
   <string name="algebraic_expression_error_empty_input">Enter an algebraic expression to continue.</string>
   <string name="math_equation_default_hint_text">Type an equation here.</string>
-  <string name="math_expression_error_empty_input">Enter an equation to continue.</string>
+  <string name="math_equation_error_empty_input">Enter an equation to continue.</string>
   <string name="math_expression_error_spaces_in_numerical_input">Please remove the spaces between numbers in your answer.</string>
   <string name="math_expression_error_unbalanced_parentheses">Please close or remove parentheses.</string>
   <string name="math_expression_error_single_redundant_parentheses">Please remove the parentheses around the whole answer: \'%s\'.</string>

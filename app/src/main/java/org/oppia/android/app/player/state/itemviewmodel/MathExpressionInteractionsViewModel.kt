@@ -295,6 +295,10 @@ class MathExpressionInteractionsViewModel private constructor(
   }
 
   private companion object {
+
+    /**
+     * Enum class representing different types of interactions in a mathematical expression input field.
+     */
     enum class InteractionType(
       val viewType: ViewType,
       @StringRes val defaultHintTextStringId: Int,
@@ -441,7 +445,7 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             MATH_EQUATION -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_empty_input
+                R.string.math_equation_error_empty_input
               )
             }
           }
