@@ -37,6 +37,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.HttpURLConnection
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -116,138 +117,41 @@ class NetworkLoggingInterceptorTest {
     runBlockingTest {
       val mockWebServerUrl = mockWebServer.url(testUrl)
 
+      val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
+
       val request = Request.Builder()
         .url(mockWebServerUrl)
         .build()
 
       val mockResponse = MockResponse()
-        .setResponseCode(404)
+        .setResponseCode(pageNotFound)
         .setHeader(testApiKey, testApiKeyValue)
         .setBody(testResponseBody)
 
       mockWebServer.enqueue(mockResponse)
 
-      val job = launch {
+      val networkJob = launch {
         networkLoggingInterceptor.logNetworkCallFlow.collect {
           assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
-          assertThat(it.responseStatusCode).isEqualTo(404)
+          assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
           assertThat(it.body).isEqualTo(testResponseBody)
         }
+      }
 
+      val failedNetworkJob = launch {
         networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
           assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
-          assertThat(it.responseStatusCode).isEqualTo(404)
-          assertThat(it.headers.first()).isEqualTo(testApiKeyValue)
+          assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
+          assertThat(it.body).isEmpty()
           assertThat(it.errorMessage).isEqualTo(testResponseBody)
         }
       }
 
       client.newCall(request).execute()
       testCoroutineDispatchers.advanceUntilIdle()
-      job.cancel()
+      networkJob.cancel()
+      failedNetworkJob.cancel()
     }
-
-//  @Test
-//  fun testLoggingInterceptor_makeCallToTopicService_logsCorrectValues() {
-//    val request = Request.Builder()
-//      .url(mockWebServer.url("/"))
-//      .addHeader("api_key", "wrong_api_key")
-//      .build()
-//
-//    mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
-//    val response = client.newCall(request).execute()
-//
-//    assertThat(response.isSuccessful).isTrue()
-//
-//    testCoroutineDispatcher.runCurrent()
-//    CoroutineScope(testCoroutineDispatcher).launch {
-//      networkLoggingInterceptor.logNetworkCallFlow.collect {
-//        assertThat(it.urlCalled).isEqualTo(testUrl)
-//        assertThat(it.headers.first()).isEqualTo(testApiKeyValue)
-//        assertThat(it.body).isEqualTo(testResponseBody)
-//        assertThat(it.body.first()).isEqualTo("failed")
-//        assertThat(it.responseStatusCode).isEqualTo(testResponseCode)
-//      }
-//    }
-
-//    val testDataJson = "{}"
-//    val successResponse = MockResponse().setBody(testDataJson)
-//    mockWebServer.enqueue(successResponse)
-//    topicService.getTopicByName(topicName).execute()
-//    val request = mockWebServer.takeRequest()
-//
-//    assertThat(request.headers.get(testApiKey)).isEqualTo(testApiKeyValue)
-
-//    mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
-//    val call = topicService.getTopicByName(topicName)
-//
-//    val response = call.execute()
-//
-//    assertThat(response.isSuccessful).isTrue()
-//
-//    val sharedFlow = networkLoggingInterceptor.logNetworkCallFlow.shareIn(CoroutineScope(testCoroutineDispatcher), SharingStarted.WhileSubscribed(200))
-
-//    val request = Request.Builder()
-//      .url(mockWebServer.url("/"))
-//      .addHeader(testApiKey, testApiKeyValue)
-//      .build()
-
-//    CoroutineScope(testCoroutineDispatcher).launch {
-//      println("This scope is launched")
-//      networkLoggingInterceptor.logNetworkCallFlow.collect { retrofitCallContext ->
-//        println("This is the retrofit call context")
-//
-//        assertThat(retrofitCallContext.urlCalled).isEqualTo(testUrl)
-//        assertThat(retrofitCallContext.headers.first()).isEqualTo(testApiKeyValue)
-//        assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
-//        assertThat(retrofitCallContext.body.first()).isEqualTo("test")
-//        assertThat(retrofitCallContext.responseStatusCode).isEqualTo(testResponseCode)
-//      }
-//    }
-//
-//    mockWebServer.enqueue(MockResponse().setBody("testResponseBody"))
-//    client.newCall(request).execute()
-//
-//    CoroutineScope(testCoroutineDispatcher).launch {
-//      networkLoggingInterceptor.logNetworkCallFlow.collect {
-//        println("This is the retrofit call context")
-//
-//        assertThat(it.urlCalled).isEqualTo(testUrl)
-//        assertThat(it.headers.first()).isEqualTo(testApiKeyValue)
-//        assertThat(it.body).isEqualTo(testResponseBody)
-//        assertThat(it.body.first()).isEqualTo("test")
-//        assertThat(it.responseStatusCode).isEqualTo(testResponseCode)
-//      }
-//    }
-//
-//    val interceptedRequest = mockWebServer.takeRequest(
-//      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-//      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
-//    )
-
-//    assertThat(interceptedRequest?.headers?.get(testApiKey)).isEqualTo(testApiKeyValue)
-//    assertThat(interceptedRequest?.body?.toString()).isEqualTo(testResponseBody)
-
-//    mockWebServer.enqueue(MockResponse().setResponseCode(testResponseCode).setBody(testResponseBody))
-//
-//    val call = topicService.getTopicByName(topicName)
-//    val serviceRequest = call.request()
-//
-//    assertThat(serviceRequest.header(testApiKey)).isEqualTo(testApiKeyValue)
-//
-//    CoroutineScope(testCoroutineDispatcher).launch {
-//      println("This scope is launched")
-//      networkLoggingInterceptor.logNetworkCallFlow.collect { retrofitCallContext ->
-//        println("This is the retrofit call context")
-//
-//        assertThat(retrofitCallContext.urlCalled).isEqualTo(testUrl)
-//        assertThat(retrofitCallContext.headers.first()).isEqualTo(testApiKeyValue)
-//        assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
-//        assertThat(retrofitCallContext.body.first()).isEqualTo("test")
-//        assertThat(retrofitCallContext.responseStatusCode).isEqualTo(testResponseCode)
-//      }
-//    }
-//  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

@@ -34,13 +34,15 @@ class NetworkLoggingInterceptor @Inject constructor(
       val request = chain.request()
       val response = chain.proceed(request)
 
+      val responseBody = response.body?.string()
+
       CoroutineScope(backgroundDispatcher).launch {
         _logNetworkCallFlow.emit(
           RetrofitCallContext.newBuilder()
             .setUrlCalled(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(response.code)
-            .setBody(response.body?.string() ?: "")
+            .setBody(responseBody ?: "")
             .build()
         )
       }
@@ -52,7 +54,7 @@ class NetworkLoggingInterceptor @Inject constructor(
               .setUrlCalled(request.url.toString())
               .setHeaders(request.headers.toString())
               .setResponseStatusCode(response.code)
-              .setErrorMessage(response.body?.toString() ?: "")
+              .setErrorMessage(responseBody ?: "")
               .build()
           )
         }
