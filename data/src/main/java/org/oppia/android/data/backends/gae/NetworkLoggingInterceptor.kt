@@ -40,6 +40,7 @@ class NetworkLoggingInterceptor @Inject constructor(
             .setUrlCalled(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(response.code)
+            .setBody(response.body?.string() ?: "")
             .build()
         )
       }

@@ -11,7 +11,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import okhttp3.Headers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
@@ -25,6 +28,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -35,20 +39,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.replay
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.launch
-import org.json.JSONObject
-import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import retrofit2.Call
-import retrofit2.http.GET
 
 /** Tests for [RemoteAuthNetworkInterceptor]. */
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(application = NetworkLoggingInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -61,7 +54,10 @@ class NetworkLoggingInterceptorTest {
   lateinit var context: Context
 
   @field:[Inject BackgroundTestDispatcher]
-  lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
+  lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private lateinit var retrofit: Retrofit
 
@@ -77,9 +73,7 @@ class NetworkLoggingInterceptorTest {
   private val testUrl = "/"
   private val testApiKey = "api_key"
   private val testApiKeyValue = "api_key_value"
-  private val topicName = "Topic1"
   private val testResponseBody = "{\"test\": \"test\"}"
-  private val testResponseCode = 202
 
   @Before
   fun setUp() {
@@ -94,18 +88,78 @@ class NetworkLoggingInterceptorTest {
   }
 
   @Test
-  fun testLoggingInterceptor_makeCallToTopicService_logsCorrectValues() {
+  fun testLoggingInterceptor_makeCallToTopicService_logsNetworkCall() = runBlockingTest {
+    val mockWebServerUrl = mockWebServer.url(testUrl)
+
     val request = Request.Builder()
-      .url(mockWebServer.url("/"))
-      .addHeader("api_key", "wrong_api_key")
+      .url(mockWebServerUrl)
+      .addHeader(testApiKey, testApiKeyValue)
       .build()
 
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
-    val response = client.newCall(request).execute()
 
-    assertThat(response.isSuccessful).isTrue()
+    val job = launch {
+      networkLoggingInterceptor.logNetworkCallFlow.collect {
+        assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+        assertThat(it.responseStatusCode).isEqualTo(200)
+        assertThat(it.body).isEqualTo(testResponseBody)
+      }
+    }
 
-    testCoroutineDispatcher.runCurrent()
+    client.newCall(request).execute()
+    testCoroutineDispatchers.advanceUntilIdle()
+    job.cancel()
+  }
+
+  @Test
+  fun testLoggingInterceptor_makeFailingCallToTopicService_logsNetworkCallFailed() =
+    runBlockingTest {
+      val mockWebServerUrl = mockWebServer.url(testUrl)
+
+      val request = Request.Builder()
+        .url(mockWebServerUrl)
+        .build()
+
+      val mockResponse = MockResponse()
+        .setResponseCode(404)
+        .setHeader(testApiKey, testApiKeyValue)
+        .setBody(testResponseBody)
+
+      mockWebServer.enqueue(mockResponse)
+
+      val job = launch {
+        networkLoggingInterceptor.logNetworkCallFlow.collect {
+          assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+          assertThat(it.responseStatusCode).isEqualTo(404)
+          assertThat(it.body).isEqualTo(testResponseBody)
+        }
+
+        networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
+          assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+          assertThat(it.responseStatusCode).isEqualTo(404)
+          assertThat(it.headers.first()).isEqualTo(testApiKeyValue)
+          assertThat(it.errorMessage).isEqualTo(testResponseBody)
+        }
+      }
+
+      client.newCall(request).execute()
+      testCoroutineDispatchers.advanceUntilIdle()
+      job.cancel()
+    }
+
+//  @Test
+//  fun testLoggingInterceptor_makeCallToTopicService_logsCorrectValues() {
+//    val request = Request.Builder()
+//      .url(mockWebServer.url("/"))
+//      .addHeader("api_key", "wrong_api_key")
+//      .build()
+//
+//    mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
+//    val response = client.newCall(request).execute()
+//
+//    assertThat(response.isSuccessful).isTrue()
+//
+//    testCoroutineDispatcher.runCurrent()
 //    CoroutineScope(testCoroutineDispatcher).launch {
 //      networkLoggingInterceptor.logNetworkCallFlow.collect {
 //        assertThat(it.urlCalled).isEqualTo(testUrl)
@@ -116,7 +170,6 @@ class NetworkLoggingInterceptorTest {
 //      }
 //    }
 
-
 //    val testDataJson = "{}"
 //    val successResponse = MockResponse().setBody(testDataJson)
 //    mockWebServer.enqueue(successResponse)
@@ -124,7 +177,6 @@ class NetworkLoggingInterceptorTest {
 //    val request = mockWebServer.takeRequest()
 //
 //    assertThat(request.headers.get(testApiKey)).isEqualTo(testApiKeyValue)
-
 
 //    mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
 //    val call = topicService.getTopicByName(topicName)
@@ -195,7 +247,7 @@ class NetworkLoggingInterceptorTest {
 //        assertThat(retrofitCallContext.responseStatusCode).isEqualTo(testResponseCode)
 //      }
 //    }
-  }
+//  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

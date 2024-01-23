@@ -58,7 +58,6 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog
 
 /** Tests for [OppiaLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -425,7 +424,7 @@ class OppiaLoggerTest {
       .isEqualTo(TEST_FOREGROUND_TIME.toFloat())
   }
 
-    private fun setUpTestApplicationComponent() {
+  private fun setUpTestApplicationComponent() {
     DaggerOppiaLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
