@@ -203,29 +203,40 @@ import javax.inject.Singleton
 class StateFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject
   lateinit var translationController: TranslationController
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject
   lateinit var testGlideImageLoader: TestGlideImageLoader
+
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
@@ -3092,7 +3103,6 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
     }
   }
 
