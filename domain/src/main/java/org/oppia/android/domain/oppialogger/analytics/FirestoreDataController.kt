@@ -7,7 +7,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.auth.AuthenticationListener
+import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -29,7 +29,7 @@ class FirestoreDataController @Inject constructor(
   private val eventLogger: FirestoreEventLogger,
   private val exceptionLogger: ExceptionLogger,
   private val oppiaClock: OppiaClock,
-  private val authenticationListener: AuthenticationListener,
+  private val authenticationController: AuthenticationController,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @FirestoreLogStorageCacheSize private val logStorageCacheSize: Int
 ) {
@@ -41,13 +41,19 @@ class FirestoreDataController @Inject constructor(
    * error will be thrown if something went wrong during upload.
    */
   suspend fun uploadData() {
-    firestoreEventsStore.readDataAsync().await().eventLogsToUploadList.forEach { eventLog ->
-      authenticateAndUploadToFirestore(eventLog)
+    val eventLogsToUpload = firestoreEventsStore.readDataAsync().await().eventLogsToUploadList
+
+    if (eventLogsToUpload.isNotEmpty()) {
+      eventLogsToUpload.forEach { eventLog ->
+        authenticateAndUploadToFirestore(eventLog)
+      }.also {
+        removeFirstEventLogFromStore()
+      }
     }
   }
 
   /**
-   * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].
+   * Logs an event defined by [eventContext] corresponding to time [timestamp].
    *
    * This will schedule a background upload of the event if there's internet connectivity, otherwise
    * it will cache the event for a later upload.
@@ -93,8 +99,8 @@ class FirestoreDataController @Inject constructor(
   }
 
   private suspend fun authenticateAndUploadToFirestore(eventLog: EventLog) {
-    if (authenticationListener.getCurrentSignedInUser() == null) {
-      when (val signInResult = authenticationListener.signInAnonymously().await()) {
+    if (authenticationController.currentFirebaseUser == null) {
+      when (val signInResult = authenticationController.signInAnonymouslyWithFirebase().await()) {
         is AsyncResult.Success -> {
           consoleLogger.i("FirestoreDataController", "Sign in succeeded")
           eventLogger.uploadEvent(eventLog)
@@ -106,7 +112,9 @@ class FirestoreDataController @Inject constructor(
           )
           cacheEventForFirestore(eventLog)
         }
-        is AsyncResult.Pending -> {} // no-op
+        is AsyncResult.Pending -> {
+          consoleLogger.i("FirestoreDataController", "Signing in anonymously to Firebase")
+        }
       }
     } else {
       eventLogger.uploadEvent(eventLog)
@@ -156,10 +164,13 @@ class FirestoreDataController @Inject constructor(
   fun getEventLogStore(): DataProvider<OppiaEventLogs> = firestoreEventsStore
 
   /** Removes the first log report that had been recorded for upload. */
-  fun removeFirstEventLogFromStore() {
-    println("removing first event log from store")
+  private fun removeFirstEventLogFromStore() {
     firestoreEventsStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
-      return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
+      if (oppiaEventLogs.eventLogsToUploadCount > 0) {
+        return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLogsToUpload(0).build()
+      } else {
+        return@storeDataAsync oppiaEventLogs // No event logs to remove
+      }
     }.invokeOnCompletion {
       it?.let {
         consoleLogger.e("FirestoreDataController", "Failed to remove event log", it)

@@ -5,6 +5,7 @@ import dagger.Module
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 
@@ -32,4 +33,8 @@ interface TestLogReportingModule {
   fun bindFakeFirestoreEventLogger(
     fakeFirestoreEventLogger: FakeFirestoreEventLogger
   ): FirestoreEventLogger
+
+  @Binds
+  fun bindFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
+    FirestoreInstanceWrapper
 }

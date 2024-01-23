@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 31
+  compileSdkVersion 33
   buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 31
+    targetSdkVersion 33
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -82,14 +82,15 @@ dependencies {
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.work:work-runtime-ktx:2.4.0',
-      'com.github.oppia:androidsvg:1265eb1087056cf3fc2e10442e5545bc65c109ce',
+      'com.github.oppia:androidsvg:5bc9c7553e94c3476e8ea32baea3c77567228fcd',
       'com.github.oppia:kotlitex:43139c140833c7120f351d63d74b42c253d2b213',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
-      'com.google.firebase:firebase-firestore-ktx:21.5.0',
+      'com.google.firebase:firebase-firestore-ktx:24.2.1',
+      'com.google.firebase:firebase-auth-ktx:19.3.1',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',

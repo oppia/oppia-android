@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,13 +14,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
-import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -206,14 +204,6 @@ class SurveyControllerTest {
     fun provideApplicationIdSeed(): Long = applicationIdSeed
   }
 
-  @Module
-  interface TestAuthModule {
-    @Binds
-    fun bindFakeAuthenticationController(
-      fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationListener
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -222,7 +212,7 @@ class SurveyControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestAuthModule::class,
+      TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

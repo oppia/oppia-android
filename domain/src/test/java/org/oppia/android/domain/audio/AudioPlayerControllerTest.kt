@@ -842,9 +842,9 @@ class AudioPlayerControllerTest {
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
 
     @Provides
@@ -853,9 +853,9 @@ class AudioPlayerControllerTest {
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
   }
 

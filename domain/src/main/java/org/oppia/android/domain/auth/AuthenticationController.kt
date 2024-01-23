@@ -1,41 +1,47 @@
 package org.oppia.android.domain.auth
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 /** Controller for signing in and retrieving a Firebase user. */
-class AuthenticationController private constructor(
-  private val firebaseAuth: FirebaseAuth
-) : AuthenticationListener {
+class AuthenticationController @Inject constructor(
+  private val firebaseAuthWrapper: FirebaseAuthWrapper,
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+) {
   /** Returns the current signed in user or null if there is no authenticated user. */
-  override fun getCurrentSignedInUser(): FirebaseUser? {
-    return firebaseAuth.currentUser
-  }
+  val currentFirebaseUser: FirebaseUserWrapper? = firebaseAuthWrapper.currentUser
 
   /** Returns the result of an authentication task. */
-  override fun signInAnonymously(): CompletableDeferred<AsyncResult<Any?>> {
+  fun signInAnonymouslyWithFirebase(): CompletableDeferred<AsyncResult<Any?>> {
     val deferredResult = CompletableDeferred<AsyncResult<Any?>>()
-    firebaseAuth.signInAnonymously()
-      .addOnSuccessListener {
-        deferredResult.complete(AsyncResult.Success(null))
+    val timeoutMillis = 3000L
+    CoroutineScope(backgroundCoroutineDispatcher).launch {
+      try {
+        withTimeout(timeoutMillis) {
+          firebaseAuthWrapper.signInAnonymously(
+            onSuccess = {
+              deferredResult.complete(AsyncResult.Success(null))
+            },
+            onFailure = { exception ->
+              deferredResult.complete(AsyncResult.Failure(exception))
+            }
+          )
+        }
+      } catch (e: TimeoutCancellationException) {
+        // Handle timeout exception
+        deferredResult.complete(
+          AsyncResult.Failure(TimeoutException("Authentication attempt timed out"))
+        )
       }
-      .addOnFailureListener {
-        deferredResult.complete(AsyncResult.Failure(it))
-      }
-
+    }
     return deferredResult
-  }
-
-  /** Application-scoped injectable factory for creating a new [AuthenticationController]. */
-  class Factory @Inject constructor() {
-    private val firebaseAuth = Firebase.auth
-
-    /** Returns a new [AuthenticationController] for the current application context. */
-    fun create(): AuthenticationController = AuthenticationController(firebaseAuth)
   }
 }

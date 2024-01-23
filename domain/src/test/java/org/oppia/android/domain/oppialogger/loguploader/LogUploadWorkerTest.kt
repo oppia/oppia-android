@@ -27,7 +27,6 @@ import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
-import org.oppia.android.domain.auth.AuthenticationListener
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -42,10 +41,10 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.FakeAuthenticationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
@@ -621,14 +620,6 @@ class LogUploadWorkerTest {
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
   }
 
-  @Module
-  interface TestAuthModule {
-    @Binds
-    fun bindFakeAuthenticationController(
-      fakeAuthenticationController: FakeAuthenticationController
-    ): AuthenticationListener
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -641,7 +632,7 @@ class LogUploadWorkerTest {
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
       ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
-      TestAuthModule::class,
+      TestAuthenticationModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

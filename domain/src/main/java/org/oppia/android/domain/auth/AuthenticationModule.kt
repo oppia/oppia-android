@@ -4,11 +4,16 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-/** Provides an implementation of FirebaseAuth. */
+/** Provides an implementation of [FirebaseAuthWrapper]. */
 @Module
 class AuthenticationModule {
   @Provides
   @Singleton
-  fun provideAuthenticationController(factory: AuthenticationController.Factory):
-    AuthenticationListener = factory.create()
+  fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapper: FirebaseAuthInstanceWrapper):
+    FirebaseAuthWrapper = FirebaseAuthWrapperImpl(firebaseAuthInstanceWrapper)
+
+  @Provides
+  @Singleton
+  fun provideFirebaseAuthInstanceWrapper(): FirebaseAuthInstanceWrapper =
+    FirebaseAuthInstanceWrapperImpl()
 }
