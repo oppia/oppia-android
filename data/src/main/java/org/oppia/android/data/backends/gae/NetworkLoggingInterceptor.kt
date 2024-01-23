@@ -70,7 +70,7 @@ class NetworkLoggingInterceptor @Inject constructor(
             .setUrlCalled(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(0)
-            .setErrorMessage(exception.message ?: "")
+            .setErrorMessage(exception.toString())
             .build()
         )
       }

@@ -75,6 +75,7 @@ class NetworkLoggingInterceptorTest {
   private val testApiKey = "api_key"
   private val testApiKeyValue = "api_key_value"
   private val testResponseBody = "{\"test\": \"test\"}"
+  private val headerString = "$testApiKey: $testApiKeyValue"
 
   @Before
   fun setUp() {
@@ -99,17 +100,18 @@ class NetworkLoggingInterceptorTest {
 
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
 
-    val job = launch {
+    val networkJob = launch {
       networkLoggingInterceptor.logNetworkCallFlow.collect {
         assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
         assertThat(it.responseStatusCode).isEqualTo(200)
+        assertThat(it.headers).contains(headerString)
         assertThat(it.body).isEqualTo(testResponseBody)
       }
     }
 
     client.newCall(request).execute()
     testCoroutineDispatchers.advanceUntilIdle()
-    job.cancel()
+    networkJob.cancel()
   }
 
   @Test
@@ -121,11 +123,11 @@ class NetworkLoggingInterceptorTest {
 
       val request = Request.Builder()
         .url(mockWebServerUrl)
+        .addHeader(testApiKey, testApiKeyValue)
         .build()
 
       val mockResponse = MockResponse()
         .setResponseCode(pageNotFound)
-        .setHeader(testApiKey, testApiKeyValue)
         .setBody(testResponseBody)
 
       mockWebServer.enqueue(mockResponse)
@@ -134,6 +136,7 @@ class NetworkLoggingInterceptorTest {
         networkLoggingInterceptor.logNetworkCallFlow.collect {
           assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
           assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
+          assertThat(it.headers).contains(headerString)
           assertThat(it.body).isEqualTo(testResponseBody)
         }
       }
@@ -142,7 +145,9 @@ class NetworkLoggingInterceptorTest {
         networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
           assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
           assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
+          assertThat(it.headers).contains(headerString)
           assertThat(it.body).isEmpty()
+          assertThat(it.errorMessage).isNotEmpty()
           assertThat(it.errorMessage).isEqualTo(testResponseBody)
         }
       }
@@ -150,6 +155,37 @@ class NetworkLoggingInterceptorTest {
       client.newCall(request).execute()
       testCoroutineDispatchers.advanceUntilIdle()
       networkJob.cancel()
+      failedNetworkJob.cancel()
+    }
+
+  @Test
+  fun testLoggingInterceptor_makeFailingCallToTopicService_logsNetworkCallFailed_withException() =
+    runBlockingTest {
+      val mockWebServerUrl = mockWebServer.url(testUrl)
+
+      val request = Request.Builder()
+        .url(mockWebServerUrl)
+        .addHeader(testApiKey, testApiKeyValue)
+        .build()
+
+      mockWebServer.shutdown()
+
+      val failedNetworkJob = launch {
+        networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
+          assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+          assertThat(it.responseStatusCode).isEqualTo(0)
+          assertThat(it.headers).contains(headerString)
+          assertThat(it.body).isEmpty()
+          assertThat(it.errorMessage).isNotEmpty()
+          assertThat(it.errorMessage).contains("Failed to connect to localhost/")
+        }
+      }
+
+      try {
+        client.newCall(request).execute()
+      } catch (e: Exception) { }
+
+      testCoroutineDispatchers.advanceUntilIdle()
       failedNetworkJob.cancel()
     }
 
