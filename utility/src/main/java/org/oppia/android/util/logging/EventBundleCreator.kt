@@ -1,6 +1,7 @@
 package org.oppia.android.util.logging
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import org.oppia.android.app.model.AppLanguageSelection
@@ -130,7 +131,7 @@ class EventBundleCreator @Inject constructor(
   private val appVersionName by lazy { context.getVersionName() }
   private val eventCount by lazy { AtomicInteger() }
   private val screenDensity by lazy {
-    context.resources.displayMetrics.densityDpi
+    Configuration().densityDpi
   }
 
   /**
