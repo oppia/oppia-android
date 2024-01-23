@@ -5,12 +5,14 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
-import androidx.test.ext.truth.os.BundleSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,12 +21,12 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -42,8 +44,15 @@ class ConsoleLoggerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private val testVersionName = "1.0"
   private val testVersionCode = 1
+
+  private val testTag = "tag"
+  private val testLogLevel: LogLevel = LogLevel.ERROR
+  private val testMessage = "test error message"
 
   @Before
   fun setUp() {
@@ -52,8 +61,20 @@ class ConsoleLoggerTest {
   }
 
   @Test
-  fun dummyTest() {
-    assertThat(true).isTrue()
+  fun testConsoleLogger_logError_withMessage_logsMessage() = runBlockingTest {
+    val consoleJob = launch {
+      consoleLogger.logErrorMessagesFlow.collect {
+        assertThat(it.logTag).isEqualTo(testTag)
+        assertThat(it.logLevel).isEqualTo(testLogLevel.toString())
+        assertThat(it.fullErrorLog).isEqualTo(testMessage)
+      }
+    }
+
+    consoleLogger.e(testTag, testMessage)
+
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    consoleJob.cancel()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -109,6 +130,7 @@ class ConsoleLoggerTest {
       FakeOppiaClockModule::class,
     ]
   )
+
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
