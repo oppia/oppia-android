@@ -962,17 +962,6 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.checkerframework:checker-qual:3.13.0"
-  artifact_version: "3.13.0"
-  license {
-    license_name: "The MIT License"
-    original_link: "https://opensource.org/licenses/MIT"
-    extracted_copy_link {
-      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
-    }
-  }
-}
-maven_dependency {
   artifact_name: "org.codehaus.mojo:animal-sniffer-annotations:1.19"
   artifact_version: "1.19"
   license {
