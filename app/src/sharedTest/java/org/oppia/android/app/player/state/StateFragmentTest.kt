@@ -591,6 +591,26 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadExp_thirdState_submitWithoutAnswer_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      clickSubmitAnswerButton()
+      onView(withId(R.id.selection_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.selection_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_thirdState_selectAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
