@@ -28,7 +28,7 @@ enum class SelectionItemInputType {
   RADIO_BUTTONS
 }
 
-/** Enum to the store the errors of selection input */
+/** Enum to the store the errors of selection input. */
 enum class SelectionInputError(@StringRes private var error: Int?) {
   VALID(error = null),
   EMPTY_INPUT(error = R.string.selection_error_empty_input);
