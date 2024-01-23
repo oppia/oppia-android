@@ -3,8 +3,8 @@ package org.oppia.android.app.testing
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.image_region_selection_test_fragment.view.*
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Interaction
@@ -58,7 +58,8 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
         }
     }
 
-    view.submit_button.setOnClickListener {
+    val submit_button = view.findViewById<Button>(R.id.submit_button)
+    submit_button.setOnClickListener {
       imageRegionSelectionInteractionViewModel
         .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     }
