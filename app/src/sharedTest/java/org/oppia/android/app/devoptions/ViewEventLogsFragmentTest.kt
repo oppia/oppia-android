@@ -81,6 +81,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -101,7 +102,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
-import org.oppia.android.util.logging.firebase.DebugFirestoreInstanceWrapperImpl
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -724,7 +724,7 @@ class ViewEventLogsFragmentTest {
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: DebugFirestoreInstanceWrapperImpl):
+    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
       FirestoreInstanceWrapper = wrapperImpl
   }
 
