@@ -14,6 +14,8 @@ kt_android_library(
     deps = [
         ":firebase_auth_wrapper",
         "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
