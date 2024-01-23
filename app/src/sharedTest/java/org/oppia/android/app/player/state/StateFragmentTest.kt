@@ -557,7 +557,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -568,12 +568,12 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -586,7 +586,7 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -659,7 +659,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -670,14 +670,15 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -688,9 +689,10 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
