@@ -27,7 +27,7 @@ import javax.inject.Inject
  * This is a dummy activity to test input interaction views.
  * It contains [MathExpressionInteractionsView].
  */
-class MathExpressionInteractionViewTestActivity :
+class MathExpressionInteractionsViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   StateKeyboardButtonListener,
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -120,8 +120,8 @@ class MathExpressionInteractionViewTestActivity :
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
-      interactionAnswerReceiver = this@MathExpressionInteractionViewTestActivity,
-      answerErrorReceiver = this@MathExpressionInteractionViewTestActivity,
+      interactionAnswerReceiver = this@MathExpressionInteractionsViewTestActivity,
+      answerErrorReceiver = this@MathExpressionInteractionsViewTestActivity,
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
@@ -131,14 +131,14 @@ class MathExpressionInteractionViewTestActivity :
 
   companion object {
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
-      "MathExpressionInteractionViewTestActivity.params"
+      "MathExpressionInteractionsViewTestActivity.params"
 
-    /** Function to create intent for MathExpressionInteractionViewTestActivity. */
+    /** Function to create intent for MathExpressionInteractionsViewTestActivity. */
     fun createIntent(
       context: Context,
       extras: InputInteractionViewTestActivityParams
     ): Intent {
-      return Intent(context, MathExpressionInteractionViewTestActivity::class.java).also {
+      return Intent(context, MathExpressionInteractionsViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
       }
     }

@@ -21,7 +21,7 @@
       android:focusableInTouchMode="true"
       android:gravity="center"
       android:orientation="vertical"
-      tools:context=".app.testing.MathExpressionInteractionViewTestActivity">
+      tools:context=".app.testing.MathExpressionInteractionsViewTestActivity">
 
       <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
         android:id="@+id/test_math_expression_input_interaction_view"
