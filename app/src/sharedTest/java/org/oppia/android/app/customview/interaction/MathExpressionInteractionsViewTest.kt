@@ -47,7 +47,7 @@ import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.REA
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.SUBMIT_TIME
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.InputInteractionViewTestActivity
+import org.oppia.android.app.testing.MathExpressionInteractionViewTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -1741,21 +1741,21 @@ class MathExpressionInteractionsViewTest {
   private fun launchForNumericExpressions(
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionViewTestActivity> {
     return launch(MathInteractionType.NUMERIC_EXPRESSION, interaction, translationContext)
   }
 
   private fun launchForMathEquations(
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionViewTestActivity> {
     return launch(MathInteractionType.MATH_EQUATION, interaction, translationContext)
   }
 
   private fun launchForAlgebraicExpressions(
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionViewTestActivity> {
     return launch(MathInteractionType.ALGEBRAIC_EXPRESSION, interaction, translationContext)
   }
 
@@ -1763,9 +1763,9 @@ class MathExpressionInteractionsViewTest {
     interactionType: MathInteractionType,
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionViewTestActivity> {
     return ActivityScenario.launch(
-      InputInteractionViewTestActivity.createIntent(
+      MathExpressionInteractionViewTestActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
         InputInteractionViewTestActivityParams.newBuilder().apply {
           this.interaction = interaction
@@ -1864,7 +1864,7 @@ class MathExpressionInteractionsViewTest {
     }.build()
   }
 
-  private fun InputInteractionViewTestActivity.getInteractionView(): TextView =
+  private fun MathExpressionInteractionViewTestActivity.getInteractionView(): TextView =
     findViewById(R.id.test_math_expression_input_interaction_view)
 
   private fun setUpTestApplicationComponent() {
