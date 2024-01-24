@@ -36,11 +36,18 @@ class MathExpressionInteractionViewTestActivity :
   private lateinit var binding:
     ActivityMathExpressionInteractionViewTestBinding
 
+  /**
+   * Injects the [MathExpressionInteractionsViewModel.FactoryImpl] for creating
+   * [MathExpressionInteractionsViewModel] instances.
+   */
   @Inject
   lateinit var mathExpViewModelFactoryFactory:
     MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl
 
+  /** The [MathExpressionInteractionsViewModel] instance. */
   lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
+
+  /** Gives access to the translation context. */
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,6 +132,7 @@ class MathExpressionInteractionViewTestActivity :
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
       "MathExpressionInteractionViewTestActivity.params"
 
+    /** Function to create intent for MathExpressionInteractionViewTestActivity. */
     fun createIntent(
       context: Context,
       extras: InputInteractionViewTestActivityParams

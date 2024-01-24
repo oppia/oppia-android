@@ -8,7 +8,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withHint
@@ -283,13 +282,13 @@ class MathExpressionInteractionsViewTest {
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(ViewMatchers.isDisplayed()))
         .perform(
           ViewActions.click()
         )
       onView(withId(R.id.math_expression_input_error))
         .check(
-          ViewAssertions.matches(
+          matches(
             ViewMatchers.withText(
               R.string.numeric_expression_error_empty_input
             )
@@ -307,13 +306,13 @@ class MathExpressionInteractionsViewTest {
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(ViewMatchers.isDisplayed()))
         .perform(
           ViewActions.click()
         )
       onView(withId(R.id.math_expression_input_error))
         .check(
-          ViewAssertions.matches(
+          matches(
             ViewMatchers.withText(
               R.string.algebraic_expression_error_empty_input
             )
@@ -331,13 +330,13 @@ class MathExpressionInteractionsViewTest {
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(ViewMatchers.isDisplayed()))
         .perform(
           ViewActions.click()
         )
       onView(withId(R.id.math_expression_input_error))
         .check(
-          ViewAssertions.matches(
+          matches(
             ViewMatchers.withText(
               R.string.math_equation_error_empty_input
             )
