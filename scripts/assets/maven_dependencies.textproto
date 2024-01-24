@@ -601,6 +601,17 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "com.google.firebase:firebase-appcheck-debug:16.0.0"
+  artifact_version: "16.0.0"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "com.google.firebase:firebase-appcheck-playintegrity:16.0.0"
   artifact_version: "16.0.0"
   license {
