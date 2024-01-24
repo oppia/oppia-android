@@ -57,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/submit_button_text"
+        android:onClick="getPendingAnswerErrorOnSubmitClick"
         android:textColor="@color/component_color_shared_secondary_4_text_color" />
 
     </LinearLayout>

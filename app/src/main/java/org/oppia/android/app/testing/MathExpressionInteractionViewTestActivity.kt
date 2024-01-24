@@ -23,11 +23,16 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
+/**
+ * This is a dummy activity to test input interaction views.
+ * It contains [MathExpressionInteractionsView].
+ */
 class MathExpressionInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   StateKeyboardButtonListener,
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
   InteractionAnswerReceiver {
+
   private lateinit var binding:
     ActivityMathExpressionInteractionViewTestBinding
 

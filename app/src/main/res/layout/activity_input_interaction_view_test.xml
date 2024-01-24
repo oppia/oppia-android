@@ -81,32 +81,6 @@
         android:singleLine="true"
         android:text="@={textInputViewModel.answerText}" />
 
-      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
-        android:id="@+id/test_math_expression_input_interaction_view"
-        style="@style/InputInteractionEditText"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:text="@={mathExpressionInteractionsViewModel.answerText}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
-        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}" />
-
-      <TextView
-        android:id="@+id/math_expression_input_error"
-        style="@style/TextViewStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="sans-serif"
-        android:minHeight="32dp"
-        android:text="@{mathExpressionInteractionsViewModel.errorMessage}"
-        android:textColor="@color/component_color_shared_input_error_color"
-        android:textSize="12sp"
-        android:visibility="@{mathExpressionInteractionsViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
-
       <Button
         android:id="@+id/submit_button"
         style="@style/StateButtonActive"
