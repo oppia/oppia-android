@@ -171,19 +171,22 @@ class DeprecationController @Inject constructor(
       }
     }
 
+    val previousDeprecatedAppVersion = deprecationDatabase.appDeprecationResponse.deprecatedVersion
+    val previousDeprecatedOsVersion = deprecationDatabase.osDeprecationResponse.deprecatedVersion
+
     val appVersionCode = Build.VERSION.SDK_INT
     val osIsDeprecated = lowestSupportedApiLevel.value > appVersionCode &&
-      deprecationDatabase.osDeprecationResponse.deprecatedVersion != appVersionCode
-    val osDeprecationDialogHasNotBeenShown = deprecationDatabase.osDeprecationResponse.deprecatedVersion <
-      lowestSupportedApiLevel.value
+      previousDeprecatedAppVersion != appVersionCode
+    val osDeprecationDialogHasNotBeenShown =
+      previousDeprecatedOsVersion < lowestSupportedApiLevel.value
 
     val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.value > appVersionCode
     val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode
 
-    val optionalAppDeprecationDialogHasNotBeenShown = deprecationDatabase.appDeprecationResponse.deprecatedVersion <
-      optionalAppUpdateVersionCode.value
-    val forcedAppDeprecationDialogHasNotBeenShown = deprecationDatabase.appDeprecationResponse.deprecatedVersion <
-      forcedAppUpdateVersionCode.value
+    val optionalAppDeprecationDialogHasNotBeenShown =
+      previousDeprecatedAppVersion < optionalAppUpdateVersionCode.value
+    val forcedAppDeprecationDialogHasNotBeenShown =
+      previousDeprecatedAppVersion < forcedAppUpdateVersionCode.value
 
     if (onboardingState.alreadyOnboardedApp) {
       if (osIsDeprecated && osDeprecationDialogHasNotBeenShown) {

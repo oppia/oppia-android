@@ -12,12 +12,11 @@ import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
 import org.oppia.android.app.notice.BetaNoticeClosedListener
 import org.oppia.android.app.notice.DeprecationNoticeActionListener
-import org.oppia.android.app.notice.DeprecationNoticeActionType
+import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to

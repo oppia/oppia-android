@@ -4,14 +4,12 @@ import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import javax.inject.Inject
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
-import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** Presenter class responsible for showing an optional update dialog to the user. */
 class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
@@ -43,10 +41,10 @@ class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
       )
       .setPositiveButton(R.string.optional_app_update_dialog_update_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-            DeprecationNoticeActionResponse(
-              deprecationResponse = deprecationResponse,
-              deprecationNoticeActionType = DeprecationNoticeActionType.UPDATE
-            )
+          DeprecationNoticeActionResponse(
+            deprecationResponse = deprecationResponse,
+            deprecationNoticeActionType = DeprecationNoticeActionType.UPDATE
+          )
         )
       }
       .setNegativeButton(R.string.optional_app_update_dialog_dismiss_button_text) { _, _ ->

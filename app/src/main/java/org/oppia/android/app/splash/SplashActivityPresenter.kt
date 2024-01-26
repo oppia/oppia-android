@@ -15,6 +15,7 @@ import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
+import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 import org.oppia.android.app.notice.DeprecationNoticeActionType
 import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
@@ -27,6 +28,7 @@ import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.SplashActivityBinding
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
+import org.oppia.android.domain.onboarding.DeprecationController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.domain.translation.TranslationController
@@ -38,8 +40,6 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.notice.DeprecationNoticeActionResponse
-import org.oppia.android.domain.onboarding.DeprecationController
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -81,10 +81,14 @@ class SplashActivityPresenter @Inject constructor(
     subscribeToOnboardingFlow()
   }
 
-  fun handleOnDeprecationNoticeActionClicked(noticeActionResponse: DeprecationNoticeActionResponse) {
+  fun handleOnDeprecationNoticeActionClicked(
+    noticeActionResponse: DeprecationNoticeActionResponse
+  ) {
     when (noticeActionResponse.deprecationNoticeActionType) {
       DeprecationNoticeActionType.CLOSE -> handleOnDeprecationNoticeCloseAppButtonClicked()
-      DeprecationNoticeActionType.DISMISS -> handleOnDeprecationNoticeDialogDismissed(noticeActionResponse)
+      DeprecationNoticeActionType.DISMISS -> handleOnDeprecationNoticeDialogDismissed(
+        noticeActionResponse
+      )
       DeprecationNoticeActionType.UPDATE -> handleOnDeprecationNoticeUpdateButtonClicked()
     }
   }
@@ -122,7 +126,9 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   /** Handles cases where the user dismisses the deprecation notice dialog. */
-  private fun handleOnDeprecationNoticeDialogDismissed(noticeActionResponse: DeprecationNoticeActionResponse) {
+  private fun handleOnDeprecationNoticeDialogDismissed(
+    noticeActionResponse: DeprecationNoticeActionResponse
+  ) {
     deprecationController.saveDeprecationResponse(noticeActionResponse.deprecationResponse)
 
     // If the Dismiss button is clicked for the deprecation notice, the dialog is automatically
