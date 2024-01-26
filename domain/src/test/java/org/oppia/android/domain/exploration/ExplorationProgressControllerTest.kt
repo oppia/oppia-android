@@ -110,6 +110,7 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -3188,6 +3189,12 @@ class ExplorationProgressControllerTest {
     @EnableLoggingLearnerStudyIds
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Enable study IDs by default in tests.
+      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
+    }
+
+    @Provides
+    @EnableNpsSurvey
+    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }

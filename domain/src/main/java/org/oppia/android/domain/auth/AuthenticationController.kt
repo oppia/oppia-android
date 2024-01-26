@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 /** Controller for signing in and retrieving a Firebase user. */
@@ -22,10 +21,9 @@ class AuthenticationController @Inject constructor(
   /** Returns the result of an authentication task. */
   fun signInAnonymouslyWithFirebase(): CompletableDeferred<AsyncResult<Any?>> {
     val deferredResult = CompletableDeferred<AsyncResult<Any?>>()
-    val timeoutMillis = 3000L
     CoroutineScope(backgroundCoroutineDispatcher).launch {
       try {
-        withTimeout(timeoutMillis) {
+        withTimeout(AUTHENTICATION_TIMEOUT_MILLIS) {
           firebaseAuthWrapper.signInAnonymously(
             onSuccess = {
               deferredResult.complete(AsyncResult.Success(null))
@@ -36,12 +34,16 @@ class AuthenticationController @Inject constructor(
           )
         }
       } catch (e: TimeoutCancellationException) {
-        // Handle timeout exception
         deferredResult.complete(
-          AsyncResult.Failure(TimeoutException("Authentication attempt timed out"))
+          AsyncResult.Failure(IllegalStateException(e))
         )
       }
     }
     return deferredResult
+  }
+
+  companion object {
+    /** The amount of time the authentication task should run before timing out. */
+    const val AUTHENTICATION_TIMEOUT_MILLIS = 30_000L
   }
 }

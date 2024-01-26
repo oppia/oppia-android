@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -33,8 +33,6 @@ import javax.inject.Singleton
 @Config(application = FirebaseAuthWrapperImplTest.TestApplication::class)
 
 class FirebaseAuthWrapperImplTest {
-  @Inject
-  lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
 
   @Inject
   lateinit var firebaseAuthWrapperImpl: FirebaseAuthWrapperImpl
@@ -46,13 +44,9 @@ class FirebaseAuthWrapperImplTest {
 
   @Test
   fun testAuthWrapperImpl_getCurrentSignedInUser_userIsNotSignedIn_returnsNull() {
-    firebaseAuthWrapper.signInAnonymously(
-      onSuccess = {},
-      onFailure = {}
-    )
     val user = firebaseAuthWrapperImpl.currentUser
 
-    Truth.assertThat(user).isNull()
+    assertThat(user).isNull()
   }
 
   private fun setUpTestApplicationComponent() {

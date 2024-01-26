@@ -46,8 +46,6 @@ class FirestoreDataController @Inject constructor(
     if (eventLogsToUpload.isNotEmpty()) {
       eventLogsToUpload.forEach { eventLog ->
         authenticateAndUploadToFirestore(eventLog)
-      }.also {
-        removeFirstEventLogFromStore()
       }
     }
   }
@@ -103,7 +101,7 @@ class FirestoreDataController @Inject constructor(
       when (val signInResult = authenticationController.signInAnonymouslyWithFirebase().await()) {
         is AsyncResult.Success -> {
           consoleLogger.i("FirestoreDataController", "Sign in succeeded")
-          eventLogger.uploadEvent(eventLog)
+          uploadLog(eventLog)
         }
         is AsyncResult.Failure -> {
           consoleLogger.e(
@@ -117,8 +115,13 @@ class FirestoreDataController @Inject constructor(
         }
       }
     } else {
-      eventLogger.uploadEvent(eventLog)
+      uploadLog(eventLog)
     }
+  }
+
+  private fun uploadLog(eventLog: EventLog) {
+    eventLogger.uploadEvent(eventLog)
+    removeFirstEventLogFromStore()
   }
 
   /**

@@ -9,29 +9,29 @@ import javax.inject.Singleton
 /** A test specific fake for the [FirebaseAuthWrapper]. */
 @Singleton
 class FakeFirebaseAuthWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
-  private var fakeAuthState: FakeAuthState = FakeAuthState.Success
+  private var fakeAuthState: FakeAuthState = FakeAuthState.SUCCESS
 
   /** Fake a successful auth response. */
   fun simulateSignInSuccess() {
-    fakeAuthState = FakeAuthState.Success
+    fakeAuthState = FakeAuthState.SUCCESS
   }
 
   /** Fake a failed auth response. */
   fun simulateSignInFailure() {
-    fakeAuthState = FakeAuthState.Failure
+    fakeAuthState = FakeAuthState.FAILURE
   }
 
   /** Returns the [fakeAuthState] of the controller. */
   fun getAuthState(): FakeAuthState = fakeAuthState
 
   override val currentUser: FirebaseUserWrapper?
-    get() = if (fakeAuthState == FakeAuthState.Success)
+    get() = if (fakeAuthState == FakeAuthState.SUCCESS)
       FirebaseUserWrapper(uid = UUID.randomUUID().toString())
     else
       null
 
   override fun signInAnonymously(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
-    if (fakeAuthState == FakeAuthState.Success) {
+    if (fakeAuthState == FakeAuthState.SUCCESS) {
       onSuccess.invoke()
     } else {
       onFailure.invoke(Exception("Sign-in failure"))
@@ -39,11 +39,11 @@ class FakeFirebaseAuthWrapperImpl @Inject constructor() : FirebaseAuthWrapper {
   }
 
   /** Represents a faked authentication state. */
-  sealed class FakeAuthState {
+  enum class FakeAuthState {
     /** Represents a faked successful authentication state. */
-    object Success : FakeAuthState()
+    SUCCESS,
 
     /** Represents a faked failed authentication state. */
-    object Failure : FakeAuthState()
+    FAILURE
   }
 }
