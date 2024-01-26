@@ -36,7 +36,7 @@ class NumericInputViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            inputAnswerAvailable = true // Allow blank answer submission
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
@@ -51,8 +51,8 @@ class NumericInputViewModel private constructor(
   }
 
   /**
-   * It checks the pending error for the current numeric input, and correspondingly
-   * updates the error string based on the specified error category.
+   * It checks the pending error for the current numeric input, and correspondingly updates the
+   * error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     pendingAnswerError = when (category) {

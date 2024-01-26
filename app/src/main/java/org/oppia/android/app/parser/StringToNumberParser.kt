@@ -41,7 +41,7 @@ class StringToNumberParser {
    * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): NumericInputParsingError {
-    if (text.normalizeWhitespace().isEmpty()) {
+    if (text.isBlank()) {
       return NumericInputParsingError.EMPTY_INPUT
     }
     if (text.length > 15) {
