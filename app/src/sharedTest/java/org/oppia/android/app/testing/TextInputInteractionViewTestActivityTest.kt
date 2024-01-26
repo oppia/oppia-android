@@ -6,11 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -197,14 +200,14 @@ class TextInputInteractionViewTestActivityTest {
   fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
     ActivityScenario.launch(TextInputInteractionViewTestActivity::class.java).use {
       scrollToSubmitButton()
-      onView(withId(R.id.submit_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
         .perform(
-          ViewActions.click()
+          click()
         )
       onView(withId(R.id.text_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.text_error_empty_input
             )
           )

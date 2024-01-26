@@ -1,16 +1,12 @@
 package org.oppia.android.app.testing
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -21,8 +17,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.databinding.ActivityTextInputInteractionViewTestBinding
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 /**
@@ -77,7 +71,7 @@ class TextInputInteractionViewTestActivity :
   }
 
   private inline fun <reified T : StateItemViewModel>
-    StateItemViewModel.InteractionItemFactory.create(
+  StateItemViewModel.InteractionItemFactory.create(
     interaction: Interaction = Interaction.getDefaultInstance()
   ): T {
     return create(

@@ -50,7 +50,7 @@ class TextInputViewModel private constructor(
 
     // Initializing with default values so that submit button is enabled by default.
     interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-      pendingAnswerError= null,
+      pendingAnswerError = null,
       inputAnswerAvailable = true
     )
   }
@@ -59,7 +59,7 @@ class TextInputViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-          pendingAnswerError = null
+        pendingAnswerError = null
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
         pendingAnswerError =
