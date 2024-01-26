@@ -221,9 +221,10 @@ class FirestoreDataControllerTest {
       ),
       profileId = profileId
     )
-    testCoroutineDispatchers.runCurrent()
 
     runSynchronously { dataController.uploadData() }
+
+    testCoroutineDispatchers.runCurrent()
 
     // The force sync should ensure everything is uploaded. NOTE TO DEVELOPER: If this test is
     // failing, it may be due to FirestoreDataController being created before
@@ -232,6 +233,36 @@ class FirestoreDataControllerTest {
     // whichever dependency is injecting FirestoreDataController is also only injected when needed
     // (i.e. using a Provider).
     assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(3)
+  }
+
+  @Test
+  fun testController_uploadEventLogs_onNetworkRestore_removesAllEventLogsFromStore() {
+    setUpTestApplicationComponent()
+
+    logTwoEventsOffline()
+
+    runSynchronously { dataController.uploadData() }
+
+    val logsProvider = dataController.getEventLogStore()
+
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(logsProvider)
+
+    assertThat(eventLogs.eventLogsToUploadList).hasSize(0)
+  }
+
+  @Test
+  fun testController_uploadEventLogs_withNetworkConnection_removesAllEventLogsFromStore() {
+    setUpTestApplicationComponent()
+
+    logTwoEvents()
+
+    runSynchronously { dataController.uploadData() }
+
+    val logsProvider = dataController.getEventLogStore()
+
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(logsProvider)
+
+    assertThat(eventLogs.eventLogsToUploadList).hasSize(0)
   }
 
   private fun createAbandonSurveyContext(

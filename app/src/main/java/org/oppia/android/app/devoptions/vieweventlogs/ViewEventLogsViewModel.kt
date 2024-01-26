@@ -1,7 +1,6 @@
 package org.oppia.android.app.devoptions.vieweventlogs
 
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
@@ -26,8 +25,6 @@ class ViewEventLogsViewModel @Inject constructor(
   // Retrieves events from cache that are meant to be uploaded to Firebase Analytics.
   private val analyticsEvents = debugAnalyticsEventLogger.getEventList()
 
-  private val eventList = mutableListOf<EventLog>()
-
   /**
    * List of [EventLogItemViewModel] used to populate recyclerview of [ViewEventLogsFragment]
    * to display event logs.
@@ -37,11 +34,7 @@ class ViewEventLogsViewModel @Inject constructor(
   }
 
   private fun processEventLogsList(): List<EventLogItemViewModel> {
-    return eventList
-      .apply {
-        addAll(analyticsEvents)
-        addAll(firestoreEvents)
-      }
+    return (analyticsEvents + firestoreEvents)
       .map {
         EventLogItemViewModel(it, machineLocale, resourceHandler)
       }

@@ -61,14 +61,14 @@ class FakeFirebaseAuthWrapperImplTest {
     fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
 
     val authState = fakeFirebaseAuthWrapperImpl.getAuthState()
-    assertThat(authState).isInstanceOf(FakeAuthState.Success::class.java)
+    assertThat(authState).isInstanceOf(FakeAuthState.SUCCESS::class.java)
   }
 
   @Test
-  fun testFakeAuthWrapper_simulateSignInSuccess_returnsFakeAuthStateFailure() {
+  fun testFakeAuthWrapper_simulateSignInFailure_returnsFakeAuthStateFailure() {
     fakeFirebaseAuthWrapperImpl.simulateSignInFailure()
     val authState = fakeFirebaseAuthWrapperImpl.getAuthState()
-    assertThat(authState).isInstanceOf(FakeAuthState.Failure::class.java)
+    assertThat(authState).isInstanceOf(FakeAuthState.FAILURE::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
