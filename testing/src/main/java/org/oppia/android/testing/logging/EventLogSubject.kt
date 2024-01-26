@@ -2008,10 +2008,18 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagItemContextThatHasName(flagName: String): FeatureFlagItemContextSubject =
-      FeatureFlagItemContextSubject.assertThat(
-        actual.featureFlagsList.firstOrNull { it.flagName == flagName }
-      )
+    fun hasFeatureFlagItemContextThat(): FeatureFlagItemContextSubject {
+      return FeatureFlagItemContextSubject.assertThat(actual.featureFlagsList.first())
+    }
+
+    /**
+     * Verifies the [EventLog]'s context and executes [block] in the same way as
+     * [hasFeatureFlagItemContextThat] except for the conditions of, and subject returned by,
+     * [hasFeatureFlagItemContextThat].
+     */
+    fun hasFeatureFlagItemContextThat(block: FeatureFlagItemContextSubject.() -> Unit) {
+      hasFeatureFlagItemContextThat().block()
+    }
 
     companion object {
       /**
@@ -2051,8 +2059,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagNameThat(): StringSubject =
-      assertThat(actual.flagName)
+    fun hasFeatureFlagNameThat(): StringSubject = assertThat(actual.flagName)
 
     /**
      * Returns a [StringSubject] to test
@@ -2061,8 +2068,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagEnabledStateThat(): BooleanSubject =
-      assertThat(actual.flagEnabledState)
+    fun hasFeatureFlagEnabledStateThat(): BooleanSubject = assertThat(actual.flagEnabledState)
 
     /**
      * Returns a [StringSubject] to test

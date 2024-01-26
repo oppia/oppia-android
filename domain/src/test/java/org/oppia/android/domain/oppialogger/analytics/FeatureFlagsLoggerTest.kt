@@ -63,12 +63,6 @@ class FeatureFlagsLoggerTest {
   @Before
   fun setup() {
     setUpTestApplicationComponent()
-
-    val mapOfTestFeatureFlags = mapOf(
-      TEST_FEATURE_FLAG to testFeatureFlag,
-      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault
-    )
-    featureFlagsLogger.setFeatureFlagItemMap(mapOfTestFeatureFlags)
   }
 
   @Test
@@ -84,12 +78,16 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlag_hasCorrectDefaultValues() {
+    featureFlagsLogger.setFeatureFlagItemMap(
+      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+    )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureFlagItemContextThatHasName(TEST_FEATURE_FLAG).apply {
+      hasFeatureFlagItemContextThat {
         hasFeatureFlagItemContextThat().isNotNull()
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
@@ -100,12 +98,16 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlagWithEnabledDefaults_hasCorrectDefaultValues() {
+    featureFlagsLogger.setFeatureFlagItemMap(
+      mapOf(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault)
+    )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureFlagItemContextThatHasName(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS).apply {
+      hasFeatureFlagItemContextThat {
         hasFeatureFlagItemContextThat().isNotNull()
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
         hasFeatureFlagEnabledStateThat().isEqualTo(true)
