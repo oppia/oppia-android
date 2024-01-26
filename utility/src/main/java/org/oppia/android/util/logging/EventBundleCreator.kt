@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_P
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_ITEM_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
@@ -64,6 +65,8 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Ca
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagItemContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.MandatorySurveyResponseContext
@@ -91,7 +94,6 @@ import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurveyEventContext
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_ITEM_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.FeatureFlagContext as FeatureFlagEventContext
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext as FeatureFlagItemEventContext
@@ -112,8 +114,6 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsa
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
-import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagContext
-import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagItemContext
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
