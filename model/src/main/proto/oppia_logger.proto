@@ -179,6 +179,9 @@ message EventLog {
 
       // The event being logged contains the feature flags and their current enabled and sync state.
       FeatureFlagContext feature_flag_context = 43;
+
+      // The event being logged contains the feature flag items.
+      FeatureFlagItemContext feature_flag_item_context = 44;
     }
   }
 
@@ -382,18 +385,18 @@ message EventLog {
 
     // List of Feature Flag items.
     repeated FeatureFlagItemContext feature_flags = 3;
+  }
 
-    // Structure for the feature flag log item.
-    message FeatureFlagItemContext {
-      // The name of the feature flag or sync status flag.
-      string flag_name = 1;
+  // Structure for the feature flag log item.
+  message FeatureFlagItemContext {
+    // The name of the feature flag or sync status flag.
+    string flag_name = 1;
 
-      // The enabled state of the feature flag.
-      bool flag_enabled_state = 2;
+    // The enabled state of the feature flag.
+    bool flag_enabled_state = 2;
 
-      // The sync status of the feature flag or sync status flag.
-      PlatformParameter.SyncStatus flag_sync_status = 3;
-    }
+    // The sync status of the feature flag or sync status flag.
+    PlatformParameter.SyncStatus flag_sync_status = 3;
   }
 
   // Supported priority of events for event logging

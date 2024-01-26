@@ -91,8 +91,10 @@ import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurveyEventContext
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_ITEM_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.FeatureFlagContext as FeatureFlagEventContext
+import org.oppia.android.app.model.EventLog.FeatureFlagItemContext as FeatureFlagItemEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
@@ -110,6 +112,8 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsa
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagItemContext
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -225,8 +229,8 @@ class EventBundleCreator @Inject constructor(
       ABANDON_SURVEY -> AbandonSurveyContext(activityName, abandonSurvey)
       MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
       OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
-      FEATURE_FLAG_CONTEXT ->
-        EventActivityContext.FeatureFlagContext(activityName, featureFlagContext)
+      FEATURE_FLAG_CONTEXT -> FeatureFlagContext(activityName, featureFlagContext)
+      FEATURE_FLAG_ITEM_CONTEXT -> FeatureFlagItemContext(activityName, featureFlagItemContext)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -571,6 +575,18 @@ class EventBundleCreator @Inject constructor(
         store.putSensitiveValue("uuid", uniqueUserUuid)
         store.putSensitiveValue("session_id", sessionId)
         store.putNonSensitiveValue("feature_flags", featureFlagsList)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [FeatureFlagItemEventContext]s. */
+    class FeatureFlagItemContext(
+      activityName: String,
+      value: FeatureFlagItemEventContext
+    ) : EventActivityContext<FeatureFlagItemEventContext>(activityName, value) {
+      override fun EventLog.FeatureFlagItemContext.storeValue(store: PropertyStore) {
+        store.putSensitiveValue("flag_name", flagName)
+        store.putSensitiveValue("enabled_state", flagEnabledState)
+        store.putSensitiveValue("sync_status", flagSyncStatus)
       }
     }
   }

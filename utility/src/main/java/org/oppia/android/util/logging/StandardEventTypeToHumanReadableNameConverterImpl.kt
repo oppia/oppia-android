@@ -61,6 +61,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.MANDATORY_RESPONSE -> "mandatory_response"
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.FEATURE_FLAG_CONTEXT -> "feature_flag"
+      ActivityContextCase.FEATURE_FLAG_ITEM_CONTEXT -> "feature_flag_item"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
     }
