@@ -2,7 +2,6 @@ package org.oppia.android.app.application
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.pm.ApplicationInfo
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -15,6 +14,7 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root base [Application] of the Oppia app. */
@@ -51,8 +51,7 @@ abstract class AbstractOppiaApplication(
     // TODO(#4751): Re-enable WorkManager for S+.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
       FirebaseApp.initializeApp(applicationContext)
-      val isDebugBuild = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
-      if (isDebugBuild) {
+      if (component.getCurrentBuildFlavor() == BuildFlavor.DEVELOPER) {
         FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
           DebugAppCheckProviderFactory.getInstance(),
         )
