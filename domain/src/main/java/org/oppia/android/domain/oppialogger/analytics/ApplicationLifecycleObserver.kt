@@ -44,8 +44,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnablePerformanceMetricsCollection
   private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
-  private val applicationLifecycleListeners:
-    Set<@JvmSuppressWildcards ApplicationLifecycleListener>,
+  private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**

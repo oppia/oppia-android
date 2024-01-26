@@ -161,8 +161,8 @@ const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
 @Qualifier
 annotation class EnableNpsSurvey
 
-/** Name of the  feature flag that toggles the NPS Survey. */
+/** Name of the feature flag that toggles the NPS Survey. */
 const val ENABLE_NPS_SURVEY = "enable_nps_survey"
 
-/** Default value of the platform parameter corresponding to [EnableNpsSurvey]. */
+/** Default value of the feature flag corresponding to [EnableNpsSurvey]. */
 const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
