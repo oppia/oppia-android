@@ -2,6 +2,7 @@ package org.oppia.android.app.notice.testing
 
 import android.os.Bundle
 import org.oppia.android.app.notice.DeprecationNoticeActionListener
+import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 import org.oppia.android.app.notice.DeprecationNoticeActionType
 import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.testing.activity.TestActivity
@@ -24,7 +25,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTestActivity :
       .showNow(supportFragmentManager, "forced_app_deprecation_dialog")
   }
 
-  override fun onActionButtonClicked(noticeType: DeprecationNoticeActionType) {
-    mockCallbackListener.onActionButtonClicked(noticeType)
+  override fun onActionButtonClicked(noticeActionResponse: DeprecationNoticeActionResponse) {
+    mockCallbackListener.onActionButtonClicked(noticeActionResponse)
   }
 }

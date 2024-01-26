@@ -17,6 +17,7 @@ import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to
@@ -63,6 +64,6 @@ class SplashActivity :
   override fun onGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss)
 
-  override fun onActionButtonClicked(noticeType: DeprecationNoticeActionType) =
-    splashActivityPresenter.handleOnDeprecationNoticeActionClicked(noticeType)
+  override fun onActionButtonClicked(noticeActionResponse: DeprecationNoticeActionResponse) =
+    splashActivityPresenter.handleOnDeprecationNoticeActionClicked(noticeActionResponse)
 }

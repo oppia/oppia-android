@@ -2,6 +2,7 @@ package org.oppia.android.domain.onboarding
 
 import android.os.Build
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
@@ -19,7 +20,6 @@ import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.runBlocking
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
 private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"
@@ -174,24 +174,28 @@ class DeprecationController @Inject constructor(
     val appVersionCode = Build.VERSION.SDK_INT
     val osIsDeprecated = lowestSupportedApiLevel.value > appVersionCode &&
       deprecationDatabase.osDeprecationResponse.deprecatedVersion != appVersionCode
-    val appUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode ||
-      forcedAppUpdateVersionCode.value > appVersionCode
+    val osDeprecationDialogHasNotBeenShown = deprecationDatabase.osDeprecationResponse.deprecatedVersion <
+      lowestSupportedApiLevel.value
+
+    val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.value > appVersionCode
+    val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode
+
+    val optionalAppDeprecationDialogHasNotBeenShown = deprecationDatabase.appDeprecationResponse.deprecatedVersion <
+      optionalAppUpdateVersionCode.value
+    val forcedAppDeprecationDialogHasNotBeenShown = deprecationDatabase.appDeprecationResponse.deprecatedVersion <
+      forcedAppUpdateVersionCode.value
 
     if (onboardingState.alreadyOnboardedApp) {
-      if (osIsDeprecated) {
+      if (osIsDeprecated && osDeprecationDialogHasNotBeenShown) {
         return StartupMode.OS_IS_DEPRECATED
       }
 
-      if (appUpdateIsAvailable) {
-        if (forcedAppUpdateVersionCode.value > appVersionCode) {
-          return StartupMode.APP_IS_DEPRECATED
-        }
+      if (forcedAppUpdateIsAvailable && forcedAppDeprecationDialogHasNotBeenShown) {
+        return StartupMode.APP_IS_DEPRECATED
+      }
 
-        if (deprecationDatabase.appDeprecationResponse.deprecatedVersion !=
-          optionalAppUpdateVersionCode.value
-        ) {
-          return StartupMode.OPTIONAL_UPDATE_AVAILABLE
-        }
+      if (optionalAppUpdateIsAvailable && optionalAppDeprecationDialogHasNotBeenShown) {
+        return StartupMode.OPTIONAL_UPDATE_AVAILABLE
       }
 
       return StartupMode.USER_IS_ONBOARDED
