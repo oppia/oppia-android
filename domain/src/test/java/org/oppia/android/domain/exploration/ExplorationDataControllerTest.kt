@@ -50,6 +50,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -401,7 +402,8 @@ class ExplorationDataControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, ExplorationProgressModule::class
+      PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
