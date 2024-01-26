@@ -36,12 +36,9 @@ class FractionParser {
     val fraction = parseFraction(text)
 
     return when {
-
       fraction == null -> FractionParsingError.INVALID_FORMAT
       fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
-      else -> {
-        FractionParsingError.VALID
-      }
+      else -> FractionParsingError.VALID
     }
   }
 

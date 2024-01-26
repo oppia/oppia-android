@@ -47,8 +47,10 @@ class TextInputViewModel private constructor(
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     errorMessage.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
     interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-      /* pendingAnswerError= */ null,
+      pendingAnswerError= null,
       inputAnswerAvailable = true
     )
   }
@@ -57,17 +59,9 @@ class TextInputViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-        if (answerText.isNotEmpty()) {
-          pendingAnswerError =
-            TextParsingUiError.createFromParsingError(
-              getSubmitTimeError(answerText.toString())
-            ).getErrorMessageFromStringRes(resourceHandler)
-        } else {
           pendingAnswerError = null
-        }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
-
         pendingAnswerError =
           TextParsingUiError.createFromParsingError(
             getSubmitTimeError(answerText.toString())
@@ -159,11 +153,10 @@ class TextInputViewModel private constructor(
   }
 
   /**
-   * Returns a [TextParsingError] for the specified text input if it's an invalid fraction, or
+   * Returns a [TextParsingError] for the specified text input if it's an invalid text, or
    * [TextParsingError.VALID] if no issues are found.
    *
-   * This method should only be used when a user tries submitting an answer. Real-time error
-   * detection should be done using [getRealTimeAnswerError], instead.
+   * This method should only be used when a user tries submitting an answer.
    */
   fun getSubmitTimeError(text: String): TextParsingError {
     if (text.isNullOrBlank()) {

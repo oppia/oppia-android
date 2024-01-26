@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
@@ -54,10 +55,7 @@ class TextInputInteractionViewTestActivity :
       this, R.layout.activity_text_input_interaction_view_test
     )
 
-    val params = intent.getProtoExtra(
-      TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, InputInteractionViewTestActivityParams.getDefaultInstance()
-    )
-    writtenTranslationContext = params.writtenTranslationContext
+    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     binding.textInputViewModel = textInputViewModel
   }
 
@@ -79,7 +77,7 @@ class TextInputInteractionViewTestActivity :
   }
 
   private inline fun <reified T : StateItemViewModel>
-  StateItemViewModel.InteractionItemFactory.create(
+    StateItemViewModel.InteractionItemFactory.create(
     interaction: Interaction = Interaction.getDefaultInstance()
   ): T {
     return create(
@@ -93,20 +91,5 @@ class TextInputInteractionViewTestActivity :
       writtenTranslationContext,
       timeToStartNoticeAnimationMs = null
     ) as T
-  }
-
-  companion object {
-    private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
-      "TextInputInteractionViewTestActivity.params"
-
-    /** Creates an intent to open this activity. */
-    fun createIntent(
-      context: Context,
-      extras: InputInteractionViewTestActivityParams
-    ): Intent {
-      return Intent(context, TextInputInteractionViewTestActivity::class.java).also {
-        it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
-      }
-    }
   }
 }
