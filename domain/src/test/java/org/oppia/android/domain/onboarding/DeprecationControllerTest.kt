@@ -65,8 +65,7 @@ class DeprecationControllerTest {
 
     setUpDefaultTestApplicationComponent()
 
-    val deprecationDataProvider = deprecationController
-      .getDeprecationDatabase()
+    val deprecationDataProvider = deprecationController.getDeprecationDatabase()
 
     val deprecationResponseDatabase = monitorFactory
       .waitForNextSuccessfulResult(deprecationDataProvider)

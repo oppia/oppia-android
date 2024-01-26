@@ -19,6 +19,7 @@ import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.runBlocking
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
 private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"
@@ -71,18 +72,7 @@ class DeprecationController @Inject constructor(
     }
   }
 
-  private fun getDeprecationResponseDatabase(): DeprecationResponseDatabase {
-    val deprecationDataProvider = fetchDeprecationProvider()
-
-    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
-
-    deprecationDataProvider.transform(GET_DEPRECATION_RESPONSE_DATABASE_ID) {
-      deprecationResponseDatabase ->
-      deprecationDatabase = deprecationResponseDatabase
-    }
-
-    return deprecationDatabase
-  }
+  private val deprecationDataProvider by lazy { fetchDeprecationProvider() }
 
   private fun fetchDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
     return deprecationStore.transform(
@@ -94,6 +84,36 @@ class DeprecationController @Inject constructor(
       }.build()
     }
   }
+
+  /**
+   * Returns a [DataProvider] containing the the [DeprecationResponseDatabase], which in turn
+   * affects what initial app flow the user is directed to.
+   */
+  fun getDeprecationDatabase(): DataProvider<DeprecationResponseDatabase> = deprecationDataProvider
+
+//  private fun getDeprecationResponseDatabase(): DeprecationResponseDatabase {
+//    val deprecationDataProvider = fetchDeprecationProvider()
+//
+//    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
+//
+//    deprecationDataProvider.transform(GET_DEPRECATION_RESPONSE_DATABASE_ID) {
+//      deprecationResponseDatabase ->
+//      deprecationDatabase = deprecationResponseDatabase
+//    }
+//
+//    return deprecationDatabase
+//  }
+//
+//  private fun fetchDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
+//    return deprecationStore.transform(
+//      GET_DEPRECATION_RESPONSE_PROVIDER_ID
+//    ) { deprecationResponsesDatabase ->
+//      DeprecationResponseDatabase.newBuilder().apply {
+//        appDeprecationResponse = deprecationResponsesDatabase.appDeprecationResponse
+//        osDeprecationResponse = deprecationResponsesDatabase.osDeprecationResponse
+//      }.build()
+//    }
+//  }
 
   /**
    * Stores a new [DeprecationResponse] to the cache.
@@ -141,7 +161,16 @@ class DeprecationController @Inject constructor(
    * [optionalAppUpdateVersionCode], [forcedAppUpdateVersionCode] and [onboardingState].
    */
   fun processStartUpMode(onboardingState: OnboardingState): StartupMode {
-    val deprecationDatabase = getDeprecationResponseDatabase()
+    val deprecationDataProvider = getDeprecationDatabase()
+
+    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
+
+    runBlocking {
+      deprecationDataProvider.retrieveData().transform {
+        deprecationDatabase = it
+      }
+    }
+
     val appVersionCode = Build.VERSION.SDK_INT
     val osIsDeprecated = lowestSupportedApiLevel.value > appVersionCode &&
       deprecationDatabase.osDeprecationResponse.deprecatedVersion != appVersionCode
