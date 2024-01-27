@@ -447,6 +447,7 @@
   <string name="return_to_lesson">Return to lesson</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
+  <string name="drag_and_drop_interaction_empty_input">Arrange the boxes to continue.</string>
   <string name="link_to_item_below">Link to item %s</string>
   <string name="unlink_items">Unlink items at %s</string>
   <string name="move_item_down_content_description">Move item down to %s</string>
