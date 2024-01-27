@@ -10,9 +10,9 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -83,7 +83,8 @@ class MathExpressionInteractionsViewTestActivity :
             .create(interaction = params.interaction)
       }
 
-      MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED, MathInteractionType.UNRECOGNIZED, null -> {
+      MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED,
+      MathInteractionType.UNRECOGNIZED, null -> {
         // Default to numeric expression arbitrarily (since something needs to be defined).
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
