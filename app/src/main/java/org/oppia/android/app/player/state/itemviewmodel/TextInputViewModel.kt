@@ -159,7 +159,7 @@ class TextInputViewModel private constructor(
    * This method should only be used when a user submits an answer.
    */
   fun getSubmitTimeError(text: String): TextParsingError {
-    if (text.isBlank()) {
+    if (text.isNullOrBlank()) {
       return TextParsingError.EMPTY_INPUT
     }
     return TextParsingError.VALID
