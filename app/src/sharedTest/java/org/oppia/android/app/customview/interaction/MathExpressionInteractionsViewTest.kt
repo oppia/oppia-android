@@ -33,9 +33,9 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.CustomSchemaValue
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.model.SchemaObjectList
@@ -1766,7 +1766,7 @@ class MathExpressionInteractionsViewTest {
     return ActivityScenario.launch(
       MathExpressionInteractionsViewTestActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
-        InputInteractionViewTestActivityParams.newBuilder().apply {
+        MathExpressionInteractionsViewTestActivityParams.newBuilder().apply {
           this.interaction = interaction
           writtenTranslationContext = translationContext
           mathInteractionType = interactionType

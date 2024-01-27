@@ -8,8 +8,8 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -59,30 +59,31 @@ class MathExpressionInteractionsViewTestActivity :
     val params =
       intent.getProtoExtra(
         TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
-        InputInteractionViewTestActivityParams.getDefaultInstance()
+        MathExpressionInteractionsViewTestActivityParams.getDefaultInstance()
       )
     writtenTranslationContext = params.writtenTranslationContext
     when (params.mathInteractionType) {
-      InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION -> {
+      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION -> {
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
             .createFactoryForNumericExpression()
             .create(interaction = params.interaction)
       }
-      InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION -> {
+      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION -> {
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
             .createFactoryForAlgebraicExpression()
             .create(interaction = params.interaction)
       }
-      InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION -> {
+      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.MATH_EQUATION -> {
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
             .createFactoryForMathEquation()
             .create(interaction = params.interaction)
       }
-      InputInteractionViewTestActivityParams.MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED,
-      InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED, null -> {
+      MathExpressionInteractionsViewTestActivityParams
+        .MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED,
+      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.UNRECOGNIZED, null -> {
         // Default to numeric expression arbitrarily (since something needs to be defined).
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
@@ -136,7 +137,7 @@ class MathExpressionInteractionsViewTestActivity :
     /** Function to create intent for MathExpressionInteractionsViewTestActivity. */
     fun createIntent(
       context: Context,
-      extras: InputInteractionViewTestActivityParams
+      extras: MathExpressionInteractionsViewTestActivityParams
     ): Intent {
       return Intent(context, MathExpressionInteractionsViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)

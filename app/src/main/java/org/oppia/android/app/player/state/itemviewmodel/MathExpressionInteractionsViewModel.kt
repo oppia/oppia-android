@@ -105,13 +105,14 @@ class MathExpressionInteractionsViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            true
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
 
+    // Initializing with default values so that submit button is enabled by default.
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
       null,
       true
@@ -158,7 +159,7 @@ class MathExpressionInteractionsViewModel private constructor(
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME -> {
         interactionType.computeSubmitTimeError(
-          answerText.toString(), allowedVariables, resourceHandler, interactionType
+          answerText.toString(), allowedVariables, resourceHandler
         )
       }
     }
@@ -428,11 +429,10 @@ class MathExpressionInteractionsViewModel private constructor(
         answerText: String,
         allowedVariables: List<String>,
         appLanguageResourceHandler: AppLanguageResourceHandler,
-        interactionType: InteractionType
       ): String? {
 
         if (answerText.isBlank()) {
-          return when (interactionType) {
+          return when (this) {
             NUMERIC_EXPRESSION -> {
               appLanguageResourceHandler.getStringInLocale(
                 R.string.numeric_expression_error_empty_input
