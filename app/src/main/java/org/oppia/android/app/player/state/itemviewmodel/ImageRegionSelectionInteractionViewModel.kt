@@ -54,7 +54,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            pendingAnswerError = pendingAnswerError,
+            pendingAnswerError = pendingAnswerError, // Allow blank answer submission.
             inputAnswerAvailable = true
           )
         }
@@ -62,6 +62,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     errorMessage.addOnPropertyChangedCallback(callback)
 
+    // Initializing with default values so that submit button is enabled by default.
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
       pendingAnswerError = null,
       inputAnswerAvailable = true
@@ -88,18 +89,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
-
-        if (answerText.isNotEmpty()) {
-          pendingAnswerError =
-            ImageRegionParsingUiError.createFromParsingError(
-              getSubmitTimeError(answerText.toString())
-            ).getErrorMessageFromStringRes(resourceHandler)
-        } else {
-          pendingAnswerError =
-            ImageRegionParsingUiError.createFromParsingError(
-              ImageRegionParsingError.VALID
-            ).getErrorMessageFromStringRes(resourceHandler)
-        }
+        pendingAnswerError = null
       }
 
       AnswerErrorCategory.SUBMIT_TIME -> {
@@ -139,6 +129,9 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       .build()
   }
 
+  /** * Returns  [ImageRegionParsingError.EMPTY_INPUT] if input is blank, or
+   * [TextParsingError.VALID] if input is not empty.
+   */
   fun getSubmitTimeError(text: String): ImageRegionParsingError {
     if (text.isNullOrBlank()) {
       return ImageRegionParsingError.EMPTY_INPUT
