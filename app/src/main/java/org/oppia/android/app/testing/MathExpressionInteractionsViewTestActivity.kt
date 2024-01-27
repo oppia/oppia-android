@@ -12,6 +12,7 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -63,27 +64,26 @@ class MathExpressionInteractionsViewTestActivity :
       )
     writtenTranslationContext = params.writtenTranslationContext
     when (params.mathInteractionType) {
-      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION -> {
+      MathInteractionType.NUMERIC_EXPRESSION -> {
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
             .createFactoryForNumericExpression()
             .create(interaction = params.interaction)
       }
-      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION -> {
+      MathInteractionType.ALGEBRAIC_EXPRESSION -> {
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
             .createFactoryForAlgebraicExpression()
             .create(interaction = params.interaction)
       }
-      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.MATH_EQUATION -> {
+      MathInteractionType.MATH_EQUATION -> {
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
             .createFactoryForMathEquation()
             .create(interaction = params.interaction)
       }
-      MathExpressionInteractionsViewTestActivityParams
-        .MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED,
-      MathExpressionInteractionsViewTestActivityParams.MathInteractionType.UNRECOGNIZED, null -> {
+
+      MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED, MathInteractionType.UNRECOGNIZED, null -> {
         // Default to numeric expression arbitrarily (since something needs to be defined).
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
