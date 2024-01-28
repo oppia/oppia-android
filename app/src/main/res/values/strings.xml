@@ -170,6 +170,7 @@
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
+  <string name="number_error_empty_input">Enter a number to continue.</string>
   <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">Your answer has two colons (:) next to each other.</string>
