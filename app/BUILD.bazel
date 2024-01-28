@@ -321,7 +321,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContentViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueNavigationButtonViewModel.kt",
-    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FeedbackViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NextButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt",
