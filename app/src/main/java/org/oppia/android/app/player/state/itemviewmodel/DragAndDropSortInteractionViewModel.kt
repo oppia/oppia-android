@@ -27,7 +27,7 @@ import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
 /** Enum to the store the errors of drag and drop sort interaction. */
-enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {
+enum class DragAndDropSortError(@StringRes private var error: Int?) {
   VALID(error = null),
   EMPTY_INPUT(error = R.string.drag_and_drop_interaction_empty_input);
 
@@ -229,11 +229,11 @@ class DragAndDropSortInteractionViewModel private constructor(
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
 
-  private fun getSubmitTimeError(): DragAndDropSortInteractionError {
+  private fun getSubmitTimeError(): DragAndDropSortError {
     return if (_originalChoiceItems == _choiceItems)
-      DragAndDropSortInteractionError.EMPTY_INPUT
+      DragAndDropSortError.EMPTY_INPUT
     else
-      DragAndDropSortInteractionError.VALID
+      DragAndDropSortError.VALID
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
