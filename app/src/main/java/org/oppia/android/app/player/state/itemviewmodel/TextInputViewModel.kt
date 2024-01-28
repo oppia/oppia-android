@@ -155,8 +155,6 @@ class TextInputViewModel private constructor(
   /**
    * Returns [TextParsingError.EMPTY_INPUT] if input is blank, or
    * [TextParsingError.VALID] if input is not blank.
-   *
-   * This method should only be used when a user submits an answer.
    */
   fun getSubmitTimeError(text: String): TextParsingError {
     if (text.isNullOrBlank()) {
