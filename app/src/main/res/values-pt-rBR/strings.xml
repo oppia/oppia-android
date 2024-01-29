@@ -202,12 +202,10 @@
   </plurals>
   <plurals name="completed_story_count" fuzzy="true">
     <item quantity="one">%s história concluída</item>
-    <item quantity="zero">%s Histórias concluídas</item>
     <item quantity="other">%s Histórias concluídas</item>
   </plurals>
   <plurals name="ongoing_topic_count" fuzzy="true">
     <item quantity="one">%s Tópico em andamento</item>
-    <item quantity="zero">%s Tópicos em andamento</item>
     <item quantity="other">%s Tópicos em andamento</item>
   </plurals>
   <string name="profile_chooser_activity_label">Página de seleção de perfil</string>
