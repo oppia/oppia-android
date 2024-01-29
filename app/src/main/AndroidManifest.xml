@@ -43,7 +43,7 @@
     <activity
       android:name=".app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity"
       android:label="@string/profile_and_device_id_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
     <activity
       android:name=".app.completedstorylist.CompletedStoryListActivity"
       android:label="@string/completed_story_list_activity_title"
@@ -309,8 +309,7 @@
     <activity
       android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".app.policies.PoliciesActivity"
+    <activity android:name=".app.policies.PoliciesActivity"
       android:label="@string/policy_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
