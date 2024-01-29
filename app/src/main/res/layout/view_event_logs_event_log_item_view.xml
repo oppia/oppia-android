@@ -31,6 +31,7 @@
       <TextView
         android:id="@+id/view_event_logs_time_text_view"
         style="@style/Subtitle2ViewStart"
+        android:layout_width="0dp"
         android:layout_weight="1"
         android:background="@color/component_color_shared_item_background_solid_color"
         android:paddingStart="16dp"
