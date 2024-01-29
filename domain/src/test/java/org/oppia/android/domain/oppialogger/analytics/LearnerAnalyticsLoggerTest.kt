@@ -43,6 +43,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -1838,6 +1839,7 @@ class LearnerAnalyticsLoggerTest {
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       CachingTestModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
