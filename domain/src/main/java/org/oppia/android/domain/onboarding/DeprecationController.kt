@@ -2,7 +2,6 @@ package org.oppia.android.domain.onboarding
 
 import android.os.Build
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.runBlocking
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
@@ -20,6 +19,7 @@ import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
 private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"
@@ -165,10 +165,16 @@ class DeprecationController @Inject constructor(
 
     var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
 
-    runBlocking {
-      deprecationDataProvider.retrieveData().transform {
-        deprecationDatabase = it
-      }
+//    runBlocking {
+//      deprecationDataProvider.retrieveData().transform {
+//        deprecationDatabase = it
+//      }
+//    }
+
+    deprecationDataProvider.transform(
+      GET_DEPRECATION_RESPONSE_DATABASE_ID
+    ) {
+      deprecationDatabase = it
     }
 
     val previousDeprecatedAppVersion = deprecationDatabase.appDeprecationResponse.deprecatedVersion
