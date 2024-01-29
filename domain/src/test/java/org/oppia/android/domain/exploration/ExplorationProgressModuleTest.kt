@@ -17,6 +17,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -92,7 +93,8 @@ class ExplorationProgressModuleTest {
       TestModule::class, TestLogModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class
+      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

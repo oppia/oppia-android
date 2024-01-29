@@ -56,11 +56,11 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
   private fun endSurveyWithCallback(callback: () -> Unit) {
     surveyController.stopSurveySession(surveyCompleted = true).toLiveData().observe(
       activity,
-      {
-        when (it) {
+      { result ->
+        when (result) {
           is AsyncResult.Pending -> oppiaLogger.d("SurveyActivity", "Stopping survey session")
           is AsyncResult.Failure -> {
-            oppiaLogger.d("SurveyActivity", "Failed to stop the survey session")
+            oppiaLogger.d("SurveyActivity", "Failed to stop the survey session", result.error)
             activity.finish() // Can't recover from the session failing to stop.
           }
           is AsyncResult.Success -> {
