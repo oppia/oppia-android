@@ -1,7 +1,6 @@
 package org.oppia.android.app.devoptions.vieweventlogs
 
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
