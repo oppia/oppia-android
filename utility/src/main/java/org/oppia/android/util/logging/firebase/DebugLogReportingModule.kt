@@ -27,4 +27,14 @@ class DebugLogReportingModule {
     factory: FirebaseAnalyticsEventLogger.Factory
   ): PerformanceMetricsEventLogger =
     factory.createPerformanceMetricEventLogger()
+
+  @Provides
+  @Singleton
+  fun provideDebugFirestoreLogger(debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl):
+    FirestoreEventLogger = debugFirestoreEventLogger
+
+  @Provides
+  @Singleton
+  fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirestoreInstanceWrapperImpl):
+    FirestoreInstanceWrapper = wrapperImpl
 }

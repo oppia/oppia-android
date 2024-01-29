@@ -17,4 +17,10 @@ interface LogUploader {
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   )
+
+  /** Enqueues a [workRequest] using the [workManager] for uploading event logs that are meant for Firestore. */
+  fun enqueueWorkRequestForFirestore(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  )
 }

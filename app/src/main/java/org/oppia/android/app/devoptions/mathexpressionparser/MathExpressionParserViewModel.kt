@@ -31,12 +31,7 @@ class MathExpressionParserViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory
 ) : ObservableViewModel() {
   private val htmlParser by lazy {
-    // TODO(#4206): Replace this with the variant that doesn't require GCS properties.
     htmlParserFactory.create(
-      gcsResourceName = "",
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false,
       displayLocale = appLanguageResourceHandler.getDisplayLocale()
     )
   }
