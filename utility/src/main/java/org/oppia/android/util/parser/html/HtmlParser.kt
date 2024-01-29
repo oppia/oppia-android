@@ -93,6 +93,8 @@ class HtmlParser private constructor(
       htmlContent = modifiedHtmlContent
     } else {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
+
+      // Images are wrapped inside `<div>` tag so that all images display in block mode.
       val regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
       val modifiedHtmlContent = rawString.replace(regex) {
         val oppiaImageTag = it.value
