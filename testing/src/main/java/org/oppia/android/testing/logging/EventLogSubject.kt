@@ -2055,7 +2055,7 @@ class EventLogSubject private constructor(
     private val actual: EventLog.FeatureFlagContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [StringSubject] to test [EventLog.FeatureFlagContext.uniqueUserUuid].
+     * Returns a [StringSubject] to test [EventLog.FeatureFlagContext.getUniqueUserUuid].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
@@ -2063,20 +2063,12 @@ class EventLogSubject private constructor(
     fun hasUniqueUserUuidThat(): StringSubject = assertThat(actual.uniqueUserUuid)
 
     /**
-     * Returns a [StringSubject] to test [EventLog.FeatureFlagContext.sessionId].
+     * Returns a [StringSubject] to test [EventLog.FeatureFlagContext.getSessionId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
     fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
-
-    /**
-     * Returns a [IterableSubject] to test [EventLog.FeatureFlagContext.getFeatureFlagsList].
-     *
-     * This method never fails since the underlying property defaults to empty list if it's not
-     * defined in the context.
-     */
-    fun hasFeatureFlagListThat(): IterableSubject = assertThat(actual.featureFlagsList)
 
     /**
      * Returns a [FeatureFlagItemContextSubject] to test
@@ -2109,10 +2101,10 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Truth subject for verifying properties of [EventLog.FeatureFlagContext.FeatureFlagItemContext]s.
+   * Truth subject for verifying properties of [EventLog.FeatureFlagItemContext]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
-   * [EventLog.FeatureFlagContext.FeatureFlagItemContext] proto can be verified through inherited
+   * [EventLog.FeatureFlagItemContext] proto can be verified through inherited
    * methods.
    *
    * Call [FeatureFlagItemContextSubject.assertThat] to create the subject.
@@ -2122,34 +2114,26 @@ class EventLogSubject private constructor(
     private val actual: FeatureFlagItemContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [StringSubject] to test [FeatureFlagItemContextSubject].
-     *
-     * This method never fails since the underlying property defaults to empty object if it's not
-     * defined in the context.
-     */
-    fun hasFeatureFlagItemContextThat(): FeatureFlagItemContextSubject = assertThat(actual)
-
-    /**
      * Returns a [StringSubject] to test
-     * [EventLog.FeatureFlagContext.FeatureFlagItemContext.getFlagName].
+     * [EventLog.FeatureFlagItemContext.getFlagName].
      *
-     * This method never fails since the underlying property defaults to empty object if it's not
+     * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
     fun hasFeatureFlagNameThat(): StringSubject = assertThat(actual.flagName)
 
     /**
-     * Returns a [StringSubject] to test
-     * [EventLog.FeatureFlagContext.FeatureFlagItemContext.getFlagEnabledState].
+     * Returns a [BooleanSubject] to test
+     * [EventLog.FeatureFlagItemContext.getFlagEnabledState].
      *
-     * This method never fails since the underlying property defaults to empty object if it's not
+     * This method never fails since the underlying property defaults to false if it's not
      * defined in the context.
      */
     fun hasFeatureFlagEnabledStateThat(): BooleanSubject = assertThat(actual.flagEnabledState)
 
     /**
-     * Returns a [StringSubject] to test
-     * [EventLog.FeatureFlagContext.FeatureFlagItemContext.getFlagSyncStatus].
+     * Returns a [ComparableSubject] to test
+     * [EventLog.FeatureFlagItemContext.getFlagSyncStatus].
      *
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.

@@ -584,9 +584,9 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagItemEventContext
     ) : EventActivityContext<FeatureFlagItemEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagItemContext.storeValue(store: PropertyStore) {
-        store.putSensitiveValue("flag_name", flagName)
-        store.putSensitiveValue("enabled_state", flagEnabledState)
-        store.putSensitiveValue("sync_status", flagSyncStatus)
+        store.putNonSensitiveValue("flag_name", flagName)
+        store.putNonSensitiveValue("enabled_state", flagEnabledState)
+        store.putNonSensitiveValue("sync_status", flagSyncStatus)
       }
     }
   }

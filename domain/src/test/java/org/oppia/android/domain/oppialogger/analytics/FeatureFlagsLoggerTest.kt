@@ -88,7 +88,6 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThat {
-        hasFeatureFlagItemContextThat().isNotNull()
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
@@ -108,7 +107,6 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThat {
-        hasFeatureFlagItemContextThat().isNotNull()
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
         hasFeatureFlagEnabledStateThat().isEqualTo(true)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
