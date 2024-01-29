@@ -40,6 +40,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPTIONAL_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
@@ -1068,6 +1069,34 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [OPTIONAL_RESPONSE] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasOptionalSurveyResponseContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(OPTIONAL_RESPONSE)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasOptionalSurveyResponseContext] and returns a
+   * [OptionalSurveyResponseContextSubject] to test the corresponding context.
+   */
+  fun hasOptionalSurveyResponseContextThat(): OptionalSurveyResponseContextSubject {
+    hasOptionalSurveyResponseContext()
+    return OptionalSurveyResponseContextSubject.assertThat(
+      actual.context.optionalResponse
+    )
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block].
+   */
+  fun hasOptionalSurveyResponseContextThat(
+    block: OptionalSurveyResponseContextSubject.() -> Unit
+  ) {
+    hasOptionalSurveyResponseContextThat().block()
+  }
+
+  /**
    * Truth subject for verifying properties of [AppLanguageSelection]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
@@ -1776,6 +1805,54 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Truth subject for verifying properties of [EventLog.OptionalSurveyResponseContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.OptionalSurveyResponseContext] proto can be verified through inherited methods.
+   *
+   * Call [OptionalSurveyResponseContextSubject.assertThat] to create the subject.
+   */
+  class OptionalSurveyResponseContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.OptionalSurveyResponseContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [SurveyResponseContextSubject] to test
+     * [EventLog.OptionalSurveyResponseContext.getSurveyDetails].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
+      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+
+    /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
+    fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
+      hasSurveyDetailsThat().block()
+    }
+
+    /**
+     * Returns a [StringSubject] to test
+     * [EventLog.OptionalSurveyResponseContext.getFeedbackAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty object if it's not
+     * defined in the context.
+     */
+    fun hasFeedbackAnswerThat(): StringSubject =
+      assertThat(actual.feedbackAnswer)
+
+    companion object {
+      /**
+       * Returns a new [OptionalSurveyResponseContextSubject] to verify aspects of the specified
+       * [EventLog.OptionalSurveyResponseContext] value.
+       */
+      fun assertThat(actual: EventLog.OptionalSurveyResponseContext):
+        OptionalSurveyResponseContextSubject =
+          assertAbout(::OptionalSurveyResponseContextSubject).that(actual)
+    }
+  }
+
+  /**
    * Truth subject for verifying properties of [EventLog.MandatorySurveyResponseContext]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
@@ -1789,7 +1866,7 @@ class EventLogSubject private constructor(
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [SurveyResponseContextSubject] to test
-     * [EventLog.AbandonSurveyContext.getSurveyDetails].
+     * [EventLog.MandatorySurveyResponseContext.getSurveyDetails].
      *
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
@@ -1823,8 +1900,8 @@ class EventLogSubject private constructor(
       assertThat(actual.marketFitAnswer)
 
     /**
-     * Returns a [ComparableSubject] to test
-     * [EventLog.MandatorySurveyResponseContext.getUserTypeAnswer].
+     * Returns a [IntegerSubject] to test
+     * [EventLog.MandatorySurveyResponseContext.getNpsScoreAnswer].
      *
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
@@ -1834,8 +1911,8 @@ class EventLogSubject private constructor(
 
     companion object {
       /**
-       * Returns a new [AbandonSurveyContextSubject] to verify aspects of the specified
-       * [EventLog.AbandonSurveyContext] value.
+       * Returns a new [MandatorySurveyResponseContextSubject] to verify aspects of the specified
+       * [EventLog.MandatorySurveyResponseContext] value.
        */
       fun assertThat(actual: EventLog.MandatorySurveyResponseContext):
         MandatorySurveyResponseContextSubject =
