@@ -36,25 +36,34 @@ class NumericInputViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
+    interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
+    )
   }
 
-  /** It checks the pending error for the current numeric input, and correspondingly updates the error string based on the specified error category. */
+  /**
+   * It checks the pending error for the current numeric input, and correspondingly updates the
+   * error string based on the specified error category.
+   */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
-      pendingAnswerError = when (category) {
-        AnswerErrorCategory.REAL_TIME ->
+    pendingAnswerError = when (category) {
+      AnswerErrorCategory.REAL_TIME ->
+        if (answerText.isNotEmpty())
           stringToNumberParser.getRealTimeAnswerError(answerText.toString())
             .getErrorMessageFromStringRes(resourceHandler)
-        AnswerErrorCategory.SUBMIT_TIME ->
-          stringToNumberParser.getSubmitTimeError(answerText.toString())
-            .getErrorMessageFromStringRes(resourceHandler)
-      }
+        else null
+      AnswerErrorCategory.SUBMIT_TIME ->
+        stringToNumberParser.getSubmitTimeError(answerText.toString())
+          .getErrorMessageFromStringRes(resourceHandler)
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError

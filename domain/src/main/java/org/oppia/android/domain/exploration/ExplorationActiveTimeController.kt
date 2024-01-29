@@ -19,6 +19,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.platformparameter.EnableNpsSurvey
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -57,7 +59,8 @@ class ExplorationActiveTimeController @Inject constructor(
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  @EnableNpsSurvey private val enableNpsSurvey: PlatformParameterValue<Boolean>
 ) : ExplorationProgressListener, ApplicationLifecycleListener {
   private var isAppInForeground: Boolean = false
   private var explorationStarted: Boolean = false
@@ -82,27 +85,35 @@ class ExplorationActiveTimeController @Inject constructor(
 
   override fun onExplorationStarted(profileId: ProfileId, topicId: String) {
     this.explorationStarted = true
-    startSessionTimer(
-      profileId = profileId,
-      topicId = topicId,
-      isAppInForeground = getIsAppInForeground(),
-      explorationStarted = true
-    )
+    if (enableNpsSurvey.value) {
+      startSessionTimer(
+        profileId = profileId,
+        topicId = topicId,
+        isAppInForeground = getIsAppInForeground(),
+        explorationStarted = true
+      )
+    }
   }
 
   override fun onExplorationEnded() {
     this.explorationStarted = false
-    stopSessionTimerAsync(getIsExplorationStarted())
+    if (enableNpsSurvey.value) {
+      stopSessionTimerAsync(getIsExplorationStarted())
+    }
   }
 
   override fun onAppInForeground() {
     this.isAppInForeground = true
-    resumeSessionTimer(getIsExplorationStarted())
+    if (enableNpsSurvey.value) {
+      resumeSessionTimer(getIsExplorationStarted())
+    }
   }
 
   override fun onAppInBackground() {
     this.isAppInForeground = false
-    pauseSessionTimerAsync()
+    if (enableNpsSurvey.value) {
+      pauseSessionTimerAsync()
+    }
   }
 
   private fun getIsAppInForeground() = this.isAppInForeground
