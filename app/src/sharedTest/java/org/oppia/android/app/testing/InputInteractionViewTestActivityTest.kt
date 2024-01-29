@@ -72,6 +72,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -244,6 +245,24 @@ class InputInteractionViewTestActivityTest {
           matches(
             withText(
               R.string.number_error_invalid_format
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testNumericInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      scrollToSubmitButton()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.number_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.number_error_empty_input
             )
           )
         )
@@ -488,7 +507,8 @@ class InputInteractionViewTestActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

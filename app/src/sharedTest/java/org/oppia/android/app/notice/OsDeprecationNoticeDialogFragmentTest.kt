@@ -73,6 +73,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -114,7 +115,8 @@ class OsDeprecationNoticeDialogFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -223,7 +225,8 @@ class OsDeprecationNoticeDialogFragmentTest {
       ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
       CachingTestModule::class, MetricLogSchedulerModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
 
