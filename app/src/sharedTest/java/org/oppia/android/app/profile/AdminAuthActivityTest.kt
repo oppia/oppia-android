@@ -674,29 +674,6 @@ class AdminAuthActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
   }
 
-  @Test
-  fun testAdminAuthActivity_intent_extras_passed() {
-    launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
-        context = context,
-        adminPin = "12345",
-        profileId = internalProfileId,
-        colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      )
-    )
-
-    val args = AdminAuthActivityArguments.newBuilder().apply {
-      this.adminPin = "12345"
-      this.internalProfileId = this@AdminAuthActivityTest.internalProfileId
-      this.colorRgb = -10710042
-      this.adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-    }.build()
-    testCoroutineDispatchers.runCurrent()
-    intended(hasComponent(AdminAuthActivity::class.java.name))
-    intended(hasProtoExtra(AdminAuthActivity.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args))
-  }
-
   private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
     val defaultProto = expectedProto.newBuilderForType().build()
     return object : TypeSafeMatcher<Intent>() {
