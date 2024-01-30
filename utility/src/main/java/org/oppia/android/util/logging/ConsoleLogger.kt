@@ -28,6 +28,9 @@ class ConsoleLogger @Inject constructor(
   private val logDirectory = File(context.filesDir, "oppia_app.log")
 
   private val _logErrorMessagesFlow = MutableSharedFlow<ConsoleLoggerContext>()
+  /**
+   * A flow that emits a [ConsoleLoggerContext] when a error message is logged.
+   */
   val logErrorMessagesFlow: SharedFlow<ConsoleLoggerContext> = _logErrorMessagesFlow
 
   /** Logs a verbose message with the specified tag. */

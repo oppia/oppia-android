@@ -251,6 +251,10 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
       .build()
   }
 
+  /**
+   * Returns the context of the event indicating that the user completed app onboarding for the
+   * first time.
+   */
   fun createAppOnBoardingContext(): EventLog.Context {
     return EventLog.Context.newBuilder().setCompleteAppOnboarding(
       EventLog.CompleteAppOnboardingContext.newBuilder()
@@ -259,6 +263,9 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     ).build()
   }
 
+  /**
+   * Returns the context of the event indicating that a console error was logged.
+   */
   fun createConsoleLogContext(
     logLevel: String,
     logTag: String,
@@ -273,6 +280,9 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     ).build()
   }
 
+  /**
+   * Returns the context of the event indicating that a retrofit call was made.
+   */
   fun createRetrofitCallContext(
     url: String,
     headers: String,
@@ -289,6 +299,9 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     ).build()
   }
 
+  /**
+   * Returns the context of the event indicating that a retrofit call failed.
+   */
   fun createRetrofitCallFailedContext(
     url: String,
     headers: String,
@@ -307,6 +320,10 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     ).build()
   }
 
+  /**
+   * Returns the context of the event indicating the amount of time spent with the app in
+   * foreground.
+   */
   fun createAppInForegroundTimeContext(
     installationId: String?,
     appSessionId: String,

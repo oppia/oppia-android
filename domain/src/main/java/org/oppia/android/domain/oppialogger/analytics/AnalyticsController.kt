@@ -324,6 +324,9 @@ class AnalyticsController @Inject constructor(
     }
   }
 
+  /**
+   * Listens to the flow emitted by the [ConsoleLogger] and logs the error messages.
+   */
   fun listenForConsoleErrorLogs() {
     CoroutineScope(backgroundDispatcher).launch {
       consoleLogger.logErrorMessagesFlow.collect { consoleLoggerContext ->
@@ -339,6 +342,10 @@ class AnalyticsController @Inject constructor(
     }
   }
 
+  /**
+   * Listens to the flow emitted by the [NetworkLoggingInterceptor] relating to retrofit calls and
+   * logs the network call information.
+   */
   fun listenForNetworkCallLogs() {
     CoroutineScope(backgroundDispatcher).launch {
       networkLoggingInterceptor.logNetworkCallFlow.collect { retrofitCallContext ->
@@ -355,6 +362,10 @@ class AnalyticsController @Inject constructor(
     }
   }
 
+  /**
+   * Listens to the flow emitted by the [NetworkLoggingInterceptor] relating to failed retrofit
+   * calls and logs the network call information to the [OppiaLogger].
+   */
   fun listenForFailedNetworkCallLogs() {
     CoroutineScope(backgroundDispatcher).launch {
       networkLoggingInterceptor.logFailedNetworkCallFlow.collect { retrofitFailedCallContext ->
@@ -372,6 +383,9 @@ class AnalyticsController @Inject constructor(
     }
   }
 
+  /**
+   * Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId].
+   */
   fun logAppOnboardedEvent(profileId: ProfileId?) {
     logLowPriorityEvent(
       oppiaLogger.createAppOnBoardingContext(),

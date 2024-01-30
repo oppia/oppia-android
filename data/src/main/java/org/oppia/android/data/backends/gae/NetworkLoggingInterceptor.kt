@@ -23,9 +23,16 @@ class NetworkLoggingInterceptor @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
 ) : Interceptor {
   private val _logNetworkCallFlow = MutableSharedFlow<RetrofitCallContext>()
+  /**
+   * A flow that emits a [RetrofitCallContext] when a network call is made.
+   */
   val logNetworkCallFlow: SharedFlow<RetrofitCallContext> = _logNetworkCallFlow
 
   private val _logFailedNetworkCallFlow = MutableSharedFlow<RetrofitCallFailedContext>()
+
+  /**
+   * A flow that emits a [RetrofitCallFailedContext] when a network call fails.
+   */
   val logFailedNetworkCallFlow: SharedFlow<RetrofitCallFailedContext> = _logFailedNetworkCallFlow
 
   @Throws(IOException::class)

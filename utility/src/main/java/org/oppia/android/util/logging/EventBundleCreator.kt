@@ -579,6 +579,7 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
+    /** The [EventActivityContext] corresponding to [CompleteAppOnboardingEventContext]s. */
     class CompleteAppOnboardingContext(
       activityName: String,
       value: CompleteAppOnboardingEventContext
@@ -588,6 +589,7 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
+    /** The [EventActivityContext] corresponding to [ConsoleLoggerEventContext]s. */
     class ConsoleLoggerContext(
       activityName: String,
       value: ConsoleLoggerEventContext
@@ -599,6 +601,7 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
+    /** The [EventActivityContext] corresponding to [RetrofitCallEventContext]s. */
     class RetrofitCallContext(
       activityName: String,
       value: RetrofitCallEventContext
@@ -611,6 +614,7 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
+    /** The [EventActivityContext] corresponding to [RetrofitCallFailedEventContext]s. */
     class RetrofitCallFailedContext(
       activityName: String,
       value: RetrofitCallFailedEventContext
@@ -624,6 +628,7 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
+    /** The [EventActivityContext] corresponding to [ForegroundAppTimeEventContext]s. */
     class ForegroundAppTimeContext(
       activityName: String,
       value: ForegroundAppTimeEventContext

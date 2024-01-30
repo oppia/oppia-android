@@ -11,12 +11,12 @@ kt_android_library(
     srcs = [
         "JsonPrefixNetworkInterceptor.kt",
         "NetworkApiKey.kt",
-        "RemoteAuthNetworkInterceptor.kt",
         "NetworkLoggingInterceptor.kt",
+        "RemoteAuthNetworkInterceptor.kt",
     ],
     visibility = [
+        "//:oppia_api_visibility",
         "//:oppia_testing_visibility",
-        "//:oppia_api_visibility"
     ],
     deps = [
         ":constants",
