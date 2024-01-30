@@ -224,3 +224,13 @@ const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES =
  * experience with the app.
  */
 const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE = 5
+
+/** Qualifier for the platform parameter that toggles the new onboarding flow. */
+@Qualifier
+annotation class EnableOnboardingFlowV2
+
+/** Name of the platform parameter that toggles the new onboarding flow. */
+const val ENABLE_ONBOARDING_FLOW_V2 = "enable_onboarding_flow_v2"
+
+/** Default value of the platform parameter corresponding to [EnableOnboardingFlowV2]. */
+const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = false
