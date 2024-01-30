@@ -72,7 +72,7 @@ In order to release these types of features in a smooth manner, we need to be ab
         ) ?: PlatformParameterValue.createDefaultParameter(
         SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
         )
-    }   
+    }
     }
     ```
 
