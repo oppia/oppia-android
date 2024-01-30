@@ -372,6 +372,13 @@ class AnalyticsController @Inject constructor(
     }
   }
 
+  fun logAppOnboardedEvent(profileId: ProfileId?) {
+    logLowPriorityEvent(
+      oppiaLogger.createAppOnBoardingContext(),
+      profileId = profileId
+    )
+  }
+
   // TODO(#4119): Migrate this to Flow.lastOrNull() once Kotlin 1.5 is available.
   private suspend fun <T : Any> Flow<T>.lastOrNull(): T? {
     return CoroutineScope(backgroundDispatcher).async {
