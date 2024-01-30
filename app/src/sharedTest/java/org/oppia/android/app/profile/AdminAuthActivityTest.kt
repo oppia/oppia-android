@@ -676,7 +676,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_intent_extras_passed() {
-    activityTestRule.launchActivity(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
