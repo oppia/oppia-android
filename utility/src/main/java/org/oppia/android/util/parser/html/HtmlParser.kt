@@ -79,14 +79,13 @@ class HtmlParser private constructor(
     supportsConceptCards: Boolean = false
   ): Spannable {
     var htmlContent = rawString
+    val regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
 
-    var regex: Regex? = null
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     if (isRtl) {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_RTL
 
-      regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
       val modifiedHtmlContent = rawString.replace(regex) {
         val oppiaImageTag = it.value
         """<div style="text-align: center;">$oppiaImageTag</div>"""
@@ -95,8 +94,8 @@ class HtmlParser private constructor(
     } else {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
 
-      // Images are wrapped inside `<div>` tag so that all images display in block mode.
-      regex = Regex("""<oppia-noninteractive-image [^>]*>.*?</oppia-noninteractive-image>""")
+      // Images are wrapped inside a <div> tag, because the <div> tag is a block-level element,
+      // so that all images display in block mode and on a new line."
       val modifiedHtmlContent = rawString.replace(regex) {
         val oppiaImageTag = it.value
         """<div>$oppiaImageTag</div>"""
