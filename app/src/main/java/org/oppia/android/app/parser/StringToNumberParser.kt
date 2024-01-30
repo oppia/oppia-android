@@ -41,6 +41,9 @@ class StringToNumberParser {
    * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): NumericInputParsingError {
+    if (text.isBlank()) {
+      return NumericInputParsingError.EMPTY_INPUT
+    }
     if (text.length > 15) {
       return NumericInputParsingError.NUMBER_TOO_LONG
     }
@@ -57,7 +60,8 @@ class StringToNumberParser {
     VALID(error = null),
     INVALID_FORMAT(error = R.string.number_error_invalid_format),
     STARTING_WITH_FLOATING_POINT(error = R.string.number_error_starting_with_floating_point),
-    NUMBER_TOO_LONG(error = R.string.number_error_larger_than_fifteen_characters);
+    NUMBER_TOO_LONG(error = R.string.number_error_larger_than_fifteen_characters),
+    EMPTY_INPUT(error = R.string.number_error_empty_input);
 
     /**
      * Returns the string corresponding to this error's string resources, or null if there is none.

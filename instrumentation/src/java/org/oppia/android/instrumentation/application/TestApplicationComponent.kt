@@ -45,6 +45,7 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
@@ -101,7 +102,8 @@ import javax.inject.Singleton
     MetricLogSchedulerModule::class, ActivityRouterModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
-    ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class
+    ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class,
+    TestAuthenticationModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {
