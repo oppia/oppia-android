@@ -19,6 +19,7 @@ import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.BuildConfig
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
@@ -160,29 +161,16 @@ class DeprecationController @Inject constructor(
    * [StartupMode.USER_NOT_YET_ONBOARDED] based on the values of [lowestSupportedApiLevel],
    * [optionalAppUpdateVersionCode], [forcedAppUpdateVersionCode] and [onboardingState].
    */
-  fun processStartUpMode(onboardingState: OnboardingState): StartupMode {
-    val deprecationDataProvider = getDeprecationDatabase()
-
-    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
-
-//    runBlocking {
-//      deprecationDataProvider.retrieveData().transform {
-//        deprecationDatabase = it
-//      }
-//    }
-
-    deprecationDataProvider.transform(
-      GET_DEPRECATION_RESPONSE_DATABASE_ID
-    ) {
-      deprecationDatabase = it
-    }
-
+  fun processStartUpMode(
+    onboardingState: OnboardingState,
+    deprecationDatabase: DeprecationResponseDatabase
+  ): StartupMode {
     val previousDeprecatedAppVersion = deprecationDatabase.appDeprecationResponse.deprecatedVersion
     val previousDeprecatedOsVersion = deprecationDatabase.osDeprecationResponse.deprecatedVersion
 
-    val appVersionCode = Build.VERSION.SDK_INT
-    val osIsDeprecated = lowestSupportedApiLevel.value > appVersionCode &&
-      previousDeprecatedAppVersion != appVersionCode
+    val appVersionCode = BuildConfig.VERSION_CODE
+    val currentApiLevel = Build.VERSION.SDK_INT
+    val osIsDeprecated = lowestSupportedApiLevel.value > currentApiLevel
     val osDeprecationDialogHasNotBeenShown =
       previousDeprecatedOsVersion < lowestSupportedApiLevel.value
 

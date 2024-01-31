@@ -18,6 +18,8 @@ import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.DeprecationResponseDatabase
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -104,9 +106,20 @@ class AppStartupStateController @Inject constructor(
   fun getAppStartupState(): DataProvider<AppStartupState> = appStartupStateDataProvider
 
   private fun computeAppStartupStateProvider(): DataProvider<AppStartupState> {
-    return onboardingFlowStore.transform(APP_STARTUP_STATE_PROVIDER_ID) { onboardingState ->
+//    return onboardingFlowStore.transform(APP_STARTUP_STATE_PROVIDER_ID) { onboardingState ->
+//      AppStartupState.newBuilder().apply {
+//        startupMode = computeAppStartupMode(onboardingState)
+//        buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
+//      }.build()
+//    }
+    val databaseProvider = deprecationController.getDeprecationDatabase()
+
+    return onboardingFlowStore.combineWith(
+      databaseProvider,
+      ""
+    ) { onboardingState, deprecationResponseDatabase ->
       AppStartupState.newBuilder().apply {
-        startupMode = computeAppStartupMode(onboardingState)
+        startupMode = computeAppStartupMode(onboardingState, deprecationResponseDatabase)
         buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
       }.build()
     }
@@ -129,7 +142,10 @@ class AppStartupStateController @Inject constructor(
     }
   }
 
-  private fun computeAppStartupMode(onboardingState: OnboardingState): StartupMode {
+  private fun computeAppStartupMode(
+    onboardingState: OnboardingState,
+    deprecationResponseDatabase: DeprecationResponseDatabase
+  ): StartupMode {
     // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
     // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
     if (!enableAppAndOsDeprecation.value) {
@@ -140,7 +156,7 @@ class AppStartupStateController @Inject constructor(
       }
     }
 
-    return deprecationController.processStartUpMode(onboardingState)
+    return deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
   }
 
   private fun computeBuildNoticeMode(
