@@ -13,7 +13,7 @@ import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
@@ -22,9 +22,9 @@ import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
@@ -119,11 +119,6 @@ class TestPlatformParameterModule {
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
     )
   }
-
-  @Provides
-  @EnableLanguageSelectionUi
-  fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(enableLanguageSelectionUi)
 
   @Provides
   @EnableEditAccountsOptionsUi
@@ -273,6 +268,12 @@ class TestPlatformParameterModule {
     }
 
   @Provides
+  @EnableNpsSurvey
+  fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableNpsSurvey)
+  }
+
+  @Provides
   @EnableOnboardingFlowV2
   fun provideEnableNewOnboardingUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(enableOnboardingFlowV2)
@@ -280,7 +281,6 @@ class TestPlatformParameterModule {
 
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
-    private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
     private var enableFastLanguageSwitchingInLesson =
@@ -296,18 +296,12 @@ class TestPlatformParameterModule {
     private var minimumLearningTime =
       NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
     private var gracePeriodInDays = NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+    private var enableNpsSurvey = ENABLE_NPS_SURVEY_DEFAULT_VALUE
     private var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 
-    /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableDownloadsSupport(value: Boolean) {
       enableDownloadsSupport = value
-    }
-
-    /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableLanguageSelectionUi(value: Boolean) {
-      enableLanguageSelectionUi = value
     }
 
     /** Enables forcing [EnableEditAccountsOptionsUI] platform parameter flag from tests. */
@@ -358,6 +352,12 @@ class TestPlatformParameterModule {
       enableSpotlightUi = value
     }
 
+    /** Enables forcing [EnableNpsSurvey] feature flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableNpsSurvey(value: Boolean) {
+      enableNpsSurvey = value
+    }
+
     /** Enables forcing [EnableOnboardingFlowV2] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableOnboardingFlowV2(value: Boolean) {
@@ -367,7 +367,6 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun reset() {
       enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
-      enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
       enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
       enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
       enableFastLanguageSwitchingInLesson = FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE

@@ -49,7 +49,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     navigationDrawerFragment = activity
       .supportFragmentManager
       .findFragmentById(R.id.home_activity_fragment_navigation_drawer) as NavigationDrawerFragment
-    navigationDrawerFragment!!.initializeDrawer(
+    navigationDrawerFragment!!.setUpDrawer(
       activity.findViewById<View>(R.id.home_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_home
     )
