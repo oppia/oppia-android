@@ -134,20 +134,14 @@ class OnboardingFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -667,6 +661,38 @@ class OnboardingFragmentTest {
       )
     }
   }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_languageSelectionScreenIsDisplayed() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.onboarding_language_activity_select_label)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_prefilledLanguageSelectionIsEnglish() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.english_localized_language_name)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  //TODO add tests for supported app language default locales: arabic, portuguese, nigeria
+  // Add test for unsupported default locale eg french
+  // Add test for langauge list dropdown contents
 
   private fun getResources(): Resources =
     ApplicationProvider.getApplicationContext<Context>().resources
