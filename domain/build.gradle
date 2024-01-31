@@ -106,7 +106,7 @@ dependencies {
   )
   testImplementation(
       'android.arch.core:core-testing:1.1.1',
-      'androidx.test.espresso:espresso-core:3.2.0',
+      'androidx.test.espresso:espresso-core:3.5.0-alpha03',
       'androidx.test.ext:junit:1.1.1',
       'androidx.work:work-testing:2.4.0',
       'com.google.dagger:dagger:2.24',
@@ -118,7 +118,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:3.9.0',
-      'org.robolectric:robolectric:4.5',
+      'org.robolectric:robolectric:4.7',
       project(":testing"),
   )
   kapt(

@@ -1,6 +1,6 @@
 maven_dependency {
-  artifact_name: "androidx.annotation:annotation-experimental:1.0.0"
-  artifact_version: "1.0.0"
+  artifact_name: "androidx.annotation:annotation-experimental:1.1.0"
+  artifact_version: "1.1.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -10,8 +10,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.annotation:annotation:1.1.0"
-  artifact_version: "1.1.0"
+  artifact_name: "androidx.annotation:annotation:1.2.0"
+  artifact_version: "1.2.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -208,8 +208,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.lifecycle:lifecycle-common:2.2.0"
-  artifact_version: "2.2.0"
+  artifact_name: "androidx.lifecycle:lifecycle-common:2.3.1"
+  artifact_version: "2.3.1"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -962,8 +962,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0"
-  artifact_version: "1.5.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31"
+  artifact_version: "1.5.31"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -995,8 +995,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
-  artifact_version: "1.5.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
+  artifact_version: "1.5.31"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1039,11 +1039,11 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.ow2.asm:asm:9.1"
-  artifact_version: "9.1"
+  artifact_name: "org.ow2.asm:asm:9.2"
+  artifact_version: "9.2"
   license {
     license_name: "BSD-3-Clause"
-    original_link: "https://asm.ow2.io/license.html"
+    original_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/org.ow2.asm%3Aasm%3A7.2-license.txt"
     extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/org.ow2.asm%3Aasm%3A7.2-license.txt"
     }
