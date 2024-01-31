@@ -51,6 +51,9 @@ abstract class AbstractOppiaApplication(
     // TODO(#4751): Re-enable WorkManager for S+.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
       FirebaseApp.initializeApp(applicationContext)
+      // FirebaseAppCheck protects our API resources from abuse. It works with Firebase services,
+      // Google Cloud services, and can also be implemented for our own APIs.
+      // See https://firebase.google.com/docs/app-check for currently supported Firebase products.
       if (component.getCurrentBuildFlavor() == BuildFlavor.DEVELOPER) {
         FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
           DebugAppCheckProviderFactory.getInstance(),
