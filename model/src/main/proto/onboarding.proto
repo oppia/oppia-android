@@ -33,6 +33,10 @@ message AppStartupState {
     // they are using an OS version that is no longer supported. The user should be shown a prompt
     // to update their OS.
     OS_IS_DEPRECATED = 5;
+
+    // Indicates that the onboarding flow shown to the user should be the new flow.
+    // TODO(#): Remove after onboarding project stabilization.
+    ONBOARDING_FLOW_V2 = 6;
   }
 
   // Describes different notices that may be shown to the user on startup depending on whether
@@ -69,6 +73,7 @@ message AppStartupState {
 
 // Stores the completion state of the user's progress through the app onboarding flow.
 message OnboardingState {
+  // TODO(#): Remove after onboarding project stabilization
   // Indicates whether user has fully completed the onboarding flow.
   bool already_onboarded_app = 1;
 
@@ -82,4 +87,22 @@ message OnboardingState {
   // Represents whether the user has seen, and asked to not see again, the notice that they're using
   // the general availability version of the app after having previously used a pre-release version.
   bool permanently_dismissed_ga_upgrade_notice = 4;
+}
+
+// Indicates the state of the app with regards to the number and type of existing profiles.
+enum ProfileOnboardingState {
+  // Indicates that the number or type of profiles is unknown.
+  PROFILE_ONBOARDING_STATE_UNSPECIFIED = 0;
+
+  // Indicates that this is a new app install given that there are no existing profiles.
+  NEW_INSTALL = 1;
+
+  // Indicates that there is only one profile and it is a sole learner profile.
+  SOLE_LEARNER_PROFILE = 2;
+
+  // Indicates that there is only one profile and it is an admin profile.
+  ADMIN_PROFILE_ONLY = 3;
+
+  // Indicates that there are multiple profiles on the device.
+  MULTIPLE_PROFILES = 4;
 }

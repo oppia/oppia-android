@@ -37,6 +37,11 @@ message EventLog {
   // The audio language selection context at the time of this event's creation.
   AudioTranslationLanguageSelection audio_translation_language_selection = 7;
 
+  // The profileId and profileType to which this event corresponds, or empty if this event is not tied to a particular
+  // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+  // at source.
+  ProfileContext profile_context = 9;
+
   // Structure of an activity context.
   message Context {
     // Deprecated exploration context. This is now handled via the open_exploration_activity context
@@ -176,6 +181,18 @@ message EventLog {
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
     }
+  }
+
+  // Structure of a ProfileContext which contains the profileId and profileType to which this event
+  // corresponds.
+  message ProfileContext {
+    // The profile to which this event corresponds, or empty if this event is not tied to a particular
+    // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+    // at source.
+    ProfileId profile_id = 1;
+
+    // Represents the type of user profile.
+    ProfileType profile_type = 2;
   }
 
   // Structure of a question context.
