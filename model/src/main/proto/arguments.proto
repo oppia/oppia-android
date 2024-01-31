@@ -555,8 +555,14 @@ message TopicPracticeFragmentArguments {
 }
 
 message TopicPracticeFragmentStateBundle {
+
   repeated int32 sub_topic_id_list = 1;
-  map<int32, string> skill_id_list = 2;
+
+  map<int32, StringList> skill_id_list = 2;
+
+  message StringList {
+    repeated string values = 1;
+  }
 }
 
 message TopicRevisionFragmentArguments {
@@ -593,4 +599,3 @@ message SurveyWelcomeDialogFragmentArguments {
 message WalkthroughFinalFragmentArguments {
   string topic_id = 1;
 }
-

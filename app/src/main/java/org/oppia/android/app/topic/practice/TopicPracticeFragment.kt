@@ -2,6 +2,7 @@ package org.oppia.android.app.topic.practice
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.TopicPracticeFragmentStateBundle
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
@@ -21,8 +23,8 @@ class TopicPracticeFragment : InjectableFragment() {
     /** Arguments key for TopicPracticeFragment. */
     const val TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY = "TopicPracticeFragment.arguments"
 
-    internal const val SUBTOPIC_ID_LIST_ARGUMENT_KEY = "TopicPracticeFragment.subtopic_id_list"
-    internal const val SKILL_ID_LIST_ARGUMENT_KEY = "TopicPracticeFragment.skill_id_list"
+    /** Staete key for TopicPracticeFragment. */
+    const val TOPIC_PRACTICE_FRAGMENT_STATE_KEY = "TopicPracticeFragment.state"
 
     /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
@@ -53,12 +55,18 @@ class TopicPracticeFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
+
     var selectedIdList = ArrayList<Int>()
     var selectedSkillId = HashMap<Int, MutableList<String>>()
     if (savedInstanceState != null) {
-      selectedIdList = savedInstanceState.getIntegerArrayList(SUBTOPIC_ID_LIST_ARGUMENT_KEY)!!
-      selectedSkillId = savedInstanceState
-        .getSerializable(SKILL_ID_LIST_ARGUMENT_KEY)!! as HashMap<Int, MutableList<String>>
+      val savedArgs = savedInstanceState.getProto(
+        TOPIC_PRACTICE_FRAGMENT_STATE_KEY,
+        TopicPracticeFragmentStateBundle.getDefaultInstance()
+      )
+      selectedIdList = savedArgs.subTopicIdListList.let { ArrayList(it) }
+      selectedSkillId = savedArgs.skillIdListMap.mapValues { entry ->
+        entry.value.valuesList.toMutableList()
+      } as HashMap<Int, MutableList<String>>
     }
     val args = arguments?.getProto(
       TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
@@ -81,13 +89,17 @@ class TopicPracticeFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putIntegerArrayList(
-      SUBTOPIC_ID_LIST_ARGUMENT_KEY,
-      topicPracticeFragmentPresenter.selectedSubtopicIdList
-    )
-    outState.putSerializable(
-      SKILL_ID_LIST_ARGUMENT_KEY,
-      topicPracticeFragmentPresenter.skillIdHashMap
-    )
+    val args = TopicPracticeFragmentStateBundle.newBuilder().apply {
+      this.addAllSubTopicIdList(topicPracticeFragmentPresenter.selectedSubtopicIdList)
+      topicPracticeFragmentPresenter.skillIdHashMap.forEach { (key, value) ->
+        this.putSkillIdList(
+          key,
+          TopicPracticeFragmentStateBundle.StringList.newBuilder().addAllValues(value).build()
+        )
+      }
+    }.build()
+
+    outState.putProto(TOPIC_PRACTICE_FRAGMENT_STATE_KEY, args)
+
   }
 }
