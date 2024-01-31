@@ -692,4 +692,12 @@
   <item name="android:textSize">@dimen/onboarding_language_message_text_size</item>
   <item name="android:fontFamily">sans-serif</item>
   </style>
+
+  <style name="OnboardingProfileTypeHeaderStyle" parent="TextViewCenterHorizontal">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_onboarding_profile_shared_text_color</item>
+    <item name="android:textSize">@dimen/onboarding_language_title_text_size</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+  </style>
 </resources>

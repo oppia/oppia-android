@@ -10,19 +10,15 @@ import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.onboarding.OnboardingViewModel
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingAppLanguageSelectionFragmentBinding
-import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [OnboardingFragment] V2. */
 @FragmentScope
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
 ) {
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
 
@@ -36,8 +32,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     // data-bound view models.
     binding.let {
       it.lifecycleOwner = fragment
-//      it.presenter = this
-//      it.viewModel = getOnboardingViewModel()
     }
 
     binding.onboardingLanguageDropdown.adapter = ArrayAdapter(
@@ -46,6 +40,12 @@ class OnboardingFragmentPresenter @Inject constructor(
       R.id.onboarding_language_text_view,
       arrayOf("English")
     )
+
+    binding.onboardingLanguageLetsGoButton.setOnClickListener {
+      val intent = OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+      fragment.startActivity(intent)
+    }
+
     return binding.root
   }
 

@@ -20,6 +20,7 @@ const val EXPLORATION_ID_ARGUMENT_KEY = "exploration_id"
 class SurveyActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var binding: SurveyActivityBinding
 
+  /** Handle creation and binding of the SurveyActivity layout. */
   fun handleOnCreate(
     profileId: ProfileId,
     topicId: String,

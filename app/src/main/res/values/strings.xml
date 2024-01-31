@@ -642,4 +642,8 @@
   <string-array name="onboarding_language_activity_languages">
     <item>English</item>
   </string-array>
+
+  <!-- Onboarding Profile Type Activity -->
+  <string name="onboarding_profile_type_activity_title">Profile Type</string>
+
 </resources>
