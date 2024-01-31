@@ -312,7 +312,7 @@ class SurveyProgressController @Inject constructor(
             controllerState.handleUpdatedQuestionsList(message.questionsList)
           is ControllerMessage.FinishSurveySession -> {
             try {
-              controllerState.completeSurveyImpl(message.surveyCompleted, message.callbackFlow)
+              controllerState.completeSurveyImpl(message.callbackFlow)
             } finally {
               // Ensure the actor ends since the session requires no further message processing.
               break
@@ -387,10 +387,11 @@ class SurveyProgressController @Inject constructor(
         )
       }
 
-      saveSelectedAnswer(currentQuestionId.toString(), selectedAnswer)
-
       if (!progress.questionDeck.isCurrentQuestionTerminal()) {
+        saveSelectedAnswer(currentQuestionId.toString(), selectedAnswer)
         moveToNextQuestion()
+      } else {
+        surveyLogger.logOptionalResponse(surveyId, profileId, selectedAnswer.freeFormAnswer)
       }
     }
   }
@@ -454,13 +455,12 @@ class SurveyProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.completeSurveyImpl(
-    surveyCompleted: Boolean,
     endSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
     checkNotNull(this) { "Cannot stop a survey session which wasn't started." }
     tryOperation(endSessionResultFlow) {
       progress.advancePlayStageTo(SurveyProgress.SurveyStage.NOT_IN_SURVEY_SESSION)
-      finishSurveyAndLog(surveyCompleted)
+      finishSurveyAndLog()
     }
   }
 
@@ -473,19 +473,8 @@ class SurveyProgressController @Inject constructor(
     convertAsyncToAutomaticDataProvider("${baseId}_$activeSessionId")
   }
 
-  private suspend fun ControllerState.finishSurveyAndLog(surveyIsComplete: Boolean) {
+  private suspend fun ControllerState.finishSurveyAndLog() {
     when {
-      surveyIsComplete -> {
-        surveyLogger.logMandatoryResponses(
-          surveyId,
-          profileId,
-          getStoredResponse(SurveyQuestionName.USER_TYPE)!!,
-          getStoredResponse(SurveyQuestionName.MARKET_FIT)!!,
-          getStoredResponse(SurveyQuestionName.NPS)!!
-        )
-
-        // TODO(#5001): Log the optional question response to Firestore
-      }
       progress.questionDeck.hasAnsweredAllMandatoryQuestions() -> {
         surveyLogger.logMandatoryResponses(
           surveyId,
