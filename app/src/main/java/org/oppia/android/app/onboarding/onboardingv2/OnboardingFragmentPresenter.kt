@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.onboarding.OnboardingViewModel
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingAppLanguageSelectionFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment] V2. */
 @FragmentScope
