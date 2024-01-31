@@ -41,7 +41,7 @@ annotation class EnableExtraTopicTabsUi
 const val EXTRA_TOPIC_TABS_UI = "android_enable_extra_topic_tabs_ui"
 
 /** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
-const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = true
+const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the feature flag that controls the visibility of [ProfileAndDeviceIdActivity]
