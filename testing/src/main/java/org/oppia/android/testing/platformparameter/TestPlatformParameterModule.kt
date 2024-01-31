@@ -275,7 +275,7 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnableOnboardingFlowV2
-  fun provideEnableNewOnboardingUi(): PlatformParameterValue<Boolean> {
+  fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(enableOnboardingFlowV2)
   }
 

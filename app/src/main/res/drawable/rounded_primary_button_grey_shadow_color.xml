@@ -7,7 +7,7 @@
     </shape>
   </item>
 
-  <item android:right="1dp" android:bottom="4dp" android:left="1dp">
+  <item android:right="1dp" android:bottom="3dp" android:left="1dp">
     <shape android:shape="rectangle">
       <solid android:color="@color/component_color_shared_secondary_button_background_trim_color" />
       <corners android:radius="@dimen/survey_shared_corner_radius" />

@@ -632,4 +632,21 @@
   <string name="lock_icon_content_description">Lock Icon</string>
   <string name="download_status_image_content_description">Download Status</string>
   <string name="font_scale_html_content_text">html Content</string>
+
+  <!-- Onboarding App Language Activity -->
+  <string name="onboarding_language_activity_title">Welcome to %s!</string>
+  <string name="onboarding_language_activity_subtitle">Learn math for free, anytime!</string>
+  <string name="onboarding_language_activity_text">Made for students aged 7 to 14</string>
+  <string name="onboarding_language_activity_select_label">Select a language to start</string>
+  <string name="onboarding_language_explanation">You can change your language selection anytime in the app settings</string>
+  <string name="onboarding_language_lets_go_button_text">Let\'s go!</string>
+  <string name="onboarding_dropdown_arrow_icon_description">Dropdown arrow icon</string>
+  <string name="onboarding_dropdown_language_icon_description">Dropdown language icon</string>
+  <string-array name="onboarding_language_activity_languages">
+    <item>English</item>
+  </string-array>
+
+  <!-- Onboarding Profile Type Activity -->
+  <string name="onboarding_profile_type_activity_title">Profile Type</string>
+
 </resources>

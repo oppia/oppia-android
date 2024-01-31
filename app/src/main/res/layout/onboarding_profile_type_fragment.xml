@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/profile_type_title_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.20" />
+
+    <TextView
+      android:id="@+id/profile_type_title"
+      style="@style/OnboardingProfileTypeHeaderStyle"
+      android:text="Tell us more about you!"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/profile_type_title_guide" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <com.google.android.material.card.MaterialCardView
+        android:id="@+id/profile_type_learner_navigation_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
+        android:clipToPadding="true"
+        android:maxWidth="144dp"
+        app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="8dp"
+        app:layout_constraintEnd_toStartOf="@id/profile_type_supervisor_navigation_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/profile_type_learner_text"
+            style="@style/OnboardingProfileTypeHeaderStyle"
+            android:text="I'm a student and I want to learn new things!"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </com.google.android.material.card.MaterialCardView>
+
+      <com.google.android.material.card.MaterialCardView
+        android:id="@+id/profile_type_supervisor_navigation_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
+        android:clipToPadding="true"
+        android:maxWidth="144dp"
+        app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/profile_type_learner_navigation_card"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/profile_type_supervisor_text"
+            style="@style/OnboardingProfileTypeHeaderStyle"
+            android:text="I'm the parent, teacher or guardian of a student"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/profile_type_center_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.50" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:id="@+id/onboarding_profile_type_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:customBackgroundColor="@color/component_color_survey_popup_background_color"
+      app:layout_constraintTop_toBottomOf="@id/profile_type_center_guide" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/profile_type_bottom_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.80" />
+
+    <TextView
+      android:id="@+id/onboarding_steps_count"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text=" STEP 2 OF 5"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_type_bottom_guide" />
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Back"
+      android:textAllCaps="false"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_steps_count" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
