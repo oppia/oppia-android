@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.practice
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,12 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicPracticeFragmentArguments
+import org.oppia.android.app.model.TopicPracticeFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import org.oppia.android.app.model.TopicPracticeFragmentStateBundle
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
@@ -100,6 +99,5 @@ class TopicPracticeFragment : InjectableFragment() {
     }.build()
 
     outState.putProto(TOPIC_PRACTICE_FRAGMENT_STATE_KEY, args)
-
   }
 }
