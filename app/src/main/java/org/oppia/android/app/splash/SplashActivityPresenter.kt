@@ -1,5 +1,6 @@
 package org.oppia.android.app.splash
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +14,8 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
@@ -24,6 +27,7 @@ import org.oppia.android.databinding.SplashActivityBinding
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -31,6 +35,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -39,6 +45,7 @@ private const val GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG = "general_availability_u
 private const val SPLASH_INIT_STATE_DATA_PROVIDER_ID = "splash_init_state_data_provider"
 
 /** The presenter for [SplashActivity]. */
+@SuppressLint("CustomSplashScreen")
 @ActivityScope
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -49,7 +56,10 @@ class SplashActivityPresenter @Inject constructor(
   private val localeController: LocaleController,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val currentBuildFlavor: BuildFlavor
+  private val currentBuildFlavor: BuildFlavor,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val profileManagementController: ProfileManagementController
 ) {
   lateinit var startupMode: StartupMode
 
@@ -211,11 +221,73 @@ class SplashActivityPresenter @Inject constructor(
           AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
       }
+      StartupMode.ONBOARDING_FLOW_V2 -> {
+        computeRoute()
+      }
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
         activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
         activity.finish()
+      }
+    }
+  }
+
+  private fun computeRoute() {
+    // Use SplashActivityViewModel to retrieve the profile type and onboarding status
+    // Based on the returned profile information, compute route as follows:
+    when (getProfileOnboardingState()) {
+      ProfileOnboardingState.NEW_INSTALL -> {
+        // route to new app language selection screen
+      }
+      ProfileOnboardingState.SOLE_LEARNER_PROFILE -> {
+        //  route = home screen
+      }
+      else -> {
+        // route = profile selection screen
+        if (enableOnboardingFlowV2.value) {
+          // new vs old profile chooser
+        }
+        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+      }
+    }
+  }
+
+  /** Returns the state of the app based on the number of existing profiles. */
+  private fun getProfileOnboardingState(): ProfileOnboardingState {
+    var profileList = listOf<Profile>()
+    profileManagementController.getProfiles().toLiveData().observe(
+      activity,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            profileList = result.value
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "SplashActivityViewModel",
+              "Encountered unexpected non-successful result when fetching profiles",
+              result.error
+            )
+          }
+          else -> {} // no-op
+        }
+      }
+    )
+
+    return when {
+      profileList.size > 1 -> {
+        ProfileOnboardingState.MULTIPLE_PROFILES
+      }
+      profileList.size == 1 -> {
+        if (profileList.first().isAdmin && profileList.first().hasPin) {
+          ProfileOnboardingState.ADMIN_PROFILE_ONLY
+        } else {
+          ProfileOnboardingState.SOLE_LEARNER_PROFILE
+        }
+      }
+      else -> {
+        ProfileOnboardingState.NEW_INSTALL
       }
     }
   }

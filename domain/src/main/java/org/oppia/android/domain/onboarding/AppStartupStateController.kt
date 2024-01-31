@@ -11,6 +11,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,7 +25,9 @@ class AppStartupStateController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val currentBuildFlavor: BuildFlavor
+  private val currentBuildFlavor: BuildFlavor,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -119,6 +123,9 @@ class AppStartupStateController @Inject constructor(
     return when {
       hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
       onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
+      enableOnboardingFlowV2.value -> {
+        StartupMode.ONBOARDING_FLOW_V2
+      }
       else -> StartupMode.USER_NOT_YET_ONBOARDED
     }
   }

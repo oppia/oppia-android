@@ -14,6 +14,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
@@ -30,6 +31,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
@@ -89,7 +91,9 @@ class ProfileManagementController @Inject constructor(
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   @EnableLoggingLearnerStudyIds
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
-  private val profileNameValidator: ProfileNameValidator
+  private val profileNameValidator: ProfileNameValidator,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
   private val profileDataStore =
@@ -290,6 +294,10 @@ class ProfileManagementController @Inject constructor(
             avatarImageUri = imageUri
           } else avatarColorRgb = colorRgb
         }.build()
+
+        if (enableOnboardingFlowV2.value) {
+          this.profileType = computeProfileType(it)
+        }
       }.build()
 
       val wasProfileEverAdded = it.profilesCount > 0
@@ -304,6 +312,27 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
     }
+  }
+
+  private fun computeProfileType(profileDatabase: ProfileDatabase): ProfileType {
+    return if (isAdminWithPin(profileDatabase)) {
+      ProfileType.SUPERVISOR
+    } else {
+      if (profileDatabase.profilesCount == 1) {
+        ProfileType.SOLE_LEARNER
+      } else {
+        ProfileType.ADDITIONAL_LEARNER
+      }
+    }
+  }
+
+  private fun isAdminWithPin(profileDatabase: ProfileDatabase): Boolean {
+    profileDatabase.profilesMap.values.forEach {
+      if (it.isAdmin && it.hasPin) {
+        return true
+      }
+    }
+    return false
   }
 
   /**
@@ -684,7 +713,7 @@ class ProfileManagementController @Inject constructor(
         return@createInMemoryDataProviderAsync AsyncResult.Success(0)
       }
       AsyncResult.Failure(
-        ProfileNotFoundException(
+        ProfileManagementController.ProfileNotFoundException(
           "ProfileId ${profileId.internalId} is" +
             " not associated with an existing profile"
         )
