@@ -159,47 +159,10 @@ When the commands above are finished running, the Android SDK should now be inst
 
 ### 4. Installing Bazel
 
-Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 4.0.0, so you'll likely need to run the following commands:
+Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 4.0.0, so you'll likely need to run the following command:
 
-**Step 1:**
-
-Get the link for the binary installer for Linux from [Bazel Github Releases](https://github.com/bazelbuild/bazel/releases/tag/4.0.0).
-In your WSL terminal, use the wget command to download the installer script.
-
-Note: Move to a directory where your user has write permissions. For example, you can change to your home directory:
-
-**home directory:**
 ```sh
-cd ~
-```
-**wget command:**
-```sh
-wget https://github.com/bazelbuild/bazel/releases/download/4.0.0/bazel-4.0.0-installer-linux-x86_64.sh
-```
-
-**Step 2:**
-
-If the download is successful, proceed to make the script executable.
-```sh
-chmod +x bazel-4.0.0-installer-linux-x86_64.sh
-```
-
-**Step 3:**
-
-Run the installer script.
-```sh
-./bazel-4.0.0-installer-linux-x86_64.sh --user
-```
-
-**Step 4:**
-
-Follow the instructions provided by the installer to add Bazel to your _PATH_.
-
-**Verify Installation:**
-
-Open a new WSL terminal and run:
-```sh
-bazel version
+sudo apt install bazel-4.0.0
 ```
 
 #### For Fedora 25+
