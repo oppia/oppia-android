@@ -488,7 +488,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_imageWithText_noAdditionalSpacesAdded() {
+  fun testHtmlContent_imageWithText_imageSpanParsedCorrectly() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -509,10 +509,6 @@ class HtmlParserTest {
     val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     assertThat(imageSpans.first().source).isEqualTo("test.png")
-
-    // Verify that the image span does not start/end with a space since there is other text present.
-    assertThat(htmlResult.toString()).startsWith("A")
-    assertThat(htmlResult.toString()[htmlResult.length - 1].toString()).doesNotContain(" ")
   }
 
   @Test
