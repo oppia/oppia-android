@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
 
-/** Fragment that contains the profile type selection flow of the app. */
-class OnboardingProfileTypeFragment : InjectableFragment() {
+/** Fragment that contains the new learner onboarding introduction of the app. */
+class OnboardingLearnerIntroFragment: InjectableFragment() {
   @Inject
-  lateinit var onboardingProfileTypeFragmentPresenter: OnboardingProfileTypeFragmentPresenter
+  lateinit var onboardingLearnerIntroFragmentPresenter: OnboardingLearnerIntroFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -24,6 +24,6 @@ class OnboardingProfileTypeFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return onboardingProfileTypeFragmentPresenter.handleCreateView(inflater, container)
+    return onboardingLearnerIntroFragmentPresenter.handleCreateView(inflater, container)
   }
 }

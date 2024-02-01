@@ -736,6 +736,7 @@ class EventBundleCreator @Inject constructor(
       ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
       ScreenName.SURVEY_ACTIVITY -> "survey_activity"
       ScreenName.ONBOARDING_PROFILE_TYPE_ACTIVITY -> "onboarding_profile_type_activity"
+      ScreenName.ONBOARDING_LEARNER_INTRO_ACTIVITY -> "onboarding_learner_intro_activity"
     }
 
     private fun AppLanguageSelection.toAnalyticsText(): String {

@@ -777,7 +777,14 @@
   <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
 
-  <!-- Onboarding App Language -->
+  <!-- Onboarding V2 -->
+  <dimen name="onboarding_navigation_button_margin">16dp</dimen>
+  <dimen name="onboarding_button_padding">12dp</dimen>
+  <dimen name="onboarding_shared_text_padding">20dp</dimen>
+  <dimen name="onboarding_shared_drawable_padding">12dp</dimen>
+  <dimen name="onboarding_shared_text_size">16sp</dimen>
+  <dimen name="onboarding_learner_intro_text_size">18sp</dimen>
+  <dimen name="onboarding_learner_intro_title_margin_top">32dp</dimen>
   <dimen name="onboarding_language_button_margin">16dp</dimen>
   <dimen name="onboarding_language_title_margin">28dp</dimen>
   <dimen name="onboarding_language_subtitle_margin">20dp</dimen>
@@ -785,7 +792,6 @@
   <dimen name="onboarding_language_explanation_text_margin">16dp</dimen>
   <dimen name="onboarding_language_title_text_size">32sp</dimen>
   <dimen name="onboarding_language_subtitle_text_size">24sp</dimen>
-  <dimen name="onboarding_language_message_text_size">16sp</dimen>
   <dimen name="onboarding_language_dropdown_elevation">8dp</dimen>
   <dimen name="onboarding_language_dropdown_padding">8dp</dimen>
   <dimen name="onboarding_language_text_padding">16dp</dimen>
