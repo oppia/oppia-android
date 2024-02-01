@@ -40,7 +40,7 @@ class TextInputViewModel private constructor(
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            /* pendingAnswerError= */ pendingAnswerError,
+            pendingAnswerError = pendingAnswerError,
             inputAnswerAvailable = true // Allow submit on empty answer.
           )
         }
@@ -55,7 +55,6 @@ class TextInputViewModel private constructor(
     )
   }
 
-  /** It checks the pending error for the current text input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
@@ -64,7 +63,7 @@ class TextInputViewModel private constructor(
       AnswerErrorCategory.SUBMIT_TIME -> {
         pendingAnswerError =
           TextParsingUiError.createFromParsingError(
-            getSubmitTimeError(answerText.toString())
+            answerText.toString()
           ).getErrorMessageFromStringRes(resourceHandler)
       }
     }
@@ -152,32 +151,11 @@ class TextInputViewModel private constructor(
     }
   }
 
-  /**
-   * Returns [TextParsingError.EMPTY_INPUT] if input is blank, or
-   * [TextParsingError.VALID] if input is not blank.
-   */
-  fun getSubmitTimeError(text: String): TextParsingError {
-    if (text.isNullOrBlank()) {
-      return TextParsingError.EMPTY_INPUT
-    }
-    return TextParsingError.VALID
-  }
-
-  /** Represents errors that can occur when parsing a text. */
-  enum class TextParsingError {
-
-    /** Indicates that the considered string is a valid. */
-    VALID,
-
-    /** Indicates that the input text was empty. */
-    EMPTY_INPUT
-  }
-
-  enum class TextParsingUiError(@StringRes private var error: Int?) {
-    /** Corresponds to [TextParsingError.VALID]. */
+  private enum class TextParsingUiError(@StringRes private var error: Int?) {
+    /** Corresponds to non empty input. */
     VALID(error = null),
 
-    /** Corresponds to [TextParsingError.EMPTY_INPUT]. */
+    /** Corresponds to empty input. */
     EMPTY_INPUT(error = R.string.text_error_empty_input);
 
     /**
@@ -188,14 +166,14 @@ class TextInputViewModel private constructor(
 
     companion object {
       /**
-       * Returns the [TextParsingUiError] corresponding to the specified [TextParsingError].
+       * Returns the [TextParsingUiError] corresponding to the input.
        */
-      fun createFromParsingError(parsingError: TextParsingError): TextParsingUiError {
-        return when (parsingError) {
+      fun createFromParsingError(text: String): TextParsingUiError {
 
-          TextParsingError.VALID -> VALID
-
-          TextParsingError.EMPTY_INPUT -> EMPTY_INPUT
+        return if (text.isEmpty()) {
+          EMPTY_INPUT
+        } else {
+          VALID
         }
       }
     }
