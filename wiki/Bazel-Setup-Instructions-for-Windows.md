@@ -53,21 +53,36 @@ After that, follow each of the subsections below as needed to install prerequisi
 
 **Java**
 
-- JDK >= 17 is required for Android Package Manager.
-- JDK 8 is required for the Android build tools, and we suggest installing OpenJDK.
+Bazel Setup requires both JDK 8 and JDK>=17 to complete the setup.
 
-(Note: [Android Package Manager](#3-installing-the-android-sdk) works with the latest JDK versions (greater than 17). Therefore, our initial recommendation is to install JDK 17 first and run sdkmanager commands. Subsequently, you can switch to JDK 8 when [building oppia-android](#6-verifying-the-build)).
+- JDK >= 17 is required for [Android Package Manager](#3-installing-the-android-sdk).
+- JDK 8 is required for the [Android build tools](#6-verifying-the-build), and we suggest installing OpenJDK.
+
+(Note: Our recommendation is to install both JDK 8 and JDK 17 and always make sure to run sdkmanager commands with JDK 17 and build commands with JDK 8. `sudo update-alternatives --config java` is used to set the default Java version).
+
+**Install JDK 8**
+
+```sh
+sudo apt install openjdk-8-jdk-headless
+```
+
+**Install JDK 17**
 
 ```sh
 sudo apt install openjdk-17-jdk
 ```
 
 #### For Fedora 25+
+
+- Install JDK 8 by running this command on the terminal:
+```
+sudo dnf install java-1.8.0-openjdk
+```
+
 - Install JDK 17 by running this command on the terminal:
 ```
 sudo dnf install java-17-openjdk
 ```
-- Set the default Java version to jdk-17 by running the following command `sudo update-alternatives --config java` and selecting the number with jdk-17.
 
 #### Follow [these instructions](https://www.java.com/en/download/help/path.html) to correctly set up $JAVA_HOME.
 
@@ -146,7 +161,18 @@ source ~/.bashrc
 
 (The last line reloads your Bash configuration file so that the variable adjustments above become live in your local terminal).
 
-The ``sdkmanager`` command can now be used to install the necessary packages. Run each of the following commands in succession (you may need to accept licenses for the SDK packages in the same way you would when using Android Studio):
+The ``sdkmanager`` command can now be used to install the necessary packages.
+
+**Set the default Java version to JDK-17**
+
+Prior to executing the sdkmanager commands, make sure to set the default Java version to jdk-17 by running the following command:
+
+```sh
+sudo update-alternatives --config java
+```
+Select the number with JDK-17.
+
+Run each of the following commands in succession (you may need to accept licenses for the SDK packages in the same way you would when using Android Studio):
 
 ```sh
 sdkmanager
@@ -203,19 +229,15 @@ At this point, your system should be able to build Oppia Android. To verify, try
 
 To build, it is necessary to configure JDK 8 as the default. To accomplish this, follow these steps:
 
-**Install JDK 8**
-```sh
-sudo apt install openjdk-8-jdk-headless
-```
-
 **Set Default version to JDK 8**
-Set the default Java version to jdk-8 by running the following command:
+
+Prior to executing the build commands, make sure to set the default Java version to jdk-8 by running the following command:
 
 ```sh
 sudo update-alternatives --config java
 ```
 
-Select the number with jdk-8
+Select the number with JDK-8
 
 **Build**
 ```sh
