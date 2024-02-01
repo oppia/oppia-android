@@ -239,7 +239,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/Story
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/TopicLessonViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/practice/TopicPracticeFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/practice/TopicPracticeFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/practice/TopicPracticeViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/HintsAndSolutionQuestionManagerFragmentPresenter.kt"
