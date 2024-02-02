@@ -275,7 +275,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the controller that the user wishes to reveal a hint.
+   * Notifies the controller that the user wishes to view a hint.
    *
    * @param hintIndex index of the hint that is being viewed
    */
@@ -1249,13 +1249,13 @@ class ExplorationProgressController @Inject constructor(
             stateAnalyticsLogger?.logHintUnlocked(newHelpIndex.nextAvailableHintIndex)
           }
           LATEST_REVEALED_HINT_INDEX -> {
-            stateAnalyticsLogger?.logViewHint(newHelpIndex.latestRevealedHintIndex)
+            stateAnalyticsLogger?.logAccessHint(newHelpIndex.latestRevealedHintIndex)
           }
           SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
-            SHOW_SOLUTION -> stateAnalyticsLogger?.logViewSolution()
+            SHOW_SOLUTION -> stateAnalyticsLogger?.logAccessSolution()
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
-              stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
+              stateAnalyticsLogger?.logAccessHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
             LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
           }
@@ -1267,12 +1267,12 @@ class ExplorationProgressController @Inject constructor(
 
     /** Logs when a user views a hint. */
     fun logViewedHint() {
-      stateAnalyticsLogger?.logViewedHint(helpIndex.nextAvailableHintIndex)
+      stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
     }
 
     /** Logs when a user views the solution. */
     fun logViewedSolution() {
-      stateAnalyticsLogger?.logViewedSolution()
+      stateAnalyticsLogger?.logViewSolution()
     }
 
     /**
