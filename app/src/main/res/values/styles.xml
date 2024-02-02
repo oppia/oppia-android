@@ -746,4 +746,14 @@
     <item name="android:textSize">@dimen/onboarding_shared_text_size</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
+
+  <style name="AudioLanguageSubtitleStyle" parent="TextViewCenterHorizontal">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:layout_margin">@dimen/onboarding_language_subtitle_margin</item>
+    <item name="android:textSize">@dimen/onboarding_language_subtitle_text_size</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textAllCaps">false</item>
+  </style>
 </resources>

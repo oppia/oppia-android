@@ -652,6 +652,7 @@
   <!-- Onboarding Learner Intro Activity -->
   <string name="onboarding_learner_intro_activity_title">Welcome</string>
   <string name="onboarding_learner_intro_activity_text">Welcome, %s!</string>
+  <string name="onboarding_learner_intro_classroom_text">Learn Math through fun, story-based lessons.</string>
   <string name="onboarding_learner_intro_practice_text">Try practice questions to test your knowledge.</string>
   <string name="onboarding_learner_intro_feedback_text">Get feedback to improve using %s\'s! corrections.</string>
 
@@ -663,5 +664,8 @@
   <string name="onboarding_step_count_five">STEP 5 OF 5</string>
   <string name="onboarding_navigation_back">Back</string>
   <string name="onboarding_navigation_continue">Continue</string>
+
+  <string name="audio_language_fragment_text">In Oppia, you can listen to lessons!</string>
+  <string name="audio_language_fragment_subtitle">Select the audio language to listen to lessons</string>
 
 </resources>
