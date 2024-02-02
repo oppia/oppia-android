@@ -101,6 +101,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -1028,7 +1029,8 @@ class ProfileAndDeviceIdFragmentTest {
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
-      ApplicationLifecycleModule::class, ExplorationProgressModule::class
+      ApplicationLifecycleModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

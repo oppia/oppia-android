@@ -151,6 +151,7 @@ import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
@@ -4962,7 +4963,8 @@ class StateFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
