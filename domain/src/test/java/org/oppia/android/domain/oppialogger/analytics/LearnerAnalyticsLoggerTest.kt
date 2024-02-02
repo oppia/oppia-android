@@ -900,13 +900,13 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logViewSolution_logsStateEvent() {
+  fun testStateAnalyticsLogger_logAccessSolution_logsStateEvent() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
     testCoroutineDispatchers.runCurrent()
 
-    stateLogger.logViewSolution()
+    stateLogger.logAccessSolution()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1507,7 +1507,7 @@ class LearnerAnalyticsLoggerTest {
     Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid="),
     Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
   )
-  fun testStateAnalyticsLogger_logViewSolution_missingOneId_logsEventWithMissingId() {
+  fun testStateAnalyticsLogger_logAccessSolution_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
@@ -1516,7 +1516,7 @@ class LearnerAnalyticsLoggerTest {
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logViewSolution()
+    stateLogger.logAccessSolution()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1529,14 +1529,14 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logViewSolution_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
+  fun testStateAnalyticsLogger_logAccessSolution_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logViewSolution()
+    stateLogger.logAccessSolution()
     testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
