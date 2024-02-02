@@ -71,7 +71,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/ChapterN
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SurveyOnboardingBackgroundView.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt"

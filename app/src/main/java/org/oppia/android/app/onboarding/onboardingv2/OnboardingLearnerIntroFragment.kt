@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import javax.inject.Inject
 
 /** Fragment that contains the new learner onboarding introduction of the app. */
-class OnboardingLearnerIntroFragment: InjectableFragment() {
+class OnboardingLearnerIntroFragment : InjectableFragment() {
   @Inject
   lateinit var onboardingLearnerIntroFragmentPresenter: OnboardingLearnerIntroFragmentPresenter
 

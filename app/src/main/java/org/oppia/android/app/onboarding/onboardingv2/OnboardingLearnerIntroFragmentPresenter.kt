@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.databinding.OnboardingLearnerIntroFragmentBinding
-import org.oppia.android.databinding.OnboardingProfileTypeFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [OnboardingLearnerIntroFragment]. */
 class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
