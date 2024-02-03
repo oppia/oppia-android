@@ -1,8 +1,8 @@
 package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.FeatureFlagContext
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
+import org.oppia.android.app.model.EventLog.FeatureFlagListContext
 import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
@@ -98,14 +98,14 @@ class FeatureFlagsLogger @Inject constructor(
         createFeatureFlagItemContext(flag)
       )
     }
-    val featureFlagContext = FeatureFlagContext.newBuilder()
+    val featureFlagContext = FeatureFlagListContext.newBuilder()
       .setSessionId(sessionId)
       .addAllFeatureFlags(featureFlagItemList)
       .build()
 
     analyticsController.logLowPriorityEvent(
       EventLog.Context.newBuilder()
-        .setFeatureFlagContext(featureFlagContext)
+        .setFeatureFlagListContext(featureFlagContext)
         .build(),
       profileId = null
     )

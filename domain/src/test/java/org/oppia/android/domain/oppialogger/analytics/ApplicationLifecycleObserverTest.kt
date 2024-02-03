@@ -15,6 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
@@ -28,6 +29,9 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
+import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
+import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -45,6 +49,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -88,11 +93,20 @@ class ApplicationLifecycleObserverTest {
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
+  @Inject
+  lateinit var featureFlagsLogger: FeatureFlagsLogger
+
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
 
   @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
   var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
+  @field:[Inject EnableTestFeatureFlag]
+  lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
+
+  @field:[Inject EnableTestFeatureFlagWithEnabledDefault]
+  lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   @get:Rule
   var activityRule =
@@ -367,6 +381,33 @@ class ApplicationLifecycleObserverTest {
     val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_logsAllFeatureFlags() {
+    setUpTestApplicationComponent()
+
+    featureFlagsLogger.setFeatureFlagItemMap(
+      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+    )
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+
+    applicationLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(eventLog).hasFeatureFlagContextThat {
+      hasSessionIdThat().isEqualTo(sessionId)
+      hasFeatureFlagItemContextThat {
+        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
+        hasFeatureFlagEnabledStateThat().isEqualTo(false)
+        hasFeatureFlagSyncStateThat().isEqualTo(PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER)
+      }
+    }
   }
 
   private fun waitInBackgroundFor(millis: Long) {
