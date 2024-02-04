@@ -1333,7 +1333,7 @@ class HomeActivityTest {
     }
   }
 
- @Config(qualifiers = "+port")
+  @Config(qualifiers = "+port")
   @Test
   fun testHomeActivity_allTopicsCompleted_mobilePortraitDisplaysAllTopicCardsIn2Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
