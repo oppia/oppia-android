@@ -1333,8 +1333,9 @@ class HomeActivityTest {
     }
   }
 
+ @Config(qualifiers = "+port")
   @Test
-  fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
+  fun testHomeActivity_allTopicsCompleted_mobilePortraitDisplaysAllTopicCardsIn2Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1349,6 +1350,58 @@ class HomeActivityTest {
       } else {
         verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
       }
+    }
+  }
+
+  @Config(qualifiers = "+land")
+  @Test
+  fun testHomeActivity_allTopicsCompleted_mobileLandscapeDisplaysAllTopicCardsIn3Columns() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
+      } else {
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+      }
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp-port")
+  @Test
+  fun testHomeActivity_allTopicsCompleted_tabletPortraitDisplaysAllTopicCardsIn3Columns() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp-land")
+  @Test
+  fun testHomeActivity_allTopicsCompleted_tabletLandscapeDisplaysAllTopicCardsIn4Columns() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
     }
   }
 
