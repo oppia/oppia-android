@@ -649,6 +649,13 @@
   <!-- Onboarding Profile Type Activity -->
   <string name="onboarding_profile_type_activity_title">Profile Type</string>
 
+  <!-- Onboarding Create New Profile Activity -->
+  <string name="create_profile_activity_title">Create Profile</string>
+  <string name="create_profile_activity_header">What should we call you?</string>
+  <string name="create_profile_activity_nickname_label">Nickname</string>
+  <string name="create_profile_activity_profile_picture_prompt">Tap here to add a picture</string>
+  <string name="create_profile_activity_nickname_error">Click in the box above to type your nickname.</string>
+
   <!-- Onboarding Learner Intro Activity -->
   <string name="onboarding_learner_intro_activity_title">Welcome</string>
   <string name="onboarding_learner_intro_activity_text">Welcome, %s!</string>

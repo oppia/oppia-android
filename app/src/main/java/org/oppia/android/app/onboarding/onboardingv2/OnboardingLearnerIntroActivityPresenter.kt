@@ -16,7 +16,7 @@ class OnboardingLearnerIntroActivityPresenter @Inject constructor(
 ) {
   private lateinit var binding: OnboardingLearnerIntroActivityBinding
 
-  /** Handle creation and binding of the  OnboardingProfileTypeActivity layout. */
+  /** Handle creation and binding of the  OnboardingLearnerIntroActivity layout. */
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(activity, R.layout.onboarding_learner_intro_activity)
     binding.apply {
