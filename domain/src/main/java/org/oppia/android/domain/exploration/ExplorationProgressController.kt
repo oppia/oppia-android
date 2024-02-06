@@ -531,9 +531,7 @@ class ExplorationProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) {
-      AsyncResult.Failure(e)
-    }
+    } catch (e: Exception) { AsyncResult.Failure(e) }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
