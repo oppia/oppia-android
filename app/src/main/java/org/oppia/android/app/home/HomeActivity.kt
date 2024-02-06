@@ -82,7 +82,9 @@ class HomeActivity :
   }
 
   override fun routeToTopicPlayStory(
-    internalProfileId: Int, topicId: String, storyId: String
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
   ) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
