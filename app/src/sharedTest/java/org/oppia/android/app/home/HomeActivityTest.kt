@@ -1345,11 +1345,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
-      } else {
-        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
-      }
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
     }
   }
 
@@ -1365,11 +1361,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
-      } else {
-        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
-      }
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
     }
   }
 
