@@ -476,8 +476,9 @@ class ExplorationProgressController @Inject constructor(
             }
             is ControllerMessage.SubmitAnswer ->
               controllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
-            is ControllerMessage.HintIsRevealed ->
+            is ControllerMessage.HintIsRevealed -> {
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
+            }
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.MoveToPreviousState ->
@@ -530,7 +531,9 @@ class ExplorationProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) { AsyncResult.Failure(e) }
+    } catch (e: Exception) {
+      AsyncResult.Failure(e)
+    }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
