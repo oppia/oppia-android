@@ -81,7 +81,9 @@ class HomeActivity :
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(
+    internalProfileId: Int, topicId: String, storyId: String
+  ) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         this,
