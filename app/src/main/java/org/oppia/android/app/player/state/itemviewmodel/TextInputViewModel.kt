@@ -56,20 +56,17 @@ class TextInputViewModel private constructor(
   }
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    when (category) {
-      AnswerErrorCategory.REAL_TIME -> {
-        pendingAnswerError = null
-      }
+    return when (category) {
+      AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME -> {
-        pendingAnswerError =
-          TextParsingUiError.createFromParsingError(
-            answerText.toString()
-          ).getErrorMessageFromStringRes(resourceHandler)
+        TextParsingUiError.createForText(
+          answerText.toString()
+        ).getErrorMessageFromStringRes(resourceHandler)
       }
+    }.also {
+      pendingAnswerError = it
+      errorMessage.set(it)
     }
-
-    errorMessage.set(pendingAnswerError)
-    return pendingAnswerError
   }
 
   fun getAnswerTextWatcher(): TextWatcher {
@@ -158,24 +155,14 @@ class TextInputViewModel private constructor(
     /** Corresponds to empty input. */
     EMPTY_INPUT(error = R.string.text_error_empty_input);
 
-    /**
-     * Returns the string corresponding to this error's string resources, or null if there is none.
-     */
+    /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
       error?.let(resourceHandler::getStringInLocale)
 
     companion object {
-      /**
-       * Returns the [TextParsingUiError] corresponding to the input.
-       */
-      fun createFromParsingError(text: String): TextParsingUiError {
-
-        return if (text.isEmpty()) {
-          EMPTY_INPUT
-        } else {
-          VALID
-        }
-      }
+      /** Returns the [TextParsingUiError] corresponding to the input. */
+      fun createForText(text: String): TextParsingUiError =
+        if (text.isEmpty()) EMPTY_INPUT else VALID
     }
   }
 }
