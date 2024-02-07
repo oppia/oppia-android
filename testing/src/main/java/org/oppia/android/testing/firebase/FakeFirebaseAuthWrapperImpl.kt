@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.firebase
 
 import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import org.oppia.android.domain.auth.FirebaseUserWrapper

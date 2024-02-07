@@ -6,9 +6,9 @@ Note that:
  of the test suite.
 """
 
-exports_files(["src/javatests/AndroidManifest.xml"])
-
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+exports_files(["src/javatests/AndroidManifest.xml"])
 
 # Used for end-to-end tests
 android_binary(
