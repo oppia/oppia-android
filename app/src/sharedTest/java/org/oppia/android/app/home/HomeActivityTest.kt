@@ -1335,7 +1335,7 @@ class HomeActivityTest {
 
   @Config(qualifiers = "+port")
   @Test
-  fun testHomeActivity_allTopicsCompleted_mobilePortraitDisplaysAllTopicCardsIn2Columns() {
+  fun testHomeActivity_allTopicsCompleted_mobilePortrait_displaysAllTopicCardsIn2Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1351,7 +1351,7 @@ class HomeActivityTest {
 
   @Config(qualifiers = "+land")
   @Test
-  fun testHomeActivity_allTopicsCompleted_mobileLandscapeDisplaysAllTopicCardsIn3Columns() {
+  fun testHomeActivity_allTopicsCompleted_mobileLandscape_displaysAllTopicCardsIn3Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1367,7 +1367,7 @@ class HomeActivityTest {
 
   @Config(qualifiers = "+sw600dp-port")
   @Test
-  fun testHomeActivity_allTopicsCompleted_tabletPortraitDisplaysAllTopicCardsIn3Columns() {
+  fun testHomeActivity_allTopicsCompleted_tabletPortrait_displaysAllTopicCardsIn3Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1383,7 +1383,7 @@ class HomeActivityTest {
 
   @Config(qualifiers = "+sw600dp-land")
   @Test
-  fun testHomeActivity_allTopicsCompleted_tabletLandscapeDisplaysAllTopicCardsIn4Columns() {
+  fun testHomeActivity_allTopicsCompleted_tabletLandscape_displaysAllTopicCardsIn4Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
