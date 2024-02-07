@@ -110,6 +110,7 @@
 /testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricAssessorTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 
+/testing/src/*/java/org/oppia/android/testing/firebase/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/lightweightcheckpointing/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/logging/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/math/ @oppia/android-app-infrastructure-reviewers
