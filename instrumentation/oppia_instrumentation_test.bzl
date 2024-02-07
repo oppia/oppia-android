@@ -3,6 +3,7 @@ Instrumentation macros to define up end-to-end tests.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
 
 def oppia_instrumentation_test(
         name,
@@ -38,4 +39,9 @@ def oppia_instrumentation_test(
         target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
         test_app = ":%sBinary" % name,
         tags = ["manual"],
+    )
+
+    build_test(
+        name = "%s_smoke_test" % name,
+        targets = [name, "%sBinary" % name],
     )
