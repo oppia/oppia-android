@@ -37,7 +37,7 @@ class CommandExecutorImplTest {
   fun testExecute_echo_invalidDirectory_throwsException() {
     val commandExecutor = CommandExecutorImpl()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       commandExecutor.executeCommand(File("invaliddirectory"), "echo", "value")
     }
 
@@ -53,7 +53,7 @@ class CommandExecutorImplTest {
     // Produce a large output so that echo takes a bit longer to reduce the likelihood of this test
     // flaking on faster machines.
     val largeOutput = "a".repeat(100_000)
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       commandExecutor.executeCommand(tempFolder.root, "echo", largeOutput)
     }
 
@@ -65,7 +65,7 @@ class CommandExecutorImplTest {
   fun testExecute_nonexistentCommand_throwsException() {
     val commandExecutor = CommandExecutorImpl()
 
-    val exception = assertThrows(IOException::class) {
+    val exception = assertThrows<IOException>() {
       commandExecutor.executeCommand(tempFolder.root, "commanddoesnotexist")
     }
 

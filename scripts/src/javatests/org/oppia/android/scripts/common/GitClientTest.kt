@@ -37,14 +37,14 @@ class GitClientTest {
     // Print the status of the git repository to help with debugging in the cases of test failures
     // and to help manually verify the expect git state at the end of each test.
     println("git status (at end of test):")
-    println(testGitRepository.status())
+    println(testGitRepository.status(checkForGitRepository = false))
   }
 
   @Test
   fun testCurrentCommit_forNonRepository_throwsException() {
     val gitClient = GitClient(tempFolder.root, "develop")
 
-    val exception = assertThrows(IllegalStateException::class) { gitClient.currentCommit }
+    val exception = assertThrows<IllegalStateException>() { gitClient.currentCommit }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
     assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")
@@ -80,7 +80,7 @@ class GitClientTest {
   fun testCurrentBranch_forNonRepository_throwsException() {
     val gitClient = GitClient(tempFolder.root, "develop")
 
-    val exception = assertThrows(IllegalStateException::class) { gitClient.currentBranch }
+    val exception = assertThrows<IllegalStateException>() { gitClient.currentBranch }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
     assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")

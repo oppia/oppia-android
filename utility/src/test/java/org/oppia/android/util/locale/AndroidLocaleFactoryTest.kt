@@ -63,7 +63,7 @@ class AndroidLocaleFactoryTest {
 
   @Test
   fun testCreateOneOffAndroidLocale_default_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createOneOffAndroidLocale(OppiaLocaleContext.getDefaultInstance())
     }
 
@@ -105,7 +105,7 @@ class AndroidLocaleFactoryTest {
 
   @Test
   fun testCreateLocale_default_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocaleBlocking(OppiaLocaleContext.getDefaultInstance())
     }
 
@@ -567,7 +567,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
@@ -997,7 +997,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
@@ -1050,7 +1050,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
@@ -1429,7 +1429,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
@@ -1482,7 +1482,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 

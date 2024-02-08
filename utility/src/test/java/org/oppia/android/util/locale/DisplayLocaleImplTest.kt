@@ -349,7 +349,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringInLocale(-1) }
     }
   }
@@ -392,7 +392,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringInLocaleWithWrapping(-1) }
     }
   }
@@ -435,7 +435,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringInLocaleWithoutWrapping(-1) }
     }
   }
@@ -455,7 +455,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringArrayInLocale(-1) }
     }
   }
@@ -491,7 +491,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityStringInLocale(-1, 0) }
     }
   }
@@ -530,7 +530,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityStringInLocaleWithWrapping(-1, 0) }
     }
   }
@@ -569,7 +569,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityStringInLocaleWithoutWrapping(-1, 0) }
     }
   }
@@ -605,7 +605,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityTextInLocale(-1, 0) }
     }
   }
