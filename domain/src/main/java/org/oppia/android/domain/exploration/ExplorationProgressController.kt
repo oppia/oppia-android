@@ -947,9 +947,11 @@ class ExplorationProgressController @Inject constructor(
 
     deferred.invokeOnCompletion {
       val checkpointState = if (it == null) {
+        explorationAnalyticsLogger.logProgressSavingSuccess()
         deferred.getCompleted()
       } else {
         oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
+        explorationAnalyticsLogger.logProgressSavingFailure()
         // CheckpointState is marked as CHECKPOINT_UNSAVED because the deferred did not
         // complete successfully.
         CheckpointState.CHECKPOINT_UNSAVED
