@@ -88,7 +88,7 @@
       android:layout_marginEnd="@dimen/onboarding_shared_margin_4xl"
       android:layout_marginBottom="@dimen/onboarding_shared_margin_large"
       android:background="@drawable/dropdown_background"
-      android:elevation="@dimen/onboarding_language_dropdown_elevation"
+      android:elevation="@dimen/onboarding_shared_elevation"
       android:padding="@dimen/onboarding_shared_padding_small"
       app:layout_constraintEnd_toEndOf="@id/onboarding_language_label"
       app:layout_constraintStart_toStartOf="@id/onboarding_language_label"

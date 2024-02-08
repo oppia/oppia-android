@@ -798,7 +798,9 @@
   <dimen name="onboarding_language_dropdown_margin">32dp</dimen>
   <dimen name="onboarding_language_dropdown_margin_top">20dp</dimen>
   <dimen name="onboarding_language_dropdown_icon_margin">8dp</dimen>
+
   <dimen name="onboarding_shared_corner_radius">4dp</dimen>
+  <dimen name="onboarding_shared_elevation">8dp</dimen>
 
   <dimen name="onboarding_shared_margin_x_small">4dp</dimen>
   <dimen name="onboarding_shared_margin_small">8dp</dimen>
@@ -816,6 +818,7 @@
   <dimen name="onboarding_shared_text_size_medium">16sp</dimen>
   <dimen name="onboarding_shared_text_size_medium_large">20sp</dimen>
   <dimen name="onboarding_shared_text_size_large">24sp</dimen>
+  <dimen name="onboarding_shared_text_size_xl">28sp</dimen>
 
   <dimen name="onboarding_shared_padding_small">4dp</dimen>
   <dimen name="onboarding_shared_padding_medium_small">8dp</dimen>

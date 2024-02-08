@@ -6,20 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/profile_type_title_guide"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.25" />
-
     <TextView
       android:id="@+id/profile_type_title"
       style="@style/OnboardingProfileTypeHeaderStyle"
       android:text="@string/onboarding_profile_type_activity_header"
+      app:layout_constraintBottom_toTopOf="@id/profile_type_learner_navigation_container"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@id/profile_type_title_guide" />
+      app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/profile_type_center_guide"
@@ -44,17 +37,11 @@
 
       <com.google.android.material.card.MaterialCardView
         android:id="@+id/profile_type_learner_navigation_card"
+        style="@style/OnboardingProfileTypeNavigationCardStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:clipToPadding="false"
-        app:cardBackgroundColor="@color/component_color_onboarding_shared_white_color"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="8dp"
-        app:contentPadding="0dp"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_2xl"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_x_small"
         app:layout_constraintEnd_toStartOf="@id/profile_type_supervisor_navigation_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -65,9 +52,11 @@
 
           <ImageView
             android:id="@+id/profile_type_learner_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="132dp"
             android:contentDescription="@string/onboarding_learner_otter_content_description"
+            android:maxWidth="132dp"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -75,12 +64,8 @@
 
           <TextView
             android:id="@+id/profile_type_learner_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:padding="12dp"
+            style="@style/OnboardingProfileTypeTextStyle"
             android:text="@string/onboarding_profile_type_activity_student_text"
-            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_type_learner_image" />
@@ -89,16 +74,11 @@
 
       <com.google.android.material.card.MaterialCardView
         android:id="@+id/profile_type_supervisor_navigation_card"
+        style="@style/OnboardingProfileTypeNavigationCardStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="16dp"
-        android:clipToPadding="false"
-        app:cardBackgroundColor="@color/component_color_onboarding_shared_white_color"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="8dp"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_x_small"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_2xl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profile_type_learner_navigation_card"
         app:layout_constraintTop_toTopOf="parent">
@@ -109,9 +89,11 @@
 
           <ImageView
             android:id="@+id/profile_type_parent_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="132dp"
             android:contentDescription="@string/onboarding_parent_otter_content_description"
+            android:maxWidth="132dp"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -119,11 +101,8 @@
 
           <TextView
             android:id="@+id/profile_type_parent_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
+            style="@style/OnboardingProfileTypeTextStyle"
             android:text="@string/onboarding_profile_type_activity_parent_text"
-            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_type_parent_image" />
@@ -146,25 +125,26 @@
       android:fontFamily="sans-serif"
       android:text="@string/onboarding_step_count_two"
       android:textColor="@color/component_color_onboarding_shared_white_color"
-      android:textSize="@dimen/onboarding_shared_text_size"
+      android:textSize="@dimen/onboarding_shared_text_size_medium_small"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/profile_type_bottom_guide" />
 
     <Button
+      android:id="@+id/onboarding_navigation_back"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/onboarding_navigation_button_margin"
+      android:layout_margin="@dimen/onboarding_shared_margin_medium"
       android:background="@drawable/rounded_rect_white_background"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
       android:minWidth="@dimen/clickable_item_min_width"
       android:minHeight="@dimen/clickable_item_min_height"
-      android:padding="@dimen/onboarding_button_padding"
+      android:padding="@dimen/onboarding_shared_padding_medium"
       android:text="@string/onboarding_navigation_back"
       android:textAllCaps="false"
       android:textColor="@color/component_color_onboarding_shared_green_color"
-      android:textSize="@dimen/onboarding_shared_text_size"
+      android:textSize="@dimen/onboarding_shared_text_size_medium"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_steps_count" />

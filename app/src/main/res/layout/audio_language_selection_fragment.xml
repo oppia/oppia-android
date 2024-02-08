@@ -72,7 +72,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/onboarding_language_text_margin"
       android:background="@drawable/dropdown_background"
-      android:elevation="@dimen/onboarding_language_dropdown_elevation"
+      android:elevation="@dimen/onboarding_shared_elevation"
       android:padding="@dimen/onboarding_language_dropdown_padding"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
