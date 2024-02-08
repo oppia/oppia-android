@@ -123,7 +123,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     withExtraDependency: String? = null,
     subpackage: String? = null
   ): Iterable<File> {
-    initEmptyWorkspace() // Ensure the workspace is at least initialized.
+    // Note that the workspace doesn't need to be explicitly initialized here since the call below
+    // to addTestToBuildFile() will initialize it.
 
     check(testName !in testFileMap) { "Test '$testName' already exists" }
     val testFile = if (subpackage != null) {
