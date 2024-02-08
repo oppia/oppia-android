@@ -443,6 +443,8 @@ class ExplorationProgressController @Inject constructor(
                 ControllerState(
                   ExplorationProgress(),
                   message.isRestart,
+                  isResume = !message.isRestart &&
+                    message.explorationCheckpoint != ExplorationCheckpoint.getDefaultInstance(),
                   message.sessionId,
                   message.ephemeralStateFlow,
                   commandQueue,
@@ -633,6 +635,14 @@ class ExplorationProgressController @Inject constructor(
         stateAnalyticsLogger?.logSubmitAnswer(
           topPendingState.interaction, userAnswer, answerOutcome.labelledAsCorrectAnswer
         )
+
+        // Log correct & incorrect answer submission in a resumed exploration.
+        if (isResume) {
+          if (answerOutcome.labelledAsCorrectAnswer)
+            explorationAnalyticsLogger.logResumeLessonSubmitCorrectAnswer()
+          else
+            explorationAnalyticsLogger.logResumeLessonSubmitIncorrectAnswer()
+        }
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
@@ -1096,6 +1106,7 @@ class ExplorationProgressController @Inject constructor(
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
     val isRestart: Boolean,
+    val isResume: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
     val commandQueue: SendChannel<ControllerMessage<*>>,
