@@ -251,22 +251,22 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     /** Logs that the current exploration progress has failed to save. */
-    internal fun logProgressSavingFailure() {
+    fun logProgressSavingFailure() {
       getExpectedStateLogger()?.logProgressSavingFailure()
     }
 
     /** Logs that the user has left the lesson advertently (attempted to save). */
-    internal fun logLessonSavedAdvertently() {
+    fun logLessonSavedAdvertently() {
       getExpectedStateLogger()?.logLessonSavedAdvertently()
     }
 
     /** Logs that correct answer was submitted in a resumed lesson. */
-    internal fun logResumeLessonSubmitCorrectAnswer() {
+    fun logResumeLessonSubmitCorrectAnswer() {
       getExpectedStateLogger()?.logResumeLessonSubmitCorrectAnswer()
     }
 
     /** Logs that incorrect answer was submitted in a resumed lesson. */
-    internal fun logResumeLessonSubmitIncorrectAnswer() {
+    fun logResumeLessonSubmitIncorrectAnswer() {
       getExpectedStateLogger()?.logResumeLessonSubmitIncorrectAnswer()
     }
 
