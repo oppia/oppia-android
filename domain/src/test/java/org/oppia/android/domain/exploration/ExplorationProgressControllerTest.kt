@@ -87,6 +87,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -109,6 +110,7 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -3189,6 +3191,12 @@ class ExplorationProgressControllerTest {
       // Enable study IDs by default in tests.
       return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
+
+    @Provides
+    @EnableNpsSurvey
+    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -3207,7 +3215,7 @@ class ExplorationProgressControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterSingletonModule::class,
-      ExplorationProgressModule::class
+      ExplorationProgressModule::class, TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

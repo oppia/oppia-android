@@ -24,8 +24,10 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -71,6 +73,9 @@ class SurveyProgressControllerTest {
 
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
 
   private val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
@@ -397,7 +402,26 @@ class SurveyProgressControllerTest {
     }
   }
 
-  // TODO(#5001): Add tests for Optional responses logging to Firestore
+  @Test
+  fun testEndSurvey_afterCompletingAllQuestions_logsOptionalSurveyResponseEvent() {
+    startSuccessfulSurveySession()
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitUserTypeAnswer(UserTypeAnswer.PARENT)
+    submitMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+    submitNpsAnswer(10)
+    submitTextInputAnswer(SurveyQuestionName.PROMOTER_FEEDBACK, TEXT_ANSWER)
+    stopSurveySession(surveyCompleted = true)
+
+    val eventLog = fakeFirestoreEventLogger.getMostRecentEvent()
+
+    EventLogSubject.assertThat(eventLog).hasOptionalSurveyResponseContextThat {
+      hasSurveyDetailsThat {
+        hasSurveyIdThat().isNotEmpty()
+        hasInternalProfileIdThat().isEqualTo("1")
+      }
+      hasFeedbackAnswerThat().isEqualTo(TEXT_ANSWER)
+    }
+  }
 
   private fun stopSurveySession(surveyCompleted: Boolean) {
     val stopProvider = surveyController.stopSurveySession(surveyCompleted)
@@ -542,7 +566,7 @@ class SurveyProgressControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class
+      TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
     ]
   )
 

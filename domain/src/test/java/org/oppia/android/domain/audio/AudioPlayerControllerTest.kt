@@ -57,6 +57,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -73,6 +74,7 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -856,6 +858,12 @@ class AudioPlayerControllerTest {
         defaultValue = enableFeature
       )
     }
+
+    @Provides
+    @EnableNpsSurvey
+    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -874,6 +882,7 @@ class AudioPlayerControllerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
       HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -69,6 +69,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -194,7 +195,8 @@ class ViewEventLogsActivityTest {
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
-      ExplorationProgressModule::class
+      ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
