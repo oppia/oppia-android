@@ -117,7 +117,7 @@ class LocaleControllerTest {
   fun testReconstituteDisplayLocale_defaultContext_throwsException() {
     val context = OppiaLocaleContext.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       localeController.reconstituteDisplayLocale(context)
     }
 

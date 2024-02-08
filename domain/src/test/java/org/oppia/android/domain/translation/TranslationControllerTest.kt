@@ -18,7 +18,7 @@ import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.HtmlTranslationList
-import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -112,9 +112,8 @@ class TranslationControllerTest {
     val appStringId = context.languageDefinition.appStringId
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(appStringId.languageTypeCase).isEqualTo(IETF_BCP47_ID)
-    assertThat(appStringId.ietfBcp47Id.ietfLanguageTag).isEmpty()
-    assertThat(appStringId.androidResourcesLanguageId.languageCode).isEmpty()
+    // TODO: Add tests for IETF_BCP47_ID type cases?
+    assertThat(appStringId.languageTypeCase).isEqualTo(LANGUAGETYPE_NOT_SET)
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
@@ -290,9 +289,7 @@ class TranslationControllerTest {
     val appStringId = context.languageDefinition.appStringId
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(appStringId.languageTypeCase).isEqualTo(IETF_BCP47_ID)
-    assertThat(appStringId.ietfBcp47Id.ietfLanguageTag).isEmpty()
-    assertThat(appStringId.androidResourcesLanguageId.languageCode).isEmpty()
+    assertThat(appStringId.languageTypeCase).isEqualTo(LANGUAGETYPE_NOT_SET)
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 

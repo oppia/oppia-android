@@ -2741,7 +2741,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows(Exception::class) { runScript() }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
