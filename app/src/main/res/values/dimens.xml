@@ -799,4 +799,27 @@
   <dimen name="onboarding_language_dropdown_margin_top">20dp</dimen>
   <dimen name="onboarding_language_dropdown_icon_margin">8dp</dimen>
   <dimen name="onboarding_shared_corner_radius">4dp</dimen>
+
+  <dimen name="onboarding_shared_margin_x_small">4dp</dimen>
+  <dimen name="onboarding_shared_margin_small">8dp</dimen>
+  <dimen name="onboarding_shared_margin_medium_small">12dp</dimen>
+  <dimen name="onboarding_shared_margin_medium">16dp</dimen>
+  <dimen name="onboarding_shared_margin_medium_large">20dp</dimen>
+  <dimen name="onboarding_shared_margin_large">24dp</dimen>
+  <dimen name="onboarding_shared_margin_xl">28dp</dimen>
+  <dimen name="onboarding_shared_margin_2xl">32dp</dimen>
+  <dimen name="onboarding_shared_margin_3xl">36dp</dimen>
+  <dimen name="onboarding_shared_margin_4xl">48dp</dimen>
+
+  <dimen name="onboarding_shared_text_size_small">12sp</dimen>
+  <dimen name="onboarding_shared_text_size_medium_small">14sp</dimen>
+  <dimen name="onboarding_shared_text_size_medium">16sp</dimen>
+  <dimen name="onboarding_shared_text_size_medium_large">20sp</dimen>
+  <dimen name="onboarding_shared_text_size_large">24sp</dimen>
+
+  <dimen name="onboarding_shared_padding_small">4dp</dimen>
+  <dimen name="onboarding_shared_padding_medium_small">8dp</dimen>
+  <dimen name="onboarding_shared_padding_medium">12dp</dimen>
+  <dimen name="onboarding_shared_padding_medium_large">16dp</dimen>
+  <dimen name="onboarding_shared_padding_large">20dp</dimen>
 </resources>

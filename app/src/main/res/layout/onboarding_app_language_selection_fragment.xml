@@ -6,13 +6,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_onboarding_shared_white_color">
-
-    <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@drawable/img_onboarding_language_background"
-      app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/component_color_onboarding_shared_green_color">
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_header_guide"
@@ -46,11 +40,36 @@
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_subtitle" />
 
     <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_image_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.40" />
+
+    <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.55" />
+      app:layout_constraintGuide_percent="0.50" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:id="@+id/onboarding_app_language_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:customBackgroundColor="@color/component_color_onboarding_shared_white_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="@id/onboarding_language_center_guide" />
+
+    <ImageView
+      android:id="@+id/onboarding_app_language_image"
+      android:layout_width="132dp"
+      android:layout_height="132dp"
+      android:contentDescription="@string/onboarding_otter_content_description"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/onboarding_language_image_guide"
+      app:srcCompat="@drawable/otter" />
 
     <TextView
       android:id="@+id/onboarding_language_label"
@@ -58,16 +77,19 @@
       android:text="@string/onboarding_language_activity_select_label"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_language_center_guide" />
+      app:layout_constraintTop_toBottomOf="@id/onboarding_app_language_image" />
 
     <RelativeLayout
       android:id="@+id/onboarding_language_dropdown_background"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/onboarding_language_text_margin"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_4xl"
+      android:layout_marginTop="@dimen/onboarding_shared_margin_medium_small"
+      android:layout_marginEnd="@dimen/onboarding_shared_margin_4xl"
+      android:layout_marginBottom="@dimen/onboarding_shared_margin_large"
       android:background="@drawable/dropdown_background"
       android:elevation="@dimen/onboarding_language_dropdown_elevation"
-      android:padding="@dimen/onboarding_language_dropdown_padding"
+      android:padding="@dimen/onboarding_shared_padding_small"
       app:layout_constraintEnd_toEndOf="@id/onboarding_language_label"
       app:layout_constraintStart_toStartOf="@id/onboarding_language_label"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_label">
@@ -76,16 +98,19 @@
         android:id="@+id/onboarding_language_dropdown_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginStart="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
+        android:layout_marginEnd="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
         android:contentDescription="@string/onboarding_dropdown_language_icon_description"
         app:srcCompat="@drawable/ic_language_icon_black_24dp" />
 
       <Spinner
         android:id="@+id/onboarding_language_dropdown"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@id/onboarding_language_dropdown_icon"
-        android:layout_marginStart="@dimen/onboarding_language_dropdown_margin"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_xl"
         android:background="@drawable/transparent_background"
         android:textColor="@color/component_color_onboarding_language_primary_text_color"
         tools:listheader="English" />
@@ -95,7 +120,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginStart="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
+        android:layout_marginEnd="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
         android:contentDescription="@string/onboarding_dropdown_arrow_icon_description"
         app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
     </RelativeLayout>
@@ -103,7 +131,6 @@
     <TextView
       android:id="@+id/onboarding_language_explanation"
       style="@style/OnboardingLanguageExplanationStyle"
-      android:padding="@dimen/onboarding_language_text_padding"
       android:text="@string/onboarding_language_explanation"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
