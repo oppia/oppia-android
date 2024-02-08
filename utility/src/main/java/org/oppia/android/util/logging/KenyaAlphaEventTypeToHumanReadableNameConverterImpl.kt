@@ -41,8 +41,10 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT -> "progress_saving_success_context"
       ActivityContextCase.PROGRESS_SAVING_FAILURE_CONTEXT -> "progress_saving_failure_context"
       ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT -> "lesson_saved_advertently_context"
-      ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT -> "resume_lesson_submit_correct_answer_context"
-      ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT -> "resume_lesson_submit_incorrect_answer_context"
+      ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT ->
+        "resume_lesson_submit_correct_answer_context"
+      ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT ->
+        "resume_lesson_submit_incorrect_answer_context"
       ActivityContextCase.RESUME_EXPLORATION_CONTEXT -> "resume_exploration_context"
       ActivityContextCase.START_OVER_EXPLORATION_CONTEXT -> "start_over_exploration_context"
       ActivityContextCase.DELETE_PROFILE_CONTEXT -> "delete_profile_context"
