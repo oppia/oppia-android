@@ -18,8 +18,14 @@ class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
   /** Returns the oldest event that's been logged. */
   fun getOldestEvent(): EventLog = eventList.first()
 
+  /** Returns the most oldest [count] logged events. */
+  fun getOldestEvents(count: Int): List<EventLog> = eventList.take(count)
+
   /** Returns the most recently logged event. */
   fun getMostRecentEvent(): EventLog = getMostRecentEvents(count = 1).first()
+
+  /** Returns the 2nd most recently logged event. */
+  fun get2ndMostRecentEvent(): EventLog = getMostRecentEvents(count = 2)[0]
 
   /** Returns the most recent [count] logged events. */
   fun getMostRecentEvents(count: Int): List<EventLog> = eventList.takeLast(count)

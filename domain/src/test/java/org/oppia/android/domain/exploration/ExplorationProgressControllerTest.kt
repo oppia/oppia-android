@@ -1967,8 +1967,8 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
 
     val exploration = loadExploration(TEST_EXPLORATION_ID_2)
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getOldestEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(4)
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
@@ -1986,8 +1986,8 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
 
     // Resuming shouldn't log a 'start card' event.
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getOldestEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(4)
     assertThat(eventLog).hasResumeExplorationContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()
@@ -2003,8 +2003,8 @@ class ExplorationProgressControllerTest {
     restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
 
-    val (eventLog1, eventLog2) = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(2)
+    val (eventLog1, eventLog2) = fakeAnalyticsEventLogger.getOldestEvents(count = 2)
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(5)
     assertThat(eventLog1).hasStartOverExplorationContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()
@@ -2092,7 +2092,7 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.get2ndMostRecentEvent()
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("ItemSelectionMinOne")
@@ -2158,7 +2158,7 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.get2ndMostRecentEvent()
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("ItemSelectionMinOne")
@@ -2208,7 +2208,7 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.get2ndMostRecentEvent()
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("NumberInput")
@@ -2281,7 +2281,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_wrongAnswer_logsSubmitAnswerEventOnly() {
+  fun testSubmitAnswer_wrongAnswer_logsSubmitAnswerEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2290,17 +2290,20 @@ class ExplorationProgressControllerTest {
 
     submitWrongAnswerForPrototypeState2()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
-    assertThat(eventLog).hasSubmitAnswerContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(2)
+    assertThat(eventLogList[0]).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasAnswerCorrectValueThat().isFalse()
     }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+      containsTestExp2Details()
+    }
   }
 
   @Test
-  fun testMoveToNextState_logsStartCardEvent() {
+  fun testMoveToNextState_logsStartCardEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2309,17 +2312,20 @@ class ExplorationProgressControllerTest {
 
     moveToNextState()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
-    assertThat(eventLog).hasStartCardContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(2)
+    assertThat(eventLogList[0]).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasSkillIdThat().isEqualTo("test_skill_id_0")
     }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+      containsTestExp2Details()
+    }
   }
 
   @Test
-  fun testHint_offered_logsHintOfferedEvent() {
+  fun testHint_offered_logsHintOfferedEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2329,16 +2335,19 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasHintUnlockedContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
     }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+      containsTestExp2Details()
+    }
   }
 
   @Test
-  fun testHint_offeredThenViewed_logsViewHintEvent() {
+  fun testHint_offeredThenViewed_logsViewHintEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2351,16 +2360,19 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     )
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessHintContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasAccessHintContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
     }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+      containsTestExp2Details()
+    }
   }
 
   @Test
-  fun testHint_lastHintWithNoSolution_offered_logsHintOfferedEvent() {
+  fun testHint_lastHintWithNoSolution_offered_logsHintOfferedEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2372,16 +2384,19 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswer(choiceIndex = 0)
     submitMultipleChoiceAnswer(choiceIndex = 0)
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasHintUnlockedContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)
     }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+      containsFractionsExp0Details()
+    }
   }
 
   @Test
-  fun testHint_lastHintWithNoSolution_offeredThenViewed_logsViewHintEvent() {
+  fun testHint_lastHintWithNoSolution_offeredThenViewed_logsViewHintEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2397,16 +2412,19 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     )
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessHintContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasAccessHintContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)
     }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+      containsFractionsExp0Details()
+    }
   }
 
   @Test
-  fun testSolution_offered_logsSolutionOfferedEvent() {
+  fun testSolution_offered_logsSolutionOfferedEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2422,13 +2440,16 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasSolutionUnlockedContextThat().containsTestExp2Details()
-    assertThat(eventLog).hasSolutionUnlockedContextThat().hasStateNameThat().isEqualTo("Fractions")
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasSolutionUnlockedContextThat {
+      containsTestExp2Details()
+      hasStateNameThat().isEqualTo("Fractions")
+    }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat().containsTestExp2Details()
   }
 
   @Test
-  fun testSolution_offeredThenViewed_logsViewSolutionEvent() {
+  fun testSolution_offeredThenViewed_logsViewSolutionEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2447,9 +2468,12 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitSolutionIsRevealed()
     )
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessSolutionContextThat().containsTestExp2Details()
-    assertThat(eventLog).hasAccessSolutionContextThat().hasStateNameThat().isEqualTo("Fractions")
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasAccessSolutionContextThat {
+      containsTestExp2Details()
+      hasStateNameThat().isEqualTo("Fractions")
+    }
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat().containsTestExp2Details()
   }
 
   @Test

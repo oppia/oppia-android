@@ -43,6 +43,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPTIONAL_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
@@ -748,6 +749,32 @@ class EventLogSubject private constructor(
    */
   fun hasFinishExplorationContextThat(block: ExplorationContextSubject.() -> Unit) {
     hasFinishExplorationContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [PROGRESS_SAVING_SUCCESS_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasProgressSavingSuccessContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(PROGRESS_SAVING_SUCCESS_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasProgressSavingSuccessContext] and returns a
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasProgressSavingSuccessContextThat(): ExplorationContextSubject {
+    hasProgressSavingSuccessContext()
+    return ExplorationContextSubject.assertThat(actual.context.progressSavingSuccessContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasResumeExplorationContextThat].
+   */
+  fun hasProgressSavingSuccessContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasProgressSavingSuccessContextThat().block()
   }
 
   /**
