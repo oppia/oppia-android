@@ -17,7 +17,10 @@ import java.util.Objects
 /**
  * Implementation of [OppiaLocale.DisplayLocale].
  *
+ * @property localeContext the [OppiaLocaleContext] that this locale is representing
  * @property formattingLocale the [Locale] used for user-facing string formatting
+ * @property machineLocale the application-wide [MachineLocale] used for string formatting
+ * @property formatterFactory the application-wide factory for creating a new [OppiaBidiFormatter]
  */
 class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,

@@ -355,7 +355,7 @@ class AndroidLocaleProfileTest {
         }.build()
       )
 
-    // This method can only be create a method via a valid Android resources language ID.
+    // This method only creates a profile when provided with a valid Android resources language ID.
     assertThat(profile).isNull()
   }
 
@@ -370,7 +370,7 @@ class AndroidLocaleProfileTest {
         }.build()
       )
 
-    // This method can only be create a method via a valid Android resources language ID.
+    // This method only creates a profile when provided with a valid Android resources language ID.
     assertThat(profile).isNull()
   }
 
@@ -383,7 +383,7 @@ class AndroidLocaleProfileTest {
         }.build()
       )
 
-    // This method can only be create a method via a valid Android resources language ID.
+    // This method only creates a profile when provided with a valid Android resources language ID.
     assertThat(profile).isNull()
   }
 

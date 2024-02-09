@@ -189,18 +189,18 @@ class AndroidLocaleFactory @Inject constructor(
      * Note that the returned proposal will prioritize its Android ID configuration over
      * alternatives (such as IETF BCP 47 or a macaronic language configuration).
      *
-     * @param allowRootProfile whether to return a [AndroidLocaleProfile.RootProfile] for cases when
-     *     a valid proposal cannot be determined rather than throwing an exception
+     * @param fallBackToRootProfile whether to return a [AndroidLocaleProfile.RootProfile] for cases
+     *     when a valid proposal cannot be determined rather than throwing an exception
      */
-    fun computeForcedProposal(allowRootProfile: Boolean): LocaleProfileProposal =
-      computeForcedAndroidProposal() ?: toForcedProposal(allowRootProfile)
+    fun computeForcedProposal(fallBackToRootProfile: Boolean): LocaleProfileProposal =
+      computeForcedAndroidProposal() ?: toForcedProposal(fallBackToRootProfile)
 
-    private fun toForcedProposal(allowRootProfile: Boolean): LocaleProfileProposal {
+    private fun toForcedProposal(fallBackToRootProfile: Boolean): LocaleProfileProposal {
       return when (val languageTypeCase = languageId.languageTypeCase) {
         IETF_BCP47_ID -> createIetfProfile().expectedProfile()
         MACARONIC_ID -> createMacaronicProfile().expectedProfile()
         LANGUAGETYPE_NOT_SET, null -> {
-          if (allowRootProfile) {
+          if (fallBackToRootProfile) {
             AndroidLocaleProfile.RootProfile
           } else error("Invalid language case: $languageTypeCase.")
         }
@@ -316,7 +316,7 @@ class AndroidLocaleFactory @Inject constructor(
     ): LocaleProfileProposal {
       return primarySource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
         ?: fallbackSource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
-        ?: primarySource.computeForcedProposal(allowRootProfile = false)
+        ?: primarySource.computeForcedProposal(fallBackToRootProfile = false)
     }
   }
 
@@ -340,7 +340,7 @@ class AndroidLocaleFactory @Inject constructor(
         ?: primarySource.computeForcedAndroidProposal()?.takeOnlyIfViable(localeProfileRepository)
         ?: fallbackSource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
         ?: fallbackSource.computeForcedAndroidProposal()?.takeOnlyIfViable(localeProfileRepository)
-        ?: primarySource.computeForcedProposal(allowRootProfile = true)
+        ?: primarySource.computeForcedProposal(fallBackToRootProfile = true)
     }
   }
 
