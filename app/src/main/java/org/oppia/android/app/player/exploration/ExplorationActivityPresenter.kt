@@ -35,8 +35,8 @@ import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService

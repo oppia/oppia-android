@@ -2372,7 +2372,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_lastHintWithNoSolution_offered_logsHintOfferedEvent_logsProgressSavingSuccessEvent() {
+  fun testHint_lastHintWithNoSolution_offered_logsHintOfferedEvent_logsProgressSavingSuccessEvt() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2396,7 +2396,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_lastHintWithNoSolution_offeredThenViewed_logsViewHintEvent_logsProgressSavingSuccessEvent() {
+  fun testHint_lastHintWithNoSol_offeredThenViewed_logsViewHintEvt_logsProgressSavingSuccessEvt() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
     waitForGetCurrentStateSuccessfulLoad()
