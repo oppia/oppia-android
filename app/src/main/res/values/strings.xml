@@ -658,6 +658,8 @@
   <string name="create_profile_activity_nickname_label">Nickname</string>
   <string name="create_profile_activity_profile_picture_prompt">Tap here to add a picture</string>
   <string name="create_profile_activity_nickname_error">Click in the box above to type your nickname.</string>
+  <string name="create_profile_activity_edit_icon_content_description">Edit profile picture</string>
+  <string name="create_profile_activity_current_picture_content_description">Current profile picture</string>
 
   <!-- Onboarding Learner Intro Activity -->
   <string name="onboarding_learner_intro_activity_title">Welcome</string>

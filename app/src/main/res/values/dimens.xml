@@ -801,6 +801,7 @@
 
   <dimen name="onboarding_shared_corner_radius">4dp</dimen>
   <dimen name="onboarding_shared_elevation">8dp</dimen>
+  <dimen name="onboarding_profile_picture_stroke_width">4dp</dimen>
 
   <dimen name="onboarding_shared_margin_x_small">4dp</dimen>
   <dimen name="onboarding_shared_margin_small">8dp</dimen>
@@ -825,4 +826,5 @@
   <dimen name="onboarding_shared_padding_medium">12dp</dimen>
   <dimen name="onboarding_shared_padding_medium_large">16dp</dimen>
   <dimen name="onboarding_shared_padding_large">20dp</dimen>
+  <dimen name="onboarding_profile_picture_padding">2dp</dimen>
 </resources>

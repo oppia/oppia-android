@@ -734,27 +734,27 @@
 
   <style name="OnboardingNavigationPrimaryButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:minWidth">@dimen/clickable_item_min_width</item>
-    <item name="android:padding">@dimen/onboarding_button_padding</item>
-    <item name="android:layout_margin">@dimen/onboarding_navigation_button_margin</item>
+    <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
+    <item name="android:layout_margin">@dimen/onboarding_shared_margin_medium</item>
     <item name="android:background">@drawable/rounded_primary_button_grey_shadow_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">false</item>
     <item name="android:gravity">center</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_white_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
   </style>
 
   <style name="OnboardingNavigationSecondaryButton" parent="BorderlessMaterialButton">
-    <item name="android:padding">@dimen/onboarding_button_padding</item>
+    <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
     <item name="android:minWidth">@dimen/clickable_item_min_width</item>
-    <item name="android:layout_margin">@dimen/onboarding_navigation_button_margin</item>
+    <item name="android:layout_margin">@dimen/onboarding_shared_margin_medium</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">false</item>
     <item name="android:gravity">center</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_green_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
   </style>
 
   <style name="OnboardingLearnerIntroSubtitleStyle" parent="TextViewStart">
@@ -772,8 +772,9 @@
   <style name="OnboardingStepCountStyle" parent="TextViewCenter">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_margin">@dimen/onboarding_language_text_margin</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_green_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_small</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
 
