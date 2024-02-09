@@ -37,8 +37,9 @@ class NetworkLoggingInterceptor @Inject constructor(
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
-    try {
-      val request = chain.request()
+    val request = chain.request()
+
+    return try {
       val response = chain.proceed(request)
 
       val responseBody = response.body?.string()
@@ -46,7 +47,7 @@ class NetworkLoggingInterceptor @Inject constructor(
       CoroutineScope(backgroundDispatcher).launch {
         _logNetworkCallFlow.emit(
           RetrofitCallContext.newBuilder()
-            .setUrlCalled(request.url.toString())
+            .setRequestUrl(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(response.code)
             .setBody(responseBody ?: "")
@@ -67,10 +68,8 @@ class NetworkLoggingInterceptor @Inject constructor(
         }
       }
 
-      return response
+      response
     } catch (exception: Exception) {
-      val request = chain.request()
-
       CoroutineScope(backgroundDispatcher).launch {
         _logFailedNetworkCallFlow.emit(
           RetrofitCallFailedContext.newBuilder()
@@ -81,7 +80,7 @@ class NetworkLoggingInterceptor @Inject constructor(
             .build()
         )
       }
-      return chain.proceed(request)
+      chain.proceed(request)
     }
   }
 }

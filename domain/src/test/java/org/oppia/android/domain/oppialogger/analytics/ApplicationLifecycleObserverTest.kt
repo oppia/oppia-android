@@ -14,6 +14,7 @@ import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
@@ -367,6 +368,44 @@ class ApplicationLifecycleObserverTest {
     val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_thenInBackground_logsAppInForegroundTime() {
+    // Flaky test as the log is sometimes logged before and sometimes after the app in background
+    // event.
+    setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    applicationLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
+
+    val advanceTime = 10000L
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+
+    val installationIdProvider = loggingIdentifierController.getInstallationId()
+    val installationId = monitorFactory.waitForNextSuccessfulResult(installationIdProvider)
+
+    applicationLifecycleObserver.onAppInForeground()
+    assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
+
+    testCoroutineDispatchers.advanceTimeBy(advanceTime)
+
+    applicationLifecycleObserver.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLogContext = eventLog.context
+
+    assertThat(eventLogContext.activityContextCase)
+      .isEqualTo(ActivityContextCase.APP_IN_FOREGROUND_TIME)
+    assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong()).isEqualTo(advanceTime)
+    assertThat(eventLogContext.appInForegroundTime.appSessionId).isEqualTo(sessionId)
+    assertThat(eventLogContext.appInForegroundTime.installationId).isEqualTo(installationId)
   }
 
   private fun waitInBackgroundFor(millis: Long) {

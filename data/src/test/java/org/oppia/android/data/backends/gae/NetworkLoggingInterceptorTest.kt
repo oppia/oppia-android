@@ -3,8 +3,6 @@ package org.oppia.android.data.backends.gae
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -15,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
@@ -23,7 +22,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
@@ -32,7 +30,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -66,22 +63,26 @@ class NetworkLoggingInterceptorTest {
 
   private lateinit var client: OkHttpClient
 
-  private lateinit var topicService: TopicService
-
-  private val testVersionName = "1.0"
-  private val testVersionCode = 1
-
   private val testUrl = "/"
   private val testApiKey = "api_key"
   private val testApiKeyValue = "api_key_value"
   private val testResponseBody = "{\"test\": \"test\"}"
   private val headerString = "$testApiKey: $testApiKeyValue"
 
+  private lateinit var mockWebServerUrl: HttpUrl
+  private lateinit var request: Request
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    setUpApplicationForContext()
     setUpRetrofit()
+
+    mockWebServerUrl = mockWebServer.url(testUrl)
+
+    request = Request.Builder()
+      .url(mockWebServerUrl)
+      .addHeader(testApiKey, testApiKeyValue)
+      .build()
   }
 
   @After
@@ -91,13 +92,6 @@ class NetworkLoggingInterceptorTest {
 
   @Test
   fun testLoggingInterceptor_makeCallToTopicService_logsNetworkCall() = runBlockingTest {
-    val mockWebServerUrl = mockWebServer.url(testUrl)
-
-    val request = Request.Builder()
-      .url(mockWebServerUrl)
-      .addHeader(testApiKey, testApiKeyValue)
-      .build()
-
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
 
     val networkJob = launch {
@@ -117,14 +111,7 @@ class NetworkLoggingInterceptorTest {
   @Test
   fun testLoggingInterceptor_makeFailingCallToTopicService_logsNetworkCallFailed() =
     runBlockingTest {
-      val mockWebServerUrl = mockWebServer.url(testUrl)
-
       val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
-
-      val request = Request.Builder()
-        .url(mockWebServerUrl)
-        .addHeader(testApiKey, testApiKeyValue)
-        .build()
 
       val mockResponse = MockResponse()
         .setResponseCode(pageNotFound)
@@ -161,13 +148,6 @@ class NetworkLoggingInterceptorTest {
   @Test
   fun testLoggingInterceptor_makeFailingCallToTopicService_logsNetworkCallFailed_withException() =
     runBlockingTest {
-      val mockWebServerUrl = mockWebServer.url(testUrl)
-
-      val request = Request.Builder()
-        .url(mockWebServerUrl)
-        .addHeader(testApiKey, testApiKeyValue)
-        .build()
-
       mockWebServer.shutdown()
 
       val failedNetworkJob = launch {
@@ -177,7 +157,7 @@ class NetworkLoggingInterceptorTest {
           assertThat(it.headers).contains(headerString)
           assertThat(it.body).isEmpty()
           assertThat(it.errorMessage).isNotEmpty()
-          assertThat(it.errorMessage).contains("Failed to connect to localhost/")
+          assertThat(it.errorMessage).contains("Failed to connect to localhost")
         }
       }
 
@@ -191,22 +171,6 @@ class NetworkLoggingInterceptorTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun setUpApplicationForContext() {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = testVersionName
-    packageInfo.versionCode = testVersionCode
-    packageManager.installPackage(packageInfo)
   }
 
   private fun setUpRetrofit() {
@@ -224,19 +188,9 @@ class NetworkLoggingInterceptorTest {
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client)
       .build()
-
-    topicService = retrofit.create(TopicService::class.java)
   }
 
   // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestNetworkModule {
-    @Provides
-    @Singleton
-    @NetworkApiKey
-    fun provideNetworkApiKey(): String = "test_api_key"
-  }
-
   @Module
   class TestModule {
     @Provides
@@ -250,8 +204,8 @@ class NetworkLoggingInterceptorTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestNetworkModule::class, TestModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class
+      RobolectricModule::class, TestModule::class, TestLogReportingModule::class,
+      TestDispatcherModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -119,10 +119,6 @@ class HomeFragmentPresenter @Inject constructor(
               // Do nothing
             }
             is AsyncResult.Success -> {
-              // It's possible for the observer to still be active & change due to the next activity
-              // causing a notification to be posted. That's always invalid to process here: the
-              // splash activity should never do anything after its initial state since it always
-              // finishes (or in the case of the deprecation dialog, blocks) the activity.
               liveData.removeObserver(this)
 
               if (startUpStateResult.value.startupMode ==

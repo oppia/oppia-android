@@ -291,7 +291,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setRetrofitCallContext(
       EventLog.RetrofitCallContext.newBuilder()
-        .setUrlCalled(url)
+        .setRequestUrl(url)
         .setHeaders(headers)
         .setBody(body)
         .setResponseStatusCode(responseCode)
@@ -330,7 +330,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     foregroundTime: Long
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setAppInForegroundTime(
-      EventLog.ForegroundAppTimeContext.newBuilder()
+      EventLog.AppInForegroundTimeContext.newBuilder()
         .setInstallationId(installationId)
         .setAppSessionId(appSessionId)
         .setForegroundTime(foregroundTime.toFloat())

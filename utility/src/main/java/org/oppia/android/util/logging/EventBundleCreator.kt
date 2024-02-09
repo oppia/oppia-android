@@ -99,12 +99,12 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurveyEventContext
+import org.oppia.android.app.model.EventLog.AppInForegroundTimeContext as AppInForegroundTimeEventContext
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.CompleteAppOnboardingContext as CompleteAppOnboardingEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ConsoleLoggerContext as ConsoleLoggerEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
-import org.oppia.android.app.model.EventLog.ForegroundAppTimeContext as ForegroundAppTimeEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
@@ -614,7 +614,7 @@ class EventBundleCreator @Inject constructor(
       value: RetrofitCallEventContext
     ) : EventActivityContext<RetrofitCallEventContext>(activityName, value) {
       override fun RetrofitCallEventContext.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("url", urlCalled)
+        store.putNonSensitiveValue("url", requestUrl)
         store.putNonSensitiveValue("headers", headers)
         store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
@@ -635,12 +635,12 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
-    /** The [EventActivityContext] corresponding to [ForegroundAppTimeEventContext]s. */
+    /** The [EventActivityContext] corresponding to [AppInForegroundTimeEventContext]s. */
     class ForegroundAppTimeContext(
       activityName: String,
-      value: ForegroundAppTimeEventContext
-    ) : EventActivityContext<ForegroundAppTimeEventContext>(activityName, value) {
-      override fun ForegroundAppTimeEventContext.storeValue(store: PropertyStore) {
+      value: AppInForegroundTimeEventContext
+    ) : EventActivityContext<AppInForegroundTimeEventContext>(activityName, value) {
+      override fun AppInForegroundTimeEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("installation_id", installationId)
         store.putNonSensitiveValue("app_session_id", appSessionId)
         store.putNonSensitiveValue("foreground_time", foregroundTime)

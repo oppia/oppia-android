@@ -351,7 +351,7 @@ class AnalyticsController @Inject constructor(
       networkLoggingInterceptor.logNetworkCallFlow.collect { retrofitCallContext ->
         logLowPriorityEvent(
           oppiaLogger.createRetrofitCallContext(
-            url = retrofitCallContext.urlCalled,
+            url = retrofitCallContext.requestUrl,
             headers = retrofitCallContext.headers,
             body = retrofitCallContext.body,
             responseCode = retrofitCallContext.responseStatusCode,

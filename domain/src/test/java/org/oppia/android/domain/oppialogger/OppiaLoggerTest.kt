@@ -47,12 +47,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
@@ -104,7 +98,7 @@ class OppiaLoggerTest {
 
     private const val TEST_INSTALLATION_ID = "test_installation_id"
     private const val TEST_APP_SESSION_ID = "test_app_session_id"
-    private const val TEST_FOREGROUND_TIME = 0L
+    private const val TEST_FOREGROUND_TIME = 5000L
 
     private val TEST_VERBOSE_EXCEPTION = Throwable(TEST_VERBOSE_LOG_EXCEPTION)
     private val TEST_DEBUG_EXCEPTION = Throwable(TEST_DEBUG_LOG_EXCEPTION)
@@ -456,34 +450,6 @@ class OppiaLoggerTest {
   }
 
   @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLearnerAnalyticsStudy: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
-  }
-
-  @Module
   class TestLogStorageModule {
 
     @Provides
@@ -498,8 +464,8 @@ class OppiaLoggerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent {
