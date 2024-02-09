@@ -21,7 +21,7 @@ import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSO
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import javax.inject.Inject
@@ -70,7 +70,7 @@ class FeatureFlagsLogger @Inject constructor(
     FAST_LANGUAGE_SWITCHING_IN_LESSON to enableFastLanguageSwitchingInLesson,
     LOGGING_LEARNER_STUDY_IDS to enableLoggingLearnerStudyIds,
     EDIT_ACCOUNTS_OPTIONS_UI to enableEditAccountsOptionsUi,
-    PERFORMANCE_METRICS_COLLECTION to enablePerformanceMetricsCollection,
+    ENABLE_PERFORMANCE_METRICS_COLLECTION to enablePerformanceMetricsCollection,
     SPOTLIGHT_UI to enableSpotlightUi,
     INTERACTION_CONFIG_CHANGE_STATE_RETENTION to enableInteractionConfigChangeStateRetention,
     APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
