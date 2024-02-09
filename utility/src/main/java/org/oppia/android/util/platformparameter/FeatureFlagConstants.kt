@@ -166,3 +166,13 @@ const val ENABLE_NPS_SURVEY = "enable_nps_survey"
 
 /** Default value of the feature flag corresponding to [EnableNpsSurvey]. */
 const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
+
+/** Qualifier for the feature flag that toggles the new onboarding flow. */
+@Qualifier
+annotation class EnableOnboardingFlowV2
+
+/** Name of the feature flag that toggles the new onboarding flow. */
+const val ENABLE_ONBOARDING_FLOW_V2 = "enable_onboarding_flow_v2"
+
+/** Default value of the feature flag corresponding to [EnableOnboardingFlowV2]. */
+const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = false
