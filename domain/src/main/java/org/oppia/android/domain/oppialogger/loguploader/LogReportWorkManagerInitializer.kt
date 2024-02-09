@@ -55,6 +55,13 @@ class LogReportWorkManagerInitializer @Inject constructor(
     )
     .build()
 
+  private val workerCaseForUploadingFirestoreData: Data = Data.Builder()
+    .putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.FIRESTORE_WORKER
+    )
+    .build()
+
   private val workerCaseForSchedulingPeriodicBackgroundMetricLogs: Data = Data.Builder()
     .putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
@@ -124,12 +131,22 @@ class LogReportWorkManagerInitializer @Inject constructor(
       .setConstraints(logReportWorkerConstraints)
       .build()
 
+  private val workRequestForUploadingFireStoreData: PeriodicWorkRequest =
+    PeriodicWorkRequest.Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+      .setInputData(workerCaseForUploadingFirestoreData)
+      .setConstraints(logReportWorkerConstraints)
+      .build()
+
   override fun onCreate(workManager: WorkManager) {
     logUploader.enqueueWorkRequestForEvents(workManager, workRequestForUploadingEvents)
     logUploader.enqueueWorkRequestForExceptions(workManager, workRequestForUploadingExceptions)
     logUploader.enqueueWorkRequestForPerformanceMetrics(
       workManager,
       workRequestForUploadingPerformanceMetrics
+    )
+    logUploader.enqueueWorkRequestForFirestore(
+      workManager,
+      workRequestForUploadingFireStoreData
     )
     metricLogScheduler.enqueueWorkRequestForPeriodicBackgroundMetrics(
       workManager,
@@ -178,6 +195,9 @@ class LogReportWorkManagerInitializer @Inject constructor(
   fun getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId(): UUID =
     workRequestForSchedulingPeriodicBackgroundMetricLogs.id
 
+  /** Returns the [UUID] of the work request that is enqueued for uploading firestore data. */
+  fun getWorkRequestForFirestoreId(): UUID = workRequestForUploadingFireStoreData.id
+
   /**
    * Returns the [Data] that goes into the work request that is enqueued for uploading event logs.
    */
@@ -212,4 +232,10 @@ class LogReportWorkManagerInitializer @Inject constructor(
    */
   fun getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs(): Data =
     workerCaseForSchedulingPeriodicBackgroundMetricLogs
+
+  /**
+   * Returns the [Data] that goes into the work request that is enqueued for uploading firestore
+   * data.
+   */
+  fun getWorkRequestDataForFirestore(): Data = workerCaseForUploadingFirestoreData
 }
