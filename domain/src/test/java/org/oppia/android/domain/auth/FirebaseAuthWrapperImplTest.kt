@@ -31,7 +31,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FirebaseAuthWrapperImplTest.TestApplication::class)
-
 class FirebaseAuthWrapperImplTest {
 
   @Inject
