@@ -61,4 +61,8 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
       timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel
   }
+
+  open fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    return false
+  }
 }

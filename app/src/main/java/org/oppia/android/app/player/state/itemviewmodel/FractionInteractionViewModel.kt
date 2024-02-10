@@ -56,6 +56,18 @@ class FractionInteractionViewModel private constructor(
     )
   }
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (this === other) return true
+    if (other !is FractionInteractionViewModel) return false
+
+    return (
+      hasConversationView == other.hasConversationView &&
+        isSplitView == other.isSplitView &&
+        pendingAnswerError == other.pendingAnswerError &&
+        hintText == other.hintText
+      )
+  }
+
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
