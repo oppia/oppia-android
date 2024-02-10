@@ -33,6 +33,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
@@ -54,7 +55,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -259,7 +259,9 @@ class StateFragmentPresenter @Inject constructor(
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
-        explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
+        explorationId,
+        viewModel.currentStateName,
+        viewModel.isAudioBarVisible,
         this::getAudioUiManager
       )
       .addConceptCardSupport()
@@ -413,7 +415,9 @@ class StateFragmentPresenter @Inject constructor(
     return when (ephemeralStateResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.error
+          "StateFragment",
+          "Failed to retrieve answer outcome",
+          ephemeralStateResult.error
         )
         AnswerOutcome.getDefaultInstance()
       }
@@ -478,7 +482,6 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
-
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       setHintOpenedAndUnRevealed(false)
@@ -512,7 +515,6 @@ class StateFragmentPresenter @Inject constructor(
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
     if (isHintUnrevealed) {
-
       val hintBulbAnimation = AnimationUtils.loadAnimation(
         context,
         R.anim.hint_bulb_animation
