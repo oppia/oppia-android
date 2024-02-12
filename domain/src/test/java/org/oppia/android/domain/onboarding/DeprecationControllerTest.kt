@@ -13,14 +13,19 @@ import dagger.Module
 import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.DeprecationResponseDatabase
+import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -40,25 +45,16 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.AppStartupState.StartupMode
-import org.oppia.android.app.model.OnboardingState
-import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
-import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
-import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
-import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
-import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Tests for [DeprecationController]. */
 // FunctionName: test names are conventionally named with underscores.

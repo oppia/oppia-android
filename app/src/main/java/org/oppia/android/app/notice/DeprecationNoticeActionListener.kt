@@ -8,8 +8,11 @@ interface DeprecationNoticeActionListener {
   fun onActionButtonClicked(noticeActionResponse: DeprecationNoticeActionResponse)
 }
 
+/** Data class for the response to a deprecation notice action. */
 data class DeprecationNoticeActionResponse(
+  /** The response to the deprecation notice. */
   val deprecationResponse: DeprecationResponse,
+  /** The type of action that was taken. */
   val deprecationNoticeActionType: DeprecationNoticeActionType,
 )
 
