@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.model.DeprecationNoticeType
-import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -26,11 +25,6 @@ class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   fun handleOnCreateDialog(): Dialog {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
 
-    val deprecationResponse = DeprecationResponse.newBuilder()
-      .setDeprecationNoticeType(DeprecationNoticeType.APP_DEPRECATION)
-      .setDeprecatedVersion(optionalAppUpdateVersionCode.value)
-      .build()
-
     val dialog = AlertDialog.Builder(activity, R.style.DeprecationAlertDialogTheme)
       .setTitle(R.string.optional_app_update_dialog_title)
       .setMessage(
@@ -41,17 +35,14 @@ class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
       )
       .setPositiveButton(R.string.optional_app_update_dialog_update_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-          DeprecationNoticeActionResponse(
-            deprecationResponse = deprecationResponse,
-            deprecationNoticeActionType = DeprecationNoticeActionType.UPDATE
-          )
+          DeprecationNoticeActionResponse.Update
         )
       }
       .setNegativeButton(R.string.optional_app_update_dialog_dismiss_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-          DeprecationNoticeActionResponse(
-            deprecationResponse = deprecationResponse,
-            deprecationNoticeActionType = DeprecationNoticeActionType.DISMISS
+          DeprecationNoticeActionResponse.Dismiss(
+            deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION,
+            deprecatedVersion = optionalAppUpdateVersionCode.value
           )
         )
       }

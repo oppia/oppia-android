@@ -164,7 +164,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(withText(R.string.forced_app_update_dialog_update_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(DeprecationNoticeActionType.UPDATE)
+        .onActionButtonClicked(DeprecationNoticeActionResponse.Update)
     }
   }
 
@@ -182,7 +182,7 @@ class ForcedAppDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(withText(R.string.forced_app_update_dialog_close_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(DeprecationNoticeActionType.CLOSE)
+        .onActionButtonClicked(DeprecationNoticeActionResponse.Close)
     }
   }
 

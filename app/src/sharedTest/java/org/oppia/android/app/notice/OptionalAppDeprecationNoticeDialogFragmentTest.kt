@@ -36,6 +36,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.notice.testing.OptionalAppDeprecationNoticeDialogFragmentTestActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -165,7 +166,7 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(withText(R.string.optional_app_update_dialog_update_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(DeprecationNoticeActionType.UPDATE)
+        .onActionButtonClicked(DeprecationNoticeActionResponse.Update)
     }
   }
 
@@ -183,7 +184,12 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(withText(R.string.optional_app_update_dialog_dismiss_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(DeprecationNoticeActionType.DISMISS)
+        .onActionButtonClicked(
+          DeprecationNoticeActionResponse.Dismiss(
+            deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION,
+            deprecatedVersion = 1
+          ) as DeprecationNoticeActionResponse
+        )
     }
   }
 

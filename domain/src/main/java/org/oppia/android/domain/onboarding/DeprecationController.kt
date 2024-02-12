@@ -91,30 +91,6 @@ class DeprecationController @Inject constructor(
    */
   fun getDeprecationDatabase(): DataProvider<DeprecationResponseDatabase> = deprecationDataProvider
 
-//  private fun getDeprecationResponseDatabase(): DeprecationResponseDatabase {
-//    val deprecationDataProvider = fetchDeprecationProvider()
-//
-//    var deprecationDatabase = DeprecationResponseDatabase.newBuilder().build()
-//
-//    deprecationDataProvider.transform(GET_DEPRECATION_RESPONSE_DATABASE_ID) {
-//      deprecationResponseDatabase ->
-//      deprecationDatabase = deprecationResponseDatabase
-//    }
-//
-//    return deprecationDatabase
-//  }
-//
-//  private fun fetchDeprecationProvider(): DataProvider<DeprecationResponseDatabase> {
-//    return deprecationStore.transform(
-//      GET_DEPRECATION_RESPONSE_PROVIDER_ID
-//    ) { deprecationResponsesDatabase ->
-//      DeprecationResponseDatabase.newBuilder().apply {
-//        appDeprecationResponse = deprecationResponsesDatabase.appDeprecationResponse
-//        osDeprecationResponse = deprecationResponsesDatabase.osDeprecationResponse
-//      }.build()
-//    }
-//  }
-
   /**
    * Stores a new [DeprecationResponse] to the cache.
    *

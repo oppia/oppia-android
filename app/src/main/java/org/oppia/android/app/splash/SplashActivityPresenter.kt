@@ -13,10 +13,11 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.model.DeprecationNoticeType
+import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.DeprecationNoticeActionResponse
-import org.oppia.android.app.notice.DeprecationNoticeActionType
 import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
@@ -84,12 +85,13 @@ class SplashActivityPresenter @Inject constructor(
   fun handleOnDeprecationNoticeActionClicked(
     noticeActionResponse: DeprecationNoticeActionResponse
   ) {
-    when (noticeActionResponse.deprecationNoticeActionType) {
-      DeprecationNoticeActionType.CLOSE -> handleOnDeprecationNoticeCloseAppButtonClicked()
-      DeprecationNoticeActionType.DISMISS -> handleOnDeprecationNoticeDialogDismissed(
-        noticeActionResponse
+    when (noticeActionResponse) {
+      is DeprecationNoticeActionResponse.Close -> handleOnDeprecationNoticeCloseAppButtonClicked()
+      is DeprecationNoticeActionResponse.Dismiss -> handleOnDeprecationNoticeDialogDismissed(
+        deprecationNoticeType = noticeActionResponse.deprecationNoticeType,
+        deprecatedVersion = noticeActionResponse.deprecatedVersion
       )
-      DeprecationNoticeActionType.UPDATE -> handleOnDeprecationNoticeUpdateButtonClicked()
+      is DeprecationNoticeActionResponse.Update -> handleOnDeprecationNoticeUpdateButtonClicked()
     }
   }
 
@@ -127,9 +129,15 @@ class SplashActivityPresenter @Inject constructor(
 
   /** Handles cases where the user dismisses the deprecation notice dialog. */
   private fun handleOnDeprecationNoticeDialogDismissed(
-    noticeActionResponse: DeprecationNoticeActionResponse
+    deprecationNoticeType: DeprecationNoticeType,
+    deprecatedVersion: Int
   ) {
-    deprecationController.saveDeprecationResponse(noticeActionResponse.deprecationResponse)
+    val deprecationResponse = DeprecationResponse.newBuilder()
+      .setDeprecationNoticeType(deprecationNoticeType)
+      .setDeprecatedVersion(deprecatedVersion)
+      .build()
+
+    deprecationController.saveDeprecationResponse(deprecationResponse)
 
     // If the Dismiss button is clicked for the deprecation notice, the dialog is automatically
     // dismissed. Navigate to profile chooser activity.
