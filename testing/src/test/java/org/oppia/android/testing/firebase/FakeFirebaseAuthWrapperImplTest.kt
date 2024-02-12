@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.firebase
 
 import android.app.Application
 import android.content.Context
@@ -14,7 +14,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseUserWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.FakeFirebaseAuthWrapperImpl.FakeAuthState
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImpl.FakeAuthState
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
