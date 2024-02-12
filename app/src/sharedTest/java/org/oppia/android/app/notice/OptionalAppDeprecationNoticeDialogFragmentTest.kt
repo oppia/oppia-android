@@ -85,6 +85,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -187,7 +188,7 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
         .onActionButtonClicked(
           DeprecationNoticeActionResponse.Dismiss(
             deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION,
-            deprecatedVersion = 1
+            deprecatedVersion = context.getVersionCode()
           ) as DeprecationNoticeActionResponse
         )
     }

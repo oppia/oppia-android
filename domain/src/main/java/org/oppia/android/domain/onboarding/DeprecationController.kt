@@ -1,5 +1,6 @@
 package org.oppia.android.domain.onboarding
 
+import android.content.Context
 import android.os.Build
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -8,12 +9,12 @@ import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.BuildConfig
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
@@ -32,6 +33,7 @@ private const val GET_DEPRECATION_RESPONSE_DATABASE_ID = "get_deprecation_respon
 @Singleton
 class DeprecationController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
+  private val context: Context,
   private val oppiaLogger: OppiaLogger,
   private val dataProviders: DataProviders,
   @OptionalAppUpdateVersionCode
@@ -143,7 +145,7 @@ class DeprecationController @Inject constructor(
     val previousDeprecatedAppVersion = deprecationDatabase.appDeprecationResponse.deprecatedVersion
     val previousDeprecatedOsVersion = deprecationDatabase.osDeprecationResponse.deprecatedVersion
 
-    val appVersionCode = BuildConfig.VERSION_CODE
+    val appVersionCode = context.getVersionCode()
     val currentApiLevel = Build.VERSION.SDK_INT
     val osIsDeprecated = lowestSupportedApiLevel.value > currentApiLevel
     val osDeprecationDialogHasNotBeenShown =
