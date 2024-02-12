@@ -13,6 +13,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import javax.inject.Inject
 
+/** The presenter for [AudioLanguageFragment] V2. */
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity

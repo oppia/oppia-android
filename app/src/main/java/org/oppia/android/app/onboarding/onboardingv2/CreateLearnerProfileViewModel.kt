@@ -8,5 +8,6 @@ import javax.inject.Inject
 /** The ViewModel for [NewLearnerProfileFragment]. */
 @FragmentScope
 class CreateLearnerProfileViewModel @Inject constructor() : ObservableViewModel() {
+  /** ObservableField that tracks whether a nickname has been entered. */
   val hasName = ObservableField(true)
 }

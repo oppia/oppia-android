@@ -679,7 +679,7 @@
   <string name="onboarding_navigation_back">Back</string>
   <string name="onboarding_navigation_continue">Continue</string>
 
-  <string name="audio_language_fragment_text">In Oppia, you can listen to lessons!</string>
+  <string name="audio_language_fragment_text">In %s, you can listen to lessons!</string>
   <string name="audio_language_fragment_subtitle">Select the audio language to listen to lessons</string>
 
 </resources>

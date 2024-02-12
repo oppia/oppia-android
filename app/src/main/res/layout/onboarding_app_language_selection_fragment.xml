@@ -113,7 +113,7 @@
         android:layout_marginStart="@dimen/onboarding_shared_margin_2xl"
         android:layout_toStartOf="@id/onboarding_language_dropdown_arrow"
         android:background="@drawable/transparent_background"
-        android:textColor="@color/component_color_onboarding_language_primary_text_color"
+        android:textColor="@color/component_color_onboarding_shared_text_color"
         tools:listheader="English" />
 
       <ImageView
