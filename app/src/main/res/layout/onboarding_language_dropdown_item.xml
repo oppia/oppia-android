@@ -9,7 +9,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif"
-    android:padding="@dimen/onboarding_shared_padding_small"
+    android:padding="@dimen/onboarding_shared_padding_medium_small"
     android:textColor="@color/component_color_onboarding_language_primary_text_color"
     android:textSize="@dimen/onboarding_shared_text_size_medium_small"
     app:layout_constraintStart_toStartOf="parent"

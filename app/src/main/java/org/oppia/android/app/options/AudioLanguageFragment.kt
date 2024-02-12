@@ -13,10 +13,19 @@ import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.onboarding.onboardingv2.AudioLanguageFragmentPresenter as AudioLanguageFragmentPresenterV2
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonListener {
   @Inject lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
+
+  @Inject lateinit var audioLanguageFragmentPresenterV2: AudioLanguageFragmentPresenterV2
+
+  @Inject
+  @field:EnableOnboardingFlowV2
+  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -33,7 +42,11 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
-    return audioLanguageFragmentPresenter.handleOnCreateView(inflater, container, audioLanguage)
+    return if (enableOnboardingFlowV2.value) {
+      audioLanguageFragmentPresenterV2.handleCreateView(inflater, container, audioLanguage)
+    } else {
+      audioLanguageFragmentPresenter.handleOnCreateView(inflater, container, audioLanguage)
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

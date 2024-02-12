@@ -310,7 +310,6 @@
   <color name="component_color_onboarding_shared_green_color">@color/color_palette_onboarding_primary_color</color>
   <color name="component_color_onboarding_shared_black_color">@color/color_palette_onboarding_black_color</color>
   <color name="component_color_onboarding_shared_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_onboarding_language_shadow_color">@color/color_palette_button_shadow_color</color>
   <color name="component_color_onboarding_language_primary_text_color">@color/color_palette_onboarding_primary_text_color</color>
   <color name="component_color_onboarding_profile_shared_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_onboarding_learner_intro_background_color">@color/color_palette_onboarding_learner_intro_background_color</color>

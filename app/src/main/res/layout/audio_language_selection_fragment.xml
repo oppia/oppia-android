@@ -25,12 +25,12 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="24dp"
+      android:layout_marginBottom="@dimen/onboarding_shared_margin_3xl"
       app:layout_constraintBottom_toTopOf="@id/audio_language_text">
 
       <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="132dp"
         android:layout_gravity="center"
         android:contentDescription="@string/onboarding_otter_content_description"
         app:srcCompat="@drawable/otter" />
@@ -46,7 +46,7 @@
       android:fontFamily="sans-serif"
       android:text="@string/audio_language_fragment_text"
       android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="16sp"
+      android:textSize="@dimen/onboarding_shared_text_size_medium_large"
       app:layout_constraintBottom_toTopOf="@id/audio_language_subtitle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
@@ -70,7 +70,9 @@
       android:id="@+id/audio_language_dropdown_background"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/onboarding_language_text_margin"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_2xl"
+      android:layout_marginTop="@dimen/onboarding_shared_margin_medium"
+      android:layout_marginEnd="@dimen/onboarding_shared_margin_2xl"
       android:background="@drawable/dropdown_background"
       android:elevation="@dimen/onboarding_shared_elevation"
       android:padding="@dimen/onboarding_language_dropdown_padding"
@@ -80,10 +82,11 @@
 
       <Spinner
         android:id="@+id/audio_language_dropdown"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/onboarding_language_dropdown_margin"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
+        android:layout_toStartOf="@id/audio_language_dropdown_arrow"
         android:background="@drawable/transparent_background"
         android:textColor="@color/component_color_onboarding_language_primary_text_color"
         tools:listheader="English" />
@@ -93,7 +96,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_medium_small"
         android:contentDescription="@string/onboarding_dropdown_arrow_icon_description"
         app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
     </RelativeLayout>

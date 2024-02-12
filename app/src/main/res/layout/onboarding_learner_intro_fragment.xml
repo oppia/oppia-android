@@ -17,7 +17,7 @@
     <TextView
       android:id="@+id/onboarding_learner_intro_title"
       style="@style/OnboardingHeaderStyle"
-      android:text="@string/onboarding_learner_intro_activity_title"
+      android:text="@string/onboarding_learner_intro_activity_text"
       android:textColor="@color/component_color_onboarding_shared_green_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

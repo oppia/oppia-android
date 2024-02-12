@@ -8,9 +8,17 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.options.AudioLanguageActivity
+import org.oppia.android.app.options.LoadAudioLanguageListListener
+import org.oppia.android.app.options.REQUEST_CODE_AUDIO_LANGUAGE
+import org.oppia.android.app.options.RouteToAudioLanguageListListener
 
 /** Fragment that contains the new learner onboarding introduction of the app. */
-class OnboardingLearnerIntroFragment : InjectableFragment() {
+class OnboardingLearnerIntroFragment :
+  InjectableFragment(),
+  RouteToAudioLanguageListListener,
+  LoadAudioLanguageListListener {
   @Inject
   lateinit var onboardingLearnerIntroFragmentPresenter: OnboardingLearnerIntroFragmentPresenter
 
@@ -24,6 +32,22 @@ class OnboardingLearnerIntroFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return onboardingLearnerIntroFragmentPresenter.handleCreateView(inflater, container)
+    return onboardingLearnerIntroFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      /* fragment = */this,
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+    )
+  }
+
+  override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
+    startActivityForResult(
+      AudioLanguageActivity.createAudioLanguageActivityIntent(requireContext(), audioLanguage),
+      REQUEST_CODE_AUDIO_LANGUAGE
+    )
+  }
+
+  override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
+    TODO("Not yet implemented")
   }
 }

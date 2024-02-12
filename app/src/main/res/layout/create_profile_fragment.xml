@@ -121,6 +121,7 @@
       android:background="@{viewModel.hasName ? @drawable/edit_text_background_border: @drawable/edit_text_error_border}"
       android:fontFamily="sans-serif"
       android:inputType="text|textCapSentences"
+      android:imeOptions="actionDone"
       android:paddingStart="@dimen/onboarding_shared_padding_medium"
       android:paddingTop="@dimen/onboarding_shared_padding_medium_small"
       android:paddingEnd="@dimen/onboarding_shared_padding_medium"
