@@ -91,7 +91,7 @@
       android:fontFamily="sans-serif-medium"
       android:text="@string/create_profile_activity_header"
       android:textColor="@color/component_color_onboarding_shared_black_color"
-      android:textSize="@dimen/onboarding_shared_text_size_medium_large"
+      android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_header_guide" />

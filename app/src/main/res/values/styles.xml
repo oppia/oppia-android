@@ -648,7 +648,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_white_color</item>
-    <item name="android:textSize">@dimen/onboarding_language_title_text_size</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_3xl</item>
     <item name="android:fontFamily">sans-serif-medium</item>
   </style>
 
@@ -656,8 +656,8 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_white_color</item>
-    <item name="android:layout_marginTop">@dimen/onboarding_language_subtitle_margin</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_large</item>
+    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium_large</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
 
@@ -665,20 +665,20 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_white_color</item>
-    <item name="android:layout_marginTop">@dimen/onboarding_language_explanation_text_margin</item>
+    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_small</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
 
   <style name="OnboardingLanguageLetsGoButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:minWidth">@dimen/clickable_item_min_width</item>
-    <item name="android:layout_margin">@dimen/onboarding_language_button_margin</item>
+    <item name="android:layout_margin">@dimen/onboarding_shared_margin_medium</item>
     <item name="android:background">@drawable/rounded_primary_button_grey_shadow_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_white_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
   </style>
 
   <style name="OnboardingLanguageLabelStyle" parent="TextViewCenterHorizontal">
@@ -689,7 +689,7 @@
     <item name="android:layout_marginStart">@dimen/onboarding_shared_margin_large</item>
     <item name="android:layout_marginEnd">@dimen/onboarding_shared_margin_large</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_green_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_large</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
     <item name="android:fontFamily">sans-serif-medium</item>
   </style>
 
@@ -710,7 +710,7 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_marginBottom">@dimen/onboarding_shared_margin_medium_small</item>
     <item name="android:textColor">@color/component_color_onboarding_profile_shared_text_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_xl</item>
     <item name="android:fontFamily">sans-serif-medium</item>
   </style>
 
@@ -761,18 +761,20 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_black_color</item>
-    <item name="android:layout_marginTop">@dimen/onboarding_language_explanation_text_margin</item>
-    <item name="android:drawablePadding">@dimen/onboarding_shared_drawable_padding</item>
-    <item name="android:paddingStart">@dimen/onboarding_shared_text_padding</item>
-    <item name="android:paddingEnd">@dimen/onboarding_shared_text_padding</item>
-    <item name="android:textSize">@dimen/onboarding_learner_intro_text_size</item>
+    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium</item>
+    <item name="android:layout_marginStart">@dimen/onboarding_shared_margin_2xl</item>
+    <item name="android:layout_marginEnd">@dimen/onboarding_shared_margin_2xl</item>
+    <item name="android:drawablePadding">@dimen/onboarding_shared_padding_medium</item>
+    <item name="android:paddingStart">@dimen/onboarding_shared_padding_large</item>
+    <item name="android:paddingEnd">@dimen/onboarding_shared_padding_large</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_large</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
 
   <style name="OnboardingStepCountStyle" parent="TextViewCenter">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_margin">@dimen/onboarding_language_text_margin</item>
+    <item name="android:layout_margin">@dimen/onboarding_shared_margin_large</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_green_color</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_small</item>
     <item name="android:fontFamily">sans-serif</item>
@@ -782,8 +784,8 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
-    <item name="android:layout_margin">@dimen/onboarding_language_subtitle_margin</item>
-    <item name="android:textSize">@dimen/onboarding_language_subtitle_text_size</item>
+    <item name="android:layout_margin">@dimen/onboarding_shared_margin_medium_large</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_xl</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textAllCaps">false</item>
   </style>

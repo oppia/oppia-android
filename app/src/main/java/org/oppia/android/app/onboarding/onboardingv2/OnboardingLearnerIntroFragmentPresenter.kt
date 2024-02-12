@@ -13,7 +13,7 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: OnboardingLearnerIntroFragmentBinding
 
-  /** Handle creation and binding of the  OnboardingProfileTypeFragment layout. */
+  /** Handle creation and binding of the  OnboardingLearnerIntroFragment layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = OnboardingLearnerIntroFragmentBinding.inflate(
       inflater,

@@ -262,7 +262,7 @@
   <color name="color_palette_nps_unselected_background_color">@color/color_def_pale_green</color>
   <color name="color_palette_survey_dialog_stroke_color">@color/color_def_light_blue</color>
   <color name="color_palette_survey_radio_button_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_survey_disabled_button_color">@color/color_def_survey_disabled_button_grey</color>
+  <color name="color_palette_survey_disabled_button_color">@color/color_def_disabled_button_grey</color>
   <color name="color_palette_survey_disabled_button_text_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_button_text_color">@color/color_def_persian_green</color>
   <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
@@ -273,7 +273,7 @@
   <color name="color_palette_onboarding_primary_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_primary_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_onboarding_black_color">@color/color_def_black</color>
-  <color name="color_palette_onboarding_learner_intro_background_color">@color/color_def_highlight_blue</color>
+  <color name="color_palette_onboarding_learner_intro_background_color">@color/color_def_sky_blue</color>
   <color name="color_palette_onboarding_profile_type_background_color">@color/color_def_jade</color>
   <color name="color_palette_onboarding_edit_icon_color">@color/color_def_persian_green</color>
 
