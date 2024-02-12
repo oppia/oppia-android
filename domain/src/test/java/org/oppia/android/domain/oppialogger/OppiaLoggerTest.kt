@@ -378,7 +378,7 @@ class OppiaLoggerTest {
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_CONTEXT)
-    assertThat(eventContext.retrofitCallContext.urlCalled).matches(TEST_URL)
+    assertThat(eventContext.retrofitCallContext.requestUrl).matches(TEST_URL)
     assertThat(eventContext.retrofitCallContext.headers).matches(TEST_HEADERS)
     assertThat(eventContext.retrofitCallContext.body).matches(TEST_BODY)
     assertThat(eventContext.retrofitCallContext.responseStatusCode).isEqualTo(TEST_RESPONSE_CODE)
@@ -395,7 +395,7 @@ class OppiaLoggerTest {
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_FAILED_CONTEXT)
-    assertThat(eventContext.retrofitCallFailedContext.urlCalled).matches(TEST_URL)
+    assertThat(eventContext.retrofitCallFailedContext.requestUrl).matches(TEST_URL)
     assertThat(eventContext.retrofitCallFailedContext.headers).matches(TEST_HEADERS)
     assertThat(eventContext.retrofitCallFailedContext.body).matches(TEST_BODY)
     assertThat(eventContext.retrofitCallFailedContext.responseStatusCode)

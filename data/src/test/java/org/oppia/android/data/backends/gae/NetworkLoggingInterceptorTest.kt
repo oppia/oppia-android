@@ -96,7 +96,7 @@ class NetworkLoggingInterceptorTest {
 
     val networkJob = launch {
       networkLoggingInterceptor.logNetworkCallFlow.collect {
-        assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+        assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
         assertThat(it.responseStatusCode).isEqualTo(200)
         assertThat(it.headers).contains(headerString)
         assertThat(it.body).isEqualTo(testResponseBody)
@@ -121,7 +121,7 @@ class NetworkLoggingInterceptorTest {
 
       val networkJob = launch {
         networkLoggingInterceptor.logNetworkCallFlow.collect {
-          assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+          assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
           assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
           assertThat(it.headers).contains(headerString)
           assertThat(it.body).isEqualTo(testResponseBody)
@@ -130,7 +130,7 @@ class NetworkLoggingInterceptorTest {
 
       val failedNetworkJob = launch {
         networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
-          assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+          assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
           assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
           assertThat(it.headers).contains(headerString)
           assertThat(it.body).isEmpty()
@@ -152,7 +152,7 @@ class NetworkLoggingInterceptorTest {
 
       val failedNetworkJob = launch {
         networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
-          assertThat(it.urlCalled).isEqualTo(mockWebServerUrl.toString())
+          assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
           assertThat(it.responseStatusCode).isEqualTo(0)
           assertThat(it.headers).contains(headerString)
           assertThat(it.body).isEmpty()

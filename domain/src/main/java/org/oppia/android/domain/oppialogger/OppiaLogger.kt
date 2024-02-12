@@ -311,7 +311,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setRetrofitCallFailedContext(
       EventLog.RetrofitCallFailedContext.newBuilder()
-        .setUrlCalled(url)
+        .setRequestUrl(url)
         .setHeaders(headers)
         .setBody(body)
         .setResponseStatusCode(responseCode)

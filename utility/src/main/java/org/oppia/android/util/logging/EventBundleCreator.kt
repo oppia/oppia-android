@@ -627,7 +627,7 @@ class EventBundleCreator @Inject constructor(
       value: RetrofitCallFailedEventContext
     ) : EventActivityContext<RetrofitCallFailedEventContext>(activityName, value) {
       override fun RetrofitCallFailedEventContext.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("url", urlCalled)
+        store.putNonSensitiveValue("url", requestUrl)
         store.putNonSensitiveValue("headers", headers)
         store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)

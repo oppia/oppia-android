@@ -420,7 +420,7 @@ message EventLog {
   // Structure for the retrofit call failed context.
   message RetrofitCallFailedContext {
     // String of the url being called.
-    string url_called = 1;
+    string request_url = 1;
 
     // Headers passed as part of the retrofit call.
     string headers = 2;

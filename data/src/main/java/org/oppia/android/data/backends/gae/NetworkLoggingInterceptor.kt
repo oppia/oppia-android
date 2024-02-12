@@ -59,7 +59,7 @@ class NetworkLoggingInterceptor @Inject constructor(
         CoroutineScope(backgroundDispatcher).launch {
           _logFailedNetworkCallFlow.emit(
             RetrofitCallFailedContext.newBuilder()
-              .setUrlCalled(request.url.toString())
+              .setRequestUrl(request.url.toString())
               .setHeaders(request.headers.toString())
               .setResponseStatusCode(response.code)
               .setErrorMessage(responseBody ?: "")
@@ -73,7 +73,7 @@ class NetworkLoggingInterceptor @Inject constructor(
       CoroutineScope(backgroundDispatcher).launch {
         _logFailedNetworkCallFlow.emit(
           RetrofitCallFailedContext.newBuilder()
-            .setUrlCalled(request.url.toString())
+            .setRequestUrl(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(0)
             .setErrorMessage(exception.toString())
