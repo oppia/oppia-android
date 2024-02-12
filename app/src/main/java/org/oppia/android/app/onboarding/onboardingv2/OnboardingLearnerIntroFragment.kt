@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.LoadAudioLanguageListListener
 import org.oppia.android.app.options.REQUEST_CODE_AUDIO_LANGUAGE
 import org.oppia.android.app.options.RouteToAudioLanguageListListener
+import javax.inject.Inject
 
 /** Fragment that contains the new learner onboarding introduction of the app. */
 class OnboardingLearnerIntroFragment :

@@ -4,15 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
-import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
-import javax.inject.Inject
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
+import javax.inject.Inject
 
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,

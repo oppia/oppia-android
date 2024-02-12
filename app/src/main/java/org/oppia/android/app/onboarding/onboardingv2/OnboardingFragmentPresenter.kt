@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.onboarding.OnboardingViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingAppLanguageSelectionFragmentBinding
 import javax.inject.Inject
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
 
@@ -39,6 +41,11 @@ class OnboardingFragmentPresenter @Inject constructor(
       R.layout.onboarding_language_dropdown_item,
       R.id.onboarding_language_text_view,
       arrayOf("English")
+    )
+
+    binding.onboardingLanguageTitle.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+      R.string.onboarding_language_activity_title,
+      activity.getString(R.string.app_name)
     )
 
     binding.onboardingLanguageLetsGoButton.setOnClickListener {

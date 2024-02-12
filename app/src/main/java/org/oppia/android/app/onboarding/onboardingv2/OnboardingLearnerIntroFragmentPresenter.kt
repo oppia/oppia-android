@@ -4,21 +4,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.fragment.app.Fragment
-import org.oppia.android.databinding.OnboardingLearnerIntroFragmentBinding
-import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.options.AudioLanguageActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.LoadAudioLanguageListListener
-import org.oppia.android.app.options.OptionsAudioLanguageViewModel
-import org.oppia.android.app.options.REQUEST_CODE_AUDIO_LANGUAGE
 import org.oppia.android.app.options.RouteToAudioLanguageListListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.databinding.OnboardingLearnerIntroFragmentBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The presenter for [OnboardingLearnerIntroFragment]. */
 class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
   private var fragment: Fragment,
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val profileManagementController: ProfileManagementController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val oppiaLogger: org.oppia.android.domain.oppialogger.OppiaLogger
 ) {
   private lateinit var binding: OnboardingLearnerIntroFragmentBinding
   private lateinit var routeToAudioLanguageListListener: RouteToAudioLanguageListListener
@@ -52,10 +57,40 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
       routeToAudioLanguageList(audioLanguage)
     }
 
+    observeProfileLivedata(ProfileId.newBuilder().setInternalId(-1).build())
+
     return binding.root
   }
 
   private fun routeToAudioLanguageList(audioLanguage: AudioLanguage) {
     routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage)
+  }
+
+  private fun observeProfileLivedata(profileId: ProfileId) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(
+      fragment,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            setLearnerName(result.value.name)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "OnboardingLearnerIntroFragment",
+              "Failed to retrieve profile with id $profileId",
+              result.error
+            )
+          }
+          is AsyncResult.Pending -> {} // do nothing
+        }
+      }
+    )
+  }
+
+  private fun setLearnerName(profileName: String) {
+    binding.onboardingLearnerIntroTitle.text =
+      appLanguageResourceHandler.getStringInLocaleWithWrapping(
+        R.string.onboarding_learner_intro_activity_text, profileName
+      )
   }
 }

@@ -18,7 +18,7 @@
     <TextView
       android:id="@+id/onboarding_language_title"
       style="@style/OnboardingHeaderStyle"
-      android:text="Welcome to Oppia"
+      android:text="@string/onboarding_language_activity_title"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@id/onboarding_language_header_guide" />

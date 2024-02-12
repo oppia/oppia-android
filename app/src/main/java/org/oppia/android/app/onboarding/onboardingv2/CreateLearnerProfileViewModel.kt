@@ -1,9 +1,9 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import javax.inject.Inject
 
 /** The ViewModel for [NewLearnerProfileFragment]. */
 @FragmentScope

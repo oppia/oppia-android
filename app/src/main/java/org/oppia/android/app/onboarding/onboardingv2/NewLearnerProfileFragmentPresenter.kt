@@ -16,12 +16,11 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import org.oppia.android.databinding.CreateProfileFragmentBinding
-import javax.inject.Inject
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.profile.GALLERY_INTENT_RESULT_CODE
+import org.oppia.android.databinding.CreateProfileFragmentBinding
+import javax.inject.Inject
 
 /** Presenter for [NewLearnerProfileFragment]. */
 @FragmentScope
