@@ -98,11 +98,11 @@
         android:id="@+id/onboarding_language_dropdown_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
         android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
-        android:layout_marginEnd="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_small"
         android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
-        android:contentDescription="@string/onboarding_dropdown_language_icon_description"
+        android:contentDescription="@string/onboarding_language_dropdown_icon_description"
         app:srcCompat="@drawable/ic_language_icon_black_24dp" />
 
       <Spinner
@@ -121,18 +121,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
         android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
-        android:layout_marginEnd="@dimen/onboarding_language_dropdown_icon_margin"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_small"
         android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
-        android:contentDescription="@string/onboarding_dropdown_arrow_icon_description"
+        android:contentDescription="@string/onboarding_language_dropdown_arrow_icon_description"
         app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
     </RelativeLayout>
 
     <TextView
       android:id="@+id/onboarding_language_explanation"
       style="@style/OnboardingLanguageExplanationStyle"
-      android:text="@string/onboarding_language_explanation"
+      android:text="@string/onboarding_language_activity_explanation_text"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_dropdown_background" />
@@ -142,7 +142,7 @@
       style="@style/OnboardingLanguageLetsGoButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/onboarding_language_lets_go_button_text"
+      android:text="@string/onboarding_language_activity_button_text"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />

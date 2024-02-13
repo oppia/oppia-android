@@ -638,13 +638,8 @@
   <string name="onboarding_language_activity_subtitle">Learn math for free, anytime!</string>
   <string name="onboarding_language_activity_text">Made for students aged 7 to 14</string>
   <string name="onboarding_language_activity_select_label">Select a language to start</string>
-  <string name="onboarding_language_explanation">You can change your language selection anytime in the app settings</string>
-  <string name="onboarding_language_lets_go_button_text">Let\'s go!</string>
-  <string name="onboarding_dropdown_arrow_icon_description">Dropdown arrow icon</string>
-  <string name="onboarding_dropdown_language_icon_description">Dropdown language icon</string>
-  <string-array name="onboarding_language_activity_languages">
-    <item>English</item>
-  </string-array>
+  <string name="onboarding_language_activity_explanation_text">You can change your language selection anytime in the app settings</string>
+  <string name="onboarding_language_activity_button_text">Let\'s go!</string>
 
   <!-- Onboarding Profile Type Activity -->
   <string name="onboarding_profile_type_activity_title">Profile Type</string>
@@ -668,6 +663,12 @@
   <string name="onboarding_learner_intro_practice_text">Try practice questions to test your knowledge.</string>
   <string name="onboarding_learner_intro_feedback_text">Get feedback to improve using %s\'s corrections.</string>
 
+  <!-- Onboarding Shared Strings -->
+  <string name="onboarding_language_dropdown_arrow_icon_description">Dropdown arrow icon</string>
+  <string name="onboarding_language_dropdown_icon_description">Dropdown language icon</string>
+  <string-array name="onboarding_language_activity_languages">
+    <item>English</item>
+  </string-array>
   <string name="onboarding_otter_content_description">Cute otter wearing glasses.</string>
   <string name="onboarding_learner_otter_content_description">Cute otter with books.</string>
   <string name="onboarding_parent_otter_content_description">Mama and baby otter.</string>
@@ -681,5 +682,4 @@
 
   <string name="audio_language_fragment_text">In %s, you can listen to lessons!</string>
   <string name="audio_language_fragment_subtitle">Select the audio language to listen to lessons</string>
-
 </resources>

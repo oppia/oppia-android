@@ -121,7 +121,7 @@
       android:id="@+id/onboarding_steps_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/onboarding_language_text_margin"
+      android:layout_margin="@dimen/onboarding_shared_margin_large"
       android:fontFamily="sans-serif"
       android:text="@string/onboarding_step_count_two"
       android:textColor="@color/component_color_onboarding_shared_white_color"

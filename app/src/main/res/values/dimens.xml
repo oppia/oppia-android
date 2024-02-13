@@ -778,16 +778,6 @@
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
 
   <!-- Onboarding V2 -->
-  <dimen name="onboarding_language_text_margin">24dp</dimen>
-  <dimen name="onboarding_language_explanation_text_margin">16dp</dimen>
-  <dimen name="onboarding_language_title_text_size">32sp</dimen>
-  <dimen name="onboarding_language_subtitle_text_size">24sp</dimen>
-  <dimen name="onboarding_language_dropdown_elevation">8dp</dimen>
-  <dimen name="onboarding_language_dropdown_padding">8dp</dimen>
-  <dimen name="onboarding_language_dropdown_margin">32dp</dimen>
-  <dimen name="onboarding_language_dropdown_margin_top">20dp</dimen>
-  <dimen name="onboarding_language_dropdown_icon_margin">8dp</dimen>
-
   <dimen name="onboarding_shared_corner_radius">4dp</dimen>
   <dimen name="onboarding_shared_elevation">8dp</dimen>
   <dimen name="onboarding_profile_picture_stroke_width">4dp</dimen>
