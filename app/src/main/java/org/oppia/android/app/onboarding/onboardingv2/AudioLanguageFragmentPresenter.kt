@@ -8,15 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment] V2. */
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
 
@@ -48,9 +49,12 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       arrayOf("English")
     )
 
+    binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+      R.string.audio_language_fragment_text,
+      activity.getString(R.string.app_name)
+    )
+
     binding.onboardingNavigationContinue.setOnClickListener {
-      val intent = HomeActivity.createHomeActivity(activity, profileId = 1)
-      fragment.startActivity(intent)
     }
 
     binding.onboardingNavigationBack.setOnClickListener {

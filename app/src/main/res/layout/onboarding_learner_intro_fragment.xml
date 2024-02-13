@@ -18,7 +18,7 @@
       android:id="@+id/onboarding_learner_intro_title"
       style="@style/OnboardingHeaderStyle"
       android:text="@string/onboarding_learner_intro_activity_text"
-      android:textColor="@color/component_color_onboarding_shared_green_color"
+      android:textColor="@color/component_color_onboarding_learner_intro_header_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@id/onboarding_learner_intro_header_guide" />
@@ -28,7 +28,6 @@
       style="@style/OnboardingLearnerIntroSubtitleStyle"
       android:layout_marginTop="@dimen/onboarding_shared_margin_3xl"
       android:text="@string/onboarding_learner_intro_classroom_text"
-      app:drawableStartCompat="@drawable/ic_green_check"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_title" />
@@ -37,7 +36,6 @@
       android:id="@+id/onboarding_learner_intro_practice"
       style="@style/OnboardingLearnerIntroSubtitleStyle"
       android:text="@string/onboarding_learner_intro_practice_text"
-      app:drawableStartCompat="@drawable/ic_green_check"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_classroom" />
@@ -46,7 +44,6 @@
       android:id="@+id/onboarding_learner_intro_feedback"
       style="@style/OnboardingLearnerIntroSubtitleStyle"
       android:text="@string/onboarding_learner_intro_feedback_text"
-      app:drawableStartCompat="@drawable/ic_green_check"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_practice" />

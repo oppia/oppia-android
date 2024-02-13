@@ -57,6 +57,12 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
       routeToAudioLanguageList(audioLanguage)
     }
 
+    binding.onboardingLearnerIntroFeedback.text =
+      appLanguageResourceHandler.getStringInLocaleWithWrapping(
+        R.string.onboarding_learner_intro_feedback_text,
+        activity.getString(R.string.app_name)
+      )
+
     observeProfileLivedata(ProfileId.newBuilder().setInternalId(-1).build())
 
     return binding.root

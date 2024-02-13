@@ -666,7 +666,7 @@
   <string name="onboarding_learner_intro_activity_text">Welcome, %s!</string>
   <string name="onboarding_learner_intro_classroom_text">Learn Math through fun, story-based lessons.</string>
   <string name="onboarding_learner_intro_practice_text">Try practice questions to test your knowledge.</string>
-  <string name="onboarding_learner_intro_feedback_text">Get feedback to improve using %s\'s! corrections.</string>
+  <string name="onboarding_learner_intro_feedback_text">Get feedback to improve using %s\'s corrections.</string>
 
   <string name="onboarding_otter_content_description">Cute otter wearing glasses.</string>
   <string name="onboarding_learner_otter_content_description">Cute otter with books.</string>
