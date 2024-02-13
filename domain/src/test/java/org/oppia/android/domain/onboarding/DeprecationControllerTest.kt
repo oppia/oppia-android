@@ -25,6 +25,9 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.onboarding.DeprecationControllerTest.TestApplicationComponent.Companion.alreadyOnboardedOnboardingState
 import org.oppia.android.domain.onboarding.DeprecationControllerTest.TestApplicationComponent.Companion.defaultDeprecationResponseDatabase
 import org.oppia.android.domain.onboarding.DeprecationControllerTest.TestApplicationComponent.Companion.deprecationResponseDatabaseWithPreviousResponses
+import org.oppia.android.domain.onboarding.DeprecationControllerTest.TestApplicationComponent.Companion.forcedAppUpdateVersion
+import org.oppia.android.domain.onboarding.DeprecationControllerTest.TestApplicationComponent.Companion.lowestApiLevel
+import org.oppia.android.domain.onboarding.DeprecationControllerTest.TestApplicationComponent.Companion.optionalAppUpdateVersion
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -181,9 +184,7 @@ class DeprecationControllerTest {
   fun testController_ifUserIsOnboarded_userIsOnboardedStartUpMode() {
     setUpDefaultTestApplicationComponent()
 
-    val onboardingState = OnboardingState.newBuilder()
-      .setAlreadyOnboardedApp(true)
-      .build()
+    val onboardingState = OnboardingState.newBuilder().setAlreadyOnboardedApp(true).build()
     val deprecationResponseDatabase = DeprecationResponseDatabase.getDefaultInstance()
     val startupMode = deprecationController.processStartUpMode(
       onboardingState, deprecationResponseDatabase
@@ -194,25 +195,9 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_osIsDeprecated_osIsDeprecatedStartUpMode() {
-    executeInPreviousAppInstance { testComponent ->
-      val lowestApiLevel = PlatformParameter.newBuilder()
-        .setName(LOWEST_SUPPORTED_API_LEVEL)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-        .build()
-
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(lowestApiLevel)
-      )
-
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-
-    testCoroutineDispatchers.runCurrent()
+    setUpTestApplicationComponentWithParameters(
+      platformParameters = listOf(lowestApiLevel)
+    )
 
     assertThat(lowestSupportedApiLevelProvider.get().value).isEqualTo(Int.MAX_VALUE)
 
@@ -225,25 +210,9 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_osIsDeprecated_previousResponseExists_userIsOnboardedStartUpMode() {
-    executeInPreviousAppInstance { testComponent ->
-      val lowestApiLevel = PlatformParameter.newBuilder()
-        .setName(LOWEST_SUPPORTED_API_LEVEL)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-        .build()
-
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(lowestApiLevel)
-      )
-
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-
-    testCoroutineDispatchers.runCurrent()
+    setUpTestApplicationComponentWithParameters(
+      platformParameters = listOf(lowestApiLevel)
+    )
 
     assertThat(lowestSupportedApiLevelProvider.get().value).isEqualTo(Int.MAX_VALUE)
 
@@ -255,25 +224,9 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_optionalUpdateAvailable_optionalUpdateAvailableStartupMode() {
-    executeInPreviousAppInstance { testComponent ->
-      val optionalAppUpdateVersion = PlatformParameter.newBuilder()
-        .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-        .build()
-
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(optionalAppUpdateVersion)
-      )
-
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-
-    testCoroutineDispatchers.runCurrent()
+    setUpTestApplicationComponentWithParameters(
+      platformParameters = listOf(optionalAppUpdateVersion)
+    )
 
     assertThat(optionalAppUpdateVersionProvider.get().value).isEqualTo(Int.MAX_VALUE)
 
@@ -285,25 +238,9 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_optionalUpdateAvailable_previousResponseExists_userIsOnboardedStartupMode() {
-    executeInPreviousAppInstance { testComponent ->
-      val optionalAppUpdateVersion = PlatformParameter.newBuilder()
-        .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-        .build()
-
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(optionalAppUpdateVersion)
-      )
-
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-
-    testCoroutineDispatchers.runCurrent()
+    setUpTestApplicationComponentWithParameters(
+      platformParameters = listOf(optionalAppUpdateVersion)
+    )
 
     assertThat(optionalAppUpdateVersionProvider.get().value).isEqualTo(Int.MAX_VALUE)
 
@@ -315,24 +252,11 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_forcedUpdateAvailable_appIsDeprecatedStartupMode() {
-    executeInPreviousAppInstance { testComponent ->
-      val forcedAppUpdateVersion = PlatformParameter.newBuilder()
-        .setName(FORCED_APP_UPDATE_VERSION_CODE)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-        .build()
-
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(forcedAppUpdateVersion)
-      )
-
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
+    setUpTestApplicationComponentWithParameters(
+      platformParameters = listOf(forcedAppUpdateVersion)
+    )
 
     monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-
     testCoroutineDispatchers.runCurrent()
 
     assertThat(forcedAppUpdateVersionProvider.get().value).isEqualTo(Int.MAX_VALUE)
@@ -345,25 +269,9 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_forcedUpdateAvailable_previousResponseExists_userIsOnboardedStartupMode() {
-    executeInPreviousAppInstance { testComponent ->
-      val forcedAppUpdateVersion = PlatformParameter.newBuilder()
-        .setName(FORCED_APP_UPDATE_VERSION_CODE)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-        .build()
-
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(forcedAppUpdateVersion)
-      )
-
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-
-    testCoroutineDispatchers.runCurrent()
+    setUpTestApplicationComponentWithParameters(
+      platformParameters = listOf(forcedAppUpdateVersion)
+    )
 
     assertThat(forcedAppUpdateVersionProvider.get().value).isEqualTo(Int.MAX_VALUE)
 
@@ -379,6 +287,22 @@ class DeprecationControllerTest {
 
   private fun setUpOppiaApplication(expirationEnabled: Boolean, expDate: String) {
     setUpOppiaApplicationForContext(context, expirationEnabled, expDate)
+  }
+
+  private fun setUpTestApplicationComponentWithParameters(
+    platformParameters: List<PlatformParameter>
+  ) {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
+        platformParameters
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpDefaultTestApplicationComponent()
+
+    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
+    testCoroutineDispatchers.runCurrent()
   }
 
   /**
@@ -502,6 +426,24 @@ class DeprecationControllerTest {
     companion object {
       val alreadyOnboardedOnboardingState: OnboardingState = OnboardingState.newBuilder()
         .setAlreadyOnboardedApp(true)
+        .build()
+
+      val lowestApiLevel: PlatformParameter = PlatformParameter.newBuilder()
+        .setName(LOWEST_SUPPORTED_API_LEVEL)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+        .build()
+
+      val optionalAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
+        .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+        .build()
+
+      val forcedAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
+        .setName(FORCED_APP_UPDATE_VERSION_CODE)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
         .build()
 
       val defaultDeprecationResponseDatabase: DeprecationResponseDatabase =
