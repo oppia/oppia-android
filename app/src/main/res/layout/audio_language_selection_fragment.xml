@@ -45,7 +45,7 @@
       android:layout_marginBottom="@dimen/onboarding_shared_margin_large"
       android:fontFamily="sans-serif"
       android:text="@string/audio_language_fragment_text"
-      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textColor="@color/component_color_onboarding_shared_text_color"
       android:textSize="@dimen/onboarding_shared_text_size_medium_large"
       app:layout_constraintBottom_toTopOf="@id/audio_language_subtitle"
       app:layout_constraintEnd_toEndOf="parent"

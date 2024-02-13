@@ -135,7 +135,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/onboarding_shared_margin_medium"
-      android:background="@drawable/rounded_rect_white_background"
+      android:background="@drawable/onboarding_back_button_white_background"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
       android:minWidth="@dimen/clickable_item_min_width"
