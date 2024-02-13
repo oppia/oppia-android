@@ -54,6 +54,8 @@ abstract class AbstractOppiaApplication(
       // FirebaseAppCheck protects our API resources from abuse. It works with Firebase services,
       // Google Cloud services, and can also be implemented for our own APIs.
       // See https://firebase.google.com/docs/app-check for currently supported Firebase products.
+      // Note that as of this code being checked in, only the app's Firestore usage is affected by
+      // App Check (Analytics is NOT affected).
       if (component.getCurrentBuildFlavor() == BuildFlavor.DEVELOPER) {
         FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
           DebugAppCheckProviderFactory.getInstance(),
