@@ -19,14 +19,18 @@ import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.NO_NOTI
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_BETA_NOTICE
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE
 import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
+import org.oppia.android.app.model.AppStartupState.StartupMode.OS_IS_DEPRECATED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.onboarding.AppStartupStateControllerTest.TestModule.Companion.enableAppAndOsDeprecation
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -49,6 +53,8 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -69,6 +75,7 @@ import javax.inject.Singleton
 class AppStartupStateControllerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var appStartupStateController: AppStartupStateController
+  @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Parameter lateinit var initialFlavorName: String
@@ -765,6 +772,34 @@ class AppStartupStateControllerTest {
     assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
   }
 
+  @Test
+  fun testController_appAndOsDeprecationEnabled_osIsDeprecated_osIsDeprecatedStartupState() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+
+      val lowestApiLevel = PlatformParameter.newBuilder()
+        .setName(LOWEST_SUPPORTED_API_LEVEL)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
+        .build()
+
+      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
+        listOf(lowestApiLevel, enableAppAndOsDeprecation)
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpDefaultTestApplicationComponent()
+
+    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
+    testCoroutineDispatchers.runCurrent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+
+    val startupMode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(startupMode.startupMode).isEqualTo(OS_IS_DEPRECATED)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -850,6 +885,12 @@ class AppStartupStateControllerTest {
   class TestModule {
     companion object {
       var buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
+
+      val enableAppAndOsDeprecation: PlatformParameter = PlatformParameter.newBuilder()
+        .setName(APP_AND_OS_DEPRECATION)
+        .setBoolean(true)
+        .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
+        .build()
     }
 
     @Provides
@@ -906,6 +947,8 @@ class AppStartupStateControllerTest {
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
 
     fun getContext(): Context
+
+    fun getPlatformParameterController(): PlatformParameterController
 
     fun inject(appStartupStateControllerTest: AppStartupStateControllerTest)
   }

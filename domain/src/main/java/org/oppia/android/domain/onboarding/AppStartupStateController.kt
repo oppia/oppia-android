@@ -13,11 +13,9 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
-import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
@@ -32,13 +30,7 @@ class AppStartupStateController @Inject constructor(
   private val currentBuildFlavor: BuildFlavor,
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
-  private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
-  @OptionalAppUpdateVersionCode
-  private val optionalAppUpdateVersionCode: PlatformParameterValue<Int>,
-  @ForcedAppUpdateVersionCode
-  private val forcedAppUpdateVersionCode: PlatformParameterValue<Int>,
-  @LowestSupportedApiLevel
-  private val lowestSupportedApiLevel: PlatformParameterValue<Int>
+  private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -105,17 +97,11 @@ class AppStartupStateController @Inject constructor(
   fun getAppStartupState(): DataProvider<AppStartupState> = appStartupStateDataProvider
 
   private fun computeAppStartupStateProvider(): DataProvider<AppStartupState> {
-//    return onboardingFlowStore.transform(APP_STARTUP_STATE_PROVIDER_ID) { onboardingState ->
-//      AppStartupState.newBuilder().apply {
-//        startupMode = computeAppStartupMode(onboardingState)
-//        buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
-//      }.build()
-//    }
     val databaseProvider = deprecationController.getDeprecationDatabase()
 
     return onboardingFlowStore.combineWith(
       databaseProvider,
-      ""
+      APP_STARTUP_STATE_PROVIDER_ID
     ) { onboardingState, deprecationResponseDatabase ->
       AppStartupState.newBuilder().apply {
         startupMode = computeAppStartupMode(onboardingState, deprecationResponseDatabase)
@@ -145,9 +131,11 @@ class AppStartupStateController @Inject constructor(
     onboardingState: OnboardingState,
     deprecationResponseDatabase: DeprecationResponseDatabase
   ): StartupMode {
+    println("App and OS Deprecation Value: ${enableAppAndOsDeprecation.get().value}")
+
     // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
     // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
-    if (!enableAppAndOsDeprecation.value) {
+    if (!enableAppAndOsDeprecation.get().value) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
         onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED

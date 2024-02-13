@@ -20,11 +20,11 @@ import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
 private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"
-private const val GET_DEPRECATION_RESPONSE_DATABASE_ID = "get_deprecation_response_database_id"
 
 /**
  * Controller for persisting and retrieving the user's deprecation responses. This will be used to
@@ -37,11 +37,11 @@ class DeprecationController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val dataProviders: DataProviders,
   @OptionalAppUpdateVersionCode
-  private val optionalAppUpdateVersionCode: PlatformParameterValue<Int>,
+  private val optionalAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
   @ForcedAppUpdateVersionCode
-  private val forcedAppUpdateVersionCode: PlatformParameterValue<Int>,
+  private val forcedAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
   @LowestSupportedApiLevel
-  private val lowestSupportedApiLevel: PlatformParameterValue<Int>
+  private val lowestSupportedApiLevel: Provider<PlatformParameterValue<Int>>
 ) {
   /** Create an instance of [PersistentCacheStore] that contains a [DeprecationResponseDatabase]. */
   private val deprecationStore by lazy {
@@ -147,17 +147,18 @@ class DeprecationController @Inject constructor(
 
     val appVersionCode = context.getVersionCode()
     val currentApiLevel = Build.VERSION.SDK_INT
-    val osIsDeprecated = lowestSupportedApiLevel.value > currentApiLevel
-    val osDeprecationDialogHasNotBeenShown =
-      previousDeprecatedOsVersion < lowestSupportedApiLevel.value
+    val osIsDeprecated = lowestSupportedApiLevel.get().value > currentApiLevel
 
-    val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.value > appVersionCode
-    val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.value > appVersionCode
+    val osDeprecationDialogHasNotBeenShown =
+      previousDeprecatedOsVersion < lowestSupportedApiLevel.get().value
+
+    val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.get().value > appVersionCode
+    val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.get().value > appVersionCode
 
     val optionalAppDeprecationDialogHasNotBeenShown =
-      previousDeprecatedAppVersion < optionalAppUpdateVersionCode.value
+      previousDeprecatedAppVersion < optionalAppUpdateVersionCode.get().value
     val forcedAppDeprecationDialogHasNotBeenShown =
-      previousDeprecatedAppVersion < forcedAppUpdateVersionCode.value
+      previousDeprecatedAppVersion < forcedAppUpdateVersionCode.get().value
 
     if (onboardingState.alreadyOnboardedApp) {
       if (osIsDeprecated && osDeprecationDialogHasNotBeenShown) {

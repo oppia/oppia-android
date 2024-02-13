@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -211,8 +212,11 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnableAppAndOsDeprecation
-  fun provideEnableAppAndOsDeprecation(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(enableAppAndOsDeprecation)
+  fun provideEnableAppAndOsDeprecation(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
   }
 
   @Provides
@@ -362,6 +366,12 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableOnboardingFlowV2(value: Boolean) {
       enableOnboardingFlowV2 = value
+    }
+
+    /** Enables forcing [EnableAppAndOsDeprecation] feature flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableAppAndOsDeprecation(value: Boolean) {
+      enableAppAndOsDeprecation = value
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
