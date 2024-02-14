@@ -223,7 +223,7 @@ todo_open_exemption {
 }
 ```
 
-Alternatively, the textproto can be entirely generated 
+Alternatively, the textproto can be entirely generated
 
 ## TODO issue resolved check
 The check ensures that a TODO issue is not closed until all of its corresponding TODO items are resolved.

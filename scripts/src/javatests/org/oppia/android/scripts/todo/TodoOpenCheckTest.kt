@@ -18,10 +18,11 @@ import java.io.PrintStream
 
 /** Tests for [TodoOpenCheck]. */
 class TodoOpenCheckTest {
-  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = System.out
-  private val TODO_CHECK_PASSED_OUTPUT_INDICATOR: String = "TODO CHECK PASSED"
-  private val TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "TODO CHECK FAILED"
+  private val outContent = ByteArrayOutputStream()
+  private val originalOut = System.out
+  private val TODO_CHECK_PASSED_OUTPUT_INDICATOR = "TODO CHECK PASSED"
+  private val TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR = "TODO CHECK FAILED"
+  private val TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR = "TODO CHECK SKIPPED"
   private val pathToProtoBinary = "scripts/assets/todo_exemptions.pb"
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
@@ -368,6 +369,404 @@ class TodoOpenCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
+  @Test
+  fun testRegenerate_noTodos_checkShouldSkip() {
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      test Todo
+      test TODO
+      """.trimIndent()
+    val testContent2 =
+      """
+      todo
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+
+    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    // 'regenerate' always throws an exception since it's regenerating everything.
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testRegenerate_onlyValidTodos_checkShouldSkip() {
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      // TODO(#11002): test summary 1.
+      # TODO(#11004): test summary 2.
+      test Todo
+      test TODO
+      """.trimIndent()
+    val testContent2 =
+      """
+      // TODO(#11001): test summary 3.
+      todo
+      <!-- TODO(#11003): test summary 4-->
+
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+
+    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    // 'regenerate' always throws an exception since it's regenerating everything.
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testRegenerate_poorlyFormattedTodos_checkShouldSkip() {
+    setUpGitHubService(issueNumbers = emptyList())
+    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
+    val testContent =
+      """
+      // TODO (#1044): test
+      # TODO(102)
+      <!-- TODO(#   101)-->
+      // some test conent TODO(#1020000): test description.
+      some test content TODO(#100002): some description.
+      """.trimIndent()
+    tempFile.writeText(testContent)
+
+    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testRegenerate_openIssuesTodos_checkShouldSkip() {
+    setUpGitHubService(issueNumbers = listOf(10000000, 100000004))
+    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
+    val testContent =
+      """
+      // TODO(#104444444): test summary 1.
+      # TODO(#10210110): test summary 2.
+      test todo
+      some test content Todo
+      <!-- TODO(#101000000): test summary 3-->
+      """.trimIndent()
+    tempFile.writeText(testContent)
+
+    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testRegenerate_mixedBadFormattingAndOpenAndValidTodos_checkShouldSkip() {
+    setUpGitHubService(issueNumbers = listOf(10000000, 100000004, 11002, 11004))
+    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
+    val testContent =
+      """
+      // TODO (#1044): test
+      # TODO(102)
+      <!-- TODO(#   101)-->
+      // some test conent TODO(#1020000): test description.
+      some test content TODO(#100002): some description.
+      // TODO(#104444444): test summary 1.
+      # TODO(#10210110): test summary 2.
+      test todo
+      some test content Todo
+      <!-- TODO(#101000000): test summary 3-->
+      // TODO(#11002): test summary 1.
+      # TODO(#11004): test summary 2.
+      test Todo
+      test TODO
+      """.trimIndent()
+    tempFile.writeText(testContent)
+
+    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testRegenerate_todosWithExemptions_checkShouldSkip() {
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      // TODO (152440222): test description 1
+      """.trimIndent()
+    val testContent2 =
+      """
+      # TODO(#1000000): test description 2
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptions = TodoOpenExemptions.newBuilder().apply {
+      this.addAllTodoOpenExemption(
+        listOf(
+          TodoOpenExemption.newBuilder().apply {
+            this.exemptedFilePath = "TempFile1.kt"
+            this.addAllLineNumber(listOf(1)).build()
+          }.build(),
+          TodoOpenExemption.newBuilder().apply {
+            this.exemptedFilePath = "TempFile2.kt"
+            this.addAllLineNumber(listOf(1)).build()
+          }.build()
+        )
+      )
+    }.build()
+    exemptions.writeTo(exemptionFile.outputStream())
+
+    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    // 'regenerate' always throws an exception since it's regenerating everything.
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testRegenerate_noTodos_shouldOutputEmptyTextProto() {
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      test Todo
+      test TODO
+      """.trimIndent()
+    val testContent2 =
+      """
+      todo
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+
+    assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    val failureMessage =
+      """
+      Regenerated exemptions:
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testRegenerate_onlyValidTodos_shouldOutputEmptyTextProto() {
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      // TODO(#11002): test summary 1.
+      # TODO(#11004): test summary 2.
+      test Todo
+      test TODO
+      """.trimIndent()
+    val testContent2 =
+      """
+      // TODO(#11001): test summary 3.
+      todo
+      <!-- TODO(#11003): test summary 4-->
+
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+
+    assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    val failureMessage =
+      """
+      Regenerated exemptions:
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testRegenerate_poorlyFormattedTodos_shouldOutputNewTextProto() {
+    setUpGitHubService(issueNumbers = emptyList())
+    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
+    val testContent =
+      """
+      // TODO (#1044): test
+      # TODO(102)
+      <!-- TODO(#   101)-->
+      // some test conent TODO(#1020000): test description.
+      some test content TODO(#100002): some description.
+      """.trimIndent()
+    tempFile.writeText(testContent)
+
+    assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    val failureMessage =
+      """
+      TODOs not in correct format:
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:3
+      - TempFile.txt:4
+      - TempFile.txt:5
+
+      $wikiReferenceNote
+
+      Regenerated exemptions:
+
+      todo_open_exemption {
+        exempted_file_path: "TempFile.txt"
+        line_number: 1
+        line_number: 2
+        line_number: 3
+        line_number: 4
+        line_number: 5
+      }
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testRegenerate_openIssuesTodos_shouldOutputNewTextProto() {
+    setUpGitHubService(issueNumbers = listOf(10000000, 100000004))
+    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
+    val testContent =
+      """
+      // TODO(#104444444): test summary 1.
+      # TODO(#10210110): test summary 2.
+      test todo
+      some test content Todo
+      <!-- TODO(#101000000): test summary 3-->
+      """.trimIndent()
+    tempFile.writeText(testContent)
+
+    assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    val failureMessage =
+      """
+      TODOs not corresponding to open issues on GitHub:
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:5
+
+      $wikiReferenceNote
+
+      Regenerated exemptions:
+
+      todo_open_exemption {
+        exempted_file_path: "TempFile.txt"
+        line_number: 1
+        line_number: 2
+        line_number: 5
+      }
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testRegenerate_mixedBadFormattingAndOpenAndValidTodos_shouldOutputNewTextProto() {
+    setUpGitHubService(issueNumbers = listOf(10000000, 100000004, 11002, 11004))
+    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
+    val testContent =
+      """
+      // TODO (#1044): test
+      # TODO(102)
+      <!-- TODO(#   101)-->
+      // some test conent TODO(#1020000): test description.
+      some test content TODO(#100002): some description.
+      // TODO(#104444444): test summary 1.
+      # TODO(#10210110): test summary 2.
+      test todo
+      some test content Todo
+      <!-- TODO(#101000000): test summary 3-->
+      // TODO(#11002): test summary 1.
+      # TODO(#11004): test summary 2.
+      test Todo
+      test TODO
+      """.trimIndent()
+    tempFile.writeText(testContent)
+
+    assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    val failureMessage =
+      """
+      TODOs not in correct format:
+      - TempFile.txt:1
+      - TempFile.txt:2
+      - TempFile.txt:3
+      - TempFile.txt:4
+      - TempFile.txt:5
+
+      TODOs not corresponding to open issues on GitHub:
+      - TempFile.txt:6
+      - TempFile.txt:7
+      - TempFile.txt:10
+
+      $wikiReferenceNote
+
+      Regenerated exemptions:
+
+      todo_open_exemption {
+        exempted_file_path: "TempFile.txt"
+        line_number: 1
+        line_number: 2
+        line_number: 3
+        line_number: 4
+        line_number: 5
+        line_number: 6
+        line_number: 7
+        line_number: 10
+      }
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testRegenerate_todosWithExemptions_shouldOutputNewTextProtoIncludingExemptions() {
+    setUpGitHubService(issueNumbers = listOf(11004, 11003, 11002, 11001))
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      // TODO (152440222): test description 1
+      """.trimIndent()
+    val testContent2 =
+      """
+      # TODO(#1000000): test description 2
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptions = TodoOpenExemptions.newBuilder().apply {
+      this.addAllTodoOpenExemption(
+        listOf(
+          TodoOpenExemption.newBuilder().apply {
+            this.exemptedFilePath = "TempFile1.kt"
+            this.addAllLineNumber(listOf(1)).build()
+          }.build(),
+          TodoOpenExemption.newBuilder().apply {
+            this.exemptedFilePath = "TempFile2.kt"
+            this.addAllLineNumber(listOf(1)).build()
+          }.build()
+        )
+      )
+    }.build()
+    exemptions.writeTo(exemptionFile.outputStream())
+
+    assertThrows<Exception>() { runScriptWithRegenerate() }
+
+    val failureMessage =
+      """
+      Regenerated exemptions:
+
+      todo_open_exemption {
+        exempted_file_path: "TempFile1.kt"
+        line_number: 1
+      }
+      todo_open_exemption {
+        exempted_file_path: "TempFile2.kt"
+        line_number: 1
+      }
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
   private fun setUpGitHubService(issueNumbers: List<Int>) {
     val issueJsons = issueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
     val mockWebServer = MockWebServer()
@@ -376,11 +775,18 @@ class TodoOpenCheckTest {
     GitHubClient.remoteApiUrl = mockWebServer.url("/").toString()
   }
 
-  /** Runs the todo_open_check. */
   private fun runScript() {
     main(
       "${tempFolder.root}/testfiles",
       "${tempFolder.root}/$pathToProtoBinary"
+    )
+  }
+
+  private fun runScriptWithRegenerate() {
+    main(
+      "${tempFolder.root}/testfiles",
+      "${tempFolder.root}/$pathToProtoBinary",
+      "regenerate"
     )
   }
 }

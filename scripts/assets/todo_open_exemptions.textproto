@@ -253,38 +253,86 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoOpenCheckTest.kt"
-  line_number: 57
   line_number: 58
-  line_number: 64
-  line_number: 66
-  line_number: 83
+  line_number: 59
+  line_number: 65
+  line_number: 67
   line_number: 84
   line_number: 85
   line_number: 86
   line_number: 87
-  line_number: 116
+  line_number: 88
   line_number: 117
-  line_number: 120
-  line_number: 148
+  line_number: 118
+  line_number: 121
   line_number: 149
   line_number: 150
-  line_number: 155
-  line_number: 157
-  line_number: 191
+  line_number: 151
+  line_number: 156
+  line_number: 158
   line_number: 192
   line_number: 193
-  line_number: 198
-  line_number: 200
-  line_number: 206
-  line_number: 240
-  line_number: 244
-  line_number: 277
+  line_number: 194
+  line_number: 199
+  line_number: 201
+  line_number: 207
+  line_number: 241
+  line_number: 245
   line_number: 278
-  line_number: 282
-  line_number: 326
+  line_number: 279
+  line_number: 283
   line_number: 327
   line_number: 328
-  line_number: 332
+  line_number: 329
+  line_number: 333
+  line_number: 402
+  line_number: 403
+  line_number: 409
+  line_number: 411
+  line_number: 429
+  line_number: 430
+  line_number: 431
+  line_number: 432
+  line_number: 433
+  line_number: 448
+  line_number: 449
+  line_number: 452
+  line_number: 467
+  line_number: 468
+  line_number: 469
+  line_number: 470
+  line_number: 471
+  line_number: 472
+  line_number: 473
+  line_number: 476
+  line_number: 477
+  line_number: 478
+  line_number: 496
+  line_number: 500
+  line_number: 560
+  line_number: 561
+  line_number: 567
+  line_number: 569
+  line_number: 590
+  line_number: 591
+  line_number: 592
+  line_number: 593
+  line_number: 594
+  line_number: 631
+  line_number: 632
+  line_number: 635
+  line_number: 668
+  line_number: 669
+  line_number: 670
+  line_number: 671
+  line_number: 672
+  line_number: 673
+  line_number: 674
+  line_number: 677
+  line_number: 678
+  line_number: 679
+  line_number: 727
+  line_number: 731
 }
 todo_open_exemption {
   exempted_file_path: "scripts/static_checks.sh"
