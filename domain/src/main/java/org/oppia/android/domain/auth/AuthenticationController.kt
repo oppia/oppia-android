@@ -35,7 +35,7 @@ class AuthenticationController @Inject constructor(
         }
       } catch (e: TimeoutCancellationException) {
         deferredResult.complete(
-          AsyncResult.Failure(IllegalStateException(e))
+          AsyncResult.Failure(e)
         )
       }
     }
@@ -44,6 +44,6 @@ class AuthenticationController @Inject constructor(
 
   companion object {
     /** The amount of time the authentication task should run before timing out. */
-    const val AUTHENTICATION_TIMEOUT_MILLIS = 30_000L
+    private const val AUTHENTICATION_TIMEOUT_MILLIS = 30_000L
   }
 }
