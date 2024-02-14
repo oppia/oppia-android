@@ -35,7 +35,7 @@ class GitClientTest {
   @After
   fun tearDown() {
     // Print the status of the git repository to help with debugging in the cases of test failures
-    // and to help manually verify the expect git state at the end of each test.
+    // and to help manually verify the expected git state at the end of each test.
     println("git status (at end of test):")
     println(testGitRepository.status(checkForGitRepository = false))
   }
