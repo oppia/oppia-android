@@ -26,7 +26,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
-/** Enum to the store the errors of drag and drop sort interaction. */
+/** Represents the type of errors that can be thrown by drag and drop sort interaction. */
 enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {
   VALID(error = null),
   EMPTY_INPUT(error = R.string.drag_and_drop_interaction_empty_input);
