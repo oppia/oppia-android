@@ -179,9 +179,6 @@ message EventLog {
 
       // The event being logged contains feature flags and their current enabled and sync state.
       FeatureFlagListContext feature_flag_list_context = 43;
-
-      // The event being logged contains the feature flag items.
-      FeatureFlagItemContext feature_flag_item_context = 44;
     }
   }
 
