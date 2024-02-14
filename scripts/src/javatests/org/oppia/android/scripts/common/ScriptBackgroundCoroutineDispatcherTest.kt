@@ -72,6 +72,8 @@ class ScriptBackgroundCoroutineDispatcherTest {
     runBlocking { taskStartedChannel.receive() }
 
     dispatcher.close()
+    // This slows down the test, but provides assurance that the task was definitely cancelled.
+    runBlocking { delay(2_000L) }
 
     // The task should not have run since it was cancelled, but no exception will be thrown.
     verifyNoMoreInteractions(mockRunnable)

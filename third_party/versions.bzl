@@ -56,6 +56,9 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.android.material:material": "1.3.0",
     "com.google.auto.value:auto-value-annotations": "1.8.1",
     "com.google.firebase:firebase-analytics": "17.5.0",
+    "com.google.firebase:firebase-appcheck": "16.0.0",
+    "com.google.firebase:firebase-appcheck-debug": "16.0.0",
+    "com.google.firebase:firebase-appcheck-playintegrity": "16.0.0",
     "com.google.firebase:firebase-auth-ktx": "19.3.1",
     "com.google.firebase:firebase-common": "19.3.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
@@ -76,7 +79,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.checkerframework:checker-qual": "3.13.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.3",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
