@@ -124,7 +124,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   fun testDenominatorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to FRACTION_VALUE_TEST_2_OVER_4)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       denominatorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
@@ -143,7 +143,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   fun testDenominatorEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_1)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       denominatorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,

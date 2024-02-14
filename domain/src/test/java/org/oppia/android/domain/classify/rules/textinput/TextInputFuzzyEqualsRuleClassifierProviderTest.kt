@@ -267,7 +267,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   fun testStringAnswer_nonNegativeIntInput_verifyThrowsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_TEST_VALUE_1)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
         inputs = inputs,

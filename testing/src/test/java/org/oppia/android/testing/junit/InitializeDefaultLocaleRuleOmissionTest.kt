@@ -106,7 +106,7 @@ class InitializeDefaultLocaleRuleOmissionTest {
   @Test
   fun testSuite_withoutRule_doesNotInitializeLocaleHandlerWithDefaultContext() {
     // Not including the rule should result in a helpful exception being thrown.
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       appLanguageLocaleHandler.getDisplayLocale()
     }
     assertThat(exception)

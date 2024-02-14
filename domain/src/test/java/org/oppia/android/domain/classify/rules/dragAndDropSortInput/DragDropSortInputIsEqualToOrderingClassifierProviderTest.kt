@@ -137,7 +137,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
     val inputs = mapOf("y" to LIST_OF_SETS_12_3_4)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,

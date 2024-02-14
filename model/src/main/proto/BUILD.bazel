@@ -273,7 +273,10 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "feedback_reporting_proto",
     srcs = ["feedback_reporting.proto"],
-    deps = [":profile_proto"],
+    deps = [
+        ":languages_proto",
+        ":profile_proto",
+    ],
 )
 
 java_lite_proto_library(
