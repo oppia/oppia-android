@@ -44,8 +44,8 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.mockito.anyOrNull
