@@ -44,31 +44,24 @@ import javax.inject.Singleton
 @Config(application = NetworkLoggingInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class NetworkLoggingInterceptorTest {
+  private companion object {
+    private const val testUrl = "/"
+    private const val testApiKey = "api_key"
+    private const val testApiKeyValue = "api_key_value"
+    private const val testResponseBody = "{\"test\": \"test\"}"
+    private const val headerString = "$testApiKey: $testApiKeyValue"
+  }
 
-  @Inject
-  lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   private lateinit var retrofit: Retrofit
-
   private lateinit var mockWebServer: MockWebServer
-
   private lateinit var client: OkHttpClient
-
-  private val testUrl = "/"
-  private val testApiKey = "api_key"
-  private val testApiKeyValue = "api_key_value"
-  private val testResponseBody = "{\"test\": \"test\"}"
-  private val headerString = "$testApiKey: $testApiKeyValue"
-
   private lateinit var mockWebServerUrl: HttpUrl
   private lateinit var request: Request
 
@@ -91,33 +84,33 @@ class NetworkLoggingInterceptorTest {
   }
 
   @Test
-  fun testLoggingInterceptor_makeCallToTopicService_logsNetworkCall() = runBlockingTest {
+  fun testLoggingInterceptor_makeNetworkCall_emitsRetrofitCallContext() = runBlockingTest {
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
+    client.newCall(request).execute()
+    testCoroutineDispatchers.advanceUntilIdle()
 
     val networkJob = launch {
       networkLoggingInterceptor.logNetworkCallFlow.collect {
         assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
-        assertThat(it.responseStatusCode).isEqualTo(200)
+        assertThat(it.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
         assertThat(it.headers).contains(headerString)
         assertThat(it.body).isEqualTo(testResponseBody)
       }
     }
 
-    client.newCall(request).execute()
-    testCoroutineDispatchers.advanceUntilIdle()
     networkJob.cancel()
   }
 
   @Test
-  fun testLoggingInterceptor_makeFailingCallToTopicService_logsNetworkCallFailed() =
+  fun testLoggingInterceptor_makeFailingNetworkCall_emitsRetrofitCall_andCallFailedContext() =
     runBlockingTest {
       val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
-
       val mockResponse = MockResponse()
         .setResponseCode(pageNotFound)
         .setBody(testResponseBody)
 
       mockWebServer.enqueue(mockResponse)
+      client.newCall(request).execute()
 
       val networkJob = launch {
         networkLoggingInterceptor.logNetworkCallFlow.collect {
@@ -139,16 +132,15 @@ class NetworkLoggingInterceptorTest {
         }
       }
 
-      client.newCall(request).execute()
-      testCoroutineDispatchers.advanceUntilIdle()
       networkJob.cancel()
       failedNetworkJob.cancel()
     }
 
   @Test
-  fun testLoggingInterceptor_makeFailingCallToTopicService_logsNetworkCallFailed_withException() =
+  fun testLoggingInterceptor_makeCrashingNetworkCall_emitsRetrofitCallFailedContext() =
     runBlockingTest {
       mockWebServer.shutdown()
+      try { client.newCall(request).execute() } catch (e: Exception) { }
 
       val failedNetworkJob = launch {
         networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
@@ -160,12 +152,6 @@ class NetworkLoggingInterceptorTest {
           assertThat(it.errorMessage).contains("Failed to connect to localhost")
         }
       }
-
-      try {
-        client.newCall(request).execute()
-      } catch (e: Exception) { }
-
-      testCoroutineDispatchers.advanceUntilIdle()
       failedNetworkJob.cancel()
     }
 

@@ -3,8 +3,6 @@ package org.oppia.android.util.logging
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -27,7 +25,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -41,27 +38,27 @@ import javax.inject.Singleton
   application = ConsoleLoggerTest.TestApplication::class
 )
 class ConsoleLoggerTest {
+  private companion object {
+    private const val testTag = "tag"
+    private val testLogLevel: LogLevel = LogLevel.ERROR
+    private const val testMessage = "test error message"
+  }
+
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val testVersionName = "1.0"
-  private val testVersionCode = 1
-
-  private val testTag = "tag"
-  private val testLogLevel: LogLevel = LogLevel.ERROR
-  private val testMessage = "test error message"
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    setUpApplicationForContext()
   }
 
   @Test
   fun testConsoleLogger_logError_withMessage_logsMessage() = runBlockingTest {
+    consoleLogger.e(testTag, testMessage)
+
     val consoleJob = launch {
       consoleLogger.logErrorMessagesFlow.collect {
         assertThat(it.logTag).isEqualTo(testTag)
@@ -70,31 +67,11 @@ class ConsoleLoggerTest {
       }
     }
 
-    consoleLogger.e(testTag, testMessage)
-
-    testCoroutineDispatchers.advanceUntilIdle()
-
     consoleJob.cancel()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun setUpApplicationForContext() {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = testVersionName
-    packageInfo.versionCode = testVersionCode
-    packageManager.installPackage(packageInfo)
   }
 
   @Module

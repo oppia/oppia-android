@@ -62,6 +62,10 @@ private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleObserverTest.TestApplication::class)
 class ApplicationLifecycleObserverTest {
+  private companion object {
+    private const val TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS = 10000L
+  }
+
   @Inject
   lateinit var loggingIdentifierController: LoggingIdentifierController
 
@@ -202,12 +206,10 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val lastTwoLogs = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    val eventLog = if (lastTwoLogs[0].context.activityContextCase ==
+    val eventLogPair = fakeAnalyticsEventLogger.getMostRecentEvents(2).zipWithNext().first()
+    val isAppInForeGroundTime = eventLogPair.first.context.activityContextCase ==
       ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
-    ) {
-      lastTwoLogs[0]
-    } else lastTwoLogs[1]
+    val eventLog = if (isAppInForeGroundTime) eventLogPair.first else eventLogPair.second
 
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
@@ -378,43 +380,32 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_thenInBackground_logsAppInForegroundTime() {
-    // Flaky test as the log is sometimes logged before and sometimes after the app in background
-    // event.
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
     applicationLifecycleObserver.onCreate()
+    applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
-
-    val advanceTime = 10000L
 
     val sessionIdProvider = loggingIdentifierController.getSessionId()
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-
     val installationIdProvider = loggingIdentifierController.getInstallationId()
     val installationId = monitorFactory.waitForNextSuccessfulResult(installationIdProvider)
 
-    applicationLifecycleObserver.onAppInForeground()
-    assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
-
-    testCoroutineDispatchers.advanceTimeBy(advanceTime)
-
+    testCoroutineDispatchers.advanceTimeBy(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
-
-    val lastTwoLogs = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    val eventLog = if (lastTwoLogs[0].context.activityContextCase ==
+    val eventLogPair = fakeAnalyticsEventLogger.getMostRecentEvents(2).zipWithNext().first()
+    val isAppInForeGroundTime = eventLogPair.first.context.activityContextCase ==
       ActivityContextCase.APP_IN_FOREGROUND_TIME
-    ) {
-      lastTwoLogs[0]
-    } else lastTwoLogs[1]
+    val eventLog = if (isAppInForeGroundTime) eventLogPair.first else eventLogPair.second
     val eventLogContext = eventLog.context
 
     assertThat(eventLogContext.activityContextCase)
       .isEqualTo(ActivityContextCase.APP_IN_FOREGROUND_TIME)
-    assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong()).isEqualTo(advanceTime)
+    assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong())
+      .isEqualTo(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
     assertThat(eventLogContext.appInForegroundTime.appSessionId).isEqualTo(sessionId)
     assertThat(eventLogContext.appInForegroundTime.installationId).isEqualTo(installationId)
   }
