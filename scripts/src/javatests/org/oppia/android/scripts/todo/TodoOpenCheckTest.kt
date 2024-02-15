@@ -775,18 +775,10 @@ class TodoOpenCheckTest {
   }
 
   private fun runScript() {
-    main(
-      "${tempFolder.root}/testfiles",
-      "${tempFolder.root}/$pathToProtoBinary",
-      if (regenerateFile) "regenerate" else ""
-    )
+    main("${tempFolder.root}/testfiles", "${tempFolder.root}/$pathToProtoBinary")
   }
 
   private fun runScriptWithRegenerate() {
-    main(
-      "${tempFolder.root}/testfiles",
-      "${tempFolder.root}/$pathToProtoBinary",
-      "regenerate"
-    )
+    main("${tempFolder.root}/testfiles", "${tempFolder.root}/$pathToProtoBinary", "regenerate")
   }
 }
