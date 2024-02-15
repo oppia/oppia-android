@@ -426,7 +426,7 @@ class CpuPerformanceSnapshotterTest {
   @Test
   fun testSnapshotter_initializeOnce_initializeAgain_throwsErrorOnReinitialization() {
     cpuPerformanceSnapshotter.initialiseSnapshotter()
-    val exception = assertThrows(IllegalArgumentException::class) {
+    val exception = assertThrows<IllegalArgumentException>() {
       cpuPerformanceSnapshotter.initialiseSnapshotter()
     }
 

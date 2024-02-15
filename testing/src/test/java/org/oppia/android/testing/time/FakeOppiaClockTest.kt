@@ -110,7 +110,7 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeMs_wallClockMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_WALL_CLOCK_TIME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       fakeOppiaClock.setCurrentTimeMs(0)
     }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
@@ -128,7 +128,7 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeMs_uptimeMillisMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_UPTIME_MILLIS)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       fakeOppiaClock.setCurrentTimeMs(0)
     }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
@@ -226,7 +226,7 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeToSameDateTime_wallClockMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_UPTIME_MILLIS)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       fakeOppiaClock.setCurrentTimeToSameDateTime(0)
     }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
@@ -258,7 +258,7 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeToSameDateTime_uptimeMillisMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_UPTIME_MILLIS)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       fakeOppiaClock.setCurrentTimeToSameDateTime(0)
     }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
