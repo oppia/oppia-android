@@ -202,7 +202,13 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val lastTwoLogs = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    val eventLog = if (lastTwoLogs[0].context.activityContextCase ==
+      ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
+    ) {
+      lastTwoLogs[0]
+    } else lastTwoLogs[1]
+
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -398,7 +404,12 @@ class ApplicationLifecycleObserverTest {
 
     assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val lastTwoLogs = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    val eventLog = if (lastTwoLogs[0].context.activityContextCase ==
+      ActivityContextCase.APP_IN_FOREGROUND_TIME
+    ) {
+      lastTwoLogs[0]
+    } else lastTwoLogs[1]
     val eventLogContext = eventLog.context
 
     assertThat(eventLogContext.activityContextCase)
