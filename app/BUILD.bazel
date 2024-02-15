@@ -713,7 +713,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
-        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_debug_util",
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
@@ -1014,6 +1014,17 @@ android_library(
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:io_fabric_sdk_android_fabric",
+    ],
+)
+
+android_library(
+    name = "firestore_deps",
+    exports = [
+        "//third_party:com_google_auto_value_auto-value-annotations",
+        "//third_party:com_google_firebase_firebase-appcheck",
+        "//third_party:com_google_firebase_firebase-appcheck-debug",
+        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
+        "//third_party:org_checkerframework_checker-qual",
     ],
 )
 
