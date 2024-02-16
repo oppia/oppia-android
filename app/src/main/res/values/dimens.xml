@@ -793,6 +793,7 @@
   <dimen name="onboarding_shared_margin_2xl">32dp</dimen>
   <dimen name="onboarding_shared_margin_3xl">36dp</dimen>
   <dimen name="onboarding_shared_margin_4xl">48dp</dimen>
+  <dimen name="onboarding_shared_margin_5xl">52dp</dimen>
 
   <dimen name="onboarding_shared_text_size_small">12sp</dimen>
   <dimen name="onboarding_shared_text_size_medium_small">14sp</dimen>

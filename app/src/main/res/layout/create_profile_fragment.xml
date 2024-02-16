@@ -22,7 +22,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.10" />
+      app:layout_constraintGuide_percent="0.08" />
 
     <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:id="@+id/create_profile_background"
@@ -33,8 +33,8 @@
 
     <com.google.android.material.imageview.ShapeableImageView
       android:id="@+id/create_profile_user_image_view"
-      android:layout_width="150dp"
-      android:layout_height="150dp"
+      android:layout_width="140dp"
+      android:layout_height="140dp"
       android:clickable="true"
       android:contentDescription="@string/create_profile_activity_current_picture_content_description"
       android:focusable="true"
@@ -88,24 +88,25 @@
       android:id="@+id/create_profile_title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_margin="@dimen/onboarding_shared_margin_medium_large"
       android:fontFamily="sans-serif-medium"
       android:text="@string/create_profile_activity_header"
       android:textColor="@color/component_color_onboarding_shared_black_color"
       android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/create_profile_header_guide" />
+      app:layout_constraintTop_toBottomOf="@id/create_profile_user_image_view" />
 
     <TextView
       android:id="@+id/create_profile_nickname_label"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/onboarding_shared_margin_xl"
-      android:layout_marginTop="@dimen/onboarding_shared_margin_medium_large"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_5xl"
+      android:layout_marginTop="@dimen/onboarding_shared_margin_medium"
       android:fontFamily="sans-serif"
       android:labelFor="@id/create_profile_nickname_edittext"
       android:text="@string/create_profile_activity_nickname_label"
-      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textColor="@color/component_color_onboarding_shared_text_color"
       android:textSize="@dimen/onboarding_shared_text_size_medium_small"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_title" />
@@ -114,20 +115,20 @@
       android:id="@+id/create_profile_nickname_edittext"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/onboarding_shared_margin_medium_large"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_5xl"
       android:layout_marginTop="@dimen/onboarding_shared_margin_small"
-      android:layout_marginEnd="@dimen/onboarding_shared_margin_medium_large"
+      android:layout_marginEnd="@dimen/onboarding_shared_margin_5xl"
       android:autofillHints="false"
-      android:background="@{viewModel.hasName ? @drawable/edit_text_white_background_with_border: @drawable/edit_text_error_border}"
+      android:background="@{viewModel.hasName ? @drawable/edit_text_white_background_with_border: @drawable/edit_text_white_background_error_border}"
       android:fontFamily="sans-serif"
-      android:inputType="text|textCapSentences"
       android:imeOptions="actionDone"
+      android:inputType="text|textCapSentences"
       android:paddingStart="@dimen/onboarding_shared_padding_medium"
       android:paddingTop="@dimen/onboarding_shared_padding_medium_small"
       android:paddingEnd="@dimen/onboarding_shared_padding_medium"
       android:paddingBottom="@dimen/onboarding_shared_padding_medium_small"
-      android:textSize="@dimen/onboarding_shared_text_size_medium"
       android:textColor="@color/component_color_onboarding_shared_text_color"
+      android:textSize="@dimen/onboarding_shared_text_size_medium"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_label"
       tools:text="John" />
@@ -136,11 +137,11 @@
       android:id="@+id/create_profile_nickname_error"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/onboarding_shared_margin_xl"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_5xl"
       android:layout_marginTop="@dimen/onboarding_shared_margin_small"
       android:fontFamily="sans-serif"
       android:text="@string/create_profile_activity_nickname_error"
-      android:textColor="@color/component_color_shared_input_error_color"
+      android:textColor="@color/component_color_shared_error_color"
       android:textSize="@dimen/onboarding_shared_text_size_medium_small"
       android:visibility="@{viewModel.hasName ? View.GONE : View.VISIBLE}"
       app:layout_constraintStart_toStartOf="parent"
@@ -150,6 +151,7 @@
       android:id="@+id/onboarding_steps_count"
       style="@style/OnboardingStepCountStyle"
       android:text="@string/onboarding_step_count_three"
+      android:visibility="visible"
       app:layout_constraintBottom_toTopOf="@id/onboarding_navigation_back"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />

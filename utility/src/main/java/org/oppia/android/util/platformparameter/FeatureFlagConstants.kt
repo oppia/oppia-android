@@ -175,4 +175,4 @@ annotation class EnableOnboardingFlowV2
 const val ENABLE_ONBOARDING_FLOW_V2 = "enable_onboarding_flow_v2"
 
 /** Default value of the feature flag corresponding to [EnableOnboardingFlowV2]. */
-const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = true
+const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = false

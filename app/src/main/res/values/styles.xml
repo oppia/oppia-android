@@ -672,7 +672,10 @@
 
   <style name="OnboardingLanguageLetsGoButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:minWidth">@dimen/clickable_item_min_width</item>
-    <item name="android:layout_margin">@dimen/onboarding_shared_margin_medium</item>
+    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium</item>
+    <item name="android:layout_marginStart">@dimen/onboarding_shared_margin_4xl</item>
+    <item name="android:layout_marginEnd">@dimen/onboarding_shared_margin_4xl</item>
+    <item name="android:layout_marginBottom">@dimen/onboarding_shared_margin_medium</item>
     <item name="android:background">@drawable/rounded_primary_button_grey_shadow_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
@@ -724,8 +727,6 @@
   </style>
 
   <style name="OnboardingProfileTypeTextStyle" parent="TextViewCenter">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
     <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_small</item>
@@ -734,7 +735,7 @@
 
   <style name="OnboardingNavigationPrimaryButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:minWidth">@dimen/clickable_item_min_width</item>
-    <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
+    <item name="android:padding">@dimen/onboarding_shared_padding_medium_small</item>
     <item name="android:layout_margin">@dimen/onboarding_shared_margin_medium</item>
     <item name="android:background">@drawable/rounded_primary_button_grey_shadow_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
@@ -758,11 +759,10 @@
   </style>
 
   <style name="OnboardingLearnerIntroSubtitleStyle" parent="TextViewStart">
-    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_learner_intro_list_color</item>
     <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium</item>
-    <item name="android:layout_marginStart">@dimen/onboarding_shared_margin_2xl</item>
     <item name="android:layout_marginEnd">@dimen/onboarding_shared_margin_2xl</item>
     <item name="android:drawablePadding">@dimen/onboarding_shared_padding_medium</item>
     <item name="android:paddingStart">@dimen/onboarding_shared_padding_large</item>

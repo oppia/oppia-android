@@ -38,11 +38,11 @@
       <com.google.android.material.card.MaterialCardView
         android:id="@+id/profile_type_learner_navigation_card"
         style="@style/OnboardingProfileTypeNavigationCardStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/onboarding_shared_margin_2xl"
-        android:layout_marginEnd="@dimen/onboarding_shared_margin_x_small"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_medium_small"
         app:layout_constraintEnd_toStartOf="@id/profile_type_supervisor_navigation_card"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -52,12 +52,10 @@
 
           <ImageView
             android:id="@+id/profile_type_learner_image"
-            android:layout_width="0dp"
-            android:layout_height="132dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/onboarding_learner_otter_content_description"
-            android:maxWidth="132dp"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/learner_otter" />
@@ -65,8 +63,10 @@
           <TextView
             android:id="@+id/profile_type_learner_text"
             style="@style/OnboardingProfileTypeTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@string/onboarding_profile_type_activity_student_text"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/profile_type_learner_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_type_learner_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -75,10 +75,9 @@
       <com.google.android.material.card.MaterialCardView
         android:id="@+id/profile_type_supervisor_navigation_card"
         style="@style/OnboardingProfileTypeNavigationCardStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/onboarding_shared_margin_x_small"
-        android:layout_marginEnd="@dimen/onboarding_shared_margin_2xl"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_medium_small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profile_type_learner_navigation_card"
         app:layout_constraintTop_toTopOf="parent">
@@ -89,12 +88,10 @@
 
           <ImageView
             android:id="@+id/profile_type_parent_image"
-            android:layout_width="0dp"
-            android:layout_height="132dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/onboarding_parent_otter_content_description"
-            android:maxWidth="132dp"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/parent_teacher_otter" />
@@ -102,20 +99,15 @@
           <TextView
             android:id="@+id/profile_type_parent_text"
             style="@style/OnboardingProfileTypeTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@string/onboarding_profile_type_activity_parent_text"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/profile_type_parent_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_type_parent_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
       </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/profile_type_bottom_guide"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.80" />
 
     <TextView
       android:id="@+id/onboarding_steps_count"
@@ -126,15 +118,16 @@
       android:text="@string/onboarding_step_count_two"
       android:textColor="@color/component_color_onboarding_shared_white_color"
       android:textSize="@dimen/onboarding_shared_text_size_medium_small"
+      app:layout_constraintBottom_toTopOf="@id/onboarding_navigation_back"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/profile_type_bottom_guide" />
+      app:layout_constraintStart_toStartOf="parent" />
 
     <Button
       android:id="@+id/onboarding_navigation_back"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/onboarding_shared_margin_medium"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_large"
+      android:layout_marginBottom="@dimen/onboarding_shared_margin_medium"
       android:background="@drawable/onboarding_back_button_white_background"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
@@ -146,7 +139,6 @@
       android:textColor="@color/component_color_onboarding_shared_green_color"
       android:textSize="@dimen/onboarding_shared_text_size_medium"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/onboarding_steps_count" />
+      app:layout_constraintStart_toStartOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
