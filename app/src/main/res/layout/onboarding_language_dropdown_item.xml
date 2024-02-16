@@ -8,10 +8,10 @@
     android:id="@+id/onboarding_language_text_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/onboarding_language_dropdown_padding"
     android:fontFamily="sans-serif"
-    android:textColor="@color/component_color_onboarding_language_primary_text_color"
-    android:textSize="@dimen/onboarding_language_message_text_size"
+    android:padding="@dimen/onboarding_shared_padding_medium_small"
+    android:textColor="@color/component_color_onboarding_shared_text_color"
+    android:textSize="@dimen/onboarding_shared_text_size_medium_small"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

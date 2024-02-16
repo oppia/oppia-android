@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item>
     <shape android:shape="rectangle">
-      <solid android:color="@color/component_color_onboarding_language_shadow_color" />
+      <solid android:color="@color/component_color_shared_white_background_color" />
       <corners
         android:bottomLeftRadius="@dimen/onboarding_shared_corner_radius"
         android:bottomRightRadius="@dimen/onboarding_shared_corner_radius" />

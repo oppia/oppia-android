@@ -11,8 +11,13 @@ import javax.inject.Inject
 
 private const val TAG_SURVEY_FRAGMENT = "TAG_SURVEY_FRAGMENT"
 
+/** Argument key for bundling the profileId. */
 const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+
+/** Argument key for bundling the topicId. */
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
+
+/** Argument key for bundling the explorationId. */
 const val EXPLORATION_ID_ARGUMENT_KEY = "exploration_id"
 
 /** The Presenter for [SurveyActivity]. */

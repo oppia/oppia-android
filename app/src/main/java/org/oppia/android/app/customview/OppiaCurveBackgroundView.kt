@@ -28,8 +28,11 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
+  /**
+   * Used to retrieve the layout direction that should be used to mirror the direction of the
+   * curve based on locale.
+   */
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -63,13 +66,13 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     val width = this.width.toFloat()
     val height = this.height.toFloat()
 
-    val controlPoint1X = width * 0.4f
+    val controlPoint1X = width * 0.55f
     val controlPoint1Y = 0f
 
-    val controlPoint2X = width * 0.5f
-    val controlPoint2Y = height * 0.15f
+    val controlPoint2X = width * 0.52f
+    val controlPoint2Y = height * 0.2f
 
-    val controlPoint3X = width * 1.2f
+    val controlPoint3X = width * 1f
     val controlPoint3Y = height * 0.1f
 
     path.reset()

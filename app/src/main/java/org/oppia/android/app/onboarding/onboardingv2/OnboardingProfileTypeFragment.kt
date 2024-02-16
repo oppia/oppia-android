@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains an onboarding flow of the app. */
+/** Fragment that contains the profile type selection flow of the app. */
 class OnboardingProfileTypeFragment : InjectableFragment() {
   @Inject
   lateinit var onboardingProfileTypeFragmentPresenter: OnboardingProfileTypeFragmentPresenter

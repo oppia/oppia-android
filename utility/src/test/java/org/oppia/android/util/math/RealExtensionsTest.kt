@@ -252,7 +252,7 @@ class RealExtensionsTest {
   fun testIsNegative_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) { defaultReal.isNegative() }
+    val exception = assertThrows<IllegalStateException>() { defaultReal.isNegative() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -309,7 +309,7 @@ class RealExtensionsTest {
     val first = Real.getDefaultInstance()
     val second = TWO_REAL
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       first.isApproximatelyEqualTo(second)
     }
 
@@ -321,7 +321,7 @@ class RealExtensionsTest {
     val first = TWO_REAL
     val second = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       first.isApproximatelyEqualTo(second)
     }
 
@@ -659,7 +659,7 @@ class RealExtensionsTest {
   fun testIsApproximatelyZero_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) { defaultReal.isApproximatelyZero() }
+    val exception = assertThrows<IllegalStateException>() { defaultReal.isApproximatelyZero() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -732,7 +732,7 @@ class RealExtensionsTest {
   fun testToDouble_default_returnsZeroDouble() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) { defaultReal.toDouble() }
+    val exception = assertThrows<IllegalStateException>() { defaultReal.toDouble() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -783,7 +783,7 @@ class RealExtensionsTest {
   fun testAsWholeNumber_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) { defaultReal.asWholeNumber() }
+    val exception = assertThrows<IllegalStateException>() { defaultReal.asWholeNumber() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -925,7 +925,7 @@ class RealExtensionsTest {
   fun testUnaryMinus_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) { -defaultReal }
+    val exception = assertThrows<IllegalStateException>() { -defaultReal }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -1782,7 +1782,7 @@ class RealExtensionsTest {
     val lhsReal = createIntegerReal(2)
     val rhsReal = createIntegerReal(0)
 
-    assertThrows(ArithmeticException::class) { lhsReal / rhsReal }
+    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
   }
 
   @Test
@@ -1790,7 +1790,7 @@ class RealExtensionsTest {
     val lhsReal = createIntegerReal(2)
     val rhsReal = createRationalReal(ZERO_FRACTION)
 
-    assertThrows(ArithmeticException::class) { lhsReal / rhsReal }
+    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
   }
 
   @Test
@@ -1808,7 +1808,7 @@ class RealExtensionsTest {
     val lhsReal = ONE_AND_ONE_HALF_REAL
     val rhsReal = createIntegerReal(0)
 
-    assertThrows(ArithmeticException::class) { lhsReal / rhsReal }
+    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
   }
 
   @Test
@@ -1816,7 +1816,7 @@ class RealExtensionsTest {
     val lhsReal = ONE_AND_ONE_HALF_REAL
     val rhsReal = createRationalReal(ZERO_FRACTION)
 
-    assertThrows(ArithmeticException::class) { lhsReal / rhsReal }
+    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
   }
 
   @Test
@@ -2188,7 +2188,7 @@ class RealExtensionsTest {
   fun testSqrt_defaultReal_throwsException() {
     val real = Real.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) { sqrt(real) }
+    val exception = assertThrows<IllegalStateException>() { sqrt(real) }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }

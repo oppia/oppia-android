@@ -199,7 +199,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsGreaterThanOrEqualToRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -216,7 +216,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsGreaterThanOrEqualToRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,

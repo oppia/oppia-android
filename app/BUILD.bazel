@@ -214,6 +214,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
+    "src/main/java/org/oppia/android/app/onboarding/onboardingv2/CreateLearnerProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsReadingTextSizeViewModel.kt",
     "src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt",
@@ -409,9 +410,9 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt",
     "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/android/app/customview/SurveyOnboardingBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/survey/SurveyMultipleChoiceOptionView.kt",
     "src/main/java/org/oppia/android/app/survey/SurveyNpsItemOptionView.kt",
@@ -1022,6 +1023,9 @@ android_library(
     name = "firestore_deps",
     exports = [
         "//third_party:com_google_auto_value_auto-value-annotations",
+        "//third_party:com_google_firebase_firebase-appcheck",
+        "//third_party:com_google_firebase_firebase-appcheck-debug",
+        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
         "//third_party:org_checkerframework_checker-qual",
     ],
 )
