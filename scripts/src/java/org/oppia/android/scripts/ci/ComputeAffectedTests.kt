@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.ci
 
 import org.oppia.android.scripts.common.BazelClient
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.proto.AffectedTestsBucket
@@ -73,9 +75,10 @@ private fun String.toBooleanStrictOrNull(): Boolean? {
 
 /** Utility used to compute affected test targets. */
 class ComputeAffectedTests(
-  val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
-  val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
-  val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD
+  private val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
+  private val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
+  private val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
 ) {
   private companion object {
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
@@ -106,7 +109,7 @@ class ComputeAffectedTests(
     println("Running from directory root: $rootDirectory")
 
     val gitClient = GitClient(rootDirectory, baseDevelopBranchReference)
-    val bazelClient = BazelClient(rootDirectory)
+    val bazelClient = BazelClient(rootDirectory, commandExecutor)
     println("Current branch: ${gitClient.currentBranch}")
     println("Most recent common commit: ${gitClient.branchMergeBase}")
 

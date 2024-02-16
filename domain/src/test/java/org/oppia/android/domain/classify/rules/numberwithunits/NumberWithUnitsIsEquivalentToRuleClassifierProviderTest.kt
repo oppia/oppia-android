@@ -179,7 +179,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   fun testInputNumberWithUnits_testAnswer_inputWithIncorrectType_verifyThrowsException() {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       unitIsEquivalentRuleClassifier.matches(
         answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
         inputs = inputs,
@@ -198,7 +198,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   fun testInputNumberWithUnits_testAnswerNumberWithUnits_withXMapping_verifyThrowsException() {
     val inputs = mapOf("x" to INPUT_TEST_NUMBER_WITH_UNITS)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,

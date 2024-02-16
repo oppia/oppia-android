@@ -41,7 +41,7 @@ class LicenseTextsCheckTest {
     val thirdPartyDepsXmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
     thirdPartyDepsXmlFile.writeText(WARNING_COMMENT)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(arrayOf())
     }
 
@@ -53,7 +53,7 @@ class LicenseTextsCheckTest {
     val thirdPartyDepsXmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
     thirdPartyDepsXmlFile.writeText("")
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
     }
 
@@ -72,7 +72,7 @@ class LicenseTextsCheckTest {
       """.trimIndent()
     )
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
     }
 
@@ -110,7 +110,7 @@ class LicenseTextsCheckTest {
   @Test
   fun testLicenseTexsCheck_xmlFileNotPresent_checkFailsWithFileNotFoundException() {
     val pathToThirdPartyDepsXml = "${tempFolder.root}/values/third_party_dependencies.xml"
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
     }
 

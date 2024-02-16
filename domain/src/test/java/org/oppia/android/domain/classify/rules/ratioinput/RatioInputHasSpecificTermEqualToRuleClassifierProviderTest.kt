@@ -198,7 +198,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_indexInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE, "y" to NON_NEGATIVE_VALUE_TEST_3)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
@@ -215,7 +215,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_valueInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4, "y" to STRING_VALUE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
@@ -232,7 +232,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_missingIndexInput_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_3)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
@@ -249,7 +249,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_missingValueInput_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
@@ -264,7 +264,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_threeTerms_missingBothInputs_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = mapOf(),
