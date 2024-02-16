@@ -444,7 +444,7 @@ class FractionExtensionsTest {
     val zeroDenominatorFraction = Fraction.getDefaultInstance()
 
     // Converting to simplest form results in a divide by zero in this case.
-    assertThrows(ArithmeticException::class) { zeroDenominatorFraction.toSimplestForm() }
+    assertThrows<ArithmeticException>() { zeroDenominatorFraction.toSimplestForm() }
   }
 
   @Test
@@ -518,7 +518,7 @@ class FractionExtensionsTest {
     val zeroDenominatorFraction = Fraction.getDefaultInstance()
 
     // Converting to simplest form results in a divide by zero in this case.
-    assertThrows(ArithmeticException::class) { zeroDenominatorFraction.toProperForm() }
+    assertThrows<ArithmeticException>() { zeroDenominatorFraction.toProperForm() }
   }
 
   @Test
@@ -1062,7 +1062,7 @@ class FractionExtensionsTest {
     val lhsFraction = ZERO_FRACTION
     val rhsFraction = ZERO_FRACTION
 
-    assertThrows(Exception::class) { lhsFraction / rhsFraction }
+    assertThrows<Exception>() { lhsFraction / rhsFraction }
   }
 
   @Test
@@ -1070,7 +1070,7 @@ class FractionExtensionsTest {
     val lhsFraction = ONE_FRACTION
     val rhsFraction = ZERO_FRACTION
 
-    assertThrows(Exception::class) { lhsFraction / rhsFraction }
+    assertThrows<Exception>() { lhsFraction / rhsFraction }
   }
 
   @Test
@@ -1078,7 +1078,7 @@ class FractionExtensionsTest {
     val lhsFraction = TWO_FRACTION
     val rhsFraction = ZERO_FRACTION
 
-    assertThrows(Exception::class) { lhsFraction / rhsFraction }
+    assertThrows<Exception>() { lhsFraction / rhsFraction }
   }
 
   @Test

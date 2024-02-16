@@ -55,7 +55,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     // Reverse the x and y parameters to ensure both have the incorrect type.
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
@@ -75,7 +75,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
       "y" to NON_NEGATIVE_VALUE_1
     )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
@@ -92,7 +92,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to VALID_CONTENT_ID_2, "y" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
@@ -109,7 +109,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   fun testAnswer_testString_missingInputX_throwsException() {
     val inputs = mapOf("y" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
@@ -126,7 +126,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_missingInputY_throwsException() {
     val inputs = mapOf("x" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
@@ -143,7 +143,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   fun testAnswer_bothInputsMissing_throwsException() {
     val inputs = mapOf("z" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,

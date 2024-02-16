@@ -33,13 +33,6 @@ class OnboardingFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    binding.onboardingLanguageDropdown.adapter = ArrayAdapter(
-      fragment.requireContext(),
-      R.layout.onboarding_language_dropdown_item,
-      R.id.onboarding_language_text_view,
-      arrayOf("English")
-    )
-
     binding.onboardingLanguageTitle.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.onboarding_language_activity_title,
       appLanguageResourceHandler.getStringInLocale(R.string.app_name)

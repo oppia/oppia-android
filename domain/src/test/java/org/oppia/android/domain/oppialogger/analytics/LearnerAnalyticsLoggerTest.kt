@@ -87,7 +87,7 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXP_5_STATE_THREE_NAME = "NumericExpressionInput.IsEquivalentTo"
     private const val TEST_EXP_5_STATE_FOUR_NAME = "AlgebraicExpressionInput.MatchesExactlyWith"
-    private const val DEFAULT_INITIAL_SESSION_ID = "e6eacc69-e636-3c90-ba29-32bf3dd17161"
+    private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
 
   @Inject

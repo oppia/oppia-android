@@ -98,6 +98,13 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has no profile ID defined per [EventLog.getProfileId].
+   */
+  fun hasNoProfileId() {
+    assertThat(actual.hasProfileId()).isFalse()
+  }
+
+  /**
    * Returns an [LiteProtoSubject] to verify the under-test [EventLog]'s [EventLog.getProfileId]
    * field.
    */

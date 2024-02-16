@@ -418,7 +418,7 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val exception = assertThrows(RuntimeException::class) {
+      val exception = assertThrows<RuntimeException>() {
         scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
@@ -433,7 +433,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      val exception = assertThrows(RuntimeException::class) {
+      val exception = assertThrows<RuntimeException>() {
         scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }

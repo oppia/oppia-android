@@ -42,13 +42,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    binding.audioLanguageDropdown.adapter = ArrayAdapter(
-      fragment.requireContext(),
-      R.layout.onboarding_language_dropdown_item,
-      R.id.onboarding_language_text_view,
-      arrayOf("English")
-    )
-
     binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.audio_language_fragment_text,
       appLanguageResourceHandler.getStringInLocale(R.string.app_name)

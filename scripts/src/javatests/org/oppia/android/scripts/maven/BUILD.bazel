@@ -9,6 +9,7 @@ kt_jvm_test(
     name = "GenerateMavenDependenciesListTest",
     size = "large",
     srcs = ["GenerateMavenDependenciesListTest.kt"],
+    shard_count = 4,
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
