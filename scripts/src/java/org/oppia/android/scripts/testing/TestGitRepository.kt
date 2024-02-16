@@ -19,20 +19,29 @@ class TestGitRepository(
   private val commandExecutor: CommandExecutor
 ) {
   private val rootDirectory by lazy { temporaryRootFolder.root }
+  private val gitDirectory: File get() = File(rootDirectory, ".git")
+  private val userEmail: String?
+    get() = maybeExecuteGitCommand("config", "--local", "--get", "user.email")?.joinOutput()?.trim()
+  private val userName: String?
+    get() = maybeExecuteGitCommand("config", "--local", "--get", "user.name")?.joinOutput()?.trim()
 
   /** Creates the repository using git init. */
   fun init() {
+    verifyNotInGitRepository()
     executeSuccessfulGitCommand("init")
   }
 
   /** Sets the user's [email] and [name] using git config. */
   fun setUser(email: String, name: String) {
-    executeSuccessfulGitCommand("config", "user.email", email)
-    executeSuccessfulGitCommand("config", "user.name", name)
+    verifyInGitRepository()
+    verifyUserIsNotSet()
+    executeSuccessfulGitCommand("config", "--local", "user.email", email)
+    executeSuccessfulGitCommand("config", "--local", "user.name", name)
   }
 
   /** Creates a new branch with the specified name, and switches to it. */
   fun checkoutNewBranch(branchName: String) {
+    verifyInGitRepository()
     executeSuccessfulGitCommand("checkout", "-b", branchName)
   }
 
@@ -42,6 +51,7 @@ class TestGitRepository(
    * This does not perform a commit. See [commit] for actually committing the change.
    */
   fun stageFileForCommit(file: File) {
+    verifyInGitRepository()
     executeSuccessfulGitCommand("add", file.toRelativeString(rootDirectory))
   }
 
@@ -57,6 +67,7 @@ class TestGitRepository(
    * This does not perform a commit. See [commit] for actually committing the change.
    */
   fun removeFileForCommit(file: File) {
+    verifyInGitRepository()
     executeSuccessfulGitCommand("rm", file.toRelativeString(rootDirectory))
   }
 
@@ -67,6 +78,7 @@ class TestGitRepository(
    * This does not perform a commit. See [commit] for actually committing the change.
    */
   fun moveFileForCommit(oldFile: File, newFile: File) {
+    verifyInGitRepository()
     executeSuccessfulGitCommand(
       "mv",
       oldFile.toRelativeString(rootDirectory),
@@ -81,25 +93,59 @@ class TestGitRepository(
    * @param allowEmpty whether to allow empty commits (i.e. committing with no staged files)
    */
   fun commit(message: String, allowEmpty: Boolean = false) {
+    verifyInGitRepository()
+    verifyUserIsSet()
     val arguments = mutableListOf("commit", "-m", message)
     if (allowEmpty) arguments += "--allow-empty"
     executeSuccessfulGitCommand(*arguments.toTypedArray())
   }
 
   /** Returns the result of git status. */
-  fun status(): String {
-    return commandExecutor.executeCommand(rootDirectory, "git", "status").output.joinOutputString()
+  fun status(checkForGitRepository: Boolean = true): String {
+    if (checkForGitRepository) verifyInGitRepository()
+    return executeGitCommand("status").joinOutput()
   }
 
-  private fun executeSuccessfulGitCommand(vararg arguments: String) {
-    verifySuccessfulCommand(commandExecutor.executeCommand(rootDirectory, "git", *arguments))
-  }
+  private fun executeGitCommand(vararg arguments: String): CommandResult =
+    commandExecutor.executeCommand(rootDirectory, "git", *arguments)
+
+  private fun maybeExecuteGitCommand(vararg arguments: String): CommandResult? =
+    executeGitCommand(*arguments).takeIf { it.exitCode == 0 }
+
+  private fun executeSuccessfulGitCommand(vararg arguments: String) =
+    verifySuccessfulCommand(executeGitCommand(*arguments))
 
   private fun verifySuccessfulCommand(result: CommandResult) {
-    assertWithMessage("Output: ${result.output.joinOutputString()}")
+    assertWithMessage("Output: ${result.joinOutput()}")
       .that(result.exitCode)
       .isEqualTo(0)
   }
 
-  private fun List<String>.joinOutputString(): String = joinToString(separator = "\n") { "  $it" }
+  private fun verifyInGitRepository() {
+    failUnless(gitDirectory.exists()) { "Not operating in an initialized Git repository." }
+  }
+
+  private fun verifyNotInGitRepository() {
+    failUnless(!gitDirectory.exists()) { "Git repository is already initialized." }
+  }
+
+  private fun verifyUserIsNotSet() {
+    verifyIsNotSet(name = "User email", userEmail)
+    verifyIsNotSet(name = "User name", userName)
+  }
+
+  private fun verifyUserIsSet() {
+    failUnless(userEmail != null) { "User email has not yet been set." }
+    failUnless(userName != null) { "User name has not yet been set." }
+  }
+
+  private fun verifyIsNotSet(name: String, value: String?) {
+    failUnless(value == null) { "$name has already been set: $value." }
+  }
+
+  private fun failUnless(condition: Boolean, lazyMessage: () -> String) {
+    if (!condition) throw AssertionError(lazyMessage())
+  }
+
+  private fun CommandResult.joinOutput(): String = output.joinToString(separator = "\n") { "  $it" }
 }

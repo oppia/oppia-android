@@ -13,7 +13,6 @@
     <item>@string/faq_question_11</item>
     <item>@string/faq_question_12</item>
     <item>@string/faq_question_13</item>
-    <item>@string/faq_question_14</item>
   </string-array>
 
   <string-array name="faq_answers">
@@ -29,6 +28,5 @@
     <item>@string/faq_answer_11</item>
     <item>@string/faq_answer_12</item>
     <item>@string/faq_answer_13</item>
-    <item>@string/faq_answer_14</item>
   </string-array>
 </resources>

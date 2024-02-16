@@ -79,7 +79,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows(NoSuchElementException::class) { debugFirestoreLoggerImpl.getMostRecentEvent() }
+    assertThrows<NoSuchElementException>() { debugFirestoreLoggerImpl.getMostRecentEvent() }
   }
 
   @Test
@@ -87,7 +87,7 @@ class DebugFirestoreEventLoggerImplTest {
     eventLogger.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
 
-    val eventException = assertThrows(NoSuchElementException::class) {
+    val eventException = assertThrows<NoSuchElementException>() {
       debugFirestoreLoggerImpl.getMostRecentEvent()
     }
 

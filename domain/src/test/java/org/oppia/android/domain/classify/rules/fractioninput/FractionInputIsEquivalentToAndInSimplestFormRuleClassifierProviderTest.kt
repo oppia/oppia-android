@@ -288,7 +288,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_1_OVER_2)
     val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
@@ -306,7 +306,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
     val answer = STRING_VALUE_TEST
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
@@ -324,7 +324,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val inputs = mapOf("f" to STRING_VALUE_TEST)
     val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,

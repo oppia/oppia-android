@@ -167,7 +167,7 @@ class DataProviderTestMonitorTest {
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextSuccessResult() }
+    val failure = assertThrows<IllegalStateException>() { monitor.waitForNextSuccessResult() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
   }
@@ -179,7 +179,7 @@ class DataProviderTestMonitorTest {
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextSuccessResult() }
+    val failure = assertThrows<IllegalStateException>() { monitor.waitForNextSuccessResult() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
   }
@@ -221,7 +221,7 @@ class DataProviderTestMonitorTest {
     monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
-    val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextSuccessResult() }
+    val failure = assertThrows<IllegalStateException>() { monitor.waitForNextSuccessResult() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
   }
@@ -251,7 +251,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Internal expectation failure since the operation hasn't completed.
-    assertThrows(AssertionError::class) { monitor.ensureNextResultIsSuccess() }
+    assertThrows<AssertionError>() { monitor.ensureNextResultIsSuccess() }
   }
 
   @Test
@@ -275,7 +275,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    val failure = assertThrows(IllegalStateException::class) { monitor.ensureNextResultIsSuccess() }
+    val failure = assertThrows<IllegalStateException>() { monitor.ensureNextResultIsSuccess() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
   }
@@ -288,24 +288,9 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    val failure = assertThrows(IllegalStateException::class) { monitor.ensureNextResultIsSuccess() }
+    val failure = assertThrows<IllegalStateException>() { monitor.ensureNextResultIsSuccess() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
-  }
-
-  @Test
-  fun testEnsureNextResultIsSuccess_failureThenSuccess_notified_throwsException() {
-    val dataProvider =
-      createDataProviderWithResultsQueue(
-        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
-      )
-    val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult() // Wait for the first result.
-
-    asyncDataSubscriptionManager.notifyChangeAsync("test")
-    testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    // Internal expectation failure since the operation hasn't completed.
-    assertThrows(AssertionError::class) { monitor.ensureNextResultIsSuccess() }
   }
 
   @Test
@@ -335,7 +320,7 @@ class DataProviderTestMonitorTest {
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    val failure = assertThrows(IllegalStateException::class) { monitor.ensureNextResultIsSuccess() }
+    val failure = assertThrows<IllegalStateException>() { monitor.ensureNextResultIsSuccess() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
   }
@@ -365,7 +350,7 @@ class DataProviderTestMonitorTest {
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextFailingResult() }
+    val failure = assertThrows<IllegalStateException>() { monitor.waitForNextFailingResult() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -389,7 +374,7 @@ class DataProviderTestMonitorTest {
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextFailingResult() }
+    val failure = assertThrows<IllegalStateException>() { monitor.waitForNextFailingResult() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -419,7 +404,7 @@ class DataProviderTestMonitorTest {
     monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
-    val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextFailingResult() }
+    val failure = assertThrows<IllegalStateException>() { monitor.waitForNextFailingResult() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -449,7 +434,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Internal expectation failure since the operation hasn't completed.
-    assertThrows(AssertionError::class) { monitor.ensureNextResultIsSuccess() }
+    assertThrows<AssertionError>() { monitor.ensureNextResultIsSuccess() }
   }
 
   @Test
@@ -473,7 +458,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    val failure = assertThrows(IllegalStateException::class) { monitor.ensureNextResultIsFailing() }
+    val failure = assertThrows<IllegalStateException>() { monitor.ensureNextResultIsFailing() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -486,7 +471,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    val failure = assertThrows(IllegalStateException::class) { monitor.ensureNextResultIsFailing() }
+    val failure = assertThrows<IllegalStateException>() { monitor.ensureNextResultIsFailing() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -502,7 +487,7 @@ class DataProviderTestMonitorTest {
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     // Internal expectation failure since the operation hasn't completed.
-    assertThrows(AssertionError::class) { monitor.ensureNextResultIsFailing() }
+    assertThrows<AssertionError>() { monitor.ensureNextResultIsFailing() }
   }
 
   @Test
@@ -532,7 +517,7 @@ class DataProviderTestMonitorTest {
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
-    val failure = assertThrows(IllegalStateException::class) { monitor.ensureNextResultIsFailing() }
+    val failure = assertThrows<IllegalStateException>() { monitor.ensureNextResultIsFailing() }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -563,7 +548,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows<NeverWantedButInvoked>() { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -574,7 +559,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows<NeverWantedButInvoked>() { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -585,7 +570,7 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows<NeverWantedButInvoked>() { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -599,7 +584,7 @@ class DataProviderTestMonitorTest {
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows<NeverWantedButInvoked>() { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -615,7 +600,7 @@ class DataProviderTestMonitorTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test")
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows<NeverWantedButInvoked>() { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -630,7 +615,7 @@ class DataProviderTestMonitorTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test")
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows<NeverWantedButInvoked>() { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -657,7 +642,7 @@ class DataProviderTestMonitorTest {
     }
 
     val failure =
-      assertThrows(AssertionError::class) {
+      assertThrows<AssertionError>() {
         monitorFactory.ensureDataProviderExecutes(dataProvider)
       }
 
@@ -673,7 +658,7 @@ class DataProviderTestMonitorTest {
     }
 
     val failure =
-      assertThrows(AssertionError::class) {
+      assertThrows<AssertionError>() {
         monitorFactory.ensureDataProviderExecutes(dataProvider)
       }
 
@@ -688,7 +673,7 @@ class DataProviderTestMonitorTest {
       AsyncResult.Failure(Exception("Failure"))
     }
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextSuccessfulResult(dataProvider)
     }
 
@@ -727,7 +712,7 @@ class DataProviderTestMonitorTest {
       )
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextSuccessfulResult(dataProvider)
     }
 
@@ -770,7 +755,7 @@ class DataProviderTestMonitorTest {
     }
 
     val failure =
-      assertThrows(IllegalStateException::class) {
+      assertThrows<IllegalStateException>() {
         monitorFactory.waitForNextSuccessfulResult(dataProvider)
       }
 
@@ -783,7 +768,7 @@ class DataProviderTestMonitorTest {
       AsyncResult.Failure(Exception("Failure"))
     }
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextSuccessfulResult(dataProvider)
     }
 
@@ -822,7 +807,7 @@ class DataProviderTestMonitorTest {
       )
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextSuccessfulResult(dataProvider)
     }
 
@@ -864,7 +849,7 @@ class DataProviderTestMonitorTest {
       AsyncResult.Pending()
     }
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextFailureResult(dataProvider)
     }
 
@@ -888,7 +873,7 @@ class DataProviderTestMonitorTest {
       AsyncResult.Success("str value")
     }
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextFailureResult(dataProvider)
     }
 
@@ -916,7 +901,7 @@ class DataProviderTestMonitorTest {
       )
     monitorFactory.waitForNextFailureResult(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) {
+    val failure = assertThrows<IllegalStateException>() {
       monitorFactory.waitForNextFailureResult(dataProvider)
     }
 
