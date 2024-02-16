@@ -42,7 +42,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
     binding.onboardingLanguageTitle.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.onboarding_language_activity_title,
-      activity.getString(R.string.app_name)
+      appLanguageResourceHandler.getStringInLocale(R.string.app_name)
     )
 
     binding.onboardingLanguageLetsGoButton.setOnClickListener {

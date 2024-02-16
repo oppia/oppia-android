@@ -60,7 +60,7 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
     binding.onboardingLearnerIntroFeedback.text =
       appLanguageResourceHandler.getStringInLocaleWithWrapping(
         R.string.onboarding_learner_intro_feedback_text,
-        activity.getString(R.string.app_name)
+        appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
 
     observeProfileLivedata(ProfileId.newBuilder().setInternalId(-1).build())

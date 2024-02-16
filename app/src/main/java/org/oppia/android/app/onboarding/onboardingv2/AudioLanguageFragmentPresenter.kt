@@ -51,7 +51,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.audio_language_fragment_text,
-      activity.getString(R.string.app_name)
+      appLanguageResourceHandler.getStringInLocale(R.string.app_name)
     )
 
     binding.onboardingNavigationContinue.setOnClickListener {
