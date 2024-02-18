@@ -21,6 +21,8 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -2335,13 +2337,23 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    assertThat(eventLogList[0]).hasHintUnlockedContextThat {
+    val hintOfferedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == HINT_UNLOCKED_CONTEXT
+    }.also {
+      assert(it != null)
+    }
+    assertThat(hintOfferedEvent!!).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
     }
-    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+
+    val progressSavingSuccessEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == PROGRESS_SAVING_SUCCESS_CONTEXT
+    }.also {
+      assert(it != null)
+    }
+    assertThat(progressSavingSuccessEvent!!).hasProgressSavingSuccessContextThat {
       containsTestExp2Details()
     }
   }
@@ -2384,13 +2396,23 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswer(choiceIndex = 0)
     submitMultipleChoiceAnswer(choiceIndex = 0)
 
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    assertThat(eventLogList[0]).hasHintUnlockedContextThat {
+    val hintOfferedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == HINT_UNLOCKED_CONTEXT
+    }.also {
+      assert(it != null)
+    }
+    assertThat(hintOfferedEvent!!).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)
     }
-    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
+
+    val progressSavingSuccessEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == PROGRESS_SAVING_SUCCESS_CONTEXT
+    }.also {
+      assert(it != null)
+    }
+    assertThat(progressSavingSuccessEvent!!).hasProgressSavingSuccessContextThat {
       containsFractionsExp0Details()
     }
   }
