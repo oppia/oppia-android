@@ -409,7 +409,7 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
   fun testAnswer1Over2_inputMissing_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_1_OVER_2)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputLessThanRuleClassifier
         .matches(
           answer = FRACTION_VALUE_TEST_1_OVER_2,
@@ -427,7 +427,7 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
   fun testAnswer1Over2_inputString_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputLessThanRuleClassifier
         .matches(
           answer = FRACTION_VALUE_TEST_1_OVER_2,
