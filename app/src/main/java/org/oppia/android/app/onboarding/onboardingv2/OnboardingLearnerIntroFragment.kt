@@ -47,7 +47,5 @@ class OnboardingLearnerIntroFragment :
     )
   }
 
-  override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
-    TODO("Not yet implemented")
-  }
+  override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {}
 }
