@@ -231,7 +231,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "c" to NEGATIVE_REAL_VALUE_3_5,
       "b" to POSITIVE_REAL_VALUE_3_5
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -250,7 +250,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "a" to NEGATIVE_REAL_VALUE_3_5,
       "c" to POSITIVE_REAL_VALUE_1_5
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -269,7 +269,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "a" to STRING_VALUE_1,
       "b" to NEGATIVE_REAL_VALUE_3_5
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -288,7 +288,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "a" to POSITIVE_REAL_VALUE_1_5,
       "b" to STRING_VALUE_2
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -307,7 +307,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "c" to POSITIVE_INT_VALUE_1,
       "b" to POSITIVE_INT_VALUE_3
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_2,
         inputs = inputs,
@@ -326,7 +326,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "a" to POSITIVE_INT_VALUE_1,
       "c" to POSITIVE_INT_VALUE_3
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_2,
         inputs = inputs,
@@ -345,7 +345,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "a" to STRING_VALUE_1,
       "b" to POSITIVE_INT_VALUE_3
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_1,
         inputs = inputs,
@@ -364,7 +364,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "a" to NEGATIVE_INT_VALUE_3,
       "b" to STRING_VALUE_2
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsInclusivelyBetweenRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_2,
         inputs = inputs,

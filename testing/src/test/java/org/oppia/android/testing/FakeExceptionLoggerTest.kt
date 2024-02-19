@@ -69,7 +69,7 @@ class FakeExceptionLoggerTest {
 
   @Test
   fun testFakeExceptionLogger_logNothing_getMostRecent_returnsFailure() {
-    val exception = assertThrows(NoSuchElementException::class) {
+    val exception = assertThrows<NoSuchElementException>() {
       fakeExceptionLogger.getMostRecentException()
     }
 
@@ -81,7 +81,7 @@ class FakeExceptionLoggerTest {
     exceptionLogger.logException(IllegalStateException("Test Exception"))
     fakeExceptionLogger.clearAllExceptions()
 
-    val exception = assertThrows(NoSuchElementException::class) {
+    val exception = assertThrows<NoSuchElementException>() {
       fakeExceptionLogger.getMostRecentException()
     }
 

@@ -92,7 +92,7 @@ class AccessibilityLabelCheckTest {
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(
         retrieveTestFilesDirectoryPath(),
         "${tempFolder.root}/$pathToProtoBinary",
@@ -134,7 +134,7 @@ class AccessibilityLabelCheckTest {
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(
         retrieveTestFilesDirectoryPath(),
         "${tempFolder.root}/$pathToProtoBinary",
@@ -244,7 +244,7 @@ class AccessibilityLabelCheckTest {
     appManifestFile.writeText(testContent1)
     splashManifestFile.writeText(testContent2)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(
         retrieveTestFilesDirectoryPath(),
         "${tempFolder.root}/$pathToProtoBinary",
@@ -308,7 +308,7 @@ class AccessibilityLabelCheckTest {
     appManifestFile.writeText(testContent1)
     splashManifestFile.writeText(testContent2)
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(
         retrieveTestFilesDirectoryPath(),
         "${tempFolder.root}/$pathToProtoBinary",
@@ -393,7 +393,7 @@ class AccessibilityLabelCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(
         retrieveTestFilesDirectoryPath(),
         "${tempFolder.root}/$pathToProtoBinary",
@@ -436,7 +436,7 @@ class AccessibilityLabelCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       main(
         retrieveTestFilesDirectoryPath(),
         "${tempFolder.root}/$pathToProtoBinary",
