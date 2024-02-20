@@ -9,6 +9,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.GitHubClient
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.scripts.proto.TodoOpenExemption
 import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.testing.assertThrows
@@ -18,6 +20,10 @@ import java.io.PrintStream
 
 /** Tests for [TodoOpenCheck]. */
 class TodoOpenCheckTest {
+  private companion object {
+    private const val TEST_AUTH_TOKEN = "abcdef1234567890"
+  }
+
   private val outContent = ByteArrayOutputStream()
   private val originalOut = System.out
   private val TODO_CHECK_PASSED_OUTPUT_INDICATOR = "TODO CHECK PASSED"
@@ -33,17 +39,22 @@ class TodoOpenCheckTest {
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val fakeCommandExecutor by lazy { FakeCommandExecutor() }
+
   @Before
   fun setUp() {
     tempFolder.newFolder("testfiles")
     tempFolder.newFolder("scripts", "assets")
     tempFolder.newFile(pathToProtoBinary)
+    setUpSupportForGhAuth(TEST_AUTH_TOKEN)
     System.setOut(PrintStream(outContent))
   }
 
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -385,7 +396,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     // 'regenerate' always throws an exception since it's regenerating everything.
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
@@ -413,7 +424,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     // 'regenerate' always throws an exception since it's regenerating everything.
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
@@ -433,7 +444,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
   }
@@ -452,7 +463,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
   }
@@ -480,7 +491,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
   }
@@ -517,7 +528,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows<Exception>() { runScriptWithRegenerate() }
+    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     // 'regenerate' always throws an exception since it's regenerating everything.
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
@@ -540,7 +551,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    assertThrows<Exception>() { runScriptWithRegenerate() }
+    assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -571,7 +582,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    assertThrows<Exception>() { runScriptWithRegenerate() }
+    assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -594,7 +605,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    assertThrows<Exception>() { runScriptWithRegenerate() }
+    assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -635,7 +646,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    assertThrows<Exception>() { runScriptWithRegenerate() }
+    assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -681,7 +692,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    assertThrows<Exception>() { runScriptWithRegenerate() }
+    assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -748,7 +759,7 @@ class TodoOpenCheckTest {
     }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    assertThrows<Exception>() { runScriptWithRegenerate() }
+    assertThrows<Exception>() { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -774,11 +785,24 @@ class TodoOpenCheckTest {
     GitHubClient.remoteApiUrl = mockWebServer.url("/").toString()
   }
 
-  private fun runScript() {
-    main("${tempFolder.root}/testfiles", "${tempFolder.root}/$pathToProtoBinary")
+  private fun setUpSupportForGhAuth(authToken: String) {
+    fakeCommandExecutor.registerHandler("gh") { _, args, outputStream, _ ->
+      when (args) {
+        listOf("help") -> 0
+        listOf("auth", "token") -> 0.also { outputStream.print(authToken) }
+        else -> 1
+      }
+    }
   }
 
-  private fun runScriptWithRegenerate() {
-    main("${tempFolder.root}/testfiles", "${tempFolder.root}/$pathToProtoBinary", "regenerate")
+  // TODO(#5314): Replace this (& other script tests) with using main() directly and swap out
+  // dependencies using Dagger rather than needing to call into a separately created instance of an
+  // internal helper class for the script.
+  private fun runScript(regenerateFile: Boolean = false) {
+    val repoRoot = File(tempFolder.root, "testfiles")
+    TodoOpenCheck(repoRoot, scriptBgDispatcher, fakeCommandExecutor).runTodoOpenCheck(
+      pathToProtoBinary = "${tempFolder.root}/$pathToProtoBinary",
+      regenerateFile
+    )
   }
 }
