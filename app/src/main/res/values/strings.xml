@@ -640,7 +640,7 @@
   <string name="onboarding_language_activity_button_text">Let\'s go!</string>
 
   <!-- Onboarding Profile Type Activity -->
-  <string name="onboarding_profile_type_activity_title">Profile Type</string>
+  <string name="onboarding_profile_type_activity_title">Select Profile Type</string>
   <string name="onboarding_profile_type_activity_header">Tell us more about you!</string>
   <string name="onboarding_profile_type_activity_student_text">I\'m a student and I want to learn new things!</string>
   <string name="onboarding_profile_type_activity_parent_text">I\'m the parent, teacher or guardian of a student.</string>

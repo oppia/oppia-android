@@ -712,8 +712,6 @@ class OnboardingFragmentTest {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
 
     launch(OnboardingActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_language_dropdown_background)).check(
         matches(
           isDisplayed()
