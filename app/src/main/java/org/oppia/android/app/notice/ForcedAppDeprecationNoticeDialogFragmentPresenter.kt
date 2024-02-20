@@ -5,16 +5,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Presenter class responsible for showing an app deprecation dialog to the user. */
 class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler,
-  @ForcedAppUpdateVersionCode
-  private val forcedAppUpdateVersionCode: PlatformParameterValue<Int>,
 ) {
   private val deprecationNoticeActionListener by lazy {
     activity as DeprecationNoticeActionListener

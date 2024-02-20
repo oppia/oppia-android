@@ -783,7 +783,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_appAndOsDeprecationEnabled_userNotOnboarded_returnsCorrectStartupMode() {
+  fun testController_appAndOsDeprecationEnabled_initialLaunch_startupModeIsUserNotOnboarded() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
         listOf(enableAppAndOsDeprecation)
@@ -802,7 +802,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_appAndOsDeprecationEnabled_userIsOnboarded_returnsCorrectStartupMode() {
+  fun testController_appAndOsDeprecationEnabled_userIsOnboarded_returnsUserOnboardedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled()
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -812,7 +812,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_osIsDeprecated_returnsCorrectStartupMode() {
+  fun testController_osIsDeprecated_returnsOsDeprecatedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       platformParameterToEnable = lowestApiLevel
     )
@@ -824,7 +824,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_osIsDeprecated_previousResponseExists_returnsCorrectStartupMode() {
+  fun testController_osIsDeprecated_previousResponseExists_returnsUserOnboardedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       previousResponses = listOf(osDeprecationResponse),
       platformParameterToEnable = lowestApiLevel
@@ -837,7 +837,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_optionalUpdateAvailable_returnsCorrectStartupMode() {
+  fun testController_optionalUpdateAvailable_returnsOptionalUpdateStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       platformParameterToEnable = optionalAppUpdateVersion
     )
@@ -849,7 +849,8 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_optionalUpdateAvailable_previousResponseExists_returnsCorrectStartupMode() {
+  fun testController_optionalUpdateAvailable_previousResponseExists_returnsUserOnboardedStartupMode
+  () {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       previousResponses = listOf(appDeprecationResponse),
       platformParameterToEnable = optionalAppUpdateVersion
@@ -862,7 +863,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_forcedUpdateAvailable_returnsCorrectStartupMode() {
+  fun testController_forcedUpdateAvailable_returnsAppDeprecatedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       platformParameterToEnable = forcedAppUpdateVersion
     )
@@ -874,7 +875,8 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_forcedUpdateAvailable_previousResponseExists_returnsCorrectStartupMode() {
+  fun testController_forcedUpdateAvailable_previousResponseExists_returnsUserOnboardedStartupMode
+  () {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       previousResponses = listOf(appDeprecationResponse),
       platformParameterToEnable = forcedAppUpdateVersion
