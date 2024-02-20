@@ -253,86 +253,86 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoOpenCheckTest.kt"
-  line_number: 58
-  line_number: 59
-  line_number: 65
   line_number: 67
-  line_number: 84
-  line_number: 85
-  line_number: 86
-  line_number: 87
-  line_number: 88
-  line_number: 117
-  line_number: 118
-  line_number: 121
-  line_number: 149
-  line_number: 150
-  line_number: 151
-  line_number: 156
+  line_number: 68
+  line_number: 74
+  line_number: 76
+  line_number: 93
+  line_number: 94
+  line_number: 95
+  line_number: 96
+  line_number: 97
+  line_number: 126
+  line_number: 127
+  line_number: 130
   line_number: 158
-  line_number: 192
-  line_number: 193
-  line_number: 194
-  line_number: 199
+  line_number: 159
+  line_number: 160
+  line_number: 165
+  line_number: 167
   line_number: 201
-  line_number: 207
-  line_number: 241
-  line_number: 245
-  line_number: 278
-  line_number: 279
-  line_number: 283
-  line_number: 327
-  line_number: 328
-  line_number: 329
-  line_number: 333
-  line_number: 402
-  line_number: 403
-  line_number: 409
+  line_number: 202
+  line_number: 203
+  line_number: 208
+  line_number: 210
+  line_number: 216
+  line_number: 250
+  line_number: 254
+  line_number: 287
+  line_number: 288
+  line_number: 292
+  line_number: 336
+  line_number: 337
+  line_number: 338
+  line_number: 342
   line_number: 411
-  line_number: 429
-  line_number: 430
-  line_number: 431
-  line_number: 432
-  line_number: 433
-  line_number: 448
-  line_number: 449
-  line_number: 452
-  line_number: 467
-  line_number: 468
-  line_number: 469
-  line_number: 470
-  line_number: 471
-  line_number: 472
-  line_number: 473
+  line_number: 412
+  line_number: 418
+  line_number: 420
+  line_number: 438
+  line_number: 439
+  line_number: 440
+  line_number: 441
+  line_number: 442
+  line_number: 457
+  line_number: 458
+  line_number: 461
   line_number: 476
   line_number: 477
   line_number: 478
-  line_number: 496
-  line_number: 500
-  line_number: 560
-  line_number: 561
-  line_number: 567
+  line_number: 479
+  line_number: 480
+  line_number: 481
+  line_number: 482
+  line_number: 485
+  line_number: 486
+  line_number: 487
+  line_number: 505
+  line_number: 509
   line_number: 569
-  line_number: 590
-  line_number: 591
-  line_number: 592
-  line_number: 593
-  line_number: 594
-  line_number: 631
-  line_number: 632
-  line_number: 635
-  line_number: 668
-  line_number: 669
-  line_number: 670
-  line_number: 671
-  line_number: 672
-  line_number: 673
-  line_number: 674
+  line_number: 570
+  line_number: 576
+  line_number: 578
+  line_number: 599
+  line_number: 600
+  line_number: 601
+  line_number: 602
+  line_number: 603
+  line_number: 640
+  line_number: 641
+  line_number: 644
   line_number: 677
   line_number: 678
   line_number: 679
-  line_number: 727
-  line_number: 731
+  line_number: 680
+  line_number: 681
+  line_number: 682
+  line_number: 683
+  line_number: 686
+  line_number: 687
+  line_number: 688
+  line_number: 736
+  line_number: 740
 }
 todo_open_exemption {
   exempted_file_path: "scripts/static_checks.sh"
@@ -350,10 +350,10 @@ todo_open_exemption {
   line_number: 204
   line_number: 208
   line_number: 210
-  line_number: 228
-  line_number: 238
-  line_number: 241
-  line_number: 244
-  line_number: 247
-  line_number: 250
+  line_number: 232
+  line_number: 242
+  line_number: 245
+  line_number: 248
+  line_number: 251
+  line_number: 254
 }
