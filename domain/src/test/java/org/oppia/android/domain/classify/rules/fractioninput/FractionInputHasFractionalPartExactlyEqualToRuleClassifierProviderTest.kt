@@ -208,7 +208,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   fun testFractionalEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("f" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
@@ -227,7 +227,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   fun testFractionalEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_4)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,

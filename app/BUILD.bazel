@@ -1022,6 +1022,9 @@ android_library(
     name = "firestore_deps",
     exports = [
         "//third_party:com_google_auto_value_auto-value-annotations",
+        "//third_party:com_google_firebase_firebase-appcheck",
+        "//third_party:com_google_firebase_firebase-appcheck-debug",
+        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
         "//third_party:org_checkerframework_checker-qual",
     ],
 )

@@ -167,7 +167,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_noExploration_throwsException() {
     // Can't retrieve the current state until the play session is started.
-    assertThrows(UninitializedPropertyAccessException::class) {
+    assertThrows<UninitializedPropertyAccessException>() {
       explorationProgressController.getCurrentState()
     }
   }

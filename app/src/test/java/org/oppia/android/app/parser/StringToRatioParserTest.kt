@@ -232,7 +232,7 @@ class StringToRatioParserTest {
 
   @Test
   fun testParser_parseRatioOrThrow_ratioWithInvalidRatio_throwsException() {
-    val exception = assertThrows(IllegalArgumentException::class) {
+    val exception = assertThrows<IllegalArgumentException>() {
       stringToRatioParser.parseRatioOrThrow("a:b:c")
     }
     assertThat(exception)
