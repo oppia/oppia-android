@@ -1,5 +1,7 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +30,8 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
   private lateinit var binding: OnboardingLearnerIntroFragmentBinding
   private lateinit var routeToAudioLanguageListListener: RouteToAudioLanguageListListener
   private lateinit var loadAudioLanguageListListener: LoadAudioLanguageListListener
+
+  private val orientation = Resources.getSystem().configuration.orientation
 
   /** Handle creation and binding of the  OnboardingLearnerIntroFragment layout. */
   fun handleCreateView(
@@ -63,7 +67,8 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
         appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
 
-    observeProfileLivedata(ProfileId.newBuilder().setInternalId(-1).build())
+    binding.onboardingStepsCount.visibility =
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
 
     return binding.root
   }

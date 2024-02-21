@@ -1,5 +1,7 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,8 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var binding: OnboardingProfileTypeFragmentBinding
+
+  private val orientation = Resources.getSystem().configuration.orientation
 
   /** Handle creation and binding of the  OnboardingProfileTypeFragment layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -40,6 +44,9 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()
     }
+
+    binding.onboardingStepsCount.visibility =
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
 
     return binding.root
   }

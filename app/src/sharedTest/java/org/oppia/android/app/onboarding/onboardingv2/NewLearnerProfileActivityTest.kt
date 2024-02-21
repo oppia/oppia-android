@@ -198,7 +198,7 @@ class NewLearnerProfileActivityTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNewLearnerProfileActivity_TestApplicationComponent.builder()
+      DaggerNewLearnerProfileActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }

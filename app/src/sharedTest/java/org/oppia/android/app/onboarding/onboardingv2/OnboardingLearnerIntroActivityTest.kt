@@ -199,7 +199,7 @@ class OnboardingLearnerIntroActivityTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOnboardingLearnerIntroActivity_TestApplicationComponent.builder()
+      DaggerOnboardingLearnerIntroActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }

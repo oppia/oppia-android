@@ -198,7 +198,7 @@ class OnboardingProfileTypeActivityTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOnboardingProfileTypeActivity_TestApplicationComponent.builder()
+      DaggerOnboardingProfileTypeActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
