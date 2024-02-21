@@ -28,7 +28,15 @@ class LoggingIdentifierController @Inject constructor(
   private val persistentCacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger
 ) {
-  private val learnerIdRandom by lazy { Random(applicationIdSeed) }
+  // Use a base random to compute the per-ID random IDs in order so that test behaviors are
+  // consistent and deterministic when fixing the application ID seed.
+  private val baseRandom = Random(applicationIdSeed)
+  private val installationRandomSeed = baseRandom.nextLong()
+  private val sessionRandomSeed = baseRandom.nextLong()
+  private val learnerRandomSeed = baseRandom.nextLong()
+  private val installationIdRandom by lazy { Random(installationRandomSeed) }
+  private val sessionIdRandom by lazy { Random(sessionRandomSeed) }
+  private val learnerIdRandom by lazy { Random(learnerRandomSeed) }
 
   private val sessionId by lazy { MutableStateFlow(computeSessionId()) }
   private val sessionIdDataProvider by lazy {
@@ -113,12 +121,12 @@ class LoggingIdentifierController @Inject constructor(
     sessionId.value = computeSessionId()
   }
 
-  private fun computeSessionId(): String = learnerIdRandom.randomUuid().toString()
+  private fun computeSessionId(): String = sessionIdRandom.randomUuid().toString()
 
   private fun computeInstallationId(): String {
     return machineLocale.run {
       MessageDigest.getInstance("SHA-1")
-        .digest(learnerIdRandom.randomUuid().toString().toByteArray())
+        .digest(installationIdRandom.randomUuid().toString().toByteArray())
         .joinToString("") { "%02x".formatForMachines(it) }
         .substring(startIndex = 0, endIndex = 12)
     }

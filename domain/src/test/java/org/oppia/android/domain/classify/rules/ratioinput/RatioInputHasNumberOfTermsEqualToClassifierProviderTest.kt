@@ -82,7 +82,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("y" to RATIO_VALUE_TEST_1_2_3)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
@@ -101,7 +101,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
   fun testAnswer_testRatio_missingInputY_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,

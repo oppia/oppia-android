@@ -199,7 +199,7 @@ class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsLessThanOrEqualToRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -216,7 +216,7 @@ class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsLessThanOrEqualToRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
@@ -233,7 +233,7 @@ class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
   fun testIntAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_INT_VALUE_1)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsLessThanOrEqualToRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_1,
         inputs = inputs,
@@ -250,7 +250,7 @@ class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
   fun testIntAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsLessThanOrEqualToRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_1,
         inputs = inputs,
