@@ -37,7 +37,7 @@ class MavenDependenciesRetrieverTest {
 
   private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
-  private val mavenDependenciesRetriever by lazy { initializeMavenDependenciesRetriever() }
+  private val retriever by lazy { initializeMavenDependenciesRetriever() }
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
@@ -66,7 +66,7 @@ class MavenDependenciesRetrieverTest {
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
 
-    val depsList = mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val depsList = retriever.retrieveThirdPartyMavenDependenciesList()
 
     assertThat(depsList).contains(DATA_BINDING_DEP)
   }
@@ -87,7 +87,7 @@ class MavenDependenciesRetrieverTest {
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
 
-    val depsList = mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val depsList = retriever.retrieveThirdPartyMavenDependenciesList()
 
     assertThat(depsList).contains(DATA_BINDING_DEP)
     assertThat(depsList).contains(IO_FABRIC_DEP)
@@ -139,7 +139,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesRetriever.addChangesFromTextProto(
+    val finalDepsList = retriever.addChangesFromTextProto(
       mavenDependenciesList,
       updatedMavenDependenciesList
     )
@@ -197,7 +197,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesRetriever.addChangesFromTextProto(
+    val finalDepsList = retriever.addChangesFromTextProto(
       dependencyListFromPom = mavenDependenciesList,
       dependencyListFromProto = mavenDependenciesList
     )
@@ -249,9 +249,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
-      mavenDependenciesList
-    )
+    val licenseSet = retriever.retrieveManuallyUpdatedLicensesSet(mavenDependenciesList)
     assertThat(licenseSet).isEmpty()
   }
 
@@ -281,9 +279,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
-      mavenDependenciesList
-    )
+    val licenseSet = retriever.retrieveManuallyUpdatedLicensesSet(mavenDependenciesList)
     assertThat(licenseSet).hasSize(1)
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseSet.elementAt(0),
@@ -334,9 +330,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
-      mavenDependenciesList
-    )
+    val licenseSet = retriever.retrieveManuallyUpdatedLicensesSet(mavenDependenciesList)
     assertThat(licenseSet).hasSize(3)
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseSet.elementAt(0),
@@ -385,7 +379,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val finalDepsList =
-      mavenDependenciesRetriever.updateMavenDependenciesList(
+      retriever.updateMavenDependenciesList(
         mavenDependenciesList, manuallyUpdatedLicenses = setOf()
       )
     assertThat(finalDepsList).isEqualTo(mavenDependenciesList)
@@ -424,7 +418,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesRetriever.updateMavenDependenciesList(
+    val finalDepsList = retriever.updateMavenDependenciesList(
       mavenDependenciesList,
       setOf<License>(updatedLicense2)
     )
@@ -458,7 +452,7 @@ class MavenDependenciesRetrieverTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val mavenDependencyList = MavenDependencyList.newBuilder().build()
 
-    mavenDependenciesRetriever.writeTextProto(
+    retriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
@@ -498,7 +492,7 @@ class MavenDependenciesRetrieverTest {
       )
     }.build()
 
-    mavenDependenciesRetriever.writeTextProto(
+    retriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
@@ -564,7 +558,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = retriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).isEmpty()
   }
 
@@ -591,7 +585,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = retriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).hasSize(2)
     verifyLicenseHasVerifiedLinkNotSet(
       license = brokenLicenses.elementAt(0),
@@ -632,7 +626,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = retriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).doesNotContain(license2)
   }
 
@@ -666,7 +660,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val licenseToDepNameMap =
-      mavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
+      retriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList, brokenLicenses = setOf()
       )
     assertThat(licenseToDepNameMap).isEmpty()
@@ -706,7 +700,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val licenseToDepNameMap =
-      mavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
+      retriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList,
         setOf<License>(license1, license2)
       )
@@ -750,7 +744,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val depsThatNeedInterventionSet =
-      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      retriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet).isEmpty()
   }
 
@@ -786,7 +780,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val depsThatNeedInterventionSet =
-      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      retriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet).hasSize(2)
     assertIsDependency(
       dependency = depsThatNeedInterventionSet.elementAt(0),
@@ -807,7 +801,7 @@ class MavenDependenciesRetrieverTest {
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = mavenDependenciesRetriever.retrieveMavenDependencyList(
+    val mavenDependenciesList = retriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -848,7 +842,7 @@ class MavenDependenciesRetrieverTest {
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = mavenDependenciesRetriever.retrieveMavenDependencyList(
+    val mavenDependenciesList = retriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -884,10 +878,10 @@ class MavenDependenciesRetrieverTest {
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
-      mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
-      )
+      ).await()
     }
 
     assertThat(mavenListDependencies).isEmpty()
@@ -899,10 +893,10 @@ class MavenDependenciesRetrieverTest {
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
-      mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(DATA_BINDING_DEP, FIREBASE_DEP)
-      )
+      ).await()
     }
 
     assertThat(mavenListDependencies).containsExactly(
@@ -919,26 +913,30 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testRetrieveDepListFromPom_emptyMavenListDependencies_returnsEmptyMavenDepList() {
-    val mavenDependencyList = mavenDependenciesRetriever.retrieveDependencyListFromPom(
-      listOf()
-    )
+    val mavenDependencyList = runBlocking {
+      retriever.retrieveDependencyListFromPomAsync(listOf()).await()
+    }
+
     assertThat(mavenDependencyList.mavenDependencyList).isEmpty()
   }
 
   @Test
   fun testRetrieveDepListFromPom_mixedDepTypes_returnsCorrectMavenDepList() {
-    val mavenDependencyList = mavenDependenciesRetriever.retrieveDependencyListFromPom(
-      listOf(
-        MavenListDependency(
-          coord = DEP_WITH_SCRAPABLE_LICENSE.coordStrToMavenCoord(),
-          repoUrls = listOf(GOOGLE_MAVEN_URL)
-        ),
-        MavenListDependency(
-          coord = DEP_WITH_NO_LICENSE.coordStrToMavenCoord(),
-          repoUrls = listOf(PUBLIC_MAVEN_URL)
+    val mavenDependencyList = runBlocking {
+      retriever.retrieveDependencyListFromPomAsync(
+        listOf(
+          MavenListDependency(
+            coord = DEP_WITH_SCRAPABLE_LICENSE.coordStrToMavenCoord(),
+            repoUrls = listOf(GOOGLE_MAVEN_URL)
+          ),
+          MavenListDependency(
+            coord = DEP_WITH_NO_LICENSE.coordStrToMavenCoord(),
+            repoUrls = listOf(PUBLIC_MAVEN_URL)
+          )
         )
-      )
-    )
+      ).await()
+    }
+
     assertThat(mavenDependencyList.mavenDependencyList.size).isEqualTo(2)
     val dependency1 = mavenDependencyList.mavenDependencyList[0]
     val dependency2 = mavenDependencyList.mavenDependencyList[1]
@@ -967,10 +965,10 @@ class MavenDependenciesRetrieverTest {
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
-      mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
-      )
+      ).await()
     }
 
     assertThat(mavenListDependencies).isEmpty()
@@ -982,10 +980,10 @@ class MavenDependenciesRetrieverTest {
     writeMavenInstallJson(mavenInstallFile)
 
     val mavenListDependencies = runBlocking {
-      mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(DATA_BINDING_DEP, FIREBASE_DEP)
-      )
+      ).await()
     }
 
     assertThat(mavenListDependencies).containsExactly(

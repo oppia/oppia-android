@@ -76,6 +76,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 2/2 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Missing dependencies that need to be added:
@@ -153,6 +155,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 3/3 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Missing dependencies that need to be added:
@@ -218,6 +222,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 3/3 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Missing dependencies that need to be added:
@@ -295,6 +301,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 1/1 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
@@ -375,6 +383,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 1/1 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
@@ -452,6 +462,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 2/2 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
@@ -531,6 +543,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 2/2 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
@@ -610,6 +624,8 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
+      Attempt 1 to resolve 5/5 Maven coordinates with 5 possible download URLs...
+      Attempt 1 to download POM files for 2/2 Maven artifacts...
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
