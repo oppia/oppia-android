@@ -158,8 +158,8 @@ class HelpActivityPresenter @Inject constructor(
       if (titleTextView != null) {
         this.helpOptionsTitle = titleTextView.text.toString()
         this.selectedFragmentTag = this@HelpActivityPresenter.selectedFragmentTag
-        this.selectedDependencyIndex = this@HelpActivityPresenter.selectedDependencyIndex
-        this.selectedLicenseIndex = this@HelpActivityPresenter.selectedLicenseIndex
+        this.selectedDependencyIndex = this@HelpActivityPresenter.selectedDependencyIndex!!
+        this.selectedLicenseIndex = this@HelpActivityPresenter.selectedLicenseIndex!!
         this.policiesActivityParams = policiesActivityParams
       }
     }.build()
