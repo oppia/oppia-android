@@ -210,7 +210,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to STRING_VALUE_TEST_LOWERCASE_INPUT_SET)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_LOWERCASE,
         inputs = inputs,
@@ -227,7 +227,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_nonNegativeIntInput_throwsException() {
     val inputs = mapOf("x" to INT_VALUE_TEST_NON_NEGATIVE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_UPPERCASE,
         inputs = inputs,
