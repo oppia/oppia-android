@@ -17,9 +17,6 @@ import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
-private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected_index"
-
 /**
  * DialogFragment that controls language selection in audio and written translations.
  */

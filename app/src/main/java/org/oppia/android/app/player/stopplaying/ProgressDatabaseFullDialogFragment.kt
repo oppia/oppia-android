@@ -14,9 +14,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
-  "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"
-
 /**
  * DialogFragment that is visible to the learner when they exit a partially complete
  * exploration if the exploration has saved progress and the checkpoint database has exceeded the

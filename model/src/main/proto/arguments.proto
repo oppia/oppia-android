@@ -530,67 +530,129 @@ message HintsAndSolutionDialogFragmentArguments {
   WrittenTranslationContext written_translation_context = 4;
 }
 
+// The bundle of properties that are saved upon configuration changes in HintsAndSolutionDialogFragment.
 message HintsAndSolutionDialogFragmentStateBundle {
+  // List of expanded items.
   repeated int32 current_expanded_item_list = 1;
+
+  // Index of hint.
   int32 hint_index = 2;
+
+  // Indicates whether hint is revealed or not.
   bool is_hint_revealed = 3;
+
+  // Solution index.
   int32 solution_index = 4;
+
+  // Indicates whether solution is revealed or not.
   bool is_solution_revealed = 5;
 }
 
+// Arguments required when creating an LanguageDialogFragment.
 message LanguageDialogFragmentArguments {
+  // List of strings containing languages.
   repeated string language_list = 1;
+
+  // Selected index from language list.
   int32 selected_index = 2;
 }
 
+// Represents the parameters needed to open StateFragmentTestActivity.
 message StateFragmentTestActivityArguments {
+
+  // The ID of the current profile.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic to which the triggering exploration belongs.
   string topic_id = 2;
+
+  // The ID of the story to which the triggering exploration belongs.
   string story_id = 3;
+
+  // The ID of the triggering exploration.
   string exploration_id = 4;
+
+  // Indicates whether to save partial progress or not.
   bool should_save_partial_progress = 5;
 }
 
+// Arguments required when creating an StateFragment.
 message StateFragmentArguments {
+
+  // The ID of the current profile.
   int32 internal_profile_id = 1;
+
+  // The ID of the topic to which the triggering exploration belongs.
   string topic_id = 2;
+
+  // The ID of the story to which the triggering exploration belongs.
   string story_id = 3;
+
+  // The ID of the triggering exploration.
   string exploration_id = 4;
 }
 
+// Arguments required when creating an ProgressDatabaseFullDialogFragment.
 message ProgressDatabaseFullDialogFragmentArguments {
+  // Oldest check point exploration title.
   string old_saved_exploration_title = 1;
 }
 
+// Represents the parameters needed to open AddProfileActivity.
 message AddProfileActivityArguments {
+  // Color for the new profile that is not already in use.
   int32 color_rgb = 1;
 }
 
+// Represents the parameters needed to open AdminAuthActivity.
 message AdminAuthActivityArguments {
+  // Admin pin.
   string admin_pin = 1;
+
+  // ID for current profile.
   int32 internal_profile_id = 2;
+
+  // Color for the profile.
   int32 color_rgb = 3;
+
+  // Represents different activities from which AdminPinActivity can be opened.
   int32 admin_pin_enum = 4;
 
 }
 
+// Represents the parameters needed to open AdminPinActivity.
 message AdminPinActivityArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // Color for the profile.
   int32 color_rgb = 2;
+
+  // Represents different activities from which AdminPinActivity can be opened.
   int32 admin_pin_enum = 3;
 }
 
+// Arguments required when creating an AdminSettingsDialogFragment.
 message AdminSettingsDialogFragmentArguments {
+  // Admin pin.
   string admin_pin = 1;
 }
 
+// Represents the parameters needed to open PinPasswordActivity.
 message PinPasswordActivityArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // Admin pin.
   string admin_pin = 2;
 }
 
+// Arguments required when creating an ResetPinDialogFragment.
 message ResetPinDialogFragmentArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // Current profile name.
   string name = 2;
 }
 
