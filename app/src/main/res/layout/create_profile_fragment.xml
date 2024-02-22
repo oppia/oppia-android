@@ -123,6 +123,7 @@
       android:fontFamily="sans-serif"
       android:imeOptions="actionDone"
       android:inputType="text|textCapSentences"
+      android:minHeight="@dimen/clickable_item_min_height"
       android:paddingStart="@dimen/onboarding_shared_padding_medium"
       android:paddingTop="@dimen/onboarding_shared_padding_medium_small"
       android:paddingEnd="@dimen/onboarding_shared_padding_medium"

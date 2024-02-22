@@ -3,16 +3,24 @@ package org.oppia.android.app.options
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -32,6 +40,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
@@ -77,6 +86,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -212,6 +222,95 @@ class AudioLanguageFragmentTest {
     }
   }
 
+  @Test
+  fun testAudioLanguage_onboardingV2Enabled_languageSelectionDropdownIsDisplayed() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testAudioLanguage_onboardingV2Enabled_configChange_languageDropdownIsDisplayed() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testAudioLanguage_onboardingV2Enabled_tabletConfigChange_languageDropdownIsDisplayed() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(withId(R.id.audio_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_landscapeMode_stepCountText_isNotDisplayed() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testFragment_tabletLandscapeMode_stepCountText_isNotDisplayed() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      if (scenario != null) {
+        Truth.assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_continueButtonClicked_launchesHomeScreen() {
+    forceEnableOnboardingFlowV2()
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
   private fun launchActivityWithLanguage(
     audioLanguage: AudioLanguage
   ): ActivityScenario<AppLanguageActivity> {
@@ -274,6 +373,10 @@ class AudioLanguageFragmentTest {
         R.id.language_text_view
       )
     ).check(matches(withText(expectedLanguageName)))
+  }
+
+  private fun forceEnableOnboardingFlowV2() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -1,5 +1,7 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
+  private val orientation = Resources.getSystem().configuration.orientation
 
   /**
    * Returns a newly inflated view to render the fragment with the specified [audioLanguage] as the
@@ -52,6 +55,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()
     }
+
+    binding.onboardingStepsCount?.visibility =
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
 
     return binding.root
   }
