@@ -356,7 +356,7 @@ message AdministratorControlActivityStateBundle {
   int32 selected_profile_id = 4;
 }
 
-// Arguments required when creating a AdministratorControlsFragment.
+// Arguments required when creating an AdministratorControlsFragment.
 message AdministratorControlsFragmentArguments {
   // The value indicates layout is multipane or not.
   bool is_multipane = 1;
@@ -419,57 +419,99 @@ message FAQSingleActivityArguments {
   string answer = 2;
 }
 
+// Represents the parameters needed to open LicenseListActivity.
 message LicenseListActivityArguments {
+  // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
 }
 
+// Arguments required when creating a LicenseListFragment.
 message LicenseListFragmentArguments {
+  // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
+
+  // The value indicates layout is multipane or not.
   bool is_multipane = 2;
 }
 
+// Represents the parameters needed to open LicenseTextViewerActivity.
 message LicenseTextViewerActivityArguments {
+  // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
+
+  // License index for a copyright license.
   int32 license_index = 2;
 }
 
+// Arguments required when creating a LicenseTextViewerFragment.
 message LicenseTextViewerFragmentArguments{
+  // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
+
+  // License index for a copyright license.
   int32 license_index = 2;
 }
 
+// Arguments required when creating a ThirdPartyDependencyListFragment.
 message ThirdPartyDependencyListFragmentArguments {
+  // The value indicates layout is multipane or not.
   bool is_multipane = 1;
 }
 
+// Represents the parameters needed to open HelpActivity.
 message HelpActivityArguments {
-  bool is_from_navigation_drawer = 2;
-}
-
-message HelpActivityStateBundle{
-  string help_options_title = 1;
-  string selected_fragment_tag = 2;
-  int32 selected_dependency_index = 3;
-  int32 selected_license_index = 4;
-  PoliciesActivityParams policies_activity_params = 5;
-}
-
-message HelpFragmentArguments {
-  bool is_multipane = 1;
-}
-
-message OptionsActivityArguments {
+  // Represents whether the user navigated to the HelpActivity through the navigation drawer or not.
   bool is_from_navigation_drawer = 1;
 }
 
+// The bundle of properties that are saved upon configuration changes in HelpActivity.
+message HelpActivityStateBundle{
+  // Title for loaded fragment.
+  string help_options_title = 1;
+
+  // Loaded fragment's fragment tag.
+  string selected_fragment_tag = 2;
+
+  // Selected dependency index from third-party dependencies
+  int32 selected_dependency_index = 3;
+
+  // Selected license index from copyright licenses.
+  int32 selected_license_index = 4;
+
+  // Policy page.
+  PoliciesActivityParams policies_activity_params = 5;
+}
+
+// Arguments required when creating a HelpFragment.
+message HelpFragmentArguments {
+  // The value indicates layout is multipane or not.
+  bool is_multipane = 1;
+}
+
+// Represents the parameters needed to open OptionsActivity.
+message OptionsActivityArguments {
+  // Represents whether the user navigated to the OptionsActivity through the navigation drawer or not.
+  bool is_from_navigation_drawer = 1;
+}
+
+// The bundle of properties that are saved upon configuration changes in OptionsActivity.
 message OptionsActivityStateBundle {
+  // Title for loaded fragment.
   string selected_options_title = 1;
+
+  // Stores identifier for currently selected fragment.
   string selected_fragment = 2;
 }
 
+// Arguments required when creating an OptionsFragment.
 message OptionsFragmentArguments {
+  // The value indicates layout is multipane or not.
   bool is_multipane = 1;
+
+  // Indicates whether to load the default fragment or not.
   bool is_first_open = 2;
+
+  // Stores identifier for currently selected fragment.
   string selected_fragment = 3;
 }
 
