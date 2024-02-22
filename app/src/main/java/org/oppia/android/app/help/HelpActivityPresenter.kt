@@ -158,12 +158,8 @@ class HelpActivityPresenter @Inject constructor(
       if (titleTextView != null) {
         this.helpOptionsTitle = titleTextView.text.toString()
         this.selectedFragmentTag = this@HelpActivityPresenter.selectedFragmentTag
-        selectedDependencyIndex.let {
-          this.selectedDependencyIndex = it
-        }
-        selectedLicenseIndex.let {
-          this.selectedLicenseIndex = it
-        }
+        this.selectedDependencyIndex = this@HelpActivityPresenter.selectedDependencyIndex
+        this.selectedLicenseIndex = this@HelpActivityPresenter.selectedLicenseIndex
         this.policiesActivityParams = policiesActivityParams
       }
     }.build()
@@ -352,7 +348,8 @@ class HelpActivityPresenter @Inject constructor(
       PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(R.string.terms_of_service_title)
       )
-      else -> {}
+      else -> {
+      }
     }
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG
