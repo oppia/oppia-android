@@ -24,6 +24,15 @@ message AppStartupState {
     // continue using it. Instead, they should be shown a prompt suggesting that they update the app
     // via the Play Store.
     APP_IS_DEPRECATED = 3;
+
+    // Indicates that a new app version is available and the user should be shown a prompt to update
+    // the app. Since the update is optional, the user can choose to update or not.
+    OPTIONAL_UPDATE_AVAILABLE = 4;
+
+    // Indicates that a new app version is available but the user can not update the app because
+    // they are using an OS version that is no longer supported. The user should be shown a prompt
+    // to update their OS.
+    OS_IS_DEPRECATED = 5;
   }
 
   // Describes different notices that may be shown to the user on startup depending on whether

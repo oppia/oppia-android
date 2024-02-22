@@ -14,6 +14,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
@@ -21,6 +22,8 @@ import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
+import org.oppia.android.databinding.SurveyMultipleChoiceItemBinding
+import org.oppia.android.databinding.SurveyNpsItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
@@ -145,6 +148,50 @@ class ViewBindingShimImpl @Inject constructor(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
         binding.multipleChoiceContentTextView
       )
+    binding.viewModel = viewModel
+  }
+
+  override fun provideMultipleChoiceItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return SurveyMultipleChoiceItemBinding.inflate(
+      LayoutInflater.from(parent.context),
+      parent,
+      false
+    ).root
+  }
+
+  override fun provideMultipleChoiceOptionViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<SurveyMultipleChoiceItemBinding>(view)!!
+    binding.optionContent = viewModel.optionContent
+    binding.viewModel = viewModel
+  }
+
+  override fun provideNpsItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return SurveyNpsItemBinding.inflate(
+      LayoutInflater.from(parent.context),
+      parent,
+      false
+    ).root
+  }
+
+  override fun provideNpsItemsViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<SurveyNpsItemBinding>(view)!!
+    binding.scoreContent = viewModel.optionContent
     binding.viewModel = viewModel
   }
 

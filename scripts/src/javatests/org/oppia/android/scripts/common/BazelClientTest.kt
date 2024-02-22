@@ -50,7 +50,7 @@ class BazelClientTest {
   fun testRetrieveTestTargets_emptyFolder_fails() {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bazelClient.retrieveAllTestTargets()
     }
 
@@ -64,7 +64,7 @@ class BazelClientTest {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bazelClient.retrieveAllTestTargets()
     }
 
@@ -352,7 +352,7 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")

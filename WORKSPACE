@@ -11,7 +11,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORI
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 31,
+    api_level = 33,
     build_tools_version = "29.0.2",
 )
 
@@ -128,9 +128,9 @@ git_repository(
 # to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
 git_repository(
     name = "androidsvg",
-    commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
+    commit = "5bc9c7553e94c3476e8ea32baea3c77567228fcd",
     remote = "https://github.com/oppia/androidsvg",
-    shallow_since = "1647295507 -0700",
+    shallow_since = "1686304726 -0700",
 )
 
 git_repository(

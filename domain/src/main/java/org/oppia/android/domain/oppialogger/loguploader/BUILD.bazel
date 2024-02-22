@@ -33,6 +33,7 @@ kt_android_library(
     ],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:data_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",

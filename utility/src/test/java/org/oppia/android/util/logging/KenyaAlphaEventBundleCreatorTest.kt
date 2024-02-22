@@ -132,7 +132,7 @@ class KenyaAlphaEventBundleCreatorTest {
     val typeName = eventBundleCreator.fillEventBundle(EventLog.getDefaultInstance(), bundle)
 
     assertThat(typeName).isEqualTo("unknown_activity_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(0)
     assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
     assertThat(bundle).integer("event_type").isEqualTo(ACTIVITYCONTEXT_NOT_SET.number)
@@ -150,7 +150,7 @@ class KenyaAlphaEventBundleCreatorTest {
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
 
     assertThat(typeName).isEqualTo("unknown_activity_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACTIVITYCONTEXT_NOT_SET.number)
@@ -190,7 +190,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_activity")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
@@ -214,7 +214,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_activity")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
@@ -240,7 +240,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_info_tab")
-    assertThat(bundle).hasSize(11)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_INFO_TAB.number)
@@ -259,7 +259,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_lessons_tab")
-    assertThat(bundle).hasSize(11)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_LESSONS_TAB.number)
@@ -278,7 +278,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_practice_tab")
-    assertThat(bundle).hasSize(11)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_PRACTICE_TAB.number)
@@ -297,7 +297,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_revision_tab")
-    assertThat(bundle).hasSize(11)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_REVISION_TAB.number)
@@ -316,7 +316,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_question_player")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_QUESTION_PLAYER.number)
@@ -336,7 +336,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_story_activity")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_STORY_ACTIVITY.number)
@@ -356,7 +356,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_concept_card")
-    assertThat(bundle).hasSize(11)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_CONCEPT_CARD.number)
@@ -375,7 +375,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_revision_card")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_REVISION_CARD.number)
@@ -395,7 +395,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("close_revision_card")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(CLOSE_REVISION_CARD.number)
@@ -415,7 +415,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_card_context")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
@@ -440,7 +440,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_card_context")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
@@ -467,7 +467,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_card_context")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
@@ -492,7 +492,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_card_context")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
@@ -519,7 +519,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("hint_offered_context")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(HINT_UNLOCKED_CONTEXT.number)
@@ -544,7 +544,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("hint_offered_context")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(HINT_UNLOCKED_CONTEXT.number)
@@ -571,7 +571,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("access_hint_context")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
@@ -596,7 +596,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("access_hint_context")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
@@ -623,7 +623,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("solution_offered_context")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_UNLOCKED_CONTEXT.number)
@@ -647,7 +647,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("solution_offered_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_UNLOCKED_CONTEXT.number)
@@ -673,7 +673,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("access_solution_context")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
@@ -697,7 +697,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("access_solution_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
@@ -723,7 +723,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
@@ -749,7 +749,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer_context")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
@@ -777,7 +777,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("play_voice_over_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
@@ -803,7 +803,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("play_voice_over_context")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
@@ -831,7 +831,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("pause_voice_over_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
@@ -857,7 +857,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("pause_voice_over_context")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
@@ -885,7 +885,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("app_in_background_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_BACKGROUND_CONTEXT.number)
@@ -903,7 +903,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("app_in_background_context")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_BACKGROUND_CONTEXT.number)
@@ -923,7 +923,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("app_in_foreground_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_FOREGROUND_CONTEXT.number)
@@ -941,7 +941,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("app_in_foreground_context")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(APP_IN_FOREGROUND_CONTEXT.number)
@@ -961,7 +961,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("exit_exploration_context")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
@@ -985,7 +985,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("exit_exploration_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
@@ -1011,7 +1011,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("finish_exploration_context")
-    assertThat(bundle).hasSize(16)
+    assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
@@ -1035,7 +1035,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("finish_exploration_context")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
@@ -1061,7 +1061,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("resume_exploration_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(RESUME_EXPLORATION_CONTEXT.number)
@@ -1079,7 +1079,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("resume_exploration_context")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(RESUME_EXPLORATION_CONTEXT.number)
@@ -1099,7 +1099,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_over_exploration_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_OVER_EXPLORATION_CONTEXT.number)
@@ -1117,7 +1117,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_over_exploration_context")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_OVER_EXPLORATION_CONTEXT.number)
@@ -1137,7 +1137,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("delete_profile_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(DELETE_PROFILE_CONTEXT.number)
@@ -1155,7 +1155,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("delete_profile_context")
-    assertThat(bundle).hasSize(12)
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(DELETE_PROFILE_CONTEXT.number)
@@ -1175,7 +1175,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_home")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_HOME.number)
@@ -1193,7 +1193,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_profile_chooser")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_PROFILE_CHOOSER.number)
@@ -1211,7 +1211,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("switch_in_lesson_language")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SWITCH_IN_LESSON_LANGUAGE.number)
@@ -1237,7 +1237,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("switch_in_lesson_language")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SWITCH_IN_LESSON_LANGUAGE.number)
@@ -1265,7 +1265,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("failed_analytics_log")
-    assertThat(bundle).hasSize(10)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(INSTALL_ID_FOR_FAILED_ANALYTICS_LOG.number)
@@ -1283,7 +1283,7 @@ class KenyaAlphaEventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("failed_analytics_log")
-    assertThat(bundle).hasSize(11)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(INSTALL_ID_FOR_FAILED_ANALYTICS_LOG.number)
@@ -1581,9 +1581,9 @@ class KenyaAlphaEventBundleCreatorTest {
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLoggingLearnerStudyIds
-      return object : PlatformParameterValue<Boolean> {
-        override val value: Boolean = enableFeature
-      }
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
     }
   }
 

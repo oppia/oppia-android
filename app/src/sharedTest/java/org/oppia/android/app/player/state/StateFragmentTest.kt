@@ -123,6 +123,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -156,6 +157,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -305,7 +307,7 @@ class StateFragmentTest {
 
       clickContinueInteractionButton()
 
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
@@ -438,6 +440,24 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric tests don't rotate like this to recreate activity
+  fun testStateFragment_loadExp_invalidAnswer_changeConfiguration_submitButtonIsDisplayed() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/")
+
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -4683,6 +4703,11 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
   }
 
+  private fun verifySubmitAnswerButtonIsEnabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
@@ -4730,7 +4755,6 @@ class StateFragmentTest {
   }
 
   private fun setUpTest() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -4939,7 +4963,8 @@ class StateFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

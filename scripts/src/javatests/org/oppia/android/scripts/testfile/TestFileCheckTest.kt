@@ -50,15 +50,13 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile1Test.kt")
     tempFolder.newFile("testfiles/ProdFile2.kt")
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt $errorMessage
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -71,16 +69,14 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile2.kt")
     tempFolder.newFile("testfiles/ProdFile3.kt")
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
       File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test file.
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -93,16 +89,14 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile3.kt")
     tempFolder.newFile("testfiles/ProdFile2.kt")
 
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
+    val exception = assertThrows<Exception>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
       File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test file.
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)

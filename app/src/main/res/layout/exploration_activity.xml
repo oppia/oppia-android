@@ -64,7 +64,8 @@
             android:layout_gravity="end"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:scaleType="center" />
+            android:scaleType="center"
+            android:contentDescription="@string/options_menu_content_description" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

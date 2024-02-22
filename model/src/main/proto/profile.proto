@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package model;
 
-import "languages.proto";
-
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -85,6 +83,10 @@ message Profile {
 
   // Reserve 17 which was used before as using it might cause issues for older profiles.
   reserved 17;
+
+  // Represents the epoch timestamp in milliseconds when the nps survey was previously shown in
+  // this profile.
+  int64 survey_last_shown_timestamp_ms = 18;
 }
 
 // Represents a profile avatar image.

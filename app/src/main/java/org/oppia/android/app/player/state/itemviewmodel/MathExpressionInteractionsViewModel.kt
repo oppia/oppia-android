@@ -73,6 +73,12 @@ class MathExpressionInteractionsViewModel private constructor(
    * bound to the corresponding edit text.
    */
   var answerText: CharSequence = ""
+    // The value of ths field is set from the Binding and from the TextWatcher. Any
+    // programmatic modification needs to be done here, so that the Binding and the TextWatcher
+    // do not step on each other.
+    set(value) {
+      field = value.toString().trim()
+    }
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -166,7 +172,7 @@ class MathExpressionInteractionsViewModel private constructor(
       }
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
-        answerText = answer.toString().trim()
+        answerText = answer
         val isAnswerTextAvailable = answerText.isNotEmpty()
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
