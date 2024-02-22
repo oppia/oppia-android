@@ -515,7 +515,7 @@ message OptionsFragmentArguments {
   string selected_fragment = 3;
 }
 
-// Arguments required when creating an HintsAndSolutionDialogFragment.
+// Arguments required when creating a HintsAndSolutionDialogFragment.
 message HintsAndSolutionDialogFragmentArguments {
   // Id Used in ExplorationController/QuestionAssessmentProgressController to get current state data.
   string id_argument = 1;
@@ -548,7 +548,7 @@ message HintsAndSolutionDialogFragmentStateBundle {
   bool is_solution_revealed = 5;
 }
 
-// Arguments required when creating an LanguageDialogFragment.
+// Arguments required when creating a LanguageDialogFragment.
 message LanguageDialogFragmentArguments {
   // List of strings containing languages.
   repeated string language_list = 1;
@@ -576,7 +576,7 @@ message StateFragmentTestActivityArguments {
   bool should_save_partial_progress = 5;
 }
 
-// Arguments required when creating an StateFragment.
+// Arguments required when creating a StateFragment.
 message StateFragmentArguments {
 
   // The ID of the current profile.
@@ -592,7 +592,7 @@ message StateFragmentArguments {
   string exploration_id = 4;
 }
 
-// Arguments required when creating an ProgressDatabaseFullDialogFragment.
+// Arguments required when creating a ProgressDatabaseFullDialogFragment.
 message ProgressDatabaseFullDialogFragmentArguments {
   // Oldest check point exploration title.
   string old_saved_exploration_title = 1;
@@ -647,7 +647,7 @@ message PinPasswordActivityArguments {
   string admin_pin = 2;
 }
 
-// Arguments required when creating an ResetPinDialogFragment.
+// Arguments required when creating a ResetPinDialogFragment.
 message ResetPinDialogFragmentArguments {
   // ID for current profile.
   int32 internal_profile_id = 1;
@@ -656,66 +656,109 @@ message ResetPinDialogFragmentArguments {
   string name = 2;
 }
 
+// Represents the parameters needed to open ProfileEditActivity.
 message ProfileEditActivityArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // The value indicates layout is multipane or not.
   bool is_multipane = 2;
 }
 
+// Arguments required when creating a ProfileEditFragment.
 message ProfileEditFragmentArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // The value indicates layout is multipane or not.
   bool is_multipane = 2;
 }
 
+// Arguments required when creating a ProfileListFragment.
 message ProfileListFragmentArguments {
+  // The value indicates layout is multipane or not.
   bool is_multipane = 1;
 }
 
+// Represents the parameters needed to open ProfileResetPinActivity.
 message ProfileResetPinActivityArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // Indicates whether current user is admin or not.
   bool is_admin = 2;
 }
 
+// Arguments required when creating a ProfileResetPinFragment.
 message ProfileResetPinFragmentArguments {
+  // ID for current profile.
   int32 internal_profile_id = 1;
+
+  // Indicates whether current user is admin or not.
   bool is_admin = 2;
 }
 
+// Represents the parameters needed to open StoryActivity.
 message StoryActivityArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the story to which the opening exploration belongs.
   string story_id = 2;
 }
 
+// Arguments required when creating a StoryFragment.
 message StoryFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the story to which the opening exploration belongs.
   string story_id = 2;
 }
 
+// Arguments required when creating a ConceptCardFragment.
 message ConceptCardFragmentArguments {
+  // The ID of the skill to which the opening exploration belongs.
   string skill_id = 2;
 }
 
+// Arguments required when creating an TopicInfoFragment.
 message TopicInfoFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 }
 
+// Arguments required when creating a TopicLessonsFragment.
 message TopicLessonsFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the story to which the opening exploration belongs.
   string story_id = 2;
 }
 
+// The bundle of properties that are saved upon configuration changes in TopicLessonsFragment.
 message TopicLessonsFragmentStateBundle {
+  // Index of expanded chapter.
   int32 current_expanded_chapter_list_index = 1;
+
+  // Indicates whether default story is expanded or not.
   bool is_default_story_expanded = 2;
 }
 
+// Arguments required when creating a TopicPracticeFragment.
 message TopicPracticeFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 }
 
+// The bundle of properties that are saved upon configuration changes in TopicPracticeFragment.
 message TopicPracticeFragmentStateBundle {
 
+  // List of selected sub topic id lists.
   repeated int32 sub_topic_id_list = 1;
 
+  // Hash map of selected skill id list.
   map<int32, StringList> skill_id_list = 2;
 
   message StringList {
@@ -723,37 +766,66 @@ message TopicPracticeFragmentStateBundle {
   }
 }
 
+// Arguments required when creating a TopicRevisionFragment.
 message TopicRevisionFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 }
 
+
+// Represents the parameters needed to open RevisionCardActivity.
 message RevisionCardActivityArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the sub topic to which the opening exploration belongs.
   int32 sub_topic_id = 2;
+
+  // The sub topic list size.
   int32 sub_topic_list_size = 3;
 }
 
+// Arguments required when creating a RevisionCardFragment.
 message RevisionCardFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the sub topic to which the opening exploration belongs.
   int32 sub_topic_id = 2;
+
+  // The sub topic list size.
   int32 sub_topic_list_size = 3;
 }
 
+// Represents the parameters needed to open TestFontScaleConfigurationUtilActivity.
 message TestFontScaleConfigurationUtilActivityArguments {
+  // The text size at which content in the exploration should be rendered.
   ReadingTextSize reading_text_size = 1;
 }
 
+// Arguments required when creating a SurveyFragment.
 message SurveyFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the triggering exploration.
   string exploration_id = 2;
 }
 
+// Arguments required when creating a SurveyWelcomeDialogFragment.
 message SurveyWelcomeDialogFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
+
+  // The ID of the triggering exploration.
   string exploration_id = 2;
+
+  // List of survey questions.
   repeated int32 question_no = 3;
 }
 
+// Arguments required when creating a WalkthroughFinalFragment.
 message WalkthroughFinalFragmentArguments {
+  // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 }
