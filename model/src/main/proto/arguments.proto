@@ -36,7 +36,7 @@ enum HighlightItem {
   DEVELOPER_OPTIONS_ITEM = 4;
 }
 
-//TODO(#59): Isolate this to a test-only proto once possible.
+// TODO(#59): Isolate this to a test-only proto once possible.
 // Represents the parameters needed to open InputInteractionViewTestActivity.
 message InputInteractionViewTestActivityParams {
   // Corresponds to the interaction used to initialize the interaction's view in the test
