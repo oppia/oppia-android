@@ -515,6 +515,7 @@ message OptionsFragmentArguments {
   string selected_fragment = 3;
 }
 
+// Arguments required when creating an HintsAndSolutionDialogFragment.
 message HintsAndSolutionDialogFragmentArguments {
   string id_argument = 1;
   State state = 2;
