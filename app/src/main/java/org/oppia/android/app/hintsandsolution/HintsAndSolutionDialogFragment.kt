@@ -2,7 +2,6 @@ package org.oppia.android.app.hintsandsolution
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -131,7 +130,7 @@ class HintsAndSolutionDialogFragment :
     val writtenTranslationContext =
       args.writtenTranslationContext ?: WrittenTranslationContext.getDefaultInstance()
     val profileId = arguments.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
-Log.e("#",profileId.internalId.toString()+" hello")
+
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
       container,
