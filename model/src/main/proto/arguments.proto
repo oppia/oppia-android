@@ -14,56 +14,56 @@ option java_multiple_files = true;
 // The fragment arguments passed to instances of ExitProfileDialogFragment.
 message ExitProfileDialogArguments {
   // Decides the correct menu item to be highlighted after canceling the ExitProfileDialogFragment.
-  HighlightItem highlight_item = 1;
+  HighlightItem highlight_item =1;
 }
 
 // Represents the type of item/menuItem that should be highlighted after canceling the
 // ExitProfileDialogFragment.
 enum HighlightItem {
   // Indicates that the highlight item was not set
-  ITEM_UNSPECIFIED = 0;
+  ITEM_UNSPECIFIED=0;
 
   // Indicates that none of the items needs to be highlighted.
-  NONE = 1;
+  NONE=1;
 
   // Indicates that one of the NavigationDrawerItem needs to be highlighted.
-  LAST_CHECKED_MENU_ITEM = 2;
+  LAST_CHECKED_MENU_ITEM=2;
 
   // Indicates that the Administrator Controls item needs to be highlighted.
-  ADMINISTRATOR_CONTROLS_ITEM = 3;
+  ADMINISTRATOR_CONTROLS_ITEM=3;
 
   // Indicates that the Developer Options item needs to be highlighted.
-  DEVELOPER_OPTIONS_ITEM = 4;
+  DEVELOPER_OPTIONS_ITEM=4;
 }
 
-// TODO(#59): Isolate this to a test-only proto once possible.
+//TODO(#59): Isolate this to a test-only proto once possible.
 // Represents the parameters needed to open InputInteractionViewTestActivity.
 message InputInteractionViewTestActivityParams {
   // Corresponds to the interaction used to initialize the interaction's view in the test
   // environment.
-  Interaction interaction = 1;
+  Interaction interaction =1;
 
   // Corresponds to the translation context which may affect the interaction's classifiers during
   // tests.
-  WrittenTranslationContext written_translation_context = 2;
+  WrittenTranslationContext written_translation_context =2;
 
   // Indicates that a math interaction should be displayed for this activity, and indicates which
   // one is being used in tests.
-  MathInteractionType math_interaction_type = 3;
+  MathInteractionType math_interaction_type =3;
 
   // The type of math interaction to initialize for testing.
   enum MathInteractionType {
     // Indicates that no math interaction should  be loaded for testing.
-    MATH_INTERACTION_TYPE_UNSPECIFIED = 0;
+    MATH_INTERACTION_TYPE_UNSPECIFIED=0;
 
     // Indicates that the numeric expression input interaction will be used for testing.
-    NUMERIC_EXPRESSION = 1;
+    NUMERIC_EXPRESSION=1;
 
     // Indicates that the algebraic expression input interaction will be used for testing.
-    ALGEBRAIC_EXPRESSION = 2;
+    ALGEBRAIC_EXPRESSION=2;
 
     // Indicates that the math equation input interaction will be used for testing.
-    MATH_EQUATION = 3;
+    MATH_EQUATION=3;
   }
 }
 
@@ -72,530 +72,576 @@ message DestinationScreen {
   // Indicates destination screen which we send in intent extras with RecentlyPlayedActivityParams.
   oneof destination_screen {
     // Indicates information about the RecentlyPlayedActivity.
-    RecentlyPlayedActivityParams recently_played_activity_params = 1;
+    RecentlyPlayedActivityParams recently_played_activity_params =1;
   }
 }
 
 // Intent extras for RecentlyPlayedActivity.
 message RecentlyPlayedActivityParams {
   // The ID of current profile.
-  ProfileId profile_id = 1;
+  ProfileId profile_id =1;
 
   // The title which should be displayed for the activity.
-  RecentlyPlayedActivityTitle activity_title = 2;
+  RecentlyPlayedActivityTitle activity_title =2;
 }
 
 // Corresponds to activity title of RecentlyPlayedActivity.
 enum RecentlyPlayedActivityTitle {
   // Activity title is not specified.
-  TITLE_UNSPECIFIED = 0;
+  TITLE_UNSPECIFIED=0;
 
   // Corresponds to activity title as "Recently played stories".
-  RECENTLY_PLAYED_STORIES = 1;
+  RECENTLY_PLAYED_STORIES=1;
 
   // Corresponds to activity title as "Stories for you".
-  STORIES_FOR_YOU = 2;
+  STORIES_FOR_YOU=2;
 
   // Corresponds to activity title as "Recommended Stories".
-  RECOMMENDED_STORIES = 3;
+  RECOMMENDED_STORIES=3;
 
   // Corresponds to activity title as "Last-Played Stories".
-  LAST_PLAYED_STORIES = 4;
+  LAST_PLAYED_STORIES=4;
 }
 
 // Params required when creating a new ExplorationActivity.
 message ExplorationActivityParams {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  ProfileId profile_id =1;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id =2;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id =3;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id =4;
 
   // The screen from which this activity was opened.
-  ParentScreen parent_screen = 5;
+  ParentScreen parent_screen =5;
 
   // Indicates whether checkpointing is enabled to story partial completion state for this session.
-  bool is_checkpointing_enabled = 6;
+  bool is_checkpointing_enabled =6;
 
   // Different parent screens that can open a new exploration activity instance.
   enum ParentScreen {
     // Indicates that the originating screen isn't actually known.
-    PARENT_SCREEN_UNSPECIFIED = 0;
+    PARENT_SCREEN_UNSPECIFIED=0;
 
     // Corresponds to the lessons tab on the topic viewer screen.
-    TOPIC_SCREEN_LESSONS_TAB = 1;
+    TOPIC_SCREEN_LESSONS_TAB=1;
 
     // Corresponds to the story viewer screen.
-    STORY_SCREEN = 2;
+    STORY_SCREEN=2;
   }
 }
 
 // Arguments that must be passed to a new ExplorationFragment.
 message ExplorationFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  ProfileId profile_id =1;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id =2;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id =3;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id =4;
 
   // The text size at which content in the exploration should be rendered.
-  ReadingTextSize reading_text_size = 5;
+  ReadingTextSize reading_text_size =5;
 }
 
 // Params required when creating a new ResumeLessonActivity.
 message ResumeLessonActivityParams {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  ProfileId profile_id =1;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id =2;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id =3;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id =4;
 
   // The screen from which this activity was opened.
-  ExplorationActivityParams.ParentScreen parent_screen = 5;
+  ExplorationActivityParams.ParentScreen parent_screen =5;
 
   // The checkpoint that may be used to resume the exploration play session.
-  ExplorationCheckpoint checkpoint = 6;
+  ExplorationCheckpoint checkpoint =6;
 }
 
 // Arguments that must be passed to a new ResumeLessonFragment.
 message ResumeLessonFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  ProfileId profile_id =1;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id =2;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id =3;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id =4;
 
   // The screen from which this activity was opened.
-  ExplorationActivityParams.ParentScreen parent_screen = 5;
+  ExplorationActivityParams.ParentScreen parent_screen =5;
 
   // The checkpoint that may be used to resume the exploration play session.
-  ExplorationCheckpoint checkpoint = 6;
+  ExplorationCheckpoint checkpoint =6;
 }
 
 // Params required when creating a new ReadingTextSizeActivity.
 message ReadingTextSizeActivityParams {
   // The ReadingTextSize previously selected by the user (upon opening the activity).
-  ReadingTextSize reading_text_size = 1;
+  ReadingTextSize reading_text_size =1;
 }
 
 // The bundle of properties that are saved upon configuration changes in ReadingTextSizeActivity.
 message ReadingTextSizeActivityStateBundle {
   // The ReadingTextSize selected by the user.
-  ReadingTextSize selected_reading_text_size = 1;
+  ReadingTextSize selected_reading_text_size =1;
 }
 
 // The bundle of properties that are returned by ReadingTextSizeActivity after it's finished.
 message ReadingTextSizeActivityResultBundle {
   // The ReadingTextSize selected by the user.
-  ReadingTextSize selected_reading_text_size = 1;
+  ReadingTextSize selected_reading_text_size =1;
 }
 
 // Arguments required when creating a new ReadingTextSizeFragment.
 message ReadingTextSizeFragmentArguments {
   // The ReadingTextSize previously selected by the user (upon opening the fragment).
-  ReadingTextSize reading_text_size = 1;
+  ReadingTextSize reading_text_size =1;
 }
 
 // The bundle of properties that are saved upon configuration changes in ReadingTextSizeFragment.
 message ReadingTextSizeFragmentStateBundle {
   // The ReadingTextSize selected by the user.
-  ReadingTextSize selected_reading_text_size = 1;
+  ReadingTextSize selected_reading_text_size =1;
 }
 
 // Params required when creating a new AudioLanguageActivity.
 message AudioLanguageActivityParams {
   // The default audio language previously selected by the user (upon opening the activity).
-  AudioLanguage audio_language = 1;
+  AudioLanguage audio_language =1;
 }
 
 // The bundle of properties that are saved upon configuration changes in AudioLanguageActivity.
 message AudioLanguageActivityStateBundle {
   // The default audio language selected by the user.
-  AudioLanguage audio_language = 1;
+  AudioLanguage audio_language =1;
 }
 
 // The bundle of properties that are returned by AudioLanguageActivity after it's finished.
 message AudioLanguageActivityResultBundle {
   // The new default audio language selected by the user.
-  AudioLanguage audio_language = 1;
+  AudioLanguage audio_language =1;
 }
 
 // Arguments required when creating a new AudioLanguageFragment.
 message AudioLanguageFragmentArguments {
   // The default audio language previously selected by the user (upon opening the fragment).
-  AudioLanguage audio_language = 1;
+  AudioLanguage audio_language =1;
 }
 
 // The bundle of properties that are saved upon configuration changes in AudioLanguageFragment.
 message AudioLanguageFragmentStateBundle {
   // The default audio language selected by the user.
-  AudioLanguage audio_language = 1;
+  AudioLanguage audio_language =1;
 }
 
 // Activity Parameters needed to open the policy page.
 message PoliciesActivityParams {
   // The specific policy page that should be displayed.
-  PolicyPage policy_page = 1;
+  PolicyPage policy_page =1;
 }
 
 // Fragment arguments needed to open the policy page.
 message PoliciesFragmentArguments {
   // The specific policy page that should be displayed.
-  PolicyPage policy_page = 1;
+  PolicyPage policy_page =1;
 }
 
 // Represents the type of policy page.
 enum PolicyPage {
   // The policy page is unknown.
-  POLICY_PAGE_UNSPECIFIED = 0;
+  POLICY_PAGE_UNSPECIFIED=0;
 
   // Corresponds to the Privacy Policy page.
-  PRIVACY_POLICY = 1;
+  PRIVACY_POLICY=1;
 
   // Corresponds to the Terms of Service page.
-  TERMS_OF_SERVICE = 2;
+  TERMS_OF_SERVICE=2;
 }
 
 // Arguments required when creating a new AppLanguageFragment.
 message AppLanguageFragmentArguments {
   // The default app language previously selected by the user (upon opening the fragment).
-  OppiaLanguage oppia_language = 1;
+  OppiaLanguage oppia_language =1;
 }
 
 // The bundle of properties that are saved upon configuration changes in AppLanguageFragment.
 message AppLanguageFragmentStateBundle {
   // The default app language selected by the user.
-  OppiaLanguage oppia_language = 1;
+  OppiaLanguage oppia_language =1;
 }
 
 // Params required when creating a new AppLanguageActivity.
 message AppLanguageActivityParams {
   // The default app language previously selected by the user (upon opening the activity).
-  OppiaLanguage oppia_language = 1;
+  OppiaLanguage oppia_language =1;
 }
 
 // The bundle of properties that are saved upon configuration changes in AppLanguageActivity.
 message AppLanguageActivityStateBundle {
   // The default app language selected by the user.
-  OppiaLanguage oppia_language = 1;
+  OppiaLanguage oppia_language =1;
 }
 
+// Represents the parameters needed to open SurveyActivity.
 message SurveyActivityParams {
   // The ID of the profile for which the survey is to be shown.
-  ProfileId profile_id = 1;
+  ProfileId profile_id =1;
 
   // The ID of the topic to which the triggering exploration belongs.
-  string topic_id = 2;
+  string topic_id =2;
 
   // The ID of the triggering exploration.
-  string exploration_id = 3;
+  string exploration_id =3;
 }
 
+// Represents the parameters needed to open TopicActivity.
 message TopicActivityArguments {
-  string topic_id = 1;
-  string story_id = 2;
+  // The ID of the topic to be opened.
+  string topic_id =1;
+
+  // The ID of the story to which the opening Topic belongs.
+  string story_id =2;
 }
 
+// Arguments required when creating a TopicFragment.
 message TopicFragmentArguments {
-  string topic_id = 1;
-  string story_id = 2;
+  // The ID of the topic to be opened.
+  string topic_id =1;
+
+  // The ID of the story to which the opening Topic belongs.
+  string story_id =2;
 }
 
+// Represents the parameters needed to open QuestionPlayerActivity.
 message QuestionPlayerActivityArguments {
-  repeated string skill_id_list = 1;
+  // Skill ID list for practice.
+  repeated string skill_id_list =1;
 }
 
+// The bundle of properties that are saved upon configuration changes in AdministratorControlActivity.
 message AdministratorControlActivityStateBundle {
-  string selected_controls_title = 1;
-  string last_loaded_fragment = 2;
-  bool is_profile_deletion_dialog_visible = 3;
-  int32 selected_profile_id = 4;
+
+  // Title for the loaded fragment.
+  string selected_controls_title =1;
+
+  // Represents last loaded fragment.
+  string last_loaded_fragment =2;
+
+  // Represents profile deletion dialog visibility.
+  bool is_profile_deletion_dialog_visible =3;
+
+  // Stores profile ID which is selected from list of profiles.
+  int32 selected_profile_id =4;
 }
 
+// Arguments required when creating a AdministratorControlsFragment.
 message AdministratorControlsFragmentArguments {
-  bool is_multipane = 1;
+  // The value indicates layout is multipane or not.
+  bool is_multipane =1;
 }
 
+// Represents the parameters needed to open MarkChaptersCompletedTestActivity.
 message MarkChaptersCompletedTestActivityArguments{
-  int32 internal_profile_id = 1;
-  bool show_confirmation_notice = 2;
+  // The ID of the profile that wants to mark chapters as completed.
+  int32 internal_profile_id =1;
+
+  // The value indicates whether to show a confirmation dialog or not
+  bool show_confirmation_notice =2;
 }
 
+// Represents the parameters needed to open MarkChaptersCompletedActivity.
 message MarkChaptersCompletedActivityArguments{
-  int32 internal_profile_id = 1;
-  bool show_confirmation_notice = 2;
+  // The ID of the profile that wants to mark chapters as completed.
+  int32 internal_profile_id =1;
+
+  // The value indicates whether to show a confirmation dialog or not.
+  bool show_confirmation_notice =2;
 }
 
+// Arguments required when creating a MarkChaptersCompletedFragment.
 message MarkChaptersCompletedFragmentArguments{
-  int32 internal_profile_id = 1;
-  bool show_confirmation_notice = 2;
+  // The ID of the profile that wants to mark chapters as completed.
+  int32 internal_profile_id =1;
+
+  // The value indicates whether to show a confirmation dialog or not.
+  bool show_confirmation_notice =2;
 }
 
+// The bundle of properties that are saved upon configuration changes in MarkChaptersCompletedFragment.
 message MarkChaptersCompletedFragmentStateBundle{
-  repeated string exploration_id_list = 1;
-  repeated string exploration_title_list = 2;
+  // List of selected exploration IDs.
+  repeated string exploration_id_list =1;
+
+  // List of selected exploration titles.
+  repeated string exploration_title_list =2;
 }
 
+// The bundle of properties that are saved upon configuration changes in MarkStoriesCompletedFragment.
 message MarkStoriesCompletedFragmentStateBundle{
-  repeated string story_id_list = 1;
+  // List of selected story IDs.
+  repeated string story_id_list =1;
 }
 
+// The bundle of properties that are saved upon configuration changes in MarkTopicsCompletedFragment.
 message MarkTopicsCompletedFragmentStateBundle {
-  repeated string topic_id_list = 1;
+  // List of selected topic IDs.
+  repeated string topic_id_list =1;
 }
 
+// Represents the parameters needed to open FAQSingleActivity.
 message FAQSingleActivityArguments {
-  string question = 1;
-  string answer = 2;
+  // The question to be displayed.
+  string question =1;
+
+  // The answer to be displayed.
+  string answer =2;
 }
 
 message LicenseListActivityArguments {
-  int32 dependency_index = 1;
+  int32 dependency_index =1;
 }
 
 message LicenseListFragmentArguments {
-  int32 dependency_index = 1;
-  bool is_multipane = 2;
+  int32 dependency_index =1;
+  bool is_multipane =2;
 }
 
 message LicenseTextViewerActivityArguments {
-  int32 dependency_index = 1;
-  int32 license_index = 2;
+  int32 dependency_index =1;
+  int32 license_index =2;
 }
 
 message LicenseTextViewerFragmentArguments{
-  int32 dependency_index = 1;
-  int32 license_index = 2;
+  int32 dependency_index =1;
+  int32 license_index =2;
 }
 
 message ThirdPartyDependencyListFragmentArguments {
-  bool is_multipane = 1;
+  bool is_multipane =1;
 }
 
 message HelpActivityArguments {
-  bool is_from_navigation_drawer = 2;
+  bool is_from_navigation_drawer =2;
 }
 
 message HelpActivityStateBundle{
-  string help_options_title = 1;
-  string selected_fragment_tag = 2;
-  int32 selected_dependency_index = 3;
-  int32 selected_license_index = 4;
-  PoliciesActivityParams policies_activity_params = 5;
+  string help_options_title =1;
+  string selected_fragment_tag =2;
+  int32 selected_dependency_index =3;
+  int32 selected_license_index =4;
+  PoliciesActivityParams policies_activity_params =5;
 }
 
 message HelpFragmentArguments {
-  bool is_multipane = 1;
+  bool is_multipane =1;
 }
 
 message OptionsActivityArguments {
-  bool is_from_navigation_drawer = 1;
+  bool is_from_navigation_drawer =1;
 }
 
 message OptionsActivityStateBundle {
-  string selected_options_title = 1;
-  string selected_fragment = 2;
+  string selected_options_title =1;
+  string selected_fragment =2;
 }
 
 message OptionsFragmentArguments {
-  bool is_multipane = 1;
-  bool is_first_open = 2;
-  string selected_fragment = 3;
+  bool is_multipane =1;
+  bool is_first_open =2;
+  string selected_fragment =3;
 }
 
 message HintsAndSolutionDialogFragmentArguments {
-  string id_argument = 1;
-  State state = 2;
-  HelpIndex help_index = 3;
-  WrittenTranslationContext written_translation_context = 4;
+  string id_argument =1;
+  State state =2;
+  HelpIndex help_index =3;
+  WrittenTranslationContext written_translation_context =4;
 }
 
 message HintsAndSolutionDialogFragmentStateBundle {
-  repeated int32 current_expanded_item_list = 1;
-  int32 hint_index = 2;
-  bool is_hint_revealed = 3;
-  int32 solution_index = 4;
-  bool is_solution_revealed = 5;
+  repeated int32 current_expanded_item_list =1;
+  int32 hint_index =2;
+  bool is_hint_revealed =3;
+  int32 solution_index =4;
+  bool is_solution_revealed =5;
 }
 
 message LanguageDialogFragmentArguments {
-  repeated string language_list = 1;
-  int32 selected_index = 2;
+  repeated string language_list =1;
+  int32 selected_index =2;
 }
 
 message StateFragmentTestActivityArguments {
-  int32 internal_profile_id = 1;
-  string topic_id = 2;
-  string story_id = 3;
-  string exploration_id = 4;
-  bool should_save_partial_progress = 5;
+  int32 internal_profile_id =1;
+  string topic_id =2;
+  string story_id =3;
+  string exploration_id =4;
+  bool should_save_partial_progress =5;
 }
 
 message StateFragmentArguments {
-  int32 internal_profile_id = 1;
-  string topic_id = 2;
-  string story_id = 3;
-  string exploration_id = 4;
+  int32 internal_profile_id =1;
+  string topic_id =2;
+  string story_id =3;
+  string exploration_id =4;
 }
 
 message ProgressDatabaseFullDialogFragmentArguments {
-  string old_saved_exploration_title = 1;
+  string old_saved_exploration_title =1;
 }
 
 message AddProfileActivityArguments {
-  int32 color_rgb = 1;
+  int32 color_rgb =1;
 }
 
 message AdminAuthActivityArguments {
-  string admin_pin = 1;
-  int32 internal_profile_id = 2;
-  int32 color_rgb = 3;
-  int32 admin_pin_enum = 4;
+  string admin_pin =1;
+  int32 internal_profile_id =2;
+  int32 color_rgb =3;
+  int32 admin_pin_enum =4;
 
 }
 
 message AdminPinActivityArguments {
-  int32 internal_profile_id = 1;
-  int32 color_rgb = 2;
-  int32 admin_pin_enum = 3;
+  int32 internal_profile_id =1;
+  int32 color_rgb =2;
+  int32 admin_pin_enum =3;
 }
 
 message AdminSettingsDialogFragmentArguments {
-  string admin_pin = 1;
+  string admin_pin =1;
 }
 
 message PinPasswordActivityArguments {
-  int32 internal_profile_id = 1;
-  string admin_pin = 2;
+  int32 internal_profile_id =1;
+  string admin_pin =2;
 }
 
 message ResetPinDialogFragmentArguments {
-  int32 internal_profile_id = 1;
-  string name = 2;
+  int32 internal_profile_id =1;
+  string name =2;
 }
 
 message ProfileEditActivityArguments {
-  int32 internal_profile_id = 1;
-  bool is_multipane = 2;
+  int32 internal_profile_id =1;
+  bool is_multipane =2;
 }
 
 message ProfileEditFragmentArguments {
-  int32 internal_profile_id = 1;
-  bool is_multipane = 2;
+  int32 internal_profile_id =1;
+  bool is_multipane =2;
 }
 
 message ProfileListFragmentArguments {
-  bool is_multipane = 1;
+  bool is_multipane =1;
 }
 
 message ProfileResetPinActivityArguments {
-  int32 internal_profile_id = 1;
-  bool is_admin = 2;
+  int32 internal_profile_id =1;
+  bool is_admin =2;
 }
 
 message ProfileResetPinFragmentArguments {
-  int32 internal_profile_id = 1;
-  bool is_admin = 2;
+  int32 internal_profile_id =1;
+  bool is_admin =2;
 }
 
 message StoryActivityArguments {
-  string topic_id = 1;
-  string story_id = 2;
+  string topic_id =1;
+  string story_id =2;
 }
 
 message StoryFragmentArguments {
-  string topic_id = 1;
-  string story_id = 2;
+  string topic_id =1;
+  string story_id =2;
 }
 
 message ConceptCardFragmentArguments {
-  string skill_id = 2;
+  string skill_id =2;
 }
 
 message TopicInfoFragmentArguments {
-  string topic_id = 1;
+  string topic_id =1;
 }
 
 message TopicLessonsFragmentArguments {
-  string topic_id = 1;
-  string story_id = 2;
+  string topic_id =1;
+  string story_id =2;
 }
 
 message TopicLessonsFragmentStateBundle {
-  int32 current_expanded_chapter_list_index = 1;
-  bool is_default_story_expanded = 2;
+  int32 current_expanded_chapter_list_index =1;
+  bool is_default_story_expanded =2;
 }
 
 message TopicPracticeFragmentArguments {
-  string topic_id = 1;
+  string topic_id =1;
 }
 
 message TopicPracticeFragmentStateBundle {
 
-  repeated int32 sub_topic_id_list = 1;
+  repeated int32 sub_topic_id_list =1;
 
-  map<int32, StringList> skill_id_list = 2;
+  map<int32,StringList> skill_id_list =2;
 
   message StringList {
-    repeated string values = 1;
+    repeated string values =1;
   }
 }
 
 message TopicRevisionFragmentArguments {
-  string topic_id = 1;
+  string topic_id =1;
 }
 
 message RevisionCardActivityArguments {
-  string topic_id = 1;
-  int32 sub_topic_id = 2;
-  int32 sub_topic_list_size = 3;
+  string topic_id =1;
+  int32 sub_topic_id =2;
+  int32 sub_topic_list_size =3;
 }
 
 message RevisionCardFragmentArguments {
-  string topic_id = 1;
-  int32 sub_topic_id = 2;
-  int32 sub_topic_list_size = 3;
+  string topic_id =1;
+  int32 sub_topic_id =2;
+  int32 sub_topic_list_size =3;
 }
 
 message TestFontScaleConfigurationUtilActivityArguments {
-  ReadingTextSize reading_text_size = 1;
+  ReadingTextSize reading_text_size =1;
 }
 
 message SurveyFragmentArguments {
-  string topic_id = 1;
-  string exploration_id = 2;
+  string topic_id =1;
+  string exploration_id =2;
 }
 
 message SurveyWelcomeDialogFragmentArguments {
-  string topic_id = 1;
-  string exploration_id = 2;
-  repeated int32 question_no = 3;
+  string topic_id =1;
+  string exploration_id =2;
+  repeated int32 question_no =3;
 }
 
 message WalkthroughFinalFragmentArguments {
-  string topic_id = 1;
+  string topic_id =1;
 }
