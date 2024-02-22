@@ -2,6 +2,7 @@ package org.oppia.android.app.hintsandsolution
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +18,6 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-
-private const val CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY =
-  "HintsAndSolutionDialogFragment.current_expanded_list_index"
-private const val HINT_INDEX_SAVED_KEY = "HintsAndSolutionDialogFragment.hint_index"
-private const val IS_HINT_REVEALED_SAVED_KEY = "HintsAndSolutionDialogFragment.is_hint_revealed"
-private const val SOLUTION_INDEX_SAVED_KEY = "HintsAndSolutionDialogFragment.solution_index"
-private const val IS_SOLUTION_REVEALED_SAVED_KEY =
-  "HintsAndSolutionDialogFragment.is_solution_revealed"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
 class HintsAndSolutionDialogFragment :
@@ -138,7 +131,7 @@ class HintsAndSolutionDialogFragment :
     val writtenTranslationContext =
       args.writtenTranslationContext ?: WrittenTranslationContext.getDefaultInstance()
     val profileId = arguments.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
-
+Log.e("#",profileId.internalId.toString()+" hello")
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
       container,
