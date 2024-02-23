@@ -1,5 +1,7 @@
 package org.oppia.android.testing.junit
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import org.junit.runner.Description
 import org.junit.runner.Runner
 import org.junit.runner.manipulation.Filter
@@ -76,6 +78,7 @@ import kotlin.reflect.KClass
  * contain (thus they should be treated as undefined outside of tests that specific define their
  * value via [Iteration]).
  */
+@RequiresApi(Build.VERSION_CODES.N)
 class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(testClass, listOf()) {
   private val parameterizedMethods = computeParameterizedMethods()
   private val selectedRunnerClass by lazy { fetchSelectedRunnerPlatformClass() }
@@ -85,16 +88,24 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     parameterizedMethods.flatMap { (methodName, method) ->
       method.iterationNames.map { iterationName ->
         ProxyParameterizedTestRunner(
-          selectedRunnerClass, testClass, parameterizedMethods, methodName, iterationName
+          selectedRunnerClass,
+          testClass,
+          parameterizedMethods,
+          methodName,
+          iterationName
         )
       }
     } + ProxyParameterizedTestRunner(
-      selectedRunnerClass, testClass, parameterizedMethods, methodName = null
+      selectedRunnerClass,
+      testClass,
+      parameterizedMethods,
+      methodName = null
     )
   }
 
   override fun getChildren(): MutableList<Runner> = childrenRunners.toMutableList()
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun computeParameterizedMethods(): Map<String, ParameterizedMethod> {
     val fieldsAndParsers = fetchParameterizedFields().map { field ->
       val valueParser = ParameterValue.createParserForField(field)
@@ -184,12 +195,14 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     }.associateBy { it.methodName }
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun fetchParameterizedFields(): List<Field> {
     return testClass.declaredFields.mapNotNull { field ->
       field.getDeclaredAnnotation(Parameter::class.java)?.let { field }
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun fetchParameterizedMethodDeclarations(): List<ParameterizedMethodDeclaration> {
     return testClass.declaredMethods.mapNotNull { method ->
       method.getDeclaredAnnotationsByType(Iteration::class.java).map { parameters ->
@@ -208,6 +221,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun fetchSelectedRunnerPlatformClass(): Class<*> {
     return checkNotNull(testClass.getDeclaredAnnotation(SelectRunnerPlatform::class.java)) {
       "All suites using OppiaParameterizedTestRunner must declare their base platform runner" +
@@ -239,7 +253,8 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    * - [Float]s
    * - [Double]s
    */
-  @Target(AnnotationTarget.FIELD) annotation class Parameter
+  @Target(AnnotationTarget.FIELD)
+  annotation class Parameter
 
   /**
    * Specifies that a method in a test that uses a [OppiaParameterizedTestRunner] runner should be
@@ -247,7 +262,8 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    *
    * See the KDoc for the runner for example code.
    */
-  @Target(AnnotationTarget.FUNCTION) annotation class RunParameterized(vararg val value: Iteration)
+  @Target(AnnotationTarget.FUNCTION)
+  annotation class RunParameterized(vararg val value: Iteration)
 
   // TODO(#4120): Migrate to Kotlin @Repeatable once Kotlin 1.6 is used (see:
   //  https://youtrack.jetbrains.com/issue/KT-12794).
@@ -300,7 +316,10 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     private fun constructDelegate(): Any {
       val constructor =
         runnerClass.getConstructor(
-          Class::class.java, Map::class.java, String::class.java, String::class.java
+          Class::class.java,
+          Map::class.java,
+          String::class.java,
+          String::class.java
         )
       return constructor.newInstance(testClass, parameterizedMethods, methodName, iterationName)
     }
