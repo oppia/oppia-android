@@ -69,6 +69,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -241,7 +242,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringInLocale(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringInLocale(-1) }
   }
 
   @Test
@@ -278,7 +279,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringInLocaleWithWrapping(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringInLocaleWithWrapping(-1) }
   }
 
   @Test
@@ -315,7 +316,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getStringInLocaleWithoutWrapping(-1)
     }
   }
@@ -335,7 +336,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getStringArrayInLocale(-1) }
+    assertThrows<Resources.NotFoundException>() { handler.getStringArrayInLocale(-1) }
   }
 
   @Test
@@ -365,7 +366,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) { handler.getQuantityStringInLocale(-1, 0) }
+    assertThrows<Resources.NotFoundException>() { handler.getQuantityStringInLocale(-1, 0) }
   }
 
   @Test
@@ -396,7 +397,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getQuantityStringInLocaleWithWrapping(-1, 0)
     }
   }
@@ -431,7 +432,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       handler.getQuantityStringInLocaleWithoutWrapping(-1, 0)
     }
   }
@@ -623,7 +624,8 @@ class AppLanguageResourceHandlerTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

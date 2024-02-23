@@ -81,6 +81,7 @@ class SurveyGatingControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
   }
