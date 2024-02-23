@@ -71,7 +71,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ExplorationActivityParams
-import org.oppia.android.app.model.HelpActivityArguments
+import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityArguments
 import org.oppia.android.app.model.ProfileId
@@ -2244,13 +2244,13 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      val args = HelpActivityArguments.newBuilder().apply {
+      val args = HelpActivityParams.newBuilder().apply {
         this.isFromNavigationDrawer = false
       }.build()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasProtoExtra(
-          HelpActivity.HELP_ACTIVITY_ARGUMENTS_KEY,
+          HelpActivity.HELP_ACTIVITY_PARAMS_KEY,
           /* value= */ args
         )
       )

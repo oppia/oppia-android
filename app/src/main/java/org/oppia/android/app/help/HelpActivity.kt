@@ -10,7 +10,7 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.model.HelpActivityArguments
+import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ProfileId
@@ -57,7 +57,7 @@ class HelpActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args =
-      intent.getProtoExtra(HELP_ACTIVITY_ARGUMENTS_KEY, HelpActivityArguments.getDefaultInstance())
+      intent.getProtoExtra(HELP_ACTIVITY_PARAMS_KEY, HelpActivityParams.getDefaultInstance())
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
 
     val stateArgs = savedInstanceState?.getProto(
@@ -88,9 +88,9 @@ class HelpActivity :
   }
 
   companion object {
-    /** Arguments key for HelpActivity. */
-    const val HELP_ACTIVITY_ARGUMENTS_KEY =
-      "HelpActivity.arguments"
+    /** Params key for HelpActivity. */
+    const val HELP_ACTIVITY_PARAMS_KEY =
+      "HelpActivity.params"
 
     /** Arguments key for HelpActivity saved state. */
     const val HELP_ACTIVITY_STATE_KEY =
@@ -101,11 +101,11 @@ class HelpActivity :
       profileId: ProfileId?,
       isFromNavigationDrawer: Boolean
     ): Intent {
-      val args = HelpActivityArguments.newBuilder().apply {
+      val args = HelpActivityParams.newBuilder().apply {
         this.isFromNavigationDrawer = isFromNavigationDrawer
       }.build()
       val intent = Intent(context, HelpActivity::class.java)
-      intent.putProtoExtra(HELP_ACTIVITY_ARGUMENTS_KEY, args)
+      intent.putProtoExtra(HELP_ACTIVITY_PARAMS_KEY, args)
       intent.decorateWithScreenName(HELP_ACTIVITY)
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)

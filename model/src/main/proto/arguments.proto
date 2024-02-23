@@ -459,7 +459,7 @@ message ThirdPartyDependencyListFragmentArguments {
 }
 
 // Represents the parameters needed to open HelpActivity.
-message HelpActivityArguments {
+message HelpActivityParams {
   // Represents whether the user navigated to the HelpActivity through the navigation drawer or not.
   bool is_from_navigation_drawer = 1;
 }
