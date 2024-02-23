@@ -73,7 +73,7 @@ class AppLanguageLocaleHandlerTest {
 
   @Test
   fun testGetDisplayLocale_initialState_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       appLanguageLocaleHandler.getDisplayLocale()
     }
 
@@ -103,7 +103,7 @@ class AppLanguageLocaleHandlerTest {
   fun testInitializeLocale_twice_throwsException() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       appLanguageLocaleHandler.initializeLocale(retrieveAppLanguageLocale())
     }
 
@@ -117,7 +117,7 @@ class AppLanguageLocaleHandlerTest {
   fun testUpdateLocale_uninitialized_throwsException() {
     setAppLanguage(ENGLISH)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       appLanguageLocaleHandler.updateLocale(retrieveAppLanguageLocale())
     }
 
@@ -186,7 +186,7 @@ class AppLanguageLocaleHandlerTest {
   fun testInitializeLocaleForActivity_uninitialized_throwsException() {
     val configuration = Configuration()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       appLanguageLocaleHandler.initializeLocaleForActivity(configuration)
     }
 

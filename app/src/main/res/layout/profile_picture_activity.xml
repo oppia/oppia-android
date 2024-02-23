@@ -47,7 +47,8 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout"
       app:profileImageSource="@{viewModel.profileAvatar}"
-      tools:src="@drawable/ic_default_avatar" />
+      tools:src="@drawable/ic_default_avatar"
+      android:contentDescription="@string/profile_picture_image_view_content_description" />
 
     <View
       android:id="@+id/app_version_shadow_view"

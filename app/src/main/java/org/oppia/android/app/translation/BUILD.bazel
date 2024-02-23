@@ -40,7 +40,7 @@ kt_android_library(
     ],
     deps = [
         ":app_language_locale_handler",
-        ":dagger",
+        "//:dagger",
         "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
     ],

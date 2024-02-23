@@ -80,10 +80,12 @@ class GenerateMavenDependenciesList(
     val bazelQueryDepsList =
       retriever.retrieveThirdPartyMavenDependenciesList()
     val mavenInstallDepsList =
-      retriever.generateDependenciesListFromMavenInstall(pathToMavenInstallJson, bazelQueryDepsList)
+      retriever.generateDependenciesListFromMavenInstallAsync(
+        pathToMavenInstallJson, bazelQueryDepsList
+      ).await()
 
     val dependenciesListFromPom =
-      retriever.retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
+      retriever.retrieveDependencyListFromPomAsync(mavenInstallDepsList).await().mavenDependencyList
 
     val dependenciesListFromTextProto =
       retriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
@@ -110,34 +112,34 @@ class GenerateMavenDependenciesList(
         """
         Some licenses do not have their 'original_link' verified. To verify a license link, click
         on the original link of the license and check if the link points to any valid license or
-        not. If the link does not point to a valid license (e.g - https://fabric.io/terms), set 
+        not. If the link does not point to a valid license (e.g. - https://fabric.io/terms), set
         the 'is_original_link_invalid' field of the license to 'true'.
-         
-        e.g - 
+
+        e.g. -
         license {
           license_name: "Terms of Service for Firebase Services"
           original_link: "https://fabric.io/terms"
           is_original_link_invalid: true
         }
-  
-        If the link does point to a valid license then choose the most appropriate category for 
+
+        If the link does point to a valid license then choose the most appropriate category for
         the link:
-        
+
         1. scrapable_link: If the license text is plain text and the URL mentioned can be scraped
-        directly from the original_link of the license. e.g - 
+        directly from the original_link of the license. e.g. -
         https://www.apache.org/licenses/LICENSE-2.0.txt
-        
-        2. extracted_copy_link: If the license text is plain text but it can not be scraped 
-        directly from the original_link of the license. e.g -
+
+        2. extracted_copy_link: If the license text is plain text but it can not be scraped
+        directly from the original_link of the license. e.g. -
         https://www.opensource.org/licenses/bsd-license
-        
+
         3. direct_link_only: If the license text is not plain text, it's best to display only the
-        link of the license. e.g - https://developer.android.com/studio/terms.html
-        
+        link of the license. e.g. - https://developer.android.com/studio/terms.html
+
         After identifying the category of the license, modify the license to include one of the
-        above mentioned 'url'. 
-        
-        e.g - 
+        above mentioned 'url'.
+
+        e.g. -
         license {
           license_name: "The Apache Software License, Version 2.0"
           original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -145,9 +147,9 @@ class GenerateMavenDependenciesList(
             url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
           }
         }
-        
-        Please verify the license link(s) for the following license(s) manually in 
-        maven_dependencies.textproto. Note that only first dependency that contains the license 
+
+        Please verify the license link(s) for the following license(s) manually in
+        maven_dependencies.textproto. Note that only first dependency that contains the license
         needs to be updated and also re-run the script to update the license details at all places.
         """.trimIndent()
       )
@@ -169,17 +171,17 @@ class GenerateMavenDependenciesList(
     if (dependenciesWithoutAnyLinks.isNotEmpty()) {
       println(
         """
-        Please remove all the invalid links (if any) from maven_dependencies.textproto for the 
+        Please remove all the invalid links (if any) from maven_dependencies.textproto for the
         below mentioned dependencies and provide the valid license links manually.
-        e.g - 
-        
+        e.g. -
+
         maven_dependency {
           artifact_name: "com.google.guava:failureaccess:1.0.1"
           artifact_version: "1.0.1"
         }
-        
+
         ***** changes to *****
-        
+
         maven_dependency {
           artifact_name: "com.google.guava:failureaccess:1.0.1"
           artifact_version: "1.0.1"
@@ -190,7 +192,7 @@ class GenerateMavenDependenciesList(
             }
           }
         }
-        
+
         Dependencies with invalid or no license links:
         """.trimIndent() + "\n"
       )

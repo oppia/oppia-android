@@ -258,7 +258,7 @@ class AsyncDataSubscriptionManagerTest {
 
   @Test
   fun testAssociateIds_sameId_throwsException() {
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       asyncDataSubscriptionManager.associateIds("same_id", "same_id")
     }
 
@@ -430,7 +430,7 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.subscribe("child_id", mockSubscriptionCallback2.toAsyncChange())
     asyncDataSubscriptionManager.associateIds("child_id", "parent_id")
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       asyncDataSubscriptionManager.associateIds("parent_id", "child_id")
     }
 
@@ -446,7 +446,7 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.associateIds("child_id1", "parent_id")
     asyncDataSubscriptionManager.associateIds("child_id2", "child_id1")
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       asyncDataSubscriptionManager.associateIds("parent_id", "child_id1")
     }
 

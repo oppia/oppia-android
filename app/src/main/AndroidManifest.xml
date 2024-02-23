@@ -93,6 +93,18 @@
       android:label="@string/test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.notice.testing.ForcedAppDeprecationNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.OptionalAppDeprecationNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.OsDeprecationNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.onboarding.OnboardingActivity"
       android:label="@string/onboarding_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -138,6 +150,7 @@
     <activity
       android:name=".app.profile.AdminPinActivity"
       android:label="@string/admin_pin_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.PinPasswordActivity"
@@ -200,6 +213,7 @@
     <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
+    <activity android:name=".app.testing.FractionInputInteractionViewTestActivity" />
     <activity
       android:name=".app.testing.TestFontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -207,6 +221,7 @@
     <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
+    <activity android:name=".app.testing.RatioInputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.ListItemLeadingMarginSpanTestActivity" />
@@ -307,6 +322,11 @@
     <activity
       android:name=".app.testing.activity.TestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.survey.SurveyActivity"
+      android:label="@string/survey_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:windowSoftInputMode="adjustNothing" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"

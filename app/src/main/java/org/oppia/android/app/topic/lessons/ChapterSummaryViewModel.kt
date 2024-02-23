@@ -33,7 +33,11 @@ class ChapterSummaryViewModel(
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
         if (previousChapterTitle != null) {
           resourceHandler.getStringInLocaleWithWrapping(
-            R.string.chapter_prerequisite_title_label, index.toString(), previousChapterTitle
+            R.string.chapter_locked_prerequisite_title_label,
+            (index + 1).toString(),
+            chapterTitle,
+            index.toString(),
+            previousChapterTitle
           )
         } else {
           resourceHandler.getStringInLocaleWithWrapping(

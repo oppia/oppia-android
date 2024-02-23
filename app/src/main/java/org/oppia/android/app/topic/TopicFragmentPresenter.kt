@@ -20,6 +20,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -35,6 +36,9 @@ class TopicFragmentPresenter @Inject constructor(
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
+
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -48,7 +52,7 @@ class TopicFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     isConfigChanged: Boolean
-  ): View? {
+  ): View {
     val binding = TopicFragmentBinding.inflate(
       inflater,
       container,
@@ -64,11 +68,11 @@ class TopicFragmentPresenter @Inject constructor(
     binding.topicToolbar.setNavigationOnClickListener {
       (activity as TopicActivity).finish()
     }
-
-    binding.topicToolbar.setOnClickListener {
-      binding.topicToolbarTitle.isSelected = true
+    if (!accessibilityService.isScreenReaderEnabled()) {
+      binding.topicToolbarTitle.setOnClickListener {
+        binding.topicToolbarTitle.isSelected = true
+      }
     }
-
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
@@ -152,7 +156,8 @@ class TopicFragmentPresenter @Inject constructor(
       TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
     analyticsController.logImportantEvent(
-      eventContext, ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      eventContext,
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 }

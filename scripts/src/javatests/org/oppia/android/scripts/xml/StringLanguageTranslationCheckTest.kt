@@ -65,7 +65,7 @@ class StringLanguageTranslationCheckTest {
 
   @Test
   fun testScript_missingPath_throwsException() {
-    val exception = assertThrows(IllegalArgumentException::class) { runScript(/* With no path. */) }
+    val exception = assertThrows<IllegalArgumentException>() { runScript(/* With no path. */) }
 
     assertThat(exception)
       .hasMessageThat()
@@ -74,7 +74,7 @@ class StringLanguageTranslationCheckTest {
 
   @Test
   fun testScript_validPath_noStringFiles_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(tempFolder.root.absolutePath)
     }
 

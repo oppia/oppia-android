@@ -70,6 +70,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -90,6 +91,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -97,6 +99,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -146,6 +149,9 @@ class PinPasswordActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   private val adminPin = "12345"
   private val adminId = 0
   private val userId = 1
@@ -180,7 +186,8 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_keyboardIsVisibleByDefault() {
+  fun testPinPassword_withAdmin_screenReaderOff_keyboardIsVisible() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -189,6 +196,20 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_screenReaderOn_keyboardIsNotVisible() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(not(hasFocus())))
     }
   }
 
@@ -1197,7 +1218,8 @@ class PinPasswordActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

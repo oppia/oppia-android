@@ -12,6 +12,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
 import org.oppia.android.util.parser.html.HtmlParser
 
 /**
@@ -166,5 +167,43 @@ interface ViewBindingShim {
     entityType: String,
     entityId: String,
     writtenTranslationContext: WrittenTranslationContext
+  )
+
+  /**
+   * Handles binding inflation for [SurveyMultipleChoiceOptionView]'s MultipleChoiceOption and
+   * returns the binding's view.
+   */
+  fun provideMultipleChoiceItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /**
+   * Handles binding inflation for [SurveyMultipleChoiceOptionView]'s MultipleChoiceOption and
+   * returns the binding's view model.
+   */
+  fun provideMultipleChoiceOptionViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
+  )
+
+  /**
+   * Handles binding inflation for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
+   * returns the binding's view.
+   */
+  fun provideNpsItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /**
+   * Handles binding inflation for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
+   * returns the binding's view model.
+   */
+  fun provideNpsItemsViewModel(
+    view: View,
+    viewModel: MultipleChoiceOptionContentViewModel
   )
 }

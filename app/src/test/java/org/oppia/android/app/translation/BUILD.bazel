@@ -48,7 +48,7 @@ oppia_android_test(
     test_class = "org.oppia.android.app.translation.ActivityLanguageLocaleHandlerTest",
     test_manifest = "//app:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",
@@ -58,6 +58,7 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",

@@ -59,7 +59,7 @@ class RetrieveLicenseTexts(
       println(
         """
         Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
-        <path_to_pb_file>  
+        <path_to_pb_file>
         """.trimIndent()
       )
       throw Exception("Too few arguments passed.")
@@ -172,7 +172,9 @@ class RetrieveLicenseTexts(
   }
 
   private fun fetchViewableLicenseText(licenseLink: String): String {
-    val licenseText = fetchLicenseText(licenseLink)
+    val licenseText = checkNotNull(fetchLicenseText(licenseLink)) {
+      "Failed to fetch license text from link: $licenseLink."
+    }
     // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
     return if (licenseText.length <= MAX_LICENSE_LENGTH) {
       licenseText
@@ -393,9 +395,7 @@ class RetrieveLicenseTexts(
     return arrayElement
   }
 
-  private fun fetchLicenseText(url: String): String {
-    return mavenArtifactPropertyFetcher.scrapeText(url)
-  }
+  private fun fetchLicenseText(url: String): String? = mavenArtifactPropertyFetcher.scrapeText(url)
 
   private fun omitVersion(artifactName: String): String {
     return artifactName.substring(0, artifactName.lastIndexOf(':'))

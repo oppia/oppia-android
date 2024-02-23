@@ -61,7 +61,8 @@
         app:srcCompat="@drawable/ic_portrait_onboarding_0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/walkthrough_welcome_description_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/walkthrough_welcome_description_text_view"
+        android:importantForAccessibility="no" />
 
       <Button
         android:id="@+id/walkthrough_welcome_next_button"
