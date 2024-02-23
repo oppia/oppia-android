@@ -7,7 +7,7 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
+import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProtoExtra
@@ -29,8 +29,8 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val args = intent.getProtoExtra(
-      MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS,
-      MarkChaptersCompletedActivityArguments.getDefaultInstance()
+      MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS,
+      MarkChaptersCompletedActivityParams.getDefaultInstance()
     )
 
     val internalProfileId = args?.internalProfileId ?: -1
@@ -47,9 +47,9 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
   }
 
   companion object {
-    /** Argument key for [MarkChaptersCompletedActivity]. */
-    const val MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS =
-      "MarkChaptersCompletedActivity.arguments"
+    /** Params key for [MarkChaptersCompletedActivity]. */
+    const val MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS =
+      "MarkChaptersCompletedActivity.params"
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkChaptersCompletedIntent(
@@ -59,13 +59,13 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     ): Intent {
       val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
 
-      val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
+      val args = MarkChaptersCompletedActivityParams.newBuilder().apply {
         this.internalProfileId = internalProfileId
         this.showConfirmationNotice = showConfirmationNotice
       }
         .build()
 
-      intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS, args)
+      intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS, args)
       intent.decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
       return intent
     }

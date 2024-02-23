@@ -372,7 +372,7 @@ message MarkChaptersCompletedTestActivityParams{
 }
 
 // Represents the parameters needed to open MarkChaptersCompletedActivity.
-message MarkChaptersCompletedActivityArguments{
+message MarkChaptersCompletedActivityParams{
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
 

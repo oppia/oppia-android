@@ -49,8 +49,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS
-import org.oppia.android.app.model.MarkChaptersCompletedActivityArguments
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS
+import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -369,13 +369,13 @@ class ProfileEditFragmentTest {
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
-      val args = MarkChaptersCompletedActivityArguments.newBuilder().apply {
+      val args = MarkChaptersCompletedActivityParams.newBuilder().apply {
         this.internalProfileId = 0
         this.showConfirmationNotice = true
       }
         .build()
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_ARGUMENTS, args))
+      intended(hasProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS, args))
     }
   }
 
