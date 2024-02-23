@@ -149,7 +149,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        "//:dagger",
         ":firestore_wrapper",
+        "//:dagger",
     ],
 )
