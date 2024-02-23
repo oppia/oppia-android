@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
-import org.oppia.android.app.model.MarkChaptersCompletedTestActivityArguments
+import org.oppia.android.app.model.MarkChaptersCompletedTestActivityParams
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 
@@ -21,8 +21,8 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     setContentView(R.layout.mark_chapters_completed_activity)
 
     val args = intent.getProtoExtra(
-      MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_ARGUMENT_KEY,
-      MarkChaptersCompletedTestActivityArguments.getDefaultInstance()
+      MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PARAMS_KEY,
+      MarkChaptersCompletedTestActivityParams.getDefaultInstance()
     )
 
     val internalProfileId = args?.internalProfileId ?: -1
@@ -43,11 +43,9 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
   }
 
   companion object {
-    private const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedTestActivity.profile_id"
-    private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
-      "MarkChaptersCompletedTestActivity.show_confirmation_notice"
-    private const val MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_ARGUMENT_KEY =
-      "MARKCHAPTERSCOMPLETEDTESTACTIVITY_ARGUMENT"
+    /** Params key for MarkChaptersCompletedTestActivity. */
+    private const val MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PARAMS_KEY =
+      "MarkChaptersCompletedTestActivity.params"
 
     /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
     fun createMarkChaptersCompletedTestIntent(
@@ -57,13 +55,13 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     ): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
 
-      val args = MarkChaptersCompletedTestActivityArguments.newBuilder().apply {
+      val args = MarkChaptersCompletedTestActivityParams.newBuilder().apply {
         this.internalProfileId = internalProfileId
         this.showConfirmationNotice = showConfirmationNotice
       }
         .build()
 
-      intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_ARGUMENT_KEY, args)
+      intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PARAMS_KEY, args)
       return intent
     }
   }

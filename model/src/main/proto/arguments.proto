@@ -363,7 +363,7 @@ message AdministratorControlsFragmentArguments {
 }
 
 // Represents the parameters needed to open MarkChaptersCompletedTestActivity.
-message MarkChaptersCompletedTestActivityArguments{
+message MarkChaptersCompletedTestActivityParams{
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
 
