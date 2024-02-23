@@ -1,16 +1,26 @@
 package org.oppia.android.domain.onboarding
 
+import android.content.Context
+import android.os.Build
 import kotlinx.coroutines.Deferred
+import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.DeprecationResponseDatabase
+import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
@@ -23,8 +33,15 @@ private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_respon
 @Singleton
 class DeprecationController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
+  private val context: Context,
   private val oppiaLogger: OppiaLogger,
-  private val dataProviders: DataProviders
+  private val dataProviders: DataProviders,
+  @OptionalAppUpdateVersionCode
+  private val optionalAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
+  @ForcedAppUpdateVersionCode
+  private val forcedAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
+  @LowestSupportedApiLevel
+  private val lowestSupportedApiLevel: Provider<PlatformParameterValue<Int>>
 ) {
   /** Create an instance of [PersistentCacheStore] that contains a [DeprecationResponseDatabase]. */
   private val deprecationStore by lazy {
@@ -113,5 +130,50 @@ class DeprecationController @Inject constructor(
     return when (deferred.await()) {
       DeprecationResponseActionStatus.SUCCESS -> AsyncResult.Success(null)
     }
+  }
+
+  /**
+   * Process and return either a [StartupMode.OS_IS_DEPRECATED], [StartupMode.APP_IS_DEPRECATED],
+   * [StartupMode.OPTIONAL_UPDATE_AVAILABLE], [StartupMode.USER_IS_ONBOARDED] or
+   * [StartupMode.USER_NOT_YET_ONBOARDED] based on the values of [lowestSupportedApiLevel],
+   * [optionalAppUpdateVersionCode], [forcedAppUpdateVersionCode] and [onboardingState].
+   */
+  fun processStartUpMode(
+    onboardingState: OnboardingState,
+    deprecationDatabase: DeprecationResponseDatabase
+  ): StartupMode {
+    val previousDeprecatedAppVersion = deprecationDatabase.appDeprecationResponse.deprecatedVersion
+    val previousDeprecatedOsVersion = deprecationDatabase.osDeprecationResponse.deprecatedVersion
+
+    val appVersionCode = context.getVersionCode()
+    val currentApiLevel = Build.VERSION.SDK_INT
+    val osIsDeprecated = lowestSupportedApiLevel.get().value > currentApiLevel
+
+    val osDeprecationDialogHasNotBeenShown =
+      previousDeprecatedOsVersion < lowestSupportedApiLevel.get().value
+
+    val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.get().value > appVersionCode
+    val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.get().value > appVersionCode
+
+    val optionalAppDeprecationDialogHasNotBeenShown =
+      previousDeprecatedAppVersion < optionalAppUpdateVersionCode.get().value
+    val forcedAppDeprecationDialogHasNotBeenShown =
+      previousDeprecatedAppVersion < forcedAppUpdateVersionCode.get().value
+
+    if (onboardingState.alreadyOnboardedApp) {
+      if (osIsDeprecated && osDeprecationDialogHasNotBeenShown) {
+        return StartupMode.OS_IS_DEPRECATED
+      }
+
+      if (forcedAppUpdateIsAvailable && forcedAppDeprecationDialogHasNotBeenShown) {
+        return StartupMode.APP_IS_DEPRECATED
+      }
+
+      if (optionalAppUpdateIsAvailable && optionalAppDeprecationDialogHasNotBeenShown) {
+        return StartupMode.OPTIONAL_UPDATE_AVAILABLE
+      }
+
+      return StartupMode.USER_IS_ONBOARDED
+    } else return StartupMode.USER_NOT_YET_ONBOARDED
   }
 }

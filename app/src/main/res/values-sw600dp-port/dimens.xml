@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
   <dimen name="home_padding_end">96dp</dimen>
-  <dimen name="home_padding_start">120dp</dimen>
-  <dimen name="home_outer_margin">120dp</dimen>
-  <dimen name="home_welcome_outer_padding">120dp</dimen>
+  <dimen name="home_padding_start">56dp</dimen>
+  <dimen name="home_outer_margin">64dp</dimen>
+  <dimen name="home_welcome_outer_padding">60dp</dimen>
   <dimen name="home_welcome_text_view_margin_end">8dp</dimen>
-  <dimen name="home_inner_margin">60dp</dimen>
+  <dimen name="home_inner_margin">32dp</dimen>
   <dimen name="recently_played_margin_max">120dp</dimen>
   <dimen name="recently_played_margin_min">60dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_start">32dp</dimen>
@@ -281,10 +281,10 @@
   <dimen name="concept_card_explanation_text_margin_end">128dp</dimen>
 
   <!-- All Topics -->
-  <dimen name="all_topics_text_margin_start">120dp</dimen>
-  <dimen name="all_topics_text_margin_top">68dp</dimen>
+  <dimen name="all_topics_text_margin_start">60dp</dimen>
+  <dimen name="all_topics_text_margin_top">52dp</dimen>
   <dimen name="all_topics_text_margin_end">76dp</dimen>
-  <dimen name="all_topics_text_margin_bottom">24dp</dimen>
+  <dimen name="all_topics_text_margin_bottom">16dp</dimen>
 
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">120dp</dimen>
@@ -441,8 +441,8 @@
   <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
 
   <!--  PromotedStoryList-->
-  <dimen name="promoted_story_list_layout_margin_end">120dp</dimen>
-  <dimen name="promoted_story_list_layout_margin_start">120dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_end">60dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">60dp</dimen>
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>

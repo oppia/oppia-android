@@ -83,8 +83,8 @@ import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as Startu
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.app.utility.getVersionCode
-import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.AbandonSurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
