@@ -4,14 +4,13 @@ import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** Presenter class responsible for showing an app deprecation dialog to the user. */
 class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) {
   private val deprecationNoticeActionListener by lazy {
     activity as DeprecationNoticeActionListener
@@ -31,12 +30,12 @@ class ForcedAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
       )
       .setPositiveButton(R.string.forced_app_update_dialog_update_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-          DeprecationNoticeActionType.UPDATE
+          DeprecationNoticeActionResponse.Update
         )
       }
       .setNegativeButton(R.string.forced_app_update_dialog_close_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-          DeprecationNoticeActionType.CLOSE
+          DeprecationNoticeActionResponse.Close
         )
       }
       .setCancelable(false)

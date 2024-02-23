@@ -775,7 +775,7 @@ class LocaleControllerTest {
 
   @Test
   fun testSetAsDefault_customLocaleImpl_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       localeController.setAsDefault(mockDisplayLocale, Configuration())
     }
 

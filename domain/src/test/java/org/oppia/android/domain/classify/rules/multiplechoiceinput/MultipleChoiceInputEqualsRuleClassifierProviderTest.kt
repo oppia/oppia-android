@@ -72,7 +72,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputEqualsRuleClassifier.matches(
         answer = NON_NEGATIVE_VALUE_TEST_0,
         inputs = inputs,
@@ -89,7 +89,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testUnexpectedStringAnswer_nonNegativeIntInput_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST,
         inputs = inputs,
@@ -106,7 +106,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE_TEST)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputEqualsRuleClassifier.matches(
         answer = NON_NEGATIVE_VALUE_TEST_0,
         inputs = inputs,

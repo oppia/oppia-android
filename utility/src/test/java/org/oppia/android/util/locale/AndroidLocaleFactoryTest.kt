@@ -51,7 +51,7 @@ class AndroidLocaleFactoryTest {
 
   @Test
   fun testCreateLocale_default_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(OppiaLocaleContext.getDefaultInstance())
     }
 
@@ -513,7 +513,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
@@ -566,7 +566,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
@@ -945,7 +945,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
@@ -998,7 +998,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
@@ -1377,7 +1377,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
@@ -1430,7 +1430,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       androidLocaleFactory.createAndroidLocale(context)
     }
 
