@@ -420,7 +420,7 @@ message FAQSingleActivityParams {
 }
 
 // Represents the parameters needed to open LicenseListActivity.
-message LicenseListActivityArguments {
+message LicenseListActivityParams {
   // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
 }

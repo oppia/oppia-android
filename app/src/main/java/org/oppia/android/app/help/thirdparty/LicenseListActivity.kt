@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.LicenseListActivityArguments
+import org.oppia.android.app.model.LicenseListActivityParams
 import org.oppia.android.app.model.ScreenName.LICENSE_LIST_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -22,16 +22,16 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY,
-      LicenseListActivityArguments.getDefaultInstance()
+      LICENSE_LIST_ACTIVITY_PARAMS_KEY,
+      LicenseListActivityParams.getDefaultInstance()
     )
     val dependencyIndex = args?.dependencyIndex ?: 0
     licenseListActivityPresenter.handleOnCreate(dependencyIndex, false)
   }
 
   companion object {
-    /** Argument key for LicenseListActivity. */
-    private const val LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY = "LicenseListActivity.arguments"
+    /** Params key for LicenseListActivity. */
+    private const val LICENSE_LIST_ACTIVITY_PARAMS_KEY = "LicenseListActivity.params"
 
     /** Returns [Intent] for [LicenseListActivity]. */
     fun createLicenseListActivityIntent(
@@ -39,9 +39,9 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
       dependencyIndex: Int
     ): Intent {
       val args =
-        LicenseListActivityArguments.newBuilder().setDependencyIndex(dependencyIndex).build()
+        LicenseListActivityParams.newBuilder().setDependencyIndex(dependencyIndex).build()
       return Intent(context, LicenseListActivity::class.java).apply {
-        putProtoExtra(LICENSE_LIST_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(LICENSE_LIST_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(LICENSE_LIST_ACTIVITY)
       }
     }
