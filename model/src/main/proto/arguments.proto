@@ -411,7 +411,7 @@ message MarkTopicsCompletedFragmentStateBundle {
 }
 
 // Represents the parameters needed to open FAQSingleActivity.
-message FAQSingleActivityArguments {
+message FAQSingleActivityParams {
   // The question to be displayed.
   string question = 1;
 

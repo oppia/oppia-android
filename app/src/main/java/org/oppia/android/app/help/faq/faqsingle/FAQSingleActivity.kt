@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.FAQSingleActivityArguments
+import org.oppia.android.app.model.FAQSingleActivityParams
 import org.oppia.android.app.model.ScreenName.FAQ_SINGLE_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -23,8 +23,8 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY,
-      FAQSingleActivityArguments.getDefaultInstance()
+      FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
+      FAQSingleActivityParams.getDefaultInstance()
     )
 
     val question = checkNotNull(args?.question) {
@@ -41,17 +41,17 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
     const val FAQ_SINGLE_ACTIVITY_QUESTION = "FAQSingleActivity.question"
     const val FAQ_SINGLE_ACTIVITY_ANSWER = "FAQSingleActivity.answer"
 
-    /** Argument key for FAQSingleActivity. */
-    const val FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY = "FAQSingleActivity.arguments"
+    /** Params key for FAQSingleActivity. */
+    const val FAQ_SINGLE_ACTIVITY_PARAMS_KEY = "FAQSingleActivity.params"
 
     fun createFAQSingleActivityIntent(context: Context, question: String, answer: String): Intent {
 
       val intent = Intent(context, FAQSingleActivity::class.java).apply {
-        val args = FAQSingleActivityArguments.newBuilder().apply {
+        val args = FAQSingleActivityParams.newBuilder().apply {
           this.question = question
           this.answer = answer
         }.build()
-        putProtoExtra(FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
       }
       return intent

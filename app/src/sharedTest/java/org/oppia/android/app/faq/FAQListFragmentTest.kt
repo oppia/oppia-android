@@ -45,8 +45,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
-import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY
-import org.oppia.android.app.model.FAQSingleActivityArguments
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.model.FAQSingleActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -158,14 +158,14 @@ class FAQListFragmentTest {
           position = 3
         )
       ).perform(click())
-      val args = FAQSingleActivityArguments.newBuilder().apply {
+      val args = FAQSingleActivityParams.newBuilder().apply {
         this.question = getResources().getString(R.string.faq_question_3)
         this.answer = getResources().getString(R.string.faq_answer_3)
       }.build()
       intended(
         allOf(
           hasProtoExtra(
-            FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY,
+            FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
             args
           ),
           hasComponent(FAQSingleActivity::class.java.name)
@@ -184,14 +184,14 @@ class FAQListFragmentTest {
           position = 3
         )
       ).perform(click())
-      val args = FAQSingleActivityArguments.newBuilder().apply {
+      val args = FAQSingleActivityParams.newBuilder().apply {
         this.question = getResources().getString(R.string.faq_question_3)
         this.answer = getResources().getString(R.string.faq_answer_3)
       }.build()
       intended(
         allOf(
           hasProtoExtra(
-            FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY,
+            FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
             args
           ),
           hasComponent(FAQSingleActivity::class.java.name)
@@ -209,13 +209,13 @@ class FAQListFragmentTest {
           position = 1
         )
       ).perform(click())
-      val args = FAQSingleActivityArguments.newBuilder().apply {
+      val args = FAQSingleActivityParams.newBuilder().apply {
         this.question = getResources().getString(R.string.faq_question_1, getAppName())
         this.answer = getResources().getString(R.string.faq_answer_1, getAppName())
       }.build()
       intended(
         allOf(
-          hasProtoExtra(FAQ_SINGLE_ACTIVITY_ARGUMENTS_KEY, args),
+          hasProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )
