@@ -10,7 +10,7 @@ import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.QuestionPlayerActivityArguments
+import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -76,8 +76,8 @@ class QuestionPlayerActivity :
   }
 
   companion object {
-    /** Arguments key for QuestionPlayerActivity. */
-    const val QUESTION_PLAYER_ACTIVITY_ARGUMENTS_KEY = "QuestionPlayerActivity.arguments"
+    /** Params key for QuestionPlayerActivity. */
+    const val QUESTION_PLAYER_ACTIVITY_PARAMS_KEY = "QuestionPlayerActivity.params"
 
     /**
      * Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list and
@@ -89,12 +89,12 @@ class QuestionPlayerActivity :
       profileId: ProfileId
     ): Intent {
 
-      val args = QuestionPlayerActivityArguments.newBuilder().apply {
+      val args = QuestionPlayerActivityParams.newBuilder().apply {
         addAllSkillIdList(skillIdList)
       }
         .build()
       return Intent(context, QuestionPlayerActivity::class.java).apply {
-        putProtoExtra(QUESTION_PLAYER_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(QUESTION_PLAYER_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(QUESTION_PLAYER_ACTIVITY)
       }

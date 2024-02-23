@@ -47,7 +47,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.QuestionPlayerActivityArguments
+import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
@@ -57,7 +57,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -289,9 +289,9 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       scrollToPosition(position = 5)
       clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
-      val args = QuestionPlayerActivityArguments.newBuilder().addAllSkillIdList(skillIdList).build()
+      val args = QuestionPlayerActivityParams.newBuilder().addAllSkillIdList(skillIdList).build()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      intended(hasProtoExtra(QUESTION_PLAYER_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(QUESTION_PLAYER_ACTIVITY_PARAMS_KEY, args))
     }
   }
 

@@ -8,11 +8,11 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.QuestionPlayerActivityArguments
+import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
@@ -103,8 +103,8 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     val skillIds = checkNotNull(
       ArrayList(
         activity.intent.getProtoExtra(
-          QUESTION_PLAYER_ACTIVITY_ARGUMENTS_KEY,
-          QuestionPlayerActivityArguments.getDefaultInstance()
+          QUESTION_PLAYER_ACTIVITY_PARAMS_KEY,
+          QuestionPlayerActivityParams.getDefaultInstance()
         )
           .skillIdListList
       )

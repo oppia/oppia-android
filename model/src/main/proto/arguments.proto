@@ -335,7 +335,7 @@ message TopicFragmentArguments {
 }
 
 // Represents the parameters needed to open QuestionPlayerActivity.
-message QuestionPlayerActivityArguments {
+message QuestionPlayerActivityParams {
   // Skill ID list for practice.
   repeated string skill_id_list = 1;
 }
