@@ -47,7 +47,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
-import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -276,12 +276,12 @@ class CompletedStoryListActivityTest {
         )
       ).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().apply {
+      val args = TopicActivityParams.newBuilder().apply {
         this.topicId = FRACTIONS_TOPIC_ID
         this.storyId = FRACTIONS_STORY_ID_0
       }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -307,12 +307,12 @@ class CompletedStoryListActivityTest {
         )
       ).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().apply {
+      val args = TopicActivityParams.newBuilder().apply {
         this.topicId = FRACTIONS_TOPIC_ID
         this.storyId = FRACTIONS_STORY_ID_0
       }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 

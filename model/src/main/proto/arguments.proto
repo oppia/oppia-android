@@ -317,7 +317,7 @@ message SurveyActivityParams {
 }
 
 // Represents the parameters needed to open TopicActivity.
-message TopicActivityArguments {
+message TopicActivityParams {
   // The ID of the topic to be opened.
   string topic_id = 1;
 

@@ -12,7 +12,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
-import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
@@ -46,8 +46,8 @@ class TopicActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     val args = intent?.getProtoExtra(
-      TOPIC_ACTIVITY_ARGUMENTS_KEY,
-      TopicActivityArguments.getDefaultInstance()
+      TOPIC_ACTIVITY_PARAMS_KEY,
+      TopicActivityParams.getDefaultInstance()
     )
     topicId = checkNotNull(
       args?.topicId
@@ -153,8 +153,8 @@ class TopicActivity :
   }
 
   companion object {
-    /** Arguments key for TopicActivity. */
-    const val TOPIC_ACTIVITY_ARGUMENTS_KEY = "TopicActivity.arguments"
+    /** Params key for TopicActivity. */
+    const val TOPIC_ACTIVITY_PARAMS_KEY = "TopicActivity.params"
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
@@ -162,10 +162,10 @@ class TopicActivity :
       internalProfileId: Int,
       topicId: String
     ): Intent {
-      val args = TopicActivityArguments.newBuilder().setTopicId(topicId).build()
+      val args = TopicActivityParams.newBuilder().setTopicId(topicId).build()
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
-        putProtoExtra(TOPIC_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(TOPIC_ACTIVITY)
       }
@@ -180,9 +180,9 @@ class TopicActivity :
     ): Intent {
       return createTopicActivityIntent(context, internalProfileId, topicId).apply {
         val args =
-          getProtoExtra(TOPIC_ACTIVITY_ARGUMENTS_KEY, TopicActivityArguments.getDefaultInstance())
+          getProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, TopicActivityParams.getDefaultInstance())
         val updateArg = args.toBuilder().setStoryId(storyId).build()
-        putProtoExtra(TOPIC_ACTIVITY_ARGUMENTS_KEY, updateArg)
+        putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, updateArg)
       }
     }
   }

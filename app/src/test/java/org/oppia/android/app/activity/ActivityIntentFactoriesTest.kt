@@ -26,7 +26,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
-import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -118,8 +118,8 @@ class ActivityIntentFactoriesTest {
         ProfileId.getDefaultInstance(), topicId = "test_topic_id"
       )
     val args = intent?.getProtoExtra(
-      TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY,
-      TopicActivityArguments.getDefaultInstance()
+      TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
+      TopicActivityParams.getDefaultInstance()
     )
 
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
@@ -135,8 +135,8 @@ class ActivityIntentFactoriesTest {
         ProfileId.getDefaultInstance(), topicId = "test_topic_id", storyId = "test_story_id"
       )
     val args = intent?.getProtoExtra(
-      TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY,
-      TopicActivityArguments.getDefaultInstance()
+      TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
+      TopicActivityParams.getDefaultInstance()
     )
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
     assert(intent.extractCurrentUserProfileId().internalId == 0)

@@ -71,7 +71,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.model.TopicActivityArguments
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -960,12 +960,12 @@ class HomeActivityTest {
         )
       ).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().apply {
+      val args = TopicActivityParams.newBuilder().apply {
         this.topicId = FRACTIONS_TOPIC_ID
         this.storyId = FRACTIONS_STORY_ID_0
       }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -1040,12 +1040,12 @@ class HomeActivityTest {
         )
       ).check(matches(withText(containsString("Fractions")))).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().apply {
+      val args = TopicActivityParams.newBuilder().apply {
         this.topicId = FRACTIONS_TOPIC_ID
         this.storyId = FRACTIONS_STORY_ID_0
       }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -1208,12 +1208,12 @@ class HomeActivityTest {
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
 
-      val args = TopicActivityArguments.newBuilder().apply {
+      val args = TopicActivityParams.newBuilder().apply {
         this.topicId = TEST_TOPIC_ID_0
         this.storyId = TEST_STORY_ID_0
       }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
