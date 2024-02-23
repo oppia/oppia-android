@@ -435,7 +435,7 @@ message LicenseListFragmentArguments {
 }
 
 // Represents the parameters needed to open LicenseTextViewerActivity.
-message LicenseTextViewerActivityArguments {
+message LicenseTextViewerActivityParams {
   // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
 

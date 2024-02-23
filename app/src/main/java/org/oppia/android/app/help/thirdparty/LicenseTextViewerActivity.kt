@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.LicenseTextViewerFragmentArguments
 import org.oppia.android.app.model.ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.LicenseTextViewerActivityParams
 
 /** The activity that will show the license text of a copyright license. */
 class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -22,8 +22,8 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY,
-      LicenseTextViewerFragmentArguments.getDefaultInstance()
+      LICENSE_TEXT_VIEWER_ACTIVITY_PARAMS_KEY,
+      LicenseTextViewerActivityParams.getDefaultInstance()
     )
     val dependencyIndex = args?.dependencyIndex ?: 0
     val licenseIndex = args?.licenseIndex ?: 0
@@ -31,9 +31,9 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    /** Argument key for LicenseTextViewerActivity. */
-    private const val LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY =
-      "LicenseTextViewerActivity.arguments"
+    /** Params key for LicenseTextViewerActivity. */
+    private const val LICENSE_TEXT_VIEWER_ACTIVITY_PARAMS_KEY =
+      "LicenseTextViewerActivity.params"
 
     /** Returns [Intent] for [LicenseTextViewerActivity]. */
     fun createLicenseTextViewerActivityIntent(
@@ -41,12 +41,12 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
       dependencyIndex: Int,
       licenseIndex: Int
     ): Intent {
-      val args = LicenseTextViewerFragmentArguments.newBuilder().apply {
+      val args = LicenseTextViewerActivityParams.newBuilder().apply {
         this.dependencyIndex = dependencyIndex
         this.licenseIndex = licenseIndex
       }.build()
       return Intent(context, LicenseTextViewerActivity::class.java).apply {
-        putProtoExtra(LICENSE_TEXT_VIEWER_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(LICENSE_TEXT_VIEWER_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(LICENSE_TEXT_VIEWER_ACTIVITY)
       }
     }
