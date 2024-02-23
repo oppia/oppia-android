@@ -719,7 +719,7 @@ message StoryFragmentArguments {
 // Arguments required when creating a ConceptCardFragment.
 message ConceptCardFragmentArguments {
   // The ID of the skill to which the opening exploration belongs.
-  string skill_id = 2;
+  string skill_id = 1;
 }
 
 // Arguments required when creating an TopicInfoFragment.
