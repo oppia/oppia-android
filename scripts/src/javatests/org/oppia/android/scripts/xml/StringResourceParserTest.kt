@@ -70,7 +70,7 @@ class StringResourceParserTest {
   fun testRetrieveBaseStringFile_noStrings_throwsException() {
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -88,7 +88,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -103,7 +103,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -118,7 +118,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -133,7 +133,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -148,7 +148,7 @@ class StringResourceParserTest {
     populateSwahiliTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -161,7 +161,7 @@ class StringResourceParserTest {
     populateTranslations(appResources, "values-fake", mapOf())
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -180,7 +180,7 @@ class StringResourceParserTest {
     populateTranslations(utilityResources, "values", mapOf())
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows(IllegalStateException::class) { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
 
     // An exception is still thrown since resources outside the app directory are ignored.
     assertThat(exception)
@@ -197,7 +197,7 @@ class StringResourceParserTest {
     writeTranslationsFile(appResources, "values", "<bad XML>")
     val parser = StringResourceParser(tempFolder.root)
 
-    assertThrows(SAXParseException::class) { parser.retrieveBaseStringFile() }
+    assertThrows<SAXParseException>() { parser.retrieveBaseStringFile() }
   }
 
   @Test

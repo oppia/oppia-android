@@ -1,42 +1,37 @@
 package org.oppia.android.testing
 
-import org.junit.Assert.fail
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-
 /* This file contains generic assertion helpers which are meant to be usable in any test.
    Not for methods which are specific to a certain test or part of the codebase. */
 
 /**
  * A replacement to JUnit5's assertThrows() that asserts an execution of the supplied operation
- * throws an exception of the supplied type
+ * throws an exception of the indicated type.
  *
  * An example of this might be:
  *
- * val exception = assertThrows(IllegalArgumentException::class) {
+ * ```kotlin
+ * val exception = assertThrows<IllegalArgumentException>() {
  *  stringToRatioParser.parseRatioOrThrow("a:b:c")
  * }
- * assertThat(exception)
- *  .hasMessageThat()
- *  .contains("Incorrectly formatted ratio: a:b:c")
+ * assertThat(exception).hasMessageThat().contains("Incorrectly formatted ratio: a:b:c")
+ * ```
  *
- * @param type the type of exception to be thrown
  * @param operation the operation being run
  * @return the exception being thrown
  * @throws AssertionError if the specified exception is not thrown
  */
-fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-  try {
-    operation()
-    fail("Expected to encounter exception of $type")
-  } catch (t: Throwable) {
-    if (type.isInstance(t)) {
-      return type.cast(t)
+inline fun <reified T : Throwable> assertThrows(noinline operation: () -> Unit): T {
+  return when (val result = try { operation() } catch (t: Throwable) { t }) {
+    is T -> result
+    is Throwable -> {
+      throw AssertionError(
+        "Expected exception of type: ${T::class.java}, not: ${result::class.java}.", result
+      )
     }
-    // Unexpected exception; throw it.
-    throw t
+    else -> {
+      throw AssertionError(
+        "Expected exception of type: ${T::class.java}. No exception was thrown."
+      )
+    }
   }
-  throw AssertionError(
-    "Reached an impossible state when verifying that an exception was thrown."
-  )
 }

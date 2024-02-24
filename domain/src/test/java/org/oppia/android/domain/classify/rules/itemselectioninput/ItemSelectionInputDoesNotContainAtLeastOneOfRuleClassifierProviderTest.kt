@@ -156,7 +156,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_inputIsMissing_throwsException() {
     val inputs = mapOf("y" to ITEM_SET_1)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SET_12345,
         inputs = inputs,
@@ -173,7 +173,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_inputHasTheWrongType_throwsException() {
     val inputs = mapOf("x" to DIFFERENT_INTERACTION_OBJECT_TYPE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SET_12345,
         inputs = inputs,
@@ -190,7 +190,7 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_answerHasTheWrongType_throwsException() {
     val inputs = mapOf("x" to ITEM_SET_12345)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
         answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
         inputs = inputs,

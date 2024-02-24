@@ -121,10 +121,10 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -1333,8 +1333,9 @@ class HomeActivityTest {
     }
   }
 
+  @Config(qualifiers = "+port")
   @Test
-  fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
+  fun testHomeActivity_allTopicsCompleted_mobilePortrait_displaysAllTopicCardsIn2Columns() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1344,11 +1345,55 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
-      } else {
-        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
-      }
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+    }
+  }
+
+  @Config(qualifiers = "+land")
+  @Test
+  fun testHomeActivity_allTopicsCompleted_mobileLandscape_displaysAllTopicCardsIn3Columns() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp-port")
+  @Test
+  fun testHomeActivity_allTopicsCompleted_tabletPortrait_displaysAllTopicCardsIn3Columns() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp-land")
+  @Test
+  fun testHomeActivity_allTopicsCompleted_tabletLandscape_displaysAllTopicCardsIn4Columns() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
     }
   }
 
