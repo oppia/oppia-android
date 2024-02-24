@@ -61,7 +61,7 @@ class TextInputViewModel private constructor(
       AnswerErrorCategory.SUBMIT_TIME -> {
         TextParsingUiError.createForText(
           answerText.toString()
-        ).getErrorMessageFromStringRes(resourceHandler)
+        ).createForText(resourceHandler)
       }
     }.also {
       pendingAnswerError = it
@@ -156,7 +156,7 @@ class TextInputViewModel private constructor(
     EMPTY_INPUT(error = R.string.text_error_empty_input);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
-    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+    fun createForText(resourceHandler: AppLanguageResourceHandler): String? =
       error?.let(resourceHandler::getStringInLocale)
 
     companion object {
