@@ -20,9 +20,9 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
 
   companion object {
     private const val MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY =
-      "MARKCHAPTERSCOMPLETED_FRAGMENT_ARGUMENTS"
+      "MarkChaptersCompletedFragment.arguments"
     private const val MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY =
-      "MARKCHAPTERSCOMPLETED_FRAGMENT_STATE"
+      "MarkChaptersCompletedFragment.state"
 
     /** Returns a new [MarkChaptersCompletedFragment]. */
     fun newInstance(

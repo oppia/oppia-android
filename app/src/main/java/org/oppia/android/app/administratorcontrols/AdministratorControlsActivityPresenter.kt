@@ -207,7 +207,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     val args = AdministratorControlActivityStateBundle.newBuilder()
       .apply {
         if (titleTextView != null) {
-          this.selectedControlsTitle = titleTextView.text.toString()
+          selectedControlsTitle = titleTextView.text.toString()
         }
         lastLoadedFragment = this@AdministratorControlsActivityPresenter.lastLoadedFragment
         this@AdministratorControlsActivityPresenter.isProfileDeletionDialogVisible?.let {

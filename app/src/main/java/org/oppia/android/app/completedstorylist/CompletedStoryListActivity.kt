@@ -12,8 +12,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-/** The arguments key  for [CompletedStoryListActivity]. */
-
 /** Activity for completed stories. */
 class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
@@ -23,9 +21,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileId = intent?.extractCurrentUserProfileId()
-
-    val internalProfileId: Int = profileId?.internalId ?: -1
+    val internalProfileId: Int = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 

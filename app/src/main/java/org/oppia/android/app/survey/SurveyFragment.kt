@@ -24,7 +24,7 @@ class SurveyFragment :
 
   companion object {
     /** Arguments key for SurveyFragment. */
-    const val SURVEY_FRAGMENT_ARGUMENTS_KEY = "SurveyFragmentarguments"
+    const val SURVEY_FRAGMENT_ARGUMENTS_KEY = "SurveyFragment.arguments"
 
     /**
      * Creates a new instance of a SurveyFragment.

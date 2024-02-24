@@ -6,5 +6,5 @@ import org.oppia.android.app.model.ProfileId
 
 /** Interface to create intent for [DeveloperOptionsActivity]. */
 interface DeveloperOptionsStarter {
-  fun createIntent(context: Context, internalProfileId: ProfileId): Intent
+  fun createIntent(context: Context, profileId: ProfileId): Intent
 }

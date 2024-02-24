@@ -51,8 +51,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
 
-    val profileId = arguments.extractCurrentUserProfileId()
-    val internalProfileId = profileId.internalId
+    val internalProfileId = arguments.extractCurrentUserProfileId().internalId
 
     var selectedTopicIdList = ArrayList<String>()
     if (savedInstanceState != null) {
