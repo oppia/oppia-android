@@ -59,7 +59,6 @@ import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.RevisionCardActivityArguments
 import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
@@ -486,7 +485,7 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      val args = RevisionCardActivityArguments.newBuilder().apply {
+      val args = RevisionCardActivityParams.newBuilder().apply {
         this.subTopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
         this.topicId = FRACTIONS_TOPIC_ID
         this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
