@@ -821,7 +821,7 @@ message SurveyWelcomeDialogFragmentArguments {
   string exploration_id = 2;
 
   // List of survey questions.
-  repeated int32 question_no = 3;
+  repeated int32 question= 3;
 }
 
 // Arguments required when creating a WalkthroughFinalFragment.
