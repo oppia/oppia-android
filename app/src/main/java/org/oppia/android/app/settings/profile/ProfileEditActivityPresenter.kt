@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileEditActivityArguments
+import org.oppia.android.app.model.ProfileEditActivityParams
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
@@ -23,8 +23,8 @@ class ProfileEditActivityPresenter @Inject constructor(
     activity.setContentView(R.layout.profile_edit_activity)
     setUpToolbar()
     val args = activity.intent.getProtoExtra(
-      ProfileEditActivity.PROFILE_EDIT_ACTIVITY_ARGUMENTS_KEY,
-      ProfileEditActivityArguments.getDefaultInstance()
+      ProfileEditActivity.PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
+      ProfileEditActivityParams.getDefaultInstance()
     )
     val profileId = args?.internalProfileId ?: 0
     val isMultipane = args?.isMultipane ?: false

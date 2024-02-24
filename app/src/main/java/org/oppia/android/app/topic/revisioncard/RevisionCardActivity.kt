@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.RevisionCardActivityArguments
+import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
@@ -36,7 +36,7 @@ class RevisionCardActivity :
     intent?.let { intent ->
       val args = intent.getProtoExtra(
         REVISION_CARD_ACTIVITY_ARGUMENTS_KEY,
-        RevisionCardActivityArguments.getDefaultInstance()
+        RevisionCardActivityParams.getDefaultInstance()
       )
 
       val internalProfileId = intent.extractCurrentUserProfileId().internalId
@@ -60,8 +60,8 @@ class RevisionCardActivity :
   }
 
   companion object {
-    /** Arguments key for RevisionCardActivity. */
-    const val REVISION_CARD_ACTIVITY_ARGUMENTS_KEY = "RevisionCardActivity.arguments"
+    /** Params key for RevisionCardActivity. */
+    const val REVISION_CARD_ACTIVITY_ARGUMENTS_KEY = "RevisionCardActivity.params"
 
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createRevisionCardActivityIntent(
@@ -72,7 +72,7 @@ class RevisionCardActivity :
       subtopicListSize: Int
     ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val args = RevisionCardActivityArguments.newBuilder().apply {
+      val args = RevisionCardActivityParams.newBuilder().apply {
         this.topicId = topicId
         this.subTopicId = subtopicId
         this.subTopicListSize = subtopicListSize

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.RevisionCardActivityArguments
 import org.oppia.android.app.model.RevisionCardFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -28,7 +27,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
      */
     fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int):
       RevisionCardFragment {
-        val args = RevisionCardActivityArguments.newBuilder().apply {
+        val args = RevisionCardFragmentArguments.newBuilder().apply {
           this.topicId = topicId
           this.subTopicId = subtopicId
           this.subTopicListSize = subtopicListSize

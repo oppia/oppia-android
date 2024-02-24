@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.app.model.TestFontScaleConfigurationUtilActivityArguments
+import org.oppia.android.app.model.TestFontScaleConfigurationUtilActivityParams
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
@@ -22,26 +22,26 @@ class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatA
     (activityComponent as ActivityComponentImpl).inject(this)
     val readingTextSize = checkNotNull(
       intent.getProtoExtra(
-        TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_ARGUMENTS_KEY,
-        TestFontScaleConfigurationUtilActivityArguments.getDefaultInstance()
+        TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_PARAMS_KEY,
+        TestFontScaleConfigurationUtilActivityParams.getDefaultInstance()
       ).readingTextSize
     ) { "Expected $FONT_SCALE_EXTRA_KEY to be in intent extras." }
     configUtilActivityPresenter.handleOnCreate(readingTextSize)
   }
 
   companion object {
-    /** Arguments key for TestFontScaleConfigurationUtilActivity. */
-    const val TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_ARGUMENTS_KEY =
-      "TestFontScaleConfigurationUtilActivity.arguments"
+    /** Params key for TestFontScaleConfigurationUtilActivity. */
+    const val TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_PARAMS_KEY =
+      "TestFontScaleConfigurationUtilActivity.params"
 
     private const val FONT_SCALE_EXTRA_KEY = "TestFontScaleConfigurationUtilActivity.font_scale"
 
     /** Returns a new [TestFontScaleConfigurationUtilActivity] for context and reading text size. */
     fun createFontScaleTestActivity(context: Context, readingTextSize: ReadingTextSize): Intent {
-      val args = TestFontScaleConfigurationUtilActivityArguments.newBuilder()
+      val args = TestFontScaleConfigurationUtilActivityParams.newBuilder()
         .setReadingTextSize(readingTextSize).build()
       val intent = Intent(context, TestFontScaleConfigurationUtilActivity::class.java)
-      intent.putProtoExtra(TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_ARGUMENTS_KEY, args)
+      intent.putProtoExtra(TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_PARAMS_KEY, args)
       return intent
     }
   }

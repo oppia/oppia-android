@@ -639,7 +639,7 @@ message AdminSettingsDialogFragmentArguments {
 }
 
 // Represents the parameters needed to open PinPasswordActivity.
-message PinPasswordActivityArguments {
+message PinPasswordActivityParams {
   // ID for current profile.
   int32 internal_profile_id = 1;
 
@@ -657,7 +657,7 @@ message ResetPinDialogFragmentArguments {
 }
 
 // Represents the parameters needed to open ProfileEditActivity.
-message ProfileEditActivityArguments {
+message ProfileEditActivityParams {
   // ID for current profile.
   int32 internal_profile_id = 1;
 
@@ -681,7 +681,7 @@ message ProfileListFragmentArguments {
 }
 
 // Represents the parameters needed to open ProfileResetPinActivity.
-message ProfileResetPinActivityArguments {
+message ProfileResetPinActivityParams {
   // ID for current profile.
   int32 internal_profile_id = 1;
 
@@ -699,7 +699,7 @@ message ProfileResetPinFragmentArguments {
 }
 
 // Represents the parameters needed to open StoryActivity.
-message StoryActivityArguments {
+message StoryActivityParams {
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 
@@ -774,7 +774,7 @@ message TopicRevisionFragmentArguments {
 
 
 // Represents the parameters needed to open RevisionCardActivity.
-message RevisionCardActivityArguments {
+message RevisionCardActivityParams {
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 
@@ -798,7 +798,7 @@ message RevisionCardFragmentArguments {
 }
 
 // Represents the parameters needed to open TestFontScaleConfigurationUtilActivity.
-message TestFontScaleConfigurationUtilActivityArguments {
+message TestFontScaleConfigurationUtilActivityParams {
   // The text size at which content in the exploration should be rendered.
   ReadingTextSize reading_text_size = 1;
 }

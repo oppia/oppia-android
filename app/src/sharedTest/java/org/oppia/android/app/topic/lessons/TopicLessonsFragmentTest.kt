@@ -59,7 +59,7 @@ import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
-import org.oppia.android.app.model.StoryActivityArguments
+import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -67,7 +67,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
-import org.oppia.android.app.story.StoryActivity.Companion.STORY_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.story.StoryActivity.Companion.STORY_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -328,12 +328,12 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.story_name_text_view)
 
-      val args = StoryActivityArguments.newBuilder().apply {
+      val args = StoryActivityParams.newBuilder().apply {
         this.storyId = RATIOS_STORY_ID_0
         this.topicId = RATIOS_TOPIC_ID
       }.build()
       intended(hasComponent(StoryActivity::class.java.name))
-      intended(hasProtoExtra(STORY_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(STORY_ACTIVITY_PARAMS_KEY, args))
     }
   }
 

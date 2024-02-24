@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileResetPinActivityArguments
+import org.oppia.android.app.model.ProfileResetPinActivityParams
 import org.oppia.android.app.model.ScreenName.PROFILE_RESET_PIN_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -17,18 +17,18 @@ class ProfileResetPinActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var profileResetPinActivityPresenter: ProfileResetPinActivityPresenter
 
   companion object {
-    /** Arguments key for ProfileResetPinActivity. */
-    const val PROFILE_RESET_PIN_ACTIVITY_ARGUMENTS_KEY = "ProfileResetPinActivity.arguments"
+    /** Params key for ProfileResetPinActivity. */
+    const val PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY = "ProfileResetPinActivity.params"
 
     /** Returns [Intent] for opening [ProfileResetPinActivity]. */
     fun createProfileResetPinActivity(context: Context, profileId: Int, isAdmin: Boolean): Intent {
 
-      val args = ProfileResetPinActivityArguments.newBuilder().apply {
+      val args = ProfileResetPinActivityParams.newBuilder().apply {
         this.internalProfileId = profileId
         this.isAdmin = isAdmin
       }.build()
       return Intent(context, ProfileResetPinActivity::class.java).apply {
-        putProtoExtra(PROFILE_RESET_PIN_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(PROFILE_RESET_PIN_ACTIVITY)
       }
     }

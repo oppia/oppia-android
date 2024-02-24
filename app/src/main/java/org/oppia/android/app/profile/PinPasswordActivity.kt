@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.PinPasswordActivityArguments
+import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -19,19 +19,19 @@ class PinPasswordActivity :
   lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
   companion object {
-    /** Arguments key for PinPasswordActivity. */
-    const val PIN_PASSWORD_ACTIVITY_ARGUMENTS_KEY = "PinPasswordActivity.arguments"
+    /** Params key for PinPasswordActivity. */
+    const val PIN_PASSWORD_ACTIVITY_PARAMS_KEY = "PinPasswordActivity.params"
     fun createPinPasswordActivityIntent(
       context: Context,
       adminPin: String,
       profileId: Int
     ): Intent {
-      val args = PinPasswordActivityArguments.newBuilder().apply {
+      val args = PinPasswordActivityParams.newBuilder().apply {
         this.adminPin = adminPin
         this.internalProfileId = profileId
       }.build()
       return Intent(context, PinPasswordActivity::class.java).apply {
-        putProtoExtra(PIN_PASSWORD_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(PIN_PASSWORD_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(PIN_PASSWORD_ACTIVITY)
       }
     }

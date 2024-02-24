@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileResetPinActivityArguments
-import org.oppia.android.app.settings.profile.ProfileResetPinActivity.Companion.PROFILE_RESET_PIN_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.model.ProfileResetPinActivityParams
+import org.oppia.android.app.settings.profile.ProfileResetPinActivity.Companion.PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.databinding.ProfileResetPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.getProtoExtra
@@ -30,8 +30,8 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       )
 
     val args = activity.intent.getProtoExtra(
-      PROFILE_RESET_PIN_ACTIVITY_ARGUMENTS_KEY,
-      ProfileResetPinActivityArguments.getDefaultInstance()
+      PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY,
+      ProfileResetPinActivityParams.getDefaultInstance()
     )
 
     val profileId = args?.internalProfileId ?: 0

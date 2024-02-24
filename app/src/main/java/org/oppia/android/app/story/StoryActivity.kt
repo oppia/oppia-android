@@ -10,7 +10,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.STORY_ACTIVITY
-import org.oppia.android.app.model.StoryActivityArguments
+import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
@@ -36,8 +36,8 @@ class StoryActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      STORY_ACTIVITY_ARGUMENTS_KEY,
-      StoryActivityArguments.getDefaultInstance()
+      STORY_ACTIVITY_PARAMS_KEY,
+      StoryActivityParams.getDefaultInstance()
     )
     internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     topicId = checkNotNull(args.topicId) {
@@ -97,8 +97,8 @@ class StoryActivity :
 
   companion object {
 
-    /** Arguments key for StoryActivity. */
-    const val STORY_ACTIVITY_ARGUMENTS_KEY = "StoryActivity.arguments"
+    /** Params key for StoryActivity. */
+    const val STORY_ACTIVITY_PARAMS_KEY = "StoryActivity.params"
 
     /** Returns a new [Intent] to route to [StoryActivity] for a specified story. */
     fun createStoryActivityIntent(
@@ -108,12 +108,12 @@ class StoryActivity :
       storyId: String
     ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val args = StoryActivityArguments.newBuilder().apply {
+      val args = StoryActivityParams.newBuilder().apply {
         this.topicId = topicId
         this.storyId = storyId
       }.build()
       return Intent(context, StoryActivity::class.java).apply {
-        putProtoExtra(STORY_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(STORY_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(STORY_ACTIVITY)
       }

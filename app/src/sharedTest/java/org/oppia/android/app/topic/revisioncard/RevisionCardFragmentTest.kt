@@ -491,7 +491,7 @@ class RevisionCardFragmentTest {
         this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -519,7 +519,7 @@ class RevisionCardFragmentTest {
         this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_ARGUMENTS_KEY, args))
+      intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
