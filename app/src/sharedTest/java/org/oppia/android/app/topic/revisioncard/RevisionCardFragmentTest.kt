@@ -141,6 +141,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.RevisionCardActivityParams
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -513,7 +514,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val args = RevisionCardActivityArguments.newBuilder().apply {
+      val args = RevisionCardActivityParams.newBuilder().apply {
         this.subTopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
         this.topicId = FRACTIONS_TOPIC_ID
         this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE

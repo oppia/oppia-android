@@ -35,7 +35,7 @@ class RevisionCardActivity :
 
     intent?.let { intent ->
       val args = intent.getProtoExtra(
-        REVISION_CARD_ACTIVITY_ARGUMENTS_KEY,
+        REVISION_CARD_ACTIVITY_PARAMS_KEY,
         RevisionCardActivityParams.getDefaultInstance()
       )
 
@@ -61,7 +61,7 @@ class RevisionCardActivity :
 
   companion object {
     /** Params key for RevisionCardActivity. */
-    const val REVISION_CARD_ACTIVITY_ARGUMENTS_KEY = "RevisionCardActivity.params"
+    const val REVISION_CARD_ACTIVITY_PARAMS_KEY = "RevisionCardActivity.params"
 
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createRevisionCardActivityIntent(
@@ -78,7 +78,7 @@ class RevisionCardActivity :
         this.subTopicListSize = subtopicListSize
       }.build()
       return Intent(context, RevisionCardActivity::class.java).apply {
-        putProtoExtra(REVISION_CARD_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(REVISION_CARD_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(REVISION_CARD_ACTIVITY)
       }
