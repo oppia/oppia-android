@@ -57,7 +57,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.OptionsActivityArguments
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RevisionCardActivityArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -337,12 +337,12 @@ class RevisionCardFragmentTest {
       onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       val args =
-        OptionsActivityArguments.newBuilder().setIsFromNavigationDrawer(false)
+        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(false)
           .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
         hasProtoExtra(
-          OptionsActivity.OPTIONS_ACTIVITY_ARGUMENTS_KEY,
+          OptionsActivity.OPTIONS_ACTIVITY_PARAMS_KEY,
           /* value= */ args
         )
       )

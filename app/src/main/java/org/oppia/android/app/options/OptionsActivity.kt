@@ -10,7 +10,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.OptionsActivityArguments
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.OptionsActivityStateBundle
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
@@ -25,9 +25,6 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
-private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
 
 /** [String] key for mapping to [ReadingTextSizeFragment]. */
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
@@ -60,8 +57,8 @@ class OptionsActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    /** Arguments key for OptionsActivity. */
-    const val OPTIONS_ACTIVITY_ARGUMENTS_KEY = "OptionsActivity.arguments"
+    /** Params key for OptionsActivity. */
+    const val OPTIONS_ACTIVITY_PARAMS_KEY = "OptionsActivity.params"
 
     /** saved state key for OptionsActivity. */
     const val OPTIONS_ACTIVITY_STATE_KEY = "OptionsActivity.state"
@@ -73,10 +70,10 @@ class OptionsActivity :
       isFromNavigationDrawer: Boolean
     ): Intent {
       val args =
-        OptionsActivityArguments.newBuilder().setIsFromNavigationDrawer(isFromNavigationDrawer)
+        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(isFromNavigationDrawer)
           .build()
       return Intent(context, OptionsActivity::class.java).apply {
-        putProtoExtra(OPTIONS_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(OPTIONS_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(OPTIONS_ACTIVITY)
         if (profileId != null)
           decorateWithUserProfileId(profileId)
@@ -88,8 +85,8 @@ class OptionsActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      OPTIONS_ACTIVITY_ARGUMENTS_KEY,
-      OptionsActivityArguments.getDefaultInstance()
+      OPTIONS_ACTIVITY_PARAMS_KEY,
+      OptionsActivityParams.getDefaultInstance()
     )
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
     profileId = intent.extractCurrentUserProfileId().internalId

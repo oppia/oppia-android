@@ -489,7 +489,7 @@ message HelpFragmentArguments {
 }
 
 // Represents the parameters needed to open OptionsActivity.
-message OptionsActivityArguments {
+message OptionsActivityParams {
   // Represents whether the user navigated to the OptionsActivity through the navigation drawer or not.
   bool is_from_navigation_drawer = 1;
 }
@@ -558,7 +558,7 @@ message LanguageDialogFragmentArguments {
 }
 
 // Represents the parameters needed to open StateFragmentTestActivity.
-message StateFragmentTestActivityArguments {
+message StateFragmentTestActivityParams {
 
   // The ID of the current profile.
   int32 internal_profile_id = 1;
@@ -599,13 +599,13 @@ message ProgressDatabaseFullDialogFragmentArguments {
 }
 
 // Represents the parameters needed to open AddProfileActivity.
-message AddProfileActivityArguments {
+message AddProfileActivityParams {
   // Color for the new profile that is not already in use.
   int32 color_rgb = 1;
 }
 
 // Represents the parameters needed to open AdminAuthActivity.
-message AdminAuthActivityArguments {
+message AdminAuthActivityParams {
   // Admin pin.
   string admin_pin = 1;
 
@@ -621,7 +621,7 @@ message AdminAuthActivityArguments {
 }
 
 // Represents the parameters needed to open AdminPinActivity.
-message AdminPinActivityArguments {
+message AdminPinActivityParams {
   // ID for current profile.
   int32 internal_profile_id = 1;
 

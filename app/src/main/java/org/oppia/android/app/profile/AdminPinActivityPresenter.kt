@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.model.AdminPinActivityArguments
+import org.oppia.android.app.model.AdminPinActivityParams
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -41,8 +41,8 @@ class AdminPinActivityPresenter @Inject constructor(
 
   private val args by lazy {
     activity.intent.getProtoExtra(
-      ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY,
-      AdminPinActivityArguments.getDefaultInstance()
+      ADMIN_PIN_ACTIVITY_PARAMS_KEY,
+      AdminPinActivityParams.getDefaultInstance()
     )
   }
 

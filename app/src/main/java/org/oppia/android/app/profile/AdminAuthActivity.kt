@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.AdminAuthActivityArguments
+import org.oppia.android.app.model.AdminAuthActivityParams
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -17,8 +17,8 @@ class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
   companion object {
-    /** Arguments key for AdminAuthActivity. */
-    const val ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY = "AdminAuthActivity.arguments"
+    /** Params key for AdminAuthActivity. */
+    const val ADMIN_AUTH_ACTIVITY_PARAMS_KEY = "AdminAuthActivity.params"
     fun createAdminAuthActivityIntent(
       context: Context,
       adminPin: String,
@@ -26,14 +26,14 @@ class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
-      val args = AdminAuthActivityArguments.newBuilder().apply {
+      val args = AdminAuthActivityParams.newBuilder().apply {
         this.adminPin = adminPin
         this.internalProfileId = profileId
         this.colorRgb = colorRgb
         this.adminPinEnum = adminPinEnum
       }.build()
       return Intent(context, AdminAuthActivity::class.java).apply {
-        putProtoExtra(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(ADMIN_AUTH_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(ADMIN_AUTH_ACTIVITY)
       }
     }

@@ -12,7 +12,7 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
-import org.oppia.android.app.model.StateFragmentTestActivityArguments
+import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
@@ -45,8 +45,8 @@ class StateFragmentTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val args = intent.getProtoExtra(
-      STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY,
-      StateFragmentTestActivityArguments.getDefaultInstance()
+      STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
+      StateFragmentTestActivityParams.getDefaultInstance()
     )
 
     profileId = ProfileId.newBuilder().apply {
@@ -65,8 +65,8 @@ class StateFragmentTestActivity :
 
   companion object {
 
-    /** Arguments key for StateFragmentTestActivity. */
-    const val STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY = "StateFragmentTestActivity.arguments"
+    /** Params key for StateFragmentTestActivity. */
+    const val STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY = "StateFragmentTestActivity.params"
 
     fun createTestActivityIntent(
       context: Context,
@@ -76,7 +76,7 @@ class StateFragmentTestActivity :
       explorationId: String,
       shouldSavePartialProgress: Boolean
     ): Intent {
-      val args = StateFragmentTestActivityArguments.newBuilder().apply {
+      val args = StateFragmentTestActivityParams.newBuilder().apply {
         this.internalProfileId = profileId
         this.topicId = topicId
         this.storyId = storyId
@@ -84,7 +84,7 @@ class StateFragmentTestActivity :
         this.shouldSavePartialProgress = shouldSavePartialProgress
       }.build()
       val intent = Intent(context, StateFragmentTestActivity::class.java)
-      intent.putProtoExtra(STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY, args)
+      intent.putProtoExtra(STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY, args)
       return intent
     }
   }

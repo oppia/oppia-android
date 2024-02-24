@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.AddProfileActivityArguments
+import org.oppia.android.app.model.AddProfileActivityParams
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -17,12 +17,12 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
 
   companion object {
-    /** Arguments key for AddProfileActivity. */
-    const val ADD_PROFILE_ACTIVITY_ARGUMENTS_KEY = "AddProfileActivity.arguments"
+    /** Params key for AddProfileActivity. */
+    const val ADD_PROFILE_ACTIVITY_PARAMS_KEY = "AddProfileActivity.params"
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
-      val args = AddProfileActivityArguments.newBuilder().setColorRgb(colorRgb).build()
+      val args = AddProfileActivityParams.newBuilder().setColorRgb(colorRgb).build()
       return Intent(context, AddProfileActivity::class.java).apply {
-        putProtoExtra(ADD_PROFILE_ACTIVITY_ARGUMENTS_KEY, args)
+        putProtoExtra(ADD_PROFILE_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(ADD_PROFILE_ACTIVITY)
       }
     }

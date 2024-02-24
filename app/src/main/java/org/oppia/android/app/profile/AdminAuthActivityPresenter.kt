@@ -8,9 +8,9 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.model.AdminAuthActivityArguments
+import org.oppia.android.app.model.AdminAuthActivityParams
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -32,8 +32,8 @@ class AdminAuthActivityPresenter @Inject constructor(
   }
   private val args by lazy {
     activity.intent.getProtoExtra(
-      ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY,
-      AdminAuthActivityArguments.getDefaultInstance()
+      ADMIN_AUTH_ACTIVITY_PARAMS_KEY,
+      AdminAuthActivityParams.getDefaultInstance()
     )
   }
 

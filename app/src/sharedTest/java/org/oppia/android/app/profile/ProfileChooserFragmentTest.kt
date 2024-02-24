@@ -49,8 +49,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY
-import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -362,7 +362,7 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtraWithKey(ADMIN_PIN_ACTIVITY_ARGUMENTS_KEY))
+      intended(hasExtraWithKey(ADMIN_PIN_ACTIVITY_PARAMS_KEY))
     }
   }
 
@@ -467,7 +467,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY))
+      intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_PARAMS_KEY))
     }
   }
 
@@ -483,7 +483,7 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_ARGUMENTS_KEY))
+      intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_PARAMS_KEY))
     }
   }
 

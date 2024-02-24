@@ -24,8 +24,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.AddProfileActivityArguments
-import org.oppia.android.app.profile.AddProfileActivity.Companion.ADD_PROFILE_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.model.AddProfileActivityParams
+import org.oppia.android.app.profile.AddProfileActivity.Companion.ADD_PROFILE_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.databinding.AddProfileActivityBinding
@@ -227,8 +227,8 @@ class AddProfileActivityPresenter @Inject constructor(
       }
 
       val rgbColor = activity.intent.getProtoExtra(
-        ADD_PROFILE_ACTIVITY_ARGUMENTS_KEY,
-        AddProfileActivityArguments.getDefaultInstance()
+        ADD_PROFILE_ACTIVITY_PARAMS_KEY,
+        AddProfileActivityParams.getDefaultInstance()
       )?.colorRgb ?: 10710042
 
       profileManagementController

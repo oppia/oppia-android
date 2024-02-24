@@ -7,11 +7,11 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StateFragmentTestActivityArguments
+import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
-import org.oppia.android.app.player.state.testing.StateFragmentTestActivity.Companion.STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivity.Companion.STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -52,8 +52,8 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     }
 
     val args = activity.intent.getProtoExtra(
-      STATE_FRAGMENT_TEST_ACTIVITY_ARGUMENTS_KEY,
-      StateFragmentTestActivityArguments.getDefaultInstance()
+      STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
+      StateFragmentTestActivityParams.getDefaultInstance()
     )
     profileId = args?.internalProfileId ?: 1
     topicId =
