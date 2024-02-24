@@ -71,7 +71,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
 
     fragment.setHasOptionsMenu(true)
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
+
+    profileId = activity.intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
 
     val headerBinding =
       NavHeaderNavigationDrawerBinding.inflate(
