@@ -569,7 +569,7 @@ class EventBundleCreator @Inject constructor(
       }
     }
 
-    /** The [EventActivityContext] corresponding to [FeatureFlagEventContext]s. */
+    /** The [EventActivityContext] corresponding to [FeatureFlagListEventContext]s. */
     class FeatureFlagContext(
       activityName: String,
       value: FeatureFlagListEventContext

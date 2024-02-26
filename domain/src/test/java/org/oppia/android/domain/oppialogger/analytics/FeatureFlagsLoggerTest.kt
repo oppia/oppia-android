@@ -8,6 +8,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.File
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -87,7 +88,7 @@ class FeatureFlagsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureFlagItemContextThat {
+      hasFeatureFlagItemContextThatAtIndex(0) {
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
@@ -106,7 +107,7 @@ class FeatureFlagsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureFlagItemContextThat {
+      hasFeatureFlagItemContextThatAtIndex(0) {
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
         hasFeatureFlagEnabledStateThat().isEqualTo(true)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
@@ -114,8 +115,46 @@ class FeatureFlagsLoggerTest {
     }
   }
 
+  @Test
+  fun testLogFeatureFlags_ensuresAllAnnotatedClassesAreLogged() {
+    val listOfAnnotatedClassNames = getAnnotatedClassNamesInFeatureFlagConstantsFile().toSet()
+
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasFeatureFlagContextThat {
+      hasFeatureFlagItemCountThat().isEqualTo(listOfAnnotatedClassNames.size)
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun getAnnotatedClassNamesInFeatureFlagConstantsFile(): List<String> {
+    val path = System.getProperty("user.dir")
+    val rootPath = path.replace("/domain", "")
+
+    val fileNamePath = "$rootPath/utility/src/main/java/org/oppia/android/util/platformparameter/" +
+      "FeatureFlagConstants.kt"
+    val exists = File(fileNamePath).exists()
+
+    if (!exists) {
+      println("File does not exist")
+      return emptyList()
+    }
+
+    val inputStream: List<String> = File(fileNamePath).readLines()
+    val listOfFeatureFlagNames = mutableListOf<String>()
+    inputStream.forEach {
+      if (it.contains("android_enable")) {
+        val className = it.split(" ").last()
+        listOfFeatureFlagNames.add(className)
+      }
+    }
+
+    return listOfFeatureFlagNames
   }
 
   private companion object {

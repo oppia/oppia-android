@@ -2078,23 +2078,31 @@ class EventLogSubject private constructor(
     fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
 
     /**
+     * Returns a [IntegerSubject] to test [EventLog.FeatureFlagListContext.getFeatureFlagsCount].
+     *
+     * This method never fails since the underlying property defaults to 0 if it's not defined in the
+     * context.
+     */
+    fun hasFeatureFlagItemCountThat(): IntegerSubject = assertThat(actual.featureFlagsCount)
+
+    /**
      * Returns a [FeatureFlagItemContextSubject] to test
      * [EventLog.FeatureFlagListContext.getFeatureFlagsList].
      *
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagItemContextThat(): FeatureFlagItemContextSubject {
-      return FeatureFlagItemContextSubject.assertThat(actual.featureFlagsList.first())
+    fun hasFeatureFlagItemContextThatAtIndex(index: Int): FeatureFlagItemContextSubject {
+      return FeatureFlagItemContextSubject.assertThat(actual.featureFlagsList[index])
     }
 
     /**
      * Verifies the [EventLog]'s context and executes [block] in the same way as
-     * [hasFeatureFlagItemContextThat] except for the conditions of, and subject returned by,
-     * [hasFeatureFlagItemContextThat].
+     * [hasFeatureFlagItemContextThatAtIndex] except for the conditions of, and subject returned by,
+     * [hasFeatureFlagItemContextThatAtIndex].
      */
-    fun hasFeatureFlagItemContextThat(block: FeatureFlagItemContextSubject.() -> Unit) {
-      hasFeatureFlagItemContextThat().block()
+    fun hasFeatureFlagItemContextThatAtIndex(index: Int, block: FeatureFlagItemContextSubject.() -> Unit) {
+      hasFeatureFlagItemContextThatAtIndex(index).block()
     }
 
     companion object {

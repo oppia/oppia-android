@@ -36,7 +36,6 @@ class ViewEventLogsViewModel @Inject constructor(
   private fun processEventLogsList(): List<EventLogItemViewModel> {
     return (analyticsEvents + firestoreEvents)
       .map {
-        println("EventLogItemViewModel: $it")
         EventLogItemViewModel(it, machineLocale, resourceHandler)
       }
       .sortedByDescending { it.eventLog.timestamp }

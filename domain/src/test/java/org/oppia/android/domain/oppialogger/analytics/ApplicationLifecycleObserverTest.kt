@@ -402,7 +402,7 @@ class ApplicationLifecycleObserverTest {
 
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasSessionIdThat().isEqualTo(sessionId)
-      hasFeatureFlagItemContextThat {
+      hasFeatureFlagItemContextThatAtIndex(0) {
         hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
         hasFeatureFlagSyncStateThat().isEqualTo(PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER)
