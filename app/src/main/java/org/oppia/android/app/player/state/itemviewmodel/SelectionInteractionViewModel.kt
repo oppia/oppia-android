@@ -80,7 +80,7 @@ class SelectionInteractionViewModel private constructor(
 
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
-  var errorMessage = ObservableField<String>("")
+  val errorMessage = ObservableField<String>("")
   val selectedItemText =
     ObservableField(
       resourceHandler.getStringInLocale(
