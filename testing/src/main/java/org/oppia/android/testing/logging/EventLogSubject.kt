@@ -2101,7 +2101,10 @@ class EventLogSubject private constructor(
      * [hasFeatureFlagItemContextThatAtIndex] except for the conditions of, and subject returned by,
      * [hasFeatureFlagItemContextThatAtIndex].
      */
-    fun hasFeatureFlagItemContextThatAtIndex(index: Int, block: FeatureFlagItemContextSubject.() -> Unit) {
+    fun hasFeatureFlagItemContextThatAtIndex(
+      index: Int,
+      block: FeatureFlagItemContextSubject.() -> Unit
+    ) {
       hasFeatureFlagItemContextThatAtIndex(index).block()
     }
 
