@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.firebase
 
 import dagger.Module
 import dagger.Provides
