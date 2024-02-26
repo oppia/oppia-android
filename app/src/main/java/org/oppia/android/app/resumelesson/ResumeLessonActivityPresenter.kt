@@ -17,6 +17,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.domain.oppialogger.OppiaLogger
 
 private const val RESUME_LESSON_TAG = "ResumeLesson"
 
@@ -24,7 +25,8 @@ private const val RESUME_LESSON_TAG = "ResumeLesson"
 class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var profileId: ProfileId
 
@@ -101,15 +103,25 @@ class ResumeLessonActivityPresenter @Inject constructor(
   }
 
   private fun processReadingTextSizeResult(
-    readingTextSizeResult: AsyncResult<Profile>
+    profileResult: AsyncResult<Profile>
   ): ReadingTextSize {
-    return when (readingTextSizeResult) {
+    return when (profileResult) {
       is AsyncResult.Failure -> {
-
+        oppiaLogger.e(
+          "ResumeLessonActivity",
+          "Failed to retrieve profile",
+          profileResult.error
+        )
         Profile.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> readingTextSizeResult.value
+      is AsyncResult.Pending -> {
+        oppiaLogger.e(
+          "ResumeLessonActivity",
+          "Result is pending"
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Success -> profileResult.value
     }.readingTextSize
   }
 
@@ -121,7 +133,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
       ) as ResumeLessonFragment?
   }
 
-  /** Handles onBacKPressed. */
+  /** Changes the reading text size to normal onBacKPressed. */
   fun onBackPressed() {
     setReadingTextSizeNormal()
   }
