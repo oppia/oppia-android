@@ -198,6 +198,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
             isCheckpointingEnabled = canHavePartialProgressSaved
           )
+          activity.finish()
         }
       }
     }
