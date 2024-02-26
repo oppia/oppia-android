@@ -54,8 +54,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            pendingAnswerError = pendingAnswerError, // Allow blank answer submission.
-            inputAnswerAvailable = true
+            pendingAnswerError = pendingAnswerError,
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
@@ -129,7 +129,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       .build()
   }
 
-  /** * Returns  [ImageRegionParsingError.EMPTY_INPUT] if input is blank, or
+  /**
+   * Returns [ImageRegionParsingError.EMPTY_INPUT] if input is blank, or
    * [TextParsingError.VALID] if input is not empty.
    */
   fun getSubmitTimeError(text: String): ImageRegionParsingError {

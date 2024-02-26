@@ -33,13 +33,13 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
 
   /** Gives access to the [ImageRegionSelectionInteractionViewModel]. */
 
-  val imageRegionSelectionInteractionViewModel by lazy {
+  private val imageRegionSelectionInteractionViewModel by lazy {
     imageRegionSelectionInteractionViewModelFactory
       .create<ImageRegionSelectionInteractionViewModel>()
   }
 
   /** Gives access to the translation context. */
-  lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding =

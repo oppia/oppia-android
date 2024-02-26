@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -404,9 +405,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  @DisableAccessibilityChecks // Disabled, as ImageRegionSelectionTestActivity is a test file and
-  // will not be used by user
-  fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+  fun testImageRegionSelectionInteractionView_withBlankInput_submit_emptyInputErrorIsDisplayed() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
         .perform(
@@ -420,6 +419,14 @@ class ImageRegionSelectionInteractionViewTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_submitBbutton_isEnabledByDefault() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.submit_button)).check(matches(isEnabled()))
     }
   }
 
