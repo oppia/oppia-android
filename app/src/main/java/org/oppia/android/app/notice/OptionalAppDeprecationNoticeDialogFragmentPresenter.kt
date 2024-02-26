@@ -4,14 +4,18 @@ import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.splash.DeprecationNoticeActionType
+import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Presenter class responsible for showing an optional update dialog to the user. */
 class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @OptionalAppUpdateVersionCode
+  private val optionalAppUpdateVersionCode: PlatformParameterValue<Int>,
 ) {
   private val deprecationNoticeActionListener by lazy {
     activity as DeprecationNoticeActionListener
@@ -31,12 +35,15 @@ class OptionalAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
       )
       .setPositiveButton(R.string.optional_app_update_dialog_update_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-          DeprecationNoticeActionType.UPDATE
+          DeprecationNoticeActionResponse.Update
         )
       }
       .setNegativeButton(R.string.optional_app_update_dialog_dismiss_button_text) { _, _ ->
         deprecationNoticeActionListener.onActionButtonClicked(
-          DeprecationNoticeActionType.DISMISS
+          DeprecationNoticeActionResponse.Dismiss(
+            deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION,
+            deprecatedVersion = optionalAppUpdateVersionCode.value
+          )
         )
       }
       .setCancelable(false)

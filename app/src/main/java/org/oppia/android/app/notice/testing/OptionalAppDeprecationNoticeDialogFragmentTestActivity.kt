@@ -2,8 +2,8 @@ package org.oppia.android.app.notice.testing
 
 import android.os.Bundle
 import org.oppia.android.app.notice.DeprecationNoticeActionListener
+import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
-import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.testing.activity.TestActivity
 
 /** [TestActivity] for setting up a test environment for testing the beta notice dialog. */
@@ -24,7 +24,7 @@ class OptionalAppDeprecationNoticeDialogFragmentTestActivity :
       .showNow(supportFragmentManager, "optional_app_deprecation_dialog")
   }
 
-  override fun onActionButtonClicked(noticeType: DeprecationNoticeActionType) {
-    mockCallbackListener.onActionButtonClicked(noticeType)
+  override fun onActionButtonClicked(noticeActionResponse: DeprecationNoticeActionResponse) {
+    mockCallbackListener.onActionButtonClicked(noticeActionResponse)
   }
 }
