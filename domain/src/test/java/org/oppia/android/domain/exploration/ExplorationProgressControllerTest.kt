@@ -2339,6 +2339,32 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testReplayExp_submitCorrectAnswer_doesNotLogResumeLessonSubmitCorrectAnswerEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    submitPrototypeState2Answer()
+
+    // Event should not be logged for correct answer submission after replaying lesson.
+    val resumeLessonSubmitCorrectAnswerEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
+    }
+    assertThat(resumeLessonSubmitCorrectAnswerEventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testReplayExp_submitIncorrectAnswer_doesNotLogResumeLessonSubmitIncorrectAnswerEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    submitWrongAnswerForPrototypeState2()
+
+    // Event should not be logged for incorrect answer submission after replaying lesson.
+    val resumeLessonSubmitIncorrectAnswerEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+    }
+    assertThat(resumeLessonSubmitIncorrectAnswerEventCount).isEqualTo(0)
+  }
+
+  @Test
   fun testSubmitAnswer_correctAnswer_logsEndCardAndSubmitAnswerEvents() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
