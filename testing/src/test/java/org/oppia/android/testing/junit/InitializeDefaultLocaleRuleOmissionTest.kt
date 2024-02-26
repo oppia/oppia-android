@@ -57,9 +57,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -106,7 +106,7 @@ class InitializeDefaultLocaleRuleOmissionTest {
   @Test
   fun testSuite_withoutRule_doesNotInitializeLocaleHandlerWithDefaultContext() {
     // Not including the rule should result in a helpful exception being thrown.
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       appLanguageLocaleHandler.getDisplayLocale()
     }
     assertThat(exception)

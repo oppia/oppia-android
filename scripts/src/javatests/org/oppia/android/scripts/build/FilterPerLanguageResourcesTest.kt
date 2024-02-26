@@ -86,21 +86,21 @@ class FilterPerLanguageResourcesTest {
 
   @Test
   fun testUtility_noArgs_failsWithUsageString() {
-    val error = assertThrows(IllegalArgumentException::class) { runScript() }
+    val error = assertThrows<IllegalArgumentException>() { runScript() }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
 
   @Test
   fun testUtility_oneArg_failsWithUsageString() {
-    val error = assertThrows(IllegalArgumentException::class) { runScript("first_file.zip") }
+    val error = assertThrows<IllegalArgumentException>() { runScript("first_file.zip") }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
 
   @Test
   fun testUtility_threeArgs_failsWithUsageString() {
-    val error = assertThrows(IllegalArgumentException::class) {
+    val error = assertThrows<IllegalArgumentException>() {
       runScript(
         tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"), "extra_param"
       )
@@ -114,7 +114,7 @@ class FilterPerLanguageResourcesTest {
     // Create an empty zip file.
     ZipOutputStream(File(tempFolder.root, "input.zip").outputStream()).close()
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
     }
 
@@ -129,7 +129,7 @@ class FilterPerLanguageResourcesTest {
       ResourceTable.getDefaultInstance().writeTo(outputStream)
     }
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
     }
 
@@ -147,7 +147,7 @@ class FilterPerLanguageResourcesTest {
       supportedLanguages = SUPPORTED_LANGUAGES_EN
     )
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
     }
 

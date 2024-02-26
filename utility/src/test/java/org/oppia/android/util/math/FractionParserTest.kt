@@ -173,7 +173,7 @@ class FractionParserTest {
     val parseFraction = fractionParser.parseFraction("7 1/2 4/5")
     assertThat(parseFraction).isEqualTo(null)
 
-    val exception = assertThrows(IllegalArgumentException::class) {
+    val exception = assertThrows<IllegalArgumentException>() {
       fractionParser.parseFractionFromString("7 1/2 4/5")
     }
     assertThat(exception).hasMessageThat().contains("Incorrectly formatted fraction: 7 1/2 4/5")
@@ -184,7 +184,7 @@ class FractionParserTest {
     val parseFraction = fractionParser.parseFraction("abc")
     assertThat(parseFraction).isEqualTo(null)
 
-    val exception = assertThrows(IllegalArgumentException::class) {
+    val exception = assertThrows<IllegalArgumentException>() {
       fractionParser.parseFractionFromString("abc")
     }
     assertThat(exception).hasMessageThat().contains("Incorrectly formatted fraction: abc")

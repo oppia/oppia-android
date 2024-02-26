@@ -250,7 +250,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   fun testEquivalence_missingInput_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_8)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_8,
         inputs = inputs,
