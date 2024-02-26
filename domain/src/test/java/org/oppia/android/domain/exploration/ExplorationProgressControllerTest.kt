@@ -24,6 +24,8 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
@@ -2256,6 +2258,84 @@ class ExplorationProgressControllerTest {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
     assertThat(engagementEventCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testResumeExp_submitCorrectAnswer_logsResumeLessonSubmitCorrectAnswerEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // End, then resume the exploration and submit correct answer.
+    endExploration()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    submitPrototypeState2Answer()
+
+    // Event should be logged for correct answer submission after returning to the lesson.
+    val resumeLessonSubmitCorrectAnswerEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
+    }
+    assertThat(resumeLessonSubmitCorrectAnswerEventCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testResumeExp_submitIncorrectAnswer_logsResumeLessonSubmitIncorrectAnswerEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // End, then resume the exploration and submit incorrect answer.
+    endExploration()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    submitWrongAnswerForPrototypeState2()
+
+    // Event should be logged for incorrect answer submission after returning to the lesson.
+    val resumeLessonSubmitIncorrectAnswerEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+    }
+    assertThat(resumeLessonSubmitIncorrectAnswerEventCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testStartOverExp_submitCorrectAnswer_doesNotLogResumeLessonSubmitCorrectAnswerEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // End, then start over the exploration and submit correct answer.
+    endExploration()
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    submitPrototypeState2Answer()
+
+    // Event should not be logged for correct answer submission after returning to the lesson.
+    val resumeLessonSubmitCorrectAnswerEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
+    }
+    assertThat(resumeLessonSubmitCorrectAnswerEventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testStartOverExp_submitIncorrectAnswer_doesNotLogResumeLessonSubmitIncorrectAnswerEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // End, then resume the exploration and submit incorrect answer.
+    endExploration()
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    submitWrongAnswerForPrototypeState2()
+
+    // Event should not be logged for incorrect answer submission after returning to the lesson.
+    val resumeLessonSubmitIncorrectAnswerEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+    }
+    assertThat(resumeLessonSubmitIncorrectAnswerEventCount).isEqualTo(0)
   }
 
   @Test
