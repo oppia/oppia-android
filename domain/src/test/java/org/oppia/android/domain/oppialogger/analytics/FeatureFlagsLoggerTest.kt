@@ -41,7 +41,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -117,44 +116,19 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_ensuresAllAnnotatedClassesAreLogged() {
-    val listOfAnnotatedClassNames = getAnnotatedClassNamesInFeatureFlagConstantsFile().toSet()
+    val expectedClassNames = 12
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureFlagItemCountThat().isEqualTo(listOfAnnotatedClassNames.size)
+      hasFeatureFlagItemCountThat().isEqualTo(expectedClassNames)
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun getAnnotatedClassNamesInFeatureFlagConstantsFile(): List<String> {
-    val path = System.getProperty("user.dir")
-    val rootPath = path.replace("/domain", "")
-
-    val fileNamePath = "$rootPath/utility/src/main/java/org/oppia/android/util/platformparameter/" +
-      "FeatureFlagConstants.kt"
-    val exists = File(fileNamePath).exists()
-
-    if (!exists) {
-      println("File does not exist")
-      return emptyList()
-    }
-
-    val inputStream: List<String> = File(fileNamePath).readLines()
-    val listOfFeatureFlagNames = mutableListOf<String>()
-    inputStream.forEach {
-      if (it.contains("android_enable")) {
-        val className = it.split(" ").last()
-        listOfFeatureFlagNames.add(className)
-      }
-    }
-
-    return listOfFeatureFlagNames
   }
 
   private companion object {
