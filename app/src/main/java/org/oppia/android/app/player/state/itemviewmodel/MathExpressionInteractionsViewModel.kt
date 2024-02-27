@@ -135,17 +135,17 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-            " math_content-with-value=\"$mathContentValue\" />"
+          " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-          answerTextString,
-          useFractionsForDivision,
-          allowedVariables,
-          mathExpressionAccessibilityUtil,
-          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-        ) ?: answerTextString
+        answerTextString,
+        useFractionsForDivision,
+        allowedVariables,
+        mathExpressionAccessibilityUtil,
+        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+      ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
