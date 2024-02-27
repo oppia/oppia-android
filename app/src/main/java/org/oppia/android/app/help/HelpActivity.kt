@@ -6,29 +6,26 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
-const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
-const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
-  "HelpActivity.third_party_dependency_index"
-const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
-const val POLICIES_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
 const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
 const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
@@ -59,21 +56,26 @@ class HelpActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val isFromNavigationDrawer = intent.getBooleanExtra(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-      /* defaultValue= */ false
+    val args =
+      intent.getProtoExtra(HELP_ACTIVITY_PARAMS_KEY, HelpActivityParams.getDefaultInstance())
+    val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
+
+    val stateArgs = savedInstanceState?.getProto(
+      HELP_ACTIVITY_STATE_KEY,
+      HelpActivityStateBundle.getDefaultInstance()
     )
+
     selectedFragment =
-      savedInstanceState?.getStringFromBundle(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT_TAG
+      stateArgs?.selectedFragmentTag ?: FAQ_LIST_FRAGMENT_TAG
     val selectedDependencyIndex =
-      savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
-    val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
-    selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
+      stateArgs?.selectedDependencyIndex ?: 0
+    val selectedLicenseIndex = stateArgs?.selectedLicenseIndex ?: 0
+
+    selectedHelpOptionsTitle = stateArgs?.helpOptionsTitle
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
-    val policiesActivityParams = savedInstanceState?.getProto(
-      POLICIES_ARGUMENT_PROTO,
-      PoliciesActivityParams.getDefaultInstance()
-    )
+
+    val policiesActivityParams = stateArgs?.policiesActivityParams
+
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
       isFromNavigationDrawer,
@@ -86,19 +88,28 @@ class HelpActivity :
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "HelpActivity.bool_is_from_navigation_drawer"
+    /** Params key for HelpActivity. */
+    const val HELP_ACTIVITY_PARAMS_KEY =
+      "HelpActivity.params"
+
+    /** Arguments key for HelpActivity saved state. */
+    const val HELP_ACTIVITY_STATE_KEY =
+      "HelpActivity.state"
 
     fun createHelpActivityIntent(
       context: Context,
-      profileId: Int?,
+      profileId: ProfileId?,
       isFromNavigationDrawer: Boolean
     ): Intent {
+      val args = HelpActivityParams.newBuilder().apply {
+        this.isFromNavigationDrawer = isFromNavigationDrawer
+      }.build()
       val intent = Intent(context, HelpActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      intent.putProtoExtra(HELP_ACTIVITY_PARAMS_KEY, args)
       intent.decorateWithScreenName(HELP_ACTIVITY)
+      if (profileId != null) {
+        intent.decorateWithUserProfileId(profileId)
+      }
       return intent
     }
   }

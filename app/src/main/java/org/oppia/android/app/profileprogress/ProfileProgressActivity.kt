@@ -16,6 +16,8 @@ import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity to display profile progress. */
@@ -39,7 +41,7 @@ class ProfileProgressActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }
 
@@ -79,11 +81,11 @@ class ProfileProgressActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val PROFILE_ID_EXTRA_KEY = "ProfileProgressActivity.profile_id"
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, ProfileProgressActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_PROGRESS_ACTIVITY)
       }
     }

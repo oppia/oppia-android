@@ -8,26 +8,17 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.AdministratorControlActivityStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
-
-/** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
-const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
-  "AdministratorControlsActivity.selected_controls_title"
-
-/** Argument key for of selected profile for selected controls in [AdministratorControlsActivity]. */
-const val SELECTED_PROFILE_ID_SAVED_KEY =
-  "AdministratorControlsActivity.selected_profile_id"
-
-/** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
-const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 
 /** Argument key used to identify [ProfileListFragment] in the backstack. */
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
@@ -35,15 +26,14 @@ const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 /** Argument key used to identify [ProfileEditFragment] in the backstack. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
-/** Argument key for the Profile deletion confirmation in [ProfileEditActivity]. */
-const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
-  "ProfileEditActivity.is_profile_deletion_dialog_visible"
-
 /** Argument key used to identify [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
 /** Argument key used to identify [ProfileAndDeviceIdFragment] in the backstack. */
 const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
+
+/** Argument key for Administrator Controls Activity saved state. */
+const val ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY = "ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
 class AdministratorControlsActivity :
@@ -68,17 +58,24 @@ class AdministratorControlsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val extraControlsTitle =
-      savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
+
+    val args = savedInstanceState?.getProto(
+      ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY,
+      AdministratorControlActivityStateBundle.getDefaultInstance()
+    )
+
+    val extraControlsTitle = args?.selectedControlsTitle
+
     isProfileDeletionDialogVisible =
-      savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) ?: false
+      args?.isProfileDeletionDialogVisible ?: false
     lastLoadedFragment = if (savedInstanceState != null) {
-      savedInstanceState.getStringFromBundle(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
+      args?.lastLoadedFragment as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY) ?: -1
+    val selectedProfileId = args?.selectedProfileId ?: -1
+
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
@@ -111,17 +108,16 @@ class AdministratorControlsActivity :
   }
 
   companion object {
-    /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
-      val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-      intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
-      return intent
-    }
 
-    /** Returns the argument key used to specify the user's internal profile ID. */
-    fun getIntentKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+    /** Returns an [Intent] to start this activity. */
+    fun createAdministratorControlsActivityIntent(context: Context, profileId: ProfileId?): Intent {
+
+      val intent = Intent(context, AdministratorControlsActivity::class.java)
+      intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
+      if (profileId != null) {
+        intent.decorateWithUserProfileId(profileId)
+      }
+      return intent
     }
   }
 

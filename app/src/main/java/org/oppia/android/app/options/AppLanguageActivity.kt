@@ -5,16 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AppLanguageActivityParams
 import org.oppia.android.app.model.AppLanguageActivityStateBundle
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.APP_LANGUAGE_ACTIVITY
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The activity to change the language of the app. */
@@ -26,7 +28,7 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     appLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
       profileId!!
@@ -41,14 +43,15 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createAppLanguageActivityIntent(
       context: Context,
       oppiaLanguage: OppiaLanguage,
-      profileId: Int?
+      internalProfileId: Int?
     ): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId!!).build()
       return Intent(context, AppLanguageActivity::class.java).apply {
         val arguments = AppLanguageActivityParams.newBuilder().apply {
           this.oppiaLanguage = oppiaLanguage
         }.build()
         putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(APP_LANGUAGE_ACTIVITY)
       }
     }

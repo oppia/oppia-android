@@ -7,6 +7,9 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -19,7 +22,8 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    val profileId = intent?.extractCurrentUserProfileId()
+    internalProfileId = profileId?.internalId ?: -1
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(
@@ -35,12 +39,12 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedTestActivity.profile_id"
-
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
     fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java).apply {
+        decorateWithUserProfileId(profileId)
+      }
       return intent
     }
   }

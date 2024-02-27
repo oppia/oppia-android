@@ -122,7 +122,7 @@ class OptionsActivityPresenter @Inject constructor(
    */
   fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     val appLanguageFragment =
-      AppLanguageFragment.newInstance(appLanguage, profileId = this.profileId!!)
+      AppLanguageFragment.newInstance(appLanguage, this.profileId!!)
     activity.supportFragmentManager
       .beginTransaction()
       .replace(R.id.multipane_options_container, appLanguageFragment)

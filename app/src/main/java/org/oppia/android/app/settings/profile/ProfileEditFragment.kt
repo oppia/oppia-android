@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileEditFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment that contains Profile Edit Screen. */
@@ -18,20 +21,24 @@ class ProfileEditFragment :
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
   companion object {
-    /** Argument key for the Multipane in tablet mode for [ProfileEditFragment]. */
-    const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
+    /** Arguments key for ProfileEditFragment. */
+    const val PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY = "ProfileEditFragment.arguments"
 
     /** This creates the new instance of [ProfileEditFragment]. */
     fun newInstance(
       internalProfileId: Int,
       isMultipane: Boolean
     ): ProfileEditFragment {
-      val args = Bundle()
-      args.putInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, internalProfileId)
-      args.putBoolean(IS_MULTIPANE_EXTRA_KEY, isMultipane)
-      val fragment = ProfileEditFragment()
-      fragment.arguments = args
-      return fragment
+      val args = ProfileEditFragmentArguments.newBuilder().apply {
+        this.internalProfileId = internalProfileId
+        this.isMultipane = isMultipane
+      }.build()
+
+      return ProfileEditFragment().apply {
+        arguments = Bundle().apply {
+          putProto(PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -45,11 +52,16 @@ class ProfileEditFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) {
+    val arguments = checkNotNull(arguments) {
       "Expected variables to be passed to ProfileEditFragment"
     }
-    val internalProfileId = args.getInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY)
-    val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA_KEY)
+    val args = arguments.getProto(
+      PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
+      ProfileEditFragmentArguments.getDefaultInstance()
+    )
+
+    val internalProfileId = args.internalProfileId
+    val isMultipane = args.isMultipane
     return profileEditFragmentPresenter.handleOnCreateView(
       inflater,
       container,

@@ -12,10 +12,12 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Developer Options. */
@@ -40,7 +42,7 @@ class DeveloperOptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId = intent.extractCurrentUserProfileId().internalId
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }
@@ -80,11 +82,13 @@ class DeveloperOptionsActivity :
   }
 
   companion object {
+
     /** Function to create intent for DeveloperOptionsActivity. */
-    fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createDeveloperOptionsActivityIntent(context: Context, profileId: ProfileId): Intent {
+
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

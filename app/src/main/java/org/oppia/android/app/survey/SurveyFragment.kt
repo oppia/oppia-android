@@ -7,8 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.model.SurveySelectedAnswer
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that represents the current state of a survey. */
@@ -18,6 +23,9 @@ class SurveyFragment :
   SelectedAnswerHandler {
 
   companion object {
+    /** Arguments key for SurveyFragment. */
+    const val SURVEY_FRAGMENT_ARGUMENTS_KEY = "SurveyFragment.arguments"
+
     /**
      * Creates a new instance of a SurveyFragment.
      *
@@ -29,12 +37,16 @@ class SurveyFragment :
       internalProfileId: Int,
       topicId: String
     ): SurveyFragment {
-      val surveyFragment = SurveyFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      surveyFragment.arguments = args
-      return surveyFragment
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = SurveyFragmentArguments.newBuilder().apply {
+        this.topicId = topicId
+      }.build()
+      return SurveyFragment().apply {
+        arguments = Bundle().apply {
+          putProto(SURVEY_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -51,9 +63,15 @@ class SurveyFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments!!.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)!!
-    val explorationId = arguments!!.getStringFromBundle(EXPLORATION_ID_ARGUMENT_KEY)!!
+
+    val args = arguments!!.getProto(
+      SURVEY_FRAGMENT_ARGUMENTS_KEY,
+      SurveyFragmentArguments.getDefaultInstance()
+    )
+
+    val internalProfileId = arguments!!.extractCurrentUserProfileId().internalId
+    val topicId = args.topicId!!
+    val explorationId = args.explorationId!!
 
     return surveyFragmentPresenter.handleCreateView(
       inflater,

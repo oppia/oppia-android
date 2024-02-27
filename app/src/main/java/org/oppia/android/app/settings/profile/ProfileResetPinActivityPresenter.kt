@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileResetPinActivityParams
+import org.oppia.android.app.settings.profile.ProfileResetPinActivity.Companion.PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.databinding.ProfileResetPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 /** The presenter for [ProfileResetPinActivity]. */
@@ -25,12 +28,14 @@ class ProfileResetPinActivityPresenter @Inject constructor(
         activity,
         R.layout.profile_reset_pin_activity
       )
-    val profileId = activity.intent.getIntExtra(
-      PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, 0
+
+    val args = activity.intent.getProtoExtra(
+      PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY,
+      ProfileResetPinActivityParams.getDefaultInstance()
     )
-    val isAdmin = activity.intent.getBooleanExtra(
-      PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, false
-    )
+
+    val profileId = args?.internalProfileId ?: 0
+    val isAdmin = args?.isAdmin ?: false
 
     binding.profileResetPinToolbar.setNavigationOnClickListener {
       (activity as ProfileResetPinActivity).finish()

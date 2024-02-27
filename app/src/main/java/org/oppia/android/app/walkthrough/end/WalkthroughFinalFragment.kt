@@ -7,21 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.WalkthroughFinalFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-
-private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
 
 /** The final slide for [WalkthroughActivity]. */
 class WalkthroughFinalFragment : InjectableFragment() {
   companion object {
+    /** Arguments key for WalkthroughFinalFragment. */
+    const val WALKTHROUGH_FINAL_FRAGMENT_ARGUMENTS_KEY = "WalkthroughFinalFragment.arguments"
+
     /** Returns a new [WalkthroughFinalFragment] to display the selected topic corresponding to the specified topic ID. */
     fun newInstance(topicId: String): WalkthroughFinalFragment {
-      val storyFragment = WalkthroughFinalFragment()
-      val args = Bundle()
-      args.putString(KEY_TOPIC_ID_ARGUMENT, topicId)
-      storyFragment.arguments = args
-      return storyFragment
+      val args = WalkthroughFinalFragmentArguments.newBuilder().setTopicId(topicId).build()
+      return WalkthroughFinalFragment().apply {
+        arguments = Bundle().apply {
+          putProto(WALKTHROUGH_FINAL_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -38,12 +42,16 @@ class WalkthroughFinalFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) {
         "Expected arguments to be passed to WalkthroughFinalFragment"
       }
+    val args = arguments.getProto(
+      WALKTHROUGH_FINAL_FRAGMENT_ARGUMENTS_KEY,
+      WalkthroughFinalFragmentArguments.getDefaultInstance()
+    )
     val topicId =
-      checkNotNull(args.getStringFromBundle(KEY_TOPIC_ID_ARGUMENT)) {
+      checkNotNull(args.topicId) {
         "Expected topicId to be passed to WalkthroughFinalFragment"
       }
     return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container, topicId)

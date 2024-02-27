@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
-  "RecentlyPlayedFragment.internal_profile_id"
 
 /** Fragment that contains all recently played stories. */
 class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener {
@@ -20,11 +20,12 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
 
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
-      val recentlyPlayedFragment = RecentlyPlayedFragment()
-      val args = Bundle()
-      args.putInt(RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY, internalProfileId)
-      recentlyPlayedFragment.arguments = args
-      return recentlyPlayedFragment
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      return RecentlyPlayedFragment().apply {
+        arguments = Bundle().apply {
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -41,9 +42,12 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to RecentlyPlayedFragment" }
-    val internalProfileId = args.getInt(RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY, -1)
+    val profileId =
+      arguments.extractCurrentUserProfileId()
+
+    val internalProfileId = profileId.internalId
     return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
@@ -25,10 +28,12 @@ class AudioFragment :
      * @param profileId used by AudioFragment to get Audio Language.
      * @return a new instance of [AudioFragment].
      */
-    fun newInstance(profileId: Int): AudioFragment {
+    fun newInstance(internalProfileId: Int): AudioFragment {
+
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val audioFragment = AudioFragment()
       val args = Bundle()
-      args.putInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, profileId)
+      args.decorateWithUserProfileId(profileId)
       audioFragment.arguments = args
       return audioFragment
     }
@@ -46,7 +51,7 @@ class AudioFragment :
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     val internalProfileId =
-      arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */ -1)
+      arguments?.extractCurrentUserProfileId()?.internalId ?: -1
     return audioFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

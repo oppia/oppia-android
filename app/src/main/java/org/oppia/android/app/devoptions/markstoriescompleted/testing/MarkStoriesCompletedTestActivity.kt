@@ -7,6 +7,9 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
 class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -19,7 +22,10 @@ class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivit
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_stories_completed_activity)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+
+    val profileId = intent?.extractCurrentUserProfileId()
+    internalProfileId = profileId?.internalId ?: -1
+
     if (getMarkStoriesCompletedFragment() == null) {
       val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(
@@ -35,13 +41,12 @@ class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivit
   }
 
   companion object {
-    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
-    const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkStoriesCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val intent = Intent(context, MarkStoriesCompletedTestActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }
