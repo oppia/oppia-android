@@ -75,7 +75,9 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -174,6 +176,8 @@ class OnboardingLearnerIntroFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
+  // Android components
   @Test
   fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
@@ -205,11 +209,13 @@ class OnboardingLearnerIntroFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
+  // Android components
   @Test
   fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
       if (scenario != null) {
