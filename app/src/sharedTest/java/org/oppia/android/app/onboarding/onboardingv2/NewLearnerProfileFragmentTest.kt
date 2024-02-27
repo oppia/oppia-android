@@ -1,29 +1,28 @@
-package org.oppia.android.app.options
+package org.oppia.android.app.onboarding.onboardingv2
 
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,13 +39,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
-import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -77,7 +70,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -86,17 +78,16 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -114,174 +105,148 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AudioLanguageFragment]. */
-// Function name: test names are conventionally named with underscores.
+/** Tests for [NewLearnerProfileFragment]. */
+// FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = AudioLanguageFragmentTest.TestApplication::class)
-class AudioLanguageFragmentTest {
-  private companion object {
-    private const val ENGLISH_BUTTON_INDEX = 0
-    private const val PORTUGUESE_BUTTON_INDEX = 4
-    private const val ARABIC_BUTTON_INDEX = 5
-    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 6
-  }
+@Config(
+  application = NewLearnerProfileFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class NewLearnerProfileFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   @Test
-  fun testOpenFragment_withEnglish_selectedLanguageIsEnglish() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      verifyEnglishIsSelected()
-    }
-  }
+  fun testFragment_nicknameLabelIsDisplayed() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_label))
+        .check(matches(isDisplayed()))
 
-  @Test
-  fun testOpenFragment_withPortuguese_selectedLanguageIsPortuguese() {
-    launchActivityWithLanguage(BRAZILIAN_PORTUGUESE_LANGUAGE).use {
-      verifyPortugueseIsSelected()
-    }
-  }
-
-  @Test
-  fun testOpenFragment_withNigerianPidgin_selectedLanguageIsNaija() {
-    launchActivityWithLanguage(NIGERIAN_PIDGIN_LANGUAGE).use {
-      verifyNigerianPidginIsSelected()
-    }
-  }
-
-  @Test
-  fun testAudioLanguage_configChange_selectedLanguageIsEnglish() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      rotateToLandscape()
-
-      verifyEnglishIsSelected()
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAudioLanguage_tabletConfig_selectedLanguageIsEnglish() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      testCoroutineDispatchers.runCurrent()
-
-      verifyEnglishIsSelected()
-    }
-  }
-
-  @Test
-  fun testAudioLanguage_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      selectPortuguese()
-
-      verifyPortugueseIsSelected()
-    }
-  }
-
-  @Test
-  fun testAudioLanguage_changeLanguageToPortuguese_configChange_selectedLanguageIsPortuguese() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      selectPortuguese()
-
-      rotateToLandscape()
-
-      verifyPortugueseIsSelected()
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAudioLanguage_configChange_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      rotateToLandscape()
-
-      selectPortuguese()
-
-      verifyPortugueseIsSelected()
-    }
-  }
-
-  @Test
-  fun testAudioLanguage_selectPortuguese_thenEnglish_selectedLanguageIsPortuguese() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      selectPortuguese()
-
-      selectEnglish()
-
-      verifyEnglishIsSelected()
-    }
-  }
-
-  @Test
-  fun testAudioLanguage_onboardingV2Enabled_languageSelectionDropdownIsDisplayed() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_language_dropdown_background)).check(
-        matches(
-          isDisplayed()
+      onView(withId(R.id.create_profile_nickname_label))
+        .check(
+          matches(
+            withText(
+              context.getString(
+                R.string.create_profile_activity_nickname_label
+              )
+            )
+          )
         )
-      )
     }
   }
 
-  @Config(qualifiers = "land")
   @Test
-  fun testAudioLanguage_onboardingV2Enabled_configChange_languageDropdownIsDisplayed() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(isRoot()).perform(orientationLandscape())
+  fun testFragment_nicknameEditTextIsDisplayed() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_stepCountText_isDisplayed() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(withText(R.string.onboarding_step_count_three)))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
+  // Android components
+  @Test
+  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
+    launchNewLearnerProfileActivity().use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_language_dropdown_background)).check(
-        matches(
-          isDisplayed()
-        )
-      )
+      if (scenario != null) {
+        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+      }
     }
   }
 
-  @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testAudioLanguage_onboardingV2Enabled_tabletConfigChange_languageDropdownIsDisplayed() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(withId(R.id.audio_language_dropdown_background)).check(
-        matches(
-          isDisplayed()
+  fun testFragment_continueButtonClicked_filledNickname_launchesLearnerIntroScreen() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
         )
-      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingLearnerIntroActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_continueButtonClicked_emptyNickname_showNicknameErrorText() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_continueButtonClicked_filledNickname_afterError_launchesLearnerIntroScreen() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingLearnerIntroActivity::class.java.name))
     }
   }
 
   @Config(qualifiers = "land")
   @Test
   fun testFragment_landscapeMode_stepCountText_isNotDisplayed() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-  }
-
-  @Config(qualifiers = "sw600dp-land")
-  @Test
-  fun testFragment_tabletLandscapeMode_stepCountText_isNotDisplayed() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+    launchNewLearnerProfileActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_steps_count))
@@ -292,131 +257,109 @@ class AudioLanguageFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
   // Android components
   @Test
-  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+  fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
+    launchNewLearnerProfileActivity().use { scenario ->
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.onboarding_navigation_back))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       if (scenario != null) {
-        Truth.assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
       }
     }
   }
 
+  @Config(qualifiers = "land")
   @Test
-  fun testFragment_continueButtonClicked_launchesHomeScreen() {
-    forceEnableOnboardingFlowV2()
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+  fun testFragment_landscapeMode_continueButtonClicked_launchesLearnerIntroScreen() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(HomeActivity::class.java.name))
+      intended(hasComponent(OnboardingLearnerIntroActivity::class.java.name))
     }
   }
 
-  private fun launchActivityWithLanguage(
-    audioLanguage: AudioLanguage
-  ): ActivityScenario<AppLanguageActivity> {
-    return launch<AppLanguageActivity>(createDefaultAudioActivityIntent(audioLanguage)).also {
+  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_landscapeMode_continueButtonClicked_emptyNickname_showNicknameErrorText() {
+    launchNewLearnerProfileActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
     }
   }
 
-  private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
-    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_landscape_continueButtonClicked_afterErrorShown_launchesLearnerIntroScreen() {
+    launchNewLearnerProfileActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
 
-  private fun rotateToLandscape() {
-    onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingLearnerIntroActivity::class.java.name))
+    }
   }
 
-  private fun selectEnglish() {
-    selectLanguage(ENGLISH_BUTTON_INDEX)
-  }
-
-  private fun selectPortuguese() {
-    selectLanguage(PORTUGUESE_BUTTON_INDEX)
-  }
-
-  private fun selectLanguage(index: Int) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.audio_language_recycler_view,
-        position = index,
-        targetViewId = R.id.language_radio_button
+  private fun launchNewLearnerProfileActivity():
+    ActivityScenario<NewLearnerProfileActivity>? {
+      val scenario = ActivityScenario.launch<NewLearnerProfileActivity>(
+        NewLearnerProfileActivity.createNewLearnerProfileActivity(context)
       )
-    ).perform(click())
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun verifyEnglishIsSelected() {
-    verifyLanguageIsSelected(index = ENGLISH_BUTTON_INDEX, expectedLanguageName = "English")
-  }
-
-  private fun verifyPortugueseIsSelected() {
-    verifyLanguageIsSelected(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
-  }
-
-  private fun verifyNigerianPidginIsSelected() {
-    verifyLanguageIsSelected(index = NIGERIAN_PIDGIN_BUTTON_INDEX, expectedLanguageName = "Naijá")
-  }
-
-  private fun verifyLanguageIsSelected(index: Int, expectedLanguageName: String) {
-    onView(
-      atPositionOnView(
-        R.id.audio_language_recycler_view,
-        index,
-        R.id.language_radio_button
-      )
-    ).check(matches(isChecked()))
-    onView(
-      atPositionOnView(
-        R.id.audio_language_recycler_view,
-        index,
-        R.id.language_text_view
-      )
-    ).check(matches(withText(expectedLanguageName)))
-  }
-
-  private fun forceEnableOnboardingFlowV2() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-  }
+      testCoroutineDispatchers.runCurrent()
+      return scenario
+    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, PlatformParameterModule::class, ApplicationModule::class,
-      RobolectricModule::class, LoggerModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      TestPlatformParameterModule::class, RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigModule::class,
-      WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
@@ -430,18 +373,18 @@ class AudioLanguageFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
+    fun inject(newLearnerProfileFragmentTest: NewLearnerProfileFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAudioLanguageFragmentTest_TestApplicationComponent.builder()
+      DaggerNewLearnerProfileFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest) {
-      component.inject(audioLanguageFragmentTest)
+    fun inject(newLearnerProfileFragmentTest: NewLearnerProfileFragmentTest) {
+      component.inject(newLearnerProfileFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

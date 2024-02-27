@@ -40,7 +40,6 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()
     }
-
     return binding.root
   }
 }

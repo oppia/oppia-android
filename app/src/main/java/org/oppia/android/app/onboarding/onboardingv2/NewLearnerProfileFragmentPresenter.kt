@@ -1,6 +1,8 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.provider.MediaStore
@@ -31,6 +33,7 @@ class NewLearnerProfileFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
+  private val orientation = Resources.getSystem().configuration.orientation
 
   /** Initialize layout bindings. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -92,6 +95,9 @@ class NewLearnerProfileFragmentPresenter @Inject constructor(
     binding.createProfileEditPictureIcon.setOnClickListener { openGalleryIntent() }
     binding.createProfilePicturePrompt.setOnClickListener { openGalleryIntent() }
     binding.createProfileUserImageView.setOnClickListener { openGalleryIntent() }
+
+    binding.onboardingStepsCount.visibility =
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
 
     return binding.root
   }
