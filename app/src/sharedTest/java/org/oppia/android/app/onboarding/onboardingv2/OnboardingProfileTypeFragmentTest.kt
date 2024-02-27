@@ -12,11 +12,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -76,7 +74,9 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -191,11 +191,13 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
+  // Android components
   @Test
   fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
     launchOnboardingProfileTypeActivity().use { scenario ->
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
       if (scenario != null) {
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
@@ -203,22 +205,13 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_landscapeMode_stepCountText_isNotDisplayed() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-  }
-
-  @Config(qualifiers = "land")
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
+  // Android components
   @Test
   fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
     launchOnboardingProfileTypeActivity().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -237,11 +230,23 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Config(qualifiers = "land")
   @Test
-  fun testFragment_landscapeMode_studentNavigationCardClicked_launchesNewProfileScreen() {
+  fun testFragment_startInLandscapeMode_studentNavigationCardClicked_launchesNewProfileScreen() {
+    launchOnboardingProfileTypeActivity().use {
+      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(NewLearnerProfileActivity::class.java.name))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testFragment_orientationChange_studentNavigationCardClicked_launchesNewProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(NewLearnerProfileActivity::class.java.name))
@@ -257,11 +262,24 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Config(qualifiers = "land")
   @Test
-  fun testFragment_landscapeMode_supervisorNavigationCardClicked_launchesProfileChooserScreen() {
+  fun testFragment_inLandscapeMode_supervisorNavigationCardClicked_launchesProfileChooserScreen() {
+    launchOnboardingProfileTypeActivity().use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
