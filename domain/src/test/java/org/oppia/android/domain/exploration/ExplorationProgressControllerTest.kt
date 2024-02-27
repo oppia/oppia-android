@@ -83,11 +83,11 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -167,7 +167,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_noExploration_throwsException() {
     // Can't retrieve the current state until the play session is started.
-    assertThrows(UninitializedPropertyAccessException::class) {
+    assertThrows<UninitializedPropertyAccessException>() {
       explorationProgressController.getCurrentState()
     }
   }

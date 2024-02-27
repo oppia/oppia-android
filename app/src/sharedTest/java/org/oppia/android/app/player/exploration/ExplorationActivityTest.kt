@@ -130,11 +130,11 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
