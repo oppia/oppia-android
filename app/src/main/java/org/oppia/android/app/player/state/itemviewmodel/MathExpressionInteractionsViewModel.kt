@@ -114,8 +114,8 @@ class MathExpressionInteractionsViewModel private constructor(
 
     // Initializing with default values so that submit button is enabled by default.
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-      null,
-      true
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
     )
   }
 
@@ -135,17 +135,17 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-          " math_content-with-value=\"$mathContentValue\" />"
+            " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-        answerTextString,
-        useFractionsForDivision,
-        allowedVariables,
-        mathExpressionAccessibilityUtil,
-        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-      ) ?: answerTextString
+          answerTextString,
+          useFractionsForDivision,
+          allowedVariables,
+          mathExpressionAccessibilityUtil,
+          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+        ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
@@ -164,7 +164,6 @@ class MathExpressionInteractionsViewModel private constructor(
       }
     }
     errorMessage.set(pendingAnswerError)
-
     return pendingAnswerError
   }
 
@@ -296,7 +295,6 @@ class MathExpressionInteractionsViewModel private constructor(
   }
 
   private companion object {
-
     /**
      * Enum class representing different types of interactions in a mathematical expression input field.
      */
@@ -428,9 +426,8 @@ class MathExpressionInteractionsViewModel private constructor(
       fun computeSubmitTimeError(
         answerText: String,
         allowedVariables: List<String>,
-        appLanguageResourceHandler: AppLanguageResourceHandler,
+        appLanguageResourceHandler: AppLanguageResourceHandler
       ): String? {
-
         if (answerText.isBlank()) {
           return when (this) {
             NUMERIC_EXPRESSION -> {
@@ -445,7 +442,7 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             MATH_EQUATION -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_equation_error_empty_input
+                R.string.math_expression_error_empty_input
               )
             }
           }

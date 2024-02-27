@@ -82,7 +82,6 @@ class MathExpressionInteractionsViewTestActivity :
             .createFactoryForMathEquation()
             .create(interaction = params.interaction)
       }
-
       MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED,
       MathInteractionType.UNRECOGNIZED, null -> {
         // Default to numeric expression arbitrarily (since something needs to be defined).

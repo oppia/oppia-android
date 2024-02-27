@@ -8,10 +8,13 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
@@ -275,7 +278,7 @@ class MathExpressionInteractionsViewTest {
   }
 
   @Test
-  fun testNumericExpression_Input_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+  fun testNumericExpression_submitWithBlankInput_emptyInputErrorIsDisplayed() {
     val interaction = createInteractionWithPlaceholder("test placeholder")
     launchForNumericExpressions(interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
@@ -283,14 +286,14 @@ class MathExpressionInteractionsViewTest {
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.submit_button)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
         .perform(
-          ViewActions.click()
+          click()
         )
       onView(withId(R.id.math_expression_input_error))
         .check(
           matches(
-            ViewMatchers.withText(
+            withText(
               R.string.numeric_expression_error_empty_input
             )
           )
@@ -299,7 +302,7 @@ class MathExpressionInteractionsViewTest {
   }
 
   @Test
-  fun testAlgebraicExpression_Input_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+  fun testAlgebraicExpression_submitWithBlankInput_emptyInputErrorIsDisplayed() {
     val interaction = createInteractionWithPlaceholder("test placeholder")
     launchForAlgebraicExpressions(interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
@@ -307,14 +310,14 @@ class MathExpressionInteractionsViewTest {
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.submit_button)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
         .perform(
-          ViewActions.click()
+          click()
         )
       onView(withId(R.id.math_expression_input_error))
         .check(
           matches(
-            ViewMatchers.withText(
+            withText(
               R.string.algebraic_expression_error_empty_input
             )
           )
@@ -323,7 +326,7 @@ class MathExpressionInteractionsViewTest {
   }
 
   @Test
-  fun testMathEquation_Input_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+  fun testMathEquation_submitWithBlankInput_emptyInputErrorIsDisplayed() {
     val interaction = createInteractionWithPlaceholder("test placeholder")
     launchForMathEquations(interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
@@ -331,15 +334,15 @@ class MathExpressionInteractionsViewTest {
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.submit_button)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
         .perform(
-          ViewActions.click()
+          click()
         )
       onView(withId(R.id.math_expression_input_error))
         .check(
           matches(
-            ViewMatchers.withText(
-              R.string.math_equation_error_empty_input
+            withText(
+              R.string.math_expression_error_empty_input
             )
           )
         )
@@ -1697,7 +1700,7 @@ class MathExpressionInteractionsViewTest {
     Iteration("algebraic_expression", "type=ALGEBRAIC_EXPRESSION", "text="),
     Iteration("math_equation", "type=MATH_EQUATION", "text=")
   )
-  fun testView_allInteractions_blankInput_ProduceSubmitTimeError() {
+  fun testView_allInteractions_blankInput_produceSubmitTimeError() {
     val interactionType = MathInteractionType.valueOf(type)
     val interaction = createInteraction()
     launch(interactionType, interaction).use { scenario ->
