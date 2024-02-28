@@ -1986,8 +1986,11 @@ class ExplorationActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    // Click on 'X' icon on toolbar
+    // Click on 'X' icon on toolbar.
     onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    explorationDataController.stopPlayingExploration(isCompletion = false)
     testCoroutineDispatchers.runCurrent()
 
     val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
@@ -2045,7 +2048,7 @@ class ExplorationActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    // Click on 'X' icon on toolbar
+    // Click on 'X' icon on toolbar.
     onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
     testCoroutineDispatchers.runCurrent()
 
