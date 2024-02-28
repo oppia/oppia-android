@@ -1987,7 +1987,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     // Click on 'X' icon on toolbar
-    onView(withDrawable(R.drawable.ic_close_white_24dp)).perform(click())
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click());
     testCoroutineDispatchers.runCurrent()
 
     val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
