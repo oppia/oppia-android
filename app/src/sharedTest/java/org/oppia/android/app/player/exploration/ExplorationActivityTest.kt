@@ -1967,6 +1967,36 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExpActivity_pressToolbarBackIcon_logsLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingNewExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // Click on 'X' icon on toolbar
+    onView(withDrawable(R.drawable.ic_close_white_24dp)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(1)
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
