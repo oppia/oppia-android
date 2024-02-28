@@ -140,3 +140,18 @@ enum AudioLanguage {
   ARABIC_LANGUAGE = 7;
   NIGERIAN_PIDGIN_LANGUAGE = 8;
 }
+
+// Represents the type of user using the app.
+enum ProfileType {
+  // The undefined ProfileType.
+  PROFILE_TYPE_UNSPECIFIED = 0;
+
+  // Represents a single learner profile without an admin pin set.
+  SOLE_LEARNER = 1;
+
+  // Represents an admin profile when there are more than one profiles.
+  SUPERVISOR = 2;
+
+  // Represents a non-admin profile in a multiple profile setup.
+  ADDITIONAL_LEARNER = 3;
+}

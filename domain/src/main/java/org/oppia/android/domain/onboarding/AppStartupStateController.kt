@@ -4,21 +4,21 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
-import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
+private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
 
 /** Controller for persisting and retrieving the user's initial app state upon opening the app. */
 @Singleton
@@ -29,8 +29,7 @@ class AppStartupStateController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val currentBuildFlavor: BuildFlavor,
   private val deprecationController: DeprecationController,
-  @EnableAppAndOsDeprecation
-  private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
+  private val profileManagementController: ProfileManagementController
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -104,7 +103,10 @@ class AppStartupStateController @Inject constructor(
       APP_STARTUP_STATE_PROVIDER_ID
     ) { onboardingState, deprecationResponseDatabase ->
       AppStartupState.newBuilder().apply {
-        startupMode = computeAppStartupMode(onboardingState, deprecationResponseDatabase)
+        startupMode = deprecationController.processStartUpMode(
+          onboardingState,
+          deprecationResponseDatabase
+        )
         buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
       }.build()
     }
@@ -125,23 +127,6 @@ class AppStartupStateController @Inject constructor(
         oppiaLogger.e("StartupController", "Failed to update onboarding state.", failure)
       }
     }
-  }
-
-  private fun computeAppStartupMode(
-    onboardingState: OnboardingState,
-    deprecationResponseDatabase: DeprecationResponseDatabase
-  ): StartupMode {
-    // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
-    // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
-    if (!enableAppAndOsDeprecation.get().value) {
-      return when {
-        hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
-        onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
-        else -> StartupMode.USER_NOT_YET_ONBOARDED
-      }
-    }
-
-    return deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
   }
 
   private fun computeBuildNoticeMode(
@@ -189,5 +174,27 @@ class AppStartupStateController @Inject constructor(
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.isBeforeToday() ?: true
     } else false
+  }
+
+  /** Returns the state of the app based on the number and type of existing profiles. */
+  fun getProfileOnboardingState(): DataProvider<ProfileOnboardingState> {
+    return profileManagementController.getProfiles()
+      .transform(PROFILE_ONBOARDING_STATE_PROVIDER_ID) { profileList ->
+        when {
+          profileList.size > 1 -> {
+            ProfileOnboardingState.MULTIPLE_PROFILES
+          }
+          profileList.size == 1 -> {
+            if (profileList.first().isAdmin && profileList.first().pin.isNotBlank()) {
+              ProfileOnboardingState.ADMIN_PROFILE_ONLY
+            } else {
+              ProfileOnboardingState.SOLE_LEARNER_PROFILE
+            }
+          }
+          else -> {
+            ProfileOnboardingState.NEW_INSTALL
+          }
+        }
+      }
   }
 }

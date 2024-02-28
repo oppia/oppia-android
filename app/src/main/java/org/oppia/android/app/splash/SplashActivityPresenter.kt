@@ -9,12 +9,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.DeprecationNoticeActionResponse
@@ -31,6 +34,7 @@ import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.DeprecationController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -65,6 +69,7 @@ class SplashActivityPresenter @Inject constructor(
   private val currentBuildFlavor: BuildFlavor,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
+  private val profileManagementController: ProfileManagementController
 ) {
   lateinit var startupMode: StartupMode
 
@@ -290,6 +295,9 @@ class SplashActivityPresenter @Inject constructor(
           AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
       }
+      StartupMode.ONBOARDING_FLOW_V2 -> {
+        getProfileOnboardingState()
+      }
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
@@ -297,6 +305,64 @@ class SplashActivityPresenter @Inject constructor(
         activity.finish()
       }
     }
+  }
+
+  private fun getProfileOnboardingState() {
+    appStartupStateController.getProfileOnboardingState().toLiveData().observe(
+      activity,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            computeLoginRoute(result.value)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "SplashActivity",
+              "Encountered unexpected non-successful result when fetching onboarding state",
+              result.error
+            )
+          }
+          is AsyncResult.Pending -> {}
+        }
+      }
+    )
+  }
+
+  private fun computeLoginRoute(onboardingState: ProfileOnboardingState) {
+    when (onboardingState) {
+      ProfileOnboardingState.NEW_INSTALL -> {
+        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+        activity.finish()
+      }
+      ProfileOnboardingState.SOLE_LEARNER_PROFILE -> {
+        profileManagementController.getProfiles().toLiveData().observe(
+          activity,
+          { result ->
+            when (result) {
+              is AsyncResult.Success -> {
+                val internalProfileId = getSoleLearnerProfile(result.value)?.id?.internalId
+                activity.startActivity(HomeActivity.createHomeActivity(activity, internalProfileId))
+                activity.finish()
+              }
+              is AsyncResult.Pending -> {} // no-op
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  "SplashActivity", "Failed to retrieve the list of profiles", result.error
+                )
+              }
+            }
+          }
+        )
+      }
+      else -> {
+        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+        activity.finish()
+      }
+    }
+  }
+
+  private fun getSoleLearnerProfile(profiles: List<Profile>): Profile? {
+    return profiles.find { it.isAdmin }
   }
 
   private fun computeInitStateDataProvider(): DataProvider<SplashInitState> {
