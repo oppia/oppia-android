@@ -1938,7 +1938,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExpActivity_pressBack_logsLessonSavedAdvertentlyEvent() {
+  fun testExpActivity_startNewExploration_pressBack_logsLessonSavedAdvertentlyEvent() {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1967,7 +1967,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExpActivity_pressToolbarBackIcon_logsLessonSavedAdvertentlyEvent() {
+  fun testExpActivity_startNewExploration_pressToolbarBackIcon_logsLessonSavedAdvertentlyEvent() {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1987,13 +1987,72 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     // Click on 'X' icon on toolbar
-    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click());
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
     testCoroutineDispatchers.runCurrent()
 
     val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
       it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
     }
     assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testExpActivity_replayExploration_pressBack_doesNotLogLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    )
+    explorationDataController.replayExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testExpActivity_replayExploration_pressToolbarBackIcon_doesNotLogLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    )
+    explorationDataController.replayExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // Click on 'X' icon on toolbar
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(0)
   }
 
   @Test
