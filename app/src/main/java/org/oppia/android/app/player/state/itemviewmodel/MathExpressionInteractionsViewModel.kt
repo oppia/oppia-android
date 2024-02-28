@@ -153,7 +153,6 @@ class MathExpressionInteractionsViewModel private constructor(
   }.build()
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-
     pendingAnswerError = when (category) {
       // There's no support for real-time errors.
       AnswerErrorCategory.REAL_TIME -> null
