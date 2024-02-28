@@ -298,7 +298,7 @@ class SplashActivityPresenter @Inject constructor(
         )
       }
       StartupMode.ONBOARDING_FLOW_V2 -> {
-        computeRoute()
+        getProfileOnboardingState()
       }
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
@@ -309,18 +309,52 @@ class SplashActivityPresenter @Inject constructor(
     }
   }
 
-  private fun computeRoute() {
-    // Use SplashActivityViewModel to retrieve the profile type and onboarding status
-    // Based on the returned profile information, compute route as follows:
-    when (getProfileOnboardingState()) {
+  private fun getProfileOnboardingState() {
+    appStartupStateController.getProfileOnboardingState().toLiveData().observe(
+      activity,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            computeLoginRoute(result.value)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "SplashActivity",
+              "Encountered unexpected non-successful result when fetching onboarding state",
+              result.error
+            )
+          }
+          is AsyncResult.Pending -> {}
+        }
+      }
+    )
+  }
+
+  private fun computeLoginRoute(onboardingState: ProfileOnboardingState) {
+    when (onboardingState) {
       ProfileOnboardingState.NEW_INSTALL -> {
         activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
         activity.finish()
       }
       ProfileOnboardingState.SOLE_LEARNER_PROFILE -> {
-        //  TODO retrieve profileId and pass to intent
-        activity.startActivity(HomeActivity.createHomeActivity(activity, null))
-        activity.finish()
+        profileManagementController.getProfiles().toLiveData().observe(
+          activity,
+          { result ->
+            when (result) {
+              is AsyncResult.Success -> {
+                val internalProfileId = getSoleLearnerProfile(result.value)?.id?.internalId
+                activity.startActivity(HomeActivity.createHomeActivity(activity, internalProfileId))
+                activity.finish()
+              }
+              is AsyncResult.Pending -> {} // no-op
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  "SplashActivity", "Failed to retrieve the list of profiles", result.error
+                )
+              }
+            }
+          }
+        )
       }
       else -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
@@ -329,43 +363,8 @@ class SplashActivityPresenter @Inject constructor(
     }
   }
 
-  /** Returns the state of the app based on the number of existing profiles. */
-  private fun getProfileOnboardingState(): ProfileOnboardingState {
-    var profileList = listOf<Profile>()
-    profileManagementController.getProfiles().toLiveData().observe(
-      activity,
-      { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            profileList = result.value
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "SplashActivity",
-              "Encountered unexpected non-successful result when fetching profiles",
-              result.error
-            )
-          }
-          else -> {} // no-op
-        }
-      }
-    )
-
-    return when {
-      profileList.size > 1 -> {
-        ProfileOnboardingState.MULTIPLE_PROFILES
-      }
-      profileList.size == 1 -> {
-        if (profileList.first().isAdmin && profileList.first().hasPin) {
-          ProfileOnboardingState.ADMIN_PROFILE_ONLY
-        } else {
-          ProfileOnboardingState.SOLE_LEARNER_PROFILE
-        }
-      }
-      else -> {
-        ProfileOnboardingState.NEW_INSTALL
-      }
-    }
+  private fun getSoleLearnerProfile(profiles: List<Profile>): Profile? {
+    return profiles.find { it.isAdmin }
   }
 
   private fun computeInitStateDataProvider(): DataProvider<SplashInitState> {
