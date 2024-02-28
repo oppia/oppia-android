@@ -68,6 +68,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
@@ -128,6 +129,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -221,6 +223,9 @@ class ExplorationActivityTest {
 
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId: Int = 0
 
@@ -1930,6 +1935,35 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testExpActivity_pressBack_logsLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingNewExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(1)
   }
 
   @Test
