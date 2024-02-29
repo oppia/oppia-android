@@ -40,10 +40,12 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.FontSizeMatcher
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -109,8 +111,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.app.utility.FontSizeMatcher
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -299,7 +299,8 @@ class ResumeLessonFragmentTest {
   fun testResumeLessonFragment_extraLargeTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
-        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
@@ -311,12 +312,12 @@ class ResumeLessonFragmentTest {
     }
   }
 
-
   @Test
   fun testResumeLessonFragment_largeTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
-        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.LARGE_TEXT_SIZE)
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
@@ -332,7 +333,8 @@ class ResumeLessonFragmentTest {
   fun testResumeLessonFragment_mediumTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
-        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.MEDIUM_TEXT_SIZE)
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
@@ -348,7 +350,8 @@ class ResumeLessonFragmentTest {
   fun testResumeLessonFragment_smallTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
-        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.SMALL_TEXT_SIZE)
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.SMALL_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
