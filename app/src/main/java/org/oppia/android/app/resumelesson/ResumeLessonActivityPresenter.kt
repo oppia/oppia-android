@@ -2,6 +2,7 @@ package org.oppia.android.app.resumelesson
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
@@ -77,22 +78,24 @@ class ResumeLessonActivityPresenter @Inject constructor(
 
   /** Loads [ResumeLessonFragment]. */
   fun loadResumeLessonFragment(readingTextSize: ReadingTextSize) {
-    if (getResumeLessonFragment() == null) {
-      val resumeLessonFragment = ResumeLessonFragment.newInstance(
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        parentScreen,
-        explorationCheckpoint,
-        readingTextSize
-      )
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.resume_lesson_fragment_placeholder,
-        resumeLessonFragment,
-        RESUME_LESSON_TAG
-      ).commitNow()
-    }
+    if (getResumeLessonFragment() != null)
+      activity.supportFragmentManager.beginTransaction()
+        .remove(getResumeLessonFragment() as Fragment).commitNow()
+
+    val resumeLessonFragment = ResumeLessonFragment.newInstance(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      parentScreen,
+      explorationCheckpoint,
+      readingTextSize
+    )
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.resume_lesson_fragment_placeholder,
+      resumeLessonFragment,
+      RESUME_LESSON_TAG
+    ).commitNow()
   }
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {

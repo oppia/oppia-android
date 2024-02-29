@@ -109,6 +109,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.utility.FontSizeMatcher
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -291,6 +293,71 @@ class ResumeLessonFragmentTest {
       parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
       checkpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+  }
+
+  @Test
+  fun testResumeLessonFragment_extraLargeTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+
+  @Test
+  fun testResumeLessonFragment_largeTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testResumeLessonFragment_mediumTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_text_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testResumeLessonFragment_smallTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter.loadResumeLessonFragment(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
+          )
+        )
+      )
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
