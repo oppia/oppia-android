@@ -11,52 +11,77 @@
       type="org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel" />
   </data>
 
-  <FrameLayout
-    android:id="@+id/interaction_container_frame_layout"
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/drag_drop_white_background"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:paddingStart="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="12dp"
-    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
-    app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationSplitViewMarginEnd="@{@dimen/interaction_item_split_view_margin_end}"
-    app:explorationSplitViewMarginStart="@{@dimen/interaction_item_split_view_margin_start}"
-    app:explorationSplitViewMarginTop="@{@dimen/interaction_item_split_view_margin_top}"
-    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
-    app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/interaction_item_exploration_view_margin_end}"
-    app:explorationViewMarginStart="@{@dimen/interaction_item_exploration_view_margin_start}"
-    app:explorationViewMarginTop="@{@dimen/interaction_item_exploration_view_margin_top}"
-    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
-    app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionSplitViewMarginEnd="@{@dimen/interaction_item_split_view_margin_end}"
-    app:questionSplitViewMarginStart="@{@dimen/interaction_item_split_view_margin_start}"
-    app:questionSplitViewMarginTop="@{@dimen/interaction_item_split_view_margin_top}"
-    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
-    app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/interaction_item_question_view_margin_end}"
-    app:questionViewMarginStart="@{@dimen/interaction_item_question_view_margin_start}"
-    app:questionViewMarginTop="@{@dimen/interaction_item_question_view_margin_top}">
+    android:layout_height="wrap_content">
 
-    <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
-      android:id="@+id/image_click_interaction_image_view"
-      android:layout_width="wrap_content"
+    <FrameLayout
+      android:id="@+id/interaction_container_frame_layout"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:adjustViewBounds="true"
-      app:clickableAreas="@{viewModel.selectableRegions}"
-      app:entityId="@{viewModel.entityId}"
-      app:imageUrl="@{viewModel.imagePath}"
-      app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
-      app:overlayView="@{interactionContainerFrameLayout}" />
+      android:background="@drawable/drag_drop_white_background"
+      android:descendantFocusability="beforeDescendants"
+      android:focusableInTouchMode="true"
+      android:paddingStart="16dp"
+      android:paddingTop="12dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="12dp"
+      app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
+      app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
+      app:explorationSplitViewMarginEnd="@{@dimen/interaction_item_split_view_margin_end}"
+      app:explorationSplitViewMarginStart="@{@dimen/interaction_item_split_view_margin_start}"
+      app:explorationSplitViewMarginTop="@{@dimen/interaction_item_split_view_margin_top}"
+      app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
+      app:explorationViewMarginBottom="@{@dimen/space_0dp}"
+      app:explorationViewMarginEnd="@{@dimen/interaction_item_exploration_view_margin_end}"
+      app:explorationViewMarginStart="@{@dimen/interaction_item_exploration_view_margin_start}"
+      app:explorationViewMarginTop="@{@dimen/interaction_item_exploration_view_margin_top}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
+      app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
+      app:questionSplitViewMarginEnd="@{@dimen/interaction_item_split_view_margin_end}"
+      app:questionSplitViewMarginStart="@{@dimen/interaction_item_split_view_margin_start}"
+      app:questionSplitViewMarginTop="@{@dimen/interaction_item_split_view_margin_top}"
+      app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
+      app:questionViewMarginBottom="@{@dimen/space_0dp}"
+      app:questionViewMarginEnd="@{@dimen/interaction_item_question_view_margin_end}"
+      app:questionViewMarginStart="@{@dimen/interaction_item_question_view_margin_start}"
+      app:questionViewMarginTop="@{@dimen/interaction_item_question_view_margin_top}">
 
-    <View
-      android:id="@+id/default_selected_region"
-      android:layout_width="24dp"
-      android:layout_height="24dp" />
-  </FrameLayout>
+      <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+        android:id="@+id/image_click_interaction_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:clickableAreas="@{viewModel.selectableRegions}"
+        app:entityId="@{viewModel.entityId}"
+        app:imageUrl="@{viewModel.imagePath}"
+        app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
+        app:overlayView="@{interactionContainerFrameLayout}" />
+
+      <View
+        android:id="@+id/default_selected_region"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    </FrameLayout>
+
+    <TextView
+      android:id="@+id/image_input_error"
+      style="@style/InputInteractionErrorTextView"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="40dp"
+      android:gravity="end"
+      android:text="@{viewModel.errorMessage}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:textColor="@color/component_color_shared_input_error_color"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}"
+      app:layout_constraintTop_toBottomOf="@+id/interaction_container_frame_layout" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>
