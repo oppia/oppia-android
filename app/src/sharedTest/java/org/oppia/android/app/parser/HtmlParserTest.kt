@@ -852,8 +852,10 @@ class HtmlParserTest {
     }
   }
 
-  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
-    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
+    val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
+    return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
+  }
 
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int
