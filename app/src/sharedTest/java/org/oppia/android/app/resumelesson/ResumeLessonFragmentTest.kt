@@ -305,7 +305,7 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
+            62f
           )
         )
       )
@@ -322,7 +322,7 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
+            53f
           )
         )
       )
@@ -339,7 +339,7 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_text_size)
+            44f
           )
         )
       )
@@ -356,7 +356,7 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
+            35f
           )
         )
       )

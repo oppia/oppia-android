@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
@@ -207,18 +208,21 @@ class RevisionCardActivityPresenter @Inject constructor(
   }
 
   fun loadRevisionCardFragment(readingTextSize: ReadingTextSize) {
-    if (getReviewCardFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.revision_card_fragment_placeholder,
-        RevisionCardFragment.newInstance(
-          topicId,
-          subtopicId,
-          profileId,
-          subtopicListSize,
-          readingTextSize
-        )
-      ).commitNow()
-    }
+    if (getReviewCardFragment() != null)
+      activity.supportFragmentManager.beginTransaction()
+        .remove(getReviewCardFragment() as Fragment).commitNow()
+
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.revision_card_fragment_placeholder,
+      RevisionCardFragment.newInstance(
+        topicId,
+        subtopicId,
+        profileId,
+        subtopicListSize,
+        readingTextSize
+      )
+    ).commitNow()
+
   }
 
   fun onBackpressed() {
