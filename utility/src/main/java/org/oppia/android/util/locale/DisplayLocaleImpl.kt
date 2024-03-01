@@ -12,8 +12,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.Objects
 
-// TODO(#3766): Restrict to be 'internal'.
-// TODO(#3766): Restrict formattingLocale to be 'internal'.
+// TODO(#3766): Restrict DisplayLocaleImpl and formattingLocale to be 'internal'.
 /**
  * Implementation of [OppiaLocale.DisplayLocale].
  *

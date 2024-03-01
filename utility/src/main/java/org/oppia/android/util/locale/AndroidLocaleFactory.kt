@@ -74,7 +74,7 @@ class AndroidLocaleFactory @Inject constructor(
    *   [Locale.ROOT].
    *
    * Note that the returned [Locale] may be cached within the factory for performance reasons, so
-   * the returned value use a [Deferred] to ensure that this method can guarantee thread-safe
+   * the returned value uses a [Deferred] to ensure that this method can guarantee thread-safe
    * access.
    *
    * @param localeContext the [OppiaLocaleContext] to use as a basis for finding a similar [Locale]
