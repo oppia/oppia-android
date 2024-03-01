@@ -137,6 +137,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.round
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -249,7 +250,9 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            62f
+            round(
+              context.resources.getDimension(R.dimen.revision_card_fragment_font_scale_content_extra_large_text_size)
+            )
           )
         )
       )
@@ -274,7 +277,10 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            53f
+            round(
+              context.resources
+                .getDimension(R.dimen.revision_card_fragment_font_scale_content_large_text_size)
+            )
           )
         )
       )
@@ -301,7 +307,8 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            44f
+            context.resources
+              .getDimension(R.dimen.revision_card_fragment_font_scale_content_medium_text_size)
           )
         )
       )
@@ -326,7 +333,10 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            35f
+            round(
+              context.resources
+                .getDimension(R.dimen.revision_card_fragment_font_scale_content_small_text_size)
+            )
           )
         )
       )
