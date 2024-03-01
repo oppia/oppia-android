@@ -12,6 +12,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":dagger",
         ":oppia_locale",
     ],
 )
@@ -75,6 +76,8 @@ kt_android_library(
     deps = [
         ":android_locale_profile",
         ":dagger",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 

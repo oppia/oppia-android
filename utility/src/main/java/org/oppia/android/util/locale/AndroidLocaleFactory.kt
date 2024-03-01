@@ -1,6 +1,10 @@
 package org.oppia.android.util.locale
 
 import android.os.Build
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
@@ -9,8 +13,8 @@ import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.Language
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,9 +24,28 @@ import javax.inject.Singleton
  */
 @Singleton
 class AndroidLocaleFactory @Inject constructor(
-  private val profileChooserSelector: ProposalChooser.Selector
+  private val profileChooserSelector: ProposalChooser.Selector,
+  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
+  private val androidLocaleProfileFactory: AndroidLocaleProfile.Factory
 ) {
-  private val memoizedLocales by lazy { ConcurrentHashMap<OppiaLocaleContext, Locale>() }
+  private val memoizedLocales = mutableMapOf<OppiaLocaleContext, Locale>()
+
+  /**
+   * Creates and returns a new [Locale] that matches the given [OppiaLocaleContext].
+   *
+   * See [createAndroidLocaleAsync] for specifics. Note that this function, unlike the async
+   * version, does **not** cache or try to load a pre-created [Locale] for the given context.
+   * Creating new [Locale]s can be expensive, so it's always preferred to use
+   * [createAndroidLocaleAsync] except in cases where that isn't an option.
+   */
+  fun createOneOffAndroidLocale(localeContext: OppiaLocaleContext): Locale {
+    val chooser = profileChooserSelector.findBestChooser(localeContext)
+    val primaryLocaleSource =
+      LocaleSource.createFromPrimary(localeContext, androidLocaleProfileFactory)
+    val fallbackLocaleSource =
+      LocaleSource.createFromFallback(localeContext, androidLocaleProfileFactory)
+    return chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource).computedLocale
+  }
 
   /**
    * Creates a new [Locale] that matches the given [OppiaLocaleContext].
@@ -50,18 +73,17 @@ class AndroidLocaleFactory @Inject constructor(
    * - For other locale-based operations, the forced [Locale] will behave like the system's
    *   [Locale.ROOT].
    *
+   * Note that the returned [Locale] may be cached within the factory for performance reasons, so
+   * the returned value uses a [Deferred] to ensure that this method can guarantee thread-safe
+   * access.
+   *
    * @param localeContext the [OppiaLocaleContext] to use as a basis for finding a similar [Locale]
    * @return the best [Locale] to match the provided [localeContext]
    */
-  fun createAndroidLocale(localeContext: OppiaLocaleContext): Locale {
-    // Note: computeIfAbsent is used here instead of getOrPut to ensure atomicity across multiple
-    // threads calling into this create function.
-    return memoizedLocales.computeIfAbsent(localeContext) {
-      val chooser = profileChooserSelector.findBestChooser(localeContext)
-      val primaryLocaleSource = LocaleSource.createFromPrimary(localeContext)
-      val fallbackLocaleSource = LocaleSource.createFromFallback(localeContext)
-      val proposal = chooser.findBestProposal(primaryLocaleSource, fallbackLocaleSource)
-      return@computeIfAbsent proposal.computedLocale
+  fun createAndroidLocaleAsync(localeContext: OppiaLocaleContext): Deferred<Locale> {
+    // A blocking dispatcher is used to ensure thread safety when updating the locales map.
+    return CoroutineScope(blockingDispatcher).async {
+      memoizedLocales.getOrPut(localeContext) { createOneOffAndroidLocale(localeContext) }
     }
   }
 
@@ -76,21 +98,17 @@ class AndroidLocaleFactory @Inject constructor(
     /**
      * A computed [Locale] that most closely represents the [AndroidLocaleProfile] of this proposal.
      */
-    val computedLocale: Locale
-      get() = Locale(profile.languageCode, profile.getNonWildcardRegionCode())
+    val computedLocale: Locale by lazy { profile.computeAndroidLocale() }
 
     /**
      * Determines whether the [AndroidLocaleProfile] of this proposal is a viable choice for using
      * to compute a [Locale] (e.g. via [computedLocale]).
      *
-     * @param machineLocale the app's [OppiaLocale.MachineLocale]
-     * @param systemProfiles [AndroidLocaleProfile]s representing the system's available locales
+     * @param localeProfileRepository the [LocaleProfileRepository]s representing the system's
+     *     available locales
      * @return whether this proposal has a viable profile for creating a [Locale]
      */
-    abstract fun isViable(
-      machineLocale: OppiaLocale.MachineLocale,
-      systemProfiles: List<AndroidLocaleProfile>
-    ): Boolean
+    abstract fun isViable(localeProfileRepository: LocaleProfileRepository): Boolean
 
     /**
      * A [LocaleProfileProposal] that is only viable if its [profile] is among the available system
@@ -101,10 +119,9 @@ class AndroidLocaleFactory @Inject constructor(
       val minAndroidSdkVersion: Int
     ) : LocaleProfileProposal() {
       override fun isViable(
-        machineLocale: OppiaLocale.MachineLocale,
-        systemProfiles: List<AndroidLocaleProfile>
+        localeProfileRepository: LocaleProfileRepository
       ): Boolean {
-        return systemProfiles.any { it.matches(machineLocale, profile) } &&
+        return localeProfileRepository.availableLocaleProfiles.any { it.matches(profile) } &&
           minAndroidSdkVersion <= Build.VERSION.SDK_INT
       }
     }
@@ -119,15 +136,8 @@ class AndroidLocaleFactory @Inject constructor(
       override val profile: AndroidLocaleProfile,
       val minAndroidSdkVersion: Int
     ) : LocaleProfileProposal() {
-      override fun isViable(
-        machineLocale: OppiaLocale.MachineLocale,
-        systemProfiles: List<AndroidLocaleProfile>
-      ): Boolean = minAndroidSdkVersion <= Build.VERSION.SDK_INT
-    }
-
-    private companion object {
-      private fun AndroidLocaleProfile.getNonWildcardRegionCode(): String =
-        regionCode.takeIf { it != AndroidLocaleProfile.REGION_WILDCARD } ?: ""
+      override fun isViable(localeProfileRepository: LocaleProfileRepository): Boolean =
+        minAndroidSdkVersion <= Build.VERSION.SDK_INT
     }
   }
 
@@ -143,7 +153,8 @@ class AndroidLocaleFactory @Inject constructor(
   class LocaleSource private constructor(
     private val localeContext: OppiaLocaleContext,
     private val definition: LanguageSupportDefinition,
-    private val languageId: LanguageId
+    private val languageId: LanguageId,
+    private val androidLocaleProfileFactory: AndroidLocaleProfile.Factory
   ) {
     private val regionDefinition by lazy {
       localeContext.regionDefinition.takeIf { localeContext.hasRegionDefinition() }
@@ -156,7 +167,7 @@ class AndroidLocaleFactory @Inject constructor(
      */
     fun computeSystemMatchingProposals(): List<LocaleProfileProposal> {
       return listOfNotNull(
-        computeLocaleProfileFromAndroidId()?.toSystemProposal(),
+        createAndroidResourcesProfile()?.toSystemProposal(),
         createIetfProfile()?.toSystemProposal(),
         createMacaronicProfile()?.toSystemProposal()
       )
@@ -169,7 +180,7 @@ class AndroidLocaleFactory @Inject constructor(
      * configured for this source's context.
      */
     fun computeForcedAndroidProposal(): LocaleProfileProposal? =
-      computeLocaleProfileFromAndroidId()?.toForcedProposal()
+      createAndroidResourcesProfile()?.toForcedProposal()
 
     /**
      * Returns a [LocaleProfileProposal] representing a [LocaleProfileProposal.ForcedProposal] that
@@ -177,37 +188,33 @@ class AndroidLocaleFactory @Inject constructor(
      *
      * Note that the returned proposal will prioritize its Android ID configuration over
      * alternatives (such as IETF BCP 47 or a macaronic language configuration).
+     *
+     * @param fallBackToRootProfile whether to return a [AndroidLocaleProfile.RootProfile] for cases
+     *     when a valid proposal cannot be determined rather than throwing an exception
      */
-    fun computeForcedProposal(): LocaleProfileProposal =
-      computeForcedAndroidProposal() ?: languageId.toForcedProposal()
+    fun computeForcedProposal(fallBackToRootProfile: Boolean): LocaleProfileProposal =
+      computeForcedAndroidProposal() ?: toForcedProposal(fallBackToRootProfile)
 
-    private fun computeLocaleProfileFromAndroidId(): AndroidLocaleProfile? {
-      return languageId.androidResourcesLanguageId.takeIf {
-        languageId.hasAndroidResourcesLanguageId() && it.languageCode.isNotEmpty()
-      }?.let {
-        // Empty region codes are allowed for Android resource IDs since they should always be used
-        // verbatim to ensure the correct Android resource string can be computed (such as for macro
-        // languages).
-        AndroidLocaleProfile(
-          it.languageCode,
-          regionCode = it.regionCode.ifEmpty { AndroidLocaleProfile.REGION_WILDCARD }
-        )
-      }
-    }
-
-    private fun LanguageId.toForcedProposal(): LocaleProfileProposal {
-      return when (languageId.languageTypeCase) {
+    private fun toForcedProposal(fallBackToRootProfile: Boolean): LocaleProfileProposal {
+      return when (val languageTypeCase = languageId.languageTypeCase) {
         IETF_BCP47_ID -> createIetfProfile().expectedProfile()
         MACARONIC_ID -> createMacaronicProfile().expectedProfile()
-        LANGUAGETYPE_NOT_SET, null -> error("Invalid language case: $languageTypeCase.")
+        LANGUAGETYPE_NOT_SET, null -> {
+          if (fallBackToRootProfile) {
+            AndroidLocaleProfile.RootProfile
+          } else error("Invalid language case: $languageTypeCase.")
+        }
       }.toForcedProposal()
     }
 
     private fun createIetfProfile(): AndroidLocaleProfile? =
-      AndroidLocaleProfile.createFromIetfDefinitions(languageId, regionDefinition)
+      androidLocaleProfileFactory.createFromIetfDefinitions(languageId, regionDefinition)
 
     private fun createMacaronicProfile(): AndroidLocaleProfile? =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageId)
+      androidLocaleProfileFactory.createFromMacaronicLanguage(languageId)
+
+    private fun createAndroidResourcesProfile(): AndroidLocaleProfile? =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(languageId)
 
     private fun AndroidLocaleProfile?.expectedProfile() = this ?: error("Invalid ID: $languageId.")
 
@@ -222,18 +229,31 @@ class AndroidLocaleFactory @Inject constructor(
        * Return a new [LocaleSource] that maps to [localeContext]'s primary language configuration
        * (i.e. fallback language details will be ignored).
        */
-      fun createFromPrimary(localeContext: OppiaLocaleContext): LocaleSource =
-        LocaleSource(localeContext, localeContext.languageDefinition, localeContext.getLanguageId())
+      fun createFromPrimary(
+        localeContext: OppiaLocaleContext,
+        androidLocaleProfileFactory: AndroidLocaleProfile.Factory
+      ): LocaleSource {
+        return LocaleSource(
+          localeContext,
+          localeContext.languageDefinition,
+          localeContext.getLanguageId(),
+          androidLocaleProfileFactory
+        )
+      }
 
       /**
        * Return a new [LocaleSource] that maps to [localeContext]'s fallback (secondary) language
        * configuration (i.e. primary language details will be ignored).
        */
-      fun createFromFallback(localeContext: OppiaLocaleContext): LocaleSource {
+      fun createFromFallback(
+        localeContext: OppiaLocaleContext,
+        androidLocaleProfileFactory: AndroidLocaleProfile.Factory
+      ): LocaleSource {
         return LocaleSource(
           localeContext,
           localeContext.fallbackLanguageDefinition,
-          localeContext.getFallbackLanguageId()
+          localeContext.getFallbackLanguageId(),
+          androidLocaleProfileFactory
         )
       }
     }
@@ -288,15 +308,15 @@ class AndroidLocaleFactory @Inject constructor(
    * system locales.
    */
   class MatchedLocalePreferredChooser @Inject constructor(
-    private val machineLocale: OppiaLocale.MachineLocale
+    private val localeProfileRepository: LocaleProfileRepository
   ) : ProposalChooser {
     override fun findBestProposal(
       primarySource: LocaleSource,
       fallbackSource: LocaleSource
     ): LocaleProfileProposal {
-      return primarySource.computeSystemMatchingProposals().findFirstViable(machineLocale)
-        ?: fallbackSource.computeSystemMatchingProposals().findFirstViable(machineLocale)
-        ?: primarySource.computeForcedProposal()
+      return primarySource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
+        ?: fallbackSource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
+        ?: primarySource.computeForcedProposal(fallBackToRootProfile = false)
     }
   }
 
@@ -308,31 +328,43 @@ class AndroidLocaleFactory @Inject constructor(
    * [Locale]s produced by such profiles in order to correctly produce app UI strings.
    */
   class AndroidResourceCompatibilityPreferredChooser @Inject constructor(
-    private val machineLocale: OppiaLocale.MachineLocale
+    private val localeProfileRepository: LocaleProfileRepository
   ) : ProposalChooser {
     override fun findBestProposal(
       primarySource: LocaleSource,
       fallbackSource: LocaleSource
     ): LocaleProfileProposal {
-      return primarySource.computeSystemMatchingProposals().findFirstViable(machineLocale)
-        ?: primarySource.computeForcedAndroidProposal()?.takeOnlyIfViable(machineLocale)
-        ?: fallbackSource.computeSystemMatchingProposals().findFirstViable(machineLocale)
-        ?: fallbackSource.computeForcedAndroidProposal()?.takeOnlyIfViable(machineLocale)
-        ?: primarySource.computeForcedProposal()
+      // Note that defaulting to the root locale only makes sense for app strings (since app strings
+      // are picked based on the configured system locale).
+      return primarySource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
+        ?: primarySource.computeForcedAndroidProposal()?.takeOnlyIfViable(localeProfileRepository)
+        ?: fallbackSource.computeSystemMatchingProposals().findFirstViable(localeProfileRepository)
+        ?: fallbackSource.computeForcedAndroidProposal()?.takeOnlyIfViable(localeProfileRepository)
+        ?: primarySource.computeForcedProposal(fallBackToRootProfile = true)
+    }
+  }
+
+  /**
+   * An application-injectable repository storing all possible [AndroidLocaleProfile]s available to
+   * use on the local system for the lifetime of the current app instance.
+   */
+  @Singleton
+  class LocaleProfileRepository @Inject constructor(
+    private val androidLocaleProfileFactory: AndroidLocaleProfile.Factory
+  ) {
+    /**
+     * All available [AndroidLocaleProfile]s that represent locales on the current running system.
+     */
+    val availableLocaleProfiles: List<AndroidLocaleProfile> by lazy {
+      Locale.getAvailableLocales().map { androidLocaleProfileFactory.createFrom(it) }
     }
   }
 
   private companion object {
-    private val availableLocaleProfiles by lazy {
-      Locale.getAvailableLocales().map(AndroidLocaleProfile::createFrom)
-    }
+    private fun List<LocaleProfileProposal>.findFirstViable(repository: LocaleProfileRepository) =
+      firstOrNull { it.isViable(repository) }
 
-    private fun List<LocaleProfileProposal>.findFirstViable(
-      machineLocale: OppiaLocale.MachineLocale
-    ) = firstOrNull { it.isViable(machineLocale, availableLocaleProfiles) }
-
-    private fun LocaleProfileProposal.takeOnlyIfViable(
-      machineLocale: OppiaLocale.MachineLocale
-    ): LocaleProfileProposal? = takeIf { isViable(machineLocale, availableLocaleProfiles) }
+    private fun LocaleProfileProposal.takeOnlyIfViable(repository: LocaleProfileRepository) =
+      takeIf { isViable(repository) }
   }
 }
