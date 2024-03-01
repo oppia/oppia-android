@@ -29,10 +29,8 @@
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:elevation="4dp"
-      app:add_shadow="true"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:shadow_radius="8"
       app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
       profile:src="@{viewModel.profile.avatar}" />
 
