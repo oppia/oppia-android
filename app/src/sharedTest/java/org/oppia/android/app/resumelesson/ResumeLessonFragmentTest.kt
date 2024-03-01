@@ -111,7 +111,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.floor
 import kotlin.math.round
 
 /** Test for [ResumeLessonFragment]. */
@@ -308,7 +307,9 @@ class ResumeLessonFragmentTest {
         matches(
           FontSizeMatcher.withFontSize(
             round(
-              context.resources.getDimension(R.dimen.resume_lesson_fragment_font_scale_content_extra_large_text_size)
+              context.resources.getDimension(
+                R.dimen.resume_lesson_fragment_font_scale_content_extra_large_text_size
+              )
             )
           )
         )
