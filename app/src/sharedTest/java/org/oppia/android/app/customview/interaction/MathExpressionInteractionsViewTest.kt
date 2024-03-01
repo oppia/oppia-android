@@ -280,14 +280,9 @@ class MathExpressionInteractionsViewTest {
     val interaction = createInteractionWithPlaceholder("test placeholder")
     launchForNumericExpressions(interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
-
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
-        .perform(
-          click()
-        )
+      onView(withId(R.id.submit_button)).perform(click())
       onView(withId(R.id.math_expression_input_error))
         .check(
           matches(
@@ -304,14 +299,9 @@ class MathExpressionInteractionsViewTest {
     val interaction = createInteractionWithPlaceholder("test placeholder")
     launchForAlgebraicExpressions(interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
-
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
-        .perform(
-          click()
-        )
+      onView(withId(R.id.submit_button)).perform(click())
       onView(withId(R.id.math_expression_input_error))
         .check(
           matches(
@@ -328,14 +318,9 @@ class MathExpressionInteractionsViewTest {
     val interaction = createInteractionWithPlaceholder("test placeholder")
     launchForMathEquations(interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
-
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
-        .perform(
-          click()
-        )
+      onView(withId(R.id.submit_button)).perform(click())
       onView(withId(R.id.math_expression_input_error))
         .check(
           matches(
