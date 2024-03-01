@@ -75,8 +75,8 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -191,7 +191,7 @@ class FAQSingleActivityTest {
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.faq_answer_1),
+      getResources().getString(R.string.faq_answer_whats_oppia),
       answerTextView
     )
     assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
@@ -204,8 +204,8 @@ class FAQSingleActivityTest {
   private fun createFAQSingleActivity(): Intent {
     return FAQSingleActivity.createFAQSingleActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      getResources().getString(R.string.faq_question_1),
-      getResources().getString(R.string.faq_answer_1)
+      getResources().getString(R.string.faq_question_whats_oppia),
+      getResources().getString(R.string.faq_answer_whats_oppia)
     )
   }
 

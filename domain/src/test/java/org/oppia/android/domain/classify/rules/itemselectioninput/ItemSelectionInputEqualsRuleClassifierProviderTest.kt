@@ -162,7 +162,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   fun testLowercaseAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to TEST_HTML_STRING_SET_LOWERCASE)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
         inputs = inputs,

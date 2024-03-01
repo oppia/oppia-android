@@ -75,7 +75,7 @@ class FakeAnalyticsEventLoggerTest {
 
   @Test
   fun testFakeEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows(NoSuchElementException::class) { fakeAnalyticsEventLogger.getMostRecentEvent() }
+    assertThrows<NoSuchElementException>() { fakeAnalyticsEventLogger.getMostRecentEvent() }
   }
 
   @Test
@@ -83,7 +83,7 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     fakeAnalyticsEventLogger.clearAllEvents()
 
-    val eventException = assertThrows(NoSuchElementException::class) {
+    val eventException = assertThrows<NoSuchElementException>() {
       fakeAnalyticsEventLogger.getMostRecentEvent()
     }
 
@@ -141,7 +141,7 @@ class FakeAnalyticsEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows(NoSuchElementException::class) { fakeAnalyticsEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException>() { fakeAnalyticsEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -169,7 +169,7 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     fakeAnalyticsEventLogger.clearAllEvents()
 
-    assertThrows(NoSuchElementException::class) { fakeAnalyticsEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException>() { fakeAnalyticsEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -234,7 +234,7 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    assertThrows(IllegalArgumentException::class) {
+    assertThrows<IllegalArgumentException>() {
       fakeAnalyticsEventLogger.getMostRecentEvents(count = -1)
     }
   }

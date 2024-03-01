@@ -94,22 +94,19 @@
 /testing/src/main/java/org/oppia/android/testing/FakeAnalyticsEventLogger.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakeExceptionLogger.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakeFirebaseAuthInstanceWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/FakeFirebaseAuthWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakeFirestoreEventLogger.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakeFirestoreInstanceWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricAssessor.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricsEventLogger.kt @oppia/android-app-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/TestAuthenticationModule.kt @oppia/android-app-infrastructure-reviewers
-/testing/src/test/java/org/oppia/android/testing/TestAuthenticationModuleTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeAnalyticsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt @oppia/android-app-infrastructure-reviewers
-/testing/src/test/java/org/oppia/android/testing/FakeFirebaseAuthWrapperImplTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeFirestoreEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricAssessorTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 
+/testing/src/*/java/org/oppia/android/testing/firebase/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/lightweightcheckpointing/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/logging/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/math/ @oppia/android-app-infrastructure-reviewers
