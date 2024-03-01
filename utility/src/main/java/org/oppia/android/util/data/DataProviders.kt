@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
@@ -74,7 +75,12 @@ class DataProviders @Inject constructor(
         override fun getId(): Any = newId
 
         override suspend fun retrieveData(): AsyncResult<O> {
-          return this@transformAsync.retrieveData().transformAsync(function)
+          return try {
+            this@transformAsync.retrieveData().transformAsync(function)
+          } catch (e: Exception) {
+            dataProviders.exceptionLogger.logException(e)
+            AsyncResult.Failure(e)
+          }
         }
       }
     }

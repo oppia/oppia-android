@@ -3,10 +3,25 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel" />
+
+  </data>
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
   <FrameLayout
     android:id="@+id/image_parent_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
     tools:context=".app.testing.ImageRegionSelectionTestActivity">
 
     <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
@@ -23,4 +38,29 @@
       android:layout_width="24dp"
       android:layout_height="24dp" />
   </FrameLayout>
+    <TextView
+      android:id="@+id/image_input_error"
+      style="@style/InputInteractionErrorTextView"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="40dp"
+      android:gravity="end"
+      android:text="@{viewModel.errorMessage}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:textColor="@color/component_color_shared_input_error_color"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}"
+      app:layout_constraintTop_toBottomOf="@+id/image_parent_view" />
+
+    <Button
+      android:id="@+id/submit_button"
+      style="@style/StateButtonActive"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:text="@string/submit_button_text"
+      android:textColor="@color/component_color_shared_secondary_4_text_color"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/image_input_error"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
