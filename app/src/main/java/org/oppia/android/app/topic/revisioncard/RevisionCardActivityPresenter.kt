@@ -222,7 +222,6 @@ class RevisionCardActivityPresenter @Inject constructor(
         readingTextSize
       )
     ).commitNow()
-
   }
 
   fun onBackpressed() {

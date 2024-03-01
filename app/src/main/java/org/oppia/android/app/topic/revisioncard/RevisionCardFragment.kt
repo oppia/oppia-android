@@ -35,16 +35,16 @@ class RevisionCardFragment : InjectableDialogFragment() {
       readingTextSize: ReadingTextSize
     ):
       RevisionCardFragment {
-      return RevisionCardFragment().apply {
-        arguments = Bundle().apply {
-          putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-          putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
-          putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
-          putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
+        return RevisionCardFragment().apply {
+          arguments = Bundle().apply {
+            putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+            putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
+            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+            putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
+            putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
+          }
         }
       }
-    }
   }
 
   @Inject
