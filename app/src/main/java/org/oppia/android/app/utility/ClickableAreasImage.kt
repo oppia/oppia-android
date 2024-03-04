@@ -1,6 +1,5 @@
 package org.oppia.android.app.utility
 
-import android.annotation.SuppressLint
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
@@ -155,7 +154,7 @@ class ClickableAreasImage(
   private fun View.initializeToggleRegionTouchListener(clickableArea: LabeledRegion) {
     setOnTouchListener { view, event ->
       if (event.action == MotionEvent.ACTION_DOWN) {
-        showOrHideRegion(newView, clickableArea)
+        showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)
       }
       view.performClick()
       return@setOnTouchListener true
