@@ -36,10 +36,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.notice.testing.OptionalAppDeprecationNoticeDialogFragmentTestActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.splash.DeprecationNoticeActionType
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -85,6 +85,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -166,7 +167,7 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(withText(R.string.optional_app_update_dialog_update_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(DeprecationNoticeActionType.UPDATE)
+        .onActionButtonClicked(DeprecationNoticeActionResponse.Update)
     }
   }
 
@@ -184,7 +185,12 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
       clickOnDialogView(withText(R.string.optional_app_update_dialog_dismiss_button_text))
 
       verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(DeprecationNoticeActionType.DISMISS)
+        .onActionButtonClicked(
+          DeprecationNoticeActionResponse.Dismiss(
+            deprecationNoticeType = DeprecationNoticeType.APP_DEPRECATION,
+            deprecatedVersion = context.getVersionCode()
+          ) as DeprecationNoticeActionResponse
+        )
     }
   }
 

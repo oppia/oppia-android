@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -12,6 +13,7 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -24,6 +26,18 @@ import javax.inject.Inject
 enum class SelectionItemInputType {
   CHECKBOXES,
   RADIO_BUTTONS
+}
+
+/** Enum to the store the errors of selection input. */
+enum class SelectionInputError(@StringRes private var error: Int?) {
+  VALID(error = null),
+  EMPTY_INPUT(error = R.string.selection_error_empty_input);
+
+  /**
+   * Returns the string corresponding to this error's string resources, or null if there is none.
+   */
+  fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+    error?.let(resourceHandler::getStringInLocale)
 }
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
@@ -64,7 +78,9 @@ class SelectionInteractionViewModel private constructor(
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this, enabledItemsList)
 
+  private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
+  val errorMessage = ObservableField<String>("")
   val selectedItemText =
     ObservableField(
       resourceHandler.getStringInLocale(
@@ -77,12 +93,19 @@ class SelectionInteractionViewModel private constructor(
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            pendingAnswerError = null,
-            inputAnswerAvailable = selectedItems.isNotEmpty()
+            pendingAnswerError,
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
+    errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
+    interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
+    )
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -113,6 +136,20 @@ class SelectionInteractionViewModel private constructor(
     writtenTranslationContext = translationContext
   }.build()
 
+  /**
+   * It checks the pending error for the current selection input, and correspondingly
+   * updates the error string based on the specified error category.
+   */
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    pendingAnswerError = when (category) {
+      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.SUBMIT_TIME ->
+        getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
+    }
+    errorMessage.set(pendingAnswerError)
+    return pendingAnswerError
+  }
+
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
     return when (itemHtmls.size) {
@@ -135,6 +172,7 @@ class SelectionInteractionViewModel private constructor(
 
   /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
   fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
     return when {
       isCurrentlySelected -> {
         selectedItems -= itemIndex
@@ -206,6 +244,13 @@ class SelectionInteractionViewModel private constructor(
     if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
     }
+  }
+
+  private fun getSubmitTimeError(): SelectionInputError {
+    return if (selectedItems.isEmpty())
+      SelectionInputError.EMPTY_INPUT
+    else
+      SelectionInputError.VALID
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */

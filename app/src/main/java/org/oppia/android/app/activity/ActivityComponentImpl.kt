@@ -83,6 +83,7 @@ import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
+import org.oppia.android.app.testing.TextInputInteractionViewTestActivity
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
@@ -150,6 +151,7 @@ interface ActivityComponentImpl :
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
+  fun inject(textInputInteractionViewTestActivity: TextInputInteractionViewTestActivity)
   fun inject(ratioInputInteractionViewTestActivity: RatioInputInteractionViewTestActivity)
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
