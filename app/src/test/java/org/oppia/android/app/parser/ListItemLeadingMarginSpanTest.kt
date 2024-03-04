@@ -1044,8 +1044,10 @@ class ListItemLeadingMarginSpanTest {
     return valueCaptor.value
   }
 
-  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
-    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
+    val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
+    return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

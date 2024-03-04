@@ -154,11 +154,11 @@ class FAQListFragmentTest {
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_3)
+            getResources().getString(R.string.faq_question_create_profile)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_3)
+            getResources().getString(R.string.faq_answer_create_profile)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -180,11 +180,11 @@ class FAQListFragmentTest {
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_3)
+            getResources().getString(R.string.faq_question_create_profile)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_3)
+            getResources().getString(R.string.faq_answer_create_profile)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -205,11 +205,11 @@ class FAQListFragmentTest {
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1, getAppName())
+            getResources().getString(R.string.faq_question_whats_oppia, getAppName())
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1, getAppName())
+            getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )

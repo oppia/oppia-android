@@ -1,4 +1,4 @@
-package org.oppia.android.app.utility
+package org.oppia.android.util.extensions
 
 import android.content.Context
 

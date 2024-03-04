@@ -191,7 +191,7 @@ class FAQSingleActivityTest {
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.faq_answer_1),
+      getResources().getString(R.string.faq_answer_whats_oppia),
       answerTextView
     )
     assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
@@ -204,8 +204,8 @@ class FAQSingleActivityTest {
   private fun createFAQSingleActivity(): Intent {
     return FAQSingleActivity.createFAQSingleActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      getResources().getString(R.string.faq_question_1),
-      getResources().getString(R.string.faq_answer_1)
+      getResources().getString(R.string.faq_question_whats_oppia),
+      getResources().getString(R.string.faq_answer_whats_oppia)
     )
   }
 

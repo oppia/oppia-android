@@ -11,13 +11,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
-import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
 import java.lang.IllegalArgumentException
