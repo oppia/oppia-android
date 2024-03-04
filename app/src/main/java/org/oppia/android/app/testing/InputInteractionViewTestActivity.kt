@@ -9,7 +9,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
-import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION
@@ -26,7 +25,6 @@ import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractio
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
-import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
@@ -36,7 +34,7 @@ import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractio
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView],and [TextInputInteractionView].
+ * It contains [NumericInputInteractionView]
  */
 class InputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
@@ -49,14 +47,9 @@ class InputInteractionViewTestActivity :
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
-
-  @Inject
   lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
 
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
-
-  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
 
   lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
   lateinit var writtenTranslationContext: WrittenTranslationContext
@@ -103,7 +96,6 @@ class InputInteractionViewTestActivity :
     }
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.textInputViewModel = textInputViewModel
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
   }
 
