@@ -1,29 +1,26 @@
-package org.oppia.android.app.notice
+package org.oppia.android.app.testing
 
 import android.app.Application
-import android.content.Context
-import android.view.View
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import dagger.BindsInstance
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -36,8 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.DeprecationNoticeType
-import org.oppia.android.app.notice.testing.OsDeprecationNoticeDialogFragmentTestActivity
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -59,7 +55,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -73,9 +69,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -94,168 +91,181 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ForcedAppDeprecationNoticeDialogFragment]. */
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+/** Tests for [TextInputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = OsDeprecationNoticeDialogFragmentTest.TestApplication::class,
+  application = TextInputInteractionViewTestActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-@LooperMode(LooperMode.Mode.PAUSED)
-class OsDeprecationNoticeDialogFragmentTest {
+class TextInputInteractionViewTestActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @field:[Rule JvmField]
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Mock
-  lateinit var mockDeprecationNoticeActionListener: DeprecationNoticeActionListener
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
-  lateinit var context: Context
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
-  @Test
-  fun testFragment_hasExpectedTitle() {
-    launchOsDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.os_deprecation_dialog_title))
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testFragment_hasExpectedContentMessageTextUnderTitle() {
-    launchOsDeprecationNoticeDialogFragmentTestActivity {
-      val appName = context.resources.getString(R.string.app_name)
-      val expectedString = context.resources.getString(
-        R.string.os_deprecation_dialog_message,
-        appName
-      )
-      onDialogView(withText(expectedString)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testFragment_hasDismissButton() {
-    launchOsDeprecationNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text))
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testFragment_clickOnDismissButton_callsCallbackListener_withDismissDeprecationActionType() {
-    launchOsDeprecationNoticeDialogFragmentTestActivity {
-      clickOnDialogView(withText(R.string.os_deprecation_dialog_dismiss_button_text))
-
-      verify(mockDeprecationNoticeActionListener)
-        .onActionButtonClicked(
-          DeprecationNoticeActionResponse.Dismiss(
-            deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION,
-            deprecatedVersion = 19,
-          )
-        )
-    }
-  }
-
-  private fun launchOsDeprecationNoticeDialogFragmentTestActivity(
-    testBlock: () -> Unit
-  ) {
-    // Launch the test activity, but make sure that it's properly set up & time is given for it to
-    // initialize.
-    ActivityScenario.launch(
-      OsDeprecationNoticeDialogFragmentTestActivity::class.java
-    ).use { scenario ->
-      scenario.onActivity { it.mockCallbackListener = mockDeprecationNoticeActionListener }
-      testCoroutineDispatchers.runCurrent()
-      testBlock()
-    }
-  }
-
-  private fun clickOnDialogView(matcher: Matcher<View>) {
-    onDialogView(matcher).perform(ViewActions.click())
-    testCoroutineDispatchers.runCurrent()
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private companion object {
-    private fun onDialogView(matcher: Matcher<View>) = Espresso.onView(matcher)
-      .inRoot(isDialog())
+  @Test
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(
+      TextInputInteractionViewTestActivity::class.java
+    )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.normalizedString).isEmpty()
+    }
   }
 
+  @Test
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withChar_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      TextInputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_text_input_interaction_view))
+      .perform(
+        editTextInputAction.appendText(
+          "abc"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+        InteractionObject.ObjectTypeCase.NORMALIZED_STRING
+      )
+      assertThat(pendingAnswer.answer.normalizedString).isEqualTo("abc")
+    }
+  }
+
+  @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      TextInputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_text_input_interaction_view))
+      .perform(
+        editTextInputAction.appendText(
+          "abc"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    onView(withId(R.id.test_text_input_interaction_view))
+      .check(matches(isDisplayed()))
+      .check(
+        matches(withText("abc"))
+      )
+  }
+
+  @Test
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    ActivityScenario.launch(TextInputInteractionViewTestActivity::class.java).use {
+      scrollToSubmitButton()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
+        .perform(
+          click()
+        )
+      onView(withId(R.id.text_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.text_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  private fun scrollToSubmitButton() {
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
-      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
-      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
-      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
-      RatioInputModule::class, ApplicationStartupListenerModule::class,
-      HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
-      WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
+      RobolectricModule::class, TestAuthenticationModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      SplitScreenInteractionModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
-      CachingTestModule::class, MetricLogSchedulerModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
+    interface Builder : ApplicationComponent.Builder
 
-      fun build(): TestApplicationComponent
-    }
-
-    fun inject(test: OsDeprecationNoticeDialogFragmentTest)
+    fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOsDeprecationNoticeDialogFragmentTest_TestApplicationComponent.builder()
+      DaggerTextInputInteractionViewTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build()
+        .build() as TestApplicationComponent
     }
 
-    fun inject(test: OsDeprecationNoticeDialogFragmentTest) = component.inject(test)
+    fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest) {
+      component.inject(inputInteractionViewTestActivityTest)
+    }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()

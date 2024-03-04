@@ -19,6 +19,7 @@ import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SY
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -112,9 +113,7 @@ class TranslationControllerTest {
     val appStringId = context.languageDefinition.appStringId
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(appStringId.languageTypeCase).isEqualTo(IETF_BCP47_ID)
-    assertThat(appStringId.ietfBcp47Id.ietfLanguageTag).isEmpty()
-    assertThat(appStringId.androidResourcesLanguageId.languageCode).isEmpty()
+    assertThat(appStringId.languageTypeCase).isEqualTo(LANGUAGETYPE_NOT_SET)
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
@@ -290,10 +289,26 @@ class TranslationControllerTest {
     val appStringId = context.languageDefinition.appStringId
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(appStringId.languageTypeCase).isEqualTo(IETF_BCP47_ID)
-    assertThat(appStringId.ietfBcp47Id.ietfLanguageTag).isEmpty()
-    assertThat(appStringId.androidResourcesLanguageId.languageCode).isEmpty()
+    assertThat(appStringId.languageTypeCase).isEqualTo(LANGUAGETYPE_NOT_SET)
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
+  }
+
+  @Test
+  fun testGetAppLanguageLocale_ptBrDefLocale_returnsLocaleWithIetfAndAndroidResourcesLangIds() {
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
+
+    val localeProvider = translationController.getAppLanguageLocale(PROFILE_ID_0)
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val appStringId = context.languageDefinition.appStringId
+    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
+    assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    assertThat(appStringId.languageTypeCase).isEqualTo(IETF_BCP47_ID)
+    assertThat(appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pt-BR")
+    assertThat(appStringId.androidResourcesLanguageId.languageCode).isEqualTo("pt")
+    assertThat(appStringId.androidResourcesLanguageId.regionCode).isEqualTo("BR")
+    assertThat(context.regionDefinition.region).isEqualTo(BRAZIL)
   }
 
   @Test
@@ -1937,6 +1952,7 @@ class TranslationControllerTest {
 
   private companion object {
     private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
     private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
     private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
 
