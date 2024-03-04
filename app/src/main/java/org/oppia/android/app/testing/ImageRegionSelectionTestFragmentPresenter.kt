@@ -3,11 +3,20 @@ package org.oppia.android.app.testing
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.databinding.ImageRegionSelectionTestFragmentBinding
 import javax.inject.Inject
@@ -15,18 +24,44 @@ import javax.inject.Inject
 /** The presenter for [ImageRegionSelectionTestActivity]. */
 class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
   private val fragment: Fragment
-) {
+) : InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  InteractionAnswerReceiver {
+
+  @Inject
+  lateinit var imageRegionSelectionInteractionViewModelFactory:
+    ImageRegionSelectionInteractionViewModel.FactoryImpl
+
+  /** Gives access to the [ImageRegionSelectionInteractionViewModel]. */
+
+  private val imageRegionSelectionInteractionViewModel by lazy {
+    imageRegionSelectionInteractionViewModelFactory
+      .create<ImageRegionSelectionInteractionViewModel>()
+  }
+
+  /** Gives access to the translation context. */
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val view =
+    val binding =
       ImageRegionSelectionTestFragmentBinding.inflate(
-        inflater, container, /* attachToRoot= */ false
-      ).root
+        inflater, container, false
+      )
+    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    binding.viewModel = imageRegionSelectionInteractionViewModel
+    val view = binding.root
     with(view) {
       val clickableAreas: List<LabeledRegion> = getClickableAreas()
-      view.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).apply {
-        setClickableAreas(clickableAreas)
-        setOnRegionClicked(fragment as OnClickableAreaClickedListener)
-      }
+      view.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+        .apply {
+          setClickableAreas(clickableAreas)
+          setOnRegionClicked(fragment as OnClickableAreaClickedListener)
+        }
+    }
+
+    val submit_button = view.findViewById<Button>(R.id.submit_button)
+    submit_button.setOnClickListener {
+      imageRegionSelectionInteractionViewModel
+        .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     }
     return view
   }
@@ -72,7 +107,28 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
       .build()
   }
 
+  private inline fun <reified T : StateItemViewModel> StateItemViewModel
+  .InteractionItemFactory.create(
+    interaction: Interaction = Interaction.getDefaultInstance()
+  ): T {
+
+    return create(
+      entityId = "fake_entity_id",
+      hasConversationView = false,
+      interaction = interaction,
+      interactionAnswerReceiver = this@ImageRegionSelectionTestFragmentPresenter,
+      answerErrorReceiver = this@ImageRegionSelectionTestFragmentPresenter,
+      hasPreviousButton = false,
+      isSplitView = false,
+      writtenTranslationContext,
+      timeToStartNoticeAnimationMs = null
+    ) as T
+  }
+
   private fun createPoint2d(x: Float, y: Float): Point2d {
     return Point2d.newBuilder().setX(x).setY(y).build()
+  }
+
+  override fun onAnswerReadyForSubmission(answer: UserAnswer) {
   }
 }
