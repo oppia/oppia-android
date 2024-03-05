@@ -73,7 +73,6 @@ import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.testing.ListItemLeadingMarginSpanTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
-import org.oppia.android.app.testing.MathExpressionInteractionsViewTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
