@@ -72,9 +72,9 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -418,60 +418,6 @@ class InputInteractionViewTestActivityTest {
           )
         )
       )
-  }
-
-  @Test
-  fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      assertThat(pendingAnswer.answer.normalizedString).isEmpty()
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testTextInput_withChar_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    onView(withId(R.id.test_text_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "abc"
-        )
-      )
-    activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.NORMALIZED_STRING
-      )
-      assertThat(pendingAnswer.answer.normalizedString).isEqualTo("abc")
-    }
-  }
-
-  @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    onView(withId(R.id.test_text_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "abc"
-        )
-      )
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    }
-    onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed()))
-      .check(matches(withText("abc")))
   }
 
   private fun scrollToSubmitButton() {

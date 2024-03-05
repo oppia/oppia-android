@@ -78,7 +78,7 @@ class FakeFirestoreEventLoggerTest {
 
   @Test
   fun testfakeEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows(NoSuchElementException::class) { fakeEventLogger.getMostRecentEvent() }
+    assertThrows<NoSuchElementException>() { fakeEventLogger.getMostRecentEvent() }
   }
 
   @Test
@@ -86,7 +86,7 @@ class FakeFirestoreEventLoggerTest {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
 
-    val eventException = assertThrows(NoSuchElementException::class) {
+    val eventException = assertThrows<NoSuchElementException>() {
       fakeEventLogger.getMostRecentEvent()
     }
 
@@ -144,7 +144,7 @@ class FakeFirestoreEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows(NoSuchElementException::class) { fakeEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException>() { fakeEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -172,7 +172,7 @@ class FakeFirestoreEventLoggerTest {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
 
-    assertThrows(NoSuchElementException::class) { fakeEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException>() { fakeEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -237,7 +237,7 @@ class FakeFirestoreEventLoggerTest {
     eventLogger.uploadEvent(eventLog2)
     eventLogger.uploadEvent(eventLog1)
 
-    assertThrows(IllegalArgumentException::class) {
+    assertThrows<IllegalArgumentException>() {
       fakeEventLogger.getMostRecentEvents(count = -1)
     }
   }

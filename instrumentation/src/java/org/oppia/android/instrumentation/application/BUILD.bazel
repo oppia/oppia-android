@@ -25,7 +25,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
         "//domain",
-        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",

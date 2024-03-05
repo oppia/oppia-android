@@ -102,10 +102,10 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAuthenticationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
@@ -852,8 +852,10 @@ class HtmlParserTest {
     }
   }
 
-  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
-    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
+    val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
+    return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
+  }
 
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int

@@ -169,7 +169,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   fun testIsProperSubset_withInvalidInput_forAnswer12345_throwsException() {
     val inputs = mapOf("x" to ITEM_SELECTION_INVAILD)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_12345,
         inputs = inputs,
@@ -186,7 +186,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   fun testIsProperSubset_withInput12345_forInvalidAnswer_throwsException() {
     val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_INVAILD,
         inputs = inputs,
@@ -203,7 +203,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   fun testIsProperSubset_missingInputX_throwsException() {
     val inputs = mapOf("a" to ITEM_SELECTION_12345)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_12345,
         inputs = inputs,

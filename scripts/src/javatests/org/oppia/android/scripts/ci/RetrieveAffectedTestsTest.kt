@@ -45,7 +45,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) { runScript() }
+    val exception = assertThrows<SecurityException>() { runScript() }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -55,7 +55,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_oneArgument_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) { runScript("arg1") }
+    val exception = assertThrows<SecurityException>() { runScript("arg1") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -65,7 +65,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_twoArguments_printsUsageStringAndExits() {
-    val exception = assertThrows(SecurityException::class) { runScript("arg1", "arg2") }
+    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -75,7 +75,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_invalidBase64_throwsException() {
-    assertThrows(IllegalArgumentException::class) { runScript("badbase64", "file1", "file2") }
+    assertThrows<IllegalArgumentException>() { runScript("badbase64", "file1", "file2") }
   }
 
   @Test

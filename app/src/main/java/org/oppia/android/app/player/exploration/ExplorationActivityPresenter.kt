@@ -397,6 +397,7 @@ class ExplorationActivityPresenter @Inject constructor(
         activity.startActivity(
           TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
         )
+        activity.finish()
       }
     }
   }

@@ -1,6 +1,7 @@
 package org.oppia.android.util.logging
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import org.oppia.android.app.model.AppLanguageSelection
@@ -58,8 +59,8 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.app.utility.getVersionCode
-import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.AbandonSurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
@@ -131,6 +132,9 @@ class EventBundleCreator @Inject constructor(
   private val appVersionCode by lazy { context.getVersionCode() }
   private val appVersionName by lazy { context.getVersionName() }
   private val eventCount by lazy { AtomicInteger() }
+  private val screenDensity by lazy {
+    Configuration().densityDpi
+  }
 
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
@@ -151,6 +155,9 @@ class EventBundleCreator @Inject constructor(
     )
     bundle.putString(
       "oppia_audio_lang", eventLog.audioTranslationLanguageSelection.toAnalyticsText()
+    )
+    bundle.putInt(
+      "screen_density", screenDensity
     )
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
