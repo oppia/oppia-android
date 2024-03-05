@@ -30,18 +30,18 @@
         android:id="@+id/test_number_input_interaction_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:focusable="true"
         android:hint="@string/test_number_input_interaction_hint"
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         android:longClickable="false"
         android:maxLength="200"
+        android:minHeight="48dp"
         android:padding="8dp"
         android:singleLine="true"
         android:text="@={numericInputViewModel.answerText}"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
 
       <TextView
