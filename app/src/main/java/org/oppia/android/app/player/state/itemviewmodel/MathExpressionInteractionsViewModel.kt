@@ -441,7 +441,7 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             MATH_EQUATION -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_empty_input
+                R.string.math_equation_error_empty_input
               )
             }
           }

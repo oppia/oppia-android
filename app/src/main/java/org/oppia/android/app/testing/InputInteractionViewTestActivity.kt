@@ -40,12 +40,7 @@ class InputInteractionViewTestActivity :
   @Inject
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
-  @Inject
-  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
-
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
-
-  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
 
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -64,7 +59,6 @@ class InputInteractionViewTestActivity :
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.textInputViewModel = textInputViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
