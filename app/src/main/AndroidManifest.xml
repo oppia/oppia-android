@@ -187,9 +187,9 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
+      android:exported="true"
       android:label="@string/app_name"
       android:screenOrientation="portrait"
-      android:exported="true"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -214,6 +214,7 @@
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
     <activity android:name=".app.testing.FractionInputInteractionViewTestActivity" />
+    <activity android:name=".app.testing.TextInputInteractionViewTestActivity" />
     <activity
       android:name=".app.testing.TestFontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

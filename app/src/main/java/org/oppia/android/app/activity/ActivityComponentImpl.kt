@@ -83,6 +83,7 @@ import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
+import org.oppia.android.app.testing.TextInputInteractionViewTestActivity
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity

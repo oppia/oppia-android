@@ -9,7 +9,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
-import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.UserAnswer
@@ -28,7 +27,7 @@ import javax.inject.Inject
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView],and [TextInputInteractionView].
+ * It contains [NumericInputInteractionView]
  */
 class InputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
