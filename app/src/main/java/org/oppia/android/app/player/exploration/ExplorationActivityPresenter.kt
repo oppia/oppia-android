@@ -108,6 +108,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       activity.onBackPressed()
     }
 

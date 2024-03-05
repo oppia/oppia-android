@@ -432,6 +432,7 @@ class StateFragmentPresenter @Inject constructor(
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
       fragment.view!!.windowToken,
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       InputMethodManager.SHOW_FORCED
     )
   }

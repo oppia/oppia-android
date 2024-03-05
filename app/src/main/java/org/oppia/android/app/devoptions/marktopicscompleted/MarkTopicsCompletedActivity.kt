@@ -34,6 +34,7 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       onBackPressed()
     }
     return super.onOptionsItemSelected(item)
