@@ -202,44 +202,20 @@ import javax.inject.Singleton
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  @field:[Inject BackgroundDispatcher]
-  lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var testGlideImageLoader: TestGlideImageLoader
-
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -2762,6 +2738,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2777,6 +2754,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2792,6 +2770,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2843,6 +2822,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2859,6 +2839,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2928,6 +2909,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3094,6 +3076,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3110,6 +3093,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3126,6 +3110,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3177,6 +3162,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3193,6 +3179,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3263,6 +3250,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3494,6 +3482,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3510,6 +3499,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3526,6 +3516,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3560,6 +3551,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3594,6 +3586,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3610,6 +3603,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3706,6 +3700,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3764,6 +3759,7 @@ class StateFragmentTest {
       // verify that the two sides are multiples of each other).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3780,6 +3776,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
