@@ -1,4 +1,12 @@
 todo_open_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCollector.kt"
+  line_number: 78
+}
+todo_open_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"
+  line_number: 12
+}
+todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoCollectorTest.kt"
   line_number: 31
   line_number: 32
@@ -245,42 +253,90 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoOpenCheckTest.kt"
+  line_number: 67
   line_number: 68
-  line_number: 69
-  line_number: 75
-  line_number: 77
-  line_number: 99
-  line_number: 100
-  line_number: 101
-  line_number: 102
-  line_number: 103
-  line_number: 139
-  line_number: 140
-  line_number: 143
-  line_number: 178
-  line_number: 179
-  line_number: 180
-  line_number: 185
-  line_number: 187
-  line_number: 228
-  line_number: 229
-  line_number: 230
-  line_number: 235
-  line_number: 237
-  line_number: 243
-  line_number: 284
+  line_number: 74
+  line_number: 76
+  line_number: 93
+  line_number: 94
+  line_number: 95
+  line_number: 96
+  line_number: 97
+  line_number: 126
+  line_number: 127
+  line_number: 130
+  line_number: 158
+  line_number: 159
+  line_number: 160
+  line_number: 165
+  line_number: 167
+  line_number: 201
+  line_number: 202
+  line_number: 203
+  line_number: 208
+  line_number: 210
+  line_number: 216
+  line_number: 250
+  line_number: 254
+  line_number: 287
   line_number: 288
-  line_number: 326
-  line_number: 327
-  line_number: 331
-  line_number: 383
-  line_number: 384
-  line_number: 385
-  line_number: 389
+  line_number: 292
+  line_number: 337
+  line_number: 338
+  line_number: 339
+  line_number: 343
+  line_number: 412
+  line_number: 413
+  line_number: 419
+  line_number: 421
+  line_number: 439
+  line_number: 440
+  line_number: 441
+  line_number: 442
   line_number: 443
-  line_number: 444
-  line_number: 445
-  line_number: 449
+  line_number: 458
+  line_number: 459
+  line_number: 462
+  line_number: 477
+  line_number: 478
+  line_number: 479
+  line_number: 480
+  line_number: 481
+  line_number: 482
+  line_number: 483
+  line_number: 486
+  line_number: 487
+  line_number: 488
+  line_number: 506
+  line_number: 510
+  line_number: 570
+  line_number: 571
+  line_number: 577
+  line_number: 579
+  line_number: 600
+  line_number: 601
+  line_number: 602
+  line_number: 603
+  line_number: 604
+  line_number: 641
+  line_number: 642
+  line_number: 645
+  line_number: 678
+  line_number: 679
+  line_number: 680
+  line_number: 681
+  line_number: 682
+  line_number: 683
+  line_number: 684
+  line_number: 687
+  line_number: 688
+  line_number: 689
+  line_number: 737
+  line_number: 741
+}
+todo_open_exemption {
+  exempted_file_path: "scripts/static_checks.sh"
+  line_number: 110
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Coding-style-guide.md"
@@ -288,16 +344,16 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Static-Analysis-Checks.md"
-  line_number: 169
-  line_number: 177
-  line_number: 182
-  line_number: 186
-  line_number: 190
-  line_number: 192
-  line_number: 207
-  line_number: 217
-  line_number: 220
-  line_number: 223
-  line_number: 226
-  line_number: 229
+  line_number: 171
+  line_number: 195
+  line_number: 200
+  line_number: 204
+  line_number: 208
+  line_number: 210
+  line_number: 232
+  line_number: 242
+  line_number: 245
+  line_number: 248
+  line_number: 251
+  line_number: 254
 }

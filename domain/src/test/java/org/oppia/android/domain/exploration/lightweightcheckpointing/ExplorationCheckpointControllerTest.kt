@@ -35,6 +35,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.OutdatedExplorationCheckpointException
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
@@ -51,6 +52,7 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_EXPLORATION_0_TITLE
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -998,7 +1000,8 @@ class ExplorationCheckpointControllerTest {
       DragDropSortInputModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      ExplorationProgressModule::class, TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

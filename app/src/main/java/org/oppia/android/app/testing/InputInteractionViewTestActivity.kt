@@ -7,9 +7,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
-import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION
@@ -17,19 +15,15 @@ import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathIn
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED
 import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
-import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
@@ -39,7 +33,7 @@ import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractio
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
+ * It contains [NumericInputInteractionView]
  */
 class InputInteractionViewTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
@@ -52,33 +46,9 @@ class InputInteractionViewTestActivity :
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
-
-  @Inject
-  lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
-
-  @Inject
-  lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
-
-  @Inject
   lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
 
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
-
-  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
-
-  val fractionInteractionViewModel by lazy {
-    fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
-  }
-
-  val ratioExpressionInputInteractionViewModel by lazy {
-    ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
-      interaction = Interaction.newBuilder().putCustomizationArgs(
-        "numberOfTerms",
-        SchemaObject.newBuilder().setSignedInt(3).build()
-      ).build()
-    )
-  }
 
   lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
   lateinit var writtenTranslationContext: WrittenTranslationContext
@@ -125,15 +95,9 @@ class InputInteractionViewTestActivity :
     }
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.textInputViewModel = textInputViewModel
-    binding.fractionInteractionViewModel = fractionInteractionViewModel
-    binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
     binding.getPendingAnswerErrorOnSubmitClick = Runnable {
-      fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
       numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-      ratioExpressionInputInteractionViewModel
-        .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     }
   }
 

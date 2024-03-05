@@ -123,6 +123,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -156,6 +157,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -305,7 +307,7 @@ class StateFragmentTest {
 
       clickContinueInteractionButton()
 
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
@@ -442,6 +444,24 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric tests don't rotate like this to recreate activity
+  fun testStateFragment_loadExp_invalidAnswer_changeConfiguration_submitButtonIsDisplayed() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/")
+
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -538,7 +558,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -549,12 +569,12 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -567,7 +587,27 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_submitWithoutAnswer_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      clickSubmitAnswerButton()
+      onView(withId(R.id.selection_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.selection_error_empty_input
+            )
+          )
+        )
     }
   }
 
@@ -640,7 +680,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -651,14 +691,15 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -669,9 +710,10 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -4683,6 +4725,11 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
   }
 
+  private fun verifySubmitAnswerButtonIsEnabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
@@ -4730,7 +4777,6 @@ class StateFragmentTest {
   }
 
   private fun setUpTest() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -4941,7 +4987,8 @@ class StateFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

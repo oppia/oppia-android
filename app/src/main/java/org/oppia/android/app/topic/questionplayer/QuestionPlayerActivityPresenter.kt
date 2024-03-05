@@ -47,6 +47,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     activity.setSupportActionBar(binding.questionPlayerToolbar)
 
     binding.questionPlayerToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       activity.onBackPressed()
     }
 

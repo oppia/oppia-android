@@ -33,18 +33,22 @@ class AdminPinActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
+
+    activity.setSupportActionBar(binding.adminPinToolbar)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     binding.apply {
       lifecycleOwner = activity
       viewModel = adminViewModel
     }
 
+    binding.adminPinToolbar.title = resourceHandler
+      .getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {

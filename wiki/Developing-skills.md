@@ -7,11 +7,11 @@ That said, we strongly recommend that you be open to learning new things. If you
       - [Learning Branching Git](https://learngitbranching.js.org/) helps explain how git works. Try the levels below:
         - Levels 1, 2, and 3 from the Introduction sequence.
         - Levels 1, 2, 3, 4, 5, and 6 from Push and Pull Git Remotes.
-      - [Introduction to GitHub](https://lab.github.com/githubtraining/introduction-to-github) covers how to use GitHub.
+      - [Introduction to GitHub](https://learn.microsoft.com/en-us/training/modules/introduction-to-github/) covers how to use GitHub.
     - More advanced:
       - The other levels from [Learn Branching Git](https://learngitbranching.js.org/) cover git in more depth.
       - You may find this [git visualizer](https://git-school.github.io/visualizing-git/) helpful for understanding more advanced git operations. It can be helpful for simple ones too!
-      - GitHub's [managing merge conflicts page](https://lab.github.com/githubtraining/managing-merge-conflicts) explains how to address merge conflicts.
+      - GitHub's [managing merge conflicts page](https://github.com/skills/resolve-merge-conflicts) explains how to address merge conflicts.
  - Kotlin is used for Android in oppia. You can learn the basics of kotlin from Udacity -- [Kotlin bootcamp for programmers](https://www.udacity.com/course/kotlin-bootcamp-for-programmers--ud9011) by Google.
  - Learn the basics of android to understand the project structure and the libraries that are used in most common apps from the Udacity -- [Developing Android Apps with Kotlin](https://www.udacity.com/course/developing-android-apps-with-kotlin--ud9012) course.
  - To learn the advanced topics like Dependency Injection and Testing in Android check out Udacity -- [Advanced Android with Kotlin](https://www.udacity.com/course/advanced-android-with-kotlin--ud940) course.

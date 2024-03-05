@@ -16,6 +16,7 @@
       android:layout_height="48dp"
       android:layout_gravity="center_vertical"
       android:padding="8dp"
-      app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
+      app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+      android:importantForAccessibility="no" />
   </FrameLayout>
 </layout>

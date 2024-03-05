@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.survey.SurveyViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_survey_background_color">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/survey_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/survey_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
+        android:contentDescription="@string/survey_exit_button_description"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppCompat.ActionBar"
+        app:navigationIcon="@drawable/ic_close_white_24dp">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+          <ProgressBar
+            android:id="@+id/survey_progress_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/survey_progress_bar_height"
+            android:layout_weight="1"
+            android:max="100"
+            android:progress="@{viewModel.progressPercentage}"
+            android:progressDrawable="@drawable/survey_progress_bar" />
+
+          <TextView
+            android:id="@+id/survey_progress_text"
+            style="@style/TextViewCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/survey_progress_text_margin_start"
+            android:layout_marginEnd="@dimen/survey_progress_text_margin_end"
+            android:fontFamily="sans-serif"
+            android:text="@{viewModel.questionProgressText}"
+            android:textColor="@color/component_color_shared_secondary_4_text_color"
+            android:textSize="14sp"
+            tools:text="25%" />
+        </LinearLayout>
+      </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/survey_content_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/survey_app_bar_layout">
+
+      <TextView
+        android:id="@+id/survey_question_text"
+        style="@style/TextViewStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/survey_question_text_margin"
+        android:layout_marginTop="@dimen/survey_question_text_margin"
+        android:layout_marginEnd="@dimen/survey_question_text_margin"
+        android:fontFamily="sans-serif-medium"
+        android:text="@{viewModel.questionText}"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Please select one of the following:" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/survey_answers_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/survey_question_recycler_view_margin"
+        android:layout_marginTop="@dimen/survey_question_recycler_view_margin"
+        android:layout_marginEnd="@dimen/survey_question_recycler_view_margin"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:data="@{viewModel.itemList}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/survey_question_text"
+        tools:itemCount="1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+      android:id="@+id/survey_buttons_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/survey_navigation_buttons_container_margin"
+      android:layout_marginBottom="@dimen/survey_navigation_buttons_container_margin"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/survey_navigation_buttons_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+          android:id="@+id/survey_previous_button"
+          style="@style/SurveyPreviousButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/survey_previous_button"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+          android:id="@+id/survey_next_button"
+          style="@style/SurveyNextButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@{viewModel.canMoveToNextQuestion ? @drawable/state_button_primary_background : @drawable/state_button_inactive_background}"
+          android:enabled="@{viewModel.canMoveToNextQuestion}"
+          android:text="@string/next"
+          android:textColor="@{viewModel.canMoveToNextQuestion ? @color/component_color_shared_secondary_4_text_color : @color/component_color_survey_disabled_button_text_color}"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

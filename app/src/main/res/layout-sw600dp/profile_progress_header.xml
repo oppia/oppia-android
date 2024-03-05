@@ -41,6 +41,7 @@
       android:elevation="4dp"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
+      android:paddingEnd="0dp"
       android:paddingTop="12dp"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
       app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"

@@ -25,6 +25,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
@@ -34,6 +35,8 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
@@ -41,6 +44,7 @@ import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
@@ -76,7 +80,8 @@ class StateFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val stateViewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val surveyGatingController: SurveyGatingController
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -184,8 +189,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    (activity as StopStatePlayingSessionWithSavedProgressListener)
-      .deleteCurrentProgressAndStopSession(isCompletion = true)
+    maybeShowSurveyDialog(profileId, topicId)
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -198,9 +202,10 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(
-      stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
-    )
+    val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    if (answer != null) {
+      handleSubmitAnswer(answer)
+    }
   }
 
   fun onResponsesHeaderClicked() {
@@ -213,9 +218,10 @@ class StateFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() {
     hideKeyboard()
     if (stateViewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(
-        stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
-      )
+      val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+      if (answer != null) {
+        handleSubmitAnswer(answer)
+      }
     }
   }
 
@@ -426,6 +432,7 @@ class StateFragmentPresenter @Inject constructor(
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
       fragment.view!!.windowToken,
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       InputMethodManager.SHOW_FORCED
     )
   }
@@ -528,6 +535,47 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+      .observe(
+        activity,
+        { gatingResult ->
+          when (gatingResult) {
+            is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+            is AsyncResult.Success -> {
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .commitNow()
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
+            }
+          }
+        }
+      )
+  }
+
   /**
    * An [Interpolator] when performs a reversed, then regular bounce interpolation using
    * [BounceInterpolator].
@@ -548,5 +596,13 @@ class StateFragmentPresenter @Inject constructor(
         bounceInterpolator.getInterpolation(1f - input * 2f)
       } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
+  }
+
+  companion object {
+    private val SURVEY_QUESTIONS = listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS
+    )
   }
 }

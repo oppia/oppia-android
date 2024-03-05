@@ -46,6 +46,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -61,6 +62,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -87,11 +89,19 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Time: Tue Apr 23 2019 23:22:00
-private const val EVENING_TIMESTAMP = 1556061720000
-// Time: Wed Apr 24 2019 08:22:00
-private const val MORNING_TIMESTAMP = 1556094120000
-// Time: Tue Apr 23 2019 14:22:00
+// Time Tue, 23 April 2019 21:26:12
+private const val EVENING_TIMESTAMP = 1556054772000
+
+// Time: Tue, Apr 23 2019 23:22:00
+private const val LATE_NIGHT_TIMESTAMP = 1556061720000
+
+// Time: Wed, Apr 24 2019 08:22:00
+private const val EARLY_MORNING_TIMESTAMP = 1556094120000
+
+// Time: Wed, 24 April 2019 10:30:12
+private const val MID_MORNING_TIMESTAMP = 1556101812000
+
+// Time: Tue, Apr 23 2019 14:22:00
 private const val AFTERNOON_TIMESTAMP = 1556029320000
 
 /** Tests for [DateTimeUtil]. */
@@ -102,8 +112,11 @@ class DateTimeUtilTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @get:Rule
   var activityRule =
@@ -118,7 +131,7 @@ class DateTimeUtilTest {
   }
 
   @Test
-  fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
+  fun testGreetingMessageBasedOnEveningTime_goodEveningMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
       val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
@@ -127,16 +140,34 @@ class DateTimeUtilTest {
   }
 
   @Test
-  fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
+  fun testGreetingMessageBasedOnNightTime_goodEveningMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
       val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+      fakeOppiaClock.setCurrentTimeToSameDateTime(LATE_NIGHT_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    }
+  }
+
+  @Test
+  fun testGreetingMessageBasedOnMorningTime_goodMorningMessageSucceeded() {
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.dateTimeUtil
+      fakeOppiaClock.setCurrentTimeToSameDateTime(MID_MORNING_TIMESTAMP)
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
     }
   }
 
   @Test
-  fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
+  fun testGreetingMessageBasedOnEarlyMorningTime_goodMorningMessageSucceeded() {
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.dateTimeUtil
+      fakeOppiaClock.setCurrentTimeToSameDateTime(EARLY_MORNING_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    }
+  }
+
+  @Test
+  fun testGreetingMessageBasedOnAfternoonTime_goodAfternoonMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
       val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
@@ -198,7 +229,8 @@ class DateTimeUtilTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class
+      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
+      ExplorationProgressModule::class, TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

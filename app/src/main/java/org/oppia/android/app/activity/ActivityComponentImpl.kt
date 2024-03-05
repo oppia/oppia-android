@@ -54,6 +54,7 @@ import org.oppia.android.app.settings.profile.ProfileRenameActivity
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.survey.SurveyActivity
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
@@ -63,6 +64,7 @@ import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.testing.ExplorationTestActivity
+import org.oppia.android.app.testing.FractionInputInteractionViewTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
@@ -75,11 +77,13 @@ import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
+import org.oppia.android.app.testing.RatioInputInteractionViewTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
 import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
+import org.oppia.android.app.testing.TextInputInteractionViewTestActivity
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
@@ -138,6 +142,7 @@ interface ActivityComponentImpl :
   fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
   fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
+  fun inject(fractionInputInteractionViewTestActivity: FractionInputInteractionViewTestActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
@@ -146,6 +151,8 @@ interface ActivityComponentImpl :
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
+  fun inject(textInputInteractionViewTestActivity: TextInputInteractionViewTestActivity)
+  fun inject(ratioInputInteractionViewTestActivity: RatioInputInteractionViewTestActivity)
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
   fun inject(listItemLeadingMarginSpanTestActivity: ListItemLeadingMarginSpanTestActivity)
@@ -206,4 +213,5 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
+  fun inject(surveyActivity: SurveyActivity)
 }

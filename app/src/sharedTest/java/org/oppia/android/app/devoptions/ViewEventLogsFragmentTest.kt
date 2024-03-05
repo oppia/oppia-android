@@ -16,7 +16,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,6 +36,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -55,13 +60,17 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
@@ -72,7 +81,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -84,13 +95,21 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
+import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -114,14 +133,29 @@ private const val TEST_SUB_TOPIC_ID = 1
   qualifiers = "port-xxhdpi"
 )
 class ViewEventLogsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var analyticsController: AnalyticsController
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var analyticsController: AnalyticsController
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var firestoreEventLogger: FirestoreEventLogger
 
   @Before
   fun setUp() {
@@ -165,7 +199,7 @@ class ViewEventLogsFragmentTest {
     launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.view_event_logs_recycler_view))
-        .check(hasItemCount(count = 5))
+        .check(hasItemCount(count = 6))
     }
   }
 
@@ -175,7 +209,7 @@ class ViewEventLogsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.view_event_logs_recycler_view))
-        .check(hasItemCount(count = 5))
+        .check(hasItemCount(count = 6))
     }
   }
 
@@ -186,30 +220,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Open Lessons Tab",
+        stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = "Open Home",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = "Open Home",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = "Open Profile Chooser",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -224,30 +264,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Open Lessons Tab",
+        stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = "Open Home",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = "Open Home",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = "Open Profile Chooser",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -265,7 +311,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
@@ -275,7 +321,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
@@ -285,6 +331,16 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
+        stringToMatch = "Open Story Activity",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 3)
+      verifyItemDisplayedOnEventLogItemViewAtPosition(
+        position = 3,
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 3,
         stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -303,7 +359,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Open Revision Card",
+        stringToMatch = "Optional Response",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
@@ -313,7 +369,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Open Story Activity",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
@@ -323,6 +379,16 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
+        stringToMatch = "Open Story Activity",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 3)
+      verifyItemDisplayedOnEventLogItemViewAtPosition(
+        position = 3,
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 3,
         stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
@@ -336,30 +402,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 50000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        targetViewId = R.id.view_event_logs_time_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
@@ -374,30 +446,36 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 50000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        targetViewId = R.id.view_event_logs_time_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
@@ -435,6 +513,12 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
+        stringToMatch = "Essential",
+        targetViewId = R.id.view_event_logs_priority_text_view
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
@@ -476,6 +560,12 @@ class ViewEventLogsFragmentTest {
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
+      scrollToPosition(position = 5)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 5,
+        stringToMatch = "Essential",
+        targetViewId = R.id.view_event_logs_priority_text_view
+      )
     }
   }
 
@@ -507,6 +597,39 @@ class ViewEventLogsFragmentTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
     )
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        createOptionalSurveyResponseContext(
+          "survey_id",
+          profileId = null,
+          answer = "some response"
+        )
+      )
+      .setPriority(EventLog.Priority.ESSENTIAL)
+      .setTimestamp(TEST_TIMESTAMP + 50000)
+      .build()
+
+    firestoreEventLogger.uploadEvent(eventLog)
+  }
+
+  private fun createOptionalSurveyResponseContext(
+    surveyId: String,
+    profileId: ProfileId?,
+    answer: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOptionalResponse(
+        EventLog.OptionalSurveyResponseContext.newBuilder()
+          .setFeedbackAnswer(answer)
+          .setSurveyDetails(
+            EventLog.SurveyResponseContext.newBuilder()
+              .setProfileId(profileId?.internalId.toString())
+              .setSurveyId(surveyId)
+              .build()
+          )
+      )
+      .build()
   }
 
   private fun verifyTextOnEventLogItemViewAtPosition(
@@ -555,6 +678,56 @@ class ViewEventLogsFragmentTest {
     )
   }
 
+  @Module
+  class TestLogStorageModule {
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @FirestoreLogStorageCacheSize
+    fun provideFirestoreLogStorageCacheSize(): Int = 2
+  }
+
+  @Module
+  class TestLogReportingModule {
+    @Provides
+    @Singleton
+    fun provideExceptionLogger(): ExceptionLogger =
+      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+
+    @Provides
+    @Singleton
+    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
+      AnalyticsEventLogger = debugAnalyticsEventLogger
+
+    @Provides
+    @Singleton
+    fun providePerformanceMetricsEventLogger(
+      factory: FirebaseAnalyticsEventLogger.Factory
+    ): PerformanceMetricsEventLogger =
+      factory.createPerformanceMetricEventLogger()
+
+    @Provides
+    @Singleton
+    fun provideDebugFirestoreEventLogger(
+      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
+    ): FirestoreEventLogger = debugFirestoreEventLogger
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
+      FirestoreInstanceWrapper = wrapperImpl
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -566,8 +739,8 @@ class ViewEventLogsFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, DebugLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, TestLogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
@@ -584,7 +757,8 @@ class ViewEventLogsFragmentTest {
       MetricLogSchedulerModule::class, PerformanceMetricsAssessorModule::class,
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class,
     ]
   )
 

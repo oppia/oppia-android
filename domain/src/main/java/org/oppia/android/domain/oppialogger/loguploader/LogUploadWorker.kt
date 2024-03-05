@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
@@ -28,6 +29,7 @@ class LogUploadWorker private constructor(
   private val exceptionsController: ExceptionsController,
   private val performanceMetricsController: PerformanceMetricsController,
   private val exceptionLogger: ExceptionLogger,
+  private val dataController: FirestoreDataController,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   private val consoleLogger: ConsoleLogger,
   private val syncStatusManager: SyncStatusManager,
@@ -40,6 +42,7 @@ class LogUploadWorker private constructor(
     const val EVENT_WORKER = "event_worker"
     const val EXCEPTION_WORKER = "exception_worker"
     const val PERFORMANCE_METRICS_WORKER = "performance_metrics_worker"
+    const val FIRESTORE_WORKER = "firestore_worker"
   }
 
   override fun startWork(): ListenableFuture<Result> {
@@ -50,6 +53,7 @@ class LogUploadWorker private constructor(
         EVENT_WORKER -> uploadEvents()
         EXCEPTION_WORKER -> uploadExceptions()
         PERFORMANCE_METRICS_WORKER -> uploadPerformanceMetrics()
+        FIRESTORE_WORKER -> uploadFirestoreData()
         else -> Result.failure()
       }
     }.asListenableFuture()
@@ -99,12 +103,24 @@ class LogUploadWorker private constructor(
     }
   }
 
+  /** Extracts data from offline storage and logs them to the remote service. */
+  private suspend fun uploadFirestoreData(): Result {
+    return try {
+      dataController.uploadData()
+      Result.success()
+    } catch (e: Exception) {
+      consoleLogger.e(TAG, e.toString(), e)
+      Result.failure()
+    }
+  }
+
   /** Creates an instance of [LogUploadWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val analyticsController: AnalyticsController,
     private val exceptionsController: ExceptionsController,
     private val performanceMetricsController: PerformanceMetricsController,
     private val exceptionLogger: ExceptionLogger,
+    private val dataController: FirestoreDataController,
     private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
     private val consoleLogger: ConsoleLogger,
     private val syncStatusManager: SyncStatusManager,
@@ -118,6 +134,7 @@ class LogUploadWorker private constructor(
         exceptionsController,
         performanceMetricsController,
         exceptionLogger,
+        dataController,
         performanceMetricsEventLogger,
         consoleLogger,
         syncStatusManager,
