@@ -136,32 +136,17 @@ class MathExpressionInteractionsViewTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var editTextInputAction: EditTextInputAction
 
-  @Parameter
-  lateinit var type: String
-
-  @Parameter
-  lateinit var lang: String
-
-  @Parameter
-  lateinit var text: String
-
-  @Parameter
-  lateinit var expHintText: String
-
-  @Parameter
-  lateinit var expLatex: String
-
-  @Parameter
-  lateinit var expA11y: String
-
-  @Parameter
-  lateinit var expErr: String
+  @Parameter lateinit var type: String
+  @Parameter lateinit var lang: String
+  @Parameter lateinit var text: String
+  @Parameter lateinit var expHintText: String
+  @Parameter lateinit var expLatex: String
+  @Parameter lateinit var expA11y: String
+  @Parameter lateinit var expErr: String
 
   @Before
   fun setUp() {
@@ -324,7 +309,7 @@ class MathExpressionInteractionsViewTest {
         .check(
           matches(
             withText(
-              R.string.math_expression_error_empty_input
+              R.string.math_equation_error_empty_input
             )
           )
         )
