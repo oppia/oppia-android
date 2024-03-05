@@ -42,13 +42,15 @@ class InputInteractionViewTestActivity :
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
+  lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
 
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
 
-  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
+  lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
 
   lateinit var writtenTranslationContext: WrittenTranslationContext
+
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -65,7 +67,7 @@ class InputInteractionViewTestActivity :
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.textInputViewModel = textInputViewModel
+    binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {

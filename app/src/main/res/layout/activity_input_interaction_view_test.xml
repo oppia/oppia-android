@@ -64,21 +64,17 @@
         android:textSize="12sp"
         android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-      <org.oppia.android.app.customview.interaction.TextInputInteractionView
-        android:id="@+id/test_text_input_interaction_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/edit_text_background"
-        android:focusable="true"
-        android:hint="@string/test_text_input_interaction_hint"
+      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+        android:id="@+id/test_math_expression_input_interaction_view"
+        style="@style/InputInteractionEditText"
         android:inputType="text"
-        android:longClickable="false"
-        android:maxLength="200"
-        android:padding="8dp"
-        android:singleLine="true"
-        android:text="@={textInputViewModel.answerText}" />
+        android:minHeight="48dp"
+        android:text="@={mathExpressionInteractionsViewModel.answerText}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
+        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}" />
 
       <Button
         android:id="@+id/submit_button"
