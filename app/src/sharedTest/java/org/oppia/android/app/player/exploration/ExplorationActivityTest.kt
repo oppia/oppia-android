@@ -2030,7 +2030,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExpActivity_replayExploration_pressToolbarBackIcon_doesNotLogLessonSavedAdvertentlyEvent() {
+  fun testExpActivity_replayExploration_pressToolbarBackIcon_doesNotLogLessonSavedAdvertentlyEvent() { // ktlint-disable max-line-length
     setUpAudioForFractionLesson()
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
