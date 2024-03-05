@@ -24,6 +24,7 @@ import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 
 /**
  * This is a dummy activity to test input interaction views.
@@ -40,11 +41,11 @@ class InputInteractionViewTestActivity :
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
+  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
 
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
 
-  lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
+  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
 
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -63,7 +64,7 @@ class InputInteractionViewTestActivity :
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
+    binding.textInputViewModel = textInputViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {

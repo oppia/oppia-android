@@ -12,6 +12,10 @@
       type="org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel" />
 
     <variable
+      name="textInputViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel" />
+
+    <variable
       name="mathExpressionInteractionsViewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
   </data>
@@ -19,7 +23,6 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -33,18 +36,18 @@
         android:id="@+id/test_number_input_interaction_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:focusable="true"
         android:hint="@string/test_number_input_interaction_hint"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         android:longClickable="false"
         android:maxLength="200"
-        android:minHeight="48dp"
         android:padding="8dp"
         android:singleLine="true"
         android:text="@={numericInputViewModel.answerText}"
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
         app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
 
       <TextView
@@ -61,17 +64,21 @@
         android:textSize="12sp"
         android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
-        android:id="@+id/test_math_expression_input_interaction_view"
-        style="@style/InputInteractionEditText"
-        android:inputType="text"
+      <org.oppia.android.app.customview.interaction.TextInputInteractionView
+        android:id="@+id/test_text_input_interaction_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:text="@={mathExpressionInteractionsViewModel.answerText}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
-        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}" />
+        android:layout_margin="8dp"
+        android:background="@drawable/edit_text_background"
+        android:focusable="true"
+        android:hint="@string/test_text_input_interaction_hint"
+        android:inputType="text"
+        android:longClickable="false"
+        android:maxLength="200"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:text="@={textInputViewModel.answerText}" />
 
       <Button
         android:id="@+id/submit_button"
