@@ -1969,6 +1969,7 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_startNewExploration_pressToolbarBackIcon_logsLessonSavedAdvertentlyEvent() {
     setUpAudioForFractionLesson()
+    markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2031,6 +2032,7 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_replayExploration_pressToolbarBackIcon_doesNotLogLessonSavedAdvertentlyEvent() {
     setUpAudioForFractionLesson()
+    markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
