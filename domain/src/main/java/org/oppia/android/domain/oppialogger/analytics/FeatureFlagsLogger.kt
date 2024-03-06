@@ -100,9 +100,9 @@ class FeatureFlagsLogger @Inject constructor(
   /**
    * This method logs the name, enabled status and sync status of all feature flags to Firebase.
    *
-   * @param sessionId denotes the id of the current appInForeground session
+   * @param appSessionId denotes the id of the current appInForeground session
    */
-  fun logAllFeatureFlags(sessionId: String) {
+  fun logAllFeatureFlags(appSessionId: String) {
     val featureFlagItemList = mutableListOf<FeatureFlagItemContext>()
     for (flag in featureFlagItemMap) {
       featureFlagItemList.add(
@@ -112,7 +112,7 @@ class FeatureFlagsLogger @Inject constructor(
 
     // TODO(#5341): Set the UUID value for this context
     val featureFlagContext = FeatureFlagListContext.newBuilder()
-      .setAppSessionId(sessionId)
+      .setAppSessionId(appSessionId)
       .addAllFeatureFlags(featureFlagItemList)
       .build()
 
@@ -127,7 +127,8 @@ class FeatureFlagsLogger @Inject constructor(
   /**
    * Creates an [EventLog] context for the feature flags to be logged.
    *
-   * @param sessionId denotes the session id of the current appInForeground session
+   * @param flagDetails denotes the key-value pair of the feature flag name and its corresponding
+   * [PlatformParameterValue]
    * @return an [EventLog.Context] for the feature flags to be logged
    */
   private fun createFeatureFlagItemContext(

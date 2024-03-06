@@ -169,8 +169,8 @@ class ApplicationLifecycleObserver @Inject constructor(
 
   private fun logAllFeatureFlags() {
     CoroutineScope(backgroundDispatcher).launch {
-      val sessionId = loggingIdentifierController.getSessionIdFlow().value
-      featureFlagsLogger.logAllFeatureFlags(sessionId)
+      val appSessionId = loggingIdentifierController.getAppSessionIdFlow().value
+      featureFlagsLogger.logAllFeatureFlags(appSessionId)
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
