@@ -2,7 +2,9 @@
 
 - [Introduction](#introduction)
 - [How to create a Platform Parameter](#how-to-create-a-platform-parameter)
-- [How to consume a Platform Parameter](#how-to-consume-a-platform-parameter)
+- [How to create a Feature Flag](#how-to-create-a-feature-flag)
+- [How to consume a Platform Parameter or Feature Flag](#how-to-consume-a-platform-parameter-or-feature-flag)
+- [Ensuring your Feature Flags are logged on each app session](#ensuring-your-feature-flags-are-logged-on-each-app-session)
 - [How to write tests related Platform Parameter](#how-to-write-tests-related-platform-parameter)
   - [1. We actually don't test for platform parameter(s)](#1-we-actually-dont-test-for-platform-parameters)
   - [2. We test for different values of platform parameter(s)](#2-we-test-for-different-values-of-platform-parameters) 
@@ -149,7 +151,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
     - Add the name and the value of our Platform Parameter. This change will make our Compile-Time Platform Parameter to be a Run-Time Platform Parameter. This means that we can control its value from backend.
     - Note that permission will be required before accessing the Feature Gating console in the Oppia backend.
 
-## How to consume a Platform Parameter/Feature Flag
+## How to consume a Platform Parameter or Feature Flag
 To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue\<T\>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter and the `EnableAppAndOSDeprecation` feature flag in `PlatformParameterSyncUpWorkManagerInitializer`
 
 ```kotlin
@@ -169,11 +171,11 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
 }
 ```
 
-## Ensuring Your Feature Flags are Logged on each app session
-As a requirement, all feature flags should be logged at the beginning of each app session. This is done automatically via the `FeatureFlagsLogger.kt` inside `domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/` and very little configuration is required. To ensure any newly added feature flags are logged as part of this requirement, follow the steps below;
+## Ensuring your Feature Flags are logged on each app session
+As a requirement, all feature flags should be logged at the beginning of each app session. This is done automatically via the `FeatureFlagsLogger.kt` inside `domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/` but some configuration is required. To ensure any newly added feature flags are logged as part of this requirement, follow the steps below;
 
 ### 1. Import the feature flag to the FeatureFlagsLogger
-Consume the created feature flag as shown in the example below to ensure the value is present;
+To get the value of the feature flag for logging, we need to consume the created feature flag as shown in the example below to ensure the value is present;
 
 ```kotlin
 /**
