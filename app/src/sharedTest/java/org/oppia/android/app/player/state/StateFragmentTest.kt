@@ -3286,6 +3286,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3466,6 +3467,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
