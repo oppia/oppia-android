@@ -47,7 +47,9 @@ class LoggingIdentifierController @Inject constructor(
     dataProviders.run { sessionId.convertToAutomaticDataProvider(SESSION_ID_DATA_PROVIDER_ID) }
   }
   private val appSessionIdDataProvider by lazy {
-    dataProviders.run { appSessionId.convertToAutomaticDataProvider(APP_SESSION_ID_DATA_PROVIDER_ID) }
+    dataProviders.run {
+      appSessionId.convertToAutomaticDataProvider(APP_SESSION_ID_DATA_PROVIDER_ID)
+    }
   }
   private val installationIdStore by lazy {
     persistentCacheStoreFactory.create(
