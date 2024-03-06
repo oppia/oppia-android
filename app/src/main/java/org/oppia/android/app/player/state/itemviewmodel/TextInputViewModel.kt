@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -9,6 +10,7 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -28,20 +30,43 @@ class TextInputViewModel private constructor(
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
+  private var pendingAnswerError: String? = null
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
+  val errorMessage = ObservableField<String>("")
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            /* pendingAnswerError= */ null,
-            answerText.isNotEmpty()
+            pendingAnswerError = pendingAnswerError,
+            inputAnswerAvailable = true // Allow submit on empty answer.
           )
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    errorMessage.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
+    interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
+    )
+  }
+
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    return when (category) {
+      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        TextParsingUiError.createForText(
+          answerText.toString()
+        ).createForText(resourceHandler)
+      }
+    }.also {
+      pendingAnswerError = it
+      errorMessage.set(it)
+    }
   }
 
   fun getAnswerTextWatcher(): TextWatcher {
@@ -55,6 +80,7 @@ class TextInputViewModel private constructor(
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
+        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {
@@ -119,6 +145,24 @@ class TextInputViewModel private constructor(
         resourceHandler,
         translationController
       )
+    }
+  }
+
+  private enum class TextParsingUiError(@StringRes private var error: Int?) {
+    /** Corresponds to non empty input. */
+    VALID(error = null),
+
+    /** Corresponds to empty input. */
+    EMPTY_INPUT(error = R.string.text_error_empty_input);
+
+    /** Returns the string corresponding to this error's string resources, or null if there is none. */
+    fun createForText(resourceHandler: AppLanguageResourceHandler): String? =
+      error?.let(resourceHandler::getStringInLocale)
+
+    companion object {
+      /** Returns the [TextParsingUiError] corresponding to the input. */
+      fun createForText(text: String): TextParsingUiError =
+        if (text.isEmpty()) EMPTY_INPUT else VALID
     }
   }
 }
