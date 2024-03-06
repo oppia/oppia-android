@@ -580,7 +580,7 @@ class EventBundleCreator @Inject constructor(
         val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
 
         store.putNonSensitiveValue("uuid", uniqueUserUuid)
-        store.putSensitiveValue("session_id", sessionId)
+        store.putSensitiveValue("session_id", appSessionId)
         store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
         store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
         store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)

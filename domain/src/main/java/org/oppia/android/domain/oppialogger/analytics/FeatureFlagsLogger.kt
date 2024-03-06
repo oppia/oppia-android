@@ -112,7 +112,7 @@ class FeatureFlagsLogger @Inject constructor(
 
     // TODO(#5341): Set the UUID value for this context
     val featureFlagContext = FeatureFlagListContext.newBuilder()
-      .setSessionId(sessionId)
+      .setAppSessionId(sessionId)
       .addAllFeatureFlags(featureFlagItemList)
       .build()
 

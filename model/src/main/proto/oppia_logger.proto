@@ -378,7 +378,7 @@ message EventLog {
     string unique_user_uuid = 1;
 
     // The id of the current session.
-    string session_id = 2;
+    string app_session_id = 2;
 
     // List of Feature Flag items.
     repeated FeatureFlagItemContext feature_flags = 3;

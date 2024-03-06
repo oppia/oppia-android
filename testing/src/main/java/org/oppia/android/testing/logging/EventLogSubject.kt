@@ -2070,12 +2070,12 @@ class EventLogSubject private constructor(
     fun hasUniqueUserUuidThat(): StringSubject = assertThat(actual.uniqueUserUuid)
 
     /**
-     * Returns a [StringSubject] to test [EventLog.FeatureFlagListContext.getSessionId].
+     * Returns a [StringSubject] to test [EventLog.FeatureFlagListContext.getAppSessionId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasSessionIdThat(): StringSubject = assertThat(actual.sessionId)
+    fun hasSessionIdThat(): StringSubject = assertThat(actual.appSessionId)
 
     /**
      * Returns a [IntegerSubject] to test [EventLog.FeatureFlagListContext.getFeatureFlagsCount].
