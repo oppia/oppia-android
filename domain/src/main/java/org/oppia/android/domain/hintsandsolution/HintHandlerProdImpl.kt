@@ -124,14 +124,11 @@ class HintHandlerProdImpl private constructor(
   }
 
   override suspend fun viewHint(hintIndex: Int) {
-
     val helpIndex = computeCurrentHelpIndex()
     check(
       helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
         helpIndex.nextAvailableHintIndex == hintIndex
-
     ) {
-
       "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
         " $hintIndex)"
     }
@@ -317,7 +314,6 @@ class HintHandlerProdImpl private constructor(
 
   private suspend fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
     // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-
     if (targetSequenceNumber == hintSequenceNumber) {
       val previousHelpIndex = computeCurrentHelpIndex()
 

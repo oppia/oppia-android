@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -282,7 +283,7 @@ class ExplorationProgressController @Inject constructor(
 
   fun submitHintIsViewed(hintIndex: Int) {
     val submitResultFlow = createAsyncResultStateFlow<Any?>()
-    val message = ControllerMessage.LogViewedHelpIndex(hintIndex, activeSessionId, submitResultFlow)
+    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId, submitResultFlow)
     sendCommandForOperation(message) {
       "Failed to schedule command for viewing hint: $hintIndex."
     }
@@ -502,21 +503,18 @@ class ExplorationProgressController @Inject constructor(
             is ControllerMessage.HintIsRevealed -> {
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
-            is ControllerMessage.LogViewedHelpIndex -> {
-              controllerState.maybeLogViewedHint(activeSessionId)
-            }
+            is ControllerMessage.LogHintIsViewed ->
+              controllerState.maybeLogViewedHint(activeSessionId,message.hintIndex)
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
-            is ControllerMessage.LogSolutionIsViewed -> {
+            is ControllerMessage.LogSolutionIsViewed ->
               controllerState.maybeLogViewedSolution(activeSessionId)
-            }
             is ControllerMessage.MoveToPreviousState ->
               controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
               controllerState.moveToNextStateImpl(message.callbackFlow)
-            is ControllerMessage.LogUpdatedHelpIndex -> {
+            is ControllerMessage.LogUpdatedHelpIndex ->
               controllerState.maybeLogUpdatedHelpIndex(message.helpIndex, activeSessionId)
-            }
             is ControllerMessage.ProcessSavedCheckpointResult -> {
               controllerState.processSaveCheckpointResult(
                 message.profileId,
@@ -530,7 +528,6 @@ class ExplorationProgressController @Inject constructor(
             is ControllerMessage.SaveCheckpoint -> controllerState.saveExplorationCheckpoint()
             is ControllerMessage.RecomputeStateAndNotify ->
               controllerState.recomputeCurrentStateAndNotifyImpl()
-            else -> {}
           }
         } catch (e: Exception) {
           exceptionsController.logNonFatalException(e)
@@ -562,9 +559,7 @@ class ExplorationProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) {
-      AsyncResult.Failure(e)
-    }
+    } catch (e: Exception) { AsyncResult.Failure(e) }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
@@ -818,11 +813,12 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun ControllerState.maybeLogViewedHint(
-    activeSessionId: String
+    activeSessionId: String,
+    hintIndex: Int
   ) {
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
-      logViewedHint()
+      logViewedHint(hintIndex)
     }
   }
 
@@ -1240,17 +1236,14 @@ class ExplorationProgressController @Inject constructor(
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
     fun checkForChangedHintState(newHelpIndex: HelpIndex) {
-
       if (helpIndex != newHelpIndex) {
         // If the index changed to the new HelpIndex, that implies that whatever is observed in the
         // new HelpIndex indicates its previous state and therefore what changed.
         when (newHelpIndex.indexTypeCase) {
-          NEXT_AVAILABLE_HINT_INDEX -> {
+          NEXT_AVAILABLE_HINT_INDEX ->
             stateAnalyticsLogger?.logHintUnlocked(newHelpIndex.nextAvailableHintIndex)
-          }
-          LATEST_REVEALED_HINT_INDEX -> {
+          LATEST_REVEALED_HINT_INDEX ->
             stateAnalyticsLogger?.logAccessHint(newHelpIndex.latestRevealedHintIndex)
-          }
           SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
             SHOW_SOLUTION -> stateAnalyticsLogger?.logAccessSolution()
@@ -1266,8 +1259,8 @@ class ExplorationProgressController @Inject constructor(
     }
 
     /** Logs when a user views a hint. */
-    fun logViewedHint() {
-      stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
+    fun logViewedHint(hintIndex: Int) {
+      stateAnalyticsLogger?.logViewHint(hintIndex)
     }
 
     /** Logs when a user views the solution. */
@@ -1400,7 +1393,7 @@ class ExplorationProgressController @Inject constructor(
      * change if the current active session has changed (since that's generally indicative of an
      * error--hints can't continue to change after the session has ended).
      */
-    data class LogViewedHelpIndex(
+    data class LogHintIsViewed(
       val hintIndex: Int,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
