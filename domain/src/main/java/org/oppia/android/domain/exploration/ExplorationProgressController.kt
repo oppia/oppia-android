@@ -1,6 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -504,7 +503,7 @@ class ExplorationProgressController @Inject constructor(
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
             is ControllerMessage.LogHintIsViewed ->
-              controllerState.maybeLogViewedHint(activeSessionId,message.hintIndex)
+              controllerState.maybeLogViewedHint(activeSessionId, message.hintIndex)
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.LogSolutionIsViewed ->
