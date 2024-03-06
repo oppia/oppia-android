@@ -599,3 +599,10 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/espresso/TextInputActionTest.kt"
 }
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "computeIfAbsent\\("
+  failure_message: "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic Kotlin-specific solution, instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/caching/testing/FakeAssetRepository.kt"
+}

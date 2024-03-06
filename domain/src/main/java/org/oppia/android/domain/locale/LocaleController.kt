@@ -62,7 +62,8 @@ class LocaleController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val machineLocale: MachineLocale,
   private val androidLocaleFactory: AndroidLocaleFactory,
-  private val formatterFactory: OppiaBidiFormatter.Factory
+  private val formatterFactory: OppiaBidiFormatter.Factory,
+  private val androidLocaleProfileFactory: AndroidLocaleProfile.Factory
 ) {
   private val definitionsLock = ReentrantLock()
   private lateinit var supportedLanguages: SupportedLanguages
@@ -115,9 +116,8 @@ class LocaleController @Inject constructor(
    * for cases in which the user changed their selected language).
    */
   fun reconstituteDisplayLocale(oppiaLocaleContext: OppiaLocaleContext): DisplayLocale {
-    return DisplayLocaleImpl(
-      oppiaLocaleContext, machineLocale, androidLocaleFactory, formatterFactory
-    )
+    val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(oppiaLocaleContext)
+    return DisplayLocaleImpl(oppiaLocaleContext, formattingLocale, machineLocale, formatterFactory)
   }
 
   /**
@@ -257,7 +257,7 @@ class LocaleController @Inject constructor(
 
   private fun getSystemLocaleProfile(): DataProvider<AndroidLocaleProfile> {
     return dataProviders.createInMemoryDataProvider(ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID) {
-      AndroidLocaleProfile.createFrom(getSystemLocale())
+      androidLocaleProfileFactory.createFrom(getSystemLocale())
     }
   }
 
@@ -293,7 +293,7 @@ class LocaleController @Inject constructor(
   @Suppress("DEPRECATION") // Old API is needed for SDK versions < N.
   private fun getDefaultLocale(configuration: Configuration): Locale = configuration.locale
 
-  private suspend fun <T : OppiaLocale> computeLocaleResult(
+  private suspend inline fun <reified T : OppiaLocale> computeLocaleResult(
     language: OppiaLanguage,
     systemLocaleProfile: AndroidLocaleProfile,
     usageMode: LanguageUsageMode
@@ -302,7 +302,6 @@ class LocaleController @Inject constructor(
     // internal weirdness that would lead to a wrong type being produced from the generic helpers.
     // This shouldn't actually ever happen in practice, but this code gracefully fails to a null
     // (and thus a failure).
-    @Suppress("UNCHECKED_CAST") // as? should always be a safe cast, even if unchecked.
     val locale = computeLocale(language, systemLocaleProfile, usageMode) as? T
     return locale?.let {
       AsyncResult.Success(it)
@@ -324,7 +323,13 @@ class LocaleController @Inject constructor(
       retrieveLanguageDefinition(languageDefinition.fallbackMacroLanguage)?.let {
         fallbackLanguageDefinition = it
       }
-      regionDefinition = retrieveRegionDefinition(systemLocaleProfile.regionCode)
+      val regionCode = when (systemLocaleProfile) {
+        is AndroidLocaleProfile.LanguageAndRegionProfile -> systemLocaleProfile.regionCode
+        is AndroidLocaleProfile.RegionOnlyProfile -> systemLocaleProfile.regionCode
+        is AndroidLocaleProfile.LanguageAndWildcardRegionProfile,
+        is AndroidLocaleProfile.LanguageOnlyProfile, is AndroidLocaleProfile.RootProfile -> ""
+      }
+      regionDefinition = retrieveRegionDefinition(regionCode)
       this.usageMode = usageMode
     }.build()
 
@@ -343,8 +348,10 @@ class LocaleController @Inject constructor(
     }
 
     return when (usageMode) {
-      APP_STRINGS ->
-        DisplayLocaleImpl(localeContext, machineLocale, androidLocaleFactory, formatterFactory)
+      APP_STRINGS -> {
+        val formattingLocale = androidLocaleFactory.createAndroidLocaleAsync(localeContext).await()
+        DisplayLocaleImpl(localeContext, formattingLocale, machineLocale, formatterFactory)
+      }
       CONTENT_STRINGS, AUDIO_TRANSLATIONS -> ContentLocaleImpl(localeContext)
       USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
     }
@@ -413,9 +420,7 @@ class LocaleController @Inject constructor(
       return@mapNotNull definition.retrieveAppLanguageProfile()?.let { profile ->
         profile to definition
       }
-    }.find { (profile, _) ->
-      localeProfile.matches(machineLocale, profile)
-    }?.let { (_, definition) -> definition }
+    }.find { (profile, _) -> localeProfile.matches(profile) }?.let { (_, definition) -> definition }
   }
 
   private suspend fun retrieveRegionDefinition(countryCode: String): RegionSupportDefinition {
@@ -431,7 +436,7 @@ class LocaleController @Inject constructor(
     } ?: RegionSupportDefinition.newBuilder().apply {
       region = OppiaRegion.REGION_UNSPECIFIED
       regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-        ietfRegionTag = countryCode
+        ietfRegionTag = machineLocale.run { countryCode.toMachineUpperCase() }
       }.build()
     }.build()
   }
@@ -455,10 +460,10 @@ class LocaleController @Inject constructor(
   private fun LanguageSupportDefinition.retrieveAppLanguageProfile(): AndroidLocaleProfile? {
     return when (appStringId.languageTypeCase) {
       LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID ->
-        AndroidLocaleProfile.createFromIetfDefinitions(appStringId, regionDefinition = null)
+        androidLocaleProfileFactory.createFromIetfDefinitions(appStringId, regionDefinition = null)
       LanguageSupportDefinition.LanguageId.LanguageTypeCase.MACARONIC_ID -> {
         // Likely won't match against system languages.
-        AndroidLocaleProfile.createFromMacaronicLanguage(appStringId)
+        androidLocaleProfileFactory.createFromMacaronicLanguage(appStringId)
       }
       LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET, null -> null
     }
@@ -473,9 +478,12 @@ class LocaleController @Inject constructor(
     // must be part of the language definitions. Support for app strings is exposed so that a locale
     // can be constructed from it.
     appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-      ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = systemLocaleProfile.computeIetfLanguageTag()
-      }.build()
+      // The root profile is assumed if there is no specific language ID to use.
+      if (systemLocaleProfile !is AndroidLocaleProfile.RootProfile) {
+        ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+          ietfLanguageTag = systemLocaleProfile.ietfLanguageTag
+        }.build()
+      }
     }.build()
   }.build()
 
