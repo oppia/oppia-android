@@ -83,7 +83,6 @@ class FeatureFlagsLogger @Inject constructor(
     INTERACTION_CONFIG_CHANGE_STATE_RETENTION to enableInteractionConfigChangeStateRetention,
     APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
     ENABLE_NPS_SURVEY to enableNpsSurvey,
-
     ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2
   )
 

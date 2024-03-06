@@ -34,12 +34,12 @@ class LoggingIdentifierController @Inject constructor(
   private val baseRandom = Random(applicationIdSeed)
   private val installationRandomSeed = baseRandom.nextLong()
   private val sessionRandomSeed = baseRandom.nextLong()
-  private val appSessionRandomSeed = baseRandom.nextLong()
   private val learnerRandomSeed = baseRandom.nextLong()
+  private val appSessionRandomSeed = baseRandom.nextLong()
   private val installationIdRandom by lazy { Random(installationRandomSeed) }
   private val sessionIdRandom by lazy { Random(sessionRandomSeed) }
-  private val appSessionIdRandom by lazy { Random(appSessionRandomSeed) }
   private val learnerIdRandom by lazy { Random(learnerRandomSeed) }
+  private val appSessionIdRandom by lazy { Random(appSessionRandomSeed) }
 
   private val sessionId by lazy { MutableStateFlow(computeSessionId()) }
   private val appSessionId by lazy { MutableStateFlow(computeAppSessionId()) }

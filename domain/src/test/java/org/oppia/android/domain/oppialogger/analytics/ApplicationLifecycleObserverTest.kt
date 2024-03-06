@@ -391,7 +391,7 @@ class ApplicationLifecycleObserverTest {
       mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
     )
 
-    val sessionIdProvider = loggingIdentifierController.getSessionId()
+    val sessionIdProvider = loggingIdentifierController.getAppSessionId()
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
     applicationLifecycleObserver.onCreate()
