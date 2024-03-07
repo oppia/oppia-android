@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -99,14 +98,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [InputInteractionViewTestActivity]. */
+/** Tests for [TextInputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = InputInteractionViewTestActivityTest.TestApplication::class,
+  application = TextInputInteractionViewTestActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class InputInteractionViewTestActivityTest {
+class TextInputInteractionViewTestActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -135,289 +134,83 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInput_withNoInput_hasCorrectPendingAnswerType() {
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
+  // will not be used by user
+  fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      TextInputInteractionViewTestActivity::class.java
     )
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      assertThat(pendingAnswer.answer.real).isWithin(1e-5).of(0.0)
+      assertThat(pendingAnswer.answer.normalizedString).isEmpty()
     }
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
   // will not be used by user
-  fun testNumericInput_withRealNumber_hasCorrectPendingAnswer() {
+  fun testTextInput_withChar_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      TextInputInteractionViewTestActivity::class.java
     )
-    onView(withId(R.id.test_number_input_interaction_view))
+    onView(withId(R.id.test_text_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "9"
+          "abc"
         )
       )
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.REAL
+        InteractionObject.ObjectTypeCase.NORMALIZED_STRING
       )
-      assertThat(pendingAnswer.answer.real).isEqualTo(9.0)
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withRealNumberWithDecimal_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "9.5"
-        )
-      )
-    activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.REAL
-      )
-      assertThat(pendingAnswer.answer.real).isEqualTo(9.5)
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withNegativeRealNumber_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "-9.5"
-        )
-      )
-    activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.REAL
-      )
-      assertThat(pendingAnswer.answer.real).isEqualTo(-9.5)
-      assertThat(pendingAnswer.answer.real).isLessThan(0.0)
+      assertThat(pendingAnswer.answer.normalizedString).isEqualTo("abc")
     }
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testNumberInput_withText_configChange_hasCorrectPendingAnswer() {
+  fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      TextInputInteractionViewTestActivity::class.java
     )
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(editTextInputAction.appendText("9"))
+    onView(withId(R.id.test_text_input_interaction_view))
+      .perform(
+        editTextInputAction.appendText(
+          "abc"
+        )
+      )
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed()))
-      .check(matches(withText("9")))
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view))
-        .perform(
-          editTextInputAction.appendText(
-            "/"
-          )
-        )
-      onView(withId(R.id.number_input_error))
-        .check(
-          matches(
-            withText(
-              R.string.number_error_invalid_format
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      scrollToSubmitButton()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error))
-        .check(
-          matches(
-            withText(
-              R.string.number_error_empty_input
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withLongNumber_submit_numberTooLongErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view))
-        .perform(
-          editTextInputAction.appendText(
-            "-12345678.6787687678"
-          )
-        )
-      closeSoftKeyboard()
-      scrollToSubmitButton()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error))
-        .check(
-          matches(
-            withText(
-              R.string.number_error_larger_than_fifteen_characters
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withLongInteger_submit_numberTooLongErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view))
-        .perform(
-          editTextInputAction.appendText(
-            "1234567886787687678"
-          )
-        )
-      closeSoftKeyboard()
-      scrollToSubmitButton()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error))
-        .check(
-          matches(
-            withText(
-              R.string.number_error_larger_than_fifteen_characters
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withMinusSymbol_submit_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view))
-        .perform(
-          editTextInputAction.appendText(
-            "-"
-          )
-        )
-      closeSoftKeyboard()
-      scrollToSubmitButton()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error))
-        .check(
-          matches(
-            withText(
-              R.string.number_error_invalid_format
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withNegativeSymbolNotAt0_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(editTextInputAction.appendText("55-"))
-    onView(withId(R.id.number_input_error))
+    onView(withId(R.id.test_text_input_interaction_view))
+      .check(matches(isDisplayed()))
       .check(
-        matches(
-          withText(
-            R.string.number_error_invalid_format
-          )
-        )
+        matches(withText("abc"))
       )
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
   // will not be used by user
-  fun testNumericInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "--55"
+  fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    ActivityScenario.launch(TextInputInteractionViewTestActivity::class.java).use {
+      scrollToSubmitButton()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
+        .perform(
+          click()
         )
-      )
-    onView(withId(R.id.number_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.number_error_invalid_format
+      onView(withId(R.id.text_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.text_error_empty_input
+            )
           )
         )
-      )
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withFloatingPointMoreThanOnce_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "5.5."
-        )
-      )
-    onView(withId(R.id.number_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.number_error_invalid_format
-          )
-        )
-      )
-  }
-
-  @Test
-  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
-  // will not be used by user
-  fun testNumericInput_withDecimalAtStart_numberStartingWithFloatingPointError() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(editTextInputAction.appendText(".5"))
-    onView(withId(R.id.number_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.number_error_starting_with_floating_point
-          )
-        )
-      )
+    }
   }
 
   private fun scrollToSubmitButton() {
@@ -429,7 +222,7 @@ class InputInteractionViewTestActivityTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      RobolectricModule::class, TestAuthenticationModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
@@ -453,25 +246,24 @@ class InputInteractionViewTestActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(inputInteractionViewTestActivityTest: InputInteractionViewTestActivityTest)
+    fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerInputInteractionViewTestActivityTest_TestApplicationComponent.builder()
+      DaggerTextInputInteractionViewTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(inputInteractionViewTestActivityTest: InputInteractionViewTestActivityTest) {
+    fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest) {
       component.inject(inputInteractionViewTestActivityTest)
     }
 
