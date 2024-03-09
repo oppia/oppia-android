@@ -178,6 +178,7 @@
   <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">Number of terms is not equal to the required terms.</string>
   <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">Ratios cannot have 0 as an element.</string>
   <string name="ratio_error_empty_input" description="The error message for ratio when the answer is empty">Enter a ratio to continue.</string>
+  <string name="text_error_empty_input">Enter text to continue.</string>
   <string name="selection_error_empty_input">Choose an answer to continue.</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%s Bytes</string>
@@ -615,7 +616,6 @@
   <string name="nps_score_question">On a scale from 0–10, how likely are you to recommend %s to a friend or colleague?</string>
   <string name="previous_subtopic_talkback_text">The previous subtopic is %s</string>
   <string name="next_subtopic_talkback_text">The next subtopic is %s</string>
-
   <string name="app_info_icon_content_description">App Info</string>
   <string name="spotlight_overlay_arrow_content_description">Spotlight Overlay Arrow</string>
   <string name="close_spotlight_button_content_description">Close Spotlight Button</string>

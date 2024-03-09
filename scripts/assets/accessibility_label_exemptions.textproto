@@ -16,6 +16,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DrawableBind
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ExplorationInjectionActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ExplorationTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/FractionInputInteractionViewTestActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TextInputInteractionViewTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HtmlParserTestActivity"
