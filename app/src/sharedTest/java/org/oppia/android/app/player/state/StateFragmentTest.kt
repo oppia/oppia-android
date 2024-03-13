@@ -4230,6 +4230,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_lateNight_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
     setUpTestWithSurveyFeatureOn()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -4259,6 +4260,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_earlyMorning_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
     setUpTestWithSurveyFeatureOn()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -4288,6 +4290,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_midMorning_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
     setUpTestWithSurveyFeatureOn()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -4315,6 +4318,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_afternoon_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
     setUpTestWithSurveyFeatureOn()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -4342,6 +4346,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_evening_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
     setUpTestWithSurveyFeatureOn()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -4369,6 +4374,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_surveyFeatureOff_allGatingConditionsMet_noSurveyPopup() {
     // Survey Gating conditions are: isPastGracePeriod, has achieved minimum aggregate exploration
     // time of 5min in a topic, and is within the hours of 9am and 10pm in the user's local time.
