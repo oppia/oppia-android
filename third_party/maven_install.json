@@ -8207,36 +8207,6 @@
                 "url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4-sources.jar"
             },
             {
-                "coord": "de.hdodenhof:circleimageview:3.0.1",
-                "dependencies": [],
-                "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar",
-                "mirror_urls": [
-                    "https://maven.google.com/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar",
-                    "https://repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar",
-                    "https://maven.fabric.io/public/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar",
-                    "https://maven.google.com/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar",
-                    "https://repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar"
-                ],
-                "sha256": "7b0f088436ad4dcbb36d779fd09bf2192d9cc1e1a734bb6337904a7648f97617",
-                "url": "https://repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1.aar"
-            },
-            {
-                "coord": "de.hdodenhof:circleimageview:jar:sources:3.0.1",
-                "dependencies": [],
-                "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar",
-                "mirror_urls": [
-                    "https://maven.google.com/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar",
-                    "https://repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar",
-                    "https://maven.fabric.io/public/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar",
-                    "https://maven.google.com/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar",
-                    "https://repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar"
-                ],
-                "sha256": "41ac0df4f7bab17c56b075a0c802a6f0b6d9013831d409556fdcd56bdb8a460b",
-                "url": "https://repo1.maven.org/maven2/de/hdodenhof/circleimageview/3.0.1/circleimageview-3.0.1-sources.jar"
-            },
-            {
                 "coord": "io.fabric.sdk.android:fabric:1.4.7",
                 "dependencies": [],
                 "directDependencies": [],
