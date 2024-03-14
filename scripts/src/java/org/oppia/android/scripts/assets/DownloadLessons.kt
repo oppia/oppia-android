@@ -453,11 +453,13 @@ class DownloadLessons(
     val imageSuccessCount = images.values.count { it is DownloadedImage.Succeeded }
     val imageDuplicationCount = images.values.count { it is DownloadedImage.Duplicated }
     val renamedImages = images.values.filterIsInstance<DownloadedImage.Renamed>()
-    val convertedImages = images.values.filterIsInstance<DownloadedImage.ConvertedSvgToPng>()
+    val convertedSvgImages = images.values.filterIsInstance<DownloadedImage.ConvertedSvgToPng>()
+    val convertedGifImages = images.values.filterIsInstance<DownloadedImage.ConvertedGifToPng>()
     println("$imageSuccessCount/${images.size} images successfully downloaded.")
     println("$imageDuplicationCount/${images.size} images were de-duplicated.")
     println("${renamedImages.size}/${images.size} images required renaming due to conflicts.")
-    println("${convertedImages.size}/${images.size} images required repairing from SVG to PNG.")
+    println("${convertedSvgImages.size}/${images.size} images required repairing from SVG to PNG.")
+    println("${convertedGifImages.size}/${images.size} images required repairing from GIF to PNG.")
     println()
 
     if (renamedImages.isNotEmpty()) {
@@ -491,10 +493,10 @@ class DownloadLessons(
       println()
     }
 
-    if (convertedImages.isNotEmpty()) {
-      println("Please manually verify the following converted images:")
+    if (convertedSvgImages.isNotEmpty()) {
+      println("Please manually verify the following converted SVG->PNG images:")
       val destDir by lazy { File(outputDir, "image_conversions").also { it.mkdir() } }
-      convertedImages.forEach { convertedImage ->
+      convertedSvgImages.forEach { convertedImage ->
         val oldFilename = convertedImage.imageRef.filename
         val newFilename = convertedImage.newFilename
         val resolutionDir = File(destDir, oldFilename.substringBeforeLast('.'))
@@ -517,6 +519,35 @@ class DownloadLessons(
         println("  - Image URL: $imageUrl")
         println("  - Language: ${convertedImage.imageRef.container.language}")
         println("  - Rendered resolution: ${convertedImage.width}x${convertedImage.height}")
+      }
+      println()
+    }
+
+    if (convertedGifImages.isNotEmpty()) {
+      println("Please manually verify the following converted GIF->PNG images:")
+      val destDir by lazy { File(outputDir, "image_conversions").also { it.mkdir() } }
+      convertedGifImages.forEach { convertedImage ->
+        val oldFilename = convertedImage.imageRef.filename
+        val newFilename = convertedImage.newFilename
+        val resolutionDir = File(destDir, oldFilename.substringBeforeLast('.'))
+        val beforeDir = File(resolutionDir, "before").also { it.mkdirs() }
+        val afterDir = File(resolutionDir, "after").also { it.mkdirs() }
+        val beforeImageData = convertedImage.downloadedImageData.toByteArray()
+        val afterImageData = convertedImage.convertedImageData.toByteArray()
+        val beforeFile = File(beforeDir, oldFilename).also { it.writeBytes(beforeImageData) }
+        val afterFile = File(afterDir, newFilename).also { it.writeBytes(afterImageData) }
+        val imageUrl =
+          imageDownloader.computeImageUrl(
+            convertedImage.imageRef.container.imageContainerType,
+            convertedImage.imageRef.imageType,
+            convertedImage.imageRef.container.entityId,
+            convertedImage.imageRef.filename
+          )
+        println("- Image $oldFilename required repairing via conversion:")
+        println("  - Before: ${beforeFile.path} (${beforeImageData.size} bytes)")
+        println("  - After: ${afterFile.path} (${afterImageData.size} bytes)")
+        println("  - Image URL: $imageUrl")
+        println("  - Language: ${convertedImage.imageRef.container.language}")
       }
       println()
     }
@@ -654,7 +685,7 @@ class DownloadLessons(
       }
     }
 
-    if (renamedImages.isNotEmpty() || convertedImages.isNotEmpty()) {
+    if (renamedImages.isNotEmpty() || convertedSvgImages.isNotEmpty() || convertedGifImages.isNotEmpty()) {
       println("WARNING: Images needed to be auto-fixed. Please verify that they are correct")
       println("(look at above output for specific images that require verification).")
     }
@@ -849,7 +880,7 @@ class DownloadLessons(
         container.imageContainerType, imageType, container.entityId, filename
       ).await()?.let { imageData ->
         withContext(Dispatchers.IO) {
-          when (val conv = imageRepairer.convertToPng(filename, imageData.decodeToString())) {
+          when (val conv = imageRepairer.convertToPng(filename, imageData)) {
             ImageRepairer.RepairedImage.NoRepairNeeded -> {
               val imageFile = File(destDir, filename)
               when {
@@ -868,6 +899,30 @@ class DownloadLessons(
                   )
                 }
               }
+            }
+            is ImageRepairer.RepairedImage.ConvertedFromGif -> {
+              val nameWithoutExt = filename.substringBeforeLast('.')
+              val expectedNewImageFile = File(destDir, "$nameWithoutExt.png")
+              val newImageFile = if (expectedNewImageFile.exists()) {
+                if (expectedNewImageFile.isImageFileSameAs(conv.pngContents.toByteArray())) {
+                  // This is a rename since the original file is being converted from SVG.
+                  return@withContext DownloadedImage.Renamed.ConvertedFile(
+                    reference,
+                    oldFilename = filename,
+                    oldFileData = imageData.toList(),
+                    newFilename = expectedNewImageFile.name
+                  )
+                } else computeNewUniqueFile(destDir, expectedNewImageFile)
+              } else expectedNewImageFile
+              val newImageData = conv.pngContents.toByteArray()
+              memoizedLoadedImageData[newImageFile] = newImageData
+              newImageFile.writeBytes(newImageData)
+              DownloadedImage.ConvertedGifToPng(
+                reference,
+                newFilename = newImageFile.name,
+                imageData.toList(),
+                conv.pngContents
+              )
             }
             is ImageRepairer.RepairedImage.RenderedSvg -> {
               val nameWithoutExt = filename.substringBeforeLast('.')
@@ -959,6 +1014,13 @@ class DownloadLessons(
       val height: Int
     ): DownloadedImage()
 
+    data class ConvertedGifToPng(
+      override val imageRef: ImageReference,
+      val newFilename: String,
+      val downloadedImageData: List<Byte>,
+      val convertedImageData: List<Byte>
+    ): DownloadedImage()
+
     data class FailedCouldNotFind(override val imageRef: ImageReference): DownloadedImage()
   }
 
@@ -983,6 +1045,7 @@ class DownloadLessons(
     }.mapValues { (_, image) ->
       when (image) {
         is DownloadedImage.ConvertedSvgToPng -> image.imageRef.filename to image.newFilename
+        is DownloadedImage.ConvertedGifToPng -> image.imageRef.filename to image.newFilename
         is DownloadedImage.Renamed -> image.oldFilename to image.newFilename
         is DownloadedImage.Duplicated, is DownloadedImage.FailedCouldNotFind,
         is DownloadedImage.Succeeded -> null
@@ -1096,7 +1159,7 @@ class DownloadLessons(
 
     private fun scanForHtmlInvalidTags(): List<Issue.HtmlHasInvalidTag> {
       val invalidTags = listOf("oppia-noninteractive-link", "oppia-noninteractive-tabs")
-      val textsByContentId = texts.associateBy { it.contentId }
+      val textsByContentId = texts.groupBy { it.container.findRoot() to it.contentId }
       return localizations.filterIsInstance<Localizations.Translations>().flatMap { translations ->
         translations.translations.flatMap { translation ->
           translation.htmls.flatMap { html ->
@@ -1104,9 +1167,11 @@ class DownloadLessons(
               (html to invalidTag).takeIf { invalidTag in html }
             }
           }.filterNotNull().map { (html, invalidTag) ->
+            // Exactly one text reference should correspond to this content ID among all in the root
+            // container.
             Issue.HtmlHasInvalidTag(
               translations.language,
-              textsByContentId.getValue(translation.contentId),
+              textsByContentId.getValue(translations.container.findRoot() to translation.contentId).single(),
               html,
               invalidTag
             )

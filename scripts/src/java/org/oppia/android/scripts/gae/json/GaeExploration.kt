@@ -18,7 +18,6 @@ data class GaeExploration(
   @Json(name = "param_specs") val paramSpecs: Map<String, GaeParamSpec>,
   @Json(name = "tags") val tags: List<String>,
   @Json(name = "auto_tts_enabled") val autoTtsEnabled: Boolean,
-  @Json(name = "correctness_feedback_enabled") val correctnessFeedbackEnabled: Boolean,
   @Json(name = "next_content_id_index") val nextContentIdIndex: Int,
   @Json(name = "edits_allowed") val editsAllowed: Boolean,
   @Json(name = "states") val states: Map<String, GaeState>,
