@@ -2738,7 +2738,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2754,7 +2754,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2770,7 +2770,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2822,7 +2822,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2839,7 +2839,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2909,7 +2909,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3076,7 +3076,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3093,7 +3093,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3110,7 +3110,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3162,7 +3162,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3179,7 +3179,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3250,7 +3250,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3286,7 +3286,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3467,7 +3467,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3484,7 +3484,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3501,7 +3501,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3518,7 +3518,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3553,7 +3553,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3588,7 +3588,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3605,7 +3605,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3702,7 +3702,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3761,7 +3761,7 @@ class StateFragmentTest {
       // verify that the two sides are multiples of each other).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3778,7 +3778,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
