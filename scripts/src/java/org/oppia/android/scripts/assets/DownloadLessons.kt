@@ -1158,7 +1158,12 @@ class DownloadLessons(
     }
 
     private fun scanForHtmlInvalidTags(): List<Issue.HtmlHasInvalidTag> {
-      val invalidTags = listOf("oppia-noninteractive-link", "oppia-noninteractive-tabs")
+      val invalidTags = listOf(
+        "oppia-noninteractive-link",
+        "oppia-noninteractive-tabs",
+        "oppia-noninteractive-video",
+        "oppia-noninteractive-collapsible"
+      )
       val textsByContentId = texts.groupBy { it.container.findRoot() to it.contentId }
       return localizations.filterIsInstance<Localizations.Translations>().flatMap { translations ->
         translations.translations.flatMap { translation ->
