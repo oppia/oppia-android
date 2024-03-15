@@ -78,7 +78,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.checkerframework:checker-qual": "3.13.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.3",
     "org.jetbrains:annotations:jar": "13.0",
 }
 

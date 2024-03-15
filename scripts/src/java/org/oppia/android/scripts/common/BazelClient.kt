@@ -10,7 +10,7 @@ import java.util.Locale
  */
 class BazelClient(
   private val rootDirectory: File,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val commandExecutor: CommandExecutor
 ) {
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
