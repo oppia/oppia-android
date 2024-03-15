@@ -3,6 +3,7 @@ package org.oppia.android.scripts.license
 import com.google.protobuf.TextFormat
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
@@ -24,7 +25,9 @@ import org.oppia.android.scripts.proto.MavenDependency
  *   third_party/maven_install.json scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  MavenDependenciesListCheck(LicenseFetcherImpl()).main(args)
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    MavenDependenciesListCheck(LicenseFetcherImpl(), scriptBgDispatcher).main(args)
+  }
 }
 
 /**
@@ -33,7 +36,8 @@ fun main(args: Array<String>) {
  */
 class MavenDependenciesListCheck(
   private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
 
   /**

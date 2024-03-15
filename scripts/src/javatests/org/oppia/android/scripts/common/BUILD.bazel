@@ -61,3 +61,14 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_test(
+    name = "ScriptBackgroundCoroutineDispatcherTest",
+    srcs = ["ScriptBackgroundCoroutineDispatcherTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//testing:assertion_helpers",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_mockito_mockito-core",
+    ],
+)
