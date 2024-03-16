@@ -1,6 +1,7 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,5 +26,10 @@ class NewLearnerProfileFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     return learnerProfileFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    learnerProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
   }
 }

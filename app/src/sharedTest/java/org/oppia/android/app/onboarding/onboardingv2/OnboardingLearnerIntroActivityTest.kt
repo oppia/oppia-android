@@ -7,7 +7,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -128,7 +128,7 @@ class OnboardingLearnerIntroActivityTest {
       OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(context)
         .extractCurrentAppScreenName()
 
-    Truth.assertThat(screenName).isEqualTo(ScreenName.ONBOARDING_LEARNER_INTRO_ACTIVITY)
+    assertThat(screenName).isEqualTo(ScreenName.ONBOARDING_LEARNER_INTRO_ACTIVITY)
   }
 
   @Test
@@ -139,7 +139,7 @@ class OnboardingLearnerIntroActivityTest {
 
       // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
       // correct string when it's read out.
-      Truth.assertThat(title)
+      assertThat(title)
         .isEqualTo(context.getString(R.string.onboarding_learner_intro_activity_title))
     }
   }

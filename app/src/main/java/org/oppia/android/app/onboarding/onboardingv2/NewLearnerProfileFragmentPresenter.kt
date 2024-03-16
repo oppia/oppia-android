@@ -1,10 +1,10 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
+import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +17,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.profile.GALLERY_INTENT_RESULT_CODE
 import org.oppia.android.databinding.CreateProfileFragmentBinding
 import javax.inject.Inject
+
+const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** Presenter for [NewLearnerProfileFragment]. */
 @FragmentScope
@@ -33,7 +35,7 @@ class NewLearnerProfileFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
-  private val orientation = Resources.getSystem().configuration.orientation
+  private var selectedImage: Uri? = null
 
   /** Initialize layout bindings. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -96,14 +98,25 @@ class NewLearnerProfileFragmentPresenter @Inject constructor(
     binding.createProfilePicturePrompt.setOnClickListener { openGalleryIntent() }
     binding.createProfileUserImageView.setOnClickListener { openGalleryIntent() }
 
-    binding.onboardingStepsCount.visibility =
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
-
     return binding.root
+  }
+
+  fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    binding.createProfilePicturePrompt.visibility = View.GONE
+    if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+      data?.let {
+        selectedImage = data.data
+        Glide.with(activity)
+          .load(selectedImage)
+          .centerCrop()
+          .apply(RequestOptions.circleCropTransform())
+          .into(uploadImageView)
+      }
+    }
   }
 
   private fun openGalleryIntent() {
     val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+    fragment.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 }

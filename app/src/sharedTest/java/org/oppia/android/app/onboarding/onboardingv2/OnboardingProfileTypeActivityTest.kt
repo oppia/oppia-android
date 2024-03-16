@@ -7,7 +7,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -127,7 +127,7 @@ class OnboardingProfileTypeActivityTest {
       OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context)
         .extractCurrentAppScreenName()
 
-    Truth.assertThat(screenName).isEqualTo(ScreenName.ONBOARDING_PROFILE_TYPE_ACTIVITY)
+    assertThat(screenName).isEqualTo(ScreenName.ONBOARDING_PROFILE_TYPE_ACTIVITY)
   }
 
   @Test
@@ -138,7 +138,7 @@ class OnboardingProfileTypeActivityTest {
 
       // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
       // correct string when it's read out.
-      Truth.assertThat(title)
+      assertThat(title)
         .isEqualTo(context.getString(R.string.onboarding_profile_type_activity_title))
     }
   }
