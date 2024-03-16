@@ -12,6 +12,7 @@ import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.LoadAudioLanguageListListener
 import org.oppia.android.app.options.REQUEST_CODE_AUDIO_LANGUAGE
 import org.oppia.android.app.options.RouteToAudioLanguageListListener
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 /** Fragment that contains the  introduction message for new learners. */
@@ -32,10 +33,12 @@ class OnboardingLearnerIntroFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
+    val profileNickname = arguments!!.getStringFromBundle(PROFILE_NICKNAME_ARGUMENT_KEY)!!
     return onboardingLearnerIntroFragmentPresenter.handleCreateView(
       inflater,
       container,
       /* fragment = */this,
+      profileNickname,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
   }

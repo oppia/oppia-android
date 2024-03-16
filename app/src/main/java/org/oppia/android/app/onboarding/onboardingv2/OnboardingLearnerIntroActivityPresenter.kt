@@ -1,5 +1,6 @@
 package org.oppia.android.app.onboarding.onboardingv2
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
@@ -9,6 +10,9 @@ import javax.inject.Inject
 
 private const val TAG_LEARNER_INTRO_FRAGMENT = "TAG_LEARNER_INTRO_FRAGMENT"
 
+/** Argument key for bundling the profileId. */
+const val PROFILE_NICKNAME_ARGUMENT_KEY = "profile_nickname"
+
 /** The Presenter for [OnboardingLearnerIntroActivity]. */
 @ActivityScope
 class OnboardingLearnerIntroActivityPresenter @Inject constructor(
@@ -17,7 +21,7 @@ class OnboardingLearnerIntroActivityPresenter @Inject constructor(
   private lateinit var binding: OnboardingLearnerIntroActivityBinding
 
   /** Handle creation and binding of the  OnboardingLearnerIntroActivity layout. */
-  fun handleOnCreate() {
+  fun handleOnCreate(profileNickname: String) {
     binding = DataBindingUtil.setContentView(activity, R.layout.onboarding_learner_intro_activity)
     binding.apply {
       lifecycleOwner = activity
@@ -25,6 +29,11 @@ class OnboardingLearnerIntroActivityPresenter @Inject constructor(
 
     if (getOnboardingLearnerIntroFragment() == null) {
       val onboardingLearnerIntroFragment = OnboardingLearnerIntroFragment()
+
+      val args = Bundle()
+      args.putString(PROFILE_NICKNAME_ARGUMENT_KEY, profileNickname)
+      onboardingLearnerIntroFragment.arguments = args
+
       activity.supportFragmentManager.beginTransaction().add(
         R.id.learner_intro_fragment_placeholder,
         onboardingLearnerIntroFragment,

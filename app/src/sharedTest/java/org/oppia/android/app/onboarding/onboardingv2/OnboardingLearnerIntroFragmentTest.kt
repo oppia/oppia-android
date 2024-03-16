@@ -126,6 +126,8 @@ class OnboardingLearnerIntroFragmentTest {
   @Inject
   lateinit var context: Context
 
+  private val testProfileNickname = "John"
+
   @Before
   fun setUp() {
     Intents.init()
@@ -238,7 +240,10 @@ class OnboardingLearnerIntroFragmentTest {
   private fun launchOnboardingLearnerIntroActivity():
     ActivityScenario<OnboardingLearnerIntroActivity>? {
       val scenario = ActivityScenario.launch<OnboardingLearnerIntroActivity>(
-        OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(context)
+        OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(
+          context,
+          testProfileNickname
+        )
       )
       testCoroutineDispatchers.runCurrent()
       return scenario

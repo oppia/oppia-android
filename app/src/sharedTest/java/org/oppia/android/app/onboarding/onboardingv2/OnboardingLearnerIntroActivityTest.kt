@@ -111,6 +111,8 @@ class OnboardingLearnerIntroActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private val testProfileNickname = "John"
+
   @Before
   fun setUp() {
     Intents.init()
@@ -125,7 +127,10 @@ class OnboardingLearnerIntroActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(context)
+      OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(
+        context,
+        testProfileNickname
+      )
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ONBOARDING_LEARNER_INTRO_ACTIVITY)
@@ -147,7 +152,10 @@ class OnboardingLearnerIntroActivityTest {
   private fun launchOnboardingLearnerIntroActivity():
     ActivityScenario<OnboardingLearnerIntroActivity>? {
       val scenario = ActivityScenario.launch<OnboardingLearnerIntroActivity>(
-        OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(context)
+        OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(
+          context,
+          testProfileNickname
+        )
       )
       testCoroutineDispatchers.runCurrent()
       return scenario

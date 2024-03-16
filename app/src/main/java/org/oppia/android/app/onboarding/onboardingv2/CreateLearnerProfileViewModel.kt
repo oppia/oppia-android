@@ -14,7 +14,7 @@ class CreateLearnerProfileViewModel @Inject constructor() : ObservableViewModel(
   private val orientation = Resources.getSystem().configuration.orientation
 
   /** ObservableField that tracks whether a nickname has been entered. */
-  val hasName = ObservableField(true)
+  val hasError = ObservableField(true)
 
   val onboardingStepsCount =
     if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE

@@ -21,7 +21,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.CreateProfileFragmentBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -31,7 +35,9 @@ const val GALLERY_INTENT_RESULT_CODE = 1
 class CreateProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val createLearnerProfileViewModel: CreateLearnerProfileViewModel
+  private val createLearnerProfileViewModel: CreateLearnerProfileViewModel,
+  private val profileManagementController: ProfileManagementController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
@@ -83,13 +89,29 @@ class CreateProfileFragmentPresenter @Inject constructor(
       .into(uploadImageView)
 
     binding.onboardingNavigationContinue.setOnClickListener {
-      if (!binding.createProfileNicknameEdittext.text.isNullOrBlank()) {
-        createLearnerProfileViewModel.hasName.set(true)
+      val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
-        val intent = OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(activity)
-        fragment.startActivity(intent)
+      if (nickname.isNotBlank()) {
+        createLearnerProfileViewModel.hasError.set(true)
+        // insert create profile logic
+        // pass nickname and profileId via args.
+        profileManagementController.addProfile(
+          name = nickname,
+          pin = "",
+          avatarImagePath = selectedImage,
+          allowDownloadAccess = true,
+          colorRgb = -10710042,
+          isAdmin = true
+        )
+          .toLiveData()
+          .observe(
+            fragment,
+            {
+              handleAddProfileResult(it, nickname)
+            }
+          )
       } else {
-        createLearnerProfileViewModel.hasName.set(false)
+        createLearnerProfileViewModel.hasError.set(false)
       }
     }
 
@@ -118,5 +140,33 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private fun openGalleryIntent() {
     val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
     fragment.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+  }
+
+  private fun handleAddProfileResult(result: AsyncResult<Any?>, nickName: String) {
+    when (result) {
+      is AsyncResult.Success -> {
+        val intent =
+          OnboardingLearnerIntroActivity.createOnboardingLearnerIntroActivity(activity, nickName)
+        fragment.startActivity(intent)
+      }
+      is AsyncResult.Failure -> {
+        createLearnerProfileViewModel.hasError.set(true)
+
+        when (result.error) {
+          is ProfileManagementController.ProfileNameNotUniqueException ->
+            binding.createProfileNicknameError.text =
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_not_unique
+              )
+
+          is ProfileManagementController.ProfileNameOnlyLettersException ->
+            binding.createProfileNicknameError.text =
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters
+              )
+        }
+      }
+      is AsyncResult.Pending -> {} // Wait for an actual result.
+    }
   }
 }
