@@ -5,7 +5,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".app.onboarding.onboardingv2.NewLearnerProfileActivity">
+    tools:context=".app.onboarding.onboardingv2.CreateProfileActivity">
 
     <FrameLayout
       android:id="@+id/profile_fragment_placeholder"

@@ -8,13 +8,13 @@ import javax.inject.Inject
 
 private const val TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT = "TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT"
 
-/** Presenter for [NewLearnerProfileActivity]. */
-class NewLearnerProfileActivityPresenter @Inject constructor(
+/** Presenter for [CreateProfileActivity]. */
+class CreateProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var binding: CreateProfileActivityBinding
 
-  /** Handle creation and binding of the NewLearnerProfileActivity layout. */
+  /** Handle creation and binding of the CreateProfileActivity layout. */
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(activity, R.layout.create_profile_activity)
     binding.apply {
@@ -22,7 +22,7 @@ class NewLearnerProfileActivityPresenter @Inject constructor(
     }
 
     if (getNewLearnerProfileFragment() == null) {
-      val createLearnerProfileFragment = NewLearnerProfileFragment()
+      val createLearnerProfileFragment = CreateProfileFragment()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_fragment_placeholder,
         createLearnerProfileFragment,
@@ -32,9 +32,9 @@ class NewLearnerProfileActivityPresenter @Inject constructor(
     }
   }
 
-  private fun getNewLearnerProfileFragment(): NewLearnerProfileFragment? {
+  private fun getNewLearnerProfileFragment(): CreateProfileFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT
-    ) as? NewLearnerProfileFragment
+    ) as? CreateProfileFragment
   }
 }

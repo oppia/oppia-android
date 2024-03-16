@@ -10,9 +10,9 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity for displaying a new learner profile creation flow. */
-class NewLearnerProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
+class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
-  lateinit var learnerProfileActivityPresenter: NewLearnerProfileActivityPresenter
+  lateinit var learnerProfileActivityPresenter: CreateProfileActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -22,9 +22,9 @@ class NewLearnerProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] open a [NewLearnerProfileActivity] with the specified params. */
+    /** Returns a new [Intent] open a [CreateProfileActivity] with the specified params. */
     fun createNewLearnerProfileActivity(context: Context): Intent {
-      return Intent(context, NewLearnerProfileActivity::class.java).apply {
+      return Intent(context, CreateProfileActivity::class.java).apply {
         decorateWithScreenName(ScreenName.CREATE_NEW_LEARNER_PROFILE_ACTIVITY)
       }
     }

@@ -11,9 +11,9 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment for displaying a new learner profile creation flow. */
-class NewLearnerProfileFragment : InjectableFragment() {
+class CreateProfileFragment : InjectableFragment() {
   @Inject
-  lateinit var learnerProfileFragmentPresenter: NewLearnerProfileFragmentPresenter
+  lateinit var learnerProfileFragmentPresenter: CreateProfileFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

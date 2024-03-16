@@ -26,9 +26,9 @@ import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
 
-/** Presenter for [NewLearnerProfileFragment]. */
+/** Presenter for [CreateProfileFragment]. */
 @FragmentScope
-class NewLearnerProfileFragmentPresenter @Inject constructor(
+class CreateProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val createLearnerProfileViewModel: CreateLearnerProfileViewModel
@@ -102,8 +102,8 @@ class NewLearnerProfileFragmentPresenter @Inject constructor(
   }
 
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    binding.createProfilePicturePrompt.visibility = View.GONE
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+      binding.createProfilePicturePrompt.visibility = View.GONE
       data?.let {
         selectedImage = data.data
         Glide.with(activity)

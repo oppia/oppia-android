@@ -28,7 +28,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
     }
 
     binding.profileTypeLearnerNavigationCard.setOnClickListener {
-      val intent = NewLearnerProfileActivity.createNewLearnerProfileActivity(activity)
+      val intent = CreateProfileActivity.createNewLearnerProfileActivity(activity)
       fragment.startActivity(intent)
     }
 

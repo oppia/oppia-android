@@ -8,7 +8,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** The ViewModel for [NewLearnerProfileFragment]. */
+/** The ViewModel for [CreateProfileFragment]. */
 @FragmentScope
 class CreateLearnerProfileViewModel @Inject constructor() : ObservableViewModel() {
   private val orientation = Resources.getSystem().configuration.orientation

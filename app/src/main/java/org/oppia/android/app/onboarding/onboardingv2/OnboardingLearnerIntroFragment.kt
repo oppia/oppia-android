@@ -14,7 +14,7 @@ import org.oppia.android.app.options.REQUEST_CODE_AUDIO_LANGUAGE
 import org.oppia.android.app.options.RouteToAudioLanguageListListener
 import javax.inject.Inject
 
-/** Fragment that contains the new learner onboarding introduction of the app. */
+/** Fragment that contains the  introduction message for new learners. */
 class OnboardingLearnerIntroFragment :
   InjectableFragment(),
   RouteToAudioLanguageListListener,

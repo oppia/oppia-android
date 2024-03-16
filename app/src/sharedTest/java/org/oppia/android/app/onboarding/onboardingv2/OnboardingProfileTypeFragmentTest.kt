@@ -226,7 +226,7 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(NewLearnerProfileActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
@@ -237,7 +237,7 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(NewLearnerProfileActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
@@ -249,7 +249,7 @@ class OnboardingProfileTypeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(NewLearnerProfileActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
