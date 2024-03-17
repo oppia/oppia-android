@@ -121,8 +121,8 @@ class DragAndDropSortInteractionViewModel private constructor(
     // Update the data list if once drag is complete and merge icons are displayed.
     if (allowMultipleItemsInSamePosition) {
       (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
-      checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
     }
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   fun onItemMoved(
