@@ -743,7 +743,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() {
+  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -758,7 +758,7 @@ class StateFragmentTest {
             isDisplayed()
           )
         )
-      // Submit button is disabled due to the error
+      // Submit button is disabled due to the error.
       verifySubmitAnswerButtonIsDisabled()
       // Drag and rearrange an item.
       dragAndDropItem(fromPosition = 0, toPosition = 1)
@@ -775,7 +775,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() {
+  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -799,7 +799,7 @@ class StateFragmentTest {
             isDisplayed()
           )
         )
-      // Submit button is disabled due to the error
+      // Submit button is disabled due to the error.
       verifySubmitAnswerButtonIsDisabled()
       // Drag and rearrange an item.
       dragAndDropItem(fromPosition = 0, toPosition = 1)
