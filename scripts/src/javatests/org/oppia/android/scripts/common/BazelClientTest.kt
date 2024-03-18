@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.common
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,10 +29,17 @@ class BazelClientTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private lateinit var testBazelWorkspace: TestBazelWorkspace
+
   @Mock lateinit var mockCommandExecutor: CommandExecutor
 
-  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
-  private lateinit var testBazelWorkspace: TestBazelWorkspace
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
+  }
 
   @Before
   fun setUp() {
@@ -335,7 +343,7 @@ class BazelClientTest {
       artifactName = "com.android.support:support-annotations:28.0.0",
       buildFile = thirdPartyBuild
     )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
@@ -344,7 +352,7 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
@@ -365,7 +373,7 @@ class BazelClientTest {
       artifactName = "com.android.support:support-annotations:28.0.0",
       buildFile = testBazelWorkspace.rootBuildFile
     )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
@@ -457,8 +465,10 @@ class BazelClientTest {
     return secondNewFile
   }
 
-  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
   private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {

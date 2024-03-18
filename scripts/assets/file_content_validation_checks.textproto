@@ -108,6 +108,11 @@ file_content_checks {
   failure_message: "Untranslatable strings should go in untranslated_strings.xml, instead."
 }
 file_content_checks {
+  file_path_regex: "app/src/main/res/values/strings\\.xml"
+  prohibited_content_regex: "CDATA"
+  failure_message: "CDATA isn't handled by Translatewiki correctly. Use escaped HTML, instead."
+}
+file_content_checks {
   file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "<string name=\"[^\"]+\">"
   failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
@@ -597,4 +602,11 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/ApplicationLifecycleObserverTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/espresso/TextInputActionTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "computeIfAbsent\\("
+  failure_message: "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic Kotlin-specific solution, instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/caching/testing/FakeAssetRepository.kt"
 }
