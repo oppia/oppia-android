@@ -43,7 +43,7 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenterV2.handleCreateView(inflater, container, audioLanguage)
+      audioLanguageFragmentPresenterV2.handleCreateView(inflater, container)
     } else {
       audioLanguageFragmentPresenter.handleOnCreateView(inflater, container, audioLanguage)
     }

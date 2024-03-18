@@ -7,19 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.options.AudioLanguageActivity
-import org.oppia.android.app.options.LoadAudioLanguageListListener
-import org.oppia.android.app.options.REQUEST_CODE_AUDIO_LANGUAGE
-import org.oppia.android.app.options.RouteToAudioLanguageListListener
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 /** Fragment that contains the  introduction message for new learners. */
-class OnboardingLearnerIntroFragment :
-  InjectableFragment(),
-  RouteToAudioLanguageListListener,
-  LoadAudioLanguageListListener {
+class OnboardingLearnerIntroFragment : InjectableFragment() {
   @Inject
   lateinit var onboardingLearnerIntroFragmentPresenter: OnboardingLearnerIntroFragmentPresenter
 
@@ -37,18 +29,7 @@ class OnboardingLearnerIntroFragment :
     return onboardingLearnerIntroFragmentPresenter.handleCreateView(
       inflater,
       container,
-      /* fragment = */this,
-      profileNickname,
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      profileNickname
     )
   }
-
-  override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
-    startActivityForResult(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(requireContext(), audioLanguage),
-      REQUEST_CODE_AUDIO_LANGUAGE
-    )
-  }
-
-  override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {}
 }

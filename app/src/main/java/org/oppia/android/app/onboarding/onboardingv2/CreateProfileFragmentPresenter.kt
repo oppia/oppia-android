@@ -92,9 +92,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
       if (nickname.isNotBlank()) {
-        createLearnerProfileViewModel.hasError.set(true)
-        // insert create profile logic
-        // pass nickname and profileId via args.
+        createLearnerProfileViewModel.hasError.set(false)
         profileManagementController.addProfile(
           name = nickname,
           pin = "",
@@ -111,7 +109,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
             }
           )
       } else {
-        createLearnerProfileViewModel.hasError.set(false)
+        createLearnerProfileViewModel.hasError.set(true)
       }
     }
 
@@ -151,7 +149,6 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
       is AsyncResult.Failure -> {
         createLearnerProfileViewModel.hasError.set(true)
-
         when (result.error) {
           is ProfileManagementController.ProfileNameNotUniqueException ->
             binding.createProfileNicknameError.text =
@@ -164,6 +161,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
               resourceHandler.getStringInLocale(
                 R.string.add_profile_error_name_only_letters
               )
+          else -> binding.createProfileNicknameError.text = result.error.message
         }
       }
       is AsyncResult.Pending -> {} // Wait for an actual result.

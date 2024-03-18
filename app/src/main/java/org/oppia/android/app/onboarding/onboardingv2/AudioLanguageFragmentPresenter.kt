@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
@@ -29,8 +30,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
    */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?,
-    audioLanguage: AudioLanguage
+    container: ViewGroup?
   ): View {
 
     activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
@@ -49,6 +49,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       appLanguageResourceHandler.getStringInLocale(R.string.app_name)
     )
 
+    binding.audioLanguageDropdown.adapter = ArrayAdapter(
+      fragment.requireContext(),
+      R.layout.onboarding_language_dropdown_item,
+      R.id.onboarding_language_text_view,
+      getAudioLanguageList()
+    )
+
     binding.onboardingNavigationContinue.setOnClickListener {
     }
 
@@ -60,5 +67,21 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
 
     return binding.root
+  }
+
+  private fun getAudioLanguageList(): List<String> {
+    return AudioLanguage.values()
+      .filter { it.isValid() }
+      .map { audioLanguage ->
+        appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
+      }
+  }
+
+  private fun AudioLanguage.isValid(): Boolean {
+    return when (this) {
+      AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
+      AudioLanguage.NO_AUDIO -> false
+      else -> true
+    }
   }
 }

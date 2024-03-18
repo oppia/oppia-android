@@ -9,23 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.options.LoadAudioLanguageListListener
-import org.oppia.android.app.options.RouteToAudioLanguageListListener
+import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.OnboardingLearnerIntroFragmentBinding
-import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [OnboardingLearnerIntroFragment]. */
 class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
   private var fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
 ) {
   private lateinit var binding: OnboardingLearnerIntroFragmentBinding
-  private lateinit var routeToAudioLanguageListListener: RouteToAudioLanguageListListener
-  private lateinit var loadAudioLanguageListListener: LoadAudioLanguageListListener
 
   private val orientation = Resources.getSystem().configuration.orientation
 
@@ -33,14 +28,8 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    fragment: OnboardingLearnerIntroFragment,
     profileNickname: String,
-    audioLanguage: AudioLanguage
   ): View {
-    this.routeToAudioLanguageListListener = fragment
-    this.loadAudioLanguageListListener = fragment
-    this.fragment = fragment
-
     binding = OnboardingLearnerIntroFragmentBinding.inflate(
       inflater,
       container,
@@ -55,7 +44,11 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
     }
 
     binding.onboardingNavigationContinue.setOnClickListener {
-      routeToAudioLanguageList(audioLanguage)
+      val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
+        fragment.requireContext(),
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      )
+      fragment.startActivity(intent)
     }
 
     binding.onboardingLearnerIntroFeedback.text =
@@ -68,10 +61,6 @@ class OnboardingLearnerIntroFragmentPresenter @Inject constructor(
       if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
 
     return binding.root
-  }
-
-  private fun routeToAudioLanguageList(audioLanguage: AudioLanguage) {
-    routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage)
   }
 
   private fun setLearnerName(profileName: String) {
