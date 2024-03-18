@@ -99,7 +99,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
           avatarImagePath = selectedImage,
           allowDownloadAccess = true,
           colorRgb = -10710042,
-          isAdmin = true
+          isAdmin = false
         )
           .toLiveData()
           .observe(
