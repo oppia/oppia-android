@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.build
 
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.w3c.dom.Document
 import org.w3c.dom.NodeList
 import java.io.File
@@ -62,21 +64,24 @@ fun main(args: Array<String>) {
   check(args.size >= 9) { USAGE_STRING }
 
   val repoRoot = File(args[0]).also { if (!it.exists()) error("File doesn't exist: ${args[0]}") }
-  TransformAndroidManifest(
-    repoRoot = repoRoot,
-    sourceManifestFile = File(args[1]).also {
-      if (!it.exists()) {
-        error("File doesn't exist: ${args[1]}")
-      }
-    },
-    outputManifestFile = File(args[2]),
-    buildFlavor = args[3],
-    majorVersion = args[4].toIntOrNull() ?: error(USAGE_STRING),
-    minorVersion = args[5].toIntOrNull() ?: error(USAGE_STRING),
-    versionCode = args[6].toIntOrNull() ?: error(USAGE_STRING),
-    relativelyQualifiedApplicationClass = args[7],
-    baseDevelopBranchReference = args[8]
-  ).generateAndOutputNewManifest()
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    TransformAndroidManifest(
+      repoRoot = repoRoot,
+      sourceManifestFile = File(args[1]).also {
+        if (!it.exists()) {
+          error("File doesn't exist: ${args[1]}")
+        }
+      },
+      outputManifestFile = File(args[2]),
+      buildFlavor = args[3],
+      majorVersion = args[4].toIntOrNull() ?: error(USAGE_STRING),
+      minorVersion = args[5].toIntOrNull() ?: error(USAGE_STRING),
+      versionCode = args[6].toIntOrNull() ?: error(USAGE_STRING),
+      relativelyQualifiedApplicationClass = args[7],
+      baseDevelopBranchReference = args[8],
+      scriptBgDispatcher
+    ).generateAndOutputNewManifest()
+  }
 }
 
 private class TransformAndroidManifest(
@@ -88,11 +93,11 @@ private class TransformAndroidManifest(
   private val minorVersion: Int,
   private val versionCode: Int,
   private val relativelyQualifiedApplicationClass: String,
-  private val baseDevelopBranchReference: String
+  private val baseDevelopBranchReference: String,
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
-  private val gitClient by lazy {
-    GitClient(repoRoot, baseDevelopBranchReference)
-  }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+  private val gitClient by lazy { GitClient(repoRoot, baseDevelopBranchReference, commandExecutor) }
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
   private val transformerFactory by lazy { TransformerFactory.newInstance() }
 
