@@ -5,22 +5,12 @@ import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
-import java.io.File
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 import org.oppia.android.scripts.assets.ImageRepairer.Companion.resizeTo
 
 class ImageRepairer {
-  fun convertToPng(filename: String, imageContents: ByteArray): RepairedImage {
-    if (!filename.endsWith(".svg") && !filename.endsWith(".gif")) return RepairedImage.NoRepairNeeded
-    if (filename.endsWith(".gif")) {
-      val gifImage = imageContents.inputStream().use { ImageIO.read(it) }
-      return ByteArrayOutputStream().use {
-        ImageIO.write(gifImage, /* formatName = */ "png", it)
-        return@use RepairedImage.ConvertedFromGif(it.toByteArray().toList())
-      }
-    }
-    val svgImageContents = imageContents.decodeToString()
+  fun convertToPng(filename: String, svgImageContents: String): RepairedImage {
     if ("data:image/png;base64" !in svgImageContents) return RepairedImage.NoRepairNeeded
     val loader = SVGLoader()
     val svgDocument =
@@ -60,8 +50,6 @@ class ImageRepairer {
     data class RenderedSvg(
       val pngContents: List<Byte>, val width: Int, val height: Int
     ): RepairedImage()
-
-    data class ConvertedFromGif(val pngContents: List<Byte>): RepairedImage()
 
     object NoRepairNeeded: RepairedImage()
   }
