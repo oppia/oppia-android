@@ -68,6 +68,7 @@
         android:layout_marginStart="@dimen/onboarding_shared_margin_small"
         android:layout_toStartOf="@id/audio_language_dropdown_arrow"
         android:background="@drawable/transparent_background"
+        android:minHeight="@dimen/clickable_item_min_height"
         android:textColor="@color/component_color_onboarding_shared_text_color"
         tools:listheader="English" />
 
