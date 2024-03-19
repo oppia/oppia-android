@@ -9,7 +9,6 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class GaeClassroom(
-
+  // TODO: Move this & other relevant models to scripts since these are never needed in production.
   @Json(name = "topic_summary_dicts") val topicSummaryDicts: List<GaeTopicSummary>?
-
 )
