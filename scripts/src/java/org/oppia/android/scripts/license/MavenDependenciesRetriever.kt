@@ -5,7 +5,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
-import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.maven.model.MavenListDependency
 import org.oppia.android.scripts.maven.model.MavenListDependencyTree
 import org.oppia.android.scripts.proto.License
@@ -24,7 +23,7 @@ private const val MAVEN_PREFIX = "@maven//:"
 class MavenDependenciesRetriever(
   private val rootPath: String,
   private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val commandExecutor: CommandExecutor
 ) {
 
   private val bazelClient by lazy {
