@@ -55,6 +55,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -62,6 +63,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.FontSizeMatcher
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -135,6 +137,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.round
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -223,6 +226,119 @@ class RevisionCardFragmentTest {
         matches(
           ViewMatchers.withContentDescription(
             "The next subtopic is Mixed Numbers"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_extraLargeTextSize_hasCorrectDimension() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      it.onActivity { activity ->
+        activity.revisionCardActivityPresenter
+          .loadRevisionCardFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            round(
+              context.resources.getDimension(
+                R.dimen.revision_card_fragment_font_scale_content_extra_large_text_size
+              )
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_largeTextSize_hasCorrectDimension() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      it.onActivity { activity ->
+        activity.revisionCardActivityPresenter
+          .loadRevisionCardFragment(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            round(
+              context.resources
+                .getDimension(R.dimen.revision_card_fragment_font_scale_content_large_text_size)
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_mediumTextSize_hasCorrectDimension() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      it.onActivity { activity ->
+        activity.revisionCardActivityPresenter
+          .loadRevisionCardFragment(
+            ReadingTextSize.MEDIUM_TEXT_SIZE
+          )
+      }
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            context.resources
+              .getDimension(R.dimen.revision_card_fragment_font_scale_content_medium_text_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_smallTextSize_hasCorrectDimension() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      it.onActivity { activity ->
+        activity.revisionCardActivityPresenter
+          .loadRevisionCardFragment(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            round(
+              context.resources
+                .getDimension(R.dimen.revision_card_fragment_font_scale_content_small_text_size)
+            )
           )
         )
       )

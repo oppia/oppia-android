@@ -4,18 +4,24 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
@@ -30,9 +36,12 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val topicController: TopicController,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val profileManagementController: ProfileManagementController,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
 ) {
-  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   private lateinit var revisionCardToolbar: Toolbar
   private lateinit var revisionCardToolbarTitle: TextView
@@ -40,6 +49,7 @@ class RevisionCardActivityPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private var subtopicId: Int = 0
+  private var subtopicListSize: Int = 0
 
   fun handleOnCreate(
     internalProfileId: Int,
@@ -54,10 +64,18 @@ class RevisionCardActivityPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.subtopicId = subtopicId
+    this.subtopicListSize = subtopicListSize
 
     binding.apply {
       lifecycleOwner = activity
     }
+
+    retrieveReadingTextSize().observe(
+      activity,
+      { result ->
+        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+      }
+    )
 
     revisionCardToolbar = binding.revisionCardToolbar
     revisionCardToolbarTitle = binding.revisionCardToolbarTitle
@@ -66,6 +84,8 @@ class RevisionCardActivityPresenter @Inject constructor(
 
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
+      fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
+      activity.onBackPressed()
     }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.revisionCardToolbarTitle.setOnClickListener {
@@ -79,17 +99,31 @@ class RevisionCardActivityPresenter @Inject constructor(
       val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
       bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
     }
+  }
 
-    if (getReviewCardFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.revision_card_fragment_placeholder,
-        RevisionCardFragment.newInstance(topicId, subtopicId, profileId, subtopicListSize)
-      ).commitNow()
-    }
+  private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
+    return Transformations.map(
+      profileManagementController.getProfile(profileId).toLiveData(),
+      ::processReadingTextSizeResult
+    )
+  }
+
+  private fun processReadingTextSizeResult(
+    readingTextSizeResult: AsyncResult<Profile>
+  ): ReadingTextSize {
+    return when (readingTextSizeResult) {
+      is AsyncResult.Failure -> {
+
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> readingTextSizeResult.value
+    }.readingTextSize
   }
 
   /** Action for onOptionsItemSelected. */
   fun handleOnOptionsItemSelected(itemId: Int): Boolean {
+    setReadingTextSizeMedium()
     return when (itemId) {
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
@@ -171,5 +205,30 @@ class RevisionCardActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.revision_card_fragment_placeholder
       ) as RevisionCardFragment?
+  }
+
+  fun loadRevisionCardFragment(readingTextSize: ReadingTextSize) {
+    if (getReviewCardFragment() != null)
+      activity.supportFragmentManager.beginTransaction()
+        .remove(getReviewCardFragment() as Fragment).commitNow()
+
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.revision_card_fragment_placeholder,
+      RevisionCardFragment.newInstance(
+        topicId,
+        subtopicId,
+        profileId,
+        subtopicListSize,
+        readingTextSize
+      )
+    ).commitNow()
+  }
+
+  fun onBackpressed() {
+    setReadingTextSizeMedium()
+  }
+
+  fun setReadingTextSizeMedium() {
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
   }
 }
