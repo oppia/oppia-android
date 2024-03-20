@@ -41,6 +41,18 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "GitHubClientTest",
+    srcs = ["GitHubClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:github_client",
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
+)
+
+kt_jvm_test(
     name = "ProtoStringEncoderTest",
     srcs = ["ProtoStringEncoderTest.kt"],
     deps = [

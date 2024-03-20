@@ -1,8 +1,10 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -13,6 +15,7 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -22,6 +25,18 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+
+/** Represents the type of errors that can be thrown by drag and drop sort interaction. */
+enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {
+  VALID(error = null),
+  EMPTY_INPUT(error = R.string.drag_and_drop_interaction_empty_input);
+
+  /**
+   * Returns the string corresponding to this error's string resources, or null if there is none.
+   */
+  fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+    error?.let(resourceHandler::getStringInLocale)
+}
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -55,25 +70,34 @@ class DragAndDropSortInteractionViewModel private constructor(
       subtitledHtml.contentId to translatedHtml
     }
 
-  private val _choiceItems: MutableList<DragDropInteractionContentViewModel> =
+  private val _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
 
+  private val _choiceItems = _originalChoiceItems.toMutableList()
   val choiceItems: List<DragDropInteractionContentViewModel> = _choiceItems
 
+  private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
+  var errorMessage = ObservableField<String>("")
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            pendingAnswerError = null,
-            inputAnswerAvailable = true
+            pendingAnswerError,
+            inputAnswerAvailable = true // Allow submission without arranging or merging items.
           )
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
+    errorMessage.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
+    interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
+    )
   }
 
   override fun onItemDragged(
@@ -98,6 +122,7 @@ class DragAndDropSortInteractionViewModel private constructor(
     if (allowMultipleItemsInSamePosition) {
       (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
     }
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   fun onItemMoved(
@@ -128,6 +153,20 @@ class DragAndDropSortInteractionViewModel private constructor(
     this.writtenTranslationContext =
       this@DragAndDropSortInteractionViewModel.writtenTranslationContext
   }.build()
+
+  /**
+   * It checks the pending error for the current drag and drop sort interaction, and correspondingly
+   * updates the error string based on the specified error category.
+   */
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    pendingAnswerError = when (category) {
+      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.SUBMIT_TIME ->
+        getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
+    }
+    errorMessage.set(pendingAnswerError)
+    return pendingAnswerError
+  }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {
@@ -188,6 +227,13 @@ class DragAndDropSortInteractionViewModel private constructor(
     }
     // to update the list
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
+  }
+
+  private fun getSubmitTimeError(): DragAndDropSortInteractionError {
+    return if (_originalChoiceItems == _choiceItems)
+      DragAndDropSortInteractionError.EMPTY_INPUT
+    else
+      DragAndDropSortInteractionError.VALID
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
