@@ -2,6 +2,7 @@ package org.oppia.android.domain.hintsandsolution
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -296,11 +297,47 @@ class HintHandlerProdImpl private constructor(
    * Schedules to allow the hint of the specified index to be shown after the specified delay,
    * cancelling any previously pending hints initiated by calls to this method.
    */
+//  private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
+//    val targetSequenceNumber = ++hintSequenceNumber
+//    CoroutineScope(backgroundCoroutineDispatcher).launch {
+//      delay(delayMs)
+//      showHint(targetSequenceNumber, helpIndexToShow)
+//    }
+//  }
+
+  private var hintJob: Job? = null
+  private var initialDelayMs: Long = 0
+  private var startedTimeMs: Long = 0
+  lateinit var helpIndexToShowAdditional: HelpIndex
+  var targetSequenceNumber = hintSequenceNumber
   private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
-    val targetSequenceNumber = ++hintSequenceNumber
-    CoroutineScope(backgroundCoroutineDispatcher).launch {
+    targetSequenceNumber = ++hintSequenceNumber
+    helpIndexToShowAdditional = helpIndexToShow
+    hintJob?.cancel()
+    initialDelayMs = delayMs
+    startedTimeMs = System.currentTimeMillis()
+
+    hintJob = CoroutineScope(backgroundCoroutineDispatcher).launch {
       delay(delayMs)
       showHint(targetSequenceNumber, helpIndexToShow)
+    }
+  }
+
+  // Pause the timer
+  fun pauseHintTimer() {
+    hintJob?.cancel()
+    val elapsedTimeMs = System.currentTimeMillis() - startedTimeMs
+    initialDelayMs -= elapsedTimeMs
+  }
+
+  // Resume the timer
+  fun resumeHintTimer() {
+    if (hintJob?.isCancelled == true) {
+      startedTimeMs = System.currentTimeMillis()
+      hintJob = CoroutineScope(backgroundCoroutineDispatcher).launch {
+        delay(initialDelayMs)
+        showHint(targetSequenceNumber, helpIndexToShowAdditional)
+      }
     }
   }
 
