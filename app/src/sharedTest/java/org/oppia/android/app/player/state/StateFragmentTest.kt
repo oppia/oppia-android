@@ -748,6 +748,96 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadDragDropExp_submitWithoutArranging_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickSubmitAnswerButton()
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            withText(
+              R.string.drag_and_drop_interaction_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Drag and drop interaction with grouping.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
