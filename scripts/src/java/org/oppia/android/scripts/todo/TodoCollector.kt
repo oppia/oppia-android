@@ -2,6 +2,7 @@ package org.oppia.android.scripts.todo
 
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.todo.model.Todo
+import java.io.File
 
 /** Collects code lines containing the 'todo' keyword (case-insensitive). */
 class TodoCollector {
@@ -26,11 +27,7 @@ class TodoCollector {
         file.bufferedReader()
           .lineSequence()
           .mapIndexedNotNull { lineIndex, lineContent ->
-            checkIfContainsTodo(
-              filePath = file.toString(),
-              lineContent = lineContent,
-              lineIndex = lineIndex
-            )
+            checkIfContainsTodo(file.absoluteFile.normalize(), lineContent, lineIndex)
           }
       }
     }
@@ -65,21 +62,20 @@ class TodoCollector {
      * @param codeLine the line of code to be checked
      * @return the parsed issue number
      */
-    fun parseIssueNumberFromTodo(codeLine: String): String? {
-      return correctTodoFormatRegex.find(codeLine)?.groupValues?.get(1)
-    }
+    fun parseIssueNumberFromTodo(codeLine: String): Int? =
+      correctTodoFormatRegex.find(codeLine)?.groupValues?.get(1)?.toIntOrNull()
 
     /**
      * Computes whether a line of code contains the 'todo' keyword.
      *
-     * @param filePath the path of the file
+     * @param file the file being checked
      * @param lineContent the line string
      * @param lineIndex the index of the line sequence which is to be searched for a TODO
      * @return a Todo instance if the todo detector regex matches, else returns null
      */
-    private fun checkIfContainsTodo(filePath: String, lineContent: String, lineIndex: Int): Todo? {
+    private fun checkIfContainsTodo(file: File, lineContent: String, lineIndex: Int): Todo? {
       if (todoDetectorRegex.containsMatchIn(lineContent)) {
-        return Todo(filePath = filePath, lineNumber = lineIndex + 1, lineContent = lineContent)
+        return Todo(file, lineNumber = lineIndex + 1, lineContent = lineContent)
       }
       return null
     }
