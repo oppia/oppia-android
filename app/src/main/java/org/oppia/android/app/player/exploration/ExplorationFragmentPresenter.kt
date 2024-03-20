@@ -129,9 +129,16 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun revealHint(hintIndex: Int) {
     getStateFragment()?.revealHint(hintIndex)
   }
+  fun viewHint(hintIndex: Int) {
+    getStateFragment()?.viewHint(hintIndex)
+  }
 
   fun revealSolution() {
     getStateFragment()?.revealSolution()
+  }
+
+  fun viewSolution() {
+    getStateFragment()?.viewSolution()
   }
 
   fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()

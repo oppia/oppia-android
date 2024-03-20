@@ -153,6 +153,7 @@ class ExplorationProgressController @Inject constructor(
     explorationCheckpoint: ExplorationCheckpoint,
     isRestart: Boolean
   ): DataProvider<Any?> {
+
     val ephemeralStateFlow = createAsyncResultStateFlow<EphemeralState>()
     val sessionId = UUID.randomUUID().toString().also {
       mostRecentSessionId.value = it
@@ -274,6 +275,20 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
+   * Notifies the controller that the user wishes to view a hint.
+   *
+   * @param hintIndex index of the hint that is being viewed
+   */
+
+  fun submitHintIsViewed(hintIndex: Int) {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for viewing hint: $hintIndex."
+    }
+  }
+
+  /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
    * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
@@ -287,6 +302,15 @@ class ExplorationProgressController @Inject constructor(
     val message = ControllerMessage.SolutionIsRevealed(activeSessionId, submitResultFlow)
     sendCommandForOperation(message) { "Failed to schedule command for revealing the solution." }
     return submitResultFlow.convertToSessionProvider(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Notifies the controller that the user wishes to view the answer.
+   */
+  fun submitSolutionIsViewed() {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for viewing the solution." }
   }
 
   /**
@@ -416,7 +440,6 @@ class ExplorationProgressController @Inject constructor(
 
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
-
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
     @Suppress("JoinDeclarationAndAssignment") // Warning is incorrect in this case.
@@ -479,8 +502,12 @@ class ExplorationProgressController @Inject constructor(
             is ControllerMessage.HintIsRevealed -> {
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
+            is ControllerMessage.LogHintIsViewed ->
+              controllerState.maybeLogViewedHint(activeSessionId, message.hintIndex)
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+            is ControllerMessage.LogSolutionIsViewed ->
+              controllerState.maybeLogViewedSolution(activeSessionId)
             is ControllerMessage.MoveToPreviousState ->
               controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
@@ -781,6 +808,25 @@ class ExplorationProgressController @Inject constructor(
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
       checkForChangedHintState(helpIndex)
+    }
+  }
+
+  private fun ControllerState.maybeLogViewedHint(
+    activeSessionId: String,
+    hintIndex: Int
+  ) {
+    // Only log if the current session is active.
+    if (sessionId == activeSessionId) {
+      logViewedHint(hintIndex)
+    }
+  }
+
+  private fun ControllerState.maybeLogViewedSolution(
+    activeSessionId: String
+  ) {
+    // Only log if the current session is active.
+    if (sessionId == activeSessionId) {
+      logViewedSolution()
     }
   }
 
@@ -1196,12 +1242,12 @@ class ExplorationProgressController @Inject constructor(
           NEXT_AVAILABLE_HINT_INDEX ->
             stateAnalyticsLogger?.logHintUnlocked(newHelpIndex.nextAvailableHintIndex)
           LATEST_REVEALED_HINT_INDEX ->
-            stateAnalyticsLogger?.logViewHint(newHelpIndex.latestRevealedHintIndex)
+            stateAnalyticsLogger?.logAccessHint(newHelpIndex.latestRevealedHintIndex)
           SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
-            SHOW_SOLUTION -> stateAnalyticsLogger?.logViewSolution()
+            SHOW_SOLUTION -> stateAnalyticsLogger?.logAccessSolution()
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
-              stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
+              stateAnalyticsLogger?.logAccessHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
             LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
           }
@@ -1209,6 +1255,16 @@ class ExplorationProgressController @Inject constructor(
         }
         helpIndex = newHelpIndex
       }
+    }
+
+    /** Logs when a user views a hint. */
+    fun logViewedHint(hintIndex: Int) {
+      stateAnalyticsLogger?.logViewHint(hintIndex)
+    }
+
+    /** Logs when a user views the solution. */
+    fun logViewedSolution() {
+      stateAnalyticsLogger?.logViewSolution()
     }
 
     /**
@@ -1327,6 +1383,30 @@ class ExplorationProgressController @Inject constructor(
       val helpIndex: HelpIndex,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
+
+    /**
+     * [ControllerMessage] to log cases when user viewed hint for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed (since that's generally indicative of an
+     * error--hints can't continue to change after the session has ended).
+     */
+    data class LogHintIsViewed(
+      val hintIndex: Int,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
+
+    /**
+     * [ControllerMessage] to log cases when user viewed solution for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed.
+     */
+    data class LogSolutionIsViewed(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
     /**
