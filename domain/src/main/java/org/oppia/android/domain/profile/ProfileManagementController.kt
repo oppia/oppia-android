@@ -30,6 +30,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
@@ -89,7 +90,9 @@ class ProfileManagementController @Inject constructor(
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   @EnableLoggingLearnerStudyIds
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
-  private val profileNameValidator: ProfileNameValidator
+  private val profileNameValidator: ProfileNameValidator,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
   private val profileDataStore =
@@ -261,13 +264,14 @@ class ProfileManagementController @Inject constructor(
 
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
+      val generatedProfileId = ProfileId.newBuilder().setInternalId(nextProfileId).build()
 
       val newProfile = Profile.newBuilder().apply {
         this.name = name
         this.pin = pin
         this.allowDownloadAccess = allowDownloadAccess
         this.allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
-        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        this.id = generatedProfileId
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -293,6 +297,10 @@ class ProfileManagementController @Inject constructor(
       }.build()
 
       val wasProfileEverAdded = it.profilesCount > 0
+
+      if (enableOnboardingFlowV2.value) {
+        setCurrentProfileId(generatedProfileId)
+      }
 
       val profileDatabaseBuilder =
         it.toBuilder()

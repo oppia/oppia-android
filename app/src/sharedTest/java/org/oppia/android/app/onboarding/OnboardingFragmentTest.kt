@@ -50,6 +50,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.onboarding.onboardingv2.OnboardingProfileTypeActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -99,7 +100,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -108,7 +108,6 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -135,20 +134,14 @@ class OnboardingFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -664,6 +657,230 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).check(
         matches(
           isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_languageSelectionDropdownIsDisplayed() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_configChange_languageDropdownIsDisplayed() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_tabletPortrait_languageDropdownIsDisplayed() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_tabletConfigChange_languageDropdownIsDisplayed() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_letsGoButtonClicked_openProfileTypeScreen() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_onboardingV2Enabled_landscape_letsGoButtonClicked_openProfileTypeScreen() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testFragment_onboardingV2Enabled_tabletPortrait_letsGoButtonClicked_openProfileTypeScreen() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testFragment_onboardingV2Enabled_tabletLand_letsGoButtonClicked_openProfileTypeScreen() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_allIcons_haveCorrectContentDescriptions() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_onboardingV2Enabled_mobileLandscape_allIcons_haveCorrectContentDescriptions() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testFragment_onboardingV2Enabled_mobilePortrait_allIcons_haveCorrectContentDescriptions() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testFragment_onboardingV2Enabled_tabletLandscape_allIcons_haveCorrectContentDescriptions() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
         )
       )
     }

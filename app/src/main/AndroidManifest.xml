@@ -24,6 +24,7 @@
     <meta-data
       android:name="expiration_date"
       android:value="2020-09-01" />
+
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
       android:label="@string/administrator_controls_title"
@@ -43,7 +44,7 @@
     <activity
       android:name=".app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity"
       android:label="@string/profile_and_device_id_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar"/>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.completedstorylist.CompletedStoryListActivity"
       android:label="@string/completed_story_list_activity_title"
@@ -329,6 +330,18 @@
       android:label="@string/survey_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustNothing" />
+    <activity
+      android:name=".app.onboarding.onboardingv2.OnboardingProfileTypeActivity"
+      android:label="@string/onboarding_profile_type_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.onboarding.onboardingv2.OnboardingLearnerIntroActivity"
+      android:label="@string/onboarding_learner_intro_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.onboarding.onboardingv2.CreateProfileActivity"
+      android:label="@string/create_profile_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
