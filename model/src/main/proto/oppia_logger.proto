@@ -175,6 +175,24 @@ message EventLog {
 
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
+
+      // The event being logged is related to lesson progress(checkpoint) saving success.
+      ExplorationContext progress_saving_success_context = 43;
+
+      // The event being logged is related to lesson progress(checkpoint) saving failure.
+      ExplorationContext progress_saving_failure_context = 44;
+
+      // The event being logged is related to lesson progress(checkpoint) saving attempt
+      // advertently(intentionally).
+      ExplorationContext lesson_saved_advertently_context = 45;
+
+      // The event being logged is related to correct answer submission after returning back to the
+      // lesson.
+      ExplorationContext resume_lesson_submit_correct_answer_context = 46;
+
+      // The event being logged is related to incorrect answer submission after returning back to
+      // the lesson.
+      ExplorationContext resume_lesson_submit_incorrect_answer_context = 47;
     }
   }
 
