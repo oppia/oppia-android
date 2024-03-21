@@ -5,7 +5,6 @@ import org.oppia.android.app.model.Survey
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -28,8 +27,7 @@ private const val CREATE_QUESTIONS_LIST_PROVIDER_ID = "create_questions_list_pro
 class SurveyController @Inject constructor(
   private val dataProviders: DataProviders,
   private val surveyProgressController: SurveyProgressController,
-  private val exceptionsController: ExceptionsController,
-  private val surveyEventsLogger: SurveyEventsLogger
+  private val exceptionsController: ExceptionsController
 ) {
   private val surveyId = UUID.randomUUID().toString()
 
