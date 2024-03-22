@@ -22,6 +22,12 @@ message Topic {
   // The topic's title.
   SubtitledHtml title = 10;
 
+  // The ID of the classroom which contains this Topic.
+  string classroom_id = 12;
+
+  // The title of the classroom this Topic is part of.
+  SubtitledHtml classroom_title = 13;
+
   // A brief description of the topic.
   SubtitledHtml description = 11;
 
@@ -204,6 +210,20 @@ message Classroom {
   int64 last_update_time_ms = 2;
 }
 
+message ClassroomSummary {
+  // The Id of the ClassroomSummary.
+  string classroom_id = 1;
+
+  // The title of the ClassroomSummary.
+  SubtitledHtml classroom_title = 2;
+
+  // All topics that are part of this ClassroomSummary.
+  TopicList topic_list = 3;
+
+  // The total number of lessons (by adding all the lessons from each topic) in this ClassroomSummary.
+  int32 total_lesson_count = 4;
+}
+
 // Corresponds to the list of topics that are currently being played and are not fully finished.
 message OngoingTopicList {
   // All topics that are currently being played and have not finished.
@@ -289,6 +309,12 @@ message PromotedStory {
   // The title of the next chapter (exploration title) to complete.
   SubtitledHtml next_chapter_title = 17;
 
+  // The ID of the classroom this story is part of.
+  string classroom_id = 18;
+
+  // The title of the classroom this story is part of.
+  SubtitledHtml classroom_title = 19;
+
   // The exploration id next chapter to complete.
   string exploration_id = 6;
 
@@ -331,8 +357,17 @@ message TopicSummary {
   // The title of the topic.
   SubtitledHtml title = 8;
 
+  // The ID of the classroom which contains this TopicSummary.
+  string classroom_id = 10;
+
+  // The title of the classroom this TopicSummary is part of.
+  SubtitledHtml classroom_title = 11;
+
   // The structural version of the topic.
   int32 version = 3;
+
+  // The number of lessons the player has completed in this topic.
+  int32 completed_chapter_count = 12;
 
   // The total number of lessons associated with this topic.
   int32 total_chapter_count = 4;
@@ -574,6 +609,12 @@ message TopicRecord {
 
   // The topic's description.
   SubtitledHtml translatable_description = 10;
+
+  // The ID of the classroom which contains this TopicSummary.
+  string classroom_id = 11;
+
+  // The title of the classroom this TopicSummary is part of.
+  SubtitledHtml classroom_title = 12;
 
   // The list of canonical story IDs that can be used to load stories from the local filesystem.
   repeated string canonical_story_ids = 4;
