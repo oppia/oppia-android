@@ -224,6 +224,8 @@ class ExplorationActivityTest {
 
   private val internalProfileId: Int = 0
 
+  private val afternoonUtcTimestampMillis = 1556101812000
+
   @Before
   fun setUp() {
     Intents.init()
@@ -231,11 +233,11 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -2310,6 +2312,79 @@ class ExplorationActivityTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_closeExploration_surveyGatingCriteriaMet_showsSurveyPopup() {
+    markAllSpotlightsSeen()
+
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+        .perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
+    markAllSpotlightsSeen()
+
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      // Time not advanced to simulate minimum aggregate learning time not achieved.
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+        .perform(click())
+
+      onView(withText(R.string.survey_onboarding_title_text)).check(doesNotExist())
     }
   }
 

@@ -569,12 +569,13 @@ class StateFragmentPresenter @Inject constructor(
                 transaction
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
                   .commitNow()
+
+                // Changes to underlying DataProviders will update the gating result.
+                liveData.removeObserver(this)
               } else {
                 (activity as StopStatePlayingSessionWithSavedProgressListener)
                   .deleteCurrentProgressAndStopSession(isCompletion = true)
               }
-              // Changes to underlying DataProviders will update the gating result.
-              liveData.removeObserver(this)
             }
           }
         }

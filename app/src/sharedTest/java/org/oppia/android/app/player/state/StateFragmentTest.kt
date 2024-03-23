@@ -4375,6 +4375,40 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_allGatingConditionsMet_surveyDismissed_popupDoesNotShowAgain() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.maybe_later_button))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Check that the fragment is removed.
+      // When the survey popup is shown, the lastShownDateProvider is updated with current time,
+      // consequently updating the combined gating data provider. Recomputation of the gating result
+      // should not re-trigger the survey.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testFinishChapter_surveyFeatureOff_allGatingConditionsMet_noSurveyPopup() {
     // Survey Gating conditions are: isPastGracePeriod, has achieved minimum aggregate exploration
     // time of 5min in a topic, and is within the hours of 9am and 10pm in the user's local time.

@@ -298,11 +298,7 @@ class ExplorationActivityPresenter @Inject constructor(
         }
         is AsyncResult.Success -> {
           oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-          if (isCompletion) {
-            maybeShowSurveyDialog(profileId, topicId)
-          } else {
-            backPressActivitySelector()
-          }
+          maybeShowSurveyDialog(profileId, topicId)
         }
       }
     }

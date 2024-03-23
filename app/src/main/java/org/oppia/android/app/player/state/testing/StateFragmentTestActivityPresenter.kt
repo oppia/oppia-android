@@ -3,21 +3,16 @@ package org.oppia.android.app.player.state.testing
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
-import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
-import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -32,9 +27,8 @@ private const val TEST_ACTIVITY_TAG = "TestActivity"
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val surveyGatingController: SurveyGatingController,
   private val oppiaLogger: OppiaLogger,
-  private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>,
+  private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
 
   private var profileId: Int = 1
@@ -103,7 +97,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     }
     startPlayingProvider.toLiveData().observe(
       activity,
-      Observer<AsyncResult<Any?>> { result ->
+      { result ->
         when (result) {
           is AsyncResult.Pending -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
           is AsyncResult.Failure ->
@@ -111,46 +105,6 @@ class StateFragmentTestActivityPresenter @Inject constructor(
           is AsyncResult.Success -> {
             oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
             initializeExploration(profileId, topicId, storyId, explorationId)
-          }
-        }
-      }
-    )
-  }
-
-  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-    liveData.observe(
-      activity,
-      object : Observer<AsyncResult<Boolean>> {
-        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
-          when (gatingResult) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("StateFragmentTest", "A gating decision is pending")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "StateFragmentTest",
-                "Failed to retrieve gating decision",
-                gatingResult.error
-              )
-              (activity as StopStatePlayingSessionWithSavedProgressListener)
-                .deleteCurrentProgressAndStopSession(isCompletion = true)
-            }
-            is AsyncResult.Success -> {
-              if (gatingResult.value) {
-                val surveyPopup = SurveyWelcomeDialogFragment.newInstance(
-                  profileId,
-                  topicId,
-                  explorationId,
-                  listOf()
-                )
-                activity.supportFragmentManager.beginTransaction()
-                  .add(R.id.state_fragment_placeholder, surveyPopup, TAG_SURVEY_WELCOME_DIALOG)
-                  .commitNow()
-              }
-              // Changes to underlying DataProviders will update the gating result.
-              liveData.removeObserver(this)
-            }
           }
         }
       }
@@ -186,9 +140,6 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   private fun finishExploration(isCompletion: Boolean) {
     explorationDataController.stopPlayingExploration(isCompletion)
-
-    val userProfileId = ProfileId.newBuilder().setInternalId(profileId).build()
-    maybeShowSurveyDialog(userProfileId, topicId)
 
     getStateFragment()?.let { fragment ->
       activity.supportFragmentManager.beginTransaction().remove(fragment).commitNow()
