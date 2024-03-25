@@ -20,6 +20,8 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.testing.network.ApiMockLoader
 import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -79,8 +81,8 @@ class FeedbackReportingServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class,
-      RetrofitTestModule::class, NetworkConfigProdModule::class
+      TestModule::class, NetworkModule::class, TestDispatcherModule::class,
+      RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

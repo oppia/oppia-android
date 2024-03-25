@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import org.oppia.android.app.model.EventLog.ConsoleLoggerContext
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
@@ -23,6 +26,12 @@ class ConsoleLogger @Inject constructor(
 ) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
   private val logDirectory = File(context.filesDir, "oppia_app.log")
+
+  private val _logErrorMessagesFlow = MutableSharedFlow<ConsoleLoggerContext>()
+  /**
+   * A flow that emits a [ConsoleLoggerContext] when a error message is logged.
+   */
+  val logErrorMessagesFlow: SharedFlow<ConsoleLoggerContext> = _logErrorMessagesFlow
 
   /** Logs a verbose message with the specified tag. */
   fun v(tag: String, msg: String) {
@@ -97,6 +106,20 @@ class ConsoleLogger @Inject constructor(
       logToFileInBackground(
         "${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog"
       )
+    }
+
+    // Add the log to the error message flow so it can be logged to firebase.
+    CoroutineScope(blockingDispatcher).launch {
+      // Only log error messages to firebase.
+      if (logLevel == LogLevel.ERROR) {
+        _logErrorMessagesFlow.emit(
+          ConsoleLoggerContext.newBuilder()
+            .setLogLevel(logLevel.toString())
+            .setLogTag(tag)
+            .setFullErrorLog(fullLog)
+            .build()
+        )
+      }
     }
   }
 

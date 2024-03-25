@@ -17,6 +17,8 @@ import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.XssiPrefix
 import org.oppia.android.testing.network.MockQuestionPlayerService
 import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -77,8 +79,8 @@ class QuestionPlayerServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class,
-      RetrofitTestModule::class, NetworkConfigProdModule::class
+      TestModule::class, NetworkModule::class, RobolectricModule::class,
+      RetrofitTestModule::class, NetworkConfigProdModule::class, TestDispatcherModule::class,
     ]
   )
   interface TestApplicationComponent {

@@ -28,6 +28,7 @@ class NetworkModule {
   fun provideRetrofitInstance(
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
+    networkLoggingInterceptor: NetworkLoggingInterceptor,
     @BaseUrl baseUrl: String
   ): Optional<Retrofit> {
     // TODO(#1720): Make this a compile-time dep once Hilt provides it as an option.
@@ -35,6 +36,7 @@ class NetworkModule {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
+        .addInterceptor(networkLoggingInterceptor)
         .build()
 
       Optional.of(

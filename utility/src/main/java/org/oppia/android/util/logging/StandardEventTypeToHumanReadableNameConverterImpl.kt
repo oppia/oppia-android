@@ -62,6 +62,11 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
+      ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
+      ActivityContextCase.CONSOLE_LOG -> "console_log"
+      ActivityContextCase.RETROFIT_CALL_CONTEXT -> "retrofit_call_context"
+      ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT -> "retrofit_call_failed_context"
+      ActivityContextCase.APP_IN_FOREGROUND_TIME -> "app_in_foreground_time"
     }
   }
 }

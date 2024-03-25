@@ -21,6 +21,8 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
@@ -111,8 +113,8 @@ class MockPlatformParameterServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class,
-      RetrofitTestModule::class, NetworkConfigProdModule::class
+      TestModule::class, NetworkModule::class, TestDispatcherModule::class,
+      RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class,
     ]
   )
   interface TestApplicationComponent {
