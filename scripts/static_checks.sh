@@ -105,4 +105,11 @@ echo "********************************"
 echo "Running license texts checks"
 echo "********************************"
 bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
+echo ""
 
+# TODO checks.
+echo "********************************"
+echo "Running TODO correctness checks"
+echo "********************************"
+bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
+echo ""
