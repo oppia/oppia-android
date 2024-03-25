@@ -9,10 +9,9 @@ import java.io.File
  */
 class GitClient(
   private val workingDirectory: File,
-  private val baseDevelopBranchReference: String
+  private val baseDevelopBranchReference: String,
+  private val commandExecutor: CommandExecutor
 ) {
-  private val commandExecutor by lazy { CommandExecutorImpl() }
-
   /** The commit hash of the HEAD of the local Git repository. */
   val currentCommit: String by lazy { retrieveCurrentCommit() }
 

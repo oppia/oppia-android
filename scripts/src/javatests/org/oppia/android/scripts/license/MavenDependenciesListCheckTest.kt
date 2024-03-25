@@ -10,6 +10,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -79,16 +80,16 @@ class MavenDependenciesListCheckTest {
   private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
     "License links are invalid or not available for some dependencies"
 
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
-  private lateinit var testBazelWorkspace: TestBazelWorkspace
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Before
   fun setUp() {
@@ -101,6 +102,7 @@ class MavenDependenciesListCheckTest {
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -113,6 +115,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -135,14 +138,14 @@ class MavenDependenciesListCheckTest {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-      
+
       artifact_name: "com.google.firebase:firebase-analytics:17.5.0"
       artifact_version: "17.5.0"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -189,6 +192,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -211,7 +215,7 @@ class MavenDependenciesListCheckTest {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -253,6 +257,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -275,14 +280,14 @@ class MavenDependenciesListCheckTest {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -329,6 +334,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -408,6 +414,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -430,7 +437,7 @@ class MavenDependenciesListCheckTest {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
@@ -484,6 +491,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -508,14 +516,14 @@ class MavenDependenciesListCheckTest {
       }
 
       Missing dependencies that need to be added:
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -562,6 +570,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -586,14 +595,14 @@ class MavenDependenciesListCheckTest {
       }
 
       Missing dependencies that need to be added:
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_UPGRADED_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_UPGRADED_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -640,6 +649,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -651,7 +661,7 @@ class MavenDependenciesListCheckTest {
     }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
-      """ 
+      """
       Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.
 
       Redundant dependencies that need to be removed:
@@ -664,14 +674,14 @@ class MavenDependenciesListCheckTest {
       }
 
       Missing dependencies that need to be added:
-      
+
       artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
         original_link: "https://developer.android.com/studio/terms.html"
       }
-      
+
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
       """.trimIndent() + "\n"
     )
@@ -720,6 +730,7 @@ class MavenDependenciesListCheckTest {
 
     MavenDependenciesListCheck(
       mockLicenseFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -773,6 +784,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -822,6 +834,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -877,6 +890,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows<Exception>() {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -1018,13 +1032,15 @@ class MavenDependenciesListCheckTest {
             }
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
   /** Returns a mock for the [LicenseFetcher]. */

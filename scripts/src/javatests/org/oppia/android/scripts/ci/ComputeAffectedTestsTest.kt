@@ -6,8 +6,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.scripts.testing.TestGitRepository
@@ -31,8 +33,9 @@ import java.util.concurrent.TimeUnit
 class ComputeAffectedTestsTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
-  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
+  private lateinit var commandExecutor: CommandExecutor
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var testGitRepository: TestGitRepository
   private lateinit var pendingOutputStream: ByteArrayOutputStream
@@ -40,8 +43,9 @@ class ComputeAffectedTestsTest {
 
   @Before
   fun setUp() {
+    commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    testGitRepository = TestGitRepository(tempFolder, CommandExecutorImpl())
+    testGitRepository = TestGitRepository(tempFolder, commandExecutor)
 
     // Redirect script output for testing purposes.
     pendingOutputStream = ByteArrayOutputStream()
@@ -58,6 +62,8 @@ class ComputeAffectedTestsTest {
     // and to help manually verify the expect git state at the end of each test.
     println("git status (at end of test):")
     println(testGitRepository.status(checkForGitRepository = false))
+
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -722,6 +728,7 @@ class ComputeAffectedTestsTest {
     // Note that main() can't be used since the shard counts need to be overwritten. Dagger would
     // be a nicer means to do this, but it's not set up currently for scripts.
     ComputeAffectedTests(
+      scriptBgDispatcher,
       maxTestCountPerLargeShard = maxTestCountPerLargeShard,
       maxTestCountPerMediumShard = maxTestCountPerMediumShard,
       maxTestCountPerSmallShard = maxTestCountPerSmallShard,
@@ -864,7 +871,9 @@ class ComputeAffectedTestsTest {
     testGitRepository.commit(message = "Modified library $name")
   }
 
-  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 }
