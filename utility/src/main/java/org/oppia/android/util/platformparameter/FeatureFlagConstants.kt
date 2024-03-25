@@ -162,7 +162,7 @@ const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
 annotation class EnableNpsSurvey
 
 /** Name of the feature flag that toggles the NPS Survey. */
-const val ENABLE_NPS_SURVEY = "enable_nps_survey"
+const val ENABLE_NPS_SURVEY = "android_enable_nps_survey"
 
 /** Default value of the feature flag corresponding to [EnableNpsSurvey]. */
 const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
@@ -172,7 +172,7 @@ const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
 annotation class EnableOnboardingFlowV2
 
 /** Name of the feature flag that toggles the new onboarding flow. */
-const val ENABLE_ONBOARDING_FLOW_V2 = "enable_onboarding_flow_v2"
+const val ENABLE_ONBOARDING_FLOW_V2 = "android_enable_onboarding_flow_v2"
 
 /** Default value of the feature flag corresponding to [EnableOnboardingFlowV2]. */
 const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = false
