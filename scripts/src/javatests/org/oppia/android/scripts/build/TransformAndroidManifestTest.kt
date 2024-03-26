@@ -1,11 +1,13 @@
 package org.oppia.android.scripts.build
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
 import java.io.File
@@ -54,16 +56,20 @@ class TransformAndroidManifestTest {
   private val VERSION_CODE = "23"
   private val APPLICATION_RELATIVE_QUALIFIED_CLASS = ".example.CustomApplication"
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
-  private val commandExecutor by lazy { CommandExecutorImpl() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
   private lateinit var testGitRepository: TestGitRepository
 
   @Before
   fun setUp() {
-    testGitRepository = TestGitRepository(tempFolder, CommandExecutorImpl())
+    testGitRepository = TestGitRepository(tempFolder, commandExecutor)
+  }
+
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
   }
 
   @Test

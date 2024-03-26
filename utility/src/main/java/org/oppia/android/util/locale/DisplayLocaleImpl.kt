@@ -12,17 +12,21 @@ import java.util.Date
 import java.util.Locale
 import java.util.Objects
 
-// TODO(#3766): Restrict to be 'internal'.
-/** Implementation of [OppiaLocale.DisplayLocale]. */
+// TODO(#3766): Restrict DisplayLocaleImpl and formattingLocale to be 'internal'.
+/**
+ * Implementation of [OppiaLocale.DisplayLocale].
+ *
+ * @property localeContext the [OppiaLocaleContext] that this locale is representing
+ * @property formattingLocale the [Locale] used for user-facing string formatting
+ * @property machineLocale the application-wide [MachineLocale] used for string formatting
+ * @property formatterFactory the application-wide factory for creating a new [OppiaBidiFormatter]
+ */
 class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,
+  val formattingLocale: Locale,
   private val machineLocale: MachineLocale,
-  private val androidLocaleFactory: AndroidLocaleFactory,
   private val formatterFactory: OppiaBidiFormatter.Factory
 ) : OppiaLocale.DisplayLocale(localeContext) {
-  // TODO(#3766): Restrict to be 'internal'.
-  /** The [Locale] used for user-facing string formatting in this display locale. */
-  val formattingLocale: Locale by lazy { androidLocaleFactory.createAndroidLocale(localeContext) }
   private val dateFormat by lazy {
     DateFormat.getDateInstance(DATE_FORMAT_LENGTH, formattingLocale)
   }

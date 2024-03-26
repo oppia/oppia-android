@@ -558,7 +558,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -569,12 +569,12 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -587,7 +587,27 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_submitWithoutAnswer_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      clickSubmitAnswerButton()
+      onView(withId(R.id.selection_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.selection_error_empty_input
+            )
+          )
+        )
     }
   }
 
@@ -660,7 +680,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -671,14 +691,15 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -689,9 +710,10 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -722,6 +744,96 @@ class StateFragmentTest {
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
       onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_submitWithoutArranging_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickSubmitAnswerButton()
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            withText(
+              R.string.drag_and_drop_interaction_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Drag and drop interaction with grouping.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
     }
   }
 
@@ -2716,7 +2828,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2732,7 +2844,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2748,7 +2860,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2800,7 +2912,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2817,7 +2929,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2887,7 +2999,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3054,7 +3166,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3071,7 +3183,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3088,7 +3200,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3140,7 +3252,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3157,7 +3269,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3228,7 +3340,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3264,7 +3376,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3445,7 +3557,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3462,7 +3574,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3479,7 +3591,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3496,7 +3608,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3531,7 +3643,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3566,7 +3678,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3583,7 +3695,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3680,7 +3792,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3739,7 +3851,7 @@ class StateFragmentTest {
       // verify that the two sides are multiples of each other).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3756,7 +3868,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
