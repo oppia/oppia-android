@@ -88,18 +88,11 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     parameterizedMethods.flatMap { (methodName, method) ->
       method.iterationNames.map { iterationName ->
         ProxyParameterizedTestRunner(
-          selectedRunnerClass,
-          testClass,
-          parameterizedMethods,
-          methodName,
-          iterationName
+          selectedRunnerClass, testClass, parameterizedMethods, methodName, iterationName
         )
       }
     } + ProxyParameterizedTestRunner(
-      selectedRunnerClass,
-      testClass,
-      parameterizedMethods,
-      methodName = null
+      selectedRunnerClass, testClass, parameterizedMethods, methodName = null
     )
   }
 
@@ -253,8 +246,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    * - [Float]s
    * - [Double]s
    */
-  @Target(AnnotationTarget.FIELD)
-  annotation class Parameter
+  @Target(AnnotationTarget.FIELD) annotation class Parameter
 
   /**
    * Specifies that a method in a test that uses a [OppiaParameterizedTestRunner] runner should be
@@ -262,8 +254,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    *
    * See the KDoc for the runner for example code.
    */
-  @Target(AnnotationTarget.FUNCTION)
-  annotation class RunParameterized(vararg val value: Iteration)
+  @Target(AnnotationTarget.FUNCTION) annotation class RunParameterized(vararg val value: Iteration)
 
   // TODO(#4120): Migrate to Kotlin @Repeatable once Kotlin 1.6 is used (see:
   //  https://youtrack.jetbrains.com/issue/KT-12794).
@@ -316,10 +307,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     private fun constructDelegate(): Any {
       val constructor =
         runnerClass.getConstructor(
-          Class::class.java,
-          Map::class.java,
-          String::class.java,
-          String::class.java
+          Class::class.java, Map::class.java, String::class.java, String::class.java
         )
       return constructor.newInstance(testClass, parameterizedMethods, methodName, iterationName)
     }
