@@ -53,8 +53,8 @@
     <ImageView
       android:id="@+id/onboarding_app_language_image"
       android:layout_width="132dp"
-      android:layout_height="140dp"
-      android:layout_marginEnd="@dimen/onboarding_shared_margin_3xl"
+      android:layout_height="138dp"
+      android:layout_marginEnd="@dimen/onboarding_shared_margin_2xl"
       android:contentDescription="@string/onboarding_otter_content_description"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_title"
@@ -72,7 +72,7 @@
 
     <RelativeLayout
       android:id="@+id/onboarding_language_dropdown_background"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/onboarding_shared_margin_5xl"
       android:layout_marginEnd="@dimen/onboarding_shared_margin_5xl"
@@ -80,6 +80,10 @@
       android:background="@drawable/dropdown_background"
       android:elevation="@dimen/onboarding_shared_elevation"
       android:padding="@dimen/onboarding_shared_padding_small"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_label"
+      app:layout_constraintWidth_percent="0.30"
       app:layout_constraintBottom_toTopOf="@id/onboarding_language_explanation">
 
       <ImageView
@@ -129,11 +133,12 @@
     <Button
       android:id="@+id/onboarding_language_lets_go_button"
       style="@style/OnboardingLanguageLetsGoButton"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/onboarding_language_activity_button_text"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintEnd_toEndOf="@id/onboarding_language_explanation"
+      app:layout_constraintWidth_percent="0.40"
+      app:layout_constraintStart_toStartOf="@id/onboarding_language_explanation" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

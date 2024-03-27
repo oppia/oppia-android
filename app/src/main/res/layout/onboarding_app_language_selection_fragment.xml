@@ -44,7 +44,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.40" />
+      app:layout_constraintGuide_percent="0.38" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
