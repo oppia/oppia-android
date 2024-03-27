@@ -57,6 +57,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     }
 
     profileManagementController.updateSurveyLastShownTimestamp(profileId)
+
     logSurveyPopUpShownEvent(explorationId, topicId, profileId)
 
     return binding.root

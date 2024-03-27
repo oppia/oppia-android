@@ -8,7 +8,6 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import java.util.UUID
 import javax.inject.Inject
@@ -54,13 +53,7 @@ class SurveyController @Inject constructor(
             survey.mandatoryQuestionsList + survey.optionalQuestion
           } else survey.mandatoryQuestionsList
         }
-
-      val beginSessionDataProvider =
-        surveyProgressController.beginSurveySession(surveyId, profileId, questionsListDataProvider)
-
-      beginSessionDataProvider.combineWith(
-        createSurveyDataProvider, START_SURVEY_SESSION_PROVIDER_ID
-      ) { sessionResult, _ -> sessionResult }
+      surveyProgressController.beginSurveySession(surveyId, profileId, questionsListDataProvider)
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       dataProviders.createInMemoryDataProviderAsync(START_SURVEY_SESSION_PROVIDER_ID) {

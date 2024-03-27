@@ -50,7 +50,6 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
-import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -79,7 +78,6 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -224,42 +222,15 @@ class ExplorationActivityTest {
 
   private val internalProfileId: Int = 0
 
-  @Before
-  fun setUp() {
-    Intents.init()
-    setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.initializeProfiles()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-  }
+  private val afternoonUtcTimestampMillis = 1556101812000
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun getApplicationDependencies(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String
-  ) {
-    launch(ExplorationInjectionActivity::class.java).use {
-      it.onActivity { activity ->
-        explorationDataController = activity.explorationDataController
-        explorationDataController.startPlayingNewExploration(
-          internalProfileId,
-          topicId,
-          storyId,
-          explorationId
-        )
-      }
-    }
   }
 
   // TODO(#388): Fill in remaining tests for this activity.
@@ -285,6 +256,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_hasCorrectActivityLabel() {
+    setUpTest()
     markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -328,6 +300,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    setUpTest()
     markAllSpotlightsSeen()
     fakeAccessibilityService.setScreenReaderEnabled(false)
     explorationActivityTestRule.launchActivity(
@@ -351,6 +324,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    setUpTest()
     markAllSpotlightsSeen()
     fakeAccessibilityService.setScreenReaderEnabled(true)
     explorationActivityTestRule.launchActivity(
@@ -374,6 +348,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    setUpTest()
     markAllSpotlightsSeen()
     fakeAccessibilityService.setScreenReaderEnabled(false)
     explorationActivityTestRule.launchActivity(
@@ -397,6 +372,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    setUpTest()
     markAllSpotlightsSeen()
     fakeAccessibilityService.setScreenReaderEnabled(true)
     explorationActivityTestRule.launchActivity(
@@ -719,6 +695,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -820,6 +797,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -849,6 +827,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -878,6 +857,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -908,6 +888,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -947,6 +928,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -993,6 +975,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -1036,6 +1019,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -1080,6 +1064,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -1119,6 +1104,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWifi_fractionsExp_changeLang_next_langIsHinglish() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1181,6 +1167,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -1226,6 +1213,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1270,6 +1258,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_onToolbarClosePressed_showsUnsavedExplorationDialog() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1299,6 +1288,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_loadingAudio_progressbarIsDisplayed() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
@@ -1337,6 +1327,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_dismissesDialog() {
+    setUpTest()
     markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
@@ -1392,6 +1383,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
+    setUpTest()
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -1428,6 +1420,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
+    setUpTest()
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -1523,6 +1516,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
+    setUpTest()
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -1595,6 +1589,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
+    setUpTest()
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -1632,6 +1627,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
+    setUpTest()
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -1994,6 +1990,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
+    setUpTest()
     markAllSpotlightsSeen()
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -2034,6 +2031,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_hasCorrectContentDescription() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2079,6 +2077,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2115,6 +2114,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2152,6 +2152,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
+    setUpTest()
     markAllSpotlightsSeen()
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -2192,6 +2193,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_initialise_openBottomSheet_showsBottomSheet() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2218,6 +2220,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_openBottomsheet_selectHelpInBottomsheet_opensHelpActivity() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2252,6 +2255,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_openBottomsheet_selectOptionsInBottomsheet_opensOptionsActivity() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2286,6 +2290,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_openBottomsheet_selectCloseOption_bottomSheetCloses() {
+    setUpTest()
     markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2311,6 +2316,95 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }
+  }
+
+  @Test
+  fun testExplorationActivity_closeExploration_surveyGatingCriteriaMet_showsSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    markAllSpotlightsSeen()
+
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+        .perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
+    setUpTest()
+    markAllSpotlightsSeen()
+
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      // Time not advanced to simulate minimum aggregate learning time not achieved.
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+        .perform(click())
+
+      onView(withText(R.string.survey_onboarding_title_text)).check(doesNotExist())
+    }
+  }
+
+  private fun setUpTestWithSurveyFeatureOn() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    setUpTest()
+  }
+
+  private fun setUpTest() {
+    Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {

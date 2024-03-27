@@ -189,7 +189,6 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    maybeShowSurveyDialog(profileId, topicId)
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -455,13 +454,17 @@ class StateFragmentPresenter @Inject constructor(
   fun getExplorationCheckpointState() = explorationCheckpointState
 
   private fun markExplorationCompleted() {
-    storyProgressController.recordCompletedChapter(
+    val markStoryCompletedLivedata = storyProgressController.recordCompletedChapter(
       profileId,
       topicId,
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
-    )
+    ).toLiveData()
+
+    // Only check gating result when the previous operation has completed because gating depends on
+    // result of saving the time spent in the exploration, at the end of the exploration.
+    markStoryCompletedLivedata.observe(activity, { maybeShowSurveyDialog(profileId, topicId) })
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
@@ -535,10 +538,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-      .observe(
-        activity,
-        { gatingResult ->
+    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+    liveData.observe(
+      activity,
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
           when (gatingResult) {
             is AsyncResult.Pending -> {
               oppiaLogger.d("StateFragment", "A gating decision is pending")
@@ -565,6 +569,9 @@ class StateFragmentPresenter @Inject constructor(
                 transaction
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
                   .commitNow()
+
+                // Changes to underlying DataProviders will update the gating result.
+                liveData.removeObserver(this)
               } else {
                 (activity as StopStatePlayingSessionWithSavedProgressListener)
                   .deleteCurrentProgressAndStopSession(isCompletion = true)
@@ -572,7 +579,8 @@ class StateFragmentPresenter @Inject constructor(
             }
           }
         }
-      )
+      }
+    )
   }
 
   /**
