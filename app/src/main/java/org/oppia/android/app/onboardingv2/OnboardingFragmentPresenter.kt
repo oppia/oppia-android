@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.OnboardingAppLanguageSelectionFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment] V2. */
 @FragmentScope
