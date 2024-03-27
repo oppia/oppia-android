@@ -1,13 +1,13 @@
 package org.oppia.android.app.customview
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -18,33 +18,38 @@ import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
 /**
- * CustomView to add a background to [SurveyWelcomeDialogFragment] and [SurveyOutroDialogFragment].
- * Without chaptersFinished and totalChapters values this custom-view cannot be created.
+ * CustomView to add a background to views that require a bezier curve background.
  *
  * Reference: // https://proandroiddev.com/how-i-drew-custom-shapes-in-bottom-bar-c4539d86afd7 and
  * // https://ciechanow.ski/drawing-bezier-curves/
  */
-class SurveyOnboardingBackgroundView : View {
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
+class OppiaCurveBackgroundView @JvmOverloads constructor(
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
+  /**
+   * Used to retrieve the layout direction that should be used to mirror the direction of the
+   * curve based on locale.
+   */
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
+  private var customBackgroundColor = Color.WHITE // Default color
+
   private lateinit var paint: Paint
   private lateinit var path: Path
   private var strokeWidth = 2f
 
-  constructor(context: Context) : super(context)
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-    context,
-    attrs,
-    defStyleAttr
-  )
-
   init {
+    val typedArray: TypedArray =
+      context.obtainStyledAttributes(attrs, R.styleable.OppiaCurveBackgroundView)
+    customBackgroundColor =
+      typedArray.getColor(R.styleable.OppiaCurveBackgroundView_customBackgroundColor, Color.WHITE)
+    typedArray.recycle()
     setupCurvePaint()
   }
 
@@ -61,10 +66,10 @@ class SurveyOnboardingBackgroundView : View {
     val width = this.width.toFloat()
     val height = this.height.toFloat()
 
-    val controlPoint1X = width * 0.5f
+    val controlPoint1X = width * 0.55f
     val controlPoint1Y = 0f
 
-    val controlPoint2X = width * 0.5f
+    val controlPoint2X = width * 0.52f
     val controlPoint2Y = height * 0.2f
 
     val controlPoint3X = width * 1f
@@ -91,11 +96,8 @@ class SurveyOnboardingBackgroundView : View {
     paint = Paint(Paint.ANTI_ALIAS_FLAG)
     paint.apply {
       style = Paint.Style.FILL_AND_STROKE
-      strokeWidth = this@SurveyOnboardingBackgroundView.strokeWidth
-      color = ContextCompat.getColor(
-        context,
-        R.color.component_color_survey_popup_background_color
-      )
+      strokeWidth = this@OppiaCurveBackgroundView.strokeWidth
+      color = customBackgroundColor
     }
     setBackgroundColor(Color.TRANSPARENT)
   }
