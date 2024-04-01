@@ -84,7 +84,7 @@ class NetworkLoggingInterceptorTest {
   }
 
   @Test
-  fun testLoggingInterceptor_makeNetworkCall_emitsRetrofitCallContext() = runBlockingTest {
+  fun testLoggingInterceptor_makeNetworkCall_succeeds() = runBlockingTest {
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
     client.newCall(request).execute()
     testCoroutineDispatchers.advanceUntilIdle()
@@ -102,7 +102,8 @@ class NetworkLoggingInterceptorTest {
   }
 
   @Test
-  fun testLoggingInterceptor_makeFailingNetworkCall_emitsRetrofitCall_andCallFailedContext() =
+//  fun testLoggingInterceptor_makeFailingNetworkCall_emitsRetrofitCall_andCallFailedContext() =
+  fun testLoggingInterceptor_makeNetworkCallWithInvalidUrl_failsAndCompletes() =
     runBlockingTest {
       val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
       val mockResponse = MockResponse()
@@ -137,7 +138,7 @@ class NetworkLoggingInterceptorTest {
     }
 
   @Test
-  fun testLoggingInterceptor_makeCrashingNetworkCall_emitsRetrofitCallFailedContext() =
+  fun testLoggingInterceptor_makeCrashingNetworkCall_failsAndCompletes() =
     runBlockingTest {
       mockWebServer.shutdown()
       try { client.newCall(request).execute() } catch (e: Exception) { }

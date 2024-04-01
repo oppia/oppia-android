@@ -188,7 +188,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
-          "ActivityLifecycleObserver",
+          "ApplicationLifecycleObserver",
           "Encountered error while trying to log app's time in the foreground.",
           failure
         )

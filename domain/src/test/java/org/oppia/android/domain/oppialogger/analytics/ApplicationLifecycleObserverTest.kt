@@ -62,6 +62,7 @@ import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -421,11 +422,11 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = getOneOfLastTwoEventsLogged(ActivityContextCase.APP_IN_FOREGROUND_TIME)
+    val eventLog = getOneOfLastTwoEventsLogged(APP_IN_FOREGROUND_TIME)
     val eventLogContext = eventLog.context
 
     assertThat(eventLogContext.activityContextCase)
-      .isEqualTo(ActivityContextCase.APP_IN_FOREGROUND_TIME)
+      .isEqualTo(APP_IN_FOREGROUND_TIME)
     assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong())
       .isEqualTo(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
     assertThat(eventLogContext.appInForegroundTime.appSessionId).isEqualTo(sessionId)
@@ -433,7 +434,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onAppInForeground_observesAndLogsConsoleErrors() {
+  fun testObserver_onAppInForeground_onConsoleError_logsConsoleErrors() {
     setUpTestApplicationComponent()
 
     applicationLifecycleObserver.onCreate()
@@ -456,7 +457,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onAppInForeground_observesAndLogsNetworkCalls() {
+  fun testObserver_onAppInForeground_onNetworkCall_logsNetworkCalls() {
     setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
@@ -481,7 +482,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onAppInForeground_observesAndLogsFailedNetworkCalls() {
+  fun testObserver_onAppInForeground_onNetworkCall_logsFailedNetworkCalls() {
     setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
