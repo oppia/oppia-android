@@ -66,6 +66,17 @@ class FeatureFlagsLoggerTest {
   }
 
   @Test
+  fun testLogFeatureFlags_logFeatureFlags_hasCorrectUserUUID() {
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasFeatureFlagContextThat {
+      hasUniqueUserUuidThat().isEqualTo("")
+    }
+  }
+
+  @Test
   fun testLogFeatureFlags_logFeatureFlags_hasCorrectSessionId() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
