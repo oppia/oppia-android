@@ -21,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
@@ -62,7 +63,6 @@ import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
