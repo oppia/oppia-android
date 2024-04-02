@@ -3,7 +3,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/application/Applica
 exempted_file_path: "app/src/main/java/org/oppia/android/app/application/ApplicationInjectorProvider.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/application/ApplicationStartupListenerModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SurveyOnboardingBackgroundView.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsFragment.kt"
