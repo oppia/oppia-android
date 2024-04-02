@@ -228,6 +228,8 @@ class ExplorationActivityTest {
 
   private val internalProfileId: Int = 0
 
+  private val afternoonUtcTimestampMillis = 1556101812000
+
   @Before
   fun setUp() {
     Intents.init()
@@ -2322,7 +2324,7 @@ class ExplorationActivityTest {
   fun testExplorationActivity_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(1556101812000)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     markAllSpotlightsSeen()
 
@@ -2332,7 +2334,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
@@ -2343,7 +2345,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      fakeOppiaClock.setCurrentTimeMs(1556101812000 + 360_000L)
+      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
 
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
