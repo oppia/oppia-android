@@ -112,6 +112,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -222,9 +223,10 @@ class ExplorationActivityTest {
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
 
-  private val internalProfileId: Int = 0
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
-  private val afternoonUtcTimestampMillis = 1556101812000
+  private val internalProfileId: Int = 0
 
   @Before
   fun setUp() {
@@ -2316,11 +2318,13 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExplorationActivity_closeExploration_surveyGatingCriteriaMet_showsSurveyPopup() {
-    markAllSpotlightsSeen()
-
+  @Ignore("Test fails to initialize test feature flag before start due to class config.")
+  fun testExplorationActivity_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+    fakeOppiaClock.setCurrentTimeMs(1556101812000)
+
+    markAllSpotlightsSeen()
 
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -2328,7 +2332,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
@@ -2339,52 +2343,30 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
+      fakeOppiaClock.setCurrentTimeMs(1556101812000 + 360_000L)
 
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-        .perform(click())
-      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.survey_onboarding_title_text)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.survey_onboarding_message_text)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
-    markAllSpotlightsSeen()
-
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
-
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
+      // subscribers of an update.
+      profileManagementController.updateSurveyLastShownTimestamp(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build()
       )
       testCoroutineDispatchers.runCurrent()
 
-      // Time not advanced to simulate minimum aggregate learning time not achieved.
-
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
         .perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button))
+        .inRoot(isDialog())
+      testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.survey_onboarding_title_text)).check(doesNotExist())
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 

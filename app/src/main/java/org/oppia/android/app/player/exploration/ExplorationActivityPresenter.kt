@@ -556,11 +556,12 @@ class ExplorationActivityPresenter @Inject constructor(
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
                   .addToBackStack(null)
                   .commit()
+
+                // Changes to underlying DataProviders will update the gating result.
+                liveData.removeObserver(this)
               } else {
                 backPressActivitySelector()
               }
-              // Changes to underlying DataProviders will update the gating result.
-              liveData.removeObserver(this)
             }
           }
         }

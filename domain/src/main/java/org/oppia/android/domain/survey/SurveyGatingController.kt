@@ -44,8 +44,8 @@ class SurveyGatingController @Inject constructor(
   fun maybeShowSurvey(profileId: ProfileId, topicId: String): DataProvider<Boolean> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
     val learningTimeProvider = retrieveAggregateLearningTime(profileId, topicId)
-    return lastShownDateProvider.combineWith(
-      learningTimeProvider, GATING_RESULT_PROVIDER_ID
+    return learningTimeProvider.combineWith(
+      lastShownDateProvider, GATING_RESULT_PROVIDER_ID
     ) { lastShownTimestampMs, learningTimeMs ->
       isSurveyGracePeriodEnded(lastShownTimestampMs) &&
         hasReachedMinimumTopicLearningThreshold(learningTimeMs) &&
