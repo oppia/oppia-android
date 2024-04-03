@@ -1,6 +1,8 @@
 package org.oppia.android.app.customview
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
@@ -38,7 +40,9 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
-  private var customBackgroundColor = Color.WHITE // Default color
+  private val orientation = Resources.getSystem().configuration.orientation
+
+  private var customBackgroundColor = Color.WHITE // Default color.
 
   private lateinit var paint: Paint
   private lateinit var path: Path
@@ -66,17 +70,37 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     val width = this.width.toFloat()
     val height = this.height.toFloat()
 
-    val controlPoint1X = width * 0.55f
-    val controlPoint1Y = 0f
+    val controlPoint1X: Float
+    val controlPoint1Y: Float
 
-    val controlPoint2X = width * 0.52f
-    val controlPoint2Y = height * 0.2f
+    val controlPoint2X: Float
+    val controlPoint2Y: Float
 
-    val controlPoint3X = width * 1f
-    val controlPoint3Y = height * 0.1f
+    val controlPoint3X: Float
+    val controlPoint3Y: Float
+
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      controlPoint1X = width * 0.55f
+      controlPoint1Y = 0f
+      controlPoint2X = width * 0.52f
+      controlPoint2Y = height * 0.2f
+      controlPoint3X = width * 1f
+      controlPoint3Y = height * 0.1f
+    } else {
+      controlPoint1X = width * 0.40f
+      controlPoint1Y = 0f
+      controlPoint2X = width * 0.60f
+      controlPoint2Y = height * 0.40f
+      controlPoint3X = width * 1f
+      controlPoint3Y = height * 0.2f
+    }
 
     path.reset()
-    path.moveTo(0f, height * 0.1f)
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      path.moveTo(0f, height * 0.10f)
+    } else {
+      path.moveTo(0f, height * 0.30f)
+    }
     path.cubicTo(
       controlPoint1X,
       controlPoint1Y,
