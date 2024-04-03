@@ -158,6 +158,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when the survey activity is visible to the user.
   SURVEY_ACTIVITY = 49;
+
+  // Screen name value for the scenario when the profile type activity is visible to the user.
+  ONBOARDING_PROFILE_TYPE_ACTIVITY = 50;
 }
 
 // Defines the current visible UI screen of the application.
