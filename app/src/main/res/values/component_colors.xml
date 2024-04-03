@@ -307,5 +307,6 @@
   <color name="component_color_onboarding_shared_white_color">@color/color_palette_white_text_color</color>
   <color name="component_color_onboarding_shared_green_color">@color/color_palette_onboarding_primary_color</color>
   <color name="component_color_onboarding_shared_text_color">@color/color_palette_onboarding_primary_text_color</color>
+  <color name="component_color_onboarding_profile_type_background_color">@color/color_palette_onboarding_profile_type_background_color</color>
 
 </resources>
