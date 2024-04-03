@@ -45,7 +45,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.FontSizeMatcher
+import org.oppia.android.app.utility.FontSizeMatcher.Companion.withFontSize
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -112,7 +112,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.round
-import org.oppia.android.app.utility.FontSizeMatcher.Companion.withFontSize
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
