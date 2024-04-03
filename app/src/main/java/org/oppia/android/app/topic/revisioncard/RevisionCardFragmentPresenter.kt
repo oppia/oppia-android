@@ -100,7 +100,6 @@ class RevisionCardFragmentPresenter @Inject constructor(
 
   /** Handles the [Fragment.onCreateView] portion of [RevisionCardFragment]'s lifecycle. */
   fun handleViewCreated() {
-
     val profileDataProvider = profileManagementController.getProfile(profileId)
     profileDataProvider.toLiveData().observe(
       fragment
@@ -108,10 +107,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
       val readingTextSize = retrieveReadingTextSize()
       if (result is AsyncResult.Success) {
         if (result.value.readingTextSize != readingTextSize) {
-
           // Since text views are based on sp for sizing, the activity needs to be recreated so that
           // sp can be correctly recomputed.
-          selectNewReadingTextSize(result.value.readingTextSize)
           fragment.requireActivity().recreate()
         }
       }
@@ -137,16 +134,5 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private fun retrieveReadingTextSize(): ReadingTextSize {
     return fragment.requireArguments()
       .getSerializable(READING_TEXT_SIZE_ARGUMENT_KEY) as ReadingTextSize
-  }
-
-  private fun selectNewReadingTextSize(readingTextSize: ReadingTextSize) {
-    updateArguments(
-      readingTextSize
-    )
-    fontScaleConfigurationUtil.adjustFontScale(fragment.requireActivity(), readingTextSize)
-  }
-
-  private fun updateArguments(readingTextSize: ReadingTextSize) {
-    fragment.requireArguments().putSerializable(READING_TEXT_SIZE_ARGUMENT_KEY, readingTextSize)
   }
 }

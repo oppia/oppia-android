@@ -40,8 +40,7 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
 ) {
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
+  @Inject lateinit var accessibilityService: AccessibilityService
 
   private lateinit var revisionCardToolbar: Toolbar
   private lateinit var revisionCardToolbarTitle: TextView
@@ -109,15 +108,25 @@ class RevisionCardActivityPresenter @Inject constructor(
   }
 
   private fun processReadingTextSizeResult(
-    readingTextSizeResult: AsyncResult<Profile>
+    profileResult: AsyncResult<Profile>
   ): ReadingTextSize {
-    return when (readingTextSizeResult) {
+    return when (profileResult) {
       is AsyncResult.Failure -> {
-
+        oppiaLogger.e(
+          "RevisionCardActivity",
+          "Failed to retrieve profile",
+          profileResult.error
+        )
         Profile.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> readingTextSizeResult.value
+      is AsyncResult.Pending -> {
+        oppiaLogger.d(
+          "RevisionCardActivity",
+          "Result is pending"
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Success -> profileResult.value
     }.readingTextSize
   }
 

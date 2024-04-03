@@ -112,6 +112,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.round
+import org.oppia.android.app.utility.FontSizeMatcher.Companion.withFontSize
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -305,7 +306,7 @@ class ResumeLessonFragmentTest {
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             round(
               context.resources.getDimension(
                 R.dimen.resume_lesson_fragment_font_scale_content_extra_large_text_size
@@ -326,7 +327,7 @@ class ResumeLessonFragmentTest {
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             round(
               context.resources
                 .getDimension(R.dimen.resume_lesson_fragment_font_scale_content_large_text_size)
@@ -346,7 +347,7 @@ class ResumeLessonFragmentTest {
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             context.resources
               .getDimension(R.dimen.resume_lesson_fragment_font_scale_content_medium_text_size)
           )
@@ -364,7 +365,7 @@ class ResumeLessonFragmentTest {
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             round(
               context.resources
                 .getDimension(R.dimen.resume_lesson_fragment_font_scale_content_small_text_size)

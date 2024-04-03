@@ -118,7 +118,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
         Profile.getDefaultInstance()
       }
       is AsyncResult.Pending -> {
-        oppiaLogger.e(
+        oppiaLogger.d(
           "ResumeLessonActivity",
           "Result is pending"
         )
@@ -134,11 +134,6 @@ class ResumeLessonActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.resume_lesson_fragment_placeholder
       ) as ResumeLessonFragment?
-  }
-
-  /** Changes the reading text size to normal onBacKPressed. */
-  fun onBackPressed() {
-    setReadingTextSizeNormal()
   }
 
   /** Set reading text size normal. */
