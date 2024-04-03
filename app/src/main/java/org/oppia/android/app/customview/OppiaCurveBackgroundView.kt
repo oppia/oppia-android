@@ -38,7 +38,7 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
-  private var customBackgroundColor = Color.WHITE // Default color
+  private var customBackgroundColor = Color.WHITE // Default color.
 
   private lateinit var paint: Paint
   private lateinit var path: Path

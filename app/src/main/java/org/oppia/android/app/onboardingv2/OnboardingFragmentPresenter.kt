@@ -26,14 +26,14 @@ class OnboardingFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.let {
-      it.lifecycleOwner = fragment
-    }
+    binding.apply {
+      lifecycleOwner = fragment
 
-    binding.onboardingLanguageTitle.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
-      R.string.onboarding_language_activity_title,
-      appLanguageResourceHandler.getStringInLocale(R.string.app_name)
-    )
+      onboardingLanguageTitle.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+        R.string.onboarding_language_activity_title,
+        appLanguageResourceHandler.getStringInLocale(R.string.app_name)
+      )
+    }
 
     return binding.root
   }

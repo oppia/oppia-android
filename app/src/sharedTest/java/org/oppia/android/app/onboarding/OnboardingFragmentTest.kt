@@ -124,13 +124,23 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class OnboardingFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject lateinit var context: Context
-  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @Inject
   @field:DefaultResourceBucketName
