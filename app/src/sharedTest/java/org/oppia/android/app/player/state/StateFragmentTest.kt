@@ -204,21 +204,35 @@ import javax.inject.Singleton
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var oppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject
+  lateinit var translationController: TranslationController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -4441,6 +4455,43 @@ class StateFragmentTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
+      // subscribers of an update.
+      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 

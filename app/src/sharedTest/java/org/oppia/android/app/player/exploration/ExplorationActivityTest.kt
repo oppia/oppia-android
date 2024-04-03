@@ -2319,59 +2319,6 @@ class ExplorationActivityTest {
     }
   }
 
-  @Test
-  @Ignore("Test fails to initialize test feature flag before start due to class config.")
-  fun testExplorationActivity_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
-
-    markAllSpotlightsSeen()
-
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      testCoroutineDispatchers.runCurrent()
-
-      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
-
-      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
-      // subscribers of an update.
-      profileManagementController.updateSurveyLastShownTimestamp(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      )
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
-        .perform(click())
-      onView(withText(R.string.stop_exploration_dialog_leave_button))
-        .inRoot(isDialog())
-        .perform(click())
-      onView(withText(R.string.stop_exploration_dialog_leave_button))
-        .inRoot(isDialog())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.survey_onboarding_title_text))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.survey_onboarding_message_text))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-  }
-
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, feature)

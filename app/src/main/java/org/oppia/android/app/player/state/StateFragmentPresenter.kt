@@ -464,7 +464,7 @@ class StateFragmentPresenter @Inject constructor(
 
     // Only check gating result when the previous operation has completed because gating depends on
     // result of saving the time spent in the exploration, at the end of the exploration.
-    markStoryCompletedLivedata.observe(activity, { maybeShowSurveyDialog(profileId, topicId) })
+    markStoryCompletedLivedata.observe(fragment, { maybeShowSurveyDialog(profileId, topicId) })
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
@@ -571,7 +571,7 @@ class StateFragmentPresenter @Inject constructor(
                   .commitNow()
 
                 // Changes to underlying DataProviders will update the gating result.
-                liveData.removeObserver(this)
+                // liveData.removeObserver(this)
               } else {
                 (activity as StopStatePlayingSessionWithSavedProgressListener)
                   .deleteCurrentProgressAndStopSession(isCompletion = true)

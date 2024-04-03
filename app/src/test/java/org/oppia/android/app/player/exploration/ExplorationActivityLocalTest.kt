@@ -11,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -210,10 +211,10 @@ class ExplorationActivityLocalTest {
 
       onView(withText(R.string.survey_onboarding_title_text))
         .inRoot(isDialog())
-        .check(matches(ViewMatchers.isDisplayed()))
+        .check(matches(isDisplayed()))
       onView(withText(R.string.survey_onboarding_message_text))
         .inRoot(isDialog())
-        .check(matches(ViewMatchers.isDisplayed()))
+        .check(matches(isDisplayed()))
     }
   }
 
