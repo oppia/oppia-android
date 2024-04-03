@@ -8,20 +8,14 @@
     android:layout_height="match_parent"
     android:background="@color/component_color_onboarding_shared_green_color">
 
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/onboarding_language_header_guide"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.10" />
-
     <TextView
       android:id="@+id/onboarding_language_title"
       style="@style/OnboardingHeaderStyle"
+      android:layout_marginTop="@dimen/onboarding_shared_margin_xl"
       android:text="@string/onboarding_language_activity_title"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@id/onboarding_language_header_guide" />
+      app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
       android:id="@+id/onboarding_language_subtitle"
@@ -44,14 +38,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.38" />
+      app:layout_constraintGuide_percent="0.30" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.50" />
+      app:layout_constraintGuide_percent="0.40" />
 
     <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:id="@+id/onboarding_app_language_background"
@@ -63,8 +57,8 @@
 
     <ImageView
       android:id="@+id/onboarding_app_language_image"
-      android:layout_width="132dp"
-      android:layout_height="148dp"
+      android:layout_width="130dp"
+      android:layout_height="134dp"
       android:contentDescription="@string/onboarding_otter_content_description"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +80,6 @@
       android:layout_marginStart="@dimen/onboarding_shared_margin_4xl"
       android:layout_marginTop="@dimen/onboarding_shared_margin_medium_small"
       android:layout_marginEnd="@dimen/onboarding_shared_margin_4xl"
-      android:layout_marginBottom="@dimen/onboarding_shared_margin_large"
       android:background="@drawable/dropdown_background"
       android:elevation="@dimen/onboarding_shared_elevation"
       android:padding="@dimen/onboarding_shared_padding_small"

@@ -45,14 +45,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.35" />
+      app:layout_constraintGuide_percent="0.34" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.50" />
+      app:layout_constraintGuide_percent="0.45" />
 
     <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:id="@+id/onboarding_app_language_background"

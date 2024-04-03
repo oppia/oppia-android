@@ -658,7 +658,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_white_color</item>
-    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium</item>
+    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_medium_small</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_small</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
