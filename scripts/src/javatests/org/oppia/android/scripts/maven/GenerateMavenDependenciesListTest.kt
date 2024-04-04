@@ -11,6 +11,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -64,16 +65,15 @@ class GenerateMavenDependenciesListTest {
   private val SCRIPT_PASSED_MESSAGE =
     "Script executed succesfully: maven_dependencies.textproto updated successfully."
 
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -86,6 +86,7 @@ class GenerateMavenDependenciesListTest {
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -99,6 +100,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -183,6 +185,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -207,6 +210,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -249,6 +253,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -316,6 +321,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -358,6 +364,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -426,6 +433,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockLicenseFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -519,6 +527,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockLicenseFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -617,6 +626,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -680,6 +690,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockLicenseFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -793,6 +804,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -918,6 +930,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -1031,6 +1044,7 @@ class GenerateMavenDependenciesListTest {
     val exception = assertThrows<Exception>() {
       GenerateMavenDependenciesList(
         mockLicenseFetcher,
+        scriptBgDispatcher,
         commandExecutor
       ).main(
         arrayOf(
@@ -1150,6 +1164,7 @@ class GenerateMavenDependenciesListTest {
 
     GenerateMavenDependenciesList(
       mockLicenseFetcher,
+      scriptBgDispatcher,
       commandExecutor
     ).main(
       arrayOf(
@@ -1394,13 +1409,15 @@ class GenerateMavenDependenciesListTest {
             }
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
   /** Returns a mock for the [LicenseFetcher]. */
