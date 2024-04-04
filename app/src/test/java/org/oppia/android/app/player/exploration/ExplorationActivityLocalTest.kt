@@ -10,8 +10,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -71,6 +71,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -129,6 +130,9 @@ class ExplorationActivityLocalTest {
 
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
@@ -200,7 +204,7 @@ class ExplorationActivityLocalTest {
 
       fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
 
-      onView(ViewMatchers.withContentDescription(R.string.nav_app_bar_navigate_up_description))
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
         .perform(click())
       onView(withText(R.string.stop_exploration_dialog_leave_button))
         .inRoot(isDialog())
@@ -250,7 +254,7 @@ class ExplorationActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
 
       // Time not advanced to simulate minimum aggregate learning time not achieved.
-      onView(ViewMatchers.withContentDescription(R.string.nav_app_bar_navigate_up_description))
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
         .perform(click())
       onView(withText(R.string.stop_exploration_dialog_leave_button))
         .inRoot(isDialog())
@@ -258,6 +262,68 @@ class ExplorationActivityLocalTest {
 
       onView(withText(R.string.survey_onboarding_title_text))
         .check(ViewAssertions.doesNotExist())
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_updateGatingProvider_surveyGatingCriteriaMet_keepsSurveyDialog() {
+    setUpTestWithNpsEnabled()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    getApplicationDependencies(
+      internalProfileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
+    markAllSpotlightsSeen()
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
+        .perform(click())
+      onView(withText(R.string.stop_exploration_dialog_leave_button))
+        .inRoot(isDialog())
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
+      // subscribers of an update.
+      profileManagementController.updateSurveyLastShownTimestamp(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      )
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
