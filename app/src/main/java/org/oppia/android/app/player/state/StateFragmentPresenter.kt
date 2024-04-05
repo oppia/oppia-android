@@ -538,8 +538,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-    liveData.observe(
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData().observe(
       activity,
       { gatingResult ->
         when (gatingResult) {
