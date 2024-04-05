@@ -22,11 +22,12 @@ import java.io.File
  * NOTE TO DEVELOPERS: The script is executed in the CI enviornment.
  */
 fun main(vararg args: String) {
-  // Path of the repo to be analyzed.
-  val repoPath = "${args[0]}/"
+  // The first argument is the path of the repo to be analyzed.
+  val repoRoot = File("${args[0]}/").absoluteFile.normalize()
+  val repoPath = repoRoot.path
 
   // Issue number of the closed issue.
-  val closedIssueNumber = args[1]
+  val closedIssueNumber = args[1].toInt()
 
   val commitSha = args[2]
 
@@ -42,6 +43,7 @@ fun main(vararg args: String) {
   }
 
   logFailures(
+    repoRoot,
     todoIssueResolvedFailures = todoIssueResolvedFailures,
     failureMessage = "The following TODOs are unresolved for the closed issue:"
   )
@@ -54,7 +56,7 @@ fun main(vararg args: String) {
   }
 
   if (todoIssueResolvedFailures.isNotEmpty()) {
-    generateTodoListFile(repoPath, todoIssueResolvedFailures, githubPermalinkUrl)
+    generateTodoListFile(repoRoot, todoIssueResolvedFailures, githubPermalinkUrl)
     throw Exception("TODO ISSUE RESOLVED CHECK FAILED")
   } else {
     println("TODO ISSUE RESOLVED CHECK PASSED")
@@ -67,7 +69,7 @@ fun main(vararg args: String) {
  * @param codeLine line content corresponding to the todo
  * @param closedIssueNumber issue number of the closed issue
  */
-private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber: String): Boolean {
+private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber: Int): Boolean {
   val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
   return parsedIssueNumberFromTodo == closedIssueNumber
 }
@@ -75,22 +77,22 @@ private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber:
 /**
  * Generates a file containing all the todos corresponding to the closed issue.
  *
- * @param repoPath path of the repo to be analyzed
+ * @param repoRoot the root directory of the repository
  * @param todoIssueResolvedFailures list of all the unresolved todos corresponding to the closed
  *     issue.
  * @param githubPermalinkUrl the GitHub url for the permalinks
  */
 private fun generateTodoListFile(
-  repoPath: String,
+  repoRoot: File,
   todoIssueResolvedFailures: List<Todo>,
   githubPermalinkUrl: String
 ) {
-  val todoListFile = File(repoPath + "script_failures.txt")
+  val todoListFile = File(repoRoot, "script_failures.txt")
   todoListFile.appendText("The issue is reopened because of the following unresolved TODOs:\n")
-  todoIssueResolvedFailures.sortedWith(compareBy({ it.filePath }, { it.lineNumber }))
+  todoIssueResolvedFailures.sortedWith(compareBy({ it.file.path }, { it.lineNumber }))
     .forEach { todo ->
       todoListFile.appendText(
-        "$githubPermalinkUrl/${(todo.filePath).removePrefix(repoPath)}#L${todo.lineNumber}\n"
+        "$githubPermalinkUrl/${(todo.file.toRelativeString(repoRoot))}#L${todo.lineNumber}\n"
       )
     }
 }
@@ -98,14 +100,19 @@ private fun generateTodoListFile(
 /**
  * Logs the TODO issue resolved check failures.
  *
+ * @param repoRoot the root directory of the repository
  * @param todoIssueResolvedFailures list of all the unresolved todos for the closed issue
  * @param failureMessage the failure message to be logged
  */
-private fun logFailures(todoIssueResolvedFailures: List<Todo>, failureMessage: String) {
+private fun logFailures(
+  repoRoot: File,
+  todoIssueResolvedFailures: List<Todo>,
+  failureMessage: String
+) {
   if (todoIssueResolvedFailures.isNotEmpty()) {
     println(failureMessage)
-    todoIssueResolvedFailures.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
-      println("- ${it.filePath}:${it.lineNumber}")
+    todoIssueResolvedFailures.sortedWith(compareBy({ it.file.path }, { it.lineNumber })).forEach {
+      println("- ${it.file.toRelativeString(repoRoot)}:${it.lineNumber}")
     }
     println()
   }

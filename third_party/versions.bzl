@@ -71,7 +71,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.okhttp3:okhttp": "4.7.2",
     "com.squareup.retrofit2:converter-moshi": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
-    "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
@@ -79,7 +78,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.checkerframework:checker-qual": "3.13.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.3",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
