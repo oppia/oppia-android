@@ -541,41 +541,36 @@ class StateFragmentPresenter @Inject constructor(
     val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
     liveData.observe(
       activity,
-      object : Observer<AsyncResult<Boolean>> {
-        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
-          when (gatingResult) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("StateFragment", "A gating decision is pending")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "StateFragment",
-                "Failed to retrieve gating decision",
-                gatingResult.error
-              )
+      { gatingResult ->
+        when (gatingResult) {
+          is AsyncResult.Pending -> {
+            oppiaLogger.d("StateFragment", "A gating decision is pending")
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "StateFragment",
+              "Failed to retrieve gating decision",
+              gatingResult.error
+            )
+            (activity as StopStatePlayingSessionWithSavedProgressListener)
+              .deleteCurrentProgressAndStopSession(isCompletion = true)
+          }
+          is AsyncResult.Success -> {
+            if (gatingResult.value) {
+              val dialogFragment =
+                SurveyWelcomeDialogFragment.newInstance(
+                  profileId,
+                  topicId,
+                  explorationId,
+                  SURVEY_QUESTIONS
+                )
+              val transaction = activity.supportFragmentManager.beginTransaction()
+              transaction
+                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                .commitNow()
+            } else {
               (activity as StopStatePlayingSessionWithSavedProgressListener)
                 .deleteCurrentProgressAndStopSession(isCompletion = true)
-            }
-            is AsyncResult.Success -> {
-              if (gatingResult.value) {
-                val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(
-                    profileId,
-                    topicId,
-                    explorationId,
-                    SURVEY_QUESTIONS
-                  )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
-                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .commitNow()
-
-                // Changes to underlying DataProviders will update the gating result.
-                // liveData.removeObserver(this)
-              } else {
-                (activity as StopStatePlayingSessionWithSavedProgressListener)
-                  .deleteCurrentProgressAndStopSession(isCompletion = true)
-              }
             }
           }
         }

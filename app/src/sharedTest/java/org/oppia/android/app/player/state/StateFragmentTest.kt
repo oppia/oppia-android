@@ -209,30 +209,18 @@ class StateFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-  @field:[Inject BackgroundDispatcher]
-  lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-  @Inject
-  lateinit var translationController: TranslationController
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject
-  lateinit var testGlideImageLoader: TestGlideImageLoader
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject
-  lateinit var oppiaClock: FakeOppiaClock
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
