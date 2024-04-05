@@ -226,6 +226,7 @@ class StateFragmentTest {
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -5046,9 +5047,7 @@ class StateFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.initializeProfiles().also {
-      testCoroutineDispatchers.unregisterIdlingResource()
-    }
+    profileTestHelper.initializeProfiles()
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
