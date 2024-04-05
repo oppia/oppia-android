@@ -112,7 +112,6 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -223,12 +222,7 @@ class ExplorationActivityTest {
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
 
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
   private val internalProfileId: Int = 0
-
-  private val afternoonUtcTimestampMillis = 1556101812000
 
   @Before
   fun setUp() {

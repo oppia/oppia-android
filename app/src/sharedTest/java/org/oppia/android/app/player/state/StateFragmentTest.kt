@@ -204,10 +204,8 @@ import javax.inject.Singleton
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
