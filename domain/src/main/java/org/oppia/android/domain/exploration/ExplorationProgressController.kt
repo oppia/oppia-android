@@ -281,8 +281,7 @@ class ExplorationProgressController @Inject constructor(
    */
 
   fun submitHintIsViewed(hintIndex: Int) {
-    val submitResultFlow = createAsyncResultStateFlow<Any?>()
-    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId, submitResultFlow)
+    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId)
     sendCommandForOperation(message) {
       "Failed to schedule command for viewing hint: $hintIndex."
     }
@@ -308,8 +307,7 @@ class ExplorationProgressController @Inject constructor(
    * Notifies the controller that the user wishes to view the answer.
    */
   fun submitSolutionIsViewed() {
-    val submitResultFlow = createAsyncResultStateFlow<Any?>()
-    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId, submitResultFlow)
+    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId)
     sendCommandForOperation(message) { "Failed to schedule command for viewing the solution." }
   }
 
@@ -1406,7 +1404,7 @@ class ExplorationProgressController @Inject constructor(
      */
     data class LogSolutionIsViewed(
       override val sessionId: String,
-      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
     ) : ControllerMessage<Any?>()
 
     /**
