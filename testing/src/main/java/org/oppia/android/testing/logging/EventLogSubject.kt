@@ -51,6 +51,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_HINT_CONTEXT
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SurveyQuestionName
@@ -524,6 +526,32 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to [VIEW_HINT_CONTEXT]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasViewHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_HINT_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasViewHintContext] and returns a [HintContextSubject]
+   * to test the corresponding context.
+   */
+  fun hasViewHintContextThat(): HintContextSubject {
+    hasViewHintContext()
+    return HintContextSubject.assertThat(actual.context.viewHintContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasViewHintContextThat].
+   */
+  fun hasViewHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasViewHintContextThat().block()
+  }
+
+  /**
    * Verifies that the [EventLog] under test has a context corresponding to
    * [SOLUTION_UNLOCKED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
@@ -573,6 +601,32 @@ class EventLogSubject private constructor(
    */
   fun hasAccessSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
     hasAccessSolutionContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [VIEW_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasViewSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_SOLUTION_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasViewSolutionContext] and returns an
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasViewSolutionContextThat(): ExplorationContextSubject {
+    hasViewSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.viewSolutionContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasViewSolutionContextThat].
+   */
+  fun hasViewSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasViewSolutionContextThat().block()
   }
 
   /**
