@@ -51,8 +51,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SurveyQuestionName
