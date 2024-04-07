@@ -102,7 +102,6 @@ class NetworkLoggingInterceptorTest {
   }
 
   @Test
-//  fun testLoggingInterceptor_makeFailingNetworkCall_emitsRetrofitCall_andCallFailedContext() =
   fun testLoggingInterceptor_makeNetworkCallWithInvalidUrl_failsAndCompletes() =
     runBlockingTest {
       val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
