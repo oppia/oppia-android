@@ -332,9 +332,8 @@ class ExplorationActivityPresenter @Inject constructor(
       showUnsavedExplorationDialogFragment()
       return
     }
-    learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
     // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
-    // fragment.
+    // fragment and log lesson saved advertently event.
     showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
@@ -520,9 +519,11 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           stopExploration(isCompletion = false)
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           showProgressDatabaseFullDialogFragment()
         }
         else -> showUnsavedExplorationDialogFragment()
