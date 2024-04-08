@@ -110,7 +110,6 @@ class ResumeLessonActivity :
   }
 
   override fun onBackPressed() {
-    super.onBackPressed()
     resumeLessonActivityPresenter.setReadingTextSizeNormal()
     finish()
   }

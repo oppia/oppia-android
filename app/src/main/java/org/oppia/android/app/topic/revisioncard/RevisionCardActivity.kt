@@ -101,7 +101,7 @@ class RevisionCardActivity :
   }
 
   override fun onBackPressed() {
-    revisionCardActivityPresenter.onBackpressed()
+    revisionCardActivityPresenter.setReadingTextSizeMedium()
     onReturnToTopicRequested()
   }
 
