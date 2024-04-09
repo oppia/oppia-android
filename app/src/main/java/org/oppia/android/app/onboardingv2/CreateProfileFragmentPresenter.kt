@@ -19,10 +19,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.databinding.CreateProfileFragmentBinding
+import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
 

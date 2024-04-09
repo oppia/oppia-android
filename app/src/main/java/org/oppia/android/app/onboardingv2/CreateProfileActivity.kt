@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName
-import javax.inject.Inject
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity for displaying a new learner profile creation flow. */
 class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
