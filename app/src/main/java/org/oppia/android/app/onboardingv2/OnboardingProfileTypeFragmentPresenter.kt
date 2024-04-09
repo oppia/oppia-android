@@ -23,18 +23,24 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.let {
-      it.lifecycleOwner = fragment
+    binding.apply {
+      lifecycleOwner = fragment
+
+      profileTypeLearnerNavigationCard.setOnClickListener {
+        val intent = CreateProfileActivity.createProfileActivityIntent(activity)
+        fragment.startActivity(intent)
+      }
+
+      profileTypeSupervisorNavigationCard.setOnClickListener {
+        val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
+        fragment.startActivity(intent)
+      }
+
+      onboardingNavigationBack.setOnClickListener {
+        activity.finish()
+      }
     }
 
-    binding.profileTypeSupervisorNavigationCard.setOnClickListener {
-      val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
-      fragment.startActivity(intent)
-    }
-
-    binding.onboardingNavigationBack.setOnClickListener {
-      activity.finish()
-    }
     return binding.root
   }
 }
