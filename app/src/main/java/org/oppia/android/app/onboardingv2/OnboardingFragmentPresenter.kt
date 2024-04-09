@@ -35,11 +35,11 @@ class OnboardingFragmentPresenter @Inject constructor(
         R.string.onboarding_language_activity_title,
         appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
-    }
 
-    binding.onboardingLanguageLetsGoButton.setOnClickListener {
-      val intent = OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-      fragment.startActivity(intent)
+      onboardingLanguageLetsGoButton.setOnClickListener {
+        val intent = OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+        fragment.startActivity(intent)
+      }
     }
 
     return binding.root
