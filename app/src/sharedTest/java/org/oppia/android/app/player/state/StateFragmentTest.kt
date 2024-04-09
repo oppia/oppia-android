@@ -28,6 +28,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
+import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -168,6 +169,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -216,6 +218,7 @@ class StateFragmentTest {
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -4317,6 +4320,258 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_lateNight_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_earlyMorning_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_midMorning_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_afternoon_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_evening_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_allGatingConditionsMet_surveyDismissed_popupDoesNotShowAgain() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.maybe_later_button))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Check that the fragment is removed.
+      // When the survey popup is shown, the lastShownDateProvider is updated with current time,
+      // consequently updating the combined gating data provider. Recomputation of the gating result
+      // should not re-trigger the survey.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_surveyFeatureOff_allGatingConditionsMet_noSurveyPopup() {
+    // Survey Gating conditions are: isPastGracePeriod, has achieved minimum aggregate exploration
+    // time of 5min in a topic, and is within the hours of 9am and 10pm in the user's local time.
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp for computing the grace period.
+
+    setUpTestWithSurveyFeatureOff()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
+      // subscribers of an update.
+      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
@@ -4866,6 +5121,16 @@ class StateFragmentTest {
     setUpTest()
   }
 
+  private fun setUpTestWithSurveyFeatureOn() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithSurveyFeatureOff() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    setUpTest()
+  }
+
   private fun setUpTest() {
     Intents.init()
     setUpTestApplicationComponent()
@@ -5110,5 +5375,28 @@ class StateFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    // Date & time: Wed Apr 24 2019 08:22:03 GMT.
+    private const val EARLY_MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+
+    // Date & time: Wed Apr 24 2019 10:30:12 GMT.
+    private const val MID_MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
+
+    // Date & time: Tue Apr 23 2019 14:22:00 GMT.
+    private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
+
+    // Date & time: Tue Apr 23 2019 21:26:12 GMT.
+    private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556054772000
+
+    // Date & time: Tue Apr 23 2019 23:22:00 GMT.
+    private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
+
+    // Exploration play through time less than the required 5 min
+    private const val SESSION_LENGTH_SHORT = 120000L
+
+    // Exploration play through time greater than the required 5 min
+    private const val SESSION_LENGTH_LONG = 360000L
   }
 }
