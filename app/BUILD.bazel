@@ -214,7 +214,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
-    "src/main/java/org/oppia/android/app/onboarding/onboardingv2/CreateProfileViewModel.kt",
+    "src/main/java/org/oppia/android/app/onboardingv2/CreateProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsReadingTextSizeViewModel.kt",
     "src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt",
