@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_onboarding_shared_green_color">
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_header_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.10" />
+
+    <TextView
+      android:id="@+id/onboarding_language_title"
+      style="@style/OnboardingHeaderStyle"
+      android:text="@string/onboarding_language_activity_title"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/onboarding_language_header_guide" />
+
+    <TextView
+      android:id="@+id/onboarding_language_subtitle"
+      style="@style/OnboardingLanguageSubtitleStyle"
+      android:text="@string/onboarding_language_activity_subtitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_title" />
+
+    <TextView
+      android:id="@+id/onboarding_language_text"
+      style="@style/OnboardingLanguageMessageStyle"
+      android:text="@string/onboarding_language_activity_text"
+      android:textSize="@dimen/onboarding_shared_text_size_medium_large"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_subtitle" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_image_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.34" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/onboarding_language_center_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.45" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:id="@+id/onboarding_app_language_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:customBackgroundColor="@color/component_color_onboarding_shared_white_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="@id/onboarding_language_center_guide" />
+
+    <ImageView
+      android:id="@+id/onboarding_app_language_image"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@string/onboarding_otter_content_description"
+      android:scaleType="centerCrop"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_image_guide"
+      app:srcCompat="@drawable/otter" />
+
+    <TextView
+      android:id="@+id/onboarding_language_label"
+      style="@style/OnboardingLanguageLabelStyle"
+      android:layout_marginTop="@dimen/onboarding_shared_margin_large"
+      android:text="@string/onboarding_language_activity_select_label"
+      app:layout_constraintBottom_toTopOf="@id/onboarding_language_dropdown_background"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_app_language_image"
+      app:layout_constraintVertical_chainStyle="packed" />
+
+    <RelativeLayout
+      android:id="@+id/onboarding_language_dropdown_background"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/onboarding_shared_margin_5xl"
+      android:layout_marginTop="@dimen/onboarding_shared_margin_medium_small"
+      android:layout_marginEnd="@dimen/onboarding_shared_margin_5xl"
+      android:layout_marginBottom="@dimen/onboarding_shared_margin_5xl"
+      android:background="@drawable/dropdown_background"
+      android:elevation="@dimen/onboarding_shared_elevation"
+      android:padding="@dimen/onboarding_shared_padding_small"
+      app:layout_constraintBottom_toTopOf="@id/onboarding_language_explanation"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_language_label"
+      app:layout_constraintWidth_percent="0.3">
+
+      <ImageView
+        android:id="@+id/onboarding_language_dropdown_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
+        android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_small"
+        android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
+        android:contentDescription="@string/onboarding_language_dropdown_icon_description"
+        app:srcCompat="@drawable/ic_language_icon_black_24dp" />
+
+      <Spinner
+        android:id="@+id/onboarding_language_dropdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_2xl"
+        android:layout_toStartOf="@id/onboarding_language_dropdown_arrow"
+        android:background="@drawable/transparent_background"
+        android:textColor="@color/component_color_onboarding_shared_text_color"
+        tools:listheader="English" />
+
+      <ImageView
+        android:id="@+id/onboarding_language_dropdown_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
+        android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
+        android:layout_marginEnd="@dimen/onboarding_shared_margin_small"
+        android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
+        android:contentDescription="@string/onboarding_language_dropdown_arrow_icon_description"
+        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
+    </RelativeLayout>
+
+    <TextView
+      android:id="@+id/onboarding_language_explanation"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/onboarding_shared_margin_2xl"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:text="@string/onboarding_language_activity_explanation_text"
+      android:textColor="@color/component_color_onboarding_shared_green_color"
+      android:textSize="@dimen/onboarding_shared_text_size_medium_large"
+      app:layout_constraintBottom_toTopOf="@id/onboarding_language_lets_go_button"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+      android:id="@+id/onboarding_language_lets_go_button"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/onboarding_shared_margin_2xl"
+      android:background="@drawable/rounded_primary_button_grey_shadow_color"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:paddingBottom="@dimen/onboarding_shared_padding_small"
+      android:text="@string/onboarding_language_activity_button_text"
+      android:textAllCaps="false"
+      android:textColor="@color/component_color_onboarding_shared_white_color"
+      android:textSize="@dimen/onboarding_shared_text_size_medium_large"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@id/onboarding_language_explanation"
+      app:layout_constraintStart_toStartOf="@id/onboarding_language_explanation"
+      app:layout_constraintWidth_percent="0.4" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
