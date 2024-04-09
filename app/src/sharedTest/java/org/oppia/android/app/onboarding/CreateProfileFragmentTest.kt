@@ -2,6 +2,7 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -11,6 +12,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -355,6 +358,29 @@ class CreateProfileFragmentTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  fun testFragment_tapToAddPictureClicked_hasGalleryIntent() {
+    launchNewLearnerProfileActivity().use {
+      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasAction(Intent.ACTION_PICK))
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
+    launchNewLearnerProfileActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasAction(Intent.ACTION_PICK))
     }
   }
 
