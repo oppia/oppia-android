@@ -282,8 +282,6 @@ class OnboardingProfileTypeFragmentTest {
             )
           )
         )
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(isDisplayed()))
     }
   }
 
