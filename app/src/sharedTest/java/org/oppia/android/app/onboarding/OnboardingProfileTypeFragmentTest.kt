@@ -20,7 +20,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -104,6 +103,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.onboardingv2.CreateProfileActivity
 
 /** Tests for [OnboardingProfileTypeFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -228,90 +228,30 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      // Does nothing for now, but should fail once navigation is implemented in a future PR.
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
-            )
-          )
-        )
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
-            )
-          )
-        )
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(isDisplayed()))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
   @RunOn(TestPlatform.ROBOLECTRIC)
   @Config(qualifiers = "land")
   @Test
-  fun testFragment_startInLandscapeMode_studentNavigationCardClicked_launchesNewProfileScreen() {
+  fun testFragment_startInLandscapeMode_studentNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      // Does nothing for now, but should fail once navigation is implemented in a future PR.
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
-            )
-          )
-        )
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
-            )
-          )
-        )
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testFragment_orientationChange_studentNavigationCardClicked_launchesNewProfileScreen() {
+  fun testFragment_orientationChange_studentNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      // Does nothing for now, but should fail once navigation is implemented in a future PR.
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
-            )
-          )
-        )
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
-            )
-          )
-        )
+      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
