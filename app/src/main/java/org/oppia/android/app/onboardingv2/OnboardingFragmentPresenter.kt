@@ -37,7 +37,8 @@ class OnboardingFragmentPresenter @Inject constructor(
       )
 
       onboardingLanguageLetsGoButton.setOnClickListener {
-        val intent = OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+        val intent =
+          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
         fragment.startActivity(intent)
       }
     }
