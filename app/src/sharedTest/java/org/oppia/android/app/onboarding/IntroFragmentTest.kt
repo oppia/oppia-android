@@ -2,31 +2,21 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.protobuf.MessageLite
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,8 +34,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.onboardingv2.CreateProfileActivity
 import org.oppia.android.app.onboardingv2.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -86,7 +74,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
-import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -97,7 +84,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -114,16 +100,16 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [CreateProfileFragment]. */
+/** Tests for [IntroFragmentTest]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = CreateProfileFragmentTest.TestApplication::class,
+  application = IntroFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class CreateProfileFragmentTest {
+class IntroFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -136,8 +122,7 @@ class CreateProfileFragmentTest {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  private val testProfileNickname = "John"
 
   @Before
   fun setUp() {
@@ -153,39 +138,33 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_nicknameLabelIsDisplayed() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.create_profile_nickname_label))
+  fun testFragment_explanationText_isDisplayed() {
+    launchOnboardingLearnerIntroActivity().use {
+      onView(withId(R.id.onboarding_learner_intro_title))
+        .check(matches(withText("Welcome, John!")))
+      onView(withText(R.string.onboarding_learner_intro_classroom_text))
         .check(matches(isDisplayed()))
-
-      onView(withId(R.id.create_profile_nickname_label))
-        .check(
-          matches(
-            withText(
-              context.getString(
-                R.string.create_profile_activity_nickname_label
-              )
-            )
+      onView(withText(R.string.onboarding_learner_intro_practice_text))
+        .check(matches(isDisplayed()))
+      onView(
+        withText(
+          context.getString(
+            R.string.onboarding_learner_intro_feedback_text,
+            context.getString(R.string.app_name)
           )
         )
-    }
-  }
-
-  @Test
-  fun testFragment_nicknameEditTextIsDisplayed() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.create_profile_nickname_edittext))
+      )
         .check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testFragment_stepCountText_isDisplayed() {
-    launchNewLearnerProfileActivity().use {
+    launchOnboardingLearnerIntroActivity().use {
       onView(withId(R.id.onboarding_steps_count))
         .check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_steps_count))
-        .check(matches(withText(R.string.onboarding_step_count_three)))
+        .check(matches(withText(R.string.onboarding_step_count_four)))
     }
   }
 
@@ -193,76 +172,12 @@ class CreateProfileFragmentTest {
   // Android components
   @Test
   fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
-    launchNewLearnerProfileActivity().use { scenario ->
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
+    launchOnboardingLearnerIntroActivity().use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
       if (scenario != null) {
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
       }
-    }
-  }
-
-  @Test
-  fun testFragment_continueButtonClicked_filledNickname_launchesLearnerIntroScreen() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(
-          editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
-        )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
-      intended(
-        allOf(
-          hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testFragment_continueButtonClicked_emptyNickname_showNicknameErrorText() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.create_profile_activity_nickname_error))
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testFragment_continueButtonClicked_filledNickname_afterError_launchesLearnerIntroScreen() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.create_profile_activity_nickname_error))
-        .check(matches(isDisplayed()))
-
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(
-          editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
-        )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
-      intended(
-        allOf(
-          hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
-        )
-      )
     }
   }
 
@@ -270,10 +185,10 @@ class CreateProfileFragmentTest {
   // Android components
   @Test
   fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
-    launchNewLearnerProfileActivity().use { scenario ->
+    launchOnboardingLearnerIntroActivity().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
       if (scenario != null) {
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
@@ -281,120 +196,17 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_landscapeMode_continueButtonClicked_launchesLearnerIntroScreen() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(
-          editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+  private fun launchOnboardingLearnerIntroActivity():
+    ActivityScenario<IntroActivity>? {
+      val scenario = ActivityScenario.launch<IntroActivity>(
+        IntroActivity.createIntroActivity(
+          context,
+          testProfileNickname
         )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
-      intended(
-        allOf(
-          hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
-        )
-      )
-    }
-  }
-
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_landscapeMode_continueButtonClicked_emptyNickname_showNicknameErrorText() {
-    launchNewLearnerProfileActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.create_profile_activity_nickname_error))
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_landscape_continueButtonClicked_afterErrorShown_launchesLearnerIntroScreen() {
-    launchNewLearnerProfileActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.create_profile_activity_nickname_error))
-        .check(matches(isDisplayed()))
-
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(
-          editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
-        )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
-      intended(
-        allOf(
-          hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testFragment_tapToAddPictureClicked_hasGalleryIntent() {
-    launchNewLearnerProfileActivity().use {
-      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasAction(Intent.ACTION_PICK))
-    }
-  }
-
-  @Config(qualifiers = "land")
-  @Test
-  fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
-    launchNewLearnerProfileActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasAction(Intent.ACTION_PICK))
-    }
-  }
-
-  private fun launchNewLearnerProfileActivity():
-    ActivityScenario<CreateProfileActivity>? {
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
     }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -436,18 +248,18 @@ class CreateProfileFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest)
+    fun inject(introFragmentTest: IntroFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCreateProfileFragmentTest_TestApplicationComponent.builder()
+      DaggerIntroFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest) {
-      component.inject(newLearnerProfileFragmentTest)
+    fun inject(introFragmentTest: IntroFragmentTest) {
+      component.inject(introFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
