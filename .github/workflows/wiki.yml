@@ -10,6 +10,24 @@ on:
   gollum:
 
 jobs:
+  table_of_contents_check:
+    name: Wiki Check Table of Contents match Headers
+    runs-on: ubuntu-20.04
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Wiki Check Table of Contents
+        id: wikichecktoc
+        run: |
+          bazel run //scripts:wiki_table_of_contents_check -- ${GITHUB_WORKSPACE}
+
   wiki-deploy:
     runs-on: ${{ matrix.os }}
     strategy:

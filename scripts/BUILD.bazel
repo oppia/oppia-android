@@ -227,6 +227,13 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "wiki_table_of_contents_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.wiki.WikiTableOfContentsCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/wiki:wiki_table_of_contents_check_lib"],
+)
+
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
 # this apparently needs to be a java_binary to set up runfiles correctly when executed within a
 # Starlark rule as a tool.
