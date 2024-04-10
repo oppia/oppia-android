@@ -33,6 +33,7 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.onboardingv2.CreateProfileActivity
+import org.oppia.android.app.onboardingv2.IntroActivity
 import org.oppia.android.app.onboardingv2.OnboardingProfileTypeActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.options.AppLanguageActivity
@@ -220,4 +221,5 @@ interface ActivityComponentImpl :
   fun inject(surveyActivity: SurveyActivity)
   fun inject(onboardingProfileTypeActivity: OnboardingProfileTypeActivity)
   fun inject(createProfileActivity: CreateProfileActivity)
+  fun inject(introActivity: IntroActivity)
 }
