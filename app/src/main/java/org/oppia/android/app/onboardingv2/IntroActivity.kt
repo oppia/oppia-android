@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.model.IntroActivityParams
 
 /** The activity for showing the learner welcome screen. */
 class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
