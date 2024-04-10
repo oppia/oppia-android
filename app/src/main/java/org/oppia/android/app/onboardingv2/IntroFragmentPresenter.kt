@@ -47,9 +47,6 @@ class IntroFragmentPresenter @Inject constructor(
         appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
 
-    binding.onboardingStepsCount.visibility =
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) View.VISIBLE else View.GONE
-
     return binding.root
   }
 
