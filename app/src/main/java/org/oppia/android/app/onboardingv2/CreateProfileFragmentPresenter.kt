@@ -87,6 +87,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
       if (nickname.isNotBlank()) {
         createProfileViewModel.hasError.set(false)
+        val intent = IntroActivity.createIntroActivity(activity, nickname)
+        fragment.startActivity(intent)
       } else {
         createProfileViewModel.hasError.set(true)
       }
@@ -100,6 +102,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /** Receive the result from selecting an image from the device gallery. **/
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
       binding.createProfilePicturePrompt.visibility = View.GONE
