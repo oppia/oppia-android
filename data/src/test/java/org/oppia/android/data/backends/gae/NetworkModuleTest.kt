@@ -18,6 +18,8 @@ import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.data.backends.gae.api.TopicService
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -121,7 +123,8 @@ class NetworkModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class, NetworkConfigProdModule::class
+      TestModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      TestDispatcherModule::class, RobolectricModule::class
     ]
   )
 
