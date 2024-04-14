@@ -165,7 +165,7 @@ annotation class EnableNpsSurvey
 const val ENABLE_NPS_SURVEY = "android_enable_nps_survey"
 
 /** Default value of the feature flag corresponding to [EnableNpsSurvey]. */
-const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
+const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = true
 
 /** Qualifier for the feature flag that toggles the new onboarding flow. */
 @Qualifier
