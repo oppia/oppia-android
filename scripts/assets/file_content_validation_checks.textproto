@@ -324,6 +324,7 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/FeatureFlagsLoggerTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLoggerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/logging/TestSyncStatusManagerTest.kt"
