@@ -42,8 +42,11 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
+
+    val internalProfileId = arguments?.retrieveProfileIdFromArguments() ?: -1
+
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenterV2.handleCreateView(inflater, container)
+      audioLanguageFragmentPresenterV2.handleCreateView(inflater, container, internalProfileId)
     } else {
       audioLanguageFragmentPresenter.handleOnCreateView(inflater, container, audioLanguage)
     }
@@ -69,11 +72,15 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
      * Returns a new [AudioLanguageFragment] corresponding to the specified [AudioLanguage] (as the
      * initial selection).
      */
-    fun newInstance(audioLanguage: AudioLanguage): AudioLanguageFragment {
+    fun newInstance(
+      audioLanguage: AudioLanguage,
+      internalProfileId: Int = -1
+    ): AudioLanguageFragment {
       return AudioLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AudioLanguageFragmentArguments.newBuilder().apply {
             this.audioLanguage = audioLanguage
+            this.profileId = internalProfileId
           }.build()
           putProto(FRAGMENT_ARGUMENTS_KEY, args)
         }
@@ -84,6 +91,12 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
       return getProto(
         FRAGMENT_ARGUMENTS_KEY, AudioLanguageFragmentArguments.getDefaultInstance()
       ).audioLanguage
+    }
+
+    private fun Bundle.retrieveProfileIdFromArguments(): Int {
+      return getProto(
+        FRAGMENT_ARGUMENTS_KEY, AudioLanguageFragmentArguments.getDefaultInstance()
+      ).profileId
     }
 
     private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage {

@@ -15,10 +15,12 @@ import javax.inject.Inject
 @ActivityScope
 class AudioLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var audioLanguage: AudioLanguage
+  private var internalProfileId = -1
 
   /** Handles when the activity is first created. */
-  fun handleOnCreate(audioLanguage: AudioLanguage) {
+  fun handleOnCreate(audioLanguage: AudioLanguage, internalProfileId: Int) {
     this.audioLanguage = audioLanguage
+    this.internalProfileId = internalProfileId // TODO Pass to fragment the fragment presenter
 
     val binding: AudioLanguageActivityBinding =
       DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)
@@ -26,7 +28,8 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
       finishWithResult()
     }
     if (getAudioLanguageFragment() == null) {
-      val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage)
+      val audioLanguageFragment =
+        AudioLanguageFragment.newInstance(audioLanguage, internalProfileId)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
     }

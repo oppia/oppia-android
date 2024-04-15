@@ -11,6 +11,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import javax.inject.Inject
+import org.oppia.android.app.home.HomeActivity
 
 /** The presenter for [AudioLanguageFragment] V2. */
 class AudioLanguageFragmentPresenter @Inject constructor(
@@ -26,9 +27,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
    */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?
+    container: ViewGroup?,
+    internalProfileId: Int
   ): View {
-
     activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
 
     binding = AudioLanguageSelectionFragmentBinding.inflate(
@@ -46,6 +47,14 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()
     }
+
+    binding.onboardingNavigationContinue.setOnClickListener {
+      val intent =
+        HomeActivity.createHomeActivity(fragment.requireContext(), internalProfileId)
+      fragment.startActivity(intent)
+      fragment.activity?.finish()
+    }
+
     return binding.root
   }
 

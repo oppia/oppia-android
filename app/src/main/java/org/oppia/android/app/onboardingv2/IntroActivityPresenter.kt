@@ -10,8 +10,11 @@ import javax.inject.Inject
 
 private const val TAG_LEARNER_INTRO_FRAGMENT = "TAG_INTRO_FRAGMENT"
 
-/** Argument key for bundling the profileId. */
+/** Argument key for bundling the profile's nickname. */
 const val PROFILE_NICKNAME_ARGUMENT_KEY = "profile_nickname"
+
+/** Argument key for bundling the profileId. */
+const val PROFILE_ID_ARGUMENT_KEY = "internal_profile_id"
 
 /** The Presenter for [IntroActivity]. */
 @ActivityScope
@@ -21,7 +24,7 @@ class IntroActivityPresenter @Inject constructor(
   private lateinit var binding: IntroActivityBinding
 
   /** Handle creation and binding of the [IntroActivity] layout. */
-  fun handleOnCreate(profileNickname: String) {
+  fun handleOnCreate(profileNickname: String, internalProfileId: Int) {
     binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)
     binding.lifecycleOwner = activity
 
@@ -30,6 +33,7 @@ class IntroActivityPresenter @Inject constructor(
 
       val args = Bundle()
       args.putString(PROFILE_NICKNAME_ARGUMENT_KEY, profileNickname)
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       introFragment.arguments = args
 
       activity.supportFragmentManager.beginTransaction().add(

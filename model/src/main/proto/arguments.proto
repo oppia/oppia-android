@@ -242,6 +242,9 @@ message ReadingTextSizeFragmentStateBundle {
 message AudioLanguageActivityParams {
   // The default audio language previously selected by the user (upon opening the activity).
   AudioLanguage audio_language = 1;
+
+  // The internal Id associated with the profile.
+  int32 profile_id = 2;
 }
 
 // The bundle of properties that are saved upon configuration changes in AudioLanguageActivity.
@@ -260,6 +263,9 @@ message AudioLanguageActivityResultBundle {
 message AudioLanguageFragmentArguments {
   // The default audio language previously selected by the user (upon opening the fragment).
   AudioLanguage audio_language = 1;
+
+  // The internal Id associated with the profile.
+  int32 profile_id = 2;
 }
 
 // The bundle of properties that are saved upon configuration changes in AudioLanguageFragment.
@@ -330,4 +336,7 @@ message SurveyActivityParams {
 message IntroActivityParams {
   // The nickname associated with a newly created profile.
   string profile_nickname = 1;
+
+  // The internal Id associated with the newly created profile.
+  int32 profile_id = 2;
 }

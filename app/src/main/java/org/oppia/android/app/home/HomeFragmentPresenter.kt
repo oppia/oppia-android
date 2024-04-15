@@ -36,6 +36,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -53,11 +55,14 @@ class HomeFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val appStartupStateController: AppStartupStateController
+  private val appStartupStateController: AppStartupStateController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
+  private var profileId: ProfileId = ProfileId.getDefaultInstance()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -65,6 +70,8 @@ class HomeFragmentPresenter @Inject constructor(
     // data-bound view models.
 
     internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     logHomeActivityEvent()
 
     val homeViewModel = HomeViewModel(
@@ -102,12 +109,16 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
-    logAppOnboardedEvent()
+    if (enableOnboardingFlowV2.value) {
+      profileManagementController.updateProfileOnboardingState(profileId)
+    } else {
+      logAppOnboardedEvent(profileId)
+    }
 
     return binding.root
   }
 
-  private fun logAppOnboardedEvent() {
+  private fun logAppOnboardedEvent(profileId: ProfileId) {
     val startupStateProvider = appStartupStateController.getAppStartupState()
     val liveData = startupStateProvider.toLiveData()
     liveData.observe(
@@ -124,9 +135,7 @@ class HomeFragmentPresenter @Inject constructor(
               if (startUpStateResult.value.startupMode ==
                 AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
               ) {
-                analyticsController.logAppOnboardedEvent(
-                  ProfileId.newBuilder().setInternalId(internalProfileId).build()
-                )
+                analyticsController.logAppOnboardedEvent(profileId)
               }
             }
             is AsyncResult.Failure -> {

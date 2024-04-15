@@ -18,6 +18,7 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var onboardingLearnerIntroActivityPresenter: IntroActivityPresenter
 
   private lateinit var profileNickname: String
+  private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -25,8 +26,9 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     val params = intent.extractParams()
     this.profileNickname = params.profileNickname
+    this.internalProfileId = params.profileId
 
-    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname)
+    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, internalProfileId)
   }
 
   companion object {
@@ -36,9 +38,14 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
      * A convenience function for creating a new [OnboardingLearnerIntroActivity] intent by prefilling
      * common params needed by the activity.
      */
-    fun createIntroActivity(context: Context, profileNickname: String): Intent {
+    fun createIntroActivity(
+      context: Context,
+      profileNickname: String,
+      internalProfileId: Int
+    ): Intent {
       val params = IntroActivityParams.newBuilder()
         .setProfileNickname(profileNickname)
+        .setProfileId(internalProfileId)
         .build()
       return createOnboardingLearnerIntroActivity(context, params)
     }

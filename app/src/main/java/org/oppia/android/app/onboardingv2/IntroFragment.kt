@@ -26,10 +26,12 @@ class IntroFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val profileNickname = arguments!!.getStringFromBundle(PROFILE_NICKNAME_ARGUMENT_KEY)!!
+    val internalProfileId = arguments!!.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
     return introFragmentPresenter.handleCreateView(
       inflater,
       container,
-      profileNickname
+      profileNickname,
+      internalProfileId
     )
   }
 }

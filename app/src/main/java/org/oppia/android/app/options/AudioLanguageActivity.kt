@@ -18,13 +18,15 @@ import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
 class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
-  @Inject lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
+  @Inject
+  lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     audioLanguageActivityPresenter.handleOnCreate(
-      savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams()
+      savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
+      intent.retrieveProfileIdFromParams()
     )
   }
 
@@ -45,11 +47,13 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
     fun createAudioLanguageActivityIntent(
       context: Context,
-      audioLanguage: AudioLanguage
+      audioLanguage: AudioLanguage,
+      internalProfileId: Int = -1
     ): Intent {
       return Intent(context, AudioLanguageActivity::class.java).apply {
         val arguments = AudioLanguageActivityParams.newBuilder().apply {
           this.audioLanguage = audioLanguage
+          this.profileId = internalProfileId
         }.build()
         putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
         decorateWithScreenName(AUDIO_LANGUAGE_ACTIVITY)
@@ -60,6 +64,12 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
       return getProtoExtra(
         ACTIVITY_PARAMS_KEY, AudioLanguageActivityParams.getDefaultInstance()
       ).audioLanguage
+    }
+
+    private fun Intent.retrieveProfileIdFromParams(): Int {
+      return getProtoExtra(
+        ACTIVITY_PARAMS_KEY, AudioLanguageActivityParams.getDefaultInstance()
+      ).profileId
     }
 
     private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage {

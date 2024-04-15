@@ -25,6 +25,7 @@ class IntroFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileNickname: String,
+    internalProfileId: Int
   ): View {
     binding = LearnerIntroFragmentBinding.inflate(
       inflater,
@@ -49,7 +50,8 @@ class IntroFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
         fragment.requireContext(),
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE,
+        internalProfileId
       )
       fragment.startActivity(intent)
     }
