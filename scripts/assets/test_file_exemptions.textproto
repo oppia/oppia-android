@@ -254,6 +254,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/Onboardi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/RouteToProfileListListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/onboardingv2/AudioLanguageFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboardingv2/IntroActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboardingv2/IntroFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboardingv2/OnboardingFragmentPresenter.kt"
