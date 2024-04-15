@@ -34,7 +34,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -147,13 +146,6 @@ class OnboardingFragmentTest {
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
-  @Before
-  fun setUp() {
-    Intents.init()
-    setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
-  }
-
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
@@ -166,6 +158,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkDefaultSlideTitle_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(
         allOf(
@@ -178,6 +171,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkDefaultSlideDescription_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(
         allOf(
@@ -190,6 +184,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(
         allOf(
@@ -220,6 +215,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkDefaultSlide_skipButtonIsVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.skip_text_view)).check(matches(isDisplayed()))
     }
@@ -227,6 +223,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkDefaultSlide_getStartedButtonIsNotVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.get_started_button)).check(doesNotExist())
     }
@@ -234,6 +231,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_swipeRight_doesNotWork() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
       onView(
@@ -247,6 +245,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide1Title_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -261,6 +260,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide1Description_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -275,6 +275,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       onView(
@@ -306,6 +307,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide1_skipButtonIsVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -315,6 +317,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
@@ -332,6 +335,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide1_getStartedButtonIsNotVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       onView(withId(R.id.get_started_button)).check(doesNotExist())
@@ -340,6 +344,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_swipeLeftThenSwipeRight_isWorking() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 0))
@@ -355,6 +360,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide2Title_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -369,6 +375,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide2Description_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -383,6 +390,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       onView(
@@ -414,6 +422,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide2_skipButtonIsVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -423,6 +432,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
@@ -440,6 +450,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide2_getStartedButtonIsNotVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       onView(withId(R.id.get_started_button)).check(doesNotExist())
@@ -448,6 +459,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide3Title_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
@@ -462,6 +474,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
@@ -476,6 +489,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide3_skipButtonIsNotVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
@@ -485,6 +499,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide3_getStartedButtonIsVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
@@ -494,6 +509,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
@@ -506,6 +522,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_swipeLeftOnLastSlide_doesNotWork() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
@@ -521,6 +538,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_slide0Title_changeOrientation_titleIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -534,6 +552,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_moveToSlide1_changeOrientation_titleIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -549,6 +568,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -565,6 +585,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_nextArrowIcon_hasCorrectContentDescription() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
         matches(
@@ -578,6 +599,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_configChange_nextArrowIcon_hasCorrectContentDescription() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
@@ -592,6 +614,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_moveToSlide1_bottomDots_hasCorrectContentDescription() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -607,6 +630,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_configChange_moveToSlide1_bottomDots_hasCorrectContentDescription() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -623,6 +647,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_moveToSlide2_bottomDots_hasCorrectContentDescription() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -638,6 +663,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_configChange_moveToSlide2_bottomDots_hasCorrectContentDescription() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -654,6 +680,7 @@ class OnboardingFragmentTest {
 
   @Test
   fun testOnboardingFragment_checkSlide3_policiesLinkIsVisible() {
+    setUpTestWithOnboardingV2Disabled()
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -667,6 +694,213 @@ class OnboardingFragmentTest {
         )
       )
     }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_screenIsCorrectlyDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_title)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_subtitle)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_configChange_screenIsCorrectlyDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_title)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_subtitle)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_tabletPortrait_screenIsCorrectlyDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_title)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_subtitle)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_tabletLandscape_screenIsCorrectlyDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_title)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_subtitle)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_allIcons_haveCorrectContentDescriptions() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_onboardingV2Enabled_mobileLandscape_allIcons_haveCorrectContentDescriptions() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testFragment_onboardingV2Enabled_mobilePortrait_allIcons_haveCorrectContentDescriptions() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testFragment_onboardingV2Enabled_tabletLandscape_allIcons_haveCorrectContentDescriptions() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_arrow_icon_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_language_dropdown_icon_description
+          )
+        )
+      )
+    }
+  }
+
+  private fun setUpTestWithOnboardingV2Disabled() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    setUp()
+  }
+
+  private fun setUpTestWithOnboardingV2Enabled() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUp()
+  }
+
+  private fun setUp() {
+    Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   private fun getResources(): Resources =
