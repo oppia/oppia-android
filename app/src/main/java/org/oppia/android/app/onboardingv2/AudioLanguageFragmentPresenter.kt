@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment] V2. */
 class AudioLanguageFragmentPresenter @Inject constructor(
