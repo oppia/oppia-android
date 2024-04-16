@@ -191,6 +191,12 @@ message EventLog {
       // The event being logged is related to the amount spent by the user with the app in
       // foreground.
       AppInForegroundTimeContext app_in_foreground_time = 48;
+
+      // The event being logged is related to accessing a hint.
+      HintContext view_existing_hint_context = 49;
+
+      // The event being logged is related to viewing the solution.
+      ExplorationContext view_existing_solution_context = 50;
     }
   }
 
