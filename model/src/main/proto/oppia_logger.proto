@@ -108,7 +108,7 @@ message EventLog {
       ExplorationContext solution_unlocked_context = 20;
 
       // The event being logged is related to accessing a solution.
-      ExplorationContext access_solution_context = 21;
+      ExplorationContext reveal_solution_context = 21;
 
       // The event being logged is related to submitting an answer.
       SubmitAnswerContext submit_answer_context = 22;
@@ -180,7 +180,7 @@ message EventLog {
       HintContext view_existing_hint_context = 43;
 
       // The event being logged is related to viewing the solution.
-      ExplorationContext view_solution_context = 44;
+      ExplorationContext view_existing_solution_context = 44;
     }
   }
 

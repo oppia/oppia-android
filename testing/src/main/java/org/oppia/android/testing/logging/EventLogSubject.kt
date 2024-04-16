@@ -16,7 +16,7 @@ import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SY
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
@@ -52,7 +52,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SurveyQuestionName
@@ -579,54 +579,54 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
-   * [ACCESS_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   * [REVEAL_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasAccessSolutionContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(ACCESS_SOLUTION_CONTEXT)
+  fun hasRevealSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REVEAL_SOLUTION_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasAccessSolutionContext] and returns an
+   * Verifies the [EventLog]'s context per [hasRevealSolutionContext] and returns an
    * [ExplorationContextSubject] to test the corresponding context.
    */
-  fun hasAccessSolutionContextThat(): ExplorationContextSubject {
-    hasAccessSolutionContext()
-    return ExplorationContextSubject.assertThat(actual.context.accessSolutionContext)
+  fun hasRevealSolutionContextThat(): ExplorationContextSubject {
+    hasRevealSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.revealSolutionContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasAccessSolutionContextThat].
+   * [hasRevealSolutionContextThat].
    */
-  fun hasAccessSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
-    hasAccessSolutionContextThat().block()
+  fun hasRevealSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasRevealSolutionContextThat().block()
   }
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
-   * [VIEW_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   * [VIEW_EXISTING_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasViewSolutionContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_SOLUTION_CONTEXT)
+  fun hasViewExistingSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasViewSolutionContext] and returns an
+   * Verifies the [EventLog]'s context per [hasViewExistingSolutionContext] and returns an
    * [ExplorationContextSubject] to test the corresponding context.
    */
-  fun hasViewSolutionContextThat(): ExplorationContextSubject {
-    hasViewSolutionContext()
-    return ExplorationContextSubject.assertThat(actual.context.viewSolutionContext)
+  fun hasViewExistingSolutionContextThat(): ExplorationContextSubject {
+    hasViewExistingSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.viewExistingSolutionContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasViewSolutionContextThat].
+   * [hasViewExistingSolutionContextThat].
    */
-  fun hasViewSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
-    hasViewSolutionContextThat().block()
+  fun hasViewExistingSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasViewExistingSolutionContextThat().block()
   }
 
   /**

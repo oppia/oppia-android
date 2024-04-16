@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
@@ -669,14 +669,14 @@ class KenyaAlphaEventBundleCreatorTest {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessSolutionContext())
+    val eventLog = createEventLog(context = createRevealSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("access_solution_context")
+    assertThat(typeName).isEqualTo("reveal_solution_context")
     assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -693,14 +693,14 @@ class KenyaAlphaEventBundleCreatorTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessSolutionContext())
+    val eventLog = createEventLog(context = createRevealSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("access_solution_context")
+    assertThat(typeName).isEqualTo("reveal_solution_context")
     assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1353,9 +1353,9 @@ class KenyaAlphaEventBundleCreatorTest {
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
 
-  private fun createAccessSolutionContext(
+  private fun createRevealSolutionContext(
     explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setAccessSolutionContext)
+  ) = createEventContext(explorationContext, EventContextBuilder::setRevealSolutionContext)
 
   private fun createSubmitAnswerContext(
     submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()

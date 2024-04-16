@@ -341,7 +341,7 @@ class LearnerAnalyticsLogger @Inject constructor(
 
     /** Logs that the solution to the current card has been viewed by the learner. */
     fun logAccessSolution() {
-      logStateEvent(EventBuilder::setAccessSolutionContext)
+      logStateEvent(EventBuilder::setRevealSolutionContext)
     }
 
     /**
@@ -349,7 +349,7 @@ class LearnerAnalyticsLogger @Inject constructor(
      * excluding the first-time viewing.
      */
     fun logViewSolution() {
-      logStateEvent(EventBuilder::setViewSolutionContext)
+      logStateEvent(EventBuilder::setViewExistingSolutionContext)
     }
 
     /**

@@ -8,7 +8,7 @@ import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
@@ -45,7 +45,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
@@ -210,9 +210,10 @@ class EventBundleCreator @Inject constructor(
       HINT_UNLOCKED_CONTEXT -> HintContext(activityName, hintUnlockedContext)
       REVEAL_HINT_CONTEXT -> HintContext(activityName, revealHintContext)
       VIEW_EXISTING_HINT_CONTEXT -> HintContext(activityName, viewExistingHintContext)
-      VIEW_SOLUTION_CONTEXT -> ExplorationContext(activityName, viewSolutionContext)
+      VIEW_EXISTING_SOLUTION_CONTEXT ->
+        ExplorationContext(activityName, viewExistingSolutionContext)
       SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
-      ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
+      REVEAL_SOLUTION_CONTEXT -> ExplorationContext(activityName, revealSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
       PLAY_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, playVoiceOverContext)
       PAUSE_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, pauseVoiceOverContext)

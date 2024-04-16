@@ -2448,8 +2448,8 @@ class ExplorationProgressControllerTest {
     )
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessSolutionContextThat().containsTestExp2Details()
-    assertThat(eventLog).hasAccessSolutionContextThat().hasStateNameThat().isEqualTo("Fractions")
+    assertThat(eventLog).hasRevealSolutionContextThat().containsTestExp2Details()
+    assertThat(eventLog).hasRevealSolutionContextThat().hasStateNameThat().isEqualTo("Fractions")
   }
 
   @Test
