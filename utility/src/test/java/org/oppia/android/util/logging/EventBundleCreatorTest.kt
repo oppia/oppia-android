@@ -20,7 +20,7 @@ import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
@@ -1106,18 +1106,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_revealHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessHintContext())
+    val eventLog = createEventLog(context = createRevealHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_hint")
     assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1131,18 +1131,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
+  fun testFillEventBundle_revealHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessHintContext())
+    val eventLog = createEventLog(context = createRevealHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_hint")
     assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -2118,8 +2118,8 @@ class EventBundleCreatorTest {
   private fun createHintUnlockedContext(hintContext: HintContext = createHintContext()) =
     createEventContext(hintContext, EventContextBuilder::setHintUnlockedContext)
 
-  private fun createAccessHintContext(hintContext: HintContext = createHintContext()) =
-    createEventContext(hintContext, EventContextBuilder::setAccessHintContext)
+  private fun createRevealHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setRevealHintContext)
 
   private fun createSolutionUnlockedContext(
     explorationContext: ExplorationContext = createExplorationContext()

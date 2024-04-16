@@ -8,7 +8,7 @@ import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
@@ -44,7 +44,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.OppiaLanguage
@@ -208,8 +208,8 @@ class EventBundleCreator @Inject constructor(
       START_CARD_CONTEXT -> CardContext(activityName, startCardContext)
       END_CARD_CONTEXT -> CardContext(activityName, endCardContext)
       HINT_UNLOCKED_CONTEXT -> HintContext(activityName, hintUnlockedContext)
-      ACCESS_HINT_CONTEXT -> HintContext(activityName, accessHintContext)
-      VIEW_HINT_CONTEXT -> HintContext(activityName, viewHintContext)
+      REVEAL_HINT_CONTEXT -> HintContext(activityName, revealHintContext)
+      VIEW_EXISTING_HINT_CONTEXT -> HintContext(activityName, viewExistingHintContext)
       VIEW_SOLUTION_CONTEXT -> ExplorationContext(activityName, viewSolutionContext)
       SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
       ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)

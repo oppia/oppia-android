@@ -2352,7 +2352,7 @@ class ExplorationProgressControllerTest {
     )
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessHintContextThat {
+    assertThat(eventLog).hasRevealHintContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
@@ -2398,7 +2398,7 @@ class ExplorationProgressControllerTest {
     )
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessHintContextThat {
+    assertThat(eventLog).hasRevealHintContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)

@@ -16,7 +16,7 @@ import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SY
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
@@ -51,7 +51,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_SOLUTION_CONTEXT
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
@@ -500,55 +500,55 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies that the [EventLog] under test has a context corresponding to [ACCESS_HINT_CONTEXT]
+   * Verifies that the [EventLog] under test has a context corresponding to [REVEAL_HINT_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasAccessHintContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(ACCESS_HINT_CONTEXT)
+  fun hasRevealHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REVEAL_HINT_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasAccessHintContext] and returns a [HintContextSubject]
+   * Verifies the [EventLog]'s context per [hasRevealHintContext] and returns a [HintContextSubject]
    * to test the corresponding context.
    */
-  fun hasAccessHintContextThat(): HintContextSubject {
-    hasAccessHintContext()
-    return HintContextSubject.assertThat(actual.context.accessHintContext)
+  fun hasRevealHintContextThat(): HintContextSubject {
+    hasRevealHintContext()
+    return HintContextSubject.assertThat(actual.context.RevealHintContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasAccessHintContextThat].
+   * [hasRevealHintContextThat].
    */
-  fun hasAccessHintContextThat(block: HintContextSubject.() -> Unit) {
-    hasAccessHintContextThat().block()
+  fun hasRevealHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasRevealHintContextThat().block()
   }
 
   /**
-   * Verifies that the [EventLog] under test has a context corresponding to [VIEW_HINT_CONTEXT]
+   * Verifies that the [EventLog] under test has a context corresponding to [VIEW_EXISTING_HINT_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasViewHintContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_HINT_CONTEXT)
+  fun hasViewExistingHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_EXISTING_HINT_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasViewHintContext] and returns a [HintContextSubject]
+   * Verifies the [EventLog]'s context per [hasViewExistingHintContext] and returns a [HintContextSubject]
    * to test the corresponding context.
    */
-  fun hasViewHintContextThat(): HintContextSubject {
-    hasViewHintContext()
-    return HintContextSubject.assertThat(actual.context.viewHintContext)
+  fun hasViewExistingHintContextThat(): HintContextSubject {
+    hasViewExistingHintContext()
+    return HintContextSubject.assertThat(actual.context.ViewExistingHintContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasViewHintContextThat].
+   * [hasViewExistingHintContextThat].
    */
-  fun hasViewHintContextThat(block: HintContextSubject.() -> Unit) {
-    hasViewHintContextThat().block()
+  fun hasViewExistingHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasViewExistingHintContextThat().block()
   }
 
   /**

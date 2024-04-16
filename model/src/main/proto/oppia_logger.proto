@@ -101,8 +101,8 @@ message EventLog {
       // The event being logged is related to offering a hint when it becomes available.
       HintContext hint_unlocked_context = 18;
 
-      // The event being logged is related to accessing a hint.
-      HintContext access_hint_context = 19;
+      // The event being logged is related to revealing a hint.
+      HintContext reveal_hint_context = 19;
 
       // The event being logged is related to offering a solution when it becomes available.
       ExplorationContext solution_unlocked_context = 20;
@@ -177,7 +177,7 @@ message EventLog {
       OptionalSurveyResponseContext optional_response = 42;
 
       // The event being logged is related to accessing a hint.
-      HintContext view_hint_context = 43;
+      HintContext view_existing_hint_context = 43;
 
       // The event being logged is related to viewing the solution.
       ExplorationContext view_solution_context = 44;

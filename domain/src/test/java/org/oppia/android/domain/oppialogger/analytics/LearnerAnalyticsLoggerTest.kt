@@ -841,7 +841,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAccessHintContextThat {
+    assertThat(eventLog).hasRevealHintContextThat {
       hasExplorationDetailsThat {
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
@@ -870,7 +870,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAccessHintContextThat().hasHintIndexThat().isEqualTo(2)
+    assertThat(eventLog).hasRevealHintContextThat().hasHintIndexThat().isEqualTo(2)
   }
 
   @Test
@@ -885,7 +885,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasViewHintContextThat {
+    assertThat(eventLog).hasViewExistingHintContextThat {
       hasExplorationDetailsThat {
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
@@ -1483,7 +1483,7 @@ class LearnerAnalyticsLoggerTest {
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessHintContextThat {
+    assertThat(eventLog).hasRevealHintContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
           hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)

@@ -1240,12 +1240,12 @@ class ExplorationProgressController @Inject constructor(
           NEXT_AVAILABLE_HINT_INDEX ->
             stateAnalyticsLogger?.logHintUnlocked(newHelpIndex.nextAvailableHintIndex)
           LATEST_REVEALED_HINT_INDEX ->
-            stateAnalyticsLogger?.logAccessHint(newHelpIndex.latestRevealedHintIndex)
+            stateAnalyticsLogger?.logRevealHint(newHelpIndex.latestRevealedHintIndex)
           SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
             SHOW_SOLUTION -> stateAnalyticsLogger?.logAccessSolution()
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
-              stateAnalyticsLogger?.logAccessHint(helpIndex.nextAvailableHintIndex)
+              stateAnalyticsLogger?.logRevealHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
             LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
           }
