@@ -815,7 +815,7 @@ class ExplorationProgressController @Inject constructor(
   ) {
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
-      logViewedHint(hintIndex)
+      stateAnalyticsLogger?.logViewHint(hintIndex)
     }
   }
 
@@ -824,7 +824,7 @@ class ExplorationProgressController @Inject constructor(
   ) {
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
-      logViewedSolution()
+      stateAnalyticsLogger?.logViewSolution()
     }
   }
 
@@ -1243,7 +1243,7 @@ class ExplorationProgressController @Inject constructor(
             stateAnalyticsLogger?.logRevealHint(newHelpIndex.latestRevealedHintIndex)
           SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
-            SHOW_SOLUTION -> stateAnalyticsLogger?.logAccessSolution()
+            SHOW_SOLUTION -> stateAnalyticsLogger?.logRevealSolution()
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
               stateAnalyticsLogger?.logRevealHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
@@ -1253,16 +1253,6 @@ class ExplorationProgressController @Inject constructor(
         }
         helpIndex = newHelpIndex
       }
-    }
-
-    /** Logs when a user views a hint. */
-    fun logViewedHint(hintIndex: Int) {
-      stateAnalyticsLogger?.logViewHint(hintIndex)
-    }
-
-    /** Logs when a user views the solution. */
-    fun logViewedSolution() {
-      stateAnalyticsLogger?.logViewSolution()
     }
 
     /**

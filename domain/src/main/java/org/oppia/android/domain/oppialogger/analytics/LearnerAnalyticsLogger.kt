@@ -340,7 +340,7 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     /** Logs that the solution to the current card has been viewed by the learner. */
-    fun logAccessSolution() {
+    fun logRevealSolution() {
       logStateEvent(EventBuilder::setRevealSolutionContext)
     }
 
