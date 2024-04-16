@@ -513,7 +513,7 @@ class EventLogSubject private constructor(
    */
   fun hasRevealHintContextThat(): HintContextSubject {
     hasRevealHintContext()
-    return HintContextSubject.assertThat(actual.context.RevealHintContext)
+    return HintContextSubject.assertThat(actual.context.revealHintContext)
   }
 
   /**
@@ -539,7 +539,7 @@ class EventLogSubject private constructor(
    */
   fun hasViewExistingHintContextThat(): HintContextSubject {
     hasViewExistingHintContext()
-    return HintContextSubject.assertThat(actual.context.ViewExistingHintContext)
+    return HintContextSubject.assertThat(actual.context.viewExistingHintContext)
   }
 
   /**
