@@ -42,6 +42,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StateFragmentBinding
+import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyGatingController
@@ -54,6 +55,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -71,6 +73,7 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val context: Context,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val explorationRetriever: ExplorationRetriever,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val oppiaLogger: OppiaLogger,
@@ -99,6 +102,7 @@ class StateFragmentPresenter @Inject constructor(
   private var forceAnnouncedForHintsBar = false
 
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  private lateinit var explorationStateOrderData: Pair<Int, MutableMap<String, Int>>
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
   }
@@ -124,6 +128,9 @@ class StateFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+
+    explorationStateOrderData = fetchExplorationStateOrder(explorationId)
+
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
       binding.congratulationsTextView,
@@ -294,6 +301,18 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
+  private fun fetchExplorationStateOrder(explorationId: String): Pair<Int, MutableMap<String, Int>> {
+    var explorationStateOrderResult: Pair<Int, MutableMap<String, Int>>
+    runBlocking {
+      explorationStateOrderResult = loadExplorationStateOrderAsync(explorationId)
+    }
+    return explorationStateOrderResult
+  }
+
+  private suspend fun loadExplorationStateOrderAsync(explorationId: String): Pair<Int, MutableMap<String, Int>> {
+    return explorationRetriever.loadExplorationPosition(explorationId)
+  }
+
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     when (result) {
       is AsyncResult.Failure ->
@@ -320,6 +339,8 @@ class StateFragmentPresenter @Inject constructor(
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
 
+    updateStateProgress(ephemeralState.state)
+
     showOrHideAudioByState(ephemeralState.state)
 
     val dataPair = recyclerViewAssembler.compute(
@@ -339,6 +360,27 @@ class StateFragmentPresenter @Inject constructor(
         200
       )
     }
+  }
+
+  private fun updateStateProgress(state: State) {
+    val currentStateName = state.name
+    val currentPosition = getPositionOfState(currentStateName, explorationStateOrderData)
+    val totalStates = explorationStateOrderData.first
+
+    var stateProgress = calculateStateProgress(currentPosition, totalStates)
+    viewModel.setStateProgress(stateProgress)
+  }
+
+  private fun getPositionOfState(currentStateName: String?, explorationStateOrderData: Pair<Int, MutableMap<String, Int>>): Int? {
+    return explorationStateOrderData.second[currentStateName]
+  }
+
+  private fun calculateStateProgress(currentPosition: Int?, totalStates: Int): Int {
+    var calculatedStateProgress : Double = 0.0
+    if (currentPosition != null) {
+      calculatedStateProgress = ((currentPosition.toDouble() / totalStates) * 100)
+    }
+    return calculatedStateProgress.toInt()
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */

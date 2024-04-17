@@ -45,6 +45,8 @@ class StateViewModel @Inject constructor(
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
+  var stateProgress = ObservableField(0)
+
   val isSplitView = ObservableField(false)
   val centerGuidelinePercentage = ObservableField(0.5f)
 
@@ -81,6 +83,10 @@ class StateViewModel @Inject constructor(
 
   fun initializeProfile(profileId: ProfileId) {
     this.profileId = profileId
+  }
+
+  fun setStateProgress(progress: Int) {
+    stateProgress.set(progress)
   }
 
   fun setAudioBarVisibility(audioBarVisible: Boolean) {

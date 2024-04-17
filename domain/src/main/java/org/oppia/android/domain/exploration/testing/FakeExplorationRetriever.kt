@@ -22,6 +22,11 @@ class FakeExplorationRetriever @Inject constructor(
     return productionImpl.loadExploration(expIdToLoad)
   }
 
+  override suspend fun loadExplorationPosition(explorationId: String): Pair<Int, MutableMap<String, Int>> {
+    val expIdToLoad = explorationProxies[explorationId] ?: explorationId
+    return productionImpl.loadExplorationPosition(expIdToLoad)
+  }
+
   /**
    * Sets the exploration ID that should be loaded in place of [expIdToLoad] on all future calls to
    * [loadExploration].

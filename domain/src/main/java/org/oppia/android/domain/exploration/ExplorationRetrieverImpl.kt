@@ -33,6 +33,11 @@ class ExplorationRetrieverImpl @Inject constructor(
     }
   }
 
+  override suspend fun loadExplorationPosition(explorationId: String): Pair<Int, MutableMap<String, Int>> {
+    val explorationObject = jsonAssetRetriever.loadJsonFromAsset("$explorationId.json")
+    return parseJsonObjectToCalculatePosition(explorationObject!!)
+  }
+
   // Returns an exploration given an assetName
   private fun loadExplorationFromAsset(explorationObject: JSONObject): Exploration {
     val innerExplorationObject = explorationObject.getJSONObject("exploration")
@@ -67,5 +72,42 @@ class ExplorationRetrieverImpl @Inject constructor(
       statesMap[key] = stateRetriever.createStateFromJson(key, statesJsonObject.getJSONObject(key))
     }
     return statesMap
+  }
+
+  private fun parseJsonObjectToCalculatePosition(explorationObject: JSONObject): Pair<Int, MutableMap<String, Int>> {
+    val states = explorationObject.getJSONObject("exploration").getJSONObject("states")
+    val initialState = explorationObject.getJSONObject("exploration").getString("init_state_name")
+
+    val statePosition = mutableMapOf<String, Int>()
+    var position = 0
+
+    // Function to recursively traverse the states and set their positions
+    fun getStatePosition(stateName: String) {
+      if (!statePosition.containsKey(stateName)) {
+        statePosition[stateName] = ++position
+
+        val state = states.getJSONObject(stateName)
+        val interaction = state.getJSONObject("interaction")
+
+        if (interaction.has("default_outcome") && !interaction.isNull("default_outcome")) {
+          val defaultOutcome = interaction.getJSONObject("default_outcome")
+          val dest = defaultOutcome.getString("dest")
+          getStatePosition(dest)
+        }
+
+        if (interaction.has("answer_groups") && interaction.getJSONArray("answer_groups").length() > 0) {
+          val answerGroups = interaction.getJSONArray("answer_groups")
+          for (i in answerGroups.length() - 1 downTo 0) {
+            val outcome = answerGroups.getJSONObject(i).getJSONObject("outcome")
+            val dest = outcome.getString("dest")
+            getStatePosition(dest)
+          }
+        }
+      }
+    }
+
+    getStatePosition(initialState)
+    return position to statePosition
+
   }
 }

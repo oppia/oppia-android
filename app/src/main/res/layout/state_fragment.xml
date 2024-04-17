@@ -24,6 +24,22 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
+      <ProgressBar
+        android:id="@+id/state_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:max="100"
+        android:progress="@{viewModel.stateProgress}"
+        android:progressDrawable="@drawable/progress_bar"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/state_recycler_view"
         android:layout_width="0dp"
@@ -39,7 +55,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/state_progress_bar" />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/extra_interaction_recycler_view"
@@ -56,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/state_progress_bar" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/center_guideline"
