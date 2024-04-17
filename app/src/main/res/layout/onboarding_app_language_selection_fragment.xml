@@ -58,7 +58,7 @@
     <ImageView
       android:id="@+id/onboarding_app_language_image"
       android:layout_width="130dp"
-      android:layout_height="134dp"
+      android:layout_height="140dp"
       android:contentDescription="@string/onboarding_otter_content_description"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
