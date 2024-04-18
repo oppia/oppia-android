@@ -1,8 +1,8 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [How to create a Platform Parameter](#how-to-create-a-platform-parameter)
-- [How to consume a Platform Parameter](#how-to-consume-a-platform-parameter)
+- [How to create a Feature Flag or Platform Parameter](#how-to-create-a-feature-flag-or-platform-parameter)
+- [How to consume a Feature Flag or Platform Parameter](#how-to-consume-a-feature-flag-or-platform-parameter)
 - [How to write tests related to Platform Parameters](#how-to-write-tests-related-to-platform-parameters)
   - [1. We actually don't test for platform parameter(s)](#1-we-actually-dont-test-for-platform-parameters)
   - [2. We test for different values of platform parameter(s)](#2-we-test-for-different-values-of-platform-parameters)
@@ -92,7 +92,8 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
     - Note that permission will be required before accessing the Feature Gating console in the Oppia backend.
 
 
-## How to consume a Platform Parameter
+## How to consume a Feature Flag or Platform Parameter
+
 To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue\<T\>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter in `PlatformParameterSyncUpWorkManagerInitializer`
 
 ```
