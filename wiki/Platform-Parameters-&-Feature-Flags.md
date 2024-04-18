@@ -3,21 +3,30 @@
 - [Introduction](#introduction)
 - [How to create a Platform Parameter](#how-to-create-a-platform-parameter)
 - [How to consume a Platform Parameter](#how-to-consume-a-platform-parameter)
-- [How to write tests related Platform Parameter](#how-to-write-tests-related-platform-parameter)
+- [How to write tests related to Platform Parameters](#how-to-write-tests-related-to-platform-parameters)
   - [1. We actually don't test for platform parameter(s)](#1-we-actually-dont-test-for-platform-parameters)
-  - [2. We test for different values of platform parameter(s)](#2-we-test-for-different-values-of-platform-parameters) 
+  - [2. We test for different values of platform parameter(s)](#2-we-test-for-different-values-of-platform-parameters)
 
 ## Introduction
-With a large scale system like Oppia, we sometimes have features that contain several points of integration in the codebase, and/or require additional data priming or migrations ahead of the feature being released. These features often span multiple releases and thus require feature flags to gate integration points to ensure that the feature is not partially released ahead of schedule. Moreover, these features often require migrations which need to be run in specific releases due to new versions being made in irreversible data structures (e.g. explorations).
+With a large scale system like Oppia, we sometimes have features that contain several points of integration in the codebase, and/or require additional data priming or migrations ahead of the feature being released. These features often span multiple releases and thus require **feature flags** to gate integration points to ensure that the feature is not partially released ahead of schedule. Moreover, these features often require migrations which need to be run in specific releases due to new versions being made in irreversible data structures (e.g. explorations). In order to release these types of features smoothly, we need to be able to put these features behind feature flags that are enabled in specific builds (compile-time) and can be enabled dynamically (at runtime).
 
-In order to release these types of features in a smooth manner, we need to be able to put these features behind feature flags that are enabled in specific builds (compile-time) and can be enabled dynamically (at runtime). Thus it actually involves introducing what are called platform parameters. These are parameters that can be one of several data types (e.g. strings, integers, booleans). We use boolean types for gating features as described above, but the other parameters are essential in order to ensure the app is reasonably configurable for many different circumstances (include deprecations).
+Through the platform parameter system in Oppia Android, we can model both feature flags and a more general version called platform parameters:
 
-## How to create a Platform Parameter
+- **Feature flags** have boolean values. We use these for turning features on or off, as described above. (If a feature can't be done by the time of PR check-in, it should be behind a feature flag.) Please also see the wiki page [Guidelines for launching new features](https://github.com/oppia/oppia-android/wiki/Guidelines-for-launching-new-features) for more information on releasing new features using feature flags. Note that any new Android feature flags will also need to be implemented on Web so that they can be configured remotely.
+
+- **Platform parameters** can have one of several data types (e.g. strings, integers, booleans). These are used to ensure the app is configurable for different circumstances. They should be used for configurable values that need to be changed at runtime without a re-release of the app, or for different app flavours for experimentation. Any new platform parameters need to be approved by the Android tech lead (e.g. Ben).
+
+
+## How to create a Feature Flag or Platform Parameter
+
+**Note:** Most of this section describes the implementation of platform parameters. Feature flags are a special case of platform parameters, and can be implemented in a similar way.
+
 1. Create the Constants
-    - If the Platform Parameter you intend to create is related to a particular feature, so first check that do there exist a file in the `utility\src\main\java\org\oppia\android\util\platformparameter` which contains other Platform Parameters related to the same feature. If there is no such then create a new Kotlin file along with its name corresponding to the feature.
+    - New feature flags should go in [FeatureFlagConstants.kt](https://github.com/oppia/oppia-android/blob/develop/utility/src/main/java/org/oppia/android/util/platformparameter/FeatureFlagConstants.kt).
+      - **Note:** Previously, platform parameters and feature flags were mixed together in `utility/src/main/java/org/oppia/android/util/platformparameter`. We are now planning to handle feature flags and platform parameters separately.
     - After searching/making a "constants" file related to a feature, we need to define three things:
         1. Qualifier Annotation which will help us to distinguish our Platform Parameter from others.
-        
+
         <br>
 
         ```
@@ -29,8 +38,8 @@ In order to release these types of features in a smooth manner, we need to be ab
         annotation class SyncUpWorkerTimePeriodInHours
         ```
 
-        2. The name of the Platform Parameter in String format 
-        
+        2. The name of the Platform Parameter in String format
+
         <br>
 
         ```
@@ -54,7 +63,7 @@ In order to release these types of features in a smooth manner, we need to be ab
         ```
 
 2. Provide your Platform Parameter
-    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterModule.kt)`
     - The return type for this @Provides annotated method will be equal to either `PlatformPrameterValue\<String\>`, `PlatformPrameterValue\<Integer\>` Or `PlatformPrameterValue\<Boolean\>` depending on the data type of the Platform Parameter you intend to create. Any other type will cause the platform parameter sync to fail. For eg- here we provide `SyncUpTimePeriodInHours` platform parameter, which is actually of integer type.
 
     <br>
@@ -99,11 +108,11 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
 }
 ```
 
-## How to write tests related Platform Parameter
-Before writing a test we must understand the purpose of the platform parameter in our class/classes (that needs to be tested). After verifying this we can divide testing procedures into following groups - 
+## How to write tests related to Platform Parameters
+Before writing a test we must understand the purpose of the platform parameter in our class/classes (that needs to be tested). After verifying this we can divide testing procedures into following groups -
 
 ### 1. We actually don't test for platform parameter(s)
-We just need specific platform parameter(s) in the dagger graph because our class needs it, but our test cases are not actually verifying the behaviour of class based on different values of the platform parameter. These are the simplest cases to write tests for. We will only need to create a `TestModule` inside the Test class and then include this into the @Component for the `TestApplicationComponent`. For eg - 
+We just need specific platform parameter(s) in the dagger graph because our class needs it, but our test cases are not actually verifying the behaviour of class based on different values of the platform parameter. These are the simplest cases to write tests for. We will only need to create a `TestModule` inside the Test class and then include this into the @Component for the `TestApplicationComponent`. For eg -
 
 ```
 @Module
@@ -131,7 +140,7 @@ interface TestApplicationComponent {
 ```
 
 ### 2. We test for different values of platform parameter(s)
-We need to test the behaviour of the target class/classes based on different values of the platform parameter. Same platform parameter can have different values because of the difference between its compile-time/default and runtime/server value. To test for this case we can set up a fake singleton class and provide the seed values that we want to be injected into target classes. For eg - 
+We need to test the behaviour of the target class/classes based on different values of the platform parameter. Same platform parameter can have different values because of the difference between its compile-time/default and runtime/server value. To test for this case we can set up a fake singleton class and provide the seed values that we want to be injected into target classes. For eg -
 ```
 @Test
 fun testSyncUpWorker_checkIfServerValueOfSyncUpTimePeriodIsUsed(){

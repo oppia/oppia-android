@@ -27,14 +27,15 @@
     * [End to End Testing Guide](https://github.com/oppia/oppia-android/wiki/End-to-End-Testing-Guide)
   * [Developing Skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
   * [Frequent Errors and Solutions](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions)
-  * [RTL Guidelines](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines) 
+  * [RTL Guidelines](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines)
   * [Working on UI](https://github.com/oppia/oppia-android/wiki/Working-on-UI)
   * [Writing Design Docs](https://github.com/oppia/oppia-android/wiki/Writing-design-docs)
+  * **[Guidelines for launching new features](https://github.com/oppia/oppia-android/wiki/Guidelines-for-launching-new-features)**
 ---
 **Developer Reference**
   * Code style
     * [Coding style guide](https://github.com/oppia/oppia-android/wiki/Coding-style-guide)
-    * [Ktlint Guide](https://github.com/oppia/oppia-android/wiki/Ktlint-Guide) 
+    * [Ktlint Guide](https://github.com/oppia/oppia-android/wiki/Ktlint-Guide)
     * [Static Analysis Checks](https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks)
     * [Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide)
     * [Debugging](https://github.com/oppia/oppia-android/wiki/Debugging)
@@ -43,7 +44,7 @@
   * [Background Processing](https://github.com/oppia/oppia-android/wiki/Background-Processing)
     * [Kotlin Coroutines](https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines)
     * [DataProvider & LiveData](https://github.com/oppia/oppia-android/wiki/DataProvider-&-LiveData)
-    * [PersistentCacheStore & In Memory Blocking Cache](https://github.com/oppia/oppia-android/wiki/PersistentCacheStore-&-In-Memory-Blocking-Cache)  
+    * [PersistentCacheStore & In Memory Blocking Cache](https://github.com/oppia/oppia-android/wiki/PersistentCacheStore-&-In-Memory-Blocking-Cache)
   * [Dark mode](https://github.com/oppia/oppia-android/wiki/Dark-Mode)
   * [Buf Guide](https://github.com/oppia/oppia-android/wiki/Buf-Guide)
   * [Firebase Console Guide](https://github.com/oppia/oppia-android/wiki/Firebase-Console-Guide)
@@ -54,7 +55,7 @@
   * [Spotlight Guide](https://github.com/oppia/oppia-android/wiki/Spotlight-Guide)
   * [Triaging Process](https://github.com/oppia/oppia-android/wiki/Triaging-process)
   * Bazel
-    * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)    
+    * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
   * [Internationalization](https://github.com/oppia/oppia-android/wiki/Internationalization)
   * [Terminology in Oppia](https://github.com/oppia/oppia-android/wiki/Terminology-in-Oppia)
