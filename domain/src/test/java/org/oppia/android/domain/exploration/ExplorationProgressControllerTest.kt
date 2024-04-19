@@ -2443,23 +2443,13 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val hintOfferedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
-      it.context.activityContextCase == HINT_UNLOCKED_CONTEXT
-    }.also {
-      assert(it != null)
-    }
-    assertThat(hintOfferedEvent!!).hasHintUnlockedContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
     }
-
-    val progressSavingSuccessEvent = fakeAnalyticsEventLogger.getLoggedEvent {
-      it.context.activityContextCase == PROGRESS_SAVING_SUCCESS_CONTEXT
-    }.also {
-      assert(it != null)
-    }
-    assertThat(progressSavingSuccessEvent!!).hasProgressSavingSuccessContextThat {
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
       containsTestExp2Details()
     }
   }
@@ -2502,23 +2492,13 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswer(choiceIndex = 0)
     submitMultipleChoiceAnswer(choiceIndex = 0)
 
-    val hintOfferedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
-      it.context.activityContextCase == HINT_UNLOCKED_CONTEXT
-    }.also {
-      assert(it != null)
-    }
-    assertThat(hintOfferedEvent!!).hasHintUnlockedContextThat {
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    assertThat(eventLogList[0]).hasHintUnlockedContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)
     }
-
-    val progressSavingSuccessEvent = fakeAnalyticsEventLogger.getLoggedEvent {
-      it.context.activityContextCase == PROGRESS_SAVING_SUCCESS_CONTEXT
-    }.also {
-      assert(it != null)
-    }
-    assertThat(progressSavingSuccessEvent!!).hasProgressSavingSuccessContextThat {
+    assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
       containsFractionsExp0Details()
     }
   }
