@@ -443,16 +443,13 @@ class ExplorationProgressController @Inject constructor(
                 ControllerState(
                   ExplorationProgress(),
                   message.isRestart,
-                  /**
-                   * The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
-                   * in the following 3 cases.
-                   *  - New exploration is started.
-                   *  - Saved Exploration is restarted.
-                   *  - Completed exploration is replayed.
-                   *
-                   * The [message.explorationCheckpoint] will contain the exploration checkpoint
-                   * only when a saved exploration is resumed.
-                   */
+                  // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
+                  // in the following 3 cases.
+                  //  - New exploration is started.
+                  //  - Saved Exploration is restarted.
+                  //  - Completed exploration is replayed.
+                  // The [message.explorationCheckpoint] will contain the exploration checkpoint
+                  // only when a saved exploration is resumed.
                   isResume = message.explorationCheckpoint
                     != ExplorationCheckpoint.getDefaultInstance(),
                   message.sessionId,
