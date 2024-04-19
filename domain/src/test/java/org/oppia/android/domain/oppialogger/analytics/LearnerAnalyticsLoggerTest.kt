@@ -1787,13 +1787,13 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logProgressSavingSuccess_logsEventWithContext() {
+  fun testExpLogger_logProgressSavingSuccess_logsEventWithContext() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     testCoroutineDispatchers.runCurrent()
 
-    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
-    stateLogger.logProgressSavingSuccess()
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logProgressSavingSuccess()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1812,13 +1812,13 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logProgressSavingFailure_logsEventWithContext() {
+  fun testExpLogger_logProgressSavingFailure_logsEventWithContext() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     testCoroutineDispatchers.runCurrent()
 
-    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
-    stateLogger.logProgressSavingFailure()
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logProgressSavingFailure()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1837,13 +1837,13 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logLessonSavedAdvertently_logsEventWithContext() {
+  fun testExpLogger_logLessonSavedAdvertently_logsEventWithContext() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     testCoroutineDispatchers.runCurrent()
 
-    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
-    stateLogger.logLessonSavedAdvertently()
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logLessonSavedAdvertently()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1862,13 +1862,13 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logResumeLessonSubmitCorrectAnswer_logsEventWithContext() {
+  fun testExpLogger_logResumeLessonSubmitCorrectAnswer_logsEventWithContext() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     testCoroutineDispatchers.runCurrent()
 
-    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
-    stateLogger.logResumeLessonSubmitCorrectAnswer()
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logResumeLessonSubmitCorrectAnswer()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1887,13 +1887,13 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logResumeLessonSubmitIncorrectAnswer_logsEventWithContext() {
+  fun testExpLogger_logResumeLessonSubmitIncorrectAnswer_logsEventWithContext() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     testCoroutineDispatchers.runCurrent()
 
-    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
-    stateLogger.logResumeLessonSubmitIncorrectAnswer()
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logResumeLessonSubmitIncorrectAnswer()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
