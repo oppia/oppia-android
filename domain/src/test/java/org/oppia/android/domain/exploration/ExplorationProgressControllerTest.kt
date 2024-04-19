@@ -21,8 +21,6 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
@@ -2096,7 +2094,8 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0] // Get the 2nd most recent event.
+    // Get the 2nd most recent event.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0]
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("ItemSelectionMinOne")
@@ -2162,7 +2161,8 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0] // Get the 2nd most recent event.
+    // Get the 2nd most recent event.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0]
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("ItemSelectionMinOne")
@@ -2212,7 +2212,8 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0] // Get the 2nd most recent event.
+    // Get the 2nd most recent event.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0]
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("NumberInput")
