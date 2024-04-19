@@ -52,11 +52,9 @@
             android:contentDescription="@string/current_profile_picture_content_description"
             android:elevation="4dp"
             android:focusable="true"
-            app:add_shadow="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shadow_radius="8"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:srcCompat="@{@drawable/ic_default_avatar}" />
 
