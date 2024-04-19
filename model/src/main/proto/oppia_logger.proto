@@ -175,7 +175,7 @@ message EventLog {
 
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
-      
+
       // The event being logged indicates that the user has reached the home screen for the first time.
       CompleteAppOnboardingContext complete_app_onboarding = 44;
 
