@@ -2096,7 +2096,7 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.get2ndMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0] // Get the 2nd most recent event.
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("ItemSelectionMinOne")
@@ -2162,7 +2162,7 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.get2ndMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0] // Get the 2nd most recent event.
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("ItemSelectionMinOne")
@@ -2212,7 +2212,7 @@ class ExplorationProgressControllerTest {
     val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
       it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
     }
-    val eventLog = fakeAnalyticsEventLogger.get2ndMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)[0] // Get the 2nd most recent event.
     assertThat(hasEngagementEvent).isTrue()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
       hasStateNameThat().isEqualTo("NumberInput")
