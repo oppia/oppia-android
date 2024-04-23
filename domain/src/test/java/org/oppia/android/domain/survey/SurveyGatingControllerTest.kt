@@ -49,6 +49,7 @@ import javax.inject.Singleton
 
 private const val SESSION_LENGTH_SHORT = 120000L
 private const val SESSION_LENGTH_LONG = 360000L
+private const val SESSION_LENGTH_MINIMUM = 300000L
 
 /** Tests for [SurveyGatingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -125,6 +126,22 @@ class SurveyGatingControllerTest {
     // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
     // more than the grace period days in the past, so no need to explicitly define
     // surveyLastShownTimestamp here.
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testGating_lateNight_isPastGracePeriod_minimumAggregateTimeExceeded_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp here.
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -173,6 +190,22 @@ class SurveyGatingControllerTest {
     // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
     // more than the grace period days in the past, so no need to explicitly define
     // surveyLastShownTimestamp here.
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testGating_earlyMorning_isPastGracePeriod_minimumAggregateTimeExceeded_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp here.
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -205,6 +238,22 @@ class SurveyGatingControllerTest {
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
     )
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testGating_midMorning_stillWithinGracePeriod_minimumAggregateTimeExceeded_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+    )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -232,6 +281,25 @@ class SurveyGatingControllerTest {
 
   @Test
   fun testGating_midMorning_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp here.
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testGating_midMorning_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -266,7 +334,23 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  fun testGating_afternoon_stillWithinGracePeriod__minimumAggregateTimeMet_returnsFalse() {
+  fun testGating_afternoon_stillWithinGracePeriod_minimumAggregateTimeMet_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+    )
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testGating_afternoon_stillWithinGracePeriod_minimumAggregateTimeExceeded_returnsFalse() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
@@ -301,6 +385,25 @@ class SurveyGatingControllerTest {
 
   @Test
   fun testGating_afternoon_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp here.
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testGating_afternoon_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -341,6 +444,22 @@ class SurveyGatingControllerTest {
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
     )
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testGating_evening_stillWithinGracePeriod_minimumAggregateTimeExceeded_returnsFalse() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+    )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -370,6 +489,25 @@ class SurveyGatingControllerTest {
 
   @Test
   fun testGating_evening_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp here.
+
+    val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(gatingProvider)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testGating_evening_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
