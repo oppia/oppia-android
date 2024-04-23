@@ -236,6 +236,7 @@ java_binary(
         "java.base/java.lang.invoke=ALL-UNNAMED",
         "-Xmx16g",  # Image conversion can require a lot of RAM.
     ],
+    visibility = ["//visibility:public"],  # TODO: Revert this when the script no longer needs to be referenced on develop.
     main_class = "org.oppia.android.scripts.assets.DownloadLessonsKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/assets:download_lessons_lib",
