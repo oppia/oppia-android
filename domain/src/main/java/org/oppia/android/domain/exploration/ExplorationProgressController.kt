@@ -153,7 +153,6 @@ class ExplorationProgressController @Inject constructor(
     explorationCheckpoint: ExplorationCheckpoint,
     isRestart: Boolean
   ): DataProvider<Any?> {
-
     val ephemeralStateFlow = createAsyncResultStateFlow<EphemeralState>()
     val sessionId = UUID.randomUUID().toString().also {
       mostRecentSessionId.value = it
