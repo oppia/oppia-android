@@ -24,12 +24,14 @@ class OppiaWebTranslationExtractor private constructor(
   }
 
   sealed class TranslatableActivityId(private val activityType: String) {
-    private val upperCasedActivityType by lazy { activityType.uppercase(Locale.US) }
+    // TODO: Switch back to .uppercase().
+    private val upperCasedActivityType by lazy { activityType.toUpperCase(Locale.US) }
 
     abstract val activityId: String
 
+    // TODO: Switch back to .uppercase().
     internal fun computeWebKeyForContent(contentId: String): String =
-      "I18N_${upperCasedActivityType}_${activityId}_${contentId.uppercase(Locale.US)}"
+      "I18N_${upperCasedActivityType}_${activityId}_${contentId.toUpperCase(Locale.US)}"
 
     data class Topic(val topicId: String) : TranslatableActivityId(activityType = "topic") {
       override val activityId: String = topicId

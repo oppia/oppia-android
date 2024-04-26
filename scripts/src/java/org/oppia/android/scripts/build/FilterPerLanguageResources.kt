@@ -180,10 +180,12 @@ private class FilterPerLanguageResources {
       val globalLanguage: GlobalLanguage,
       val regionCode: String
     ) : LanguageLocale() {
+      // TODO: Switch back to .uppercase().
       override val bcp47QualifiedCode =
-        "${globalLanguage.bcp47QualifiedCode}-${regionCode.uppercase()}"
+        "${globalLanguage.bcp47QualifiedCode}-${regionCode.toUpperCase()}"
+      // TODO: Switch back to .uppercase().
       override val androidBcp47QualifiedCode =
-        "${globalLanguage.androidBcp47QualifiedCode}-${regionCode.uppercase()}"
+        "${globalLanguage.androidBcp47QualifiedCode}-${regionCode.toUpperCase()}"
     }
 
     companion object {
@@ -194,15 +196,18 @@ private class FilterPerLanguageResources {
       fun createFrom(qualifiedLanguageCode: String): LanguageLocale {
         return if ("-" in qualifiedLanguageCode) {
           val (languageCode, regionCode) = qualifiedLanguageCode.split('-', limit = 2)
-          RegionalLanguage(createGlobalLanguageLocale(languageCode), regionCode.lowercase())
+          // TODO: Switch back to .lowercase().
+          RegionalLanguage(createGlobalLanguageLocale(languageCode), regionCode.toLowerCase())
         } else createGlobalLanguageLocale(qualifiedLanguageCode)
       }
 
       /** Returns a new [LanguageLocale] to represent the provided [definition]. */
       fun createFrom(definition: LanguageSupportDefinition): LanguageLocale? {
         val androidLanguageId = definition.appStringId.androidResourcesLanguageId
-        val language = androidLanguageId.languageCode.lowercase()
-        val region = androidLanguageId.regionCode.lowercase()
+        // TODO: Switch back to .lowercase().
+        val language = androidLanguageId.languageCode.toLowerCase()
+        // TODO: Switch back to .lowercase().
+        val region = androidLanguageId.regionCode.toLowerCase()
         return when {
           language.isEmpty() -> null // Unsupported.
           region.isEmpty() -> GlobalLanguage(language)
@@ -211,7 +216,8 @@ private class FilterPerLanguageResources {
       }
 
       private fun createGlobalLanguageLocale(languageCode: String): GlobalLanguage {
-        return languageCode.lowercase().takeIf(String::isNotEmpty)?.let(::GlobalLanguage)
+        // TODO: Switch back to .lowercase().
+        return languageCode.toLowerCase().takeIf(String::isNotEmpty)?.let(::GlobalLanguage)
           ?: GlobalLanguage(languageCode = "en")
       }
     }
