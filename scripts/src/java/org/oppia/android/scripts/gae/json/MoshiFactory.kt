@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.gae.json
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion.GaeNormalizedRectangle2d
 
 object MoshiFactory {
@@ -26,6 +27,7 @@ object MoshiFactory {
       add(GaeTranslatableContentFormat.Adapter())
       add(GaeInteractionCustomizationArgsMap.Adapter(typeResolutionContext))
       add(GaeEntityTranslations.Adapter)
+      add(KotlinJsonAdapterFactory()) // TODO: Remove this so that it can be done without reflection.
     }.build()
   }
 }
