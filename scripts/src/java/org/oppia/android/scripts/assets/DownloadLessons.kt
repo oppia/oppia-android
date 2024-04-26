@@ -120,11 +120,15 @@ fun main(vararg args: String) {
   }
   val cacheDir = cacheDirPath?.let {
     File(cacheDirPath).absoluteFile.normalize().also {
-      check(it.exists() && it.isDirectory) { "Expected cache directory to exist: $cacheDirPath." }
+      check(if (!it.exists()) it.mkdirs() else it.isDirectory) {
+        "Expected cache directory to exist or to be creatable: $cacheDirPath."
+      }
     }
   }
   val outputDir = File(outputDirPath).absoluteFile.normalize().also {
-    check(it.exists() && it.isDirectory) { "Expected output directory to exist: $outputDirPath." }
+    check(if (!it.exists()) it.mkdirs() else it.isDirectory) {
+      "Expected output directory to exist or to be creatable: $outputDirPath."
+    }
   }
 
   val baseArgCount = if (cacheDirPath == null) 6 else 7
