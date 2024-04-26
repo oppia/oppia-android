@@ -3,6 +3,7 @@ package org.oppia.android.scripts.gae.proto
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.awaitAll
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.json.GaeExploration
@@ -541,7 +542,8 @@ class LocalizationTracker private constructor(
     @Json(name = "svg_filename") val svgFilename: String
   ) {
     companion object {
-      private val moshi by lazy { Moshi.Builder().build() }
+      // TODO: Remove KotlinJsonAdapterFactory so that it can be done without reflection.
+      private val moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
       private val adapter by lazy { moshi.adapter(MathContentValue::class.java) }
 
       internal fun parseFromHtmlValue(htmlValue: String): MathContentValue {
