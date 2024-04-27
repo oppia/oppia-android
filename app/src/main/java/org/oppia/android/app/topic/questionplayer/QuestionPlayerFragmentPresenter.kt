@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
@@ -26,6 +27,7 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
@@ -35,13 +37,9 @@ import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
-import org.oppia.android.app.model.QuestionPlayerFragmentArguments
-import org.oppia.android.app.model.ResumeLessonFragmentArguments
-import org.oppia.android.app.resumelesson.ResumeLessonFragment
-import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.util.extensions.getProto
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -56,7 +54,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
-  ) {
+) {
   // TODO(#503): Add tests for the question player.
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
