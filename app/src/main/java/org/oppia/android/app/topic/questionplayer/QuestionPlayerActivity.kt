@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.questionplayer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
@@ -23,6 +24,8 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 
 private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
   "QuestionPlayerActivity.profile_id"
@@ -41,6 +44,7 @@ class QuestionPlayerActivity :
   RevealHintListener,
   RevealSolutionInterface,
   HintsAndSolutionQuestionManagerListener,
+  DefaultFontSizeStateListener,
   ConceptCardListener {
 
   @Inject
@@ -59,6 +63,7 @@ class QuestionPlayerActivity :
 
   override fun onBackPressed() {
     showStopExplorationDialogFragment()
+    questionPlayerActivityPresenter.setReadingTextSizeNormal()
   }
 
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
@@ -123,5 +128,9 @@ class QuestionPlayerActivity :
 
   override fun stopSession() {
     questionPlayerActivityPresenter.stopTrainingSession()
+  }
+
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    questionPlayerActivityPresenter.loadQuestionPlayerFragment(readingTextSize)
   }
 }

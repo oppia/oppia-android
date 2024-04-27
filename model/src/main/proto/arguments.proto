@@ -329,3 +329,12 @@ message SurveyActivityParams {
   // The ID of the triggering exploration.
   string exploration_id = 3;
 }
+
+// Arguments required when creating a QuestionPlayerFragment.
+message QuestionPlayerFragmentArguments{
+  // The ID of current profile.
+  ProfileId profile_id = 1;
+
+  // The ReadingTextSize previously selected by the user (upon opening the fragment).
+  ReadingTextSize reading_text_size=2;
+}

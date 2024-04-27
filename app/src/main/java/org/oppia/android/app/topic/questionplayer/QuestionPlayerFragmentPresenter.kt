@@ -37,6 +37,11 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
+import org.oppia.android.app.model.QuestionPlayerFragmentArguments
+import org.oppia.android.app.model.ResumeLessonFragmentArguments
+import org.oppia.android.app.resumelesson.ResumeLessonFragment
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.util.extensions.getProto
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -49,8 +54,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val analyticsController: AnalyticsController,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager
-) {
+  private val splitScreenManager: SplitScreenManager,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
+  ) {
   // TODO(#503): Add tests for the question player.
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -67,6 +73,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
   private lateinit var profileId: ProfileId
+
+  /** Handles the [Fragment.onAttach] portion of [QuestionPlayerFragment]'s lifecycle. */
+  fun handleAttach(context: Context) {
+    fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
+  }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -117,6 +128,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun dismissConceptCard() {
     ConceptCardFragment.dismissAll(fragment.childFragmentManager)
+  }
+
+  private fun retrieveArguments(): QuestionPlayerFragmentArguments {
+    return fragment.requireArguments().getProto(
+      QuestionPlayerFragment.ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance()
+    )
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {

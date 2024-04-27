@@ -1,8 +1,11 @@
 package org.oppia.android.app.topic.questionplayer
 
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -17,6 +20,12 @@ import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.domain.profile.ProfileManagementController
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
 private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
@@ -26,11 +35,14 @@ private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_
 class QuestionPlayerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val questionTrainingController: QuestionTrainingController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val profileManagementController: ProfileManagementController,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
 ) {
   private lateinit var profileId: ProfileId
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var readingTextSize: ReadingTextSize
 
   fun handleOnCreate(profileId: ProfileId) {
     this.profileId = profileId
@@ -50,11 +62,21 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       activity.onBackPressed()
     }
 
+    retrieveReadingTextSize().observe(
+      activity as QuestionPlayerActivity,
+      { result ->
+        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+      }
+    )
+  }
+
+  fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+    this.readingTextSize = readingTextSize
     if (getQuestionPlayerFragment() == null) {
       startTrainingSessionWithCallback {
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance(profileId),
+          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -66,6 +88,36 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         HintsAndSolutionQuestionManagerFragment()
       ).commitNow()
     }
+  }
+
+  private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
+    return Transformations.map(
+      profileManagementController.getProfile(profileId).toLiveData(),
+      ::processReadingTextSizeResult
+    )
+  }
+
+  private fun processReadingTextSizeResult(
+    profileResult: AsyncResult<Profile>
+  ): ReadingTextSize {
+    return when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "QuestionPlayerActivity",
+          "Failed to retrieve profile",
+          profileResult.error
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> {
+        oppiaLogger.d(
+          "QuestionPlayerActivity",
+          "Result is pending"
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Success -> profileResult.value
+    }.readingTextSize
   }
 
   private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? { // ktlint-disable max-line-length
@@ -89,7 +141,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance(profileId),
+          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -134,10 +186,12 @@ class QuestionPlayerActivityPresenter @Inject constructor(
             oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
           is AsyncResult.Failure -> {
             oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
+            setReadingTextSizeNormal()
             activity.finish() // Can't recover from the session failing to stop.
           }
           is AsyncResult.Success -> {
             oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
+            setReadingTextSizeNormal()
             callback()
           }
         }
@@ -211,5 +265,13 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_DIALOG
     ) as? HintsAndSolutionDialogFragment
+  }
+
+  /** Set reading text size normal. */
+  fun setReadingTextSizeNormal() {
+    fontScaleConfigurationUtil.adjustFontScale(
+      context = activity,
+      ReadingTextSize.MEDIUM_TEXT_SIZE
+    )
   }
 }
