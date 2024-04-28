@@ -174,18 +174,6 @@ class RecyclerViewMatcher {
     }
 
     /**
-     * Verifies if the provided text, referenced by its String resource ID, is displayed in a dialog.
-     *
-     * @param textInDialogId The resource ID of the text to verify in the dialog.
-     * @param context The context used to retrieve the actual text from the provided resource ID.
-     */
-    fun verifyTextInDialog(@StringRes textInDialogId: Int, context: Context) {
-      onView(withText(context.getString(textInDialogId)))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-
-    /**
      * Scrolls to the specified position within a RecyclerView.
      *
      * @param position The position to scroll to within the RecyclerView.
