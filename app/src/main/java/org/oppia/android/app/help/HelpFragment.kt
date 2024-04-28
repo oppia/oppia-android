@@ -12,8 +12,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val IS_MULTIPANE_KEY = "HelpFragment.bool_is_multipane"
-
 /** Fragment that contains help in the app. */
 class HelpFragment : InjectableFragment() {
   @Inject

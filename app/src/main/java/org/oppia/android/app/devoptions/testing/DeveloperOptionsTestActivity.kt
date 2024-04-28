@@ -89,9 +89,7 @@ class DeveloperOptionsTestActivity :
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-        .apply {
-          decorateWithUserProfileId(profileId)
-        }
+        intent.decorateWithUserProfileId(profileId)
       return intent
     }
   }

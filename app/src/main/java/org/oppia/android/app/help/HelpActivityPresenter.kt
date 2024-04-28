@@ -348,8 +348,7 @@ class HelpActivityPresenter @Inject constructor(
       PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(R.string.terms_of_service_title)
       )
-      else -> {
-      }
+      else -> {}
     }
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG

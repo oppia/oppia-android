@@ -37,7 +37,7 @@ enum HighlightItem {
 }
 
 // TODO(#59): Isolate this to a test-only proto once possible.
-// Represents the parameters needed to open InputInteractionViewTestActivity.
+// Represents the parameters needed to create InputInteractionViewTestActivity.
 message InputInteractionViewTestActivityParams {
   // Corresponds to the interaction used to initialize the interaction's view in the test
   // environment.
@@ -256,13 +256,13 @@ message AudioLanguageFragmentStateBundle {
   AudioLanguage audio_language = 1;
 }
 
-// Activity Parameters needed to open the policy page.
+// Activity Parameters needed to create the policy page.
 message PoliciesActivityParams {
   // The specific policy page that should be displayed.
   PolicyPage policy_page = 1;
 }
 
-// Fragment arguments needed to open the policy page.
+// Fragment arguments needed to create the policy page.
 message PoliciesFragmentArguments {
   // The specific policy page that should be displayed.
   PolicyPage policy_page = 1;
@@ -304,7 +304,7 @@ message AppLanguageActivityStateBundle {
   OppiaLanguage oppia_language = 1;
 }
 
-// Represents the parameters needed to open SurveyActivity.
+// Represents the parameters needed to create SurveyActivity.
 message SurveyActivityParams {
   // The ID of the profile for which the survey is to be shown.
   ProfileId profile_id = 1;
@@ -316,25 +316,25 @@ message SurveyActivityParams {
   string exploration_id = 3;
 }
 
-// Represents the parameters needed to open TopicActivity.
+// Represents the parameters needed to create TopicActivity.
 message TopicActivityParams {
-  // The ID of the topic to be opened.
+  // The ID of the topic to be loaded.
   string topic_id = 1;
 
-  // The ID of the story to which the opening Topic belongs.
+  // The ID of the story to to be loaded.
   string story_id = 2;
 }
 
 // Arguments required when creating a TopicFragment.
 message TopicFragmentArguments {
-  // The ID of the topic to be opened.
+  // The ID of the topic to be loaded.
   string topic_id = 1;
 
-  // The ID of the story to which the opening Topic belongs.
+  // The ID of the story to to be loaded.
   string story_id = 2;
 }
 
-// Represents the parameters needed to open QuestionPlayerActivity.
+// Represents the parameters needed to create QuestionPlayerActivity.
 message QuestionPlayerActivityParams {
   // Skill ID list for practice.
   repeated string skill_id_list = 1;
@@ -352,26 +352,26 @@ message AdministratorControlActivityStateBundle {
   // Represents profile deletion dialog visibility.
   bool is_profile_deletion_dialog_visible = 3;
 
-  // Stores profile ID which is selected from list of profiles.
+  // Represents the profile ID of the current profile.
   int32 selected_profile_id = 4;
 }
 
 // Arguments required when creating an AdministratorControlsFragment.
 message AdministratorControlsFragmentArguments {
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 1;
 }
 
-// Represents the parameters needed to open MarkChaptersCompletedTestActivity.
+// Represents the parameters needed to create MarkChaptersCompletedTestActivity.
 message MarkChaptersCompletedTestActivityParams{
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
 
-  // The value indicates whether to show a confirmation dialog or not
+  // The value indicates whether to show a confirmation dialog or not.
   bool show_confirmation_notice = 2;
 }
 
-// Represents the parameters needed to open MarkChaptersCompletedActivity.
+// Represents the parameters needed to create MarkChaptersCompletedActivity.
 message MarkChaptersCompletedActivityParams{
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
@@ -410,7 +410,7 @@ message MarkTopicsCompletedFragmentStateBundle {
   repeated string topic_id_list = 1;
 }
 
-// Represents the parameters needed to open FAQSingleActivity.
+// Represents the parameters needed to create FAQSingleActivity.
 message FAQSingleActivityParams {
   // The question to be displayed.
   string question = 1;
@@ -419,7 +419,7 @@ message FAQSingleActivityParams {
   string answer = 2;
 }
 
-// Represents the parameters needed to open LicenseListActivity.
+// Represents the parameters needed to create LicenseListActivity.
 message LicenseListActivityParams {
   // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
@@ -430,11 +430,11 @@ message LicenseListFragmentArguments {
   // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
 
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 2;
 }
 
-// Represents the parameters needed to open LicenseTextViewerActivity.
+// Represents the parameters needed to create LicenseTextViewerActivity.
 message LicenseTextViewerActivityParams {
   // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
@@ -454,11 +454,11 @@ message LicenseTextViewerFragmentArguments{
 
 // Arguments required when creating a ThirdPartyDependencyListFragment.
 message ThirdPartyDependencyListFragmentArguments {
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 1;
 }
 
-// Represents the parameters needed to open HelpActivity.
+// Represents the parameters needed to create HelpActivity.
 message HelpActivityParams {
   // Represents whether the user navigated to the HelpActivity through the navigation drawer or not.
   bool is_from_navigation_drawer = 1;
@@ -469,26 +469,26 @@ message HelpActivityStateBundle{
   // Title for loaded fragment.
   string help_options_title = 1;
 
-  // Loaded fragment's fragment tag.
+  // The loaded fragment's tag.
   string selected_fragment_tag = 2;
 
-  // Selected dependency index from third-party dependencies
+  // Selected dependency index from third-party dependencies.
   int32 selected_dependency_index = 3;
 
   // Selected license index from copyright licenses.
   int32 selected_license_index = 4;
 
-  // Policy page.
+  // Arguments for creating the Policy page.
   PoliciesActivityParams policies_activity_params = 5;
 }
 
 // Arguments required when creating a HelpFragment.
 message HelpFragmentArguments {
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 1;
 }
 
-// Represents the parameters needed to open OptionsActivity.
+// Represents the parameters needed to create OptionsActivity.
 message OptionsActivityParams {
   // Represents whether the user navigated to the OptionsActivity through the navigation drawer or not.
   bool is_from_navigation_drawer = 1;
@@ -499,19 +499,19 @@ message OptionsActivityStateBundle {
   // Title for loaded fragment.
   string selected_options_title = 1;
 
-  // Stores identifier for currently selected fragment.
+  // Stores the identifier of the currently selected fragment.
   string selected_fragment = 2;
 }
 
 // Arguments required when creating an OptionsFragment.
 message OptionsFragmentArguments {
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 1;
 
   // Indicates whether to load the default fragment or not.
   bool is_first_open = 2;
 
-  // Stores identifier for currently selected fragment.
+  // Stores the identifier of the currently selected fragment.
   string selected_fragment = 3;
 }
 
@@ -520,13 +520,13 @@ message HintsAndSolutionDialogFragmentArguments {
   // Id Used in ExplorationController/QuestionAssessmentProgressController to get current state data.
   string id_argument = 1;
 
-  // [State] being viewed by the learner
+  // The [State] being viewed by the learner.
   State state = 2;
 
   // [HelpIndex] corresponding to the current hints/solution configuration.
   HelpIndex help_index = 3;
 
-  //[WrittenTranslationContext] needed to translate the hints/solution
+  // [WrittenTranslationContext] needed to translate the hints/solution.
   WrittenTranslationContext written_translation_context = 4;
 }
 
@@ -557,7 +557,7 @@ message LanguageDialogFragmentArguments {
   int32 selected_index = 2;
 }
 
-// Represents the parameters needed to open StateFragmentTestActivity.
+// Represents the parameters needed to create StateFragmentTestActivity.
 message StateFragmentTestActivityParams {
 
   // The ID of the current profile.
@@ -594,38 +594,37 @@ message StateFragmentArguments {
 
 // Arguments required when creating a ProgressDatabaseFullDialogFragment.
 message ProgressDatabaseFullDialogFragmentArguments {
-  // Oldest check point exploration title.
+  // Oldest checkpoint exploration title.
   string old_saved_exploration_title = 1;
 }
 
-// Represents the parameters needed to open AddProfileActivity.
+// Represents the parameters needed to create AddProfileActivity.
 message AddProfileActivityParams {
   // Color for the new profile that is not already in use.
   int32 color_rgb = 1;
 }
 
-// Represents the parameters needed to open AdminAuthActivity.
+// Represents the parameters needed to create AdminAuthActivity.
 message AdminAuthActivityParams {
   // Admin pin.
   string admin_pin = 1;
 
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 2;
 
-  // Color for the profile.
+  // Color of the profile avatar.
   int32 color_rgb = 3;
 
   // Represents different activities from which AdminPinActivity can be opened.
   int32 admin_pin_enum = 4;
-
 }
 
-// Represents the parameters needed to open AdminPinActivity.
+// Represents the parameters needed to create AdminPinActivity.
 message AdminPinActivityParams {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
-  // Color for the profile.
+  // Color of the profile avatar.
   int32 color_rgb = 2;
 
   // Represents different activities from which AdminPinActivity can be opened.
@@ -638,9 +637,9 @@ message AdminSettingsDialogFragmentArguments {
   string admin_pin = 1;
 }
 
-// Represents the parameters needed to open PinPasswordActivity.
+// Represents the parameters needed to create PinPasswordActivity.
 message PinPasswordActivityParams {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
   // Admin pin.
@@ -649,40 +648,40 @@ message PinPasswordActivityParams {
 
 // Arguments required when creating a ResetPinDialogFragment.
 message ResetPinDialogFragmentArguments {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
   // Current profile name.
   string name = 2;
 }
 
-// Represents the parameters needed to open ProfileEditActivity.
+// Represents the parameters needed to create ProfileEditActivity.
 message ProfileEditActivityParams {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 2;
 }
 
 // Arguments required when creating a ProfileEditFragment.
 message ProfileEditFragmentArguments {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 2;
 }
 
 // Arguments required when creating a ProfileListFragment.
 message ProfileListFragmentArguments {
-  // The value indicates layout is multipane or not.
+  // The value indicates whether the layout is multipane or not.
   bool is_multipane = 1;
 }
 
-// Represents the parameters needed to open ProfileResetPinActivity.
+// Represents the parameters needed to create ProfileResetPinActivity.
 message ProfileResetPinActivityParams {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
   // Indicates whether current user is admin or not.
@@ -691,14 +690,14 @@ message ProfileResetPinActivityParams {
 
 // Arguments required when creating a ProfileResetPinFragment.
 message ProfileResetPinFragmentArguments {
-  // ID for current profile.
+  // ID of the current profile.
   int32 internal_profile_id = 1;
 
   // Indicates whether current user is admin or not.
   bool is_admin = 2;
 }
 
-// Represents the parameters needed to open StoryActivity.
+// Represents the parameters needed to create StoryActivity.
 message StoryActivityParams {
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
@@ -773,7 +772,7 @@ message TopicRevisionFragmentArguments {
 }
 
 
-// Represents the parameters needed to open RevisionCardActivity.
+// Represents the parameters needed to create RevisionCardActivity.
 message RevisionCardActivityParams {
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
@@ -797,7 +796,7 @@ message RevisionCardFragmentArguments {
   int32 sub_topic_list_size = 3;
 }
 
-// Represents the parameters needed to open TestFontScaleConfigurationUtilActivity.
+// Represents the parameters needed to create TestFontScaleConfigurationUtilActivity.
 message TestFontScaleConfigurationUtilActivityParams {
   // The text size at which content in the exploration should be rendered.
   ReadingTextSize reading_text_size = 1;
@@ -821,7 +820,7 @@ message SurveyWelcomeDialogFragmentArguments {
   string exploration_id = 2;
 
   // List of survey questions.
-  repeated int32 question= 3;
+  repeated int32 questions= 3;
 }
 
 // Arguments required when creating a WalkthroughFinalFragment.

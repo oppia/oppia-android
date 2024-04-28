@@ -12,8 +12,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val IS_MULTIPANE_KEY = "ThirdPartyDependencyListFragment.is_multipane"
-
 /** Fragment that contains third-party dependency list in the app. */
 class ThirdPartyDependencyListFragment : InjectableFragment() {
 

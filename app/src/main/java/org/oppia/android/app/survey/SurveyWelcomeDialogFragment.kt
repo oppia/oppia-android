@@ -98,8 +98,8 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
     )
   }
 
-  private fun getQuestions(questionNoList: List<Int>): List<SurveyQuestionName> {
-    return questionNoList.map { number -> SurveyQuestionName.forNumber(number) }
+  private fun getQuestions(questionNumberList: List<Int>): List<SurveyQuestionName> {
+    return questionNumberList.map { number -> SurveyQuestionName.forNumber(number) }
   }
 
   override fun onStart() {
