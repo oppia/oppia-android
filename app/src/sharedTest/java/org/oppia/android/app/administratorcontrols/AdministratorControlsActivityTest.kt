@@ -157,6 +157,8 @@ class AdministratorControlsActivityTest {
   @Inject
   lateinit var context: Context
 
+  private val administratorControlsListRecyclerViewId: Int = R.id.administrator_controls_list
+
   @get:Rule
   val activityTestRule = ActivityTestRule(
     AdministratorControlsActivity::class.java,
