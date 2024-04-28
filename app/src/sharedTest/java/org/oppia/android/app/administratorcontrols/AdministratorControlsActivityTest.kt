@@ -216,14 +216,17 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetView = R.id.general_text_view
       )
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account
+        stringIdToMatch = R.string.administrator_controls_edit_account,
+        context = context
       )
     }
   }
@@ -238,13 +241,15 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetView = R.id.general_text_view
       )
-      verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+      verifyTextViewOnListItemAtPositionDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
-        targetViewId = R.id.edit_account_text_view,
+        targetViewId = R.id.edit_account_text_view
       )
     }
   }
@@ -257,14 +262,17 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
       )
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_profiles
+        stringIdToMatch = R.string.administrator_controls_edit_profiles,
+        context = context
       )
     }
   }
@@ -277,9 +285,9 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message, context)
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -293,7 +301,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.app_version_text_view)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
     }
@@ -322,11 +330,11 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button, context)
     }
   }
 
@@ -338,13 +346,13 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button, context)
     }
   }
 
@@ -356,12 +364,12 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.log_out_text_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button, context)
     }
   }
 
@@ -373,9 +381,9 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message, context)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
@@ -409,7 +417,7 @@ class AdministratorControlsActivityTest {
       )
 
       // Open the app version fragment
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.app_version_text_view)).perform(click())
 
       // Check that the multipane container has only one child and it is the app version fragment
@@ -880,70 +888,6 @@ class AdministratorControlsActivityTest {
 
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
-  }
-
-  private fun verifyItemDisplayedOnAdministratorControlListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(isDisplayed()))
-  }
-
-  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(doesNotExist())
-  }
-
-  private fun verifyTextOnAdministratorListItemAtPosition(
-    itemPosition: Int,
-    targetViewId: Int,
-    @StringRes stringIdToMatch: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetViewId
-      )
-    ).check(matches(withText(context.getString(stringIdToMatch))))
-  }
-
-  private fun verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
-    itemPosition: Int,
-    targetViewId: Int,
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetViewId
-      )
-    ).check(doesNotExist())
-  }
-
-  private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.administrator_controls_list))
-      .perform(scrollToPosition<RecyclerView.ViewHolder>(position))
-  }
-
-  private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
-    onView(withText(context.getString(textInDialogId)))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
