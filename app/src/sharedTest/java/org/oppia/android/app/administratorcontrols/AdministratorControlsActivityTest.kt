@@ -6,7 +6,6 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
@@ -67,6 +66,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.scrollToPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyItemDisplayedOnListItem
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyItemDisplayedOnListItemDoesNotExist
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyTextInDialog
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyTextOnListItemAtPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyTextViewOnListItemAtPositionDoesNotExist
 import org.oppia.android.app.settings.profile.ProfileListActivity
@@ -385,7 +385,7 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message, context)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
@@ -890,12 +890,6 @@ class AdministratorControlsActivityTest {
 
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
-  }
-
-  private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
-    onView(withText(context.getString(textInDialogId)))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

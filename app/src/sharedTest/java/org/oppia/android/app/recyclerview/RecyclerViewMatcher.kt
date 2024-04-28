@@ -12,18 +12,25 @@ import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import javax.inject.Inject
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 // Reference Link: https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
 class RecyclerViewMatcher {
+
   companion object {
+    @Inject
+    lateinit var resourceHandler: AppLanguageResourceHandler
+
     /**
      * This function returns a Matcher for an item inside RecyclerView from a specified position.
      */
@@ -170,6 +177,18 @@ class RecyclerViewMatcher {
           targetViewId = targetViewId
         )
       ).check(ViewAssertions.doesNotExist())
+    }
+
+    /**
+     * Verifies if the provided text, referenced by its String resource ID, is displayed in a dialog.
+     *
+     * @param textInDialogId The resource ID of the text to verify in the dialog.
+     * @param context The context used to retrieve the actual text from the provided resource ID.
+     */
+    fun verifyTextInDialog(@StringRes textInDialogId: Int) {
+      onView(withText(resourceHandler.getStringInLocale(textInDialogId)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
 
     /**
