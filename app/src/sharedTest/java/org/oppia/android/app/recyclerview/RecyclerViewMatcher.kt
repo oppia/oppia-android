@@ -1,11 +1,18 @@
 package org.oppia.android.app.recyclerview
 
+import android.content.Context
 import android.content.res.Resources
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
@@ -73,6 +80,117 @@ class RecyclerViewMatcher {
 
     fun hasGridColumnCount(expectedColumnCount: Int): ViewAssertion {
       return GridLayoutManagerColumnCountAssertion(expectedColumnCount)
+    }
+
+    /**
+     * Verifies if an item at a specified position in a RecyclerView with the given ID contains a target view that is displayed.
+     *
+     * @param recyclerViewId The resource ID of the RecyclerView.
+     * @param itemPosition The position of the item in the RecyclerView.
+     * @param targetView The resource ID of the target view within the item.
+     */
+    fun verifyItemDisplayedOnListItem(
+      recyclerViewId: Int,
+      itemPosition: Int,
+      targetView: Int
+    ) {
+      Espresso.onView(
+        atPositionOnView(
+          recyclerViewId = recyclerViewId,
+          position = itemPosition,
+          targetViewId = targetView
+        )
+      ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    /**
+     * Verifies if an item at a specified position in a RecyclerView with the given ID does not contain a target view.
+     *
+     * @param recyclerViewId The resource ID of the RecyclerView.
+     * @param itemPosition The position of the item in the RecyclerView.
+     * @param targetView The resource ID of the target view within the item.
+     */
+    fun verifyItemDisplayedOnListItemDoesNotExist(
+      recyclerViewId: Int,
+      itemPosition: Int,
+      targetView: Int
+    ) {
+      Espresso.onView(
+        atPositionOnView(
+          recyclerViewId = recyclerViewId,
+          position = itemPosition,
+          targetViewId = targetView
+        )
+      ).check(ViewAssertions.doesNotExist())
+    }
+
+    /**
+     * Verifies if the text of a target view within an item at a specified position in a RecyclerView with the given ID matches the provided string resource.
+     *
+     * @param recyclerViewId The resource ID of the RecyclerView.
+     * @param itemPosition The position of the item in the RecyclerView.
+     * @param targetViewId The resource ID of the target view within the item.
+     * @param stringIdToMatch The resource ID of the string to match against the target view's text.
+     * @param context The context used to access resources.
+     */
+    fun verifyTextOnListItemAtPosition(
+      recyclerViewId: Int,
+      itemPosition: Int,
+      targetViewId: Int,
+      @StringRes stringIdToMatch: Int,
+      context: Context
+    ) {
+      Espresso.onView(
+        atPositionOnView(
+          recyclerViewId = recyclerViewId,
+          position = itemPosition,
+          targetViewId = targetViewId
+        )
+      ).check(ViewAssertions.matches(ViewMatchers.withText(context.getString(stringIdToMatch))))
+    }
+
+    /**
+     * Verifies if a target view within an item at a specified position in a RecyclerView with the given ID does not exist.
+     *
+     * @param recyclerViewId The resource ID of the RecyclerView.
+     * @param itemPosition The position of the item in the RecyclerView.
+     * @param targetViewId The resource ID of the target view within the item.
+     */
+    fun verifyTextViewOnListItemAtPositionDoesNotExist(
+      recyclerViewId: Int,
+      itemPosition: Int,
+      targetViewId: Int
+    ) {
+      Espresso.onView(
+        atPositionOnView(
+          recyclerViewId = recyclerViewId,
+          position = itemPosition,
+          targetViewId = targetViewId
+        )
+      ).check(ViewAssertions.doesNotExist())
+    }
+
+    /**
+     * Verifies if the provided text, referenced by its String resource ID, is displayed in a dialog.
+     *
+     * @param textInDialogId The resource ID of the text to verify in the dialog.
+     * @param context The context used to retrieve the actual text from the provided resource ID.
+     */
+    fun verifyTextInDialog(@StringRes textInDialogId: Int, context: Context) {
+      Espresso.onView(ViewMatchers.withText(context.getString(textInDialogId)))
+        .inRoot(RootMatchers.isDialog())
+        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    /**
+     * Scrolls to the specified position within a RecyclerView.
+     *
+     * @param position The position to scroll to within the RecyclerView.
+     * @param recyclerViewId The resource ID of the RecyclerView to perform scrolling on.
+     */
+    fun scrollToPosition(position: Int, recyclerViewId: Int) {
+      Espresso.onView(ViewMatchers.withId(recyclerViewId))
+        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position))
     }
   }
 
