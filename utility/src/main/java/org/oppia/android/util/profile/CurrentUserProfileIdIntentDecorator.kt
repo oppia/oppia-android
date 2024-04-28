@@ -8,6 +8,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 
+/** Represents key for Profile ID. */
 const val PROFILE_ID_INTENT_DECORATOR = "CurrentUserProfileIdIntentDecorator.profile_id_key"
 private const val PROFILE_ID_BUNDLE_DECORATOR =
   "CurrentUserProfileIdIntentDecorator.profile_id_bundle_key"
