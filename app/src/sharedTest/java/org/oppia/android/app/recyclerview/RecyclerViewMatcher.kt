@@ -6,14 +6,17 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -94,13 +97,13 @@ class RecyclerViewMatcher {
       itemPosition: Int,
       targetView: Int
     ) {
-      Espresso.onView(
+      onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
           targetViewId = targetView
         )
-      ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      ).check(matches(isDisplayed()))
     }
 
     /**
@@ -115,7 +118,7 @@ class RecyclerViewMatcher {
       itemPosition: Int,
       targetView: Int
     ) {
-      Espresso.onView(
+      onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
@@ -140,13 +143,13 @@ class RecyclerViewMatcher {
       @StringRes stringIdToMatch: Int,
       context: Context
     ) {
-      Espresso.onView(
+      onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
           targetViewId = targetViewId
         )
-      ).check(ViewAssertions.matches(ViewMatchers.withText(context.getString(stringIdToMatch))))
+      ).check(matches(withText(context.getString(stringIdToMatch))))
     }
 
     /**
@@ -161,7 +164,7 @@ class RecyclerViewMatcher {
       itemPosition: Int,
       targetViewId: Int
     ) {
-      Espresso.onView(
+      onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
@@ -177,9 +180,9 @@ class RecyclerViewMatcher {
      * @param context The context used to retrieve the actual text from the provided resource ID.
      */
     fun verifyTextInDialog(@StringRes textInDialogId: Int, context: Context) {
-      Espresso.onView(ViewMatchers.withText(context.getString(textInDialogId)))
-        .inRoot(RootMatchers.isDialog())
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      onView(withText(context.getString(textInDialogId)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
 
     /**
@@ -189,8 +192,8 @@ class RecyclerViewMatcher {
      * @param recyclerViewId The resource ID of the RecyclerView to perform scrolling on.
      */
     fun scrollToPosition(position: Int, recyclerViewId: Int) {
-      Espresso.onView(ViewMatchers.withId(recyclerViewId))
-        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position))
+      onView(withId(recyclerViewId))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(position))
     }
   }
 
