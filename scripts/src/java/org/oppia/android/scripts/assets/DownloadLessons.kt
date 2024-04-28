@@ -100,6 +100,10 @@ import org.oppia.proto.v1.structure.UpcomingTopicSummaryDto
 
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
+// TODO: Update this to include a two-step process:
+// 1. Download the latest versions file compatible with this version of the app.
+// 2. Use the version above to pin select versions to download at the time of AAB compilation. This could even be done using Bazel's fetcher for better performance.
+//    - Assumption: images aren't changed after upload, but this needs to be confirmed (that is, if they need to be changed a new image is added to GCS, instead).
 fun main(vararg args: String) {
   check(args.size >= 6) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
