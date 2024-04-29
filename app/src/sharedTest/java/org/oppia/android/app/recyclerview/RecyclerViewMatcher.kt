@@ -21,15 +21,11 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import javax.inject.Inject
 
 // Reference Link: https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
 class RecyclerViewMatcher {
 
   companion object {
-    @Inject
-    lateinit var resourceHandler: AppLanguageResourceHandler
 
     /**
      * This function returns a Matcher for an item inside RecyclerView from a specified position.
@@ -186,7 +182,7 @@ class RecyclerViewMatcher {
      * @param context The context used to retrieve the actual text from the provided resource ID.
      */
     fun verifyTextInDialog(@StringRes textInDialogId: Int) {
-      onView(withText(resourceHandler.getStringInLocale(textInDialogId)))
+      onView(withText(textInDialogId))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
