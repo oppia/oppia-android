@@ -1,6 +1,5 @@
 package org.oppia.android.app.recyclerview
 
-import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import androidx.annotation.StringRes
@@ -136,7 +135,6 @@ class RecyclerViewMatcher {
      * @param itemPosition The position of the item in the RecyclerView.
      * @param targetViewId The resource ID of the target view within the item.
      * @param stringIdToMatch The resource ID of the string to match against the target view's text.
-     * @param context The context used to access resources.
      */
     fun verifyTextOnListItemAtPosition(
       recyclerViewId: Int,
@@ -178,7 +176,6 @@ class RecyclerViewMatcher {
      * Verifies if the provided text, referenced by its String resource ID, is displayed in a dialog.
      *
      * @param textInDialogId The resource ID of the text to verify in the dialog.
-     * @param context The context used to retrieve the actual text from the provided resource ID.
      */
     fun verifyTextInDialog(@StringRes textInDialogId: Int) {
       onView(withText(textInDialogId))
