@@ -180,8 +180,7 @@ class AdministratorControlsFragmentTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_edit_account
       )
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
@@ -192,8 +191,7 @@ class AdministratorControlsFragmentTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_profiles,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
     }
   }
@@ -210,8 +208,7 @@ class AdministratorControlsFragmentTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_label,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
@@ -268,8 +265,7 @@ class AdministratorControlsFragmentTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringIdToMatch = R.string.administrator_controls_app_version,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_app_version
       )
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
@@ -280,8 +276,7 @@ class AdministratorControlsFragmentTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
-        stringIdToMatch = R.string.administrator_controls_log_out,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_log_out
       )
     }
   }

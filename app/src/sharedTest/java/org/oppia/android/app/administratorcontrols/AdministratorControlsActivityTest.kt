@@ -227,8 +227,7 @@ class AdministratorControlsActivityTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_edit_account
       )
     }
   }
@@ -273,8 +272,7 @@ class AdministratorControlsActivityTest {
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_profiles,
-        context = context
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
     }
   }

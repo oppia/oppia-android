@@ -143,7 +143,6 @@ class RecyclerViewMatcher {
       itemPosition: Int,
       targetViewId: Int,
       @StringRes stringIdToMatch: Int,
-      context: Context
     ) {
       onView(
         atPositionOnView(
@@ -151,7 +150,7 @@ class RecyclerViewMatcher {
           position = itemPosition,
           targetViewId = targetViewId
         )
-      ).check(matches(withText(context.getString(stringIdToMatch))))
+      ).check(matches(withText(stringIdToMatch)))
     }
 
     /**
