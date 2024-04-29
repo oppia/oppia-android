@@ -11,7 +11,8 @@ on:
 
 jobs:
   table_of_contents_check:
-    name: Wiki Check Table of Contents match Headers
+    # To verify that the wiki's table of contents matches the headers accurately.
+    name: Check Wiki Table of Contents
     runs-on: ubuntu-20.04
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -23,8 +24,8 @@ jobs:
         with:
           version: 4.0.0
 
-      - name: Wiki Check Table of Contents
-        id: wikichecktoc
+      - name: Check Wiki Table of Contents
+        id: checkWikiToc
         run: |
           bazel run //scripts:wiki_table_of_contents_check -- ${GITHUB_WORKSPACE}
 
