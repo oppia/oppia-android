@@ -2,18 +2,24 @@ package org.oppia.android.app.faq
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -93,6 +99,16 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.model.FAQSingleActivityParams
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [FAQListFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -131,6 +147,96 @@ class FAQListFragmentTest {
       ).check(matches(withText(R.string.featured_questions)))
     }
   }
+
+  @Test
+  fun openFAQListActivity_selectFAQQuestion_opensFAQSingleActivity() {
+    launch(FAQListActivity::class.java).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.faq_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      val args = FAQSingleActivityParams.newBuilder().apply {
+        this.question = getResources().getString(R.string.faq_question_3)
+        this.answer = getResources().getString(R.string.faq_answer_3)
+      }.build()
+      intended(
+        allOf(
+          hasProtoExtra(
+            FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
+            args
+          ),
+          hasComponent(FAQSingleActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openFAQListActivity_changeConfiguration_selectFAQQuestion_opensFAQSingleActivity() {
+    launch(FAQListActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.faq_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      val args = FAQSingleActivityParams.newBuilder().apply {
+        this.question = getResources().getString(R.string.faq_question_3)
+        this.answer = getResources().getString(R.string.faq_answer_3)
+      }.build()
+      intended(
+        allOf(
+          hasProtoExtra(
+            FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
+            args
+          ),
+          hasComponent(FAQSingleActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+
+
+  @Test
+  fun openFaqListActivity_selectQuestionWithOppiaInName_opensFaqSingleActivity() {
+    launch(FAQListActivity::class.java).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.faq_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      val args = FAQSingleActivityParams.newBuilder().apply {
+        this.question = getResources().getString(R.string.faq_question_1, getAppName())
+        this.answer = getResources().getString(R.string.faq_answer_1, getAppName())
+      }.build()
+      intended(
+        allOf(
+          hasProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args),
+          hasComponent(FAQSingleActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
