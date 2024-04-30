@@ -158,8 +158,8 @@ class FAQListFragmentTest {
         )
       ).perform(click())
       val args = FAQSingleActivityParams.newBuilder().apply {
-        this.question = getResources().getString(R.string.faq_question_3)
-        this.answer = getResources().getString(R.string.faq_answer_3)
+        this.question = getResources().getString(R.string.faq_question_create_profile)
+        this.answer = getResources().getString(R.string.faq_answer_create_profile)
       }.build()
       intended(
         allOf(
@@ -184,8 +184,8 @@ class FAQListFragmentTest {
         )
       ).perform(click())
       val args = FAQSingleActivityParams.newBuilder().apply {
-        this.question = getResources().getString(R.string.faq_question_3)
-        this.answer = getResources().getString(R.string.faq_answer_3)
+        this.question = getResources().getString(R.string.faq_question_create_profile)
+        this.answer = getResources().getString(R.string.faq_answer_create_profile)
       }.build()
       intended(
         allOf(
@@ -209,8 +209,8 @@ class FAQListFragmentTest {
         )
       ).perform(click())
       val args = FAQSingleActivityParams.newBuilder().apply {
-        this.question = getResources().getString(R.string.faq_question_1, getAppName())
-        this.answer = getResources().getString(R.string.faq_answer_1, getAppName())
+        this.question = getResources().getString(R.string.faq_question_whats_oppia, getAppName())
+        this.answer = getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
       }.build()
       intended(
         allOf(
