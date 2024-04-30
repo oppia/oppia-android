@@ -33,6 +33,9 @@ class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
   /** Returns whether a certain event has been logged or not, based on the provided [predicate]. */
   fun hasEventLogged(predicate: (EventLog) -> Boolean): Boolean = eventList.find(predicate) != null
 
+  /** Returns a certain event if it has been logged or null, based on the provided [predicate]. */
+  fun getLoggedEvent(predicate: (EventLog) -> Boolean): EventLog? = eventList.find(predicate)
+
   /** Returns the number of logged events that match the provided [predicate]. */
   fun countEvents(predicate: (EventLog) -> Boolean): Int = eventList.count(predicate)
 
