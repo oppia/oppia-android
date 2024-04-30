@@ -62,7 +62,7 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
         PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY,
         ProgressDatabaseFullDialogFragmentArguments.getDefaultInstance()
       )
-        .oldSavedExplorationTitle
+        .oldestSavedExplorationTitle
         ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =

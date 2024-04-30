@@ -595,7 +595,7 @@ message StateFragmentArguments {
 // Arguments required when creating a ProgressDatabaseFullDialogFragment.
 message ProgressDatabaseFullDialogFragmentArguments {
   // Oldest checkpoint exploration title.
-  string old_saved_exploration_title = 1;
+  string oldest_saved_exploration_title = 1;
 }
 
 // Represents the parameters needed to create AddProfileActivity.

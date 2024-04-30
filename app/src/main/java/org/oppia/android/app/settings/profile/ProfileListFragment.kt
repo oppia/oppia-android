@@ -12,8 +12,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val IS_MULTIPANE_ARGUMENT_KEY = "ProfileListFragment.is_multipane"
-
 /** Fragment to display all profiles to admin. */
 class ProfileListFragment : InjectableFragment() {
   @Inject

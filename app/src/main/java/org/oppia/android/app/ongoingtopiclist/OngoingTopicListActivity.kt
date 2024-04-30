@@ -26,9 +26,6 @@ class OngoingTopicListActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY =
-      "OngoingTopicListActivity.profile_id"
-
     /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified profile ID. */
     fun createOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()

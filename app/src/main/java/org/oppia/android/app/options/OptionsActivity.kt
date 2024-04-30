@@ -60,7 +60,7 @@ class OptionsActivity :
     /** Params key for OptionsActivity. */
     const val OPTIONS_ACTIVITY_PARAMS_KEY = "OptionsActivity.params"
 
-    /** saved state key for OptionsActivity. */
+    /** Saved state key for OptionsActivity. */
     const val OPTIONS_ACTIVITY_STATE_KEY = "OptionsActivity.state"
 
     /** Returns an [Intent] to start this activity. */
@@ -190,8 +190,9 @@ class OptionsActivity :
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
     val args = OptionsActivityStateBundle.newBuilder().apply {
-      if (titleTextView != null)
+      if (titleTextView != null) {
         selectedOptionsTitle = titleTextView.text.toString()
+      }
       selectedFragment = this@OptionsActivity.selectedFragment
     }.build()
     outState.putProto(OPTIONS_ACTIVITY_STATE_KEY, args)
