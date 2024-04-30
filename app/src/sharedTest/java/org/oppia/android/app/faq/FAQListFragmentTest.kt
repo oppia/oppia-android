@@ -131,7 +131,6 @@ class FAQListFragmentTest {
       ).check(matches(withText(R.string.featured_questions)))
     }
   }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
