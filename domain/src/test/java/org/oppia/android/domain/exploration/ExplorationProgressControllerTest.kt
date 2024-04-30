@@ -21,6 +21,8 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
