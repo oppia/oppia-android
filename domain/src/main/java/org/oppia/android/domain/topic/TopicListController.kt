@@ -905,7 +905,7 @@ internal fun createDefaultStoryThumbnail(): LessonThumbnail {
 internal fun createStoryThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xa5d3ec)
+    .setBackgroundColorRgb(0x0F63A3)
     .build()
 }
 
@@ -926,7 +926,7 @@ internal fun createStoryThumbnail2(): LessonThumbnail {
 internal fun createStoryThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xa5a2d3)
+    .setBackgroundColorRgb(0x0F63A3)
     .build()
 }
 
@@ -947,7 +947,7 @@ internal fun createChapterThumbnail0(): LessonThumbnail {
 internal fun createChapterThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 
@@ -968,21 +968,21 @@ internal fun createChapterThumbnail3(): LessonThumbnail {
 internal fun createChapterThumbnail4(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
+    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
     .build()
 }
 
 internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 
