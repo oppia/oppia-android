@@ -21,6 +21,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -39,10 +43,15 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.model.FAQSingleActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -85,6 +94,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -99,16 +109,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
-import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
-import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_PARAMS_KEY
-import org.oppia.android.app.model.FAQSingleActivityParams
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [FAQListFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -198,8 +198,6 @@ class FAQListFragmentTest {
       )
     }
   }
-
-
 
   @Test
   fun openFaqListActivity_selectQuestionWithOppiaInName_opensFaqSingleActivity() {
