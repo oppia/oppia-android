@@ -41,7 +41,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
       val args = SurveyWelcomeDialogFragmentArguments.newBuilder().apply {
         this.topicId = topicId
         this.explorationId = explorationId
-        this.addAllQuestion(
+        this.addAllQuestions(
           SurveyWelcomeDialogFragment().extractQuestions(mandatoryQuestionNames).asList()
         )
       }.build()
@@ -86,7 +86,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
     val profileId = arguments.extractCurrentUserProfileId()
     val topicId = args.topicId!!
     val explorationId = args.explorationId!!
-    val surveyQuestions = getQuestions(args.questionList)
+    val surveyQuestions = getQuestions(args.questionsList)
 
     return surveyWelcomeDialogFragmentPresenter.handleCreateView(
       inflater,

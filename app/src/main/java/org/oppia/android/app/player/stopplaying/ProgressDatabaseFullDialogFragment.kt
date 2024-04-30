@@ -41,7 +41,7 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
       oldestSavedExplorationTitle: String
     ): ProgressDatabaseFullDialogFragment {
       val args = ProgressDatabaseFullDialogFragmentArguments.newBuilder()
-        .setOldSavedExplorationTitle(oldestSavedExplorationTitle).build()
+        .setOldestSavedExplorationTitle(oldestSavedExplorationTitle).build()
       return ProgressDatabaseFullDialogFragment().apply {
         arguments = Bundle().apply {
           putProto(PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
