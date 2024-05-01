@@ -86,18 +86,20 @@ class FeatureFlagsLoggerTest {
   @Parameter lateinit var flagName: String
 
   @Before
-  fun setup() {
+  fun setUp() {
     setUpTestApplicationComponent()
   }
 
   @Test
-  fun testLogFeatureFlags_logFeatureFlags_hasCorrectUserUUID() {
+  fun testLogFeatureFlags_logFeatureFlags_hasEmptyUserUuid() {
+    // TODO(#5341):The user UUID is not set in this test context and is expected to be empty.
+    //  This test should be updated if the user UUID is set in the future.
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasUniqueUserUuidThat().isEqualTo("")
+      hasUniqueUserUuidThat().isEmpty()
     }
   }
 
@@ -152,14 +154,14 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
-    val expectedClassNames = 12
+    val expectedFeatureFlagCount = 12
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
-      hasFeatureFlagItemCountThat().isEqualTo(expectedClassNames)
+      hasFeatureFlagItemCountThat().isEqualTo(expectedFeatureFlagCount)
     }
   }
 
