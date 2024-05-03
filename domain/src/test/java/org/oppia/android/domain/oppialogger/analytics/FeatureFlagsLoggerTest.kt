@@ -93,7 +93,6 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logFeatureFlags_hasEmptyUserUuid() {
     // TODO(#5341):The user UUID is not set in this test context and is expected to be empty.
-    //  This test should be updated if the user UUID is set in the future.
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
 
