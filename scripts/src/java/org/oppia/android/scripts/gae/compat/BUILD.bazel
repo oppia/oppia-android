@@ -23,6 +23,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/gae/json:api",
         "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
         "//scripts/src/java/org/oppia/android/scripts/gae/proto:localization_tracker",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_list_versions_java_proto",
         "//third_party:oppia_proto_api_java_protos",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],

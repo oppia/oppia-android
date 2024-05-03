@@ -38,6 +38,7 @@ import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestStat
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicContentProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicListProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicSummaryProtoVersion
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase.CONCEPT_CARD
@@ -67,7 +68,8 @@ class GaeAndroidEndpointJsonImpl(
   forceCacheLoad: Boolean,
   private val coroutineDispatcher: CoroutineDispatcher,
   private val topicDependencies: Map<String, Set<String>>,
-  private val imageDownloader: ImageDownloader
+  private val imageDownloader: ImageDownloader,
+  private val forcedVersions: DownloadListVersions?
 ) : GaeAndroidEndpoint {
   private val activityService by lazy {
     AndroidActivityHandlerService(
@@ -115,7 +117,8 @@ class GaeAndroidEndpointJsonImpl(
           supportedAudioFormats = SUPPORTED_AUDIO_FORMATS,
           supportedHtmlTags = SUPPORTED_HTML_TAGS,
           supportedStateSchemaVersion = SUPPORTED_STATE_SCHEMA_VERSION,
-          topicDependencies = topicDependencies
+          topicDependencies = topicDependencies,
+          forcedVersions = forcedVersions
         )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()

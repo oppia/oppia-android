@@ -5,6 +5,20 @@ Libraries corresponding to asset transformation & download scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
+    name = "download_lesson_list_lib",
+    testonly = True,
+    srcs = ["DownloadLessonList.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/src/java/org/oppia/android/scripts/gae",
+        "//scripts/src/java/org/oppia/android/scripts/gae:gae_json_impl",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:proto_version_provider",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_list_versions_java_proto",
+    ],
+)
+
+kt_jvm_library(
     name = "download_lessons_lib",
     testonly = True,
     srcs = ["DownloadLessons.kt"],

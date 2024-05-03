@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+message DownloadListVersions {
+  repeated TopicInfo tracked_topic_info = 1;
+  repeated SkillInfo tracked_skill_info = 2;
+
+  message TopicInfo {
+    string id = 1;
+    int32 content_version = 2;
+    repeated StoryInfo story_info = 3;
+    repeated SubtopicInfo subtopic_info = 4;
+  }
+
+  message StoryInfo {
+    string id = 1;
+    int32 content_version = 2;
+    repeated ChapterInfo chapter_info = 3;
+  }
+
+  message ChapterInfo {
+    string exploration_id = 1;
+    int32 exploration_content_version = 2;
+  }
+
+  message SubtopicInfo {
+    int32 index = 1;
+    int32 content_version = 2;
+  }
+
+  message SkillInfo {
+    string id = 1;
+    int32 content_version = 2;
+  }
+}

@@ -48,6 +48,7 @@ import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolve
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContainerId
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.DESCRIPTION
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.TITLE
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.structure.LanguageType
 
 // TODO: Check SVG compatibility?
@@ -360,7 +361,8 @@ class StructureCompatibilityChecker(
     val supportedAudioFormats: Set<String>,
     val supportedHtmlTags: Set<String>,
     val supportedStateSchemaVersion: Int,
-    val topicDependencies: Map<String, Set<String>>
+    val topicDependencies: Map<String, Set<String>>,
+    val forcedVersions: DownloadListVersions?
   ) {
     fun supportsImageWithExtension(extension: String): Boolean =
       supportedImageFormats.any { it.equals(extension, ignoreCase = true) }

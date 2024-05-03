@@ -228,6 +228,21 @@ kt_jvm_binary(
 )
 
 java_binary(
+    name = "download_lesson_list",
+    testonly = True,
+    # Hide warnings that come from https://github.com/square/retrofit/issues/3341.
+    jvm_flags = [
+        "--add-opens",
+        "java.base/java.lang.invoke=ALL-UNNAMED",
+    ],
+    main_class = "org.oppia.android.scripts.assets.DownloadLessonListKt",
+    visibility = ["//visibility:public"],  # TODO: Revert this when the script no longer needs to be referenced on develop.
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/assets:download_lesson_list_lib",
+    ],
+)
+
+java_binary(
     name = "download_lessons",
     testonly = True,
     # Hide warnings that come from https://github.com/square/retrofit/issues/3341.
@@ -236,8 +251,8 @@ java_binary(
         "java.base/java.lang.invoke=ALL-UNNAMED",
         "-Xmx16g",  # Image conversion can require a lot of RAM.
     ],
-    visibility = ["//visibility:public"],  # TODO: Revert this when the script no longer needs to be referenced on develop.
     main_class = "org.oppia.android.scripts.assets.DownloadLessonsKt",
+    visibility = ["//visibility:public"],  # TODO: Revert this when the script no longer needs to be referenced on develop.
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/assets:download_lessons_lib",
     ],

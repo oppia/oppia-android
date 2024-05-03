@@ -49,6 +49,7 @@ import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageContainerType
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageType
 import org.oppia.android.scripts.gae.proto.ImageDownloader
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase
 import org.oppia.proto.v1.api.TopicContentResponseDto
@@ -100,14 +101,11 @@ import org.oppia.proto.v1.structure.UpcomingTopicSummaryDto
 
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
-// TODO: Update this to include a two-step process:
-// 1. Download the latest versions file compatible with this version of the app.
-// 2. Use the version above to pin select versions to download at the time of AAB compilation. This could even be done using Bazel's fetcher for better performance.
-//    - Assumption: images aren't changed after upload, but this needs to be confirmed (that is, if they need to be changed a new image is added to GCS, instead).
 fun main(vararg args: String) {
-  check(args.size >= 6) {
+  check(args.size == 8) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
-      " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force> [/cache/dir] [test,topic,ids]"
+      " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force>" +
+      " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]>"
   }
 
   val baseUrl = args[0]
@@ -116,17 +114,17 @@ fun main(vararg args: String) {
   val apiSecretPath = args[3]
   val outputDirPath = args[4]
   val cacheModeLine = args[5]
-  val (cacheDirPath, force) = when (val cacheMode = cacheModeLine.removePrefix("cache_mode=")) {
-    "none" -> null to false
-    "lazy" -> args[6] to false
-    "force" -> args[6] to true
+  val forceCacheLoad = when (val cacheMode = cacheModeLine.removePrefix("cache_mode=")) {
+    "none" -> false
+    "lazy" -> false
+    "force" -> true
     else -> error("Invalid cache_mode: $cacheMode.")
   }
-  val cacheDir = cacheDirPath?.let {
-    File(cacheDirPath).absoluteFile.normalize().also {
-      check(if (!it.exists()) it.mkdirs() else it.isDirectory) {
-        "Expected cache directory to exist or to be creatable: $cacheDirPath."
-      }
+  val cacheDirPath = args[6]
+  val downloadListVersionsPath = args[7]
+  val cacheDir = File(cacheDirPath).absoluteFile.normalize().also {
+    check(if (!it.exists()) it.mkdirs() else it.isDirectory) {
+      "Expected cache directory to exist or to be creatable: $cacheDirPath."
     }
   }
   val outputDir = File(outputDirPath).absoluteFile.normalize().also {
@@ -135,25 +133,38 @@ fun main(vararg args: String) {
     }
   }
 
-  val baseArgCount = if (cacheDirPath == null) 6 else 7
-  val testTopicIds = args.getOrNull(baseArgCount)?.split(',')?.toSet() ?: setOf()
   val apiSecretFile = File(apiSecretPath).absoluteFile.normalize().also {
     check(it.exists() && it.isFile) { "Expected API secret file to exist: $apiSecretPath." }
   }
+  val downloadListVersionsFile = File(downloadListVersionsPath).absoluteFile.normalize().also {
+    check(it.exists() && it.isFile) {
+      "Expected versions proto file to exist: $downloadListVersionsPath."
+    }
+  }
   val apiSecret = apiSecretFile.readText().trim()
+  val downloadListVersions = when (downloadListVersionsFile.extension) {
+    "pb" -> downloadListVersionsFile.inputStream().buffered().use(DownloadListVersions::parseFrom)
+    "textproto" -> // TODO: Force pb to be used.
+      TextFormat.parse(downloadListVersionsFile.readText(), DownloadListVersions::class.java)
+    else -> error("Invalid extension for versions proto file: $downloadListVersionsPath.")
+  }
+
+  println("Using $downloadListVersionsPath to force structure versions for determinism.")
   val downloader =
-    DownloadLessons(baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, force, testTopicIds)
+    LessonDownloader(
+      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, forceCacheLoad, downloadListVersions
+    )
   downloader.downloadLessons(outputDir)
 }
 
-class DownloadLessons(
+class LessonDownloader(
   gaeBaseUrl: String,
   gcsBaseUrl: String,
   gcsBucket: String,
   apiSecret: String,
   private val cacheDir: File?,
   private val forceCacheLoad: Boolean,
-  testTopicIds: Set<String>
+  downloadListVersions: DownloadListVersions
 ) {
   private val threadPool by lazy {
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
@@ -171,8 +182,9 @@ class DownloadLessons(
       cacheDir,
       forceCacheLoad,
       coroutineDispatcher,
-      topicDependencies = topicDependenciesTable + testTopicIds.associateWith { setOf() },
-      imageDownloader
+      topicDependencies = topicDependenciesTable,
+      imageDownloader,
+      forcedVersions = downloadListVersions
     )
   }
   private val textFormat by lazy { TextFormat.printer() }
@@ -1899,7 +1911,7 @@ class DownloadLessons(
 
   private companion object {
     private val CLIENT_CONTEXT = AndroidClientContextDto.newBuilder().apply {
-      appVersionName = checkNotNull(DownloadLessons::class.qualifiedName)
+      appVersionName = checkNotNull(LessonDownloader::class.qualifiedName)
       appVersionCode = 0
     }.build()
     private const val CONSOLE_COLUMN_COUNT = 80
