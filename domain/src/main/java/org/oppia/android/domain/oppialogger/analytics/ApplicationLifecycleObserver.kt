@@ -176,7 +176,6 @@ class ApplicationLifecycleObserver @Inject constructor(
 
   private fun logAllFeatureFlags() {
     CoroutineScope(backgroundDispatcher).launch {
-      // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
       val appSessionId = loggingIdentifierController.getAppSessionIdFlow().value
       featureFlagsLogger.logAllFeatureFlags(appSessionId)
     }.invokeOnCompletion { failure ->

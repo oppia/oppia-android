@@ -289,6 +289,19 @@ class LoggingIdentifierControllerTest {
     assertThat(appSessionId).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
   }
 
+  @Test
+  fun testGetAppSessionId_secondAppOpen_providerReturnsDifferentIdValue() {
+    val installationId1 = monitorFactory
+      .waitForNextSuccessfulResult(loggingIdentifierController.getAppSessionId())
+    assertThat(installationId1).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
+
+    loggingIdentifierController.updateAppSessionId() // Simulate a new app session.
+
+    val installationId2 =
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getAppSessionId())
+    assertThat(installationId2).isEqualTo("5e6269a9-6bad-3fa2-a5e0-d6b2185f0ffb")
+  }
+
   private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
   }
