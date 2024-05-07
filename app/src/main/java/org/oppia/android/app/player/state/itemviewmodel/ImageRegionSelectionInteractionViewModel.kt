@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -9,6 +10,7 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -31,6 +33,9 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
+  private var pendingAnswerError: String? = null
+  var errorMessage = ObservableField<String>("")
+  private var isDefaultRegionClicked = false
   var answerText: CharSequence = ""
   val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
@@ -49,25 +54,58 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            pendingAnswerError = null,
-            inputAnswerAvailable = answerText.isNotEmpty()
+            pendingAnswerError = pendingAnswerError,
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    errorMessage.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
+    errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
+    )
   }
 
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
+
     when (region) {
       is DefaultRegionClickedEvent -> {
         answerText = ""
         isAnswerAvailable.set(false)
+        isDefaultRegionClicked = true
       }
       is NamedRegionClickedEvent -> {
         answerText = region.regionLabel
         isAnswerAvailable.set(true)
       }
     }
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
+  }
+
+  /** It checks the pending error for the current image region input, and correspondingly updates the error string based on the specified error category. */
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    when (category) {
+      AnswerErrorCategory.REAL_TIME -> {
+        pendingAnswerError = null
+      }
+
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        if (answerText.isNotEmpty() || isDefaultRegionClicked) {
+          pendingAnswerError = null
+        } else {
+          pendingAnswerError =
+            ImageRegionParsingUiError.createFromParsingError(
+              getSubmitTimeError(answerText.toString())
+            ).getErrorMessageFromStringRes(resourceHandler)
+        }
+      }
+    }
+
+    errorMessage.set(pendingAnswerError)
+    return pendingAnswerError
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -91,10 +129,60 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       .build()
   }
 
+  /**
+   * Returns [ImageRegionParsingError.EMPTY_INPUT] if input is blank, or
+   * [TextParsingError.VALID] if input is not empty.
+   */
+  fun getSubmitTimeError(text: String): ImageRegionParsingError {
+    if (text.isNullOrBlank()) {
+      return ImageRegionParsingError.EMPTY_INPUT
+    }
+    return ImageRegionParsingError.VALID
+  }
+
+  /** Represents errors that can occur when parsing region name. */
+  enum class ImageRegionParsingError {
+
+    /** Indicates that the considered string is a valid. */
+    VALID,
+
+    /** Indicates that the input text was empty. */
+    EMPTY_INPUT
+  }
+
+  enum class ImageRegionParsingUiError(@StringRes private var error: Int?) {
+    /** Corresponds to [ImageRegionParsingError.VALID]. */
+    VALID(error = null),
+
+    /** Corresponds to [ImageRegionParsingError.EMPTY_INPUT]. */
+    EMPTY_INPUT(error = R.string.image_error_empty_input);
+
+    /**
+     * Returns the string corresponding to this error's string resources, or null if there is none.
+     */
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+      error?.let(resourceHandler::getStringInLocale)
+
+    companion object {
+      /**
+       * Returns the [ImageRegionParsingUiError] corresponding to the specified [ImageRegionParsingError].
+       */
+      fun createFromParsingError(parsingError: ImageRegionParsingError): ImageRegionParsingUiError {
+        return when (parsingError) {
+
+          ImageRegionParsingError.VALID -> VALID
+
+          ImageRegionParsingError.EMPTY_INPUT -> EMPTY_INPUT
+        }
+      }
+    }
+  }
+
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
     private val resourceHandler: AppLanguageResourceHandler
   ) : InteractionItemFactory {
+
     override fun create(
       entityId: String,
       hasConversationView: Boolean,

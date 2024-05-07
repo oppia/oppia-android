@@ -67,6 +67,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -127,7 +128,7 @@ class AppCompatCheckBoxBindingAdaptersTest {
     activityRule.scenario.onActivity {
       val appCompatCheckBox: AppCompatCheckBox = getAppCompatCheckBox(it)
       setButtonTint(appCompatCheckBox, colorRgb)
-      assertThat(appCompatCheckBox.supportButtonTintList?.defaultColor).isEqualTo(colorRgb)
+      assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
@@ -169,7 +170,8 @@ class AppCompatCheckBoxBindingAdaptersTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
 

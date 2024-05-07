@@ -89,6 +89,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -334,7 +335,7 @@ class AudioFragmentTest {
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText("OK")).inRoot(isDialog()).perform(click())
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon))
@@ -482,7 +483,8 @@ class AudioFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

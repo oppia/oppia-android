@@ -45,8 +45,18 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.OPEN_PROFILE_CHOOSER -> "open_profile_chooser"
       ActivityContextCase.REACH_INVESTED_ENGAGEMENT -> "reached_invested_engagement"
       ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE -> "switch_in_lesson_language"
+      ActivityContextCase.SHOW_SURVEY_POPUP -> "show_survey_popup"
+      ActivityContextCase.BEGIN_SURVEY -> "begin_survey"
+      ActivityContextCase.ABANDON_SURVEY -> "abandon_survey"
+      ActivityContextCase.MANDATORY_RESPONSE -> "mandatory_response"
+      ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG -> "failed_analytics_log"
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "unknown_activity_context"
+      ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
+      ActivityContextCase.CONSOLE_LOG -> "console_log"
+      ActivityContextCase.RETROFIT_CALL_CONTEXT -> "retrofit_call_context"
+      ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT -> "retrofit_call_failed_context"
+      ActivityContextCase.APP_IN_FOREGROUND_TIME -> "app_in_foreground_time"
     }
   }
 }

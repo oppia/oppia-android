@@ -48,6 +48,7 @@ oppia_proto_library(
         ":exploration_proto",
         ":languages_proto",
         ":profile_proto",
+        ":survey_proto",
     ],
 )
 
@@ -151,6 +152,18 @@ java_lite_proto_library(
     name = "onboarding_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":onboarding_proto"],
+)
+
+oppia_proto_library(
+    name = "deprecation_proto",
+    srcs = ["deprecation.proto"],
+    deps = [":version_proto"],
+)
+
+java_lite_proto_library(
+    name = "deprecation_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":deprecation_proto"],
 )
 
 oppia_proto_library(
@@ -260,7 +273,10 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "feedback_reporting_proto",
     srcs = ["feedback_reporting.proto"],
-    deps = [":profile_proto"],
+    deps = [
+        ":languages_proto",
+        ":profile_proto",
+    ],
 )
 
 java_lite_proto_library(
@@ -337,6 +353,7 @@ oppia_proto_library(
     name = "survey_proto",
     srcs = ["survey.proto"],
     visibility = ["//:oppia_api_visibility"],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(

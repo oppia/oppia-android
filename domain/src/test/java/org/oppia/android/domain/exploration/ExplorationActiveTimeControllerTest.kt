@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
@@ -95,6 +96,11 @@ class ExplorationActiveTimeControllerTest {
 
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+
+  @Before
+  fun setUp() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+  }
 
   @Test
   fun testSessionTimer_explorationStartedCallbackReceived_startsSessionTimer() {
@@ -223,7 +229,7 @@ class ExplorationActiveTimeControllerTest {
   fun testStopTimer_beforeStarting_isFailure() {
     setUpTestApplicationComponent()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       stopExploration()
     }
     assertThat(exception)

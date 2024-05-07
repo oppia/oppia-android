@@ -28,10 +28,8 @@
       android:elevation="4dp"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
-      app:add_shadow="true"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:shadow_radius="8"
       app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
       profile:src="@{viewModel.profile.avatar}" />
 
@@ -42,6 +40,7 @@
       android:elevation="4dp"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
+      android:paddingEnd="0dp"
       android:paddingTop="12dp"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
       app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"

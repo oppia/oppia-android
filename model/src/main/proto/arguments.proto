@@ -46,6 +46,18 @@ message InputInteractionViewTestActivityParams {
   // Corresponds to the translation context which may affect the interaction's classifiers during
   // tests.
   WrittenTranslationContext written_translation_context = 2;
+}
+
+// TODO(#59): Isolate this to a test-only proto once possible.
+// Represents the parameters needed to open MathExpressionInteractionsViewTestActivity.
+message MathExpressionInteractionsViewTestActivityParams {
+  // Corresponds to the interaction used to initialize the interaction's view in the test
+  // environment.
+  Interaction interaction = 1;
+
+  // Corresponds to the translation context which may affect the interaction's classifiers during
+  // tests.
+  WrittenTranslationContext written_translation_context = 2;
 
   // Indicates that a math interaction should be displayed for this activity, and indicates which
   // one is being used in tests.
@@ -302,4 +314,15 @@ message AppLanguageActivityParams {
 message AppLanguageActivityStateBundle {
   // The default app language selected by the user.
   OppiaLanguage oppia_language = 1;
+}
+
+message SurveyActivityParams {
+  // The ID of the profile for which the survey is to be shown.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the triggering exploration belongs.
+  string topic_id = 2;
+
+  // The ID of the triggering exploration.
+  string exploration_id = 3;
 }

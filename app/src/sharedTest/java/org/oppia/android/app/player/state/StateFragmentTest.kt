@@ -28,6 +28,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
+import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -157,6 +158,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -167,6 +169,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -215,6 +218,7 @@ class StateFragmentTest {
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -306,7 +310,7 @@ class StateFragmentTest {
 
       clickContinueInteractionButton()
 
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
@@ -443,6 +447,24 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric tests don't rotate like this to recreate activity
+  fun testStateFragment_loadExp_invalidAnswer_changeConfiguration_submitButtonIsDisplayed() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/")
+
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -539,7 +561,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -550,12 +572,12 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasEnabledSubmitButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -568,7 +590,27 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_submitWithoutAnswer_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      clickSubmitAnswerButton()
+      onView(withId(R.id.selection_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.selection_error_empty_input
+            )
+          )
+        )
     }
   }
 
@@ -641,7 +683,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -652,14 +694,15 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -670,9 +713,10 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -703,6 +747,96 @@ class StateFragmentTest {
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
       onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_submitWithoutArranging_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickSubmitAnswerButton()
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            withText(
+              R.string.drag_and_drop_interaction_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Drag and drop interaction with grouping.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
     }
   }
 
@@ -2697,7 +2831,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2713,7 +2847,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2729,7 +2863,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2781,7 +2915,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2798,7 +2932,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -2868,7 +3002,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3035,7 +3169,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3052,7 +3186,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3069,7 +3203,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3121,7 +3255,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3138,7 +3272,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3209,7 +3343,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3245,7 +3379,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3426,7 +3560,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3443,7 +3577,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3460,7 +3594,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3477,7 +3611,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3512,7 +3646,7 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3547,7 +3681,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3564,7 +3698,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3661,7 +3795,7 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3720,7 +3854,7 @@ class StateFragmentTest {
       // verify that the two sides are multiples of each other).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -3737,7 +3871,7 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
@@ -4183,6 +4317,258 @@ class StateFragmentTest {
           targetViewId = R.id.item_selection_checkbox
         )
       ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_lateNight_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_earlyMorning_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_midMorning_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_afternoon_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_evening_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_allGatingConditionsMet_surveyDismissed_popupDoesNotShowAgain() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.maybe_later_button))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Check that the fragment is removed.
+      // When the survey popup is shown, the lastShownDateProvider is updated with current time,
+      // consequently updating the combined gating data provider. Recomputation of the gating result
+      // should not re-trigger the survey.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_surveyFeatureOff_allGatingConditionsMet_noSurveyPopup() {
+    // Survey Gating conditions are: isPastGracePeriod, has achieved minimum aggregate exploration
+    // time of 5min in a topic, and is within the hours of 9am and 10pm in the user's local time.
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp for computing the grace period.
+
+    setUpTestWithSurveyFeatureOff()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
+      // subscribers of an update.
+      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -4684,6 +5070,11 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
   }
 
+  private fun verifySubmitAnswerButtonIsEnabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
@@ -4730,8 +5121,17 @@ class StateFragmentTest {
     setUpTest()
   }
 
+  private fun setUpTestWithSurveyFeatureOn() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithSurveyFeatureOff() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    setUpTest()
+  }
+
   private fun setUpTest() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -4940,7 +5340,8 @@ class StateFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -4974,5 +5375,28 @@ class StateFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    // Date & time: Wed Apr 24 2019 08:22:03 GMT.
+    private const val EARLY_MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+
+    // Date & time: Wed Apr 24 2019 10:30:12 GMT.
+    private const val MID_MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
+
+    // Date & time: Tue Apr 23 2019 14:22:00 GMT.
+    private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
+
+    // Date & time: Tue Apr 23 2019 21:26:12 GMT.
+    private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556054772000
+
+    // Date & time: Tue Apr 23 2019 23:22:00 GMT.
+    private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
+
+    // Exploration play through time less than the required 5 min
+    private const val SESSION_LENGTH_SHORT = 120000L
+
+    // Exploration play through time greater than the required 5 min
+    private const val SESSION_LENGTH_LONG = 360000L
   }
 }

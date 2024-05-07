@@ -84,14 +84,15 @@
             android:fontFamily="sans-serif"
             android:text="@{viewModel.storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
             android:textColor="@color/component_color_shared_primary_text_color"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="horizontal">
+          android:orientation="horizontal"
+          android:baselineAligned="false">
 
           <LinearLayout
             android:id="@+id/story_name_chapter_count_container"

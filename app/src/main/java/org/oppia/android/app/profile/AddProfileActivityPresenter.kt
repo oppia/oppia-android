@@ -63,8 +63,9 @@ class AddProfileActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = profileViewModel
     }
-    if (!enableDownloadsSupport.value) {
+    if (enableDownloadsSupport.value) {
       binding.addProfileActivityAllowDownloadConstraintLayout.setOnClickListener {
+        // Negating logic to sync with the switch component state
         allowDownloadAccess = !allowDownloadAccess
         binding.addProfileActivityAllowDownloadSwitch.isChecked = allowDownloadAccess
       }

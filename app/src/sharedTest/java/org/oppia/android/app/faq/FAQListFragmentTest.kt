@@ -80,6 +80,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -146,18 +147,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
+          position = 3
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
+            getResources().getString(R.string.faq_question_create_profile)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
+            getResources().getString(R.string.faq_answer_create_profile)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -172,18 +173,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
+          position = 3
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_1)
+            getResources().getString(R.string.faq_question_create_profile)
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_1)
+            getResources().getString(R.string.faq_answer_create_profile)
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -197,18 +198,18 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 4
+          position = 1
         )
       ).perform(click())
       intended(
         allOf(
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_4, getAppName())
+            getResources().getString(R.string.faq_question_whats_oppia, getAppName())
           ),
           hasExtra(
             FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_4, getAppName())
+            getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -253,7 +254,8 @@ class FAQListFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

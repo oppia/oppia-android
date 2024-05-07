@@ -67,11 +67,8 @@ The following files have been added for maintaining the colors :
   	<color name="component_color_add_profile_activity_label_text_color">@color/primary_text_color</color>
   	<color name="component_color_add_profile_activity_switch_text_color">@color/dark_text_color</color>
 	```
-4. **`colors_migrating.xml`**<br>
-	This file contains color declarations which are supposed to be in color_defs.xml but has not been renamed yet to have actual color name instead of names linked to their use and components. This is a temporary measure to make sure other 4 color files follows the convention decided for them.
-	This file should be deleted after all colors have been shifted to `color_defs.xml`.<br>
 
-_Note:_ 
+_Note:_
 - *All color names should strictly follow `snake_case` naming convention.*<br>
 - *All colors in `component_colors.xml` and `color_palette.xml` should have `_color` as suffix and just the opposite for `color_defs.xml`*<br>
 - *All color declaration must have their parent file name as prefix of their name, i.e. "`<file_name>_<color_name>`" (Look at the color name examples for better understanding.)*
@@ -81,22 +78,9 @@ _Note:_
 <img src="https://user-images.githubusercontent.com/76056229/153405110-a1c547b4-e8b8-4539-89dd-efe15dbb1b0d.png" width="700px" alt="visual representation of color hierarchy"></p>
 
 ## Working with the layouts
-Currently most of the layouts are directly referencing colors from `color_defs.xml`, they don't have separate colors for day and night mode. Our goal here is to make sure that views and layouts are using specified colors for day and night wherever applicable.
 
-You can refer to the design mocks for expected final result : [Dark Mode Mocks](https://xd.adobe.com/view/c05e9343-60f6-4c11-84ac-c756b75b940f-950d/grid/)
-
-#### How to achieve this goal?
-Here is how I would go around working with any particular layout...<br>
-
-- Replace all the generic colors in the layout with something more specific to the component by defining it in the `component_colors.xml`, generally it should be named in the format *`component_color_<activity_name>_<component_name>_color`*. 
-
-- Go through the mock for the concerned activity and note down which component of the app needs separate colors for day and night modes. The mock has provided hex color codes for all the elements in the UI, if any of the colors is not already present in the `color_defs.xml` then add it to the file with the actual color name.
-
-- Now, the newly defined colors in `component_colors.xml` should reference to something in `color_palette.xml`, define new colors in `color_palette.xml` based on general use case if not already defined. You will need to define same colors twice, in `values\color_palette.xml` as well as `values-night\color_palette.xml`. Both these declarations can be same as well, if there is no difference in the mocks for day and night mode. Make sure `color_palette.xml` is using colors from `color_defs.xml` only.
-
-Naming these colors can be bit tricky so it is suggested to take help from already exisitng colors in these files.
-
-In short, the general idea is to make sure layouts reference colors only from `component_colors.xml`, which is then referencing a version of `color_palette.xml` based on the active theme, making sure all the color declarations are as per the conventions decided for them.
+- Naming these colors can be bit tricky so it is suggested to take help from already exisitng colors in these files.
+- The general idea is to make sure layouts reference colors only from `component_colors.xml`, which is then referencing a version of `color_palette.xml` based on the active theme, making sure all the color declarations are as per the conventions decided for them.
 
 *Tip: Use layout Inspector to know more about targeted views.*
 
@@ -104,3 +88,28 @@ In short, the general idea is to make sure layouts reference colors only from `c
 We suggest running the app on an API 30 Google Pixel emulator using the system-wide dark mode option from settings.<br>
 
 Some other skins of android might force their own version of dark mode to screens not having dark mode support yet.
+
+## How is dark-mode implemented currently?
+_Disclaimer: The current designs in the android code do not match the [mocks](https://xd.adobe.com/view/c05e9343-60f6-4c11-84ac-c756b75b940f-950d/grid/)  fully because the mocks were inconsistent across various screens and also there were some UI parts where we don’t have dark-mode mocks entirely._
+
+These rules were followed while implementing dark-mode designs in android app:
+- Avoid introducing new colors in the codebase as much as possible. For example, if there are two colors `#727272` and another `#737373` both of which have slight differences only, then use only one color, whichever is getting used more in general on similar screens.
+- Keep the UI for similar screens consistent. For example: the colors of all screens where a pin is entered for authentication like `Add Profile`, `Pin Verification`, `Admin Auth`, etc should have similar colors in both dark mode and light mode.
+- Similar views should be consistent. Best example for this is Toolbar/ActionBar. In current dark-mode designs the toolbar color is very inconsistent, so to remove any confusion we have kept the background color of all toolbars the same for dark mode (with some minor exceptions). Similarly, the divider color in `Help` screen and in `Options` screen should have similar color too. Same consistency rule applies for buttons and many other views too.
+- New color rule: As mentioned earlier, we tried introducing new colors as much as possible and also used consistent colors across various screens but if we had to introduce a new color on our own we did this by using light mode designs as guidelines along with keeping the contrast ratio the same. For example: for this [App Version](https://xd.adobe.com/view/d405de00-a871-4f0f-73a0-f8acef30349b-a234/screen/80d1f4d6-be84-42db-ab23-9b5e1eb6e596/) blue background color we did not have dark-mode mocks and this color is not even getting used anywhere in the app. So for this we introduced a new dark mode color by following these steps:
+- - The background color code is : `#A5D3EC` which is blue, so for dark mode we introduced `#1B5879` which is similar to blue but also makes sure that the color contrast is more than required so that it passes WCAG guidelines.
+
+### Notes for Designers
+- Have a look at [color_def](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values/color_defs.xml), color_palette [light](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values/color_palette.xml) & [dark](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values-night/color_palette.xml) and [component_colors](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values/component_colors.xml) files.
+- If you need to introduce any new color, check if you can find some similar color in the [color_def](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values/color_defs.xml) file and possibly use that.
+- Try to introduce similar colors for the same UI. For example: if you are using `Topic Name` somewhere then if possible try to use similar colors which have already been used for topic names in the android app.
+- If you are looking for an already existing view and trying to find its light/dark color code, you will need to navigate to [component_colors](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values/component_colors.xml) first and find the name for the view in component_colors.xml file. For example you can look at:
+    - [<color name="component_color_add_profile_activity_info_icon_color">@color/color_palette_info_icon_color</color>](https://github.com/oppia/oppia-android/blob/12ded96886d29d46682e837c3232c4b6d3377800/app/src/main/res/values/component_colors.xml#L124C3-L124C114)
+    - In this, we now we can find the related color_palette name, i.e., color_palette_info_icon_color. Now we can visit the color_palette file for light and dark mode, i.e.,for light mode [<color name="color_palette_info_icon_color">@color/color_def_chooser_grey</color>](https://github.com/oppia/oppia-android/blob/12ded96886d29d46682e837c3232c4b6d3377800/app/src/main/res/values/color_palette.xml#L65) and for dark-mode [<color name="color_palette_info_icon_color">@color/color_def_oppia_silver</color>](https://github.com/oppia/oppia-android/blob/12ded96886d29d46682e837c3232c4b6d3377800/app/src/main/res/values-night/color_palette.xml#L60)
+    - In the end, we can see that the light color is color_def_chooser_grey and dark color is color_def_oppia_silver and we can find the exact color code for both in the [color_def](https://github.com/oppia/oppia-android/blob/develop/app/src/main/res/values/color_defs.xml) file.
+
+### Notes for Reviewers
+- Ensure that the naming of new colors across all files should follow the rules mentioned [above](https://github.com/oppia/oppia-android/wiki/Dark-Mode#knowing-the-convention).
+- If any new color is getting introduced in the `color_defs.xml` file, then treat it as a red flag and keep a close eye on why it is getting introduced? Why can't any of the existing colors be used? Has this been approved by the design team?
+- If any new color palette is getting introduced in `color_palette.xml` keep a close eye on that to make sure that there is no similar color palette already defined in `color_palette.xml` light/dark files. If there is a similar color palette, can you rename the existing color_palette such that it can be used on existing places as well as new places?
+- Hardcoded-colors should only be mentioned in icons/thumbnails of `mipmap` and `drawable`folder and in the `color_defs.xml` file.

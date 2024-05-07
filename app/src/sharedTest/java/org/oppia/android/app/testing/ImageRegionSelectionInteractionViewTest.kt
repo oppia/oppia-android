@@ -7,16 +7,20 @@ import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -86,9 +90,11 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -118,20 +124,40 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ImageRegionSelectionInteractionViewTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @get:Rule val mockitoRule = MockitoJUnit.rule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Mock lateinit var onClickableAreaClickedListener: OnClickableAreaClickedListener
-  @Captor lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var imageLoader: TestGlideImageLoader
+  @get:Rule
+  val mockitoRule = MockitoJUnit.rule()
+
+  @Mock
+  lateinit var onClickableAreaClickedListener: OnClickableAreaClickedListener
+
+  @Captor
+  lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var imageLoader: TestGlideImageLoader
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
     imageLoader.arrangeBitmap("test_image_url.drawable", R.drawable.testing_fraction)
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
@@ -376,6 +402,33 @@ class ImageRegionSelectionInteractionViewTest {
     }
   }
 
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_withBlankInput_submit_emptyInputErrorIsDisplayed() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
+        .perform(
+          click()
+        )
+      onView(withId(R.id.image_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.image_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_submitBbutton_isEnabledByDefault() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.submit_button)).check(matches(isEnabled()))
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -404,7 +457,8 @@ class ImageRegionSelectionInteractionViewTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

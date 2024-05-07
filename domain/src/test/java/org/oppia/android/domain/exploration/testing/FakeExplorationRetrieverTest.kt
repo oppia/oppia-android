@@ -58,7 +58,7 @@ class FakeExplorationRetrieverTest {
 
   @Test
   fun testLoadExploration_noProxySet_fakeExpId_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
     }
 
@@ -83,7 +83,7 @@ class FakeExplorationRetrieverTest {
       expIdToLoad = TEST_EXPLORATION_ID_2, expIdToLoadInstead = "fake_id"
     )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runBlocking { fakeExplorationRetriever.loadExploration(TEST_EXPLORATION_ID_2) }
     }
 
@@ -120,7 +120,7 @@ class FakeExplorationRetrieverTest {
       expIdToLoad = "fake_id", expIdToLoadInstead = "other_fake_id"
     )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
     }
 
@@ -133,7 +133,7 @@ class FakeExplorationRetrieverTest {
       expIdToLoad = TEST_EXPLORATION_ID_2, expIdToLoadInstead = TEST_EXPLORATION_ID_5
     )
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
     }
 
@@ -175,7 +175,7 @@ class FakeExplorationRetrieverTest {
     )
 
     fakeExplorationRetriever.clearExplorationProxy("fake_id")
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
     }
 

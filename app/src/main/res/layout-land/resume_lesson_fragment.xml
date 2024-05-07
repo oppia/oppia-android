@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -76,36 +76,36 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/secondary_button_background"
-          android:gravity="center"
           android:fontFamily="sans-serif-medium"
+          android:gravity="center"
           android:minWidth="144dp"
           android:minHeight="@dimen/clickable_item_min_height"
-          android:textAllCaps="true"
+          android:text="@string/start_over_lesson_button"
+          android:textAllCaps="false"
           android:textColor="@color/component_color_shared_secondary_button_background_trim_color"
           android:textSize="14sp"
-          android:text="@string/start_over_lesson_button"
           app:backgroundTint="@null"
           app:icon="@drawable/ic_start_over_24dp"
-          app:iconTint="@color/component_color_shared_secondary_button_background_trim_color"
-          app:iconGravity="textStart" />
-
+          app:iconGravity="textStart"
+          app:iconTint="@color/component_color_shared_secondary_button_background_trim_color" />
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/resume_lesson_continue_button"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          android:minWidth="144dp"
-          android:gravity="center"
           android:background="@drawable/state_button_primary_background"
           android:drawableTint="@color/component_color_shared_white_background_color"
           android:fontFamily="sans-serif-medium"
+          android:gravity="center"
+          android:minWidth="144dp"
           android:minHeight="@dimen/clickable_item_min_height"
-          android:textAllCaps="true"
+          android:text="@string/resume_lesson_button"
+          android:textAllCaps="false"
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:textSize="14sp"
-          android:text="@string/resume_lesson_button"
-          app:iconGravity="textEnd"
-          app:icon="@drawable/ic_arrow_right_alt_24dp" />
+          app:backgroundTint="@null"
+          app:icon="@drawable/ic_arrow_right_alt_24dp"
+          app:iconGravity="textEnd" />
       </com.google.android.flexbox.FlexboxLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>

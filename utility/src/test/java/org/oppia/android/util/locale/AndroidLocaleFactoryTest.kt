@@ -9,6 +9,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,9 +26,14 @@ import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,18 +50,63 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AndroidLocaleFactoryTest {
-  @Inject
-  lateinit var androidLocaleFactory: AndroidLocaleFactory
+  @Inject lateinit var androidLocaleFactory: AndroidLocaleFactory
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
+  /* Basic tests for one-off Locale creation (latter functions indirectly test in more detail. */
+
+  @Test
+  fun testCreateOneOffAndroidLocale_default_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createOneOffAndroidLocale(OppiaLocaleContext.getDefaultInstance())
+    }
+
+    // The operation should fail since there's no language type defined.
+    assertThat(exception).hasMessageThat().contains("Invalid language case")
+  }
+
+  @Test
+  fun testCreateOneOffAndroidLocale_appStrings_defaultLanguage_returnsRootLocale() {
+    val context =
+      createAppStringsContext(
+        language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
+        appStringId = LanguageId.getDefaultInstance(),
+        regionDefinition = RegionSupportDefinition.getDefaultInstance()
+      )
+
+    val locale = androidLocaleFactory.createOneOffAndroidLocale(context)
+
+    assertThat(locale).isEqualTo(Locale.ROOT)
+  }
+
+  @Test
+  fun testCreateOneOffAndroidLocale_appStrings_withAndroidId_compatible_returnsAndroidIdLocale() {
+    val context =
+      createAppStringsContext(
+        language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
+        appStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
+        regionDefinition = REGION_BRAZIL
+      )
+
+    val locale = androidLocaleFactory.createOneOffAndroidLocale(context)
+
+    // The context should be matched to a valid locale.
+    assertThat(locale.language).isEqualTo("pt")
+    assertThat(locale.country).isEqualTo("BR")
+  }
+
+  /* Begin createAndroidLocaleAsync tests. */
+
   @Test
   fun testCreateLocale_default_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(OppiaLocaleContext.getDefaultInstance())
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createAndroidLocaleBlocking(OppiaLocaleContext.getDefaultInstance())
     }
 
     // The operation should fail since there's no language type defined.
@@ -70,7 +124,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -86,7 +140,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -102,7 +156,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_US
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale. Note that BR is matched since the IETF
     // language tag includes the region.
@@ -119,7 +173,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -138,7 +192,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Android is preferred when both are present. Note no region is provided since the Android
     // language is missing a region definition.
@@ -158,7 +212,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Android is preferred when both are present. Note no region is provided since the Android
     // language is missing a region definition.
@@ -176,7 +230,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is picked because it's an Android ID for app strings, so it's always taken as a forced
     // locale over any fallback options.
@@ -194,7 +248,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale, and it's not
     // an Android ID that would take precedence.
@@ -212,7 +266,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -229,7 +283,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language's region doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -246,7 +300,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_ZZ
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the supplied region doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -263,7 +317,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -280,7 +334,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language is invalid.
     assertThat(locale.language).isEqualTo("pt")
@@ -298,7 +352,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language isn't compatible with the current SDK.
     assertThat(locale.language).isEqualTo("pt")
@@ -318,7 +372,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is picked because it's an Android ID for app strings, so it's always taken as a forced
     // locale over any fallback options.
@@ -339,7 +393,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale, and it's not
     // an Android ID that would take precedence. Beyond that, the fallback's Android ID should take
@@ -361,7 +415,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is picked because it's an Android ID for app strings, so it's always taken as a forced
     // locale over any fallback options.
@@ -382,7 +436,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked since Android IDs take precedence among multiple fallback options, and
     // none of the primary options are viable.
@@ -400,7 +454,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is picked over the primary language because it's an Android ID and the primary language
     // doesn't match any locales.
@@ -418,7 +472,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is the exact locale being requested.
     assertThat(locale.language).isEqualTo("qq")
@@ -438,7 +492,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' takes precedence over the IETF language since Android IDs are picked first when
     // creating a forced locale.
@@ -459,7 +513,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' takes precedence over the macaronic language since Android IDs are picked first when
     // creating a forced locale.
@@ -477,7 +531,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The IETF language ID is used for the forced locale (note that fallback languages are ignored
     // when computing the forced locale).
@@ -495,7 +549,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Hinglish macaronic language ID is used for the forced locale (note that fallback
     // languages are ignored when computing the forced locale).
@@ -513,8 +567,8 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(context)
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid ID")
@@ -532,7 +586,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The 'qq' language should be matched as a forced profile since both language IDs are
     // SDK-incompatible (despite the fallback being a matchable language).
@@ -549,7 +603,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // Simple macro languages may not match any internal locales due to missing regions. They should
     // still become a valid locale (due to wildcard matching internally).
@@ -558,7 +612,7 @@ class AndroidLocaleFactoryTest {
   }
 
   @Test
-  fun testCreateLocale_appStrings_allIncompat_invalidLangType_throwsException() {
+  fun testCreateLocale_appStrings_allIncompat_invalidLangType_returnsRootLocale() {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.ENGLISH,
@@ -566,11 +620,9 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(context)
-    }
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
-    assertThat(exception).hasMessageThat().contains("Invalid language case")
+    assertThat(locale).isEqualTo(Locale.ROOT)
   }
 
   /* Tests for written content strings. */
@@ -584,7 +636,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -600,7 +652,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -616,7 +668,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_US
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale. Note that BR is matched since the IETF
     // language tag includes the region.
@@ -633,7 +685,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -652,7 +704,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Android is preferred when both are present. Note no region is provided since the Android
     // language is missing a region definition.
@@ -672,7 +724,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Android is preferred when both are present. Note no region is provided since the Android
     // language is missing a region definition.
@@ -690,7 +742,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -707,7 +759,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -724,7 +776,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language's region doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -741,7 +793,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_ZZ
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the supplied region doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -758,7 +810,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -775,7 +827,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language is invalid.
     assertThat(locale.language).isEqualTo("pt")
@@ -793,7 +845,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language isn't compatible with the current SDK.
     assertThat(locale.language).isEqualTo("pt")
@@ -813,7 +865,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked since Android IDs take precedence among multiple fallback options.
     assertThat(locale.language).isEqualTo("pt")
@@ -833,7 +885,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked since Android IDs take precedence among multiple fallback options.
     assertThat(locale.language).isEqualTo("pt")
@@ -850,7 +902,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is the exact locale being requested.
     assertThat(locale.language).isEqualTo("qq")
@@ -870,7 +922,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' takes precedence over the IETF language since Android IDs are picked first when
     // creating a forced locale.
@@ -891,7 +943,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' takes precedence over the macaronic language since Android IDs are picked first when
     // creating a forced locale.
@@ -909,7 +961,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The IETF language ID is used for the forced locale (note that fallback languages are ignored
     // when computing the forced locale).
@@ -927,7 +979,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Hinglish macaronic language ID is used for the forced locale (note that fallback
     // languages are ignored when computing the forced locale).
@@ -945,8 +997,8 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(context)
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid ID")
@@ -964,7 +1016,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The 'qq' language should be matched as a forced profile since both language IDs are
     // SDK-incompatible (despite the fallback being a matchable language).
@@ -981,7 +1033,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // Simple macro languages may not match any internal locales due to missing regions. They should
     // still become a valid locale (due to wildcard matching internally).
@@ -998,8 +1050,8 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(context)
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid language case")
@@ -1016,7 +1068,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1032,7 +1084,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1048,7 +1100,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_US
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale. Note that BR is matched since the IETF
     // language tag includes the region.
@@ -1065,7 +1117,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The context should be matched to a valid locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1084,7 +1136,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Android is preferred when both are present. Note no region is provided since the Android
     // language is missing a region definition.
@@ -1104,7 +1156,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Android is preferred when both are present. Note no region is provided since the Android
     // language is missing a region definition.
@@ -1122,7 +1174,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1139,7 +1191,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1156,7 +1208,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language's region doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1173,7 +1225,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_ZZ
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the supplied region doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1190,7 +1242,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language doesn't match a real locale.
     assertThat(locale.language).isEqualTo("pt")
@@ -1207,7 +1259,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language is invalid.
     assertThat(locale.language).isEqualTo("pt")
@@ -1225,7 +1277,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_BRAZIL
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked because the primary language isn't compatible with the current SDK.
     assertThat(locale.language).isEqualTo("pt")
@@ -1245,7 +1297,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked since Android IDs take precedence among multiple fallback options.
     assertThat(locale.language).isEqualTo("pt")
@@ -1265,7 +1317,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // pt-BR should be picked since Android IDs take precedence among multiple fallback options.
     assertThat(locale.language).isEqualTo("pt")
@@ -1282,7 +1334,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' is the exact locale being requested.
     assertThat(locale.language).isEqualTo("qq")
@@ -1302,7 +1354,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' takes precedence over the IETF language since Android IDs are picked first when
     // creating a forced locale.
@@ -1323,7 +1375,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // 'qq' takes precedence over the macaronic language since Android IDs are picked first when
     // creating a forced locale.
@@ -1341,7 +1393,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The IETF language ID is used for the forced locale (note that fallback languages are ignored
     // when computing the forced locale).
@@ -1359,7 +1411,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The Hinglish macaronic language ID is used for the forced locale (note that fallback
     // languages are ignored when computing the forced locale).
@@ -1377,8 +1429,8 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(context)
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid ID")
@@ -1396,7 +1448,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // The 'qq' language should be matched as a forced profile since both language IDs are
     // SDK-incompatible (despite the fallback being a matchable language).
@@ -1413,7 +1465,7 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val locale = androidLocaleFactory.createAndroidLocale(context)
+    val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
 
     // Simple macro languages may not match any internal locales due to missing regions. They should
     // still become a valid locale (due to wildcard matching internally).
@@ -1430,11 +1482,21 @@ class AndroidLocaleFactoryTest {
         regionDefinition = REGION_INDIA
       )
 
-    val exception = assertThrows(IllegalStateException::class) {
-      androidLocaleFactory.createAndroidLocale(context)
+    val exception = assertThrows<IllegalStateException>() {
+      androidLocaleFactory.createAndroidLocaleBlocking(context)
     }
 
     assertThat(exception).hasMessageThat().contains("Invalid language case")
+  }
+
+  private fun AndroidLocaleFactory.createAndroidLocaleBlocking(
+    context: OppiaLocaleContext
+  ): Locale {
+    val deferred =
+      CoroutineScope(backgroundDispatcher).async { createAndroidLocaleAsync(context).await() }
+    testCoroutineDispatchers.runCurrent()
+    assertThat(deferred.isCompleted).isTrue()
+    return runBlocking { deferred.await() }
   }
 
   private fun createLanguageId(androidLanguageId: AndroidLanguageId): LanguageId {
@@ -1602,7 +1664,8 @@ class AndroidLocaleFactoryTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

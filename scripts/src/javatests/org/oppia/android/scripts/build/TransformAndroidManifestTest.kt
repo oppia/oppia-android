@@ -1,11 +1,13 @@
 package org.oppia.android.scripts.build
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
 import java.io.File
@@ -54,23 +56,27 @@ class TransformAndroidManifestTest {
   private val VERSION_CODE = "23"
   private val APPLICATION_RELATIVE_QUALIFIED_CLASS = ".example.CustomApplication"
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
-  private val commandExecutor by lazy { CommandExecutorImpl() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
   private lateinit var testGitRepository: TestGitRepository
 
   @Before
   fun setUp() {
-    testGitRepository = TestGitRepository(tempFolder, CommandExecutorImpl())
+    testGitRepository = TestGitRepository(tempFolder, commandExecutor)
+  }
+
+  @After
+  fun tearDown() {
+    scriptBgDispatcher.close()
   }
 
   @Test
   fun testUtility_noArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
 
-    val exception = assertThrows(IllegalStateException::class) { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
 
     assertThat(exception).hasMessageThat().contains(USAGE_STRING)
   }
@@ -79,7 +85,7 @@ class TransformAndroidManifestTest {
   fun testUtility_oneArg_failsWithUsageString() {
     initializeEmptyGitRepository()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(tempFolder.root.absolutePath)
     }
 
@@ -91,7 +97,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(tempFolder.root.absolutePath, manifestFile.absolutePath)
     }
 
@@ -103,7 +109,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -119,7 +125,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -136,7 +142,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -154,7 +160,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -173,7 +179,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -193,7 +199,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -214,7 +220,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -236,7 +242,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -258,7 +264,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
@@ -280,7 +286,7 @@ class TransformAndroidManifestTest {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         "nowhere",
         manifestFile.absolutePath,
@@ -301,7 +307,7 @@ class TransformAndroidManifestTest {
   fun testUtility_allArgs_manifestDoesNotExist_failsWithError() {
     initializeEmptyGitRepository()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         "fake_manifest_file",
@@ -325,7 +331,7 @@ class TransformAndroidManifestTest {
       writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS_AND_APPLICATION)
     }
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       runScript(
         tempFolder.root.absolutePath,
         manifestFile.absolutePath,
