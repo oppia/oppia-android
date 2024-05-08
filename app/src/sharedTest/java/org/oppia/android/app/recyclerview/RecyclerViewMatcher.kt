@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -125,7 +125,7 @@ class RecyclerViewMatcher {
           position = itemPosition,
           targetViewId = targetView
         )
-      ).check(ViewAssertions.doesNotExist())
+      ).check(doesNotExist())
     }
 
     /**
@@ -169,7 +169,7 @@ class RecyclerViewMatcher {
           position = itemPosition,
           targetViewId = targetViewId
         )
-      ).check(ViewAssertions.doesNotExist())
+      ).check(doesNotExist())
     }
 
     /**
