@@ -251,7 +251,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           withFontSize(
-         67F
+            67F
           )
         )
       )
