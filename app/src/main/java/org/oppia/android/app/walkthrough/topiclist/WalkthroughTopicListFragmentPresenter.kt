@@ -35,11 +35,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    }.build()
+    val profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
     viewModel.initialize(profileId)
-
     binding =
       WalkthroughTopicListFragmentBinding.inflate(
         inflater,

@@ -90,7 +90,7 @@ class QuestionPlayerActivity :
     ): Intent {
 
       val args = QuestionPlayerActivityParams.newBuilder().apply {
-        addAllSkillIdList(skillIdList)
+        addAllSkillIds(skillIdList)
       }
         .build()
       return Intent(context, QuestionPlayerActivity::class.java).apply {

@@ -46,7 +46,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       val selectedIndex = languageArrayList.indexOf(currentLanguageCode)
 
       val args = LanguageDialogFragmentArguments.newBuilder().apply {
-        this.addAllLanguageList(languageArrayList)
+        this.addAllLanguages(languageArrayList)
         this.selectedIndex = selectedIndex
       }.build()
       return LanguageDialogFragment().apply {
@@ -72,7 +72,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
     )
     var selectedIndex = args?.selectedIndex ?: 0
     val languageCodeArrayList: ArrayList<String> = checkNotNull(
-      args?.languageListList?.let { ArrayList(it) }
+      args?.languagesList?.let { ArrayList(it) }
     )
 
     val languageNameArrayList = ArrayList<String>()

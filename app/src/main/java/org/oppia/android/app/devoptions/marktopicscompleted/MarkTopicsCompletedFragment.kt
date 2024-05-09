@@ -59,7 +59,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
         MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY,
         MarkTopicsCompletedFragmentStateBundle.getDefaultInstance()
       )
-      selectedTopicIdList = stateArgs?.topicIdListList?.let { ArrayList(it) }!!
+      selectedTopicIdList = stateArgs?.topicIdsList?.let { ArrayList(it) }?: ArrayList()
     }
     return markTopicsCompletedFragmentPresenter.handleCreateView(
       inflater,
@@ -72,7 +72,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val args = MarkTopicsCompletedFragmentStateBundle.newBuilder().apply {
-      addAllTopicIdList(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
+      addAllTopicIds(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
     }.build()
     outState.apply {
       putProto(MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY, args)

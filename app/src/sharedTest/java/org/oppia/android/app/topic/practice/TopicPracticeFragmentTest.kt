@@ -289,7 +289,7 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       scrollToPosition(position = 5)
       clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
-      val args = QuestionPlayerActivityParams.newBuilder().addAllSkillIdList(skillIdList).build()
+      val args = QuestionPlayerActivityParams.newBuilder().addAllSkillIds(skillIdList).build()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
       intended(hasProtoExtra(QUESTION_PLAYER_ACTIVITY_PARAMS_KEY, args))
     }

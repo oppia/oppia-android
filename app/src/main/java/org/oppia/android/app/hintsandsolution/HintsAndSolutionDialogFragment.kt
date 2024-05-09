@@ -101,7 +101,7 @@ class HintsAndSolutionDialogFragment :
         HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY,
         HintsAndSolutionDialogFragmentStateBundle.getDefaultInstance()
       )
-      expandedItemsList = stateArgs?.currentExpandedItemListList?.let { ArrayList(it) }!!
+      expandedItemsList = stateArgs?.currentExpandedItemsList?.let { ArrayList(it) }?: ArrayList()
 
       index = stateArgs?.hintIndex ?: -1
       if (index == -1) index = null
@@ -157,7 +157,7 @@ class HintsAndSolutionDialogFragment :
     super.onSaveInstanceState(outState)
 
     val args = HintsAndSolutionDialogFragmentStateBundle.newBuilder().apply {
-      this.addAllCurrentExpandedItemList(expandedItemsList)
+      this.addAllCurrentExpandedItems(expandedItemsList)
       if (index != null)
         this.hintIndex = index!!
       if (this@HintsAndSolutionDialogFragment.isHintRevealed != null)

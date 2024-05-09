@@ -172,9 +172,8 @@ class AdministratorControlsFragmentTest {
     }
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(profileId).build()
-
+  private fun createAdministratorControlsActivityIntent(internalProifleId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProifleId).build()
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
       profileId

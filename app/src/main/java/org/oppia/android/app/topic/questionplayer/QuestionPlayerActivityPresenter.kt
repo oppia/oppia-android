@@ -106,7 +106,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
           QUESTION_PLAYER_ACTIVITY_PARAMS_KEY,
           QuestionPlayerActivityParams.getDefaultInstance()
         )
-          .skillIdListList
+          .skillIdsList
       )
     ) {
       "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."

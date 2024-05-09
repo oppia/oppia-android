@@ -75,8 +75,9 @@ class OptionsActivity :
       return Intent(context, OptionsActivity::class.java).apply {
         putProtoExtra(OPTIONS_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(OPTIONS_ACTIVITY)
-        if (profileId != null)
+        if (profileId != null) {
           decorateWithUserProfileId(profileId)
+        }
       }
     }
   }

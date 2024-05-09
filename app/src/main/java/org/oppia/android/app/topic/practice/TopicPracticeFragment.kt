@@ -22,7 +22,7 @@ class TopicPracticeFragment : InjectableFragment() {
     /** Arguments key for TopicPracticeFragment. */
     const val TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY = "TopicPracticeFragment.arguments"
 
-    /** Staete key for TopicPracticeFragment. */
+    /** State key for TopicPracticeFragment. */
     const val TOPIC_PRACTICE_FRAGMENT_STATE_KEY = "TopicPracticeFragment.state"
 
     /** Returns a new [TopicPracticeFragment]. */
@@ -62,8 +62,8 @@ class TopicPracticeFragment : InjectableFragment() {
         TOPIC_PRACTICE_FRAGMENT_STATE_KEY,
         TopicPracticeFragmentStateBundle.getDefaultInstance()
       )
-      selectedIdList = savedArgs.subTopicIdListList.let { ArrayList(it) }
-      selectedSkillId = savedArgs.skillIdListMap.mapValues { entry ->
+      selectedIdList = ArrayList(savedArgs.subTopicIdsList)
+      selectedSkillId = savedArgs.skillIdsMap.mapValues { entry ->
         entry.value.valuesList.toMutableList()
       } as HashMap<Int, MutableList<String>>
     }
@@ -89,9 +89,9 @@ class TopicPracticeFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val args = TopicPracticeFragmentStateBundle.newBuilder().apply {
-      this.addAllSubTopicIdList(topicPracticeFragmentPresenter.selectedSubtopicIdList)
+      this.addAllSubTopicIds(topicPracticeFragmentPresenter.selectedSubtopicIdList)
       topicPracticeFragmentPresenter.skillIdHashMap.forEach { (key, value) ->
-        this.putSkillIdList(
+        this.putSkillIds(
           key,
           TopicPracticeFragmentStateBundle.StringList.newBuilder().addAllValues(value).build()
         )

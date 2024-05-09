@@ -70,8 +70,8 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
       container,
       internalProfileId,
       showConfirmationNotice,
-      savedStateArgs?.explorationIdListList ?: listOf(),
-      savedStateArgs?.explorationTitleListList ?: listOf()
+      savedStateArgs?.explorationIdsList ?: listOf(),
+      savedStateArgs?.explorationTitlesList ?: listOf()
     )
   }
 
@@ -80,10 +80,10 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
 
     outState.apply {
       val args = MarkChaptersCompletedFragmentStateBundle.newBuilder().apply {
-        addAllExplorationIdList(
+        addAllExplorationIds(
           markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
         )
-        addAllExplorationTitleList(
+        addAllExplorationTitles(
           markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
         )
       }

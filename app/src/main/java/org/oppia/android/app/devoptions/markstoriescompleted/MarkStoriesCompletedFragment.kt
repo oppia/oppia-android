@@ -60,7 +60,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
         MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY,
         MarkStoriesCompletedFragmentStateBundle.getDefaultInstance()
       )
-      selectedStoryIdList = ArrayList(stateArgs?.storyIdListList)
+      selectedStoryIdList = stateArgs?.storyIdsList?.let { ArrayList(it) }?: ArrayList()
     }
     return markStoriesCompletedFragmentPresenter.handleCreateView(
       inflater,
@@ -73,7 +73,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val args = MarkStoriesCompletedFragmentStateBundle.newBuilder().apply {
-      addAllStoryIdList(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
+      addAllStoryIds(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
     }
       .build()
     outState.apply {

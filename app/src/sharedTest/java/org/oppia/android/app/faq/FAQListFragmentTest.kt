@@ -157,10 +157,10 @@ class FAQListFragmentTest {
           position = 3
         )
       ).perform(click())
-      val args = FAQSingleActivityParams.newBuilder().apply {
-        this.question = getResources().getString(R.string.faq_question_create_profile)
-        this.answer = getResources().getString(R.string.faq_answer_create_profile)
-      }.build()
+      val args = getFAQSingleActivityParams(
+        question = getResources().getString(R.string.faq_question_create_profile),
+        answer = getResources().getString(R.string.faq_answer_create_profile)
+        )
       intended(
         allOf(
           hasProtoExtra(
@@ -183,10 +183,11 @@ class FAQListFragmentTest {
           position = 3
         )
       ).perform(click())
-      val args = FAQSingleActivityParams.newBuilder().apply {
-        this.question = getResources().getString(R.string.faq_question_create_profile)
-        this.answer = getResources().getString(R.string.faq_answer_create_profile)
-      }.build()
+      val args = getFAQSingleActivityParams(
+        question = getResources().getString(R.string.faq_question_create_profile),
+        answer = getResources().getString(R.string.faq_answer_create_profile)
+      )
+
       intended(
         allOf(
           hasProtoExtra(
@@ -208,10 +209,10 @@ class FAQListFragmentTest {
           position = 1
         )
       ).perform(click())
-      val args = FAQSingleActivityParams.newBuilder().apply {
-        this.question = getResources().getString(R.string.faq_question_whats_oppia, getAppName())
-        this.answer = getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
-      }.build()
+      val args = getFAQSingleActivityParams(
+        question = getResources().getString(R.string.faq_question_whats_oppia, getAppName()),
+        answer = getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
+      )
       intended(
         allOf(
           hasProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args),
@@ -219,6 +220,13 @@ class FAQListFragmentTest {
         )
       )
     }
+  }
+
+  private fun getFAQSingleActivityParams(question:String,answer:String): FAQSingleActivityParams{
+   return FAQSingleActivityParams.newBuilder().apply {
+      this.question = question
+      this.answer = answer
+    }.build()
   }
 
   private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {

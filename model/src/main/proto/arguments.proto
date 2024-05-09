@@ -349,7 +349,7 @@ message TopicFragmentArguments {
 // Represents the parameters needed to create QuestionPlayerActivity.
 message QuestionPlayerActivityParams {
   // Skill ID list for practice.
-  repeated string skill_id_list = 1;
+  repeated string skill_ids = 1;
 }
 
 // The bundle of properties that are saved upon configuration changes in AdministratorControlActivity.
@@ -404,22 +404,22 @@ message MarkChaptersCompletedFragmentArguments{
 // The bundle of properties that are saved upon configuration changes in MarkChaptersCompletedFragment.
 message MarkChaptersCompletedFragmentStateBundle{
   // List of selected exploration IDs.
-  repeated string exploration_id_list = 1;
+  repeated string exploration_ids = 1;
 
   // List of selected exploration titles.
-  repeated string exploration_title_list = 2;
+  repeated string exploration_titles = 2;
 }
 
 // The bundle of properties that are saved upon configuration changes in MarkStoriesCompletedFragment.
 message MarkStoriesCompletedFragmentStateBundle{
   // List of selected story IDs.
-  repeated string story_id_list = 1;
+  repeated string story_ids = 1;
 }
 
 // The bundle of properties that are saved upon configuration changes in MarkTopicsCompletedFragment.
 message MarkTopicsCompletedFragmentStateBundle {
   // List of selected topic IDs.
-  repeated string topic_id_list = 1;
+  repeated string topic_ids = 1;
 }
 
 // Represents the parameters needed to create FAQSingleActivity.
@@ -545,7 +545,7 @@ message HintsAndSolutionDialogFragmentArguments {
 // The bundle of properties that are saved upon configuration changes in HintsAndSolutionDialogFragment.
 message HintsAndSolutionDialogFragmentStateBundle {
   // List of expanded items.
-  repeated int32 current_expanded_item_list = 1;
+  repeated int32 current_expanded_items = 1;
 
   // Index of hint.
   int32 hint_index = 2;
@@ -563,7 +563,7 @@ message HintsAndSolutionDialogFragmentStateBundle {
 // Arguments required when creating a LanguageDialogFragment.
 message LanguageDialogFragmentArguments {
   // List of strings containing languages.
-  repeated string language_list = 1;
+  repeated string languages = 1;
 
   // Selected index from language list.
   int32 selected_index = 2;
@@ -767,10 +767,10 @@ message TopicPracticeFragmentArguments {
 message TopicPracticeFragmentStateBundle {
 
   // List of selected sub topic id lists.
-  repeated int32 sub_topic_id_list = 1;
+  repeated int32 sub_topic_ids = 1;
 
   // Hash map of selected skill id list.
-  map<int32, StringList> skill_id_list = 2;
+  map<int32, StringList> skill_ids = 2;
 
   message StringList {
     repeated string values = 1;

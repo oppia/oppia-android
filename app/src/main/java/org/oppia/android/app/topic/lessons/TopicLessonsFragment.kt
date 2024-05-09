@@ -33,7 +33,7 @@ class TopicLessonsFragment :
     /** Arguments key for TopicLessonsFragment. */
     const val TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY = "TopicLessonsFragment.arguments"
 
-    /** Staete key for TopicLessonsFragment. */
+    /** State key for TopicLessonsFragment. */
     const val TOPIC_LESSONS_FRAGMENT_STATE_KEY = "TopicLessonsFragment.state"
 
     /** Returns a new [TopicLessonsFragment]. */
@@ -46,7 +46,7 @@ class TopicLessonsFragment :
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = TopicLessonsFragmentArguments.newBuilder().apply {
         this.topicId = topicId
-        if (storyId.isNotEmpty())
+        if (storyId.isNotBlank())
           this.storyId = storyId
       }.build()
       return TopicLessonsFragment().apply {
@@ -84,7 +84,7 @@ class TopicLessonsFragment :
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }
-      isDefaultStoryExpanded = stateArgs?.isDefaultStoryExpanded!!
+      isDefaultStoryExpanded = stateArgs?.isDefaultStoryExpanded?:false
     }
     val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
     val args = arguments?.getProto(
