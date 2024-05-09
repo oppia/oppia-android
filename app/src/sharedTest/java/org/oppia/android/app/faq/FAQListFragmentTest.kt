@@ -160,7 +160,7 @@ class FAQListFragmentTest {
       val args = getFAQSingleActivityParams(
         question = getResources().getString(R.string.faq_question_create_profile),
         answer = getResources().getString(R.string.faq_answer_create_profile)
-        )
+      )
       intended(
         allOf(
           hasProtoExtra(
@@ -222,12 +222,13 @@ class FAQListFragmentTest {
     }
   }
 
-  private fun getFAQSingleActivityParams(question:String,answer:String): FAQSingleActivityParams{
-   return FAQSingleActivityParams.newBuilder().apply {
-      this.question = question
-      this.answer = answer
-    }.build()
-  }
+  private fun getFAQSingleActivityParams(question: String, answer: String):
+    FAQSingleActivityParams {
+      return FAQSingleActivityParams.newBuilder().apply {
+        this.question = question
+        this.answer = answer
+      }.build()
+    }
 
   private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
     val defaultProto = expectedProto.newBuilderForType().build()

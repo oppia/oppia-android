@@ -84,7 +84,7 @@ class TopicLessonsFragment :
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }
-      isDefaultStoryExpanded = stateArgs?.isDefaultStoryExpanded?:false
+      isDefaultStoryExpanded = stateArgs?.isDefaultStoryExpanded ?: false
     }
     val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
     val args = arguments?.getProto(

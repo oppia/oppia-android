@@ -60,7 +60,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
         MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY,
         MarkStoriesCompletedFragmentStateBundle.getDefaultInstance()
       )
-      selectedStoryIdList = stateArgs?.storyIdsList?.let { ArrayList(it) }?: ArrayList()
+      selectedStoryIdList = stateArgs?.storyIdsList?.let { ArrayList(it) } ?: ArrayList()
     }
     return markStoriesCompletedFragmentPresenter.handleCreateView(
       inflater,

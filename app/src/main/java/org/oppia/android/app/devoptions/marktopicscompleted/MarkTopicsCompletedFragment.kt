@@ -59,7 +59,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
         MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY,
         MarkTopicsCompletedFragmentStateBundle.getDefaultInstance()
       )
-      selectedTopicIdList = stateArgs?.topicIdsList?.let { ArrayList(it) }?: ArrayList()
+      selectedTopicIdList = stateArgs?.topicIdsList?.let { ArrayList(it) } ?: ArrayList()
     }
     return markTopicsCompletedFragmentPresenter.handleCreateView(
       inflater,

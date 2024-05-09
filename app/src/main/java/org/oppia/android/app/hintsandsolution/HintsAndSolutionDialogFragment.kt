@@ -101,7 +101,7 @@ class HintsAndSolutionDialogFragment :
         HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY,
         HintsAndSolutionDialogFragmentStateBundle.getDefaultInstance()
       )
-      expandedItemsList = stateArgs?.currentExpandedItemsList?.let { ArrayList(it) }?: ArrayList()
+      expandedItemsList = stateArgs?.currentExpandedItemsList?.let { ArrayList(it) } ?: ArrayList()
 
       index = stateArgs?.hintIndex ?: -1
       if (index == -1) index = null
