@@ -232,7 +232,8 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @Test
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_extraLargeTextSize_hasCorrectDimension() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
@@ -250,11 +251,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           withFontSize(
-            round(
-              context.resources.getDimension(
-                R.dimen.revision_card_fragment_font_scale_content_extra_large_text_size
-              )
-            )
+         67F
           )
         )
       )
