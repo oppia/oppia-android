@@ -568,10 +568,10 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
-      onView(withId(R.id.content_text_view)).check(
+      onView(withId(R.id.question_progress_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            67F
+            50F
           )
         )
       )
@@ -586,10 +586,10 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
       }
-      onView(withId(R.id.content_text_view)).check(
+      onView(withId(R.id.question_progress_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            58F
+            43F
           )
         )
       )
@@ -604,10 +604,10 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
-      onView(withId(R.id.content_text_view)).check(
+      onView(withId(R.id.question_progress_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            48F
+            36F
           )
         )
       )
@@ -622,10 +622,10 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
       }
-      onView(withId(R.id.content_text_view)).check(
+      onView(withId(R.id.question_progress_text)).check(
         matches(
           FontSizeMatcher.withFontSize(
-            38F
+            29F
           )
         )
       )
