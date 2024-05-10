@@ -112,6 +112,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.round
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestPlatform
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -296,7 +298,8 @@ class ResumeLessonFragmentTest {
     )
   }
 
-  @Test
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_extraLargeTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
@@ -306,18 +309,15 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           withFontSize(
-            round(
-              context.resources.getDimension(
-                R.dimen.resume_lesson_fragment_font_scale_content_extra_large_text_size
-              )
-            )
+            67F
           )
         )
       )
     }
   }
 
-  @Test
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_largeTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
@@ -327,17 +327,15 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           withFontSize(
-            round(
-              context.resources
-                .getDimension(R.dimen.resume_lesson_fragment_font_scale_content_large_text_size)
-            )
+            58F
           )
         )
       )
     }
   }
 
-  @Test
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_mediumTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
@@ -347,15 +345,15 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           withFontSize(
-            context.resources
-              .getDimension(R.dimen.resume_lesson_fragment_font_scale_content_medium_text_size)
+            48F
           )
         )
       )
     }
   }
 
-  @Test
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_smallTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       it.onActivity { activity ->
@@ -365,10 +363,7 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(
           withFontSize(
-            round(
-              context.resources
-                .getDimension(R.dimen.resume_lesson_fragment_font_scale_content_small_text_size)
-            )
+            38F
           )
         )
       )
