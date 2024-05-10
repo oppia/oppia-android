@@ -1,6 +1,5 @@
 package org.oppia.android.app.utility
 
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CheckResult
@@ -16,7 +15,6 @@ class FontSizeMatcher(private val expectedSize: Float) :
     if (target !is TextView) {
       return false
     }
-    Log.e("#", target.textSize.toString() + "  ---------0--------------------------------->")
     return target.textSize.equals(expectedSize)
   }
 

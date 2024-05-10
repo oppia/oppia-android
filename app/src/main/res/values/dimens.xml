@@ -34,18 +34,6 @@
   <dimen name="font_scale_content_large_text_view_size">24dp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>
 
-  <!-- Resume Lesson Fragment Font Scale -->
-  <dimen name="resume_lesson_fragment_font_scale_content_small_text_size">12.8dp</dimen>
-  <dimen name="resume_lesson_fragment_font_scale_content_medium_text_size">16dp</dimen>
-  <dimen name="resume_lesson_fragment_font_scale_content_large_text_size">19.2dp</dimen>
-  <dimen name="resume_lesson_fragment_font_scale_content_extra_large_text_size">22.4dp</dimen>
-
-  <!-- Revision Card Fragment Fragment Font Scale -->
-  <dimen name="revision_card_fragment_font_scale_content_small_text_size">12.8dp</dimen>
-  <dimen name="revision_card_fragment_font_scale_content_medium_text_size">16dp</dimen>
-  <dimen name="revision_card_fragment_font_scale_content_large_text_size">19.2dp</dimen>
-  <dimen name="revision_card_fragment_font_scale_content_extra_large_text_size">22.4dp</dimen>
-
   <!-- Profile Chooser Fragment -->
   <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>

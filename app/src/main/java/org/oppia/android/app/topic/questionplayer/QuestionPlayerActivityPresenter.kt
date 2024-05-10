@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.questionplayer
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
@@ -69,15 +70,23 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+    startTrainingSessionWithCallback {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.question_player_fragment_placeholder,
+        QuestionPlayerFragment.newInstance(profileId, readingTextSize),
+        TAG_QUESTION_PLAYER_FRAGMENT
+      ).commitNow()
+    }
+  }
+
+  fun loadFragments(readingTextSize: ReadingTextSize) {
     this.readingTextSize = readingTextSize
     if (getQuestionPlayerFragment() == null) {
-      startTrainingSessionWithCallback {
-        activity.supportFragmentManager.beginTransaction().add(
-          R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-          TAG_QUESTION_PLAYER_FRAGMENT
-        ).commitNow()
-      }
+      loadQuestionPlayerFragment(readingTextSize)
+    } else {
+      activity.supportFragmentManager.beginTransaction()
+        .remove(getQuestionPlayerFragment() as Fragment).commitNow()
+      loadQuestionPlayerFragment(readingTextSize)
     }
 
     if (getHintsAndSolutionExplorationManagerFragment() == null) {

@@ -64,6 +64,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -78,6 +79,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.FontSizeMatcher
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -555,6 +557,106 @@ class QuestionPlayerActivityTest {
       clickContinueNavigationButton()
 
       onView(withId(R.id.content_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_extraLargeTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.question_recycler_view,
+          position = 0,
+          targetViewId = R.id.content_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(withId(R.id.content_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            67F
+          )
+        )
+      )
+    }
+  }
+
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.question_recycler_view,
+          position = 0,
+          targetViewId = R.id.content_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(withId(R.id.content_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            58F
+          )
+        )
+      )
+    }
+  }
+
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      }
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.question_recycler_view,
+          position = 0,
+          targetViewId = R.id.content_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(withId(R.id.content_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            48F
+          )
+        )
+      )
+    }
+  }
+
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.question_recycler_view,
+          position = 0,
+          targetViewId = R.id.content_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(withId(R.id.content_text_view)).check(
+        matches(
+          FontSizeMatcher.withFontSize(
+            38F
+          )
+        )
+      )
     }
   }
 

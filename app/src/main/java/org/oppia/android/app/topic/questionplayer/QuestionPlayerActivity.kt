@@ -130,6 +130,6 @@ class QuestionPlayerActivity :
   }
 
   override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
-    questionPlayerActivityPresenter.loadQuestionPlayerFragment(readingTextSize)
+    questionPlayerActivityPresenter.loadFragments(readingTextSize)
   }
 }
