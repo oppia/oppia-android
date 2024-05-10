@@ -137,7 +137,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.round
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -277,7 +276,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           withFontSize(
-           58F
+            58F
           )
         )
       )
@@ -331,7 +330,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(
           withFontSize(
-          38F
+            38F
           )
         )
       )
