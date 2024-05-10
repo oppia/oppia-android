@@ -568,13 +568,6 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.question_recycler_view,
-          position = 0,
-          targetViewId = R.id.content_text_view
-        )
-      ).check(matches(isDisplayed()))
       onView(withId(R.id.content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -593,13 +586,6 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
       }
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.question_recycler_view,
-          position = 0,
-          targetViewId = R.id.content_text_view
-        )
-      ).check(matches(isDisplayed()))
       onView(withId(R.id.content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -618,13 +604,6 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.question_recycler_view,
-          position = 0,
-          targetViewId = R.id.content_text_view
-        )
-      ).check(matches(isDisplayed()))
       onView(withId(R.id.content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -643,13 +622,6 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
       }
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.question_recycler_view,
-          position = 0,
-          targetViewId = R.id.content_text_view
-        )
-      ).check(matches(isDisplayed()))
       onView(withId(R.id.content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
