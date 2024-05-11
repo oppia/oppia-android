@@ -64,7 +64,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -563,7 +562,7 @@ class QuestionPlayerActivityTest {
   // TODO(#3858): Enable for Espresso.
   @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testQuestionPlayer_hint_extraLargeTextSize_hasCorrectDimension(){
+  fun testQuestionPlayer_hint_extraLargeTextSize_hasCorrectDimension() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
       // Submit two incorrect answers.
@@ -577,11 +576,13 @@ class QuestionPlayerActivityTest {
       // The hint explanation should be in Arabic. This helps demonstrate that the activity is
       // correctly piping the profile ID along to the hint dialog fragment.
       onView(withId(R.id.hints_and_solution_summary))
-        .check(matches(
-          FontSizeMatcher.withFontSize(
-            50F
+        .check(
+          matches(
+            FontSizeMatcher.withFontSize(
+              50F
+            )
           )
-        ))
+        )
     }
   }
 
