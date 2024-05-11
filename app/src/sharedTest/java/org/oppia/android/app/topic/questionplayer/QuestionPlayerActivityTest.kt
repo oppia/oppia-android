@@ -161,6 +161,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ReadingTextSize
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -565,6 +566,10 @@ class QuestionPlayerActivityTest {
   fun testQuestionPlayer_hint_extraLargeTextSize_hasCorrectDimension() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
       // Submit two incorrect answers.
       selectMultipleChoiceOption(optionPosition = 3)
       selectMultipleChoiceOption(optionPosition = 3)
