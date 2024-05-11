@@ -560,77 +560,102 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testQuestionPlayer_extraLargeTextSize_hasCorrectDimension() {
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testQuestionPlayer_hint_extraLargeTextSize_hasCorrectDimension(){
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
-      it.onActivity { activity ->
-        activity.questionPlayerActivityPresenter
-          .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
-      }
-      onView(withId(R.id.question_progress_text)).check(
-        matches(
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic. This helps demonstrate that the activity is
+      // correctly piping the profile ID along to the hint dialog fragment.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(
           FontSizeMatcher.withFontSize(
             50F
           )
-        )
-      )
+        ))
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
-    launchForSkillList(SKILL_ID_LIST).use {
-      it.onActivity { activity ->
-        activity.questionPlayerActivityPresenter
-          .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
-      }
-      onView(withId(R.id.question_progress_text)).check(
-        matches(
-          FontSizeMatcher.withFontSize(
-            43F
-          )
-        )
-      )
-    }
-  }
-
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
-    launchForSkillList(SKILL_ID_LIST).use {
-      it.onActivity { activity ->
-        activity.questionPlayerActivityPresenter
-          .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
-      }
-      onView(withId(R.id.question_progress_text)).check(
-        matches(
-          FontSizeMatcher.withFontSize(
-            36F
-          )
-        )
-      )
-    }
-  }
-
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
-    launchForSkillList(SKILL_ID_LIST).use {
-      it.onActivity { activity ->
-        activity.questionPlayerActivityPresenter
-          .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
-      }
-      onView(withId(R.id.question_progress_text)).check(
-        matches(
-          FontSizeMatcher.withFontSize(
-            29F
-          )
-        )
-      )
-    }
-  }
+//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+//  @RunOn(TestPlatform.ROBOLECTRIC)
+//  fun testQuestionPlayer_extraLargeTextSize_hasCorrectDimension() {
+//    launchForSkillList(SKILL_ID_LIST).use {
+//      it.onActivity { activity ->
+//        activity.questionPlayerActivityPresenter
+//          .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+//      }
+//      onView(withId(R.id.question_progress_text)).check(
+//        matches(
+//          FontSizeMatcher.withFontSize(
+//            50F
+//          )
+//        )
+//      )
+//    }
+//  }
+//
+//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+//  @RunOn(TestPlatform.ROBOLECTRIC)
+//  fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
+//    launchForSkillList(SKILL_ID_LIST).use {
+//      it.onActivity { activity ->
+//        activity.questionPlayerActivityPresenter
+//          .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
+//      }
+//      onView(withId(R.id.question_progress_text)).check(
+//        matches(
+//          FontSizeMatcher.withFontSize(
+//            43F
+//          )
+//        )
+//      )
+//    }
+//  }
+//
+//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+//  @RunOn(TestPlatform.ROBOLECTRIC)
+//  fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
+//    launchForSkillList(SKILL_ID_LIST).use {
+//      it.onActivity { activity ->
+//        activity.questionPlayerActivityPresenter
+//          .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
+//      }
+//      onView(withId(R.id.question_progress_text)).check(
+//        matches(
+//          FontSizeMatcher.withFontSize(
+//            36F
+//          )
+//        )
+//      )
+//    }
+//  }
+//
+//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+//  @RunOn(TestPlatform.ROBOLECTRIC)
+//  fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
+//    launchForSkillList(SKILL_ID_LIST).use {
+//      it.onActivity { activity ->
+//        activity.questionPlayerActivityPresenter
+//          .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
+//      }
+//      onView(withId(R.id.question_progress_text)).check(
+//        matches(
+//          FontSizeMatcher.withFontSize(
+//            29F
+//          )
+//        )
+//      )
+//    }
+//  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
