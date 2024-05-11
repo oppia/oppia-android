@@ -64,6 +64,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -161,7 +162,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ReadingTextSize
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
