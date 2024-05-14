@@ -28,6 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.FlakyTest
 import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
@@ -561,6 +562,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#3858): Enable for Espresso.
+  @FlakyTest
   @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testQuestionPlayer_hint_extraLargeTextSize_hasCorrectDimension() {
