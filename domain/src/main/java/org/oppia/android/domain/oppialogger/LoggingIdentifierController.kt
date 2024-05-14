@@ -147,17 +147,6 @@ class LoggingIdentifierController @Inject constructor(
     sessionId.value = computeSessionId()
   }
 
-  /**
-   * Regenerates [appSessionId] and notifies the data provider.
-   *
-   * The [appSessionId] is generally updated when:
-   *  1. The app is opened.
-   *  2. The app is destroyed by the Android system.
-   */
-  fun updateAppSessionId() {
-    appSessionId.value = computeAppSessionId()
-  }
-
   private fun computeSessionId(): String = sessionIdRandom.randomUuid().toString()
 
   private fun computeAppSessionId(): String = appSessionIdRandom.randomUuid().toString()
