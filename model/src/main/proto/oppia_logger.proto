@@ -195,6 +195,24 @@ message EventLog {
 
       // The event being logged contains feature flags and their current enabled and sync state.
       FeatureFlagListContext feature_flag_list_context = 43;
+
+      // The event being logged is related to lesson progress(checkpoint) saving success.
+      ExplorationContext progress_saving_success_context = 49;
+
+      // The event being logged is related to lesson progress(checkpoint) saving failure.
+      ExplorationContext progress_saving_failure_context = 50;
+
+      // The event being logged is related to lesson progress(checkpoint) saving attempt
+      // advertently(intentionally).
+      ExplorationContext lesson_saved_advertently_context = 51;
+
+      // The event being logged is related to correct answer submission after returning back to the
+      // lesson.
+      ExplorationContext resume_lesson_submit_correct_answer_context = 52;
+
+      // The event being logged is related to incorrect answer submission after returning back to
+      // the lesson.
+      ExplorationContext resume_lesson_submit_incorrect_answer_context = 53;
     }
   }
 
