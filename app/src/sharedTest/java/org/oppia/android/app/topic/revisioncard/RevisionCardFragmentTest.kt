@@ -486,7 +486,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       val args = RevisionCardActivityParams.newBuilder().apply {
-        this.subTopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
+        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
         this.topicId = FRACTIONS_TOPIC_ID
         this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
@@ -514,7 +514,7 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val args = RevisionCardActivityParams.newBuilder().apply {
-        this.subTopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
+        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
         this.topicId = FRACTIONS_TOPIC_ID
         this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()

@@ -767,7 +767,7 @@ message TopicPracticeFragmentArguments {
 message TopicPracticeFragmentStateBundle {
 
   // List of selected sub topic id lists.
-  repeated int32 sub_topic_ids = 1;
+  repeated int32 subtopic_ids = 1;
 
   // Hash map of selected skill id list.
   map<int32, StringList> skill_ids = 2;
@@ -790,7 +790,7 @@ message RevisionCardActivityParams {
   string topic_id = 1;
 
   // The ID of the sub topic to which the opening exploration belongs.
-  int32 sub_topic_id = 2;
+  int32 subtopic_id = 2;
 
   // The sub topic list size.
   int32 sub_topic_list_size = 3;
@@ -802,7 +802,7 @@ message RevisionCardFragmentArguments {
   string topic_id = 1;
 
   // The ID of the sub topic to which the opening exploration belongs.
-  int32 sub_topic_id = 2;
+  int32 subtopic_id = 2;
 
   // The sub topic list size.
   int32 sub_topic_list_size = 3;

@@ -62,7 +62,7 @@ class TopicPracticeFragment : InjectableFragment() {
         TOPIC_PRACTICE_FRAGMENT_STATE_KEY,
         TopicPracticeFragmentStateBundle.getDefaultInstance()
       )
-      selectedIdList = ArrayList(savedArgs.subTopicIdsList)
+      selectedIdList = ArrayList(savedArgs.subtopicIdsList)
       selectedSkillId = savedArgs.skillIdsMap.mapValues { entry ->
         entry.value.valuesList.toMutableList()
       } as HashMap<Int, MutableList<String>>
@@ -89,7 +89,7 @@ class TopicPracticeFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val args = TopicPracticeFragmentStateBundle.newBuilder().apply {
-      this.addAllSubTopicIds(topicPracticeFragmentPresenter.selectedSubtopicIdList)
+      this.addAllSubtopicIds(topicPracticeFragmentPresenter.selectedSubtopicIdList)
       topicPracticeFragmentPresenter.skillIdHashMap.forEach { (key, value) ->
         this.putSkillIds(
           key,

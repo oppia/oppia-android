@@ -29,7 +29,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
       RevisionCardFragment {
         val args = RevisionCardFragmentArguments.newBuilder().apply {
           this.topicId = topicId
-          this.subTopicId = subtopicId
+          this.subtopicId = subtopicId
           this.subTopicListSize = subtopicListSize
         }.build()
         return RevisionCardFragment().apply {
@@ -67,7 +67,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
       checkNotNull(args?.topicId) {
         "Expected topicId to be passed to RevisionCardFragment"
       }
-    val subtopicId = args?.subTopicId ?: -1
+    val subtopicId = args?.subtopicId ?: -1
     val profileId = arguments.extractCurrentUserProfileId()
     val subtopicListSize = args?.subTopicListSize ?: -1
 
