@@ -488,7 +488,7 @@ class RevisionCardFragmentTest {
       val args = RevisionCardActivityParams.newBuilder().apply {
         this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
         this.topicId = FRACTIONS_TOPIC_ID
-        this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
       intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
@@ -516,7 +516,7 @@ class RevisionCardFragmentTest {
       val args = RevisionCardActivityParams.newBuilder().apply {
         this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
         this.topicId = FRACTIONS_TOPIC_ID
-        this.subTopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
       intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))

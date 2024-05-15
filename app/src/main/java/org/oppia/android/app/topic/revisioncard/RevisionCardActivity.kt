@@ -44,7 +44,7 @@ class RevisionCardActivity :
         "Expected topic ID to be included in intent for RevisionCardActivity."
       }
       val subtopicId = args?.subtopicId ?: -1
-      val subtopicListSize = args?.subTopicListSize ?: -1
+      val subtopicListSize = args?.subtopicListSize ?: -1
 
       revisionCardActivityPresenter.handleOnCreate(
         internalProfileId,
@@ -75,7 +75,7 @@ class RevisionCardActivity :
       val args = RevisionCardActivityParams.newBuilder().apply {
         this.topicId = topicId
         this.subtopicId = subtopicId
-        this.subTopicListSize = subtopicListSize
+        this.subtopicListSize = subtopicListSize
       }.build()
       return Intent(context, RevisionCardActivity::class.java).apply {
         putProtoExtra(REVISION_CARD_ACTIVITY_PARAMS_KEY, args)

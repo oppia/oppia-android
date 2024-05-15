@@ -793,7 +793,7 @@ message RevisionCardActivityParams {
   int32 subtopic_id = 2;
 
   // The sub topic list size.
-  int32 sub_topic_list_size = 3;
+  int32 subtopic_list_size = 3;
 }
 
 // Arguments required when creating a RevisionCardFragment.
@@ -805,7 +805,7 @@ message RevisionCardFragmentArguments {
   int32 subtopic_id = 2;
 
   // The sub topic list size.
-  int32 sub_topic_list_size = 3;
+  int32 subtopic_list_size = 3;
 }
 
 // Represents the parameters needed to create TestFontScaleConfigurationUtilActivity.

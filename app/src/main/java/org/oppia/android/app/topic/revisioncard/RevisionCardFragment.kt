@@ -30,7 +30,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
         val args = RevisionCardFragmentArguments.newBuilder().apply {
           this.topicId = topicId
           this.subtopicId = subtopicId
-          this.subTopicListSize = subtopicListSize
+          this.subtopicListSize = subtopicListSize
         }.build()
         return RevisionCardFragment().apply {
           arguments = Bundle().apply {
@@ -69,7 +69,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
       }
     val subtopicId = args?.subtopicId ?: -1
     val profileId = arguments.extractCurrentUserProfileId()
-    val subtopicListSize = args?.subTopicListSize ?: -1
+    val subtopicListSize = args?.subtopicListSize ?: -1
 
     return revisionCardFragmentPresenter.handleCreateView(
       inflater, container, topicId, subtopicId, profileId, subtopicListSize
