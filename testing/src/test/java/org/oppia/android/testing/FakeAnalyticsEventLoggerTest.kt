@@ -261,6 +261,105 @@ class FakeAnalyticsEventLoggerTest {
     assertThat(mostRecentEvents).containsExactly(eventLog2)
   }
 
+  @Test
+  fun testOldestEvents_twoEvents_noEventsLogged_returnsEmptyList() {
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 2)
+
+    assertThat(oldestEvents).isEmpty()
+  }
+
+  @Test
+  fun testOldestEvents_twoEvents_oneEventLogged_returnsOneItemList() {
+    analyticsEventLogger.logEvent(eventLog1)
+
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 2)
+
+    assertThat(oldestEvents).containsExactly(eventLog1)
+  }
+
+  @Test
+  fun testOldestEvents_twoEvents_twoEventsLogged_returnsEventsInOrder() {
+    analyticsEventLogger.logEvent(eventLog2)
+    analyticsEventLogger.logEvent(eventLog1)
+
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 2)
+
+    assertThat(oldestEvents).containsExactly(eventLog2, eventLog1).inOrder()
+  }
+
+  @Test
+  fun testOldestEvents_oneEvent_twoEventsLogged_returnsSingleOldestEvent() {
+    analyticsEventLogger.logEvent(eventLog2)
+    analyticsEventLogger.logEvent(eventLog1)
+
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 1)
+
+    assertThat(oldestEvents).containsExactly(eventLog2)
+  }
+
+  @Test
+  fun testOldestEvents_zeroEvents_twoEventsLogged_returnsEmptyList() {
+    analyticsEventLogger.logEvent(eventLog2)
+    analyticsEventLogger.logEvent(eventLog1)
+
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 0)
+
+    assertThat(oldestEvents).isEmpty()
+  }
+
+  @Test
+  fun testOldestEvents_negativeEvents_twoEventsLogged_throwsException() {
+    analyticsEventLogger.logEvent(eventLog2)
+    analyticsEventLogger.logEvent(eventLog1)
+
+    assertThrows<IllegalArgumentException>() {
+      fakeAnalyticsEventLogger.getOldestEvents(count = -1)
+    }
+  }
+
+  @Test
+  fun testOldestEvents_twoEventsLogged_eventsCleared_returnsEmptyList() {
+    analyticsEventLogger.logEvent(eventLog2)
+    analyticsEventLogger.logEvent(eventLog1)
+    fakeAnalyticsEventLogger.clearAllEvents()
+
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 2)
+
+    assertThat(oldestEvents).isEmpty()
+  }
+
+  @Test
+  fun testOldestEvents_eventLogged_cleared_newEventLogged_returnsNewestEvent() {
+    analyticsEventLogger.logEvent(eventLog1)
+    fakeAnalyticsEventLogger.clearAllEvents()
+    analyticsEventLogger.logEvent(eventLog2)
+
+    val oldestEvents = fakeAnalyticsEventLogger.getOldestEvents(count = 2)
+
+    assertThat(oldestEvents).containsExactly(eventLog2)
+  }
+
+  @Test
+  fun testLoggedEvent_eventsLogged_getLoggedEvent_returnsLoggedEventCorrectly() {
+    analyticsEventLogger.logEvent(eventLog1)
+    analyticsEventLogger.logEvent(eventLog2)
+
+    val loggedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.priority == Priority.ESSENTIAL
+    }
+
+    assertThat(loggedEvent).isEqualTo(eventLog1)
+  }
+
+  @Test
+  fun testLoggedEvent_noEventsLogged_getLoggedEvent_returnsNull() {
+    val loggedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.priority == Priority.ESSENTIAL
+    }
+
+    assertThat(loggedEvent).isNull()
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerFakeAnalyticsEventLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())

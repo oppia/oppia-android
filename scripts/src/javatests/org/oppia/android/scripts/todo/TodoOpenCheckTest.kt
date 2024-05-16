@@ -34,8 +34,8 @@ class TodoOpenCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#todo-open-checks for more details on how to fix this."
   private val regenerateNote =
-    "There were failures. Re-run the command with \"regenerate\" at the end to regenerate the " +
-      "exemption file with all failures as exempted."
+    "There were failures. Re-run //scripts:todo_open_check with \"regenerate\" at the end to " +
+      "regenerate the exemption file with all failures as exempted."
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
