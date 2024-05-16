@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -35,6 +36,7 @@ import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
@@ -58,6 +60,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val resourceHandler: AppLanguageResourceHandler,
   private val surveyGatingController: SurveyGatingController
 ) {
@@ -293,11 +296,7 @@ class ExplorationActivityPresenter @Inject constructor(
         }
         is AsyncResult.Success -> {
           oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-          if (isCompletion) {
-            maybeShowSurveyDialog(profileId, topicId)
-          } else {
-            backPressActivitySelector()
-          }
+          maybeShowSurveyDialog(profileId, topicId)
         }
       }
     }
@@ -327,7 +326,7 @@ class ExplorationActivityPresenter @Inject constructor(
       return
     }
     // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
-    // fragment.
+    // fragment and log lesson saved advertently event.
     showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
@@ -509,9 +508,11 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           stopExploration(isCompletion = false)
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           showProgressDatabaseFullDialogFragment()
         }
         else -> showUnsavedExplorationDialogFragment()
@@ -520,42 +521,48 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-      .observe(
-        activity
-      ) { gatingResult ->
-        when (gatingResult) {
-          is AsyncResult.Pending -> {
-            oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "ExplorationActivity",
-              "Failed to retrieve gating decision",
-              gatingResult.error
-            )
-            backPressActivitySelector()
-          }
-          is AsyncResult.Success -> {
-            if (gatingResult.value) {
-              val dialogFragment =
-                SurveyWelcomeDialogFragment.newInstance(
-                  profileId,
-                  topicId,
-                  explorationId,
-                  SURVEY_QUESTIONS
-                )
-              val transaction = activity.supportFragmentManager.beginTransaction()
-              transaction
-                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                .addToBackStack(null)
-                .commit()
-            } else {
+    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+    liveData.observe(
+      activity,
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
+          when (gatingResult) {
+            is AsyncResult.Pending -> {
+              oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "ExplorationActivity",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
               backPressActivitySelector()
+            }
+            is AsyncResult.Success -> {
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .addToBackStack(null)
+                  .commit()
+
+                // Changes to underlying DataProviders will update the gating result.
+                liveData.removeObserver(this)
+              } else {
+                backPressActivitySelector()
+              }
             }
           }
         }
       }
+    )
   }
 
   companion object {

@@ -44,6 +44,8 @@ import javax.inject.Singleton
 private const val ONE_WEEK_IN_DAYS = 7
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
+private const val BAKER_BG_COLOR = "#0F63A3"
+private const val DUCK_BG_COLOR = "#05538F"
 
 private const val CHAPTER_BG_COLOR_1 = "#F8BF74"
 private const val CHAPTER_BG_COLOR_2 = "#D68F78"
@@ -875,7 +877,7 @@ internal fun createTopicThumbnail0(): LessonThumbnail {
 internal fun createTopicThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 
@@ -889,7 +891,7 @@ internal fun createTopicThumbnail2(): LessonThumbnail {
 internal fun createTopicThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
     .build()
 }
 
@@ -903,7 +905,7 @@ internal fun createDefaultStoryThumbnail(): LessonThumbnail {
 internal fun createStoryThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xa5d3ec)
+    .setBackgroundColorRgb(0x0F63A3)
     .build()
 }
 
@@ -924,7 +926,7 @@ internal fun createStoryThumbnail2(): LessonThumbnail {
 internal fun createStoryThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xa5a2d3)
+    .setBackgroundColorRgb(0x0F63A3)
     .build()
 }
 
@@ -945,7 +947,7 @@ internal fun createChapterThumbnail0(): LessonThumbnail {
 internal fun createChapterThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 
@@ -966,21 +968,21 @@ internal fun createChapterThumbnail3(): LessonThumbnail {
 internal fun createChapterThumbnail4(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
+    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
     .build()
 }
 
 internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
+    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
     .build()
 }
 

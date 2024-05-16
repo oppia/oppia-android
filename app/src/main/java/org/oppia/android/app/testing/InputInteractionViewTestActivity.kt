@@ -9,18 +9,12 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
@@ -29,7 +23,6 @@ import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
-import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
 
 /**
  * This is a dummy activity to test input interaction views.
@@ -45,12 +38,8 @@ class InputInteractionViewTestActivity :
   @Inject
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
-  @Inject
-  lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
-
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
 
-  lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,36 +55,8 @@ class InputInteractionViewTestActivity :
         InputInteractionViewTestActivityParams.getDefaultInstance()
       )
     writtenTranslationContext = params.writtenTranslationContext
-    when (params.mathInteractionType) {
-      NUMERIC_EXPRESSION -> {
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForNumericExpression()
-            .create(interaction = params.interaction)
-      }
-      ALGEBRAIC_EXPRESSION -> {
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForAlgebraicExpression()
-            .create(interaction = params.interaction)
-      }
-      MATH_EQUATION -> {
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForMathEquation()
-            .create(interaction = params.interaction)
-      }
-      MATH_INTERACTION_TYPE_UNSPECIFIED, UNRECOGNIZED, null -> {
-        // Default to numeric expression arbitrarily (since something needs to be defined).
-        mathExpressionViewModel =
-          mathExpViewModelFactoryFactory
-            .createFactoryForNumericExpression()
-            .create(interaction = params.interaction)
-      }
-    }
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
     binding.getPendingAnswerErrorOnSubmitClick = Runnable {
       numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     }

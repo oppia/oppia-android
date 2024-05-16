@@ -1,7 +1,9 @@
 package org.oppia.android.testing.espresso
 
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.view.View
+import androidx.annotation.RequiresApi
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -19,6 +21,7 @@ class GenericViewMatchers {
      * Returns a [Matcher] that verifies a view has a fully opaque background. The view is expected
      * to have a [GradientDrawable] background.
      */
+    @RequiresApi(Build.VERSION_CODES.N)
     fun withOpaqueBackground(): Matcher<View> = withColorBackgroundMatching(
       descriptionSuffix = "an opaque background"
     ) { color -> color?.extractAlpha() == 0xff }
@@ -27,6 +30,7 @@ class GenericViewMatchers {
      * Returns a [Matcher] with the specified description suffix and color matcher, matching against
      * filled background colors of views.
      */
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun withColorBackgroundMatching(
       @Suppress("SameParameterValue") descriptionSuffix: String,
       colorMatcher: (Long?) -> Boolean
