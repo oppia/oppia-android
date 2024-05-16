@@ -27,6 +27,9 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//third_party:androidx_test_ext_junit",
@@ -40,6 +43,8 @@ TEST_DEPS = [
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
     "//utility",
+    "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/threading:annotations",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

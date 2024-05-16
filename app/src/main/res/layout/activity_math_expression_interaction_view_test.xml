@@ -8,15 +8,12 @@
     <import type="android.view.View" />
 
     <variable
-      name="numericInputViewModel"
-      type="org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel" />
-
+      name="mathExpressionInteractionsViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
   </data>
-
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -24,28 +21,22 @@
       android:focusableInTouchMode="true"
       android:gravity="center"
       android:orientation="vertical"
-      tools:context=".testing.InputInteractionViewTestActivity">
+      tools:context=".app.testing.MathExpressionInteractionsViewTestActivity">
 
-      <org.oppia.android.app.customview.interaction.NumericInputInteractionView
-        android:id="@+id/test_number_input_interaction_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@drawable/edit_text_background"
-        android:focusable="true"
-        android:hint="@string/test_number_input_interaction_hint"
-        android:longClickable="false"
-        android:maxLength="200"
+      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+        android:id="@+id/test_math_expression_input_interaction_view"
+        style="@style/InputInteractionEditText"
         android:minHeight="48dp"
-        android:padding="8dp"
-        android:singleLine="true"
-        android:text="@={numericInputViewModel.answerText}"
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
-        app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
+        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
+        android:inputType="text"
+        android:text="@={mathExpressionInteractionsViewModel.answerText}"
+        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
       <TextView
-        android:id="@+id/number_input_error"
+        android:id="@+id/math_expression_input_error"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,10 +44,10 @@
         android:layout_marginEnd="8dp"
         android:fontFamily="sans-serif"
         android:minHeight="32dp"
-        android:text="@{numericInputViewModel.errorMessage}"
+        android:text="@{mathExpressionInteractionsViewModel.errorMessage}"
         android:textColor="@color/component_color_shared_input_error_color"
         android:textSize="12sp"
-        android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+        android:visibility="@{mathExpressionInteractionsViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
       <Button
         android:id="@+id/submit_button"
@@ -64,9 +55,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:onClick="getPendingAnswerErrorOnSubmitClick"
         android:text="@string/submit_button_text"
+        android:onClick="getPendingAnswerErrorOnSubmitClick"
         android:textColor="@color/component_color_shared_secondary_4_text_color" />
+
     </LinearLayout>
   </ScrollView>
 </layout>
