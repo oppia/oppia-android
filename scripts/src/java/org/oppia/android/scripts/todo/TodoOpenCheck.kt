@@ -131,8 +131,8 @@ class TodoOpenCheck(
       openIssueFailureTodosAfterExemption.isNotEmpty()
     ) {
       println(
-        "There were failures. Re-run the command with \"regenerate\" at the end to regenerate the" +
-          " exemption file with all failures as exempted."
+        "There were failures. Re-run //scripts:todo_open_check with \"regenerate\" at the end" +
+          " to regenerate the exemption file with all failures as exempted."
       )
       println()
       throw Exception("TODO CHECK FAILED")
