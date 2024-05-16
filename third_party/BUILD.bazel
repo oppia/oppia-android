@@ -37,14 +37,6 @@ load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPEND
     ],
 ) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
 
-android_library(
-    name = "circularimageview_circular_image_view",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@circularimageview//circularimageview:circular_image_view",
-    ],
-)
-
 # A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
 # library still routes through //third_party).
 android_library(

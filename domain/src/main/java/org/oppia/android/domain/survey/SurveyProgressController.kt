@@ -382,8 +382,8 @@ class SurveyProgressController @Inject constructor(
       if (selectedAnswer.questionName == SurveyQuestionName.NPS) {
         // compute the feedback question before navigating to it
         progress.questionGraph.computeFeedbackQuestion(
-          currentQuestionId + 1,
-          selectedAnswer.npsScore
+          index = currentQuestionId + 1,
+          npsScore = selectedAnswer.npsScore
         )
       }
 
