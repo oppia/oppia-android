@@ -23,8 +23,7 @@ class TodoIssueResolvedCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#todo-issue-resolved-check for more details on how to fix this."
 
-  @field:[Rule JvmField]
-  val tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
