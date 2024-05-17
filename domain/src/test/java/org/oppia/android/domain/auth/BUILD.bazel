@@ -2,7 +2,6 @@
 Tests for libraries providing authentication with Firebase functionality.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -72,5 +71,3 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
-
-dagger_rules()
