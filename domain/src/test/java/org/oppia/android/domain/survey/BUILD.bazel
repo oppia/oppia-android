@@ -2,7 +2,6 @@
 Tests for survey domain components.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -87,5 +86,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()
