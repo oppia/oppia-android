@@ -5,6 +5,7 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.LessonThumbnail
@@ -18,7 +19,6 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Topic
-import org.oppia.android.app.model.TopicIdList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
@@ -44,8 +44,6 @@ import javax.inject.Singleton
 private const val ONE_WEEK_IN_DAYS = 7
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
-private const val BAKER_BG_COLOR = "#0F63A3"
-private const val DUCK_BG_COLOR = "#05538F"
 
 private const val CHAPTER_BG_COLOR_1 = "#F8BF74"
 private const val CHAPTER_BG_COLOR_2 = "#D68F78"
@@ -135,16 +133,16 @@ class TopicListController @Inject constructor(
 
   private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
     return if (loadLessonProtosFromAssets) {
-      val topicIdList =
+      val classroomList =
         assetRepository.loadProtoFromLocalAssets(
-          assetName = "topics",
-          baseMessage = TopicIdList.getDefaultInstance()
+          assetName = "classrooms",
+          baseMessage = ClassroomList.getDefaultInstance()
         )
       return TopicList.newBuilder().apply {
         // Only include topics currently playable in the topic list.
         addAllTopicSummary(
-          topicIdList.topicIdsList.map {
-            createEphemeralTopicSummary(it, contentLocale)
+          classroomList.classroomsList.flatMap { classroom ->
+            classroom.topicIdsList.map { createEphemeralTopicSummary(it, contentLocale) }
           }.filter {
             it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
           }
@@ -577,14 +575,12 @@ class TopicListController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
     return if (loadLessonProtosFromAssets) {
-      val topicIdList =
+      val topicIdsList =
         assetRepository.loadProtoFromLocalAssets(
-          assetName = "topics",
-          baseMessage = TopicIdList.getDefaultInstance()
-        )
-      return computeSuggestedStoriesForTopicIds(
-        topicProgressList, topicIdList.topicIdsList, contentLocale
-      )
+          assetName = "classrooms",
+          baseMessage = ClassroomList.getDefaultInstance()
+        ).flatMap { it.topicIdsList }
+      return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdsList, contentLocale)
     } else computeSuggestedStoriesFromJson(topicProgressList, contentLocale)
   }
 
@@ -877,7 +873,7 @@ internal fun createTopicThumbnail0(): LessonThumbnail {
 internal fun createTopicThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
@@ -891,7 +887,7 @@ internal fun createTopicThumbnail2(): LessonThumbnail {
 internal fun createTopicThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
@@ -905,7 +901,7 @@ internal fun createDefaultStoryThumbnail(): LessonThumbnail {
 internal fun createStoryThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0x0F63A3)
+    .setBackgroundColorRgb(0xa5d3ec)
     .build()
 }
 
@@ -926,7 +922,7 @@ internal fun createStoryThumbnail2(): LessonThumbnail {
 internal fun createStoryThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0x0F63A3)
+    .setBackgroundColorRgb(0xa5a2d3)
     .build()
 }
 
@@ -947,7 +943,7 @@ internal fun createChapterThumbnail0(): LessonThumbnail {
 internal fun createChapterThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
@@ -968,21 +964,21 @@ internal fun createChapterThumbnail3(): LessonThumbnail {
 internal fun createChapterThumbnail4(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 

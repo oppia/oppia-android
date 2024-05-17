@@ -97,8 +97,8 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
         "GJ2rLXRKD5hw",
         "omzF4oqgeTXd",
     ],
-    topic_list_file_names = [
-        "topics",
+    classroom_list_file_names = [
+        "classrooms",
     ],
 )
 
