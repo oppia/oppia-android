@@ -93,11 +93,9 @@ class MathExpressionInteractionsViewTestActivity :
     }
 
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
-  }
-
-  /** Checks submit-time errors. */
-  fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    mathExpressionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
+      mathExpressionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(

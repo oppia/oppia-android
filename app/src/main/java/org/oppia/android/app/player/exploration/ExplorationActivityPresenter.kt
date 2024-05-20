@@ -527,7 +527,7 @@ class ExplorationActivityPresenter @Inject constructor(
       object : Observer<AsyncResult<Boolean>> {
         override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
           when (gatingResult) {
-            is AsyncResult.Pending -> {
+            null, is AsyncResult.Pending -> {
               oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
             }
             is AsyncResult.Failure -> {

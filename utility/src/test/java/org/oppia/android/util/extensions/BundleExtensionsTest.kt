@@ -1,11 +1,15 @@
 package org.oppia.android.util.extensions
 
 import android.content.Intent
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import androidx.core.app.BundleCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
+import java.io.Serializable
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.IncompatibleTestMessage
@@ -187,6 +191,7 @@ class BundleExtensionsTest {
   }
 
   @Test
+  @Config(sdk = [33]) // Using new getSerializableExtra() method introduced in API 33.
   fun testPutProtoExtra_intentWithSameKey_overridesWithProto() {
     val intent = Intent()
     intent.putExtra("first_extra", "with_value")
@@ -195,7 +200,8 @@ class BundleExtensionsTest {
 
     assertThat(intent).extras().hasSize(1)
     assertThat(intent).extras().containsKey("first_extra")
-    assertThat(intent.getSerializableExtra("first_extra")).isNotInstanceOf(String::class.java)
+    assertThat(intent.getSerializableExtra("first_extra", Serializable::class.java))
+      .isNotInstanceOf(String::class.java)
   }
 
   @Test
