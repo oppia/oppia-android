@@ -191,7 +191,6 @@ class BundleExtensionsTest {
   }
 
   @Test
-  @Config(sdk = [33]) // Using new getSerializableExtra() method introduced in API 33.
   fun testPutProtoExtra_intentWithSameKey_overridesWithProto() {
     val intent = Intent()
     intent.putExtra("first_extra", "with_value")
@@ -200,8 +199,8 @@ class BundleExtensionsTest {
 
     assertThat(intent).extras().hasSize(1)
     assertThat(intent).extras().containsKey("first_extra")
-    assertThat(intent.getSerializableExtra("first_extra", Serializable::class.java))
-      .isNotInstanceOf(String::class.java)
+    // TODO: Convert this to a type check with getSerializableExtra once Robolectric can be updated.
+    assertThat(intent.getStringExtra("first_extra")).isNull()
   }
 
   @Test
