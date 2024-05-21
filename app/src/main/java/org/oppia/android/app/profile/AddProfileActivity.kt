@@ -1,8 +1,10 @@
 package org.oppia.android.app.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
@@ -29,6 +31,14 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     addProfileFragmentPresenter.handleOnCreate()
+
+    addProfileFragmentPresenter.resultLauncher = registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+      if (result.resultCode == Activity.RESULT_OK) {
+        addProfileFragmentPresenter.updateProfileAvatar(result.data)
+      }
+    }
   }
 
   override fun onSupportNavigateUp(): Boolean {
@@ -37,11 +47,6 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     startActivity(intent)
     return false
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    addProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
   }
 
   override fun onDestroy() {

@@ -1,8 +1,11 @@
 package org.oppia.android.app.profileprogress
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
@@ -36,11 +39,21 @@ class ProfileProgressActivity :
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
+  private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
+
+    resultLauncher = registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+      if (result.resultCode == Activity.RESULT_OK) {
+        profileProgressActivityPresenter.updateProfileAvatar(result.data)
+      }
+    }
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
@@ -99,11 +112,7 @@ class ProfileProgressActivity :
   }
 
   override fun showGalleryForProfilePicture() {
-    profileProgressActivityPresenter.openGalleryIntent()
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    profileProgressActivityPresenter.handleOnActivityResult(data)
+    val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
+    resultLauncher.launch(galleryIntent)
   }
 }
