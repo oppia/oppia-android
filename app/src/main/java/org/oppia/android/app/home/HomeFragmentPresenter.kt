@@ -4,6 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
@@ -96,7 +104,36 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
+    binding.composeView.apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent {
+        MaterialTheme {
+          GroupedList()
+        }
+      }
+    }
+
     return binding.root
+  }
+
+  @OptIn(
+    ExperimentalFoundationApi::class,
+    ExperimentalUnitApi::class,
+    ExperimentalMaterialApi::class
+  )
+  @Composable
+  fun GroupedList() {
+    val sections = listOf("A", "B", "C")
+
+    LazyColumn {
+      sections.forEach {
+        stickyHeader {
+        }
+        items(10) { item ->
+          Text(text = "Some item $item")
+        }
+      }
+    }
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {

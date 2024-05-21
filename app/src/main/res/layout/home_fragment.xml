@@ -25,6 +25,11 @@
       android:visibility="@{viewModel.isProgressBarVisible?View.VISIBLE:View.GONE}"
       />
 
+    <androidx.compose.ui.platform.ComposeView
+      android:id="@+id/compose_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"
       android:layout_width="match_parent"
@@ -34,6 +39,7 @@
       android:paddingTop="@dimen/home_fragment_padding_top"
       android:paddingBottom="@dimen/home_fragment_padding_bottom"
       android:scrollbars="none"
+      android:visibility="gone"
       app:data="@{viewModel.homeItemViewModelListLiveData}" />
 
     <View
