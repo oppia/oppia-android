@@ -2,7 +2,7 @@
 Libraries corresponding to telemetry scripts, including tools for locally analyzing event data.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "decode_user_study_event_string_lib",

@@ -3,7 +3,7 @@ Instrumentation macros to define up end-to-end tests.
 """
 
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 def oppia_instrumentation_test(
         name,
