@@ -193,14 +193,14 @@ class MavenDependenciesRetriever(
   ): Deferred<MavenDependencyList> {
     return CoroutineScope(scriptBgDispatcher).async {
       val candidates = finalDependenciesList.map { MavenListDependencyPomCandidate(it) }
-      val failingCandidates = candidates.filterTo(mutableSetOf()) { it.latestPomFileText == null }
+      val undoneCandidates = candidates.filterTo(mutableSetOf()) { it.latestPomFileText == null }
       var attemptCount = 0
-      while (failingCandidates.isNotEmpty() && attemptCount < 10) {
+      while (undoneCandidates.isNotEmpty() && attemptCount < 10) {
         println(
           "Attempt ${++attemptCount} to download POM files for" +
-            " ${failingCandidates.size}/${candidates.size} Maven artifacts..."
+            " ${undoneCandidates.size}/${candidates.size} Maven artifacts..."
         )
-        failingCandidates -= failingCandidates.map { pomCandidate ->
+        undoneCandidates -= undoneCandidates.map { pomCandidate ->
           CoroutineScope(scriptBgDispatcher).async {
             // Run blocking I/O operations on the I/O thread pool.
             withContext(Dispatchers.IO) {
@@ -212,9 +212,9 @@ class MavenDependenciesRetriever(
           pomCandidate.takeIf { pomFileText != null }?.also { it.latestPomFileText = pomFileText }
         }
       }
-      check(failingCandidates.isEmpty()) {
-        "Failed to download ${failingCandidates.size}/${candidates.size} POM files:" +
-          " $failingCandidates."
+      check(undoneCandidates.isEmpty()) {
+        "Failed to download ${undoneCandidates.size}/${candidates.size} POM files:" +
+          " $undoneCandidates."
       }
       return@async MavenDependencyList.newBuilder().apply {
         this.addAllMavenDependency(
