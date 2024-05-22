@@ -789,17 +789,11 @@
   <dimen name="phone_shared_margin_large">20dp</dimen>
   <dimen name="phone_shared_margin_xl">28dp</dimen>
 
-  <dimen name="onboarding_shared_margin_x_small">4dp</dimen>
-  <dimen name="onboarding_shared_margin_small">8dp</dimen>
-  <dimen name="onboarding_shared_margin_medium_small">12dp</dimen>
-  <dimen name="onboarding_shared_margin_medium">16dp</dimen>
-  <dimen name="onboarding_shared_margin_medium_large">20dp</dimen>
-  <dimen name="onboarding_shared_margin_large">24dp</dimen>
-  <dimen name="onboarding_shared_margin_xl">28dp</dimen>
-  <dimen name="onboarding_shared_margin_2xl">32dp</dimen>
-  <dimen name="onboarding_shared_margin_3xl">36dp</dimen>
-  <dimen name="onboarding_shared_margin_4xl">48dp</dimen>
-  <dimen name="onboarding_shared_margin_5xl">52dp</dimen>
+  <dimen name="tablet_shared_margin_x_small">8dp</dimen>
+  <dimen name="tablet_shared_margin_small">12dp</dimen>
+  <dimen name="tablet_shared_margin_medium">16dp</dimen>
+  <dimen name="tablet_shared_margin_large">28dp</dimen>
+  <dimen name="tablet_shared_margin_xl">36dp</dimen>
 
   <dimen name="onboarding_shared_text_size_small">12sp</dimen>
   <dimen name="onboarding_shared_text_size_medium_small">14sp</dimen>
