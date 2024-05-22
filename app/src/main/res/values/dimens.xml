@@ -791,7 +791,6 @@
   <dimen name="onboarding_shared_text_size_xl">32sp</dimen>
 
   <!-- Shared Margins -->
-
   <dimen name="phone_shared_margin_x_small">4dp</dimen>
   <dimen name="phone_shared_margin_small">8dp</dimen>
   <dimen name="phone_shared_margin_medium">16dp</dimen>
