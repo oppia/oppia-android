@@ -767,7 +767,9 @@ class ViewEventLogsFragmentTest {
 
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     /**
      * Injects [TestApplicationComponent] to [ViewEventLogsFragmentTest] providing the required

@@ -183,7 +183,7 @@ class TopicActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -260,7 +260,9 @@ class TopicActivityTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(topicActivityTest: TopicActivityTest)
   }

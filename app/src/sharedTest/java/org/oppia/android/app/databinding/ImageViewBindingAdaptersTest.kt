@@ -240,7 +240,9 @@ class ImageViewBindingAdaptersTest {
   interface TestApplicationComponent : ApplicationComponent {
     /** Build the TestApplicationComponent. */
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     /** Inject [ImageViewBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest)

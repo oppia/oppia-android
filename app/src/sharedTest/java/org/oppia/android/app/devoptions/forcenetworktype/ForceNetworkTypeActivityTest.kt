@@ -203,7 +203,9 @@ class ForceNetworkTypeActivityTest {
   interface TestApplicationComponent : ApplicationComponent {
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     /**
      * Injects [TestApplicationComponent] to [ForceNetworkTypeActivityTest] providing the required

@@ -13,7 +13,6 @@ import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileResetPinFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -24,13 +23,10 @@ import javax.inject.Inject
 class ProfileResetPinFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ProfileResetPinViewModel>,
+  private val profileResetPinViewModel: ProfileResetPinViewModel,
   private val profileManagementController: ProfileManagementController,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val viewModel: ProfileResetPinViewModel by lazy {
-    getProfileResetPinViewModel()
-  }
   private lateinit var binding: ProfileResetPinFragmentBinding
   private var inputtedPin = false
   private var inputtedConfirmPin = false
@@ -44,24 +40,24 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
   ): View? {
     binding = ProfileResetPinFragmentBinding.inflate(inflater, container, false)
 
-    viewModel.isAdmin.set(isAdmin)
+    profileResetPinViewModel.isAdmin.set(isAdmin)
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = viewModel
+      it.viewModel = profileResetPinViewModel
     }
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileResetInputPinEditText.onTextChanged { pin ->
       pin?.let {
         if (
-          viewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
-          viewModel.inputPin.get() == it
+          profileResetPinViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+          profileResetPinViewModel.inputPin.get() == it
         ) {
-          viewModel.inputPin.set(it)
+          profileResetPinViewModel.inputPin.set(it)
           inputtedPin = pin.isNotEmpty()
         } else {
-          viewModel.inputPin.set(it)
-          viewModel.pinErrorMsg.set("")
+          profileResetPinViewModel.inputPin.set(it)
+          profileResetPinViewModel.pinErrorMsg.set("")
           inputtedPin = pin.isNotEmpty()
           setValidPin()
         }
@@ -72,14 +68,14 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
     binding.profileResetInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         if (
-          viewModel.confirmErrorMsg.get()?.isNotEmpty()!! &&
-          viewModel.inputConfirmPin.get() == it
+          profileResetPinViewModel.confirmErrorMsg.get()?.isNotEmpty()!! &&
+          profileResetPinViewModel.inputConfirmPin.get() == it
         ) {
-          viewModel.inputConfirmPin.set(it)
+          profileResetPinViewModel.inputConfirmPin.set(it)
           inputtedConfirmPin = confirmPin.isNotEmpty()
         } else {
-          viewModel.inputConfirmPin.set(it)
-          viewModel.confirmErrorMsg.set("")
+          profileResetPinViewModel.inputConfirmPin.set(it)
+          profileResetPinViewModel.confirmErrorMsg.set("")
           inputtedConfirmPin = confirmPin.isNotEmpty()
           setValidPin()
         }
@@ -101,7 +97,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
       var failed = false
       if (isAdmin) {
         if (pin.length < 5) {
-          viewModel.pinErrorMsg.set(
+          profileResetPinViewModel.pinErrorMsg.set(
             resourceHandler.getStringInLocale(
               R.string.profile_reset_pin_error_admin_pin_length
             )
@@ -110,7 +106,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         }
       } else {
         if (pin.length < 3) {
-          viewModel.pinErrorMsg.set(
+          profileResetPinViewModel.pinErrorMsg.set(
             resourceHandler.getStringInLocale(
               R.string.profile_reset_pin_error_user_pin_length
             )
@@ -119,7 +115,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         }
       }
       if (pin != confirmPin) {
-        viewModel.confirmErrorMsg.set(
+        profileResetPinViewModel.confirmErrorMsg.set(
           resourceHandler.getStringInLocale(
             R.string.add_profile_error_pin_confirm_wrong
           )
@@ -147,13 +143,9 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
 
   private fun setValidPin() {
     if (inputtedPin && inputtedConfirmPin) {
-      viewModel.isButtonActive.set(true)
+      profileResetPinViewModel.isButtonActive.set(true)
     } else {
-      viewModel.isButtonActive.set(false)
+      profileResetPinViewModel.isButtonActive.set(false)
     }
-  }
-
-  private fun getProfileResetPinViewModel(): ProfileResetPinViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileResetPinViewModel::class.java)
   }
 }

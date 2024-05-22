@@ -93,6 +93,9 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// Time: Wed Apr 24 2019 08:22:00
+private const val TIMESTAMP = 1556094120000
+
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -113,6 +116,8 @@ class TextViewBindingAdaptersTest {
       )
     )
 
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -124,19 +129,13 @@ class TextViewBindingAdaptersTest {
     Intents.release()
   }
 
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  // Time: Wed Apr 24 2019 08:22:00
-  private val TIMESTAMP = 1556094120000
-
   @Test
   fun testTextViewBindingAdapters_profileDataTextIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileDataText(textView, /* setText= */ TIMESTAMP)
+      setProfileDataText(textView, TIMESTAMP)
       assertThat(textView.text.toString()).isEqualTo("Created on April 24, 2019")
     }
   }
@@ -148,10 +147,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs)
       assertThat(textView.text.toString()).isEqualTo("Last used just now")
     }
   }
@@ -163,10 +159,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 60000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 60000)
       assertThat(textView.text.toString()).isEqualTo("Last used a minute ago")
     }
   }
@@ -178,10 +171,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 120000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 120000)
       assertThat(textView.text.toString()).isEqualTo("Last used 2 minutes ago")
     }
   }
@@ -193,10 +183,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 3600000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 3600000)
       assertThat(textView.text.toString()).isEqualTo("Last used an hour ago")
     }
   }
@@ -208,10 +195,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 7200000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 7200000)
       assertThat(textView.text.toString()).isEqualTo("Last used 2 hours ago")
     }
   }
@@ -223,10 +207,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 86400000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 86400000)
       assertThat(textView.text.toString()).isEqualTo("Last used yesterday")
     }
   }
@@ -238,10 +219,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs - 172800000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs - 172800000)
       assertThat(textView.text.toString()).isEqualTo("Last used 2 days ago")
     }
   }
@@ -253,10 +231,7 @@ class TextViewBindingAdaptersTest {
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(
-        textView,
-        /* setText= */ getCurrentTimeMs + 172800000
-      )
+      setProfileLastVisitedText(textView, getCurrentTimeMs + 172800000)
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
   }
@@ -265,12 +240,11 @@ class TextViewBindingAdaptersTest {
   fun testSetProfileLastVisitedText_forTimeZero_setsLastUsedRecently() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
-    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ 0
+        /* timestamp = */ 0
       )
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
@@ -280,12 +254,11 @@ class TextViewBindingAdaptersTest {
   fun testSetProfileLastVisitedText_forNegativeTime_setsLastUsedRecently() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
-    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ -1
+        /* timestamp = */ -1
       )
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
@@ -301,7 +274,7 @@ class TextViewBindingAdaptersTest {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setDrawableEndCompat(
         textView,
-        /* setDrawableEndCompat= */ drawable
+        /* drawable = */ drawable
       )
       assertThat(textView.compoundDrawablesRelative[2]).isEqualTo(drawable)
     }
@@ -345,7 +318,9 @@ class TextViewBindingAdaptersTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(textViewBindingAdaptersTest: TextViewBindingAdaptersTest)
   }

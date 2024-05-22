@@ -519,7 +519,7 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
     setUpTestWithLanguageSwitchingFeatureOff()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -4582,7 +4582,7 @@ class StateFragmentTest {
     addException.invoke(/* obj= */ null, dataSource, exception)
   }
 
-  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any {
+  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any? {
     val audioUrl = createAudioUrl(explorationId, audioFileName)
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
@@ -5153,9 +5153,11 @@ class StateFragmentTest {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
-      val dataSource = createAudioDataSource(
-        explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
-      )
+      val dataSource = checkNotNull(
+        createAudioDataSource(
+          explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
+        )
+      ) { "Failed to create audio data source." }
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
     }
   }

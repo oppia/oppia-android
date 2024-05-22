@@ -17,6 +17,7 @@ class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatA
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
     val readingTextSize = checkNotNull(
       intent.getSerializableExtra(FONT_SCALE_EXTRA_KEY) as? ReadingTextSize
     ) { "Expected $FONT_SCALE_EXTRA_KEY to be in intent extras." }

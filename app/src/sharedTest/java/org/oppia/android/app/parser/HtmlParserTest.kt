@@ -43,7 +43,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
@@ -386,7 +386,7 @@ class HtmlParserTest {
       imageCenterAlign = true,
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+    val (_, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li><li>How to tell whether one" +
@@ -677,7 +677,7 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).perform(click())
 
     // Verify the tag listener is not called since link support is disabled.
-    verifyZeroInteractions(mockCustomOppiaTagActionListener)
+    verifyNoMoreInteractions(mockCustomOppiaTagActionListener)
   }
 
   @Test
@@ -922,7 +922,9 @@ class HtmlParserTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(htmlParserTest: HtmlParserTest)
   }

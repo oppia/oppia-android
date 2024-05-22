@@ -195,7 +195,8 @@ class BundleExtensionsTest {
 
     assertThat(intent).extras().hasSize(1)
     assertThat(intent).extras().containsKey("first_extra")
-    assertThat(intent.getSerializableExtra("first_extra")).isNotInstanceOf(String::class.java)
+    // TODO: Convert this to a type check with getSerializableExtra once Robolectric can be updated.
+    assertThat(intent.getStringExtra("first_extra")).isNull()
   }
 
   @Test

@@ -1667,7 +1667,7 @@ class MathExpressionInteractionsViewTest {
     Iteration("algebraic_expression", "type=ALGEBRAIC_EXPRESSION", "text="),
     Iteration("math_equation", "type=MATH_EQUATION", "text=")
   )
-  fun testView_allInteractions_blankInput_produceSubmitTimeError() {
+  fun testView_allInteractions_validAndInvalidExpressions_doNotProduceRealTimeError() {
     val interactionType = MathInteractionType.valueOf(type)
     val interaction = createInteraction()
     launch(interactionType, interaction).use { scenario ->
@@ -1677,8 +1677,8 @@ class MathExpressionInteractionsViewTest {
 
       // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
-        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
-        assertThat(answerError).isNotEmpty()
+        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(REAL_TIME)
+        assertThat(answerError).isNull()
       }
     }
   }
@@ -1692,7 +1692,7 @@ class MathExpressionInteractionsViewTest {
     Iteration("math_equation_valid", "type=MATH_EQUATION", "text=z=x^2"),
     Iteration("math_equation_invalid", "type=MATH_EQUATION", "text=z=2^x")
   )
-  fun testView_allInteractions_validAndInvalidExpressions_doNotProduceRealTimeError() {
+  fun testView_allInteractions_blankInput_produceSubmitTimeError() {
     val interactionType = MathInteractionType.valueOf(type)
     val interaction = createInteraction()
     launch(interactionType, interaction).use { scenario ->
@@ -1702,8 +1702,8 @@ class MathExpressionInteractionsViewTest {
 
       // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
-        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(REAL_TIME)
-        assertThat(answerError).isNull()
+        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
+        assertThat(answerError).isNotEmpty()
       }
     }
   }
@@ -1875,7 +1875,9 @@ class MathExpressionInteractionsViewTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(mathExpressionInteractionsViewTest: MathExpressionInteractionsViewTest)
   }

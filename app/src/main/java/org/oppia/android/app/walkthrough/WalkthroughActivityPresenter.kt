@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
@@ -16,7 +15,7 @@ import javax.inject.Inject
 @ActivityScope
 class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
+  private val walkthroughViewModel: WalkthroughViewModel
 ) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
@@ -25,7 +24,7 @@ class WalkthroughActivityPresenter @Inject constructor(
     binding = DataBindingUtil.setContentView(activity, R.layout.walkthrough_activity)
 
     binding.apply {
-      viewModel = getWalkthroughViewModel()
+      viewModel = walkthroughViewModel
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
@@ -34,14 +33,14 @@ class WalkthroughActivityPresenter @Inject constructor(
       activity,
       true
     )
-    val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
+    val currentFragmentIndex = walkthroughViewModel.currentProgress.get()?.minus(1)
 
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.walkthrough_fragment_placeholder,
         WalkthroughWelcomeFragment()
       ).commitNow().also {
-        getWalkthroughViewModel().currentProgress.set(1)
+        walkthroughViewModel.currentProgress.set(1)
       }
     } else if (currentFragmentIndex != null) {
       when (currentFragmentIndex) {
@@ -50,21 +49,21 @@ class WalkthroughActivityPresenter @Inject constructor(
             R.id.walkthrough_fragment_placeholder,
             getWalkthroughWelcomeFragment() ?: WalkthroughWelcomeFragment()
           ).commitNow().also {
-            getWalkthroughViewModel().currentProgress.set(1)
+            walkthroughViewModel.currentProgress.set(1)
           }
         1 ->
           activity.supportFragmentManager.beginTransaction().replace(
             R.id.walkthrough_fragment_placeholder,
             getWalkthroughTopicListFragment() ?: WalkthroughTopicListFragment()
           ).commitNow().also {
-            getWalkthroughViewModel().currentProgress.set(2)
+            walkthroughViewModel.currentProgress.set(2)
           }
         2 ->
           activity.supportFragmentManager.beginTransaction().replace(
             R.id.walkthrough_fragment_placeholder,
             getWalkthroughFinalFragment() ?: WalkthroughFinalFragment()
           ).commitNow().also {
-            getWalkthroughViewModel().currentProgress.set(3)
+            walkthroughViewModel.currentProgress.set(3)
           }
       }
     }
@@ -76,10 +75,6 @@ class WalkthroughActivityPresenter @Inject constructor(
     else {
       changePage(currentProgress - 2)
     }
-  }
-
-  private fun getWalkthroughViewModel(): WalkthroughViewModel {
-    return viewModelProvider.getForActivity(activity, WalkthroughViewModel::class.java)
   }
 
   private fun getWalkthroughWelcomeFragment(): WalkthroughWelcomeFragment? {
@@ -113,7 +108,7 @@ class WalkthroughActivityPresenter @Inject constructor(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughWelcomeFragment()
         ).commitNow().also {
-          getWalkthroughViewModel().currentProgress.set(1)
+          walkthroughViewModel.currentProgress.set(1)
         }
       }
       WalkthroughPages.TOPIC_LIST.value -> {
@@ -121,7 +116,7 @@ class WalkthroughActivityPresenter @Inject constructor(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughTopicListFragment()
         ).commitNow().also {
-          getWalkthroughViewModel().currentProgress.set(2)
+          walkthroughViewModel.currentProgress.set(2)
         }
       }
       WalkthroughPages.FINAL.value -> {
@@ -129,14 +124,14 @@ class WalkthroughActivityPresenter @Inject constructor(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughFinalFragment.newInstance(topicId)
         ).commitNow().also {
-          getWalkthroughViewModel().currentProgress.set(3)
+          walkthroughViewModel.currentProgress.set(3)
         }
       }
     }
   }
 
   fun handleSystemBack() {
-    moveToPreviousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
+    moveToPreviousPage(walkthroughViewModel.currentProgress.get() ?: 1)
   }
 
   fun setTopicId(topicId: String) {

@@ -32,7 +32,6 @@ import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
-import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -818,7 +817,9 @@ class QuestionPlayerActivityTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(questionPlayerActivityTest: QuestionPlayerActivityTest)
   }

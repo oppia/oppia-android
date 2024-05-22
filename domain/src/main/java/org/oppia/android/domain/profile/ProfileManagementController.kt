@@ -919,13 +919,15 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
+    // TODO(#3616): Migrate to the proper SDK 29+ APIs.
+    @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
     val fileName = avatarImagePath.pathSegments.last()
     val imageFile = File(profileDir, fileName)
     try {
       FileOutputStream(imageFile).use { fos ->
         rotateAndCompressBitmap(avatarImagePath, bitmap, /* cropSize= */ 300)
-          .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
+          .compress(Bitmap.CompressFormat.PNG, /* quality = */ 100, fos)
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -956,12 +958,12 @@ class ProfileManagementController @Inject constructor(
     matrix.postRotate(rotate.toFloat())
     return Bitmap.createBitmap(
       croppedBitmap,
-      /* x= */ 0,
-      /* y= */ 0,
+      /* x = */ 0,
+      /* y = */ 0,
       cropSize,
       cropSize,
       matrix,
-      /* filter= */ true
+      /* filter = */ true
     )
   }
 }

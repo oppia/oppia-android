@@ -76,6 +76,7 @@ class RatioInputInteractionViewTestActivity :
   /**
    * Checks for submit time errors.
    */
+  @Suppress("UNUSED_PARAMETER") // TODO: Fix this properly or file a bug.
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     ratioExpressionInputInteractionViewModel
       .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
