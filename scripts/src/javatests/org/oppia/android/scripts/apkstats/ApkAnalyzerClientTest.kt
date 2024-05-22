@@ -39,7 +39,7 @@ class ApkAnalyzerClientTest {
   fun testComputeDownloadSize_forNonExistentApk_throwsException() {
     val apkAnalyzerClient = createApkAnalyzerClient()
 
-    val exception = assertThrows(IllegalArgumentException::class) {
+    val exception = assertThrows<IllegalArgumentException>() {
       apkAnalyzerClient.computeDownloadSize("fake.apk")
     }
 
