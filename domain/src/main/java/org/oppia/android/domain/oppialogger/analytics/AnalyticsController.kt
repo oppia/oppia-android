@@ -199,7 +199,6 @@ class AnalyticsController @Inject constructor(
             .addEventLogsToUpload(eventLog)
             .build()
         } else {
-          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             IllegalStateException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
           consoleLogger.e("AnalyticsController", "Failure while caching event.", exception)
