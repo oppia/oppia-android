@@ -1,15 +1,11 @@
 package org.oppia.android.util.extensions
 
 import android.content.Intent
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import androidx.core.app.BundleCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
-import java.io.Serializable
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.IncompatibleTestMessage
