@@ -38,7 +38,7 @@ class Aapt2ClientTest {
   fun testDumpResources_forNonExistentApk_throwsException() {
     val aapt2Client = createAapt2Client()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       aapt2Client.dumpResources("fake_file.apk")
     }
 

@@ -12,6 +12,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.auth.AuthenticationModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -26,6 +27,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -37,7 +39,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterAlphaModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
@@ -85,7 +87,7 @@ import javax.inject.Singleton
     ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class,
-    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    PlatformParameterAlphaModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
@@ -97,7 +99,8 @@ import javax.inject.Singleton
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class, CpuPerformanceSnapshotterModule::class,
-    PerformanceMetricsAssessorModule::class,
+    PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,
+    AuthenticationModule::class,
   ]
 )
 interface AlphaApplicationComponent : ApplicationComponent {

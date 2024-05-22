@@ -44,7 +44,7 @@ class ComputeAabDifferencesTest {
     val differencesUtility = createComputeAabDifferences()
     val profile = createProfile(oldAabFilePath = "fake.apk", newAabFilePath = "fake.apk")
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       differencesUtility.computeBuildStats(profile)
     }
 

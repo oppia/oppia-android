@@ -10,6 +10,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
@@ -20,12 +21,15 @@ class OptionsActivityPresenter @Inject constructor(
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var toolbar: Toolbar
+  private var profileId: Int? = -1
 
+  /** Initializes and creates the views for [OptionsActivity]. */
   fun handleOnCreate(
     isFromNavigationDrawer: Boolean,
     extraOptionsTitle: String?,
     isFirstOpen: Boolean,
-    selectedFragment: String
+    selectedFragment: String,
+    profileId: Int
   ) {
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.option_activity)
@@ -53,6 +57,7 @@ class OptionsActivityPresenter @Inject constructor(
       R.id.options_fragment_placeholder,
       OptionsFragment.newInstance(isMultipane, isFirstOpen, selectedFragment)
     ).commitNow()
+    this.profileId = profileId
   }
 
   private fun setUpToolbar() {
@@ -81,18 +86,26 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
+  /** Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value. */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
-  fun updateAppLanguage(appLanguage: String) {
-    getOptionFragment()?.updateAppLanguage(appLanguage)
+  /** Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value. */
+  fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
+    getOptionFragment()?.updateAppLanguage(oppiaLanguage)
   }
 
+  /** Updates [AudioLanguage] value in [OptionsFragment] when user selects new value. */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
+  /**
+   * Returns a new instance of [ReadingTextSizeFragment].
+   *
+   * @param textSize the initially selected reading text size
+   */
   fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
@@ -102,8 +115,14 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(READING_TEXT_SIZE_FRAGMENT)
   }
 
-  fun loadAppLanguageFragment(appLanguage: String) {
-    val appLanguageFragment = AppLanguageFragment.newInstance(appLanguage)
+  /**
+   * Returns a new instance of [AppLanguageFragment].
+   *
+   * @param appLanguage the initially selected App language
+   */
+  fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
+    val appLanguageFragment =
+      AppLanguageFragment.newInstance(appLanguage, profileId = this.profileId!!)
     activity.supportFragmentManager
       .beginTransaction()
       .replace(R.id.multipane_options_container, appLanguageFragment)
@@ -111,6 +130,11 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(APP_LANGUAGE_FRAGMENT)
   }
 
+  /**
+   * Returns a new instance of [AudioLanguageFragment].
+   *
+   * @param audioLanguage the initially selected audio language
+   */
   fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
     val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage)
     activity.supportFragmentManager
@@ -120,6 +144,7 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.setSelectedFragment(AUDIO_LANGUAGE_FRAGMENT)
   }
 
+  /** Sets the title for [OptionsActivity]. */
   fun setExtraOptionTitle(title: String) {
     activity.findViewById<TextView>(R.id.options_activity_selected_options_title).text = title
   }

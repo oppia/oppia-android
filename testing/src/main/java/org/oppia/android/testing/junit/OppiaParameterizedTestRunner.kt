@@ -1,5 +1,7 @@
 package org.oppia.android.testing.junit
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import org.junit.runner.Description
 import org.junit.runner.Runner
 import org.junit.runner.manipulation.Filter
@@ -72,6 +74,7 @@ import kotlin.reflect.KClass
  * fields since there's no way to ensure what values those fields will contain (thus they should be
  * treated as undefined outside of tests that specific define their value via [Iteration]).
  */
+@RequiresApi(Build.VERSION_CODES.N)
 class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(testClass, listOf()) {
   private val parameterizedMethods = computeParameterizedMethods()
   private val selectedRunnerClass by lazy { fetchSelectedRunnerPlatformClass() }
@@ -91,6 +94,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
 
   override fun getChildren(): MutableList<Runner> = childrenRunners.toMutableList()
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun computeParameterizedMethods(): Map<String, ParameterizedMethod> {
     val fieldsAndParsers = fetchParameterizedFields().map { field ->
       val valueParser = ParameterValue.createParserForField(field)
@@ -180,12 +184,14 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     }.associateBy { it.methodName }
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun fetchParameterizedFields(): List<Field> {
     return testClass.declaredFields.mapNotNull { field ->
       field.getDeclaredAnnotation(Parameter::class.java)?.let { field }
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun fetchParameterizedMethodDeclarations(): List<ParameterizedMethodDeclaration> {
     return testClass.declaredMethods.mapNotNull { method ->
       method.getDeclaredAnnotationsByType(Iteration::class.java).map { parameters ->
@@ -204,6 +210,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   private fun fetchSelectedRunnerPlatformClass(): Class<*> {
     return checkNotNull(testClass.getDeclaredAnnotation(SelectRunnerPlatform::class.java)) {
       "All suites using OppiaParameterizedTestRunner must declare their base platform runner" +

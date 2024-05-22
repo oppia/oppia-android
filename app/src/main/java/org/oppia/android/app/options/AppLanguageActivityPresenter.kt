@@ -1,45 +1,40 @@
 package org.oppia.android.app.options
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.databinding.AppLanguageActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageActivity]. */
 @ActivityScope
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private lateinit var prefSummaryValue: String
+  private lateinit var oppiaLanguage: OppiaLanguage
 
-  fun handleOnCreate(prefValue: String) {
+  /** Initializes and creates the views for [AppLanguageActivity]. */
+  fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: Int) {
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.app_language_activity,
     )
-    binding.appLanguageToolbar.setNavigationOnClickListener {
-      val intent = Intent().apply {
-        putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, prefSummaryValue)
-      }
-      (activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
-      activity.finish()
-    }
-    setLanguageSelected(prefValue)
+    binding.appLanguageToolbar.setNavigationOnClickListener { activity.finish() }
+    setLanguageSelected(oppiaLanguage)
     if (getAppLanguageFragment() == null) {
-      val appLanguageFragment = AppLanguageFragment.newInstance(prefValue)
+      val appLanguageFragment = AppLanguageFragment.newInstance(oppiaLanguage, profileId)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.app_language_fragment_container, appLanguageFragment).commitNow()
     }
   }
 
-  fun setLanguageSelected(appLanguage: String) {
-    this.prefSummaryValue = appLanguage
+  /** Set the selected language for this Activity. */
+  fun setLanguageSelected(oppiaLanguage: OppiaLanguage) {
+    this.oppiaLanguage = oppiaLanguage
   }
 
-  fun getLanguageSelected(): String {
-    return prefSummaryValue
-  }
+  /** Return's the selected language for this Activity. */
+  fun getLanguageSelected(): OppiaLanguage = oppiaLanguage
 
   private fun getAppLanguageFragment(): AppLanguageFragment? {
     return activity.supportFragmentManager

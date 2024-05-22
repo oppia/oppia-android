@@ -32,6 +32,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -44,6 +45,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -84,19 +86,28 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXP_5_STATE_THREE_NAME = "NumericExpressionInput.IsEquivalentTo"
     private const val TEST_EXP_5_STATE_FOUR_NAME = "AlgebraicExpressionInput.MatchesExactlyWith"
-    private const val DEFAULT_INITIAL_SESSION_ID = "e6eacc69-e636-3c90-ba29-32bf3dd17161"
+    private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
 
-  @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
-  @Inject lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+  @Inject
+  lateinit var explorationDataController: ExplorationDataController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Parameter lateinit var iid: String
-  @Parameter lateinit var lid: String
-  @Parameter lateinit var eid: String
-  @Parameter lateinit var elid: String
+  @Parameter
+  lateinit var iid: String
+  @Parameter
+  lateinit var lid: String
+  @Parameter
+  lateinit var eid: String
+  @Parameter
+  lateinit var elid: String
 
   private val learnerIdParameter: String? get() = lid.takeIf { it != "null" }
   private val installIdParameter: String? get() = iid.takeIf { it != "null" }
@@ -1748,6 +1759,131 @@ class LearnerAnalyticsLoggerTest {
     }
   }
 
+  @Test
+  fun testExpLogger_logProgressSavingSuccess_logsEventWithContext() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logProgressSavingSuccess()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasProgressSavingSuccessContextThat {
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logProgressSavingFailure_logsEventWithContext() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logProgressSavingFailure()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasProgressSavingFailureContextThat {
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logLessonSavedAdvertently_logsEventWithContext() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logLessonSavedAdvertently()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasLessonSavedAdvertentlyContextThat {
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logResumeLessonSubmitCorrectAnswer_logsEventWithContext() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logResumeLessonSubmitCorrectAnswer()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasResumeLessonSubmitCorrectAnswerContextThat {
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logResumeLessonSubmitIncorrectAnswer_logsEventWithContext() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    expLogger.logResumeLessonSubmitIncorrectAnswer()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasResumeLessonSubmitIncorrectAnswerContextThat {
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
   private fun loadExploration(expId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationDataController.getExplorationById(profileId, expId)
@@ -1800,7 +1936,8 @@ class LearnerAnalyticsLoggerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class
+      CachingTestModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

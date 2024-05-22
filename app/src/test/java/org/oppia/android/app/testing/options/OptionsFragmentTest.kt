@@ -7,10 +7,6 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -55,6 +51,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -70,8 +67,10 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -106,14 +105,17 @@ class OptionsFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -128,7 +130,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(ReadingTextSizeFragment::class.java)
       }
     }
   }
@@ -149,27 +151,8 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(ReadingTextSizeFragment::class.java)
       }
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_featureEnabled_appLanguageItemIsDisplayed() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.app_language_item_layout)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_featureDisabled_appLanguageItemIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.app_language_item_layout)).check(doesNotExist())
     }
   }
 
@@ -189,7 +172,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is AppLanguageFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(AppLanguageFragment::class.java)
       }
     }
   }
@@ -210,7 +193,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is AudioLanguageFragment).isTrue()
+        assertThat(loadedFragment).isInstanceOf(AudioLanguageFragment::class.java)
       }
     }
   }
@@ -257,7 +240,8 @@ class OptionsFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

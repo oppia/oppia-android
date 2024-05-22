@@ -975,7 +975,7 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewHintSync(hintIndex = 0)
     }
 
@@ -1156,7 +1156,7 @@ class HintHandlerProdImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewHintSync(hintIndex = 0)
     }
 
@@ -1171,7 +1171,7 @@ class HintHandlerProdImplTest {
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewHintSync(hintIndex = 0)
     }
 
@@ -1187,7 +1187,7 @@ class HintHandlerProdImplTest {
     triggerAndRevealSecondHint()
     triggerAndRevealSolution()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewHintSync(hintIndex = 0)
     }
 
@@ -1202,7 +1202,7 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewSolutionSync()
     }
 
@@ -1216,7 +1216,7 @@ class HintHandlerProdImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewSolutionSync()
     }
 
@@ -1230,7 +1230,7 @@ class HintHandlerProdImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewSolutionSync()
     }
 
@@ -1246,7 +1246,7 @@ class HintHandlerProdImplTest {
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewSolutionSync()
     }
 
@@ -1343,7 +1343,7 @@ class HintHandlerProdImplTest {
     triggerAndRevealSecondHint()
     triggerAndRevealSolution()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       hintHandler.viewSolutionSync()
     }
 

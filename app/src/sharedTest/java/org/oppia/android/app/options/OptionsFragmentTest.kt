@@ -15,9 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -47,8 +45,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AppLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -72,6 +72,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -86,8 +87,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -140,7 +145,6 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -350,34 +354,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    launch<OptionsActivity>(
-      createOptionActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.app_language_text_view)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
-
-    launch<OptionsActivity>(
-      createOptionActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.app_language_text_view)).check(doesNotExist())
-    }
-  }
-
-  @Test
   fun testOptionsFragment_defaultAudioLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -478,6 +454,7 @@ class OptionsFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -493,12 +470,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
+        oppiaLanguage = OppiaLanguage.ENGLISH
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
-            "English"
-          ),
+          hasProtoExtra("AppLanguageActivity.params", expectedParams),
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )
@@ -506,6 +484,7 @@ class OptionsFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -521,12 +500,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
+        oppiaLanguage = OppiaLanguage.ENGLISH
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
-            "English"
-          ),
+          hasProtoExtra("AppLanguageActivity.params", expectedParams),
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )
@@ -665,7 +645,8 @@ class OptionsFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

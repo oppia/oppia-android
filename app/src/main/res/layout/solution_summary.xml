@@ -80,6 +80,7 @@
             android:text="@string/show_solution"
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
+            android:textAllCaps="false"
             android:visibility="@{viewModel.isSolutionRevealed()? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -167,6 +168,7 @@
               android:contentDescription="@{viewModel.solutionSummaryContentDescription}"
               android:fontFamily="sans-serif"
               android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
+              android:textColorLink="@color/component_color_shared_link_text_color"
               android:textSize="16sp" />
           </LinearLayout>
         </LinearLayout>

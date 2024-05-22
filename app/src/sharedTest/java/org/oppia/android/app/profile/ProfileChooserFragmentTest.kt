@@ -66,6 +66,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -84,6 +85,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -167,7 +169,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -205,13 +207,10 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_afterVisitingHomeActivity_showsJustNowText() {
-    val data = profileTestHelper.initializeProfiles()
+    // Note that the auto-log in here is simulating HomeActivity having been visited before (i.e.
+    // that a profile was previously logged in).
+    profileTestHelper.initializeProfiles(autoLogIn = true)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      // Note that this wait is needed to simulate HomeActivity being
-      // visited by ensuring a profile was previously logged in.
-      it.onActivity {
-        profileTestHelper.waitForOperationToComplete(data)
-      }
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -230,13 +229,10 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_afterVisitingHomeActivity_changeConfiguration_showsJustNowText() {
-    val data = profileTestHelper.initializeProfiles()
+    // Note that the auto-log in here is simulating HomeActivity having been visited before (i.e.
+    // that a profile was previously logged in).
+    profileTestHelper.initializeProfiles(autoLogIn = true)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      // Note that this wait is needed to simulate HomeActivity being
-      // visited by ensuring a profile was previously logged in.
-      it.onActivity {
-        profileTestHelper.waitForOperationToComplete(data)
-      }
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -256,7 +252,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     profileTestHelper.addMoreProfiles(8)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -325,7 +321,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -426,7 +422,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkText_addProfileIsVisible() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       verifyTextOnProfileListItemAtPosition(
@@ -439,7 +435,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkDescriptionText_isDisplayed() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -454,7 +450,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAdminControls_opensAdminAuthActivity() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
@@ -465,7 +461,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAddProfile_opensAdminAuthActivity() {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -534,7 +530,8 @@ class ProfileChooserFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

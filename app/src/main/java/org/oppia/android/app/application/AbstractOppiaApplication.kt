@@ -9,8 +9,12 @@ import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root base [Application] of the Oppia app. */
@@ -47,6 +51,20 @@ abstract class AbstractOppiaApplication(
     // TODO(#4751): Re-enable WorkManager for S+.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
       FirebaseApp.initializeApp(applicationContext)
+      // FirebaseAppCheck protects our API resources from abuse. It works with Firebase services,
+      // Google Cloud services, and can also be implemented for our own APIs.
+      // See https://firebase.google.com/docs/app-check for currently supported Firebase products.
+      // Note that as of this code being checked in, only the app's Firestore usage is affected by
+      // App Check (Analytics is NOT affected).
+      if (component.getCurrentBuildFlavor() == BuildFlavor.DEVELOPER) {
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+          DebugAppCheckProviderFactory.getInstance(),
+        )
+      } else {
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+          PlayIntegrityAppCheckProviderFactory.getInstance(),
+        )
+      }
       WorkManager.initialize(applicationContext, workManagerConfiguration)
       val workManager = WorkManager.getInstance(applicationContext)
       component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }

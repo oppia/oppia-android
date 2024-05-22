@@ -119,20 +119,13 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace
 
 google_services_workspace_dependencies()
 
-git_repository(
-    name = "circularimageview",
-    commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
-    remote = "https://github.com/oppia/CircularImageview",
-    shallow_since = "1622148929 -0700",
-)
-
 # A custom version of Android SVG is needed since custom changes needed to be added to the library
 # to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
 git_repository(
     name = "androidsvg",
-    commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
+    commit = "5bc9c7553e94c3476e8ea32baea3c77567228fcd",
     remote = "https://github.com/oppia/androidsvg",
-    shallow_since = "1647295507 -0700",
+    shallow_since = "1686304726 -0700",
 )
 
 git_repository(

@@ -47,6 +47,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     activity.setSupportActionBar(binding.questionPlayerToolbar)
 
     binding.questionPlayerToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       activity.onBackPressed()
     }
 
@@ -177,8 +178,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
           questionId,
           state,
           helpIndex,
-          writtenTranslationContext,
-          profileId
+          writtenTranslationContext
         )
       hintsAndSolutionDialogFragment.showNow(
         activity.supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG
