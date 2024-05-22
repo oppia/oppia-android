@@ -138,7 +138,7 @@ class AdministratorControlsActivity :
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
     } else {
-      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       super.onBackPressed()
     }
   }

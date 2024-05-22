@@ -106,7 +106,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   }
 
   override fun goBack() {
-    @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
+    @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
     activity.onBackPressed()
   }
 }
