@@ -783,6 +783,12 @@
   <dimen name="onboarding_profile_picture_stroke_width">4dp</dimen>
   <dimen name="onboarding_profile_picture_padding">2dp</dimen>
 
+  <dimen name="phone_shared_margin_x_small">4dp</dimen>
+  <dimen name="phone_shared_margin_small">8dp</dimen>
+  <dimen name="phone_shared_margin_medium">16dp</dimen>
+  <dimen name="phone_shared_margin_large">20dp</dimen>
+  <dimen name="phone_shared_margin_xl">28dp</dimen>
+
   <dimen name="onboarding_shared_margin_x_small">4dp</dimen>
   <dimen name="onboarding_shared_margin_small">8dp</dimen>
   <dimen name="onboarding_shared_margin_medium_small">12dp</dimen>
