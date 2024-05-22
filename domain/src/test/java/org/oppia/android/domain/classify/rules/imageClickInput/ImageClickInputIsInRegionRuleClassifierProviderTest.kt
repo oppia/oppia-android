@@ -89,7 +89,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
@@ -108,7 +108,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
   fun testAnswer_testString_missingInputX_throwsException() {
     val inputs = mapOf("y" to createString(ITEM_REGION_A))
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,

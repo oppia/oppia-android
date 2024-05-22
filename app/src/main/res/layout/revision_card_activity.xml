@@ -37,7 +37,8 @@
           android:layout_gravity="end"
           android:minWidth="48dp"
           android:minHeight="48dp"
-          android:scaleType="center" />
+          android:scaleType="center"
+          android:contentDescription="@string/options_menu_content_description" />
 
         <TextView
           android:id="@+id/revision_card_toolbar_title"

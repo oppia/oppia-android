@@ -35,6 +35,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -56,6 +57,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -73,6 +75,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -109,6 +112,8 @@ class AudioLanguageFragmentTest {
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
     private const val PORTUGUESE_BUTTON_INDEX = 4
+    private const val ARABIC_BUTTON_INDEX = 5
+    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 6
   }
 
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -135,6 +140,13 @@ class AudioLanguageFragmentTest {
   fun testOpenFragment_withPortuguese_selectedLanguageIsPortuguese() {
     launchActivityWithLanguage(BRAZILIAN_PORTUGUESE_LANGUAGE).use {
       verifyPortugueseIsSelected()
+    }
+  }
+
+  @Test
+  fun testOpenFragment_withNigerianPidgin_selectedLanguageIsNaija() {
+    launchActivityWithLanguage(NIGERIAN_PIDGIN_LANGUAGE).use {
+      verifyNigerianPidginIsSelected()
     }
   }
 
@@ -243,6 +255,10 @@ class AudioLanguageFragmentTest {
     verifyLanguageIsSelected(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
   }
 
+  private fun verifyNigerianPidginIsSelected() {
+    verifyLanguageIsSelected(index = NIGERIAN_PIDGIN_BUTTON_INDEX, expectedLanguageName = "Naijá")
+  }
+
   private fun verifyLanguageIsSelected(index: Int, expectedLanguageName: String) {
     onView(
       atPositionOnView(
@@ -299,7 +315,8 @@ class AudioLanguageFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

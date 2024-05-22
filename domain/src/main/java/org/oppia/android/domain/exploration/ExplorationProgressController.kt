@@ -113,7 +113,8 @@ class ExplorationProgressController @Inject constructor(
   private val loggingIdentifierController: LoggingIdentifierController,
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -445,6 +446,15 @@ class ExplorationProgressController @Inject constructor(
                 ControllerState(
                   ExplorationProgress(),
                   message.isRestart,
+                  // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
+                  // in the following 3 cases.
+                  //  - New exploration is started.
+                  //  - Saved Exploration is restarted.
+                  //  - Completed exploration is replayed.
+                  // The [message.explorationCheckpoint] will contain the exploration checkpoint
+                  // only when a saved exploration is resumed.
+                  isResume = message.explorationCheckpoint
+                    != ExplorationCheckpoint.getDefaultInstance(),
                   message.sessionId,
                   message.ephemeralStateFlow,
                   commandQueue,
@@ -569,6 +579,12 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
+      explorationProgressListeners.forEach {
+        it.onExplorationStarted(
+          profileId = profileId,
+          topicId = explorationProgress.currentTopicId
+        )
+      }
     }
   }
 
@@ -579,6 +595,7 @@ class ExplorationProgressController @Inject constructor(
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
+      explorationProgressListeners.forEach(ExplorationProgressListener::onExplorationEnded)
     }
 
     // The only way to be sure of an exploration completion is if the user clicks the 'Return to
@@ -624,6 +641,14 @@ class ExplorationProgressController @Inject constructor(
         stateAnalyticsLogger?.logSubmitAnswer(
           topPendingState.interaction, userAnswer, answerOutcome.labelledAsCorrectAnswer
         )
+
+        // Log correct & incorrect answer submission in a resumed exploration.
+        if (isResume) {
+          if (answerOutcome.labelledAsCorrectAnswer)
+            explorationAnalyticsLogger.logResumeLessonSubmitCorrectAnswer()
+          else
+            explorationAnalyticsLogger.logResumeLessonSubmitIncorrectAnswer()
+        }
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
@@ -939,9 +964,11 @@ class ExplorationProgressController @Inject constructor(
 
     deferred.invokeOnCompletion {
       val checkpointState = if (it == null) {
+        explorationAnalyticsLogger.logProgressSavingSuccess()
         deferred.getCompleted()
       } else {
         oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
+        explorationAnalyticsLogger.logProgressSavingFailure()
         // CheckpointState is marked as CHECKPOINT_UNSAVED because the deferred did not
         // complete successfully.
         CheckpointState.CHECKPOINT_UNSAVED
@@ -1086,6 +1113,7 @@ class ExplorationProgressController @Inject constructor(
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
     val isRestart: Boolean,
+    val isResume: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
     val commandQueue: SendChannel<ControllerMessage<*>>,

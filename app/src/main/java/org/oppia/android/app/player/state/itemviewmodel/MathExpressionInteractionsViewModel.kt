@@ -73,6 +73,12 @@ class MathExpressionInteractionsViewModel private constructor(
    * bound to the corresponding edit text.
    */
   var answerText: CharSequence = ""
+    // The value of ths field is set from the Binding and from the TextWatcher. Any
+    // programmatic modification needs to be done here, so that the Binding and the TextWatcher
+    // do not step on each other.
+    set(value) {
+      field = value.toString().trim()
+    }
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -99,12 +105,18 @@ class MathExpressionInteractionsViewModel private constructor(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            inputAnswerAvailable = true // Allow blank answer submission.
           )
         }
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+
+    // Initializing with default values so that submit button is enabled by default.
+    errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+      pendingAnswerError = null,
+      inputAnswerAvailable = true
+    )
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -141,18 +153,16 @@ class MathExpressionInteractionsViewModel private constructor(
   }.build()
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
-      pendingAnswerError = when (category) {
-        // There's no support for real-time errors.
-        AnswerErrorCategory.REAL_TIME -> null
-        AnswerErrorCategory.SUBMIT_TIME -> {
-          interactionType.computeSubmitTimeError(
-            answerText.toString(), allowedVariables, resourceHandler
-          )
-        }
+    pendingAnswerError = when (category) {
+      // There's no support for real-time errors.
+      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.SUBMIT_TIME -> {
+        interactionType.computeSubmitTimeError(
+          answerText.toString(), allowedVariables, resourceHandler
+        )
       }
-      errorMessage.set(pendingAnswerError)
     }
+    errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
@@ -166,7 +176,7 @@ class MathExpressionInteractionsViewModel private constructor(
       }
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
-        answerText = answer.toString().trim()
+        answerText = answer
         val isAnswerTextAvailable = answerText.isNotEmpty()
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
@@ -284,7 +294,10 @@ class MathExpressionInteractionsViewModel private constructor(
   }
 
   private companion object {
-    private enum class InteractionType(
+    /**
+     * Enum class representing different types of interactions in a mathematical expression input field.
+     */
+    enum class InteractionType(
       val viewType: ViewType,
       @StringRes val defaultHintTextStringId: Int,
       val hasPlaceholder: Boolean,
@@ -414,6 +427,25 @@ class MathExpressionInteractionsViewModel private constructor(
         allowedVariables: List<String>,
         appLanguageResourceHandler: AppLanguageResourceHandler
       ): String? {
+        if (answerText.isBlank()) {
+          return when (this) {
+            NUMERIC_EXPRESSION -> {
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.numeric_expression_error_empty_input
+              )
+            }
+            ALGEBRAIC_EXPRESSION -> {
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.algebraic_expression_error_empty_input
+              )
+            }
+            MATH_EQUATION -> {
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.math_equation_error_empty_input
+              )
+            }
+          }
+        }
         return when (val parseResult = parseAnswer(answerText, allowedVariables)) {
           is MathParsingResult.Failure -> when (val error = parseResult.error) {
             is DisabledVariablesInUseError -> {

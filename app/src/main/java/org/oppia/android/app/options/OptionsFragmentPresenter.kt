@@ -8,8 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -19,13 +20,14 @@ import org.oppia.android.databinding.OptionStoryTextSizeBinding
 import org.oppia.android.databinding.OptionsFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
-private const val APP_LANGUAGE_TAG = "AppLanguage"
+private const val APP_LANGUAGE_TAG = "OptionsFragmentPresenter"
 private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"
 private const val READING_TEXT_SIZE_ERROR =
   "Something went wrong while updating the reading text size"
@@ -42,15 +44,17 @@ class OptionsFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val optionControlsViewModel: OptionControlsViewModel,
   private val oppiaLogger: OppiaLogger,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val translationController: TranslationController
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+  private var appLanguage = OppiaLanguage.ENGLISH
   private var audioLanguage = AudioLanguage.NO_AUDIO
 
+  /** Initializes and creates the views for [OptionsFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -59,7 +63,6 @@ class OptionsFragmentPresenter @Inject constructor(
     selectedFragment: String
   ): View? {
     optionControlsViewModel.isUIInitialized(false)
-    optionControlsViewModel.isFirstOpen(isFirstOpen)
     optionControlsViewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
       inflater,
@@ -82,6 +85,19 @@ class OptionsFragmentPresenter @Inject constructor(
     }
     setSelectedFragment(selectedFragment)
     optionControlsViewModel.isUIInitialized(true)
+
+    var hasDefaultInitializedFragment = false
+    optionControlsViewModel.optionsListLiveData.observe(fragment) { viewModels ->
+      if (!hasDefaultInitializedFragment) {
+        viewModels.filterIsInstance<OptionsReadingTextSizeViewModel>().singleOrNull()?.let {
+          if (isMultipane && isFirstOpen) {
+            it.loadReadingTextSizeFragment()
+          }
+          hasDefaultInitializedFragment = true
+        }
+      }
+    }
+
     return binding.root
   }
 
@@ -105,26 +121,22 @@ class OptionsFragmentPresenter @Inject constructor(
         }
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
-    }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
-        inflateDataBinding = OptionStoryTextSizeBinding::inflate,
-        setViewModel = this::bindReadingTextSize,
-        transformViewModel = { it as OptionsReadingTextSizeViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
-        inflateDataBinding = OptionAppLanguageBinding::inflate,
-        setViewModel = this::bindAppLanguage,
-        transformViewModel = { it as OptionsAppLanguageViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_AUDIO_LANGUAGE,
-        inflateDataBinding = OptionAudioLanguageBinding::inflate,
-        setViewModel = this::bindAudioLanguage,
-        transformViewModel = { it as OptionsAudioLanguageViewModel }
-      )
-      .build()
+    }.registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
+      inflateDataBinding = OptionStoryTextSizeBinding::inflate,
+      setViewModel = this::bindReadingTextSize,
+      transformViewModel = { it as OptionsReadingTextSizeViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
+      inflateDataBinding = OptionAppLanguageBinding::inflate,
+      setViewModel = this::bindAppLanguage,
+      transformViewModel = { it as OptionsAppLanguageViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_AUDIO_LANGUAGE,
+      inflateDataBinding = OptionAudioLanguageBinding::inflate,
+      setViewModel = this::bindAudioLanguage,
+      transformViewModel = { it as OptionsAudioLanguageViewModel }
+    ).build()
   }
 
   private fun bindReadingTextSize(
@@ -151,6 +163,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
+  /** Sets the selected fragment index in [OptionsControlViewModel]. */
   fun setSelectedFragment(selectedFragment: String) {
     optionControlsViewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(
@@ -169,11 +182,20 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    /** Represents view type for displaying [ReadingTextSize]. */
     VIEW_TYPE_READING_TEXT_SIZE,
+    /** Represents view type for displaying [OppiaLanguage]. */
     VIEW_TYPE_APP_LANGUAGE,
+    /** Represents view type for displaying [AudioLanguage]. */
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
+  /**
+   * Updates [ReadingTextSize] value in [OptionsFragment] when user selects new value and notifies
+   * the adapter to refresh after the changes.
+   *
+   * @param textSize new textSize to be set as current
+   */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
     val sizeUpdateResult = profileManagementController.updateReadingTextSize(profileId, textSize)
     sizeUpdateResult.toLiveData().observe(fragment) {
@@ -189,72 +211,44 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
-  fun updateAppLanguage(language: String) {
-    when (language) {
-      optionControlsViewModel.getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.ENGLISH_APP_LANGUAGE
-        ).toLiveData().observe(fragment) {
-          when (it) {
-            is AsyncResult.Success -> appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
-            is AsyncResult.Failure ->
-              oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: English", it.error)
-            is AsyncResult.Pending -> {} // Wait for a result.
-          }
-        }
-      }
-      optionControlsViewModel.getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.HINDI_APP_LANGUAGE
-        ).toLiveData().observe(fragment) {
-          when (it) {
-            is AsyncResult.Success -> appLanguage = AppLanguage.HINDI_APP_LANGUAGE
-            is AsyncResult.Failure ->
-              oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: Hindi", it.error)
-            is AsyncResult.Pending -> {} // Wait for a result.
-          }
-        }
-      }
-      optionControlsViewModel.getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.CHINESE_APP_LANGUAGE
-        ).toLiveData().observe(fragment) {
-          when (it) {
-            is AsyncResult.Success -> appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
-            is AsyncResult.Failure ->
-              oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: Chinese", it.error)
-            is AsyncResult.Pending -> {} // Wait for a result.
-          }
-        }
-      }
-      optionControlsViewModel.getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.FRENCH_APP_LANGUAGE
-        ).toLiveData().observe(fragment) {
-          when (it) {
-            is AsyncResult.Success -> appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
-            is AsyncResult.Failure ->
-              oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: French", it.error)
-            is AsyncResult.Pending -> {} // Wait for a result.
-          }
-        }
+  /**
+   * Updates [OppiaLanguage] value in [OptionsFragment] when user selects new value and notifies the
+   * adapter to refresh after the changes.
+   *
+   * @param oppiaLanguage new oppiaLanguage to be set as current
+   */
+  fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
+    val selection = AppLanguageSelection.newBuilder().apply {
+      selectedLanguage = oppiaLanguage
+      selectedLanguageValue = oppiaLanguage.number
+    }.build()
+
+    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+      when (it) {
+        is AsyncResult.Success -> appLanguage = oppiaLanguage
+        is AsyncResult.Failure ->
+          oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: $oppiaLanguage.", it.error)
+        is AsyncResult.Pending -> {} // Wait for a result.
       }
     }
 
     recyclerViewAdapter.notifyItemChanged(1)
   }
 
-  fun updateAudioLanguage(language: AudioLanguage) {
-    val updateLanguageResult = profileManagementController.updateAudioLanguage(profileId, language)
+  /**
+   * Updates [AudioLanguage] value in [OptionsFragment] when user selects new value and notifies the
+   * adapter to refresh after the changes.
+   *
+   * @param audioLanguage new audioLanguage to be set as current
+   */
+  fun updateAudioLanguage(audioLanguage: AudioLanguage) {
+    val updateLanguageResult =
+      profileManagementController.updateAudioLanguage(profileId, audioLanguage)
     updateLanguageResult.toLiveData().observe(fragment) {
       when (it) {
-        is AsyncResult.Success -> audioLanguage = language
+        is AsyncResult.Success -> this.audioLanguage = audioLanguage
         is AsyncResult.Failure ->
-          oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: $language", it.error)
+          oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: $audioLanguage", it.error)
         is AsyncResult.Pending -> {} // Wait for a result.
       }
     }
@@ -265,6 +259,7 @@ class OptionsFragmentPresenter @Inject constructor(
   /**
    * Used to fix the race condition that happens when the presenter tries to call a function before
    * [handleCreateView] is completely executed.
+   *
    * @param action what to execute after the UI is initialized.
    */
   fun runAfterUIInitialization(action: () -> Unit) {

@@ -18,6 +18,8 @@ If you run into any problems along the way, we're here to help! Check out our [w
 
 ## How to find information on this wiki
 
+Please see the animated image below for guidance:
+
 <img width="1074" alt="Screenshot wiki preview" src="https://user-images.githubusercontent.com/76530270/235522765-3d17617e-1f3b-4531-b84c-33af94885863.gif">
 
 ## Onboarding instructions
@@ -45,13 +47,13 @@ We suggest choosing your first issue from the [list of good first issues](https:
 
 When you've found an issue you'd like to tackle:
 
-- Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you. 
+- Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you.
 - Submit a PR, following the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
 - If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
 
 You are also welcome to tackle non-starter issues, but for those, you might need to be more independent, because we might not know how to solve them either!
 
-Once you've merged PRs that correspond to **two** different pre-existing GitHub issues, please fill in [this form](https://forms.gle/NxPjimCMqsSTNUgu5) to become an Oppia collaborator! This will grant you access to the repository, and allow you to join a team. (But please don't create your own issues and then make PRs for them -- that won't count.)
+Once you've merged PRs that correspond to **two** different pre-existing GitHub issues, please fill in [this form](https://forms.gle/NxPjimCMqsSTNUgu5) to be considered for a place on a team at Oppia Android! A team lead will evaluate your contributions and give you access to the repository so that you can assign yourself to issues. (But please don't create your own issues and then make PRs for them -- that won't count.)
 
 
 

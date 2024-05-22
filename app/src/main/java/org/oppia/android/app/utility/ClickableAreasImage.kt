@@ -1,6 +1,5 @@
 package org.oppia.android.app.utility
 
-import android.annotation.SuppressLint
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
@@ -26,7 +25,7 @@ class ClickableAreasImage(
 ) {
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
 
-  init { initializeShowRegionTouchListener() }
+  init { imageView.initializeShowRegionTouchListener() }
 
   /**
    * Called when an image is clicked.
@@ -142,22 +141,22 @@ class ClickableAreasImage(
     newView.setBackgroundResource(R.drawable.selected_region_background)
   }
 
-  @SuppressLint("ClickableViewAccessibility") // Accessibility is custom-handled for image regions.
-  private fun initializeShowRegionTouchListener() {
-    imageView.setOnTouchListener { _, motionEvent ->
+  private fun View.initializeShowRegionTouchListener() {
+    setOnTouchListener { view, motionEvent ->
       if (motionEvent.action == MotionEvent.ACTION_DOWN) {
         onPhotoTap(motionEvent.x, motionEvent.y)
       }
+      view.performClick()
       return@setOnTouchListener false
     }
   }
 
-  @SuppressLint("ClickableViewAccessibility") // See initializeShowRegionTouchListener.
   private fun View.initializeToggleRegionTouchListener(clickableArea: LabeledRegion) {
-    setOnTouchListener { _, event ->
+    setOnTouchListener { view, event ->
       if (event.action == MotionEvent.ACTION_DOWN) {
         showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)
       }
+      view.performClick()
       return@setOnTouchListener true
     }
   }

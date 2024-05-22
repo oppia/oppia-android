@@ -11,6 +11,8 @@ import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
 import org.oppia.android.app.notice.BetaNoticeClosedListener
+import org.oppia.android.app.notice.DeprecationNoticeActionListener
+import org.oppia.android.app.notice.DeprecationNoticeActionResponse
 import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -28,6 +30,7 @@ class SplashActivity :
   AppCompatActivity(),
   FragmentComponentFactory,
   DeprecationNoticeExitAppListener,
+  DeprecationNoticeActionListener,
   BetaNoticeClosedListener,
   GeneralAvailabilityUpgradeNoticeClosedListener {
 
@@ -47,14 +50,19 @@ class SplashActivity :
 
   override fun createFragmentComponent(fragment: Fragment): FragmentComponent {
     val builderInjector = activityComponent as FragmentComponentBuilderInjector
-    return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
+    return builderInjector.getFragmentComponentBuilderProvider().get()
+      .setFragment(fragment).build()
   }
 
-  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
+  override fun onCloseAppButtonClicked() = splashActivityPresenter
+    .handleOnDeprecationNoticeCloseAppButtonClicked()
 
   override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)
 
   override fun onGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss)
+
+  override fun onActionButtonClicked(noticeActionResponse: DeprecationNoticeActionResponse) =
+    splashActivityPresenter.handleOnDeprecationNoticeActionClicked(noticeActionResponse)
 }

@@ -7,6 +7,6 @@ import org.oppia.android.app.model.PolicyPage
  * on tablet.
  */
 interface LoadPoliciesFragmentListener {
-  /**  Called when the user wants to view an app policy. */
+  /** Called when the user wants to view an app policy. */
   fun loadPoliciesFragment(policyPage: PolicyPage)
 }

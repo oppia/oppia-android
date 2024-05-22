@@ -91,6 +91,10 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     maybeInitializeClickableAreas()
   }
 
+  override fun performClick(): Boolean {
+    return super.performClick()
+  }
+
   fun setOnRegionClicked(onRegionClicked: OnClickableAreaClickedListener) {
     this.onRegionClicked = onRegionClicked
     maybeInitializeClickableAreas()

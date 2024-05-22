@@ -61,7 +61,7 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_oneArgument_printsUsageStringAndThrowsException() {
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(arrayOf())
     }
 
@@ -71,7 +71,7 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_oneArguments_printsUsageStringAndThrowsException() {
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
           "${tempFolder.root}/values"
@@ -90,7 +90,7 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
@@ -109,7 +109,7 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
@@ -139,7 +139,7 @@ class RetrieveLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val exception = assertThrows(Exception::class) {
+    val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
@@ -274,7 +274,7 @@ class RetrieveLicenseTextsTest {
       """
       "Copyright <YEAR> <COPYRIGHT HOLDER>
 
-      Redistribution and use in source and binary forms, with or without modification, are 
+      Redistribution and use in source and binary forms, with or without modification, are
       permitted provided that the following conditions are met:"
       """.trimIndent()
     )
@@ -575,7 +575,7 @@ class RetrieveLicenseTextsTest {
           """
           Copyright <YEAR> <COPYRIGHT HOLDER>
 
-          Redistribution and use in source and binary forms, with or without modification, are 
+          Redistribution and use in source and binary forms, with or without modification, are
           permitted provided that the following conditions are met:
           """.trimIndent()
         )

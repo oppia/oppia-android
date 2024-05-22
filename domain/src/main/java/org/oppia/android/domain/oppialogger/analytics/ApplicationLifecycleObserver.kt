@@ -43,7 +43,9 @@ class ApplicationLifecycleObserver @Inject constructor(
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnablePerformanceMetricsCollection
-  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
+  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
+  private val analyticsController: AnalyticsController,
+  private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**
@@ -92,6 +94,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
@@ -101,17 +104,24 @@ class ApplicationLifecycleObserver @Inject constructor(
     }
     performanceMetricsController.setAppInForeground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
+
+    analyticsController.listenForConsoleErrorLogs()
+    analyticsController.listenForNetworkCallLogs()
+    analyticsController.listenForFailedNetworkCallLogs()
   }
 
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     }
     performanceMetricsController.setAppInBackground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
+
+    logAppInForegroundTime()
   }
 
   override fun onActivityResumed(activity: Activity) {
@@ -156,6 +166,30 @@ class ApplicationLifecycleObserver @Inject constructor(
         oppiaLogger.e(
           "ActivityLifecycleObserver",
           "Encountered error while trying to log app's performance metrics.",
+          failure
+        )
+      }
+    }
+  }
+
+  private fun logAppInForegroundTime() {
+    CoroutineScope(backgroundDispatcher).launch {
+      val sessionId = loggingIdentifierController.getSessionIdFlow().value
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      val timeInForeground = oppiaClock.getCurrentTimeMs() - appStartTimeMillis
+      analyticsController.logLowPriorityEvent(
+        oppiaLogger.createAppInForegroundTimeContext(
+          installationId = installationId,
+          appSessionId = sessionId,
+          foregroundTime = timeInForeground
+        ),
+        profileId = null
+      )
+    }.invokeOnCompletion { failure ->
+      if (failure != null) {
+        oppiaLogger.e(
+          "ApplicationLifecycleObserver",
+          "Encountered error while trying to log app's time in the foreground.",
           failure
         )
       }

@@ -62,9 +62,8 @@ class TodoCollector {
      * @param codeLine the line of code to be checked
      * @return the parsed issue number
      */
-    fun parseIssueNumberFromTodo(codeLine: String): String? {
-      return correctTodoFormatRegex.find(codeLine)?.groupValues?.get(1)
-    }
+    fun parseIssueNumberFromTodo(codeLine: String): Int? =
+      correctTodoFormatRegex.find(codeLine)?.groupValues?.get(1)?.toIntOrNull()
 
     /**
      * Computes whether a line of code contains the 'todo' keyword.

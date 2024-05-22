@@ -16,7 +16,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  /** Handles onCreate() method of the [ResumeLessonActivity] */
+  /** Handles onCreate() method of the [ResumeLessonActivity]. */
   fun handleOnCreate(
     profileId: ProfileId,
     topicId: String,
@@ -33,6 +33,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
     activity.setSupportActionBar(resumeLessonToolbar)
 
     resumeLessonToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
       activity.onBackPressed()
     }
 

@@ -13,7 +13,11 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -25,11 +29,13 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -41,14 +47,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
@@ -88,9 +86,19 @@ class OppiaLoggerTest {
     private const val TEST_WARN_LOG_MSG = "test_warn_log_msg"
     private const val TEST_WARN_LOG_EXCEPTION = "test_warn_log_exception"
 
+    private const val TEST_ERROR_LOG_LEVEL = "test_log_level"
     private const val TEST_ERROR_LOG_TAG = "test_error_log_tag"
     private const val TEST_ERROR_LOG_MSG = "test_error_log_msg"
     private const val TEST_ERROR_LOG_EXCEPTION = "test_error_log_exception"
+
+    private const val TEST_URL = "test_url"
+    private const val TEST_HEADERS = "test_headers"
+    private const val TEST_BODY = "test_body"
+    private const val TEST_RESPONSE_CODE = 200
+
+    private const val TEST_INSTALLATION_ID = "test_installation_id"
+    private const val TEST_APP_SESSION_ID = "test_app_session_id"
+    private const val TEST_FOREGROUND_TIME = 5000L
 
     private val TEST_VERBOSE_EXCEPTION = Throwable(TEST_VERBOSE_LOG_EXCEPTION)
     private val TEST_DEBUG_EXCEPTION = Throwable(TEST_DEBUG_LOG_EXCEPTION)
@@ -99,9 +107,14 @@ class OppiaLoggerTest {
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
   }
 
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -315,6 +328,96 @@ class OppiaLoggerTest {
     assertThat(eventContext.closeRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
+  @Test
+  fun testController_createShowSurveyPopupContext_returnsCorrectShowSurveyPopupContext() {
+    val eventContext = oppiaLogger.createShowSurveyPopupContext(TEST_EXPLORATION_ID, TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(SHOW_SURVEY_POPUP)
+    assertThat(eventContext.showSurveyPopup.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.showSurveyPopup.explorationId).isEqualTo(TEST_EXPLORATION_ID)
+  }
+
+  @Test
+  fun testController_createBeginSurveyContext_returnsCorrectBeginSurveyContext() {
+    val eventContext = oppiaLogger.createBeginSurveyContext(TEST_EXPLORATION_ID, TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(BEGIN_SURVEY)
+    assertThat(eventContext.beginSurvey.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.beginSurvey.explorationId).isEqualTo(TEST_EXPLORATION_ID)
+  }
+
+  @Test
+  fun testController_createAppOnBoardingContext_returnsCorrectAppOnBoardingContextContext() {
+    val eventContext = oppiaLogger.createAppOnBoardingContext()
+
+    assertThat(eventContext.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
+    assertThat(eventContext.completeAppOnboarding.completeAppOnboarding).isEqualTo(true)
+  }
+
+  @Test
+  fun testController_createConsoleLogContext_returnsCorrectConsoleLogContext() {
+    val eventContext = oppiaLogger.createConsoleLogContext(
+      logLevel = TEST_ERROR_LOG_LEVEL,
+      logTag = TEST_ERROR_LOG_TAG,
+      errorLog = TEST_ERROR_LOG_MSG
+    )
+
+    assertThat(eventContext.activityContextCase).isEqualTo(CONSOLE_LOG)
+    assertThat(eventContext.consoleLog.logLevel).matches(TEST_ERROR_LOG_LEVEL)
+    assertThat(eventContext.consoleLog.logTag).matches(TEST_ERROR_LOG_TAG)
+    assertThat(eventContext.consoleLog.fullErrorLog).matches(TEST_ERROR_LOG_MSG)
+  }
+
+  @Test
+  fun testController_createRetrofitCallContext_returnsCorrectRetrofitCallContext() {
+    val eventContext = oppiaLogger.createRetrofitCallContext(
+      url = TEST_URL,
+      headers = TEST_HEADERS,
+      body = TEST_BODY,
+      responseCode = TEST_RESPONSE_CODE,
+    )
+
+    assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_CONTEXT)
+    assertThat(eventContext.retrofitCallContext.requestUrl).matches(TEST_URL)
+    assertThat(eventContext.retrofitCallContext.headers).matches(TEST_HEADERS)
+    assertThat(eventContext.retrofitCallContext.body).matches(TEST_BODY)
+    assertThat(eventContext.retrofitCallContext.responseStatusCode).isEqualTo(TEST_RESPONSE_CODE)
+  }
+
+  @Test
+  fun testController_createRetrofitCallFailedContext_returnsCorrectRetrofitCallFailedContext() {
+    val eventContext = oppiaLogger.createRetrofitCallFailedContext(
+      url = TEST_URL,
+      headers = TEST_HEADERS,
+      body = TEST_BODY,
+      responseCode = TEST_RESPONSE_CODE,
+      errorMessage = TEST_ERROR_LOG_MSG,
+    )
+
+    assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_FAILED_CONTEXT)
+    assertThat(eventContext.retrofitCallFailedContext.requestUrl).matches(TEST_URL)
+    assertThat(eventContext.retrofitCallFailedContext.headers).matches(TEST_HEADERS)
+    assertThat(eventContext.retrofitCallFailedContext.body).matches(TEST_BODY)
+    assertThat(eventContext.retrofitCallFailedContext.responseStatusCode)
+      .isEqualTo(TEST_RESPONSE_CODE)
+    assertThat(eventContext.retrofitCallFailedContext.errorMessage).matches(TEST_ERROR_LOG_MSG)
+  }
+
+  @Test
+  fun testController_createAppInForegroundTimeContext_returnsCorrectAppInForegroundTimeContext() {
+    val eventContext = oppiaLogger.createAppInForegroundTimeContext(
+      installationId = TEST_INSTALLATION_ID,
+      appSessionId = TEST_APP_SESSION_ID,
+      foregroundTime = TEST_FOREGROUND_TIME
+    )
+
+    assertThat(eventContext.activityContextCase).isEqualTo(APP_IN_FOREGROUND_TIME)
+    assertThat(eventContext.appInForegroundTime.installationId).matches(TEST_INSTALLATION_ID)
+    assertThat(eventContext.appInForegroundTime.appSessionId).matches(TEST_APP_SESSION_ID)
+    assertThat(eventContext.appInForegroundTime.foregroundTime)
+      .isEqualTo(TEST_FOREGROUND_TIME.toFloat())
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerOppiaLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -347,42 +450,6 @@ class OppiaLoggerTest {
   }
 
   @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLearnerAnalyticsStudy: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
-  }
-
-  @Module
   class TestLogStorageModule {
 
     @Provides
@@ -397,8 +464,8 @@ class OppiaLoggerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent {

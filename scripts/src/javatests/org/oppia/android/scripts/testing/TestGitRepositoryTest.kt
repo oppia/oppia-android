@@ -39,7 +39,7 @@ class TestGitRepositoryTest {
   private val commandExecutorInterceptor by lazy { CommandExecutorInterceptor(scriptBgDispatcher) }
 
   @After
-  fun restoreStreams() {
+  fun tearDown() {
     scriptBgDispatcher.close()
   }
 
@@ -65,11 +65,11 @@ class TestGitRepositoryTest {
   fun testSetUser_noGitRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     }
 
-    assertThat(error).hasMessageThat().contains("not in a git directory")
+    assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
 
   @Test
@@ -98,11 +98,11 @@ class TestGitRepositoryTest {
   fun testCheckOutNewBranch_notGitRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.checkoutNewBranch("develop")
     }
 
-    assertThat(error).hasMessageThat().ignoringCase().contains("not a git repository")
+    assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
 
   @Test
@@ -122,7 +122,7 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.stageFileForCommit(File(tempFolder.root, "fake_file"))
     }
 
@@ -194,7 +194,7 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.stageFilesForCommit(
         listOf(
           tempFolder.newFile("new_file1"),
@@ -213,7 +213,7 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.removeFileForCommit(File(tempFolder.root, "nonexistent_file"))
     }
 
@@ -227,7 +227,7 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     tempFolder.newFile("untracked_file")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.removeFileForCommit(File(tempFolder.root, "untracked_file"))
     }
 
@@ -256,7 +256,7 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.moveFileForCommit(
         File(tempFolder.root, "nonexistent_file"), File(tempFolder.root, "new_file")
       )
@@ -272,7 +272,7 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     tempFolder.newFile("untracked_file")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.moveFileForCommit(
         File(tempFolder.root, "untracked_file"), File(tempFolder.root, "new_file")
       )
@@ -310,11 +310,9 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("file_to_be_committed"))
 
-    val error = assertThrows(AssertionError::class) {
-      testGitRepository.commit("Commit new file.")
-    }
+    val error = assertThrows<AssertionError> { testGitRepository.commit("Commit new file.") }
 
-    assertThat(error).hasMessageThat().contains("Please tell me who you are")
+    assertThat(error).hasMessageThat().contains("User email has not yet been set.")
   }
 
   @Test
@@ -324,7 +322,7 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
 
-    val error = assertThrows(AssertionError::class) {
+    val error = assertThrows<AssertionError>() {
       testGitRepository.commit("Attempting empty commit.", allowEmpty = false)
     }
 
@@ -363,12 +361,32 @@ class TestGitRepositoryTest {
   }
 
   @Test
-  fun testStatus_noGitRepository_hasStatusWithError() {
+  fun testStatus_noGitRepository_doNotCheckForRepository_hasStatusWithError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val status = testGitRepository.status()
+    val status = testGitRepository.status(checkForGitRepository = false)
 
     assertThat(status).ignoringCase().contains("not a git repository")
+  }
+
+  @Test
+  fun testStatus_noGitRepository_checkForRepository_throwsAssertionError() {
+    val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
+
+    val error = assertThrows<AssertionError>() {
+      testGitRepository.status(checkForGitRepository = true)
+    }
+
+    assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
+  }
+
+  @Test
+  fun testStatus_noGitRepository_defaultCheckForRepository_throwsAssertionError() {
+    val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
+
+    val error = assertThrows<AssertionError>() { testGitRepository.status() }
+
+    assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
 
   @Test

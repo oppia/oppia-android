@@ -4,6 +4,7 @@ package model;
 
 import "languages.proto";
 import "profile.proto";
+import "survey.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -158,6 +159,56 @@ message EventLog {
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
       string install_id_for_failed_analytics_log = 33;
+
+      // The event being logged is related to viewing a survey popup dialog.
+      SurveyContext show_survey_popup = 38;
+
+      // The event being logged is related to a survey session being started.
+      SurveyContext begin_survey = 39;
+
+      // The event being logged is related to a survey session being started and ended before the
+      // mandatory questions are completed.
+      AbandonSurveyContext abandon_survey = 40;
+
+      // The event being logged is related to the responses to the mandatory survey questions.
+      MandatorySurveyResponseContext mandatory_response = 41;
+
+      // The event being logged is related to the response to the optional survey question.
+      OptionalSurveyResponseContext optional_response = 42;
+
+      // The event being logged indicates that the user has reached the home screen for the first time.
+      CompleteAppOnboardingContext complete_app_onboarding = 44;
+
+      // The event being logged is related to an error logged on the console logger.
+      ConsoleLoggerContext console_log = 45;
+
+      // The event being logged is a retrofit call.
+      RetrofitCallContext retrofit_call_context = 46;
+
+      // The event being logged is a retrofit call.
+      RetrofitCallFailedContext retrofit_call_failed_context = 47;
+
+      // The event being logged is related to the amount spent by the user with the app in
+      // foreground.
+      AppInForegroundTimeContext app_in_foreground_time = 48;
+      
+      // The event being logged is related to lesson progress(checkpoint) saving success.
+      ExplorationContext progress_saving_success_context = 49;
+
+      // The event being logged is related to lesson progress(checkpoint) saving failure.
+      ExplorationContext progress_saving_failure_context = 50;
+
+      // The event being logged is related to lesson progress(checkpoint) saving attempt
+      // advertently(intentionally).
+      ExplorationContext lesson_saved_advertently_context = 51;
+
+      // The event being logged is related to correct answer submission after returning back to the
+      // lesson.
+      ExplorationContext resume_lesson_submit_correct_answer_context = 52;
+
+      // The event being logged is related to incorrect answer submission after returning back to
+      // the lesson.
+      ExplorationContext resume_lesson_submit_incorrect_answer_context = 53;
     }
   }
 
@@ -297,6 +348,121 @@ message EventLog {
 
     // The content language to which the lesson is being switched.
     OppiaLanguage switch_to_language = 3;
+  }
+
+  // Structure of a survey context.
+  message SurveyContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+
+    // The active exploration ID when the event is logged.
+    string exploration_id = 2;
+  }
+
+  // Represents the event context for when a survey is exited without completing all the mandatory
+  // questions.
+  message AbandonSurveyContext {
+    // Defined attributes that are common among other survey related event log contexts.
+    SurveyResponseContext survey_details = 1;
+
+    // The semantic name of the question at which the survey was abandoned.
+    SurveyQuestionName question_name = 2;
+  }
+
+  // Represents the event context that contains the responses to the mandatory survey questions.
+  message MandatorySurveyResponseContext {
+    // Defined attributes that are common among other survey related event log contexts.
+    SurveyResponseContext survey_details = 1;
+
+    // The semantic name of the selected answer for the user type question.
+    UserTypeAnswer user_type_answer = 2;
+
+    // The semantic name of the selected answer for the market fit question.
+    MarketFitAnswer market_fit_answer = 3;
+
+    // The integer value representing the score selected by the user for the NPS question.
+    int32 nps_score_answer = 4;
+  }
+
+  // Represents the event context that contains the response to the optional survey question.
+  message OptionalSurveyResponseContext {
+    // Defined attributes that are common among other survey related event log contexts.
+    SurveyResponseContext survey_details = 1;
+
+    // The string value representing the free form answer given for the feedback question.
+    string feedback_answer = 2;
+  }
+
+  // Structure of a survey response context.
+  message SurveyResponseContext {
+    // The ID of the survey for which this response event is being logged.
+    string survey_id = 1;
+
+    // The ID of the Oppia profile currently logged in, responding to the survey.
+    string profile_id = 2;
+  }
+
+  // Structure for the app onboarding context.
+  message CompleteAppOnboardingContext {
+    // Boolean showing the app onboarding happened. The value will always be true.
+    bool complete_app_onboarding = 1;
+  }
+
+  // Structure for the ConsoleLogger context
+  message ConsoleLoggerContext {
+    // String containing the LogLevel of the log.
+    string log_level = 1;
+
+    // String containing the tag of the error.
+    string log_tag = 2;
+
+    // String containing the full error description.
+    string full_error_log = 3;
+  }
+
+  // Structure for the retrofit call context.
+  message RetrofitCallContext {
+    // String of the url being called.
+    string request_url = 1;
+
+    // Headers passed as part of the retrofit call.
+    string headers = 2;
+
+    // Body of the retrofit call.
+    string body = 3;
+
+    // Http response code from the call.
+    int32 response_status_code = 4;
+  }
+
+  // Structure for the retrofit call failed context.
+  message RetrofitCallFailedContext {
+    // String of the url being called.
+    string request_url = 1;
+
+    // Headers passed as part of the retrofit call.
+    string headers = 2;
+
+    // Body of the retrofit call.
+    string body = 3;
+
+    // Response code from the call.
+    int32 response_status_code = 4;
+
+    // The error body of the failed network call
+    string error_message = 5;
+  }
+
+  // Structure for the foreground time context.
+  message AppInForegroundTimeContext {
+    // String containing the installation id.
+    string installation_id = 1;
+
+    // String containing the app session id.
+    string app_session_id = 2;
+
+    // Foreground time in millis.
+    float foreground_time = 3;
   }
 
   // Supported priority of events for event logging

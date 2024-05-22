@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
 /** Test activity used for testing font scale. */
-class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
+class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var configUtilActivityPresenter: TestFontScaleConfigurationUtilActivityPresenter
@@ -17,6 +17,7 @@ class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
     val readingTextSize = checkNotNull(
       intent.getSerializableExtra(FONT_SCALE_EXTRA_KEY) as? ReadingTextSize
     ) { "Expected $FONT_SCALE_EXTRA_KEY to be in intent extras." }

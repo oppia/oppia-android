@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,9 +15,11 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import java.io.ByteArrayOutputStream
+import java.security.MessageDigest
 import java.util.Base64
 import java.util.zip.GZIPOutputStream
 import javax.inject.Inject
@@ -31,6 +34,7 @@ class ControlButtonsViewModel private constructor(
   private val activity: AppCompatActivity,
   private val analyticsController: AnalyticsController,
   private val syncStatusManager: SyncStatusManager,
+  private val machineLocale: OppiaLocale.MachineLocale,
   private val viewModels: List<ProfileListItemViewModel>
 ) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.SHARE_IDS) {
   private var monitoredUploadProgress: LiveData<ForceSyncProgress> =
@@ -73,10 +77,17 @@ class ControlButtonsViewModel private constructor(
           )
         }
         is SyncStatusItemViewModel -> {
+          val halfLineCount = BASE64_LINE_WRAP_LIMIT / 2
+          val logsStr = logs?.toCompressedBase64()
           listOf(
             "Current sync status: ${viewModel.syncStatus.value}.",
+            "Event log encoding integrity checks:",
+            "- First $halfLineCount chars of encoded string: ${logsStr?.take(halfLineCount)}",
+            "- Last $halfLineCount chars of encoded string: ${logsStr?.takeLast(halfLineCount)}",
+            "- SHA-1 hash (unwrapped event string): ${logsStr?.computeSha1Hash(machineLocale)}",
+            "- Total event string length (unwrapped): ${logsStr?.length}",
             "Encoded event logs:"
-          ) + (logs?.toCompressedBase64()?.chunked(BASE64_LINE_WRAP_LIMIT) ?: listOf("Missing"))
+          ) + (logsStr?.chunked(BASE64_LINE_WRAP_LIMIT) ?: listOf("Missing"))
         }
         else -> null
       }
@@ -198,12 +209,13 @@ class ControlButtonsViewModel private constructor(
     private val oppiaLogger: OppiaLogger,
     private val activity: AppCompatActivity,
     private val analyticsController: AnalyticsController,
-    private val syncStatusManager: SyncStatusManager
+    private val syncStatusManager: SyncStatusManager,
+    private val machineLocale: OppiaLocale.MachineLocale
   ) {
     /** Returns a new [ControlButtonsViewModel]. */
     fun create(viewModels: List<ProfileListItemViewModel>): ControlButtonsViewModel {
       return ControlButtonsViewModel(
-        oppiaLogger, activity, analyticsController, syncStatusManager, viewModels
+        oppiaLogger, activity, analyticsController, syncStatusManager, machineLocale, viewModels
       )
     }
   }
@@ -217,7 +229,19 @@ class ControlButtonsViewModel private constructor(
       val compressedMessage = ByteArrayOutputStream().also { byteOutputStream ->
         GZIPOutputStream(byteOutputStream).use(::writeTo)
       }.toByteArray()
-      return Base64.getEncoder().encodeToString(compressedMessage)
+      return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        Base64.getEncoder().encodeToString(compressedMessage)
+      } else {
+        android.util.Base64.encodeToString(compressedMessage, 0)
+      }
+    }
+
+    private fun String.computeSha1Hash(machineLocale: OppiaLocale.MachineLocale): String {
+      return machineLocale.run {
+        MessageDigest.getInstance("SHA-1")
+          .digest(this@computeSha1Hash.toByteArray())
+          .joinToString("") { "%02x".formatForMachines(it) }
+      }
     }
   }
 }

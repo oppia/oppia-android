@@ -13,14 +13,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -57,8 +60,10 @@ class AnalyticsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   private val syncStatusManager: SyncStatusManager,
   private val oppiaClock: OppiaClock,
+  private val oppiaLogger: OppiaLogger,
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
+  private val networkLoggingInterceptor: NetworkLoggingInterceptor,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
@@ -317,6 +322,75 @@ class AnalyticsController @Inject constructor(
         error?.let { consoleLogger.e("AnalyticsController", "Failed to remove event log.", error) }
       }
     }
+  }
+
+  /**
+   * Listens to the flow emitted by the [ConsoleLogger] and logs the error messages.
+   */
+  fun listenForConsoleErrorLogs() {
+    CoroutineScope(backgroundDispatcher).launch {
+      consoleLogger.logErrorMessagesFlow.collect { consoleLoggerContext ->
+        logLowPriorityEvent(
+          oppiaLogger.createConsoleLogContext(
+            logLevel = consoleLoggerContext.logLevel,
+            logTag = consoleLoggerContext.logTag,
+            errorLog = consoleLoggerContext.fullErrorLog
+          ),
+          profileId = null
+        )
+      }
+    }
+  }
+
+  /**
+   * Listens to the flow emitted by the [NetworkLoggingInterceptor] relating to retrofit calls and
+   * logs the network call information.
+   */
+  fun listenForNetworkCallLogs() {
+    CoroutineScope(backgroundDispatcher).launch {
+      networkLoggingInterceptor.logNetworkCallFlow.collect { retrofitCallContext ->
+        logLowPriorityEvent(
+          oppiaLogger.createRetrofitCallContext(
+            url = retrofitCallContext.requestUrl,
+            headers = retrofitCallContext.headers,
+            body = retrofitCallContext.body,
+            responseCode = retrofitCallContext.responseStatusCode,
+          ),
+          profileId = null
+        )
+      }
+    }
+  }
+
+  /**
+   * Listens to the flow emitted by the [NetworkLoggingInterceptor] relating to failed retrofit
+   * calls and logs the network call information to the [OppiaLogger].
+   */
+  fun listenForFailedNetworkCallLogs() {
+    CoroutineScope(backgroundDispatcher).launch {
+      networkLoggingInterceptor.logFailedNetworkCallFlow.collect { retrofitFailedCallContext ->
+        logLowPriorityEvent(
+          oppiaLogger.createRetrofitCallFailedContext(
+            url = retrofitFailedCallContext.requestUrl,
+            headers = retrofitFailedCallContext.headers,
+            body = retrofitFailedCallContext.body,
+            responseCode = retrofitFailedCallContext.responseStatusCode,
+            errorMessage = retrofitFailedCallContext.errorMessage,
+          ),
+          profileId = null
+        )
+      }
+    }
+  }
+
+  /**
+   * Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId].
+   */
+  fun logAppOnboardedEvent(profileId: ProfileId?) {
+    logLowPriorityEvent(
+      oppiaLogger.createAppOnBoardingContext(),
+      profileId = profileId
+    )
   }
 
   private companion object {

@@ -114,6 +114,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -144,6 +145,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -268,7 +270,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       testCoroutineDispatchers.runCurrent()
@@ -338,7 +339,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -352,7 +352,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -367,7 +366,6 @@ class StateFragmentLocalTest {
 
   @Test
   fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
@@ -390,7 +388,6 @@ class StateFragmentLocalTest {
   @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
@@ -423,7 +420,6 @@ class StateFragmentLocalTest {
   @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughTestState1()
@@ -1408,7 +1404,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withText("SHOW SOLUTION"))
+      onView(withText("Show solution"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1691,6 +1687,7 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1717,6 +1714,7 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1742,6 +1740,7 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -2946,7 +2945,8 @@ class StateFragmentLocalTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

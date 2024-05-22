@@ -27,6 +27,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -44,6 +45,7 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
@@ -100,7 +102,8 @@ import javax.inject.Singleton
     MetricLogSchedulerModule::class, ActivityRouterModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
-    CpuPerformanceSnapshotterModule::class
+    ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class,
+    TestAuthenticationModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

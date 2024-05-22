@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif"
-    android:text="html Content"
+    android:text="@string/font_scale_html_content_text"
     android:textColor="@color/component_color_shared_primary_text_color"
     android:textSize="20sp" />
 </FrameLayout>

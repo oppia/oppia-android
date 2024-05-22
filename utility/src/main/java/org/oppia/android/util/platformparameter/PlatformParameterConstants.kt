@@ -11,15 +11,6 @@ import javax.inject.Qualifier
  */
 
 /**
- * Qualifier for the platform parameter that controls whether the user has support for manually
- * downloading topics.
- */
-@Qualifier annotation class EnableDownloadsSupport
-
-/** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
-const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
-
-/**
  * Name of the platform parameter that automatically updates topics when a user toggles the
  * switch in the [AdministratorControlsFragmentPresenter].
  */
@@ -74,43 +65,6 @@ const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
  * [PlatformParameterSyncUpWorker] will run again.
  */
 const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
-
-/** Qualifier for the feature flag corresponding to enabling the language selection UI. */
-@Qualifier
-annotation class EnableLanguageSelectionUi
-
-// TODO(#52): Enable this feature by default once it's completed.
-/** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
-const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
-
-/**
- * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
- */
-@Qualifier
-annotation class EnableExtraTopicTabsUi
-
-/** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
-const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
-
-/**
- * Qualifier for the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
- * and working of learner study related analytics logging.
- */
-@Qualifier
-annotation class EnableLearnerStudyAnalytics
-
-/**
- * Name of the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
- * and working of learner study related analytics logging.
- */
-const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
-
-/**
- * Default value of the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
- * and working of learner study related analytics logging.
- */
-const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
-
 /**
  * Qualifier for the platform parameter that controls whether to cache LaTeX rendering using Glide.
  */
@@ -122,34 +76,6 @@ const val CACHE_LATEX_RENDERING = "cache_latex_rendering"
 
 /** Default value for whether to cache LaTeX rendering using Glide. */
 const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
-
-/** Qualifier for the feature flag corresponding to enabling the edit accounts options. */
-@Qualifier
-annotation class EnableEditAccountsOptionsUi
-
-/** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
-const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
-
-/** Qualifier for the platform parameter that controls whether to record performance metrics. */
-@Qualifier
-annotation class EnablePerformanceMetricsCollection
-
-/** Name of the platform parameter that controls whether to record performance metrics. */
-const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_collection"
-
-/** Default value for whether to record performance metrics. */
-const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
-
-/**
- * Qualifier for the platform parameter that controls whether to animate the continue button
- * interaction and navigation items. This is used to disable the animation during testing because
- * Espresso has known problems while testing views that contain animations.
- */
-@Qualifier
-annotation class EnableContinueButtonAnimation
-
-/** Default value for whether to enable continue button animation. */
-const val ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE = true
 
 /**
  * Qualifier for the platform parameter that controls the time interval in minutes of uploading
@@ -213,21 +139,88 @@ const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES 
 const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
   1440
 
-/** Qualifier for the feature flag corresponding to enabling the spotlight UI. */
-@Qualifier
-annotation class EnableSpotlightUi
-
-/** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
-const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
-
 /**
- * Qualifier for the platform parameter that controls whether input interaction state is correctly
- * retained across configuration changes.
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * optional app update, which is used to notify the app that a soft update is available.
  */
 @Qualifier
-annotation class EnableInteractionConfigChangeStateRetention
+annotation class OptionalAppUpdateVersionCode
 
 /**
- * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * optional app update.
  */
-const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
+const val OPTIONAL_APP_UPDATE_VERSION_CODE = "optional_app_update_version_code"
+
+/**
+ * Qualifier for the platform parameter that contains the version code of the latest available
+ * forced app update, which is used to notify the app that a mandatory update is available.
+ */
+@Qualifier
+annotation class ForcedAppUpdateVersionCode
+
+/**
+ * Name of the platform parameter that contains the integer version code of the latest available
+ * forced app update.
+ */
+const val FORCED_APP_UPDATE_VERSION_CODE = "forced_app_update_version_code"
+
+/**
+ * Qualifier for the platform parameter that contains an integer indicating the lowest supported
+ * Android API Level.
+ */
+@Qualifier
+annotation class LowestSupportedApiLevel
+
+/**
+ * Name of the platform parameter that contains an integer indicating the lowest supported Android
+ * API Level.
+ */
+const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
+
+/**
+ * Default value for the platform parameter that contains an integer indicating the lowest
+ * supported Android API Level.
+ *
+ * The current minimum supported API level is 19 (KitKat).
+ */
+const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
+
+/**
+ * Qualifier for the platform parameter that controls the time interval in days between showing
+ * subsequent NPS surveys.
+ */
+@Qualifier
+annotation class NpsSurveyGracePeriodInDays
+
+/**
+ * Name of the platform parameter that controls the time interval in days between showing subsequent
+ * NPS surveys.
+ */
+const val NPS_SURVEY_GRACE_PERIOD_IN_DAYS = "nps_survey_grace_period_in_days"
+
+/** Default value of the time interval in days between showing subsequent NPS surveys. */
+const val NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE = 30
+
+/**
+ * Qualifier for the platform parameter that controls the minimum learning time in a topic, in
+ * minutes, that indicates a learner has had sufficient interaction with the app to be able to
+ * provide informed feedback about their experience with the app.
+ */
+@Qualifier
+annotation class NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
+
+/**
+ * Name of the platform parameter that controls the minimum learning time in a topic, in
+ * minutes, that indicates a learner has had sufficient interaction with the app to be able to
+ * provide informed feedback about their experience with the app.
+ */
+const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES =
+  "nps_survey_minimum_aggregate_learning_time_in_a_topic_in_minutes"
+
+/**
+ * Default value of the minimum learning time in a topic, in minutes, that indicates a learner has
+ * had sufficient interaction with the app to be able to provide informed feedback about their
+ * experience with the app.
+ */
+const val NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE = 5
