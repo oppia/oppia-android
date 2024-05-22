@@ -111,7 +111,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
-      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
 

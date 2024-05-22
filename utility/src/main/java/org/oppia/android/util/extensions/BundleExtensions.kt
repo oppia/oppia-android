@@ -72,7 +72,7 @@ fun <T : MessageLite> Intent.getProtoExtra(name: String, defaultValue: T): T {
  */
 fun Bundle.getStringFromBundle(key: String): String? = getString(key)
 
-// TODO: Migrate this to BundleCompat.
+// TODO(#5405): Migrate this to BundleCompat.
 private inline fun <reified T : Serializable> Bundle.getTypedSerializable(name: String): T? {
   return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     getSerializableAboveApi32(name, T::class.java)

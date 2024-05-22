@@ -81,7 +81,6 @@ class PerformanceMetricsController @Inject constructor(
             .addOppiaMetricLog(oppiaMetricLog)
             .build()
         } else {
-          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             IllegalStateException(
               "Least Recent Event index absent -- MetricLogStorageCacheSize is 0"

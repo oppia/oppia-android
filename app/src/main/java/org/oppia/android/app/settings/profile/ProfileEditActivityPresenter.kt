@@ -26,7 +26,7 @@ class ProfileEditActivityPresenter @Inject constructor(
 
     toolbar.setNavigationOnClickListener {
       if (isMultipane) {
-        @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
+        @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
         activity.onBackPressed()
       } else {
         val intent = Intent(activity, ProfileListActivity::class.java)
