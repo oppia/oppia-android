@@ -699,7 +699,7 @@
   <style name="OnboardingProfileTypeHeaderStyle" parent="TextViewCenterHorizontal">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginBottom">@dimen/onboarding_shared_margin_medium_small</item>
+    <item name="android:layout_marginBottom">@dimen/phone_shared_margin_medium</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_xl</item>
     <item name="android:fontFamily">sans-serif-medium</item>
@@ -709,12 +709,12 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size_xl</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
     <item name="android:fontFamily">sans-serif-medium</item>
   </style>
 
   <style name="OnboardingProfileTypeNavigationCardStyle" parent="Widget.MaterialComponents.CardView">
-    <item name="android:layout_marginTop">@dimen/onboarding_shared_margin_x_small</item>
+    <item name="android:layout_marginTop">@dimen/phone_shared_margin_x_small</item>
     <item name="android:clipToPadding">true</item>
     <item name="cardCornerRadius">@dimen/onboarding_shared_corner_radius</item>
     <item name="cardBackgroundColor">@color/component_color_onboarding_shared_white_color</item>
@@ -724,7 +724,7 @@
   <style name="OnboardingProfileTypeTextStyle" parent="TextViewCenter">
     <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium_small</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_small</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
 </resources>
