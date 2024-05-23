@@ -694,7 +694,6 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
-        "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
