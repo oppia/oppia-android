@@ -50,8 +50,8 @@
 
     <ImageView
       android:id="@+id/create_profile_edit_picture_icon"
-      android:layout_width="44dp"
-      android:layout_height="44dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:contentDescription="@string/create_profile_activity_edit_icon_content_description"
       android:elevation="@dimen/onboarding_shared_elevation"
       android:paddingStart="@dimen/onboarding_shared_padding_medium"

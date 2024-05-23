@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -19,8 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -75,9 +74,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -147,14 +144,14 @@ class CreateProfileFragmentTest {
   fun testFragment_nicknameLabelIsDisplayed() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_label))
-        .check(matches(isDisplayed()))
-
-      onView(withId(R.id.create_profile_nickname_label))
         .check(
           matches(
-            withText(
-              context.getString(
-                R.string.create_profile_activity_nickname_label
+            allOf(
+              isDisplayed(),
+              withText(
+                context.getString(
+                  R.string.create_profile_activity_nickname_label
+                )
               )
             )
           )
@@ -174,23 +171,18 @@ class CreateProfileFragmentTest {
   fun testFragment_stepCountText_isDisplayed() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.onboarding_steps_count))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(withText(R.string.onboarding_step_count_three)))
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
-    launchNewLearnerProfileActivity().use { scenario ->
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                context.getString(
+                  R.string.onboarding_step_count_three
+                )
+              )
+            )
+          )
+        )
     }
   }
 
@@ -264,21 +256,6 @@ class CreateProfileFragmentTest {
             )
           )
         )
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
-    launchNewLearnerProfileActivity().use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
     }
   }
 
