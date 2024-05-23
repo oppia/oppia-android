@@ -335,12 +335,12 @@ class OnboardingProfileTypeFragmentTest {
 
   private fun launchOnboardingProfileTypeActivity():
     ActivityScenario<OnboardingProfileTypeActivity>? {
-    val scenario = ActivityScenario.launch<OnboardingProfileTypeActivity>(
-      OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context)
-    )
-    testCoroutineDispatchers.runCurrent()
-    return scenario
-  }
+      val scenario = ActivityScenario.launch<OnboardingProfileTypeActivity>(
+        OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context)
+      )
+      testCoroutineDispatchers.runCurrent()
+      return scenario
+    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
