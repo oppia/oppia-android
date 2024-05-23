@@ -724,7 +724,18 @@
   <style name="OnboardingProfileTypeTextStyle" parent="TextViewCenter">
     <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
-    <item name="android:textSize">@dimen/onboarding_shared_text_size_small</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
     <item name="android:fontFamily">sans-serif</item>
+  </style>
+
+  <style name="OnboardingNavigationSecondaryButton" parent="BorderlessMaterialButton">
+    <item name="android:padding">@dimen/onboarding_shared_padding_medium</item>
+    <item name="android:minWidth">@dimen/clickable_item_min_width</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@color/component_color_onboarding_shared_green_color</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
   </style>
 </resources>
