@@ -36,6 +36,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
         activity.finish()
       }
     }
+    
     return binding.root
   }
 }

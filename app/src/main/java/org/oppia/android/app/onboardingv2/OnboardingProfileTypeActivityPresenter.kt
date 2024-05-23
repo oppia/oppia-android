@@ -29,8 +29,7 @@ class OnboardingProfileTypeActivityPresenter @Inject constructor(
         R.id.profile_type_fragment_placeholder,
         onboardingProfileTypeFragment,
         TAG_PROFILE_TYPE_FRAGMENT
-      )
-        .commitNow()
+      ).commitNow()
     }
   }
 
