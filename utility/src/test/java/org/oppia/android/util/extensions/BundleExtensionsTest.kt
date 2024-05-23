@@ -195,7 +195,7 @@ class BundleExtensionsTest {
 
     assertThat(intent).extras().hasSize(1)
     assertThat(intent).extras().containsKey("first_extra")
-    // TODO: Convert this to a type check with getSerializableExtra once Robolectric can be updated.
+    // TODO(#5405): Convert this to getSerializableExtra once Robolectric can be updated.
     assertThat(intent.getStringExtra("first_extra")).isNull()
   }
 
