@@ -41,7 +41,7 @@ class StringResourceValidationCheckTest {
     private const val PCM_STRING_TWO_NEWLINES = "\\nPause di audio\\n"
   }
 
-  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val originalOut: PrintStream = System.out
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
