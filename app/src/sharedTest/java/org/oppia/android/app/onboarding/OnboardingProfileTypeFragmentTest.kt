@@ -104,6 +104,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.allOf
 
 /** Tests for [OnboardingProfileTypeFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -144,12 +145,33 @@ class OnboardingProfileTypeFragmentTest {
   fun testFragment_headerTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_title))
-        .check(matches(isDisplayed()))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                R.string.onboarding_profile_type_activity_header
+              )
+            )
+          )
+        )
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testFragment_landscapeMode_headerTextIsDisplayed() {
+    launchOnboardingProfileTypeActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_type_title))
         .check(
           matches(
-            withText(
-              R.string.onboarding_profile_type_activity_header
+            allOf(
+              isDisplayed(),
+              withText(
+                R.string.onboarding_profile_type_activity_header
+              )
             )
           )
         )
@@ -160,23 +182,57 @@ class OnboardingProfileTypeFragmentTest {
   fun testFragment_navigationCardsAreDisplayed() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
         .check(
           matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_student_text)
+              )
             )
           )
         )
 
       onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_parent_text)
+              )
+            )
+          )
+        )
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testFragment_landscapeMode_navigationCardsAreDisplayed() {
+    launchOnboardingProfileTypeActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_type_learner_navigation_card))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_student_text)
+              )
+            )
+          )
+        )
+
       onView(withId(R.id.profile_type_supervisor_navigation_card))
         .check(
           matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_parent_text)
+              )
             )
           )
         )
@@ -187,9 +243,16 @@ class OnboardingProfileTypeFragmentTest {
   fun testFragment_portrait_stepCountTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.onboarding_steps_count))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(withText(R.string.onboarding_step_count_two)))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                R.string.onboarding_step_count_two
+              )
+            )
+          )
+        )
     }
   }
 
@@ -201,25 +264,8 @@ class OnboardingProfileTypeFragmentTest {
       // Does nothing for now, but should fail once navigation is implemented in a future PR.
       onView(withId(R.id.profile_type_learner_navigation_card))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
-            )
-          )
-        )
+
       onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
-            )
-          )
-        )
-      onView(withId(R.id.onboarding_steps_count))
         .check(matches(isDisplayed()))
     }
   }
@@ -234,24 +280,9 @@ class OnboardingProfileTypeFragmentTest {
       // Does nothing for now, but should fail once navigation is implemented in a future PR.
       onView(withId(R.id.profile_type_learner_navigation_card))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
-            )
-          )
-        )
+
       onView(withId(R.id.profile_type_supervisor_navigation_card))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
-            )
-          )
-        )
     }
   }
 
@@ -261,27 +292,14 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       // Does nothing for now, but should fail once navigation is implemented in a future PR.
       onView(withId(R.id.profile_type_learner_navigation_card))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
-            )
-          )
-        )
+
       onView(withId(R.id.profile_type_supervisor_navigation_card))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
-            )
-          )
-        )
     }
   }
 
@@ -320,12 +338,12 @@ class OnboardingProfileTypeFragmentTest {
 
   private fun launchOnboardingProfileTypeActivity():
     ActivityScenario<OnboardingProfileTypeActivity>? {
-      val scenario = ActivityScenario.launch<OnboardingProfileTypeActivity>(
-        OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context)
-      )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    val scenario = ActivityScenario.launch<OnboardingProfileTypeActivity>(
+      OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context)
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
