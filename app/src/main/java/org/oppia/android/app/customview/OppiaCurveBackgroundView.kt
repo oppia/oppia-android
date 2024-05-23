@@ -119,7 +119,7 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     path = Path()
     paint = Paint(Paint.ANTI_ALIAS_FLAG)
     paint.apply {
-      style = Paint.Style.FILL_AND_STROKE
+      style = Paint.Style.FILL
       strokeWidth = this@OppiaCurveBackgroundView.strokeWidth
       color = customBackgroundColor
     }

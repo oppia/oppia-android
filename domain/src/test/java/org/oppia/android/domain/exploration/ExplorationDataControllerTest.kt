@@ -403,7 +403,7 @@ class ExplorationDataControllerTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

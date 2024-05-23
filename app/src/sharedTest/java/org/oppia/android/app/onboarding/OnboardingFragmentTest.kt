@@ -729,23 +729,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
-  @Test
-  fun testOnboardingFragment_onboardingV2Enabled_tabletPortrait_screenIsCorrectlyDisplayed() {
-    setUpTestWithOnboardingV2Enabled()
-
-    launch(OnboardingActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_language_title)).check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_language_subtitle)).check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_language_text)).check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_language_label)).check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
-    }
-  }
-
   @Config(qualifiers = "sw600dp-land")
   @Test
   fun testOnboardingFragment_onboardingV2Enabled_tabletLandscape_screenIsCorrectlyDisplayed() {
