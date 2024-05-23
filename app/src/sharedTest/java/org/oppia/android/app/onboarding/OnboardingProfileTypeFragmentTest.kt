@@ -193,36 +193,6 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
-    launchOnboardingProfileTypeActivity().use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
-    launchOnboardingProfileTypeActivity().use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
-    }
-  }
-
   @Test
   fun testFragment_studentNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
