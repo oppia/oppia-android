@@ -329,7 +329,8 @@ class TodoOpenCheckTest {
   @Test
   fun testTodoCheck_combineMultipleFailures_checkShouldFailWithAllErrorsLogged() {
     setUpGitHubService(issueNumbers = listOf(1000000, 152440222, 152440223, 11001))
-    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    tempFolder.newFolder("testfiles/extra_dir")
+    val tempFile1 = tempFolder.newFile("testfiles/extra_dir/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
     val testContent1 =
       """
@@ -348,7 +349,7 @@ class TodoOpenCheckTest {
       this.addAllTodoOpenExemption(
         listOf(
           TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile1.kt"
+            this.exemptedFilePath = "extra_dir/TempFile1.kt"
             this.addAllLineNumber(listOf(1, 2)).build()
           }.build()
         )
@@ -362,14 +363,14 @@ class TodoOpenCheckTest {
     val failureMessage =
       """
       Redundant exemptions (there are no TODOs corresponding to these lines):
-      - TempFile1.kt:2
+      - extra_dir/TempFile1.kt:2
       Please remove them from scripts/assets/todo_exemptions.textproto
 
       TODOs not in correct format:
       - TempFile2.kt:1
 
       TODOs not corresponding to open issues on GitHub:
-      - TempFile1.kt:3
+      - extra_dir/TempFile1.kt:3
 
       $wikiReferenceNote
 

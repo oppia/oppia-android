@@ -37,6 +37,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
@@ -60,6 +61,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val resourceHandler: AppLanguageResourceHandler,
   private val surveyGatingController: SurveyGatingController
 ) {
@@ -328,7 +330,7 @@ class ExplorationActivityPresenter @Inject constructor(
       return
     }
     // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
-    // fragment.
+    // fragment and log lesson saved advertently event.
     showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
@@ -514,9 +516,11 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           stopExploration(isCompletion = false)
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           showProgressDatabaseFullDialogFragment()
         }
         else -> showUnsavedExplorationDialogFragment()

@@ -24,6 +24,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
@@ -39,8 +40,12 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPTIONAL_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_FAILURE_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
@@ -231,6 +236,16 @@ class EventBundleCreator @Inject constructor(
       APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
       EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
       FINISH_EXPLORATION_CONTEXT -> ExplorationContext(activityName, finishExplorationContext)
+      PROGRESS_SAVING_SUCCESS_CONTEXT ->
+        ExplorationContext(activityName, progressSavingSuccessContext)
+      PROGRESS_SAVING_FAILURE_CONTEXT ->
+        ExplorationContext(activityName, progressSavingFailureContext)
+      LESSON_SAVED_ADVERTENTLY_CONTEXT ->
+        ExplorationContext(activityName, lessonSavedAdvertentlyContext)
+      RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT ->
+        ExplorationContext(activityName, resumeLessonSubmitCorrectAnswerContext)
+      RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT ->
+        ExplorationContext(activityName, resumeLessonSubmitIncorrectAnswerContext)
       RESUME_EXPLORATION_CONTEXT -> LearnerDetailsContext(activityName, resumeExplorationContext)
       START_OVER_EXPLORATION_CONTEXT ->
         LearnerDetailsContext(activityName, startOverExplorationContext)

@@ -9,9 +9,7 @@ import java.io.File
 
 /** Tests for [RepositoryFile]. */
 class RepositoryFileTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
