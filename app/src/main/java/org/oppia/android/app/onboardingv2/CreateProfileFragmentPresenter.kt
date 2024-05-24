@@ -24,7 +24,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.databinding.CreateProfileFragmentBinding
 import javax.inject.Inject
 
-const val GALLERY_INTENT_RESULT_CODE = 1
+private const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** Presenter for [CreateProfileFragment]. */
 @FragmentScope
@@ -100,7 +100,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  /** Receive the result of image upload and load it into the image view **/
+  /** Receive the result of image upload and load it into the image view. **/
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
       binding.createProfilePicturePrompt.visibility = View.GONE
