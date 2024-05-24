@@ -100,6 +100,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /** Receive the result of image upload and load it into the image view **/
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
       binding.createProfilePicturePrompt.visibility = View.GONE
