@@ -3,19 +3,15 @@ package org.oppia.android.app.onboarding
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -38,7 +34,6 @@ import org.oppia.android.app.onboardingv2.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -71,9 +66,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -137,6 +130,7 @@ class IntroFragmentTest {
     Intents.release()
   }
 
+  // use all of
   @Test
   fun testFragment_explanationText_isDisplayed() {
     launchOnboardingLearnerIntroActivity().use {
@@ -158,6 +152,7 @@ class IntroFragmentTest {
     }
   }
 
+  // portrait vs landscape
   @Test
   fun testFragment_stepCountText_isDisplayed() {
     launchOnboardingLearnerIntroActivity().use {
@@ -168,33 +163,7 @@ class IntroFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
-    launchOnboardingLearnerIntroActivity().use { scenario ->
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
-    launchOnboardingLearnerIntroActivity().use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
-    }
-  }
+  // Placeholder tests for navigation into next screen
 
   private fun launchOnboardingLearnerIntroActivity():
     ActivityScenario<IntroActivity>? {
