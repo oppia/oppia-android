@@ -55,6 +55,18 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
     }
   }
 
+  /**
+   * Returns the map of dex files to method counts contained within the specified APK file, as
+   * similarly reported by apkanalyzer.
+   */
+  fun computeDexReferencesList(inputApkPath: String): Map<String, Int> {
+    return collectZipEntries(inputApkPath) {
+      it.endsWith(".dex")
+    }.mapValues { (_, dexFileContents) ->
+      DexFileStats.create(listOf(DexFiles.getDexFile(dexFileContents))).referencedMethodCount
+    }
+  }
+
   // Based on the apkanalyzer CLI implementation.
   private fun walkParseTree(node: DefaultMutableTreeNode?): List<String> {
     return node?.let {
@@ -78,26 +90,14 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
     } ?: listOf()
   }
 
-  /**
-   * Returns the map of dex files to method counts contained within the specified APK file, as
-   * similarly reported by apkanalyzer.
-   */
-  fun computeDexReferencesList(inputApkPath: String): Map<String, Int> {
-    return collectZipEntries(inputApkPath) {
-      it.endsWith(".dex")
-    }.mapValues { (_, dexFileContents) ->
-      DexFileStats.create(listOf(DexFiles.getDexFile(dexFileContents))).referencedMethodCount
-    }
-  }
-
   private fun collectZipEntries(
     inputZipFile: String,
-    predicate: (String) -> Boolean
+    namePredicate: (String) -> Boolean
   ): Map<String, ByteArray> {
     return ZipFile(inputZipFile).use { zipFile ->
       zipFile.entries()
         .asSequence()
-        .filter { predicate(it.name) }
+        .filter { namePredicate(it.name) }
         .associateBy { it.name }
         .mapValues { (_, entry) -> zipFile.getInputStream(entry).readBytes() }
     }

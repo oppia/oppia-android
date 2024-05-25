@@ -236,7 +236,3 @@ http_jar(
         for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
     ],
 )
-
-load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
-bazel_skylib_workspace()

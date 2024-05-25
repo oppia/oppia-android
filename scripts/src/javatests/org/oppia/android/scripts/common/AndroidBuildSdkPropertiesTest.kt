@@ -23,7 +23,7 @@ class AndroidBuildSdkPropertiesTest {
   }
 
   @Test
-  fun testBuildToolsVersion_isTheVersion() {
+  fun testBuildToolsVersion_isTheCorrectVersion() {
     val properties = AndroidBuildSdkProperties()
 
     assertThat(properties.buildToolsVersion).isEqualTo("29.0.2")
