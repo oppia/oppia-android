@@ -110,9 +110,9 @@ class ComputeAabDifferences(
     val universalApkWithoutChanges = computeUniversalApk(aabWithoutChangesPath, destWithoutChanges)
     val universalApkWithChanges = computeUniversalApk(aabWithChangesPath, destWithChanges)
 
-    val (masterApkWithoutChanges, splitApksWithoutChanges) =
+    val (mainApkWithoutChanges, splitApksWithoutChanges) =
       computeApksList(aabWithoutChangesPath, destWithoutChanges)
-    val (masterApkWithChanges, splitApksWithChanges) =
+    val (mainApkWithChanges, splitApksWithChanges) =
       computeApksList(aabWithChangesPath, destWithChanges)
     val splitApkStats = combineMaps(
       splitApksWithoutChanges, splitApksWithChanges
@@ -126,8 +126,8 @@ class ComputeAabDifferences(
       universalApkStats = computeConfigurationStats(
         universalApkWithoutChanges, universalApkWithChanges
       ),
-      masterSplitApkStats = computeConfigurationStats(
-        masterApkWithoutChanges, masterApkWithChanges
+      mainSplitApkStats = computeConfigurationStats(
+        mainApkWithoutChanges, mainApkWithChanges
       ),
       splitApkStats = splitApkStats,
       configurationsList = configurationsList
@@ -148,13 +148,13 @@ class ComputeAabDifferences(
     println("Generating APK list for: $inputAabPath")
     val apksListPath = File(destDir, "list.apks").absolutePath
     val apkFiles = bundleToolClient.buildApks(inputAabPath, apksListPath, destDir)
-    val masterFilePath = apkFiles.first { "master" in it.name }.absolutePath
+    val mainApkFilePath = apkFiles.first { "master" in it.name }.absolutePath
     val apkFilePathMap =
       apkFiles.filter { "master" !in it.name }
         .associate { file ->
           file.name.substringAfter("base-").substringBefore('.') to file.absolutePath
         }
-    return masterFilePath to apkFilePathMap
+    return mainApkFilePath to apkFilePathMap
   }
 
   private fun computeConfigurationStats(
@@ -311,7 +311,7 @@ class ComputeAabDifferences(
    *
    * @property universalApkStats stats corresponding to the before & after universal APKs built for
    *     the considered build flavor
-   * @property masterSplitApkStats stats corresponding to the base APK of the compared AABs for the
+   * @property mainSplitApkStats stats corresponding to the base APK of the compared AABs for the
    *     considered build flavor
    * @property splitApkStats a map from configuration name to the compared stats for each split APK
    *     of the compared AABs for the considered build flavor
@@ -320,7 +320,7 @@ class ComputeAabDifferences(
    */
   data class AabStats(
     val universalApkStats: ApkConfigurationStats,
-    val masterSplitApkStats: ApkConfigurationStats,
+    val mainSplitApkStats: ApkConfigurationStats,
     val splitApkStats: Map<String, ApkConfigurationStats>,
     val configurationsList: DiffList<String>
   ) {
@@ -364,7 +364,7 @@ class ComputeAabDifferences(
       stream.println()
 
       stream.println("#### Base APK")
-      masterSplitApkStats.writeSummaryTo(stream, itemize = longSummary, longSummary, itemLimit)
+      mainSplitApkStats.writeSummaryTo(stream, itemize = longSummary, longSummary, itemLimit)
 
       splitApkStats.forEach { (configuration, stats) ->
         stream.println()
@@ -528,6 +528,7 @@ class ComputeAabDifferences(
      *
      * @param itemLimit the max number of items to include in expanded lists
      * @param itemize whether to expand lists of items
+     * @return whether anything was printed
      */
     fun writeTo(stream: PrintStream, itemize: Boolean, itemLimit: Int): Boolean {
       val totalOldCount = resources.values.sumOf { it.oldCount }

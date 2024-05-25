@@ -1342,7 +1342,7 @@ class GenerateMavenDependenciesListTest {
     )
   }
 
-  /** Helper function to write a fake maven install manifest file. */
+  /** Helper function to write a fake Maven install manifest file. */
   private fun writeMavenInstallJson(file: File) {
     file.writeText(
       """

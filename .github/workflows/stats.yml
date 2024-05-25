@@ -3,19 +3,58 @@
 name: Stats Checks & Reports
 
 on:
-  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 02 * * *"
+
+permissions:
+  pull-requests: write
 
 jobs:
+  find_open_pull_requests:
+    name: Find open PRs
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.compute-pull-request-matrix.outputs.matrix }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute PR matrix
+        id: compute-pull-request-matrix
+        # Remove spaces to ensure the matrix output is on one line. Reference:
+        # https://stackoverflow.com/a/3232433.
+        run: |
+          CURRENT_OPEN_PR_INFO="$(gh pr list --json number,baseRefName,headRefName,headRepository,headRepositoryOwner | tr -d '[:space:]')"
+          echo "matrix={\"prInfo\": $CURRENT_OPEN_PR_INFO}" >> "$GITHUB_OUTPUT"
+
   build_stats:
     name: Build Stats
+    needs: find_open_pull_requests
     runs-on: ubuntu-20.04
+    # Reduce parallelization due to high build times, and allow individual PRs to fail.
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.find_open_pull_requests.outputs.matrix) }}
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Compute PR head owner/repo reference
+        env:
+          PR_HEAD_REPO: ${{ matrix.prInfo.headRepository.name }}
+          PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
+        run: |
+          echo "PR_HEAD=$PR_HEAD_REPO_OWNER/$PR_HEAD_REPO" >> "$GITHUB_ENV"
+      - name: Print PR information for this run
+        env:
+          PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
+          PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
+          PR_NUMBER: ${{ matrix.prInfo.number }}
+        run: |
+          echo "PR $PR_NUMBER is merging into $PR_BASE_REF_NAME from https://github.com/$PR_HEAD branch $PR_HEAD_REF_NAME."
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -39,17 +78,6 @@ jobs:
       - name: Set up Bazel (latest version)
         run: |
           sudo apt-get install bazel-6.2.0
-
-      - name: Set up build environment
-        uses: ./.github/actions/set-up-android-bazel-build-environment
-
-      - name: Set up Oppia Bazel Android Tools (for old configurations)
-        run: |
-          mkdir $HOME/opensource
-          cd $HOME/opensource
-          git clone https://github.com/oppia/oppia-bazel-tools
-          cd $GITHUB_WORKSPACE
-        shell: bash
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -98,47 +126,78 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
+      # This checks out the actual true develop branch separately to ensure that the stats check is
+      # run from the latest develop rather than the base branch (which might be different for
+      # chained PRs).
+      - name: Check out develop repository
+        uses: actions/checkout@v4
+        with:
+          path: develop
+
+      - name: Set up build environment
+        uses: ./develop/.github/actions/set-up-android-bazel-build-environment
+
+      - name: Set up Oppia Bazel Android Tools (for old configurations)
+        run: |
+          mkdir $HOME/opensource
+          cd $HOME/opensource
+          git clone https://github.com/oppia/oppia-bazel-tools
+          cd $GITHUB_WORKSPACE
+        shell: bash
+
       - name: Check Bazel environment
-        run: bazel info
+        run: |
+          cd develop
+          bazel info
 
-      - name: Change to base
+      - name: Check out base repository and branch
         env:
-          base_commit_hash: ${{ github.event.pull_request.base.sha }}
+          PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.PR_BASE_REF_NAME }}
+          path: base
+
+      - name: Check out head repository and branch
+        env:
+          PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: ${{ env.PR_HEAD }}
+          ref: ${{ env.PR_HEAD_REF_NAME }}
+          path: head
+
+      # Note that Bazel is shutdown between builds since multiple Bazel servers will otherwise end
+      # up being active (due to multiple repositories being used) and this can quickly overwhelm CI
+      # worker resources.
+      - name: Build Oppia dev, alpha, beta, and GA (feature branch)
         run: |
-          git checkout $base_commit_hash
+          cd head
           git log -n 1
-
-      - name: Enable Oppia's custom Bazel Android Tools (for old configurations)
-        run: |
-          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> ./.bazelrc
-
-      - name: Build Oppia dev, alpha, beta, and GA (base)
-        run: |
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
-          cp bazel-bin/oppia_dev.aab ./oppia_dev_without_changes.aab
-          cp bazel-bin/oppia_alpha.aab ./oppia_alpha_without_changes.aab
-          cp bazel-bin/oppia_beta.aab ./oppia_beta_without_changes.aab
-          cp bazel-bin/oppia_ga.aab ./oppia_ga_without_changes.aab
+          cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_with_changes.aab
+          cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_with_changes.aab
+          cp bazel-bin/oppia_beta.aab ../develop/oppia_beta_with_changes.aab
+          cp bazel-bin/oppia_ga.aab ../develop/oppia_ga_with_changes.aab
+          bazel shutdown
 
-      - name: Disable old Oppia Bazel Android Tools (for new configurations)
+      - name: Build Oppia dev, alpha, beta, and GA (base branch)
         run: |
-          git checkout ./.bazelrc
-
-      - name: Change to feature branch
-        run: |
-          git checkout $GITHUB_SHA
+          cd base
           git log -n 1
-
-      - name: Build Oppia dev, alpha, beta, and GA (branch)
-        run: |
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
-          cp bazel-bin/oppia_dev.aab ./oppia_dev_with_changes.aab
-          cp bazel-bin/oppia_alpha.aab ./oppia_alpha_with_changes.aab
-          cp bazel-bin/oppia_beta.aab ./oppia_beta_with_changes.aab
-          cp bazel-bin/oppia_ga.aab ./oppia_ga_with_changes.aab
+          cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_without_changes.aab
+          cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_without_changes.aab
+          cp bazel-bin/oppia_beta.aab ../develop/oppia_beta_without_changes.aab
+          cp bazel-bin/oppia_ga.aab ../develop/oppia_ga_without_changes.aab
+          bazel shutdown
 
-      - name: Run stats analysis tool
+      - name: Run stats analysis tool (develop branch)
         run: |
+          cd develop
+          git log -n 1
           bazel run //scripts:compute_aab_differences -- \
             $(pwd)/brief_build_summary.log $(pwd)/full_build_summary.log \
             dev $(pwd)/oppia_dev_without_changes.aab $(pwd)/oppia_dev_with_changes.aab \
@@ -147,23 +206,32 @@ jobs:
             ga $(pwd)/oppia_ga_without_changes.aab $(pwd)/oppia_ga_with_changes.aab
 
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
+      # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
       - name: Extract reports for uploading & commenting
+        env:
+          PR_NUMBER: ${{ matrix.prInfo.number }}
         id: compute-comment-body
         run: |
-          comment_body="$(cat /home/runner/work/oppia-android/oppia-android/brief_build_summary.log)"
-          comment_body="${comment_body//'%'/'%25'}"
-          comment_body="${comment_body//$'\n'/'%0A'}"
-          comment_body="${comment_body//$'\r'/'%0D'}"
-          echo "::set-output name=comment_body::$comment_body"
+          {
+            echo 'comment_body<<EOF'
+            cat $GITHUB_WORKSPACE/develop/brief_build_summary.log
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+          FULL_BUILD_SUMMARY_FILE_NAME="full_build_summary_pr_$PR_NUMBER.log"
+          FULL_BUILD_SUMMARY_FILE_PATH="$GITHUB_WORKSPACE/develop/$FULL_BUILD_SUMMARY_FILE_NAME"
+          echo "FULL_BUILD_SUMMARY_FILE_NAME=$FULL_BUILD_SUMMARY_FILE_NAME" >> "$GITHUB_ENV"
+          echo "FULL_BUILD_SUMMARY_FILE_PATH=$FULL_BUILD_SUMMARY_FILE_PATH" >> "$GITHUB_ENV"
+          cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
 
       - name: Add build stats summary comment
+        env:
+          PR_NUMBER: ${{ matrix.prInfo.number }}
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ env.PR_NUMBER }}
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: fill-build-summary.log
-          path: |
-            /home/runner/work/oppia-android/oppia-android/full_build_summary.log
+          name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
+          path: ${{ env.FULL_BUILD_SUMMARY_FILE_PATH }}

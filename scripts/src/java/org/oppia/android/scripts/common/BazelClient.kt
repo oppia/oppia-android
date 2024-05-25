@@ -84,8 +84,8 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
-   * Returns the list of direct and indirect production Maven third-party dependencies on which the
-   * specified binary depends.
+   * Returns the list of direct and indirect Maven third-party dependencies on which the specified
+   * binary depends.
    */
   fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
     return executeBazelCommand(

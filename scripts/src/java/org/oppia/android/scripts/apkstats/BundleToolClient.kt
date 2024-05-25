@@ -10,6 +10,10 @@ import java.util.zip.ZipFile
  * General utility for interfacing with bundletool in the local system at the specified working
  * directory path.
  *
+ * @property workingDirectoryPath the path to the working directory in which instances of bundletool
+ *     should be executed
+ * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the
+ *     bundletool command
  * @property commandExecutor the [CommandExecutor] to use when accessing bundletool
  */
 class BundleToolClient(
@@ -83,7 +87,7 @@ class BundleToolClient(
         *arguments
       )
     check(result.exitCode == 0) {
-      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
+      "Expected zero exit code (not ${result.exitCode}) for command: ${result.command}." +
         "\nStandard output:\n${result.output.joinToString("\n")}" +
         "\nError output:\n${result.errorOutput.joinToString("\n")}"
     }
