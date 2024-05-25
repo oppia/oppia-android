@@ -23,9 +23,7 @@ class AccessibilityLabelCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#accessibility-label-check for more details on how to fix this."
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
