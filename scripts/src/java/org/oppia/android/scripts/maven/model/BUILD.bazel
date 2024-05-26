@@ -8,9 +8,8 @@ kt_jvm_library(
     name = "model",
     testonly = True,
     srcs = [
-        "MavenListDependencies.kt",
-        "MavenListDependency.kt",
-        "MavenListDependencyTree.kt",
+        "MavenArtifact.kt",
+        "MavenInstallJson.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],

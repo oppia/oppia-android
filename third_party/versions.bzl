@@ -130,15 +130,20 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "2.28.1",
     },
     "protobuf_tools": {
+        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
         "version": "3.11.0",
+    },
+    "robolectric": {
+        "sha": "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
+        "version": "4.5",
     },
     "rules_java": {
         "sha": "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
         "version": "4.0.0",
     },
     "rules_jvm": {
-        "sha": "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
-        "version": "4.1",
+        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
+        "version": "5.1",
     },
     "rules_kotlin": {
         "sha": "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",

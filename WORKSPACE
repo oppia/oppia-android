@@ -96,8 +96,9 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.5",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.5.tar.gz"],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["robolectric"]["sha"],
+    strip_prefix = "robolectric-bazel-%s" % HTTP_DEPENDENCY_VERSIONS["robolectric"]["version"],
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["robolectric"]["version"]],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
@@ -109,6 +110,7 @@ git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
     remote = "https://github.com/bazelbuild/tools_android",
+    shallow_since = "1594238320 -0400",
 )
 
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
@@ -137,7 +139,7 @@ git_repository(
     name = "kotlitex",
     commit = "43139c140833c7120f351d63d74b42c253d2b213",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1647554845 -0700",
+    shallow_since = "1675741075 -0800",
 )
 
 bind(
@@ -147,6 +149,7 @@ bind(
 
 http_archive(
     name = "protobuf_tools",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["sha"],
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
@@ -178,14 +181,15 @@ http_jar(
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    duplicate_version_warning = "error",
     fail_if_repin_required = True,
-    fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.fabric.io/public",
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
+    strict_visibility = True,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
