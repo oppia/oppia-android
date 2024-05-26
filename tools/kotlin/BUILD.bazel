@@ -4,6 +4,10 @@ Configurations for a codebase-wide build toolchain for Kotlin.
 
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
 
+# This exposes a patch that fixes an issue with duplicate processor arguments. See:
+# github.com/bazelbuild/rules_kotlin/pull/940.
+exports_files(["remove_processor_duplicates.patch"])
+
 kt_kotlinc_options(
     name = "oppia_kotlinc_options",
     warn = "error",

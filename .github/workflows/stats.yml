@@ -61,23 +61,10 @@ jobs:
         with:
           java-version: 11
 
-      # Note that a different Bazel binary installation is used here since multiple versions need to
-      # be set up simultaneously.
-      - name: Set up Bazel apt repository & install latest
-        run: |
-          sudo apt-get install apt-transport-https curl gnupg -y
-          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
-          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-          sudo apt-get update && sudo apt-get install bazel
-
-      - name: Set up Bazel (previous version)
-        run: |
-          sudo apt-get install bazel-4.0.0
-
-      - name: Set up Bazel (latest version)
-        run: |
-          sudo apt-get install bazel-6.2.0
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -136,14 +123,6 @@ jobs:
 
       - name: Set up build environment
         uses: ./develop/.github/actions/set-up-android-bazel-build-environment
-
-      - name: Set up Oppia Bazel Android Tools (for old configurations)
-        run: |
-          mkdir $HOME/opensource
-          cd $HOME/opensource
-          git clone https://github.com/oppia/oppia-bazel-tools
-          cd $GITHUB_WORKSPACE
-        shell: bash
 
       - name: Check Bazel environment
         run: |

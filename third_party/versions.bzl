@@ -81,6 +81,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
     "org.jetbrains:annotations:jar": "13.0",
 }
@@ -140,10 +141,6 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
         "version": "31.0.1",
     },
-    "kotlinx-coroutines-core-jvm": {
-        "sha": "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
-        "version": "1.6.0",
-    },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
         "version": "3.11.0",
@@ -160,9 +157,9 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
         "version": "5.1",
     },
-    "rules_kotlin_prerelease": {
-        "sha": "1d872b9c6546f0f737a356d873b164d70282760fe4c880349770abc9e494c9ce",
-        "version": "v1.7.2",
+    "rules_kotlin": {
+        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
+        "version": "v1.7.1",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
