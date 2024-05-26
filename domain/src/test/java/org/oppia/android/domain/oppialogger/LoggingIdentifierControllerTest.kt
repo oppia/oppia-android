@@ -1,9 +1,11 @@
 package org.oppia.android.domain.oppialogger
 
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.MessageLite
 import dagger.BindsInstance
@@ -73,6 +75,7 @@ class LoggingIdentifierControllerTest {
 
   @Before
   fun setUp() {
+    TestLoggingIdentifierModule.applicationIdSeed = INITIAL_APPLICATION_ID
     setUpTestApplicationComponent()
   }
 
@@ -99,7 +102,8 @@ class LoggingIdentifierControllerTest {
   @Test
   fun testGetInstallationId_secondAppOpen_providerReturnsSameInstallationIdValue() {
     monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
-    setUpTestApplicationComponent() // Simulate an app re-open.
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
 
     val installationId =
       monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
@@ -130,7 +134,8 @@ class LoggingIdentifierControllerTest {
   @Test
   fun testFetchInstallationId_secondAppOpen_returnsSameInstallationIdValue() {
     monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
-    setUpTestApplicationComponent() // Simulate an app re-open.
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
 
     val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
 
@@ -165,6 +170,19 @@ class LoggingIdentifierControllerTest {
     // The second call should return the same ID (since the ID doesn't automatically change).
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
     assertThat(sessionId).isEqualTo("4d0a66f3-82b6-3aa9-8f61-140bdd5f49d3")
+  }
+
+  @Test
+  fun testGetSessionId_secondAppOpen_returnsNewRandomId() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getSessionId())
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+
+    // The second call should return the same ID (since the ID doesn't automatically change).
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(sessionId).isEqualTo("18c2816d-f7ad-312f-b696-d3fdd51f2e92")
   }
 
   @Test
@@ -292,6 +310,17 @@ class LoggingIdentifierControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun setUpNewTestApplicationComponent() {
+    createNewTestApplication().inject(this)
+  }
+
+  private fun createNewTestApplication(): TestApplication {
+    return Instrumentation.newApplication(
+      TestApplication::class.java,
+      InstrumentationRegistry.getInstrumentation().targetContext
+    ) as TestApplication
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -327,12 +356,12 @@ class LoggingIdentifierControllerTest {
   @Module
   class TestLoggingIdentifierModule {
     companion object {
-      internal const val applicationIdSeed = 1L
+      internal var applicationIdSeed: Long? = null
     }
 
     @Provides
     @ApplicationIdSeed
-    fun provideApplicationIdSeed(): Long = applicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed!! // Fail if not initialized.
   }
 
   @Module
@@ -397,5 +426,10 @@ class LoggingIdentifierControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  companion object {
+    private const val INITIAL_APPLICATION_ID = 1L
+    private const val SECOND_APP_OPEN_APPLICATION_ID = 2L
   }
 }
