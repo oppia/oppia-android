@@ -1,5 +1,6 @@
 package org.oppia.android.app.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -9,7 +10,6 @@ import android.provider.MediaStore
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -34,6 +34,8 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
+const val GALLERY_INTENT_RESULT_CODE = 1
+
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
 class AddProfileActivityPresenter @Inject constructor(
@@ -50,8 +52,6 @@ class AddProfileActivityPresenter @Inject constructor(
   private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
   private lateinit var alertDialog: AlertDialog
-
-  lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
@@ -181,25 +181,25 @@ class AddProfileActivityPresenter @Inject constructor(
     }
   }
 
-  fun updateProfileAvatar(data: Intent?) {
-    data?.let {
-      selectedImage = data.data
-      Glide.with(activity)
-        .load(selectedImage)
-        .centerCrop()
-        .apply(RequestOptions.circleCropTransform())
-        .into(uploadImageView)
+  fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+      data?.let {
+        selectedImage = data.data
+        Glide.with(activity)
+          .load(selectedImage)
+          .centerCrop()
+          .apply(RequestOptions.circleCropTransform())
+          .into(uploadImageView)
+      }
     }
   }
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     uploadImageView.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-      resultLauncher.launch(galleryIntent)
+      openGalleryIntent()
     }
     binding.addProfileActivityEditUserImageView.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-      resultLauncher.launch(galleryIntent)
+      openGalleryIntent()
     }
 
     binding.addProfileActivityCreateButton.setOnClickListener {
@@ -239,6 +239,11 @@ class AddProfileActivityPresenter @Inject constructor(
           }
         )
     }
+  }
+
+  private fun openGalleryIntent() {
+    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {

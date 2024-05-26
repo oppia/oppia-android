@@ -1,12 +1,9 @@
 package org.oppia.android.app.options
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -51,9 +48,6 @@ class OptionsActivity :
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
   private var profileId: Int? = -1
-
-  private lateinit var audioLanguageResultLauncher: ActivityResultLauncher<Intent>
-  private lateinit var textSizeResultLauncher: ActivityResultLauncher<Intent>
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -102,29 +96,26 @@ class OptionsActivity :
       profileId!!
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
+  }
 
-    audioLanguageResultLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == Activity.RESULT_OK) {
-        val data: Intent? = result.data
-        val audioLanguage = data?.getProtoExtra(
-          MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
-        )?.audioLanguage
-        optionActivityPresenter.updateAudioLanguage(audioLanguage!!)
-      }
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    checkNotNull(data) {
+      "Expected data to be passed as an activity result for request: $requestCode."
     }
-
-    textSizeResultLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == Activity.RESULT_OK) {
-        val data: Intent? = result.data
-        val textSizeResults = data?.getProtoExtra(
+    when (requestCode) {
+      REQUEST_CODE_TEXT_SIZE -> {
+        val textSizeResults = data.getProtoExtra(
           MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
           ReadingTextSizeActivityResultBundle.getDefaultInstance()
         )
-        optionActivityPresenter.updateReadingTextSize(textSizeResults!!.selectedReadingTextSize!!)
+        optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+      }
+      REQUEST_CODE_AUDIO_LANGUAGE -> {
+        val audioLanguage = data.getProtoExtra(
+          MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
+        ).audioLanguage
+        optionActivityPresenter.updateAudioLanguage(audioLanguage)
       }
     }
   }
@@ -140,13 +131,17 @@ class OptionsActivity :
   }
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
-    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage)
-    audioLanguageResultLauncher.launch(intent)
+    startActivityForResult(
+      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage),
+      REQUEST_CODE_AUDIO_LANGUAGE
+    )
   }
 
   override fun routeReadingTextSize(readingTextSize: ReadingTextSize) {
-    val intent = ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize)
-    textSizeResultLauncher.launch(intent)
+    startActivityForResult(
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize),
+      REQUEST_CODE_TEXT_SIZE
+    )
   }
 
   override fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
