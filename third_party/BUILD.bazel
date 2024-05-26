@@ -19,22 +19,18 @@ load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPEND
 # Create an android library wrapper for all production dependencies. Note that artifact is used so
 # that the correct Maven repository (default) is selected. This allows future customization
 # potential in managing multiple Maven repositories.
-[android_library(
+[alias(
     name = name.replace(":", "_").replace(".", "_"),
+    actual = artifact("%s:%s" % (name, version)),
     visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
 ) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
 
 # Create an android library wrapper for all test dependencies.
-[android_library(
+[alias(
     name = name.replace(":", "_").replace(".", "_"),
     testonly = True,
+    actual = artifact("%s:%s" % (name, version)),
     visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
 ) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
 
 # A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
