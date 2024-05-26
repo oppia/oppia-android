@@ -114,13 +114,33 @@ class LoggingIdentifierControllerTest {
 
   @Test
   fun testGetInstallationId_secondAppOpen_emptiedDatabase_providerReturnsEmptyString() {
+    // Simulate initing the installation ID, then emptying/corrupting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
     writeFileCache("device_context_database", DeviceContextDatabase.getDefaultInstance())
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
 
     val installationId =
       monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
 
-    // The installation ID is empty since the database was overwritten.
+    // If the file was emptied, no installation ID can be loaded (this is a critical failure case).
     assertThat(installationId).isEmpty()
+  }
+
+  @Test
+  fun testGetInstallationId_secondAppOpen_deletedDatabase_providerReturnsNewInstallationIdValue() {
+    // Simulate initing the installation ID, then deleting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
+    deleteCacheFile("device_context_database")
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+
+    val installationId =
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
+
+    // It should seem like a reinstallation since the app's data has been cleared after restarting.
+    assertThat(installationId).isEqualTo("a52e69fcfedc")
+    assertThat(installationId.length).isEqualTo(12)
   }
 
   @Test
@@ -145,12 +165,32 @@ class LoggingIdentifierControllerTest {
 
   @Test
   fun testFetchInstallationId_secondAppOpen_emptiedDatabase_returnsNull() {
+    // Simulate initing the installation ID, then emptying/corrupting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
     writeFileCache("device_context_database", DeviceContextDatabase.getDefaultInstance())
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+
+    val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
+
+    // If the file was emptied, no installation ID can be loaded (this is a critical failure case).
+    assertThat(installationId).isNull()
+  }
+
+  @Test
+  fun testFetchInstallationId_secondAppOpen_deletedDatabase_returnsNewInstallationIdValue() {
+    // Simulate initing the installation ID, then deleting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
+    deleteCacheFile("device_context_database")
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
 
     val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
 
     // The installation ID is null since the database was overwritten.
-    assertThat(installationId).isNull()
+    assertThat(installationId).isEqualTo("a52e69fcfedc")
+    assertThat(installationId?.length).isEqualTo(12)
   }
 
   @Test
@@ -271,6 +311,10 @@ class LoggingIdentifierControllerTest {
 
   private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
+  }
+
+  private fun deleteCacheFile(cacheName: String) {
+    check(getCacheFile(cacheName).delete()) { "Failed to delete: $cacheName." }
   }
 
   private fun getCacheFile(cacheName: String) = File(context.filesDir, "$cacheName.cache")
