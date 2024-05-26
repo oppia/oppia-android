@@ -6,10 +6,10 @@ import java.nio.file.Path
 import kotlin.streams.asSequence
 
 /** Helper class for managing & accessing files within the project repository. */
-class RepositoryFile() {
+class RepositoryFile {
   companion object {
     /** A list of directories which should be excluded for every script check. */
-    private val alwaysExcludeDirectoryList = listOf<String>(
+    private val alwaysExcludeDirectoryList = listOf(
       ".git",
       ".gitsecret",
       ".idea",
@@ -19,12 +19,12 @@ class RepositoryFile() {
       "bazel-oppia-android",
       "bazel-out",
       "bazel-testlogs",
-      "app/build/",
-      "data/build/",
-      "domain/build/",
-      "model/build/",
-      "testing/build/",
-      "utility/build/",
+      "app/build",
+      "data/build",
+      "domain/build",
+      "model/build",
+      "testing/build",
+      "utility/build",
     )
 
     /**
@@ -42,33 +42,25 @@ class RepositoryFile() {
     fun collectSearchFiles(
       repoPath: String,
       expectedExtension: String = "",
-      exemptionsList: List<String> = listOf<String>()
+      exemptionsList: List<String> = listOf()
     ): List<File> {
       // Note that Files.walk() is used instead of Kotlin's walk() function since the latter follows
       // symbolic links which is almost 10x slower than not following them (due to very deep Bazel
       // build directories), and it's not necessary to follow the symlinks.
-      return Files.walk(File(repoPath).toPath()).asSequence().map(Path::toFile).filter { file ->
-        val isProhibited = checkIfProhibitedFile(retrieveRelativeFilePath(file, repoPath))
-        !isProhibited &&
+      val repoRoot = File(repoPath).absoluteFile.normalize()
+      return Files.walk(repoRoot.toPath()).asSequence().map(Path::toFile).map { file ->
+        file.absoluteFile.normalize()
+      }.filter { file ->
+        !checkIfProhibitedFile(repoRoot, file) &&
           file.isFile &&
           file.name.endsWith(expectedExtension) &&
-          retrieveRelativeFilePath(file, repoPath) !in exemptionsList
+          file.toRelativeString(repoRoot) !in exemptionsList
       }.toList()
     }
 
-    /**
-     * Checks if a file/directory is prohibited to be analyzed for the check.
-     *
-     * @param pathString the path of the repo
-     * @return whether the specified path should be analyzed per allow rules
-     */
-    private fun checkIfProhibitedFile(pathString: String): Boolean {
-      return alwaysExcludeDirectoryList.any {
-        if (it.endsWith("/")) {
-          pathString.startsWith("$it")
-        } else {
-          pathString.startsWith("$it/")
-        }
+    private fun checkIfProhibitedFile(repoRoot: File, consideredFile: File): Boolean {
+      return alwaysExcludeDirectoryList.any { dirPath ->
+        consideredFile.hasBase(File(repoRoot, dirPath))
       }
     }
 
@@ -82,5 +74,8 @@ class RepositoryFile() {
     fun retrieveRelativeFilePath(file: File, repoPath: String): String {
       return file.toString().removePrefix(repoPath)
     }
+
+    private fun File.hasBase(possibleBase: File): Boolean =
+      relativeToOrNull(possibleBase)?.path?.let { ".." !in it } ?: false
   }
 }
