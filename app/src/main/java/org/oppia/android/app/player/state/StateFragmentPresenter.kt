@@ -189,7 +189,6 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    maybeShowSurveyDialog(profileId, topicId)
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -432,7 +431,7 @@ class StateFragmentPresenter @Inject constructor(
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
       fragment.view!!.windowToken,
-      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
+      @Suppress("DEPRECATION") // TODO(#5406): Use the correct constant value here.
       InputMethodManager.SHOW_FORCED
     )
   }
@@ -456,13 +455,17 @@ class StateFragmentPresenter @Inject constructor(
   fun getExplorationCheckpointState() = explorationCheckpointState
 
   private fun markExplorationCompleted() {
-    storyProgressController.recordCompletedChapter(
+    val markStoryCompletedLivedata = storyProgressController.recordCompletedChapter(
       profileId,
       topicId,
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
-    )
+    ).toLiveData()
+
+    // Only check gating result when the previous operation has completed because gating depends on
+    // result of saving the time spent in the exploration, at the end of the exploration.
+    markStoryCompletedLivedata.observe(fragment, { maybeShowSurveyDialog(profileId, topicId) })
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
@@ -536,44 +539,43 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
-      .observe(
-        activity,
-        { gatingResult ->
-          when (gatingResult) {
-            is AsyncResult.Pending -> {
-              oppiaLogger.d("StateFragment", "A gating decision is pending")
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "StateFragment",
-                "Failed to retrieve gating decision",
-                gatingResult.error
-              )
+    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData().observe(
+      activity,
+      { gatingResult ->
+        when (gatingResult) {
+          is AsyncResult.Pending -> {
+            oppiaLogger.d("StateFragment", "A gating decision is pending")
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "StateFragment",
+              "Failed to retrieve gating decision",
+              gatingResult.error
+            )
+            (activity as StopStatePlayingSessionWithSavedProgressListener)
+              .deleteCurrentProgressAndStopSession(isCompletion = true)
+          }
+          is AsyncResult.Success -> {
+            if (gatingResult.value) {
+              val dialogFragment =
+                SurveyWelcomeDialogFragment.newInstance(
+                  profileId,
+                  topicId,
+                  explorationId,
+                  SURVEY_QUESTIONS
+                )
+              val transaction = activity.supportFragmentManager.beginTransaction()
+              transaction
+                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                .commitNow()
+            } else {
               (activity as StopStatePlayingSessionWithSavedProgressListener)
                 .deleteCurrentProgressAndStopSession(isCompletion = true)
             }
-            is AsyncResult.Success -> {
-              if (gatingResult.value) {
-                val dialogFragment =
-                  SurveyWelcomeDialogFragment.newInstance(
-                    profileId,
-                    topicId,
-                    explorationId,
-                    SURVEY_QUESTIONS
-                  )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
-                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .commitNow()
-              } else {
-                (activity as StopStatePlayingSessionWithSavedProgressListener)
-                  .deleteCurrentProgressAndStopSession(isCompletion = true)
-              }
-            }
           }
         }
-      )
+      }
+    )
   }
 
   /**

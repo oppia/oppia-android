@@ -192,40 +192,33 @@ class MavenDependenciesRetriever(
     finalDependenciesList: List<MavenListDependency>
   ): Deferred<MavenDependencyList> {
     return CoroutineScope(scriptBgDispatcher).async {
-      val pomCandidates = finalDependenciesList.map { MavenListDependencyPomCandidate(it) }
+      val candidates = finalDependenciesList.map { MavenListDependencyPomCandidate(it) }
+      val undoneCandidates = candidates.filterTo(mutableSetOf()) { it.latestPomFileText == null }
       var attemptCount = 0
-      var pomCandidatesToUpdate = pomCandidates.filter {
-        it.latestPomFileText == null && it.downloadTryCount < 10
-      }
-      while (pomCandidatesToUpdate.isNotEmpty()) {
+      while (undoneCandidates.isNotEmpty() && attemptCount < 10) {
         println(
           "Attempt ${++attemptCount} to download POM files for" +
-            " ${pomCandidatesToUpdate.size}/${pomCandidates.size} Maven artifacts..."
+            " ${undoneCandidates.size}/${candidates.size} Maven artifacts..."
         )
-        pomCandidatesToUpdate.map { pomCandidate ->
+        undoneCandidates -= undoneCandidates.map { pomCandidate ->
           CoroutineScope(scriptBgDispatcher).async {
             // Run blocking I/O operations on the I/O thread pool.
             withContext(Dispatchers.IO) {
-              mavenArtifactPropertyFetcher.scrapeText(pomCandidate.pomFileUrl)
+              pomCandidate to mavenArtifactPropertyFetcher.scrapeText(pomCandidate.pomFileUrl)
             }
           }
-        }.awaitAll().forEachIndexed { index, pomFileText ->
-          val pomCandidate = pomCandidatesToUpdate[index]
-          pomCandidate.latestPomFileText = pomFileText
-          pomCandidate.downloadTryCount++
-        }
-        pomCandidatesToUpdate = pomCandidates.filter {
-          it.latestPomFileText == null && it.downloadTryCount < 10
+        }.awaitAll().mapNotNullTo(mutableSetOf()) { (pomCandidate, pomFileText) ->
+          // Map back to the original failing candidate, and try to update its text.
+          pomCandidate.takeIf { pomFileText != null }?.also { it.latestPomFileText = pomFileText }
         }
       }
-      val failedToDownload = pomCandidates.filter { it.latestPomFileText == null }
-      check(failedToDownload.isEmpty()) {
-        "Failed to download ${failedToDownload.size}/${pomCandidates.size} POM files:" +
-          " $failedToDownload."
+      check(undoneCandidates.isEmpty()) {
+        "Failed to download ${undoneCandidates.size}/${candidates.size} POM files:" +
+          " $undoneCandidates."
       }
       return@async MavenDependencyList.newBuilder().apply {
         this.addAllMavenDependency(
-          pomCandidates.map { pomCandidate ->
+          candidates.map { pomCandidate ->
             MavenDependency.newBuilder().apply {
               this.artifactName = pomCandidate.dep.coord.reducedCoordinateString
               this.artifactVersion = pomCandidate.dep.coord.version
@@ -483,8 +476,7 @@ class MavenDependenciesRetriever(
 
   private data class MavenListDependencyPomCandidate(
     val dep: MavenListDependency,
-    var latestPomFileText: String? = null,
-    var downloadTryCount: Int = 0
+    var latestPomFileText: String? = null
   ) {
     private val repoBaseUrl: String
       get() = dep.repoUrls.firstOrNull() ?: error("No repo URL found for artifact: $dep.")

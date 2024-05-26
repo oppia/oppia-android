@@ -222,6 +222,8 @@ class RegexPatternValidationCheckTest {
   private val referenceComputeIfAbsent =
     "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic" +
       " Kotlin-specific solution, instead."
+  private val cdataShouldNotBeUsed =
+    "CDATA isn't handled by Translatewiki correctly. Use escaped HTML, instead."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -2747,6 +2749,28 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $referenceComputeIfAbsent
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_includesCdataContentInStringsXml_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      <string name="test"><![CDATA[<p>Some nested HTML.</p>]]></string>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $cdataShouldNotBeUsed
         $wikiReferenceNote
         """.trimIndent()
       )

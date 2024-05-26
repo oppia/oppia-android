@@ -12,10 +12,6 @@
       type="org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel" />
 
     <variable
-      name="mathExpressionInteractionsViewModel"
-      type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
-
-    <variable
       name="getPendingAnswerErrorOnSubmitClick"
       type="java.lang.Runnable" />
   </data>
@@ -64,18 +60,6 @@
         android:textColor="@color/component_color_shared_input_error_color"
         android:textSize="12sp"
         android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
-
-      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
-        android:id="@+id/test_math_expression_input_interaction_view"
-        style="@style/InputInteractionEditText"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:text="@={mathExpressionInteractionsViewModel.answerText}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
-        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}" />
 
       <Button
         android:id="@+id/submit_button"

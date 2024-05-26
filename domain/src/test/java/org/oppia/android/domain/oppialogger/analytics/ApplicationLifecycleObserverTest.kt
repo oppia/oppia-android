@@ -10,13 +10,22 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
@@ -38,6 +47,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -47,6 +57,9 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -61,6 +74,15 @@ private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleObserverTest.TestApplication::class)
 class ApplicationLifecycleObserverTest {
+  private companion object {
+    private const val TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS = 10000L
+    private const val testUrl = "/"
+    private const val testApiKey = "api_key"
+    private const val testApiKeyValue = "api_key_value"
+    private const val testResponseBody = "{\"test\": \"test\"}"
+    private const val headerString = "$testApiKey: $testApiKeyValue"
+  }
+
   @Inject
   lateinit var loggingIdentifierController: LoggingIdentifierController
 
@@ -88,6 +110,12 @@ class ApplicationLifecycleObserverTest {
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
+  @Inject
+  lateinit var fakeConsoleLogger: ConsoleLogger
+
+  @Inject
+  lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
 
@@ -107,6 +135,12 @@ class ApplicationLifecycleObserverTest {
     ActivityScenarioRule<TextInputActionTestActivity>(
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
+
+  private lateinit var retrofit: Retrofit
+  private lateinit var mockWebServer: MockWebServer
+  private lateinit var client: OkHttpClient
+  private lateinit var mockWebServerUrl: HttpUrl
+  private lateinit var request: Request
 
   @After
   fun tearDown() {
@@ -201,7 +235,8 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLog = getOneOfLastTwoEventsLogged(ActivityContextCase.APP_IN_BACKGROUND_CONTEXT)
+
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -369,6 +404,111 @@ class ApplicationLifecycleObserverTest {
     assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
   }
 
+  @Test
+  fun testObserver_onAppInForeground_thenInBackground_logsAppInForegroundTime() {
+    setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+
+    applicationLifecycleObserver.onCreate()
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    val installationIdProvider = loggingIdentifierController.getInstallationId()
+    val installationId = monitorFactory.waitForNextSuccessfulResult(installationIdProvider)
+
+    testCoroutineDispatchers.advanceTimeBy(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
+    applicationLifecycleObserver.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = getOneOfLastTwoEventsLogged(APP_IN_FOREGROUND_TIME)
+    val eventLogContext = eventLog.context
+
+    assertThat(eventLogContext.activityContextCase)
+      .isEqualTo(APP_IN_FOREGROUND_TIME)
+    assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong())
+      .isEqualTo(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
+    assertThat(eventLogContext.appInForegroundTime.appSessionId).isEqualTo(sessionId)
+    assertThat(eventLogContext.appInForegroundTime.installationId).isEqualTo(installationId)
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_onConsoleError_logsConsoleErrors() {
+    setUpTestApplicationComponent()
+
+    applicationLifecycleObserver.onCreate()
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    val testTag = "TestObserver"
+    val testMessage = "Test error message"
+
+    fakeConsoleLogger.e(testTag, testMessage)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLogContext = eventLog.context
+
+    assertThat(eventLogContext.activityContextCase).isEqualTo(ActivityContextCase.CONSOLE_LOG)
+    assertThat(eventLogContext.consoleLog.fullErrorLog).isEqualTo(testMessage)
+    assertThat(eventLogContext.consoleLog.logLevel).isEqualTo(LogLevel.ERROR.toString())
+    assertThat(eventLogContext.consoleLog.logTag).isEqualTo(testTag)
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_onNetworkCall_logsNetworkCalls() {
+    setUpTestApplicationComponent()
+    setUpRetrofitApiCall()
+
+    applicationLifecycleObserver.onCreate()
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
+    client.newCall(request).execute()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val eventLogContext = eventLog.context
+    val retrofitCallContext = eventLogContext.retrofitCallContext
+
+    assertThat(eventLogContext.activityContextCase)
+      .isEqualTo(ActivityContextCase.RETROFIT_CALL_CONTEXT)
+    assertThat(retrofitCallContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
+    assertThat(retrofitCallContext.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
+    assertThat(retrofitCallContext.headers).contains(headerString)
+    assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_onNetworkCall_logsFailedNetworkCalls() {
+    setUpTestApplicationComponent()
+    setUpRetrofitApiCall()
+
+    applicationLifecycleObserver.onCreate()
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
+    val mockResponse = MockResponse()
+      .setResponseCode(pageNotFound)
+      .setBody(testResponseBody)
+
+    mockWebServer.enqueue(mockResponse)
+    client.newCall(request).execute()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = getOneOfLastTwoEventsLogged(ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT)
+    val eventLogContext = eventLog.context
+    val retrofitCallFailedContext = eventLogContext.retrofitCallFailedContext
+
+    assertThat(eventLogContext.activityContextCase)
+      .isEqualTo(ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT)
+    assertThat(retrofitCallFailedContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
+    assertThat(retrofitCallFailedContext.responseStatusCode).isEqualTo(pageNotFound)
+  }
+
   private fun waitInBackgroundFor(millis: Long) {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
@@ -409,6 +549,37 @@ class ApplicationLifecycleObserverTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
+  }
+
+  private fun setUpRetrofitApiCall() {
+    mockWebServer = MockWebServer()
+    client = OkHttpClient.Builder()
+      .addInterceptor(networkLoggingInterceptor)
+      .build()
+
+    mockWebServerUrl = mockWebServer.url(testUrl)
+
+    request = Request.Builder()
+      .url(mockWebServerUrl)
+      .addHeader(testApiKey, testApiKeyValue)
+      .build()
+
+    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
+    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
+    // request mocking in different ways and we want to verify the full request is executed here.
+    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
+    retrofit = Retrofit.Builder()
+      .baseUrl(mockWebServerUrl)
+      .addConverterFactory(MoshiConverterFactory.create())
+      .client(client)
+      .build()
+  }
+
+  private fun getOneOfLastTwoEventsLogged(
+    wantedContext: ActivityContextCase
+  ): EventLog {
+    val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    return if (events[0].context.activityContextCase == wantedContext) events[0] else events[1]
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -604,6 +604,82 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "com.crashlytics.sdk.android:answers:1.4.6"
+  artifact_version: "1.4.6"
+  license {
+    license_name: "Crashlytics Terms of Service"
+    original_link: "https://answers.io/terms"
+    direct_link_only {
+      url: "https://firebase.google.com/terms/crashlytics"
+    }
+    is_original_link_invalid: true
+  }
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+    scrapable_link {
+      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/52e1cf89efd795d798ae5485b8503e04e4a936b8/LICENSE"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.crashlytics.sdk.android:beta:1.2.10"
+  artifact_version: "1.2.10"
+  license {
+    license_name: "Crashlytics Terms of Service"
+    original_link: "https://try.crashlytics.com/terms/terms-of-service.pdf"
+    direct_link_only {
+      url: "https://firebase.google.com/terms/crashlytics"
+    }
+    is_original_link_invalid: true
+  }
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+    scrapable_link {
+      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/52e1cf89efd795d798ae5485b8503e04e4a936b8/LICENSE"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.crashlytics.sdk.android:crashlytics-core:2.6.7"
+  artifact_version: "2.6.7"
+  license {
+    license_name: "Crashlytics Terms of Service"
+    original_link: "https://try.crashlytics.com/terms/terms-of-service.pdf"
+    direct_link_only {
+      url: "https://firebase.google.com/terms/crashlytics"
+    }
+    is_original_link_invalid: true
+  }
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+    scrapable_link {
+      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/52e1cf89efd795d798ae5485b8503e04e4a936b8/LICENSE"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.crashlytics.sdk.android:crashlytics:2.9.8"
+  artifact_version: "2.9.8"
+  license {
+    license_name: "Crashlytics Terms of Service"
+    original_link: "https://try.crashlytics.com/terms/terms-of-service.pdf"
+    direct_link_only {
+      url: "https://firebase.google.com/terms/crashlytics"
+    }
+    is_original_link_invalid: true
+  }
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+    scrapable_link {
+      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/52e1cf89efd795d798ae5485b8503e04e4a936b8/LICENSE"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "com.github.bumptech.glide:annotations:4.11.0"
   artifact_version: "4.11.0"
   license {
@@ -1339,17 +1415,6 @@ maven_dependency {
 maven_dependency {
   artifact_name: "com.squareup:kotlinpoet:1.10.2"
   artifact_version: "1.10.2"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "de.hdodenhof:circleimageview:3.0.1"
-  artifact_version: "3.0.1"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"

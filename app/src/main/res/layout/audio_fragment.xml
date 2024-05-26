@@ -56,14 +56,14 @@
         android:layout_height="52dp"
         android:layout_marginStart="8dp"
         android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
-        android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
+        android:contentDescription="@{viewModel.playStatusLiveData.equals(UiAudioPlayStatus.PLAYING) ? @string/audio_pause_description : @string/audio_play_description}"
         android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
         android:visibility="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING ? View.VISIBLE : View.INVISIBLE}"
         android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
+        app:srcCompat="@{viewModel.playStatusLiveData.equals(UiAudioPlayStatus.PLAYING) ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
         app:tint="@color/component_color_shared_icon_white_color" />
 
       <SeekBar

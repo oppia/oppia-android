@@ -8,14 +8,13 @@
     <import type="android.view.View" />
 
     <variable
-      name="textInputViewModel"
-      type="org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel" />
+      name="mathExpressionInteractionsViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
 
     <variable
       name="getPendingAnswerErrorOnSubmitClick"
       type="java.lang.Runnable" />
   </data>
-
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -26,33 +25,22 @@
       android:focusableInTouchMode="true"
       android:gravity="center"
       android:orientation="vertical"
-      tools:context=".testing.TextInputInteractionViewTestActivity">
+      tools:context=".app.testing.MathExpressionInteractionsViewTestActivity">
 
-      <org.oppia.android.app.customview.interaction.TextInputInteractionView
-        android:id="@+id/test_text_input_interaction_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@drawable/edit_text_background"
-        android:fontFamily="sans-serif"
-        android:hint="@{textInputViewModel.hintText}"
-        android:imeOptions="actionDone"
-        android:longClickable="false"
-        android:maxLength="200"
+      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+        android:id="@+id/test_math_expression_input_interaction_view"
+        style="@style/InputInteractionEditText"
         android:minHeight="48dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:singleLine="true"
-        android:text="@={textInputViewModel.answerText}"
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
-        android:textSize="14sp"
-        android:textStyle="italic"
-        app:textChangedListener="@{textInputViewModel.answerTextWatcher}" />
+        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
+        android:inputType="text"
+        android:text="@={mathExpressionInteractionsViewModel.answerText}"
+        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
       <TextView
-        android:id="@+id/text_input_error"
+        android:id="@+id/math_expression_input_error"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,10 +48,10 @@
         android:layout_marginEnd="8dp"
         android:fontFamily="sans-serif"
         android:minHeight="32dp"
-        android:text="@{textInputViewModel.errorMessage}"
+        android:text="@{mathExpressionInteractionsViewModel.errorMessage}"
         android:textColor="@color/component_color_shared_input_error_color"
         android:textSize="12sp"
-        android:visibility="@{textInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+        android:visibility="@{mathExpressionInteractionsViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
       <Button
         android:id="@+id/submit_button"
@@ -71,9 +59,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:onClick="@{(v) -> getPendingAnswerErrorOnSubmitClick.run()}"
         android:text="@string/submit_button_text"
+        android:onClick="@{(v) -> getPendingAnswerErrorOnSubmitClick.run()}"
         android:textColor="@color/component_color_shared_secondary_4_text_color" />
+
     </LinearLayout>
   </ScrollView>
 </layout>

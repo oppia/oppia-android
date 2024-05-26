@@ -89,7 +89,7 @@ class OptionsActivity :
     selectedFragment = if (savedInstanceState == null) {
       READING_TEXT_SIZE_FRAGMENT
     } else {
-      @Suppress("DEPRECATION") // TODO: Fix this properly or file a bug.
+      @Suppress("DEPRECATION") // TODO(#5405): Ensure the correct type is being retrieved.
       savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
     }
     val extraOptionsTitle =
