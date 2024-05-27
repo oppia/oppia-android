@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package org.oppia.android.scripts.gae.proto;
+
+import "org/oppia/proto/v1/structure/languages.proto";
+import "org/oppia/proto/v1/structure/objects.proto";
+
+option java_package = "org.oppia.android.scripts.gae.proto";
+option java_multiple_files = true;
+
+message CustomizationArgValue {
+  oneof value_type {
+    int32 integer = 1;
+    bool boolean = 2;
+    org.oppia.proto.v1.structure.SubtitledTextDto subtitled_text_dto = 3;
+    StringList string_list = 4;
+    SubtitledTextList subtitled_text_list = 5;
+    org.oppia.proto.v1.structure.ImageWithRegionsDto image_with_regions_dto = 6;
+  }
+}
+
+message StringList {
+  repeated string string = 1;
+}
+
+message SubtitledTextList {
+  repeated org.oppia.proto.v1.structure.SubtitledTextDto subtitled_html = 1;
+}

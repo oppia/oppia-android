@@ -1,0 +1,83 @@
+"""
+Library for providing the JSON model definitions & endpoint details for Oppia web's Google App
+Engine Android-specific endpoints, particularly for lesson downloads.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+# TODO: Split this up.
+kt_jvm_library(
+    name = "model",
+    testonly = True,
+    srcs = [
+        "AndroidActivityRequests.kt",
+        "GaeAnswerGroup.kt",
+        "GaeClassroom.kt",
+        "GaeCustomizationArgValue.kt",
+        "GaeEntityTranslations.kt",
+        "GaeExploration.kt",
+        "GaeHint.kt",
+        "GaeInteractionCustomizationArgsMap.kt",
+        "GaeInteractionInstance.kt",
+        "GaeInteractionObject.kt",
+        "GaeMisconception.kt",
+        "GaeOutcome.kt",
+        "GaeParamChange.kt",
+        "GaeParamCustomizationArgs.kt",
+        "GaeParamSpec.kt",
+        "GaeRecordedVoiceovers.kt",
+        "GaeRubric.kt",
+        "GaeRuleSpec.kt",
+        "GaeSkill.kt",
+        "GaeSkillContents.kt",
+        "GaeSolution.kt",
+        "GaeState.kt",
+        "GaeStory.kt",
+        "GaeStoryContents.kt",
+        "GaeStoryNode.kt",
+        "GaeStoryReference.kt",
+        "GaeSubtitledHtml.kt",
+        "GaeSubtitledUnicode.kt",
+        "GaeSubtopic.kt",
+        "GaeSubtopicPage.kt",
+        "GaeSubtopicPageContents.kt",
+        "GaeTopic.kt",
+        "GaeTranslatableContentFormat.kt",
+        "GaeTranslatedContent.kt",
+        "GaeVoiceover.kt",
+        "GaeWorkedExample.kt",
+        "GaeWrittenTranslation.kt",
+        "GaeWrittenTranslations.kt",
+        "JsonReaderExtensions.kt",
+        "MoshiFactory.kt",
+        "SubtitledText.kt",
+        "TypeResolutionContext.kt",
+        "VersionedStructure.kt",
+    ],
+    visibility = [
+        "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:extra_exploration_definitions_java_proto",
+        "//third_party:moshi",
+        "//third_party:oppia_proto_api_java_protos",
+    ],
+)
+
+kt_jvm_library(
+    name = "api",
+    testonly = True,
+    srcs = [
+        "AndroidActivityEndpointApi.kt",
+        "AndroidActivityHandlerService.kt",
+    ],
+    visibility = [
+        "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
+    ],
+    deps = [
+        ":model",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
