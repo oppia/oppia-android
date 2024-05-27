@@ -6,6 +6,8 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ClassroomList
+import org.oppia.android.app.model.ClassroomRecord
+import org.oppia.android.app.model.ClassroomRecord.TopicIdList
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.LessonThumbnail
@@ -40,8 +42,6 @@ import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ClassroomRecord
-import org.oppia.android.app.model.ClassroomRecord.TopicIdList
 
 private const val ONE_WEEK_IN_DAYS = 7
 
@@ -827,11 +827,13 @@ class TopicListController @Inject constructor(
     }
     return ClassroomRecord.newBuilder().apply {
       this.id = checkNotNull(classroom.optString("id")) { "Expected classroom to have ID." }
-      this.putAllTopicPrerequisites(topicPrereqs.mapValues { (_, topicIds) ->
-        TopicIdList.newBuilder().apply {
-          addAllTopicIds(topicIds)
-        }.build()
-      })
+      this.putAllTopicPrerequisites(
+        topicPrereqs.mapValues { (_, topicIds) ->
+          TopicIdList.newBuilder().apply {
+            addAllTopicIds(topicIds)
+          }.build()
+        }
+      )
     }.build()
   }
 

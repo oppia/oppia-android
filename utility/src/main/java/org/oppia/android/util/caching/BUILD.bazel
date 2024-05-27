@@ -19,7 +19,6 @@ kt_android_library(
 kt_android_library(
     name = "annotations",
     srcs = [
-        "CacheAssetsLocally.kt",
         "LoadImagesFromAssets.kt",
         "LoadLessonProtosFromAssets.kt",
     ],
@@ -55,7 +54,6 @@ kt_android_library(
         ":annotations",
         ":asset_repository",
         ":dagger",
-        ":topic_list_to_cache",
     ],
 )
 
@@ -68,17 +66,6 @@ kt_android_library(
     deps = [
         ":dagger",
         ":impl",
-    ],
-)
-
-kt_android_library(
-    name = "topic_list_to_cache",
-    srcs = [
-        "TopicListToCache.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
     ],
 )
 
