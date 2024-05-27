@@ -1,7 +1,6 @@
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-
-# TODO: The dependencies in this module are a bit broken with compat/. Needs refactor.
 
 proto_library(
     name = "extra_exploration_definitions_proto",
@@ -13,4 +12,63 @@ java_proto_library(
     name = "extra_exploration_definitions_java_proto",
     visibility = ["//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__"],
     deps = [":extra_exploration_definitions_proto"],
+)
+
+kt_jvm_library(
+    name = "json_to_proto_converter",
+    testonly = True,
+    srcs = [
+        "JsonToProtoConverter.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":extra_exploration_definitions_java_proto",
+        ":localization_tracker",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_library(
+    name = "localization_tracker",
+    testonly = True,
+    srcs = [
+        "LocalizationTracker.kt",
+        "OppiaWebTranslationExtractor.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":image_downloader",
+        ":proto_version_provider",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//third_party:moshi",
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_library(
+    name = "image_downloader",
+    testonly = True,
+    srcs = [
+        "ImageDownloader.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae/gcs:api",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_library(
+    name = "proto_version_provider",
+    testonly = True,
+    srcs = [
+        "ProtoVersionProvider.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:oppia_proto_api_java_protos",
+    ],
 )

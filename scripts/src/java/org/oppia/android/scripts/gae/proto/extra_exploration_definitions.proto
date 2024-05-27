@@ -4,9 +4,91 @@ package org.oppia.android.scripts.gae.proto;
 
 import "org/oppia/proto/v1/structure/languages.proto";
 import "org/oppia/proto/v1/structure/objects.proto";
+import "org/oppia/proto/v1/structure/state.proto";
 
 option java_package = "org.oppia.android.scripts.gae.proto";
 option java_multiple_files = true;
+
+// Convenience collection object for all potential types of answer groups.
+message AnswerGroup {
+  oneof interaction_type {
+    org.oppia.proto.v1.structure.FractionInputInstanceDto.AnswerGroupDto fraction_input_instance_answer_group = 1;
+    org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.AnswerGroupDto item_selection_input_instance_answer_group = 2;
+    org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.AnswerGroupDto multiple_choice_input_instance_answer_group = 3;
+    org.oppia.proto.v1.structure.NumericInputInstanceDto.AnswerGroupDto numeric_input_instance_answer_group = 4;
+    org.oppia.proto.v1.structure.TextInputInstanceDto.AnswerGroupDto text_input_instance_answer_group = 5;
+    org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.AnswerGroupDto drag_and_drop_sort_input_instance_answer_group = 6;
+    org.oppia.proto.v1.structure.ImageClickInputInstanceDto.AnswerGroupDto image_click_input_instance_answer_group = 7;
+    org.oppia.proto.v1.structure.RatioExpressionInputInstanceDto.AnswerGroupDto ratio_expression_input_instance_answer_group = 8;
+    org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.AnswerGroupDto numeric_expression_input_instance_answer_group = 9;
+    org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.AnswerGroupDto algebraic_expression_input_instance_answer_group = 10;
+    org.oppia.proto.v1.structure.MathEquationInputInstanceDto.AnswerGroupDto math_equation_input_instance_answer_group = 11;
+  }
+}
+
+// Convenience collection object for all potential types of rule specs.
+message RuleSpec {
+  oneof interaction_type {
+    org.oppia.proto.v1.structure.FractionInputInstanceDto.RuleSpecDto fraction_input_instance_rule_spec = 1;
+    org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto item_selection_input_instance_rule_spec = 2;
+    org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.RuleSpecDto multiple_choice_input_instance_rule_spec = 3;
+    org.oppia.proto.v1.structure.NumericInputInstanceDto.RuleSpecDto numeric_input_instance_rule_spec = 4;
+    org.oppia.proto.v1.structure.TextInputInstanceDto.RuleSpecDto text_input_instance_rule_spec = 5;
+    org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto drag_and_drop_sort_input_instance_rule_spec = 6;
+    org.oppia.proto.v1.structure.ImageClickInputInstanceDto.RuleSpecDto image_click_input_instance_rule_spec = 7;
+    org.oppia.proto.v1.structure.RatioExpressionInputInstanceDto.RuleSpecDto ratio_expression_input_instance_rule_spec = 8;
+    org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto numeric_expression_input_instance_rule_spec = 9;
+    org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.RuleSpecDto algebraic_expression_input_instance_rule_spec = 10;
+    org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto math_equation_input_instance_rule_spec = 11;
+  }
+}
+
+// Convenience collection object for all potential types of solutions.
+message Solution {
+  // The different type of interactions existed in an exploration.
+  oneof interaction_type {
+    org.oppia.proto.v1.structure.FractionInputInstanceDto.SolutionDto fraction_instance_solution = 1;
+    org.oppia.proto.v1.structure.NumericInputInstanceDto.SolutionDto numeric_input_instance_solution = 2;
+    org.oppia.proto.v1.structure.TextInputInstanceDto.SolutionDto text_input_instance_solution = 3;
+    org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.SolutionDto drag_and_drop_sort_input_instance_solution = 4;
+    org.oppia.proto.v1.structure.RatioExpressionInputInstanceDto.SolutionDto ratio_expression_input_instance_solution = 5;
+    org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.SolutionDto numeric_expression_input_instance_solution = 6;
+    org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.SolutionDto algebraic_expression_input_instance_solution = 7;
+    org.oppia.proto.v1.structure.MathEquationInputInstanceDto.SolutionDto math_equation_input_instance_solution = 8;
+  }
+}
+
+// Convenience object that supports all potential answer types that can be provided by a solution.
+message SolutionAnswer {
+  oneof answer_type {
+    org.oppia.proto.v1.structure.FractionDto fraction = 1;
+    org.oppia.proto.v1.structure.SetOfTranslatableHtmlContentIdsDto set_of_translatable_html_content_ids = 2;
+    uint32 non_negative_int = 3;
+    double real = 4;
+    string normalized_string = 5;
+    org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto list_of_sets_of_translatable_html_content_ids = 6;
+    org.oppia.proto.v1.structure.RatioExpressionDto ratio_expression = 7;
+    string math_expression = 8;
+  }
+}
+
+// TODO: Remove this? Ditto for other protos not actually needed.
+// Convenience object that supports all potential inputs for rules.
+message RuleInputType {
+  oneof input_type {
+    int32 int = 1;
+    uint32 non_negative_int = 2;
+    double real = 3;
+    string normalized_string = 4;
+    org.oppia.proto.v1.structure.FractionDto fraction = 5;
+    org.oppia.proto.v1.structure.SetOfTranslatableHtmlContentIdsDto set_of_translatable_html_content_ids = 6;
+    org.oppia.proto.v1.structure.TranslatableSetOfNormalizedStringDto translatable_set_of_normalized_string = 7;
+    org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto list_of_sets_of_translatable_html_content_ids = 8;
+    org.oppia.proto.v1.structure.TranslatableHtmlContentIdDto translatable_html_content_id = 9;
+    org.oppia.proto.v1.structure.RatioExpressionDto ratio_expression = 10;
+    string math_expression = 11;
+  }
+}
 
 message CustomizationArgValue {
   oneof value_type {
