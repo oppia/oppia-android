@@ -35,37 +35,29 @@ load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPEND
 
 # A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
 # library still routes through //third_party).
-android_library(
+alias(
     name = "com_caverock_androidsvg",
+    actual = "@androidsvg//androidsvg",
     visibility = ["//visibility:public"],
-    exports = [
-        "@androidsvg//androidsvg",
-    ],
 )
 
-android_library(
+alias(
     name = "com_github_takusemba_spotlight",
+    actual = "@android-spotlight//spotlight",
     visibility = ["//visibility:public"],
-    exports = [
-        "@android-spotlight//spotlight",
-    ],
 )
 
-android_library(
+alias(
     name = "robolectric_android-all",
     testonly = True,
+    actual = "@robolectric//bazel:android-all",
     visibility = ["//visibility:public"],
-    exports = [
-        "@robolectric//bazel:android-all",
-    ],
 )
 
-android_library(
+alias(
     name = "com_google_archivepatcher",
+    actual = "@archive_patcher//tools",
     visibility = ["//visibility:public"],
-    exports = [
-        "@archive_patcher//tools",
-    ],
 )
 
 java_library(
@@ -77,12 +69,10 @@ java_library(
     ],
 )
 
-android_library(
+alias(
     name = "io_github_karino2_kotlitex",
+    actual = "@kotlitex//kotlitex",
     visibility = ["//visibility:public"],
-    exports = [
-        "@kotlitex//kotlitex",
-    ],
 )
 
 # Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
@@ -122,10 +112,10 @@ java_library(
     visibility = ["//visibility:public"],
 )
 
-android_library(
+alias(
     name = "android_bundletool",
+    actual = "@android_bundletool//jar",
     visibility = ["//visibility:public"],
-    exports = ["@android_bundletool//jar"],
 )
 
 java_binary(
