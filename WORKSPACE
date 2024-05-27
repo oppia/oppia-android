@@ -16,6 +16,22 @@ android_sdk_repository(
     build_tools_version = BUILD_TOOLS_VERSION,
 )
 
+# Oppia's backend proto API definitions.
+git_repository(
+    name = "oppia_proto_api",
+    commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
+    remote = "https://github.com/oppia/oppia-proto-api",
+    shallow_since = "1716846301 -0700",
+)
+
+load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
+
+initializeDepsForWorkspace()
+
+load("@oppia_proto_api//repo:toolchains.bzl", "initializeToolchainsForWorkspace")
+
+initializeToolchainsForWorkspace()
+
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
 http_archive(
     name = "rules_jvm_external",

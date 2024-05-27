@@ -59,7 +59,6 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -219,7 +218,7 @@ class DateTimeUtilTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
-      GlideImageLoaderModule::class, PrimeTopicAssetsControllerModule::class,
+      GlideImageLoaderModule::class,
       HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
       LocaleProdModule::class, ActivityRecreatorTestModule::class,

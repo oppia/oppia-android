@@ -9,15 +9,8 @@ kt_android_library(
     name = "network",
     testonly = True,
     srcs = [
-        "MockClassroomService.kt",
-        "MockConceptCardService.kt",
-        "MockExplorationService.kt",
         "MockFeedbackReportingService.kt",
         "MockPlatformParameterService.kt",
-        "MockQuestionPlayerService.kt",
-        "MockStoryService.kt",
-        "MockSubtopicService.kt",
-        "MockTopicService.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
