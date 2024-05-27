@@ -95,6 +95,21 @@ alias(
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
+# Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
+# Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
+android_library(
+    name = "com_google_guava_guava",
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_android//jar",
+    ],
+)
+
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
 # can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
 # Android assets which java_library targets do not export.

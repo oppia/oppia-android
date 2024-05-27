@@ -2,7 +2,6 @@
 Tests for broad logging functionality test utilities.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.logging.TestSyncStatusManagerTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
@@ -39,7 +38,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.logging.SyncStatusTestModuleTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
@@ -58,5 +57,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()
