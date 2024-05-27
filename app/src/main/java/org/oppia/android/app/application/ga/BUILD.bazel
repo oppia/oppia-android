@@ -2,7 +2,6 @@
 This package contains the root application definitions for general availability builds of the app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -17,7 +16,7 @@ kt_android_library(
         "//app/src/test/java/org/oppia/android/app/application/ga:__pkg__",
     ],
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app/src/main/java/org/oppia/android/app/application:abstract_application",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
@@ -28,5 +27,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
     ],
 )
-
-dagger_rules()
