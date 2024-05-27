@@ -43,7 +43,7 @@ import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertTo
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToSubtopicRecord
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicIdList
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicRecord
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageContainerType
@@ -584,7 +584,7 @@ class LessonDownloader(
       val packs = explorationPacks.getValue(exp.id)
       writeProtosAsync(protoV1Dir, exp.id, exp.convertToExploration(imageReplacements, packs))
     } + writeProtosAsync(
-      protoV1Dir, baseName = "topics", topicSummaries.values.convertToTopicIdList()
+      protoV1Dir, baseName = "classrooms", topicSummaries.values.convertToClassroomList()
     )
 
     // Wait for all proto writes to finish.

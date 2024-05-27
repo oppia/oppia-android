@@ -121,8 +121,7 @@ class ComputeAffectedTests(
     println("Current branch: ${gitClient.currentBranch}.")
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
-    // TODO: Switch back to .lowercase().
-    val currentBranch = gitClient.currentBranch.toLowerCase(Locale.US)
+    val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
     val affectedTestTargets = if (computeAllTestsSetting || currentBranch == "develop") {
       computeAllTestTargets(bazelClient)
     } else computeAffectedTargetsForNonDevelopBranch(gitClient, bazelClient, rootDirectory)

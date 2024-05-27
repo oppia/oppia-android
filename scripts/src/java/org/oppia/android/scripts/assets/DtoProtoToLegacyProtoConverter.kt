@@ -30,7 +30,7 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.SubtopicRecord
-import org.oppia.android.app.model.TopicIdList
+import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
@@ -102,11 +102,13 @@ import org.oppia.proto.v1.structure.VoiceoverFileDto
 // TODO: For all "not used/unused" properties, remove them from the app's protos.
 
 object DtoProtoToLegacyProtoConverter {
-  fun Iterable<DownloadableTopicSummaryDto>.convertToTopicIdList(): TopicIdList {
-    val dtos = this
-    return TopicIdList.newBuilder().apply {
-      addAllTopicIds(dtos.map { it.id })
-    }.build()
+  fun Iterable<DownloadableTopicSummaryDto>.convertToClassroomList(): ClassroomList {
+    // TODO: Finish this.
+//    val dtos = this
+//    return TopicIdList.newBuilder().apply {
+//      addAllTopicIds(dtos.map { it.id })
+//    }.build()
+    return ClassroomList.getDefaultInstance()
   }
 
   fun DownloadableTopicSummaryDto.convertToTopicRecord(
