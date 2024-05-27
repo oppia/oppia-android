@@ -77,9 +77,9 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 2. If you encounter the following:
    ```
-   external/bazel_tools/src/tools/android/java/com/google/devtools/build/android/dexer/DexFileSplitter.java:21: error: package com.android.dex does not exist
-import com.android.dex.DexFormat;
-                      ^
+      external/bazel_tools/src/tools/android/java/com/google/devtools/build/android/dexer/DexFileSplitter.java:21: error: package com.android.dex does not exist
+   import com.android.dex.DexFormat;
+                         ^
    ```
 
    This means that you're still configured for using the custom Oppia Android tool repository for Bazel 4.x (which is no longer needed with Bazel 6.x+). You can fix this by updating your ~/.bazelrc file and either commenting out (e.g. by adding a ``#`` at the start of the line), or removing, the following line:
