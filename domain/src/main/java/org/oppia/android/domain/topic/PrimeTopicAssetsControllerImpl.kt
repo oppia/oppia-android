@@ -117,9 +117,9 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
 
     // Ensure all JSON files are available in memory for quick retrieval.
     val allFiles = mutableListOf<String>()
-    allFiles.add("topics.json")
+    allFiles.add("classrooms.json")
     val topicIdJsonArray = jsonAssetRetriever
-      .loadJsonFromAsset("topics.json")!!
+      .loadJsonFromAsset("classrooms.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
       allFiles.addAll(topicController.getJsonAssetFileNameList(topicIdJsonArray.optString(i)))
