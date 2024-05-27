@@ -20,6 +20,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
@@ -34,7 +35,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
 
 /** Tests for [RemoteAuthNetworkInterceptor]. */
 @RunWith(AndroidJUnit4::class)

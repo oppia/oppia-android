@@ -6,15 +6,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.network.ApiMockLoader
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
