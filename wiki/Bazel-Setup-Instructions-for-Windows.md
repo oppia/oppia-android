@@ -53,17 +53,17 @@ After that, follow each of the subsections below as needed to install prerequisi
 
 **Java**
 
-Bazel Setup requires both JDK 8 and JDK>=17 to complete the setup.
+Bazel Setup requires both JDK 11 and JDK>=17 to complete the setup.
 
 - JDK >= 17 is required for [Android Package Manager](#3-installing-the-android-sdk).
-- JDK 8 is required for the [Android build tools](#6-verifying-the-build), and we suggest installing OpenJDK.
+- JDK 11 is required for the [Android build tools](#6-verifying-the-build), and we suggest installing OpenJDK.
 
-(Note: Our recommendation is to install both JDK 8 and JDK 17 and always make sure to run sdkmanager commands with JDK 17 and build commands with JDK 8. `sudo update-alternatives --config java` is used to set the default Java version).
+(Note: Our recommendation is to install both JDK 11 and JDK 17 and always make sure to run sdkmanager commands with JDK 17 and build commands with JDK 11. `sudo update-alternatives --config java` is used to set the default Java version).
 
-**Install JDK 8**
+**Install JDK 11**
 
 ```sh
-sudo apt install openjdk-8-jdk-headless
+sudo apt install openjdk-11-jdk-headless
 ```
 
 **Install JDK 17**
@@ -74,9 +74,9 @@ sudo apt install openjdk-17-jdk
 
 #### For Fedora 25+
 
-- Install JDK 8 by running this command on the terminal:
+- Install JDK 11 by running this command on the terminal:
 ```
-sudo dnf install java-1.8.0-openjdk
+sudo dnf install java-11-openjdk
 ```
 
 - Install JDK 17 by running this command on the terminal:
@@ -178,17 +178,17 @@ Run each of the following commands in succession (you may need to accept license
 sdkmanager
 sdkmanager --install "platform-tools"
 sdkmanager --install "platforms;android-33"
-sdkmanager --install "build-tools;29.0.2"
+sdkmanager --install "build-tools;32.0.0"
 ```
 
 When the commands above are finished running, the Android SDK should now be installed in your subsystem & be accessible to Bazel.
 
 ### 4. Installing Bazel
 
-Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 4.0.0, so you'll likely need to run the following command:
+Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 6.5.0, so you'll likely need to run the following command:
 
 ```sh
-sudo apt install bazel-4.0.0
+sudo apt install bazel-6.5.0
 ```
 
 #### For Fedora 25+
@@ -215,8 +215,6 @@ Clone the [oppia-android](https://github.com/oppia/oppia-android) repository int
 git clone https://github.com/oppia/oppia-android.git
 ```
 
-From there, follow [these instructions](https://github.com/oppia/oppia-bazel-tools#readme) in order to prepare your environment to support Oppia Android builds.
-
 To configure your development environment and set up essential tools, execute the following setup script from the oppia-android directory.
 
 ```sh
@@ -227,17 +225,17 @@ scripts/setup.sh
 
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this & all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
-To build, it is necessary to configure JDK 8 as the default. To accomplish this, follow these steps:
+To build, it is necessary to configure JDK 11 as the default. To accomplish this, follow these steps:
 
-**Set Default version to JDK 8**
+**Set Default version to JDK 11**
 
-Prior to executing the build commands, make sure to set the default Java version to jdk-8 by running the following command:
+Prior to executing the build commands, make sure to set the default Java version to JDK 11 by running the following command:
 
 ```sh
 sudo update-alternatives --config java
 ```
 
-Select the number with JDK-8
+Select the number with JDK 11.
 
 **Build**
 ```sh

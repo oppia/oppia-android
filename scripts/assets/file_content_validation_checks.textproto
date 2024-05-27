@@ -133,7 +133,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
-  prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase|capitalize|decapitalize|lowercase|uppercase)\\("
+  prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase|capitalize|decapitalize|lowercase|uppercase|replaceFirstChar)\\("
   failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/translation/AppLanguageResourceHandler.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
@@ -318,6 +318,7 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLoggerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/logging/TestSyncStatusManagerTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/ConsoleLoggerTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorImplTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"

@@ -67,5 +67,12 @@
       app:draggableData="@{viewModel.choiceItems}"
       app:onDragEnded="@{(adapter) -> viewModel.onDragEnded(adapter)}"
       app:onItemDrag="@{(indexFrom, indexTo, adapter) -> viewModel.onItemDragged(indexFrom, indexTo, adapter)}" />
+
+    <TextView
+      android:id="@+id/drag_drop_interaction_error"
+      style="@style/InputInteractionErrorTextView"
+      android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/component_color_shared_input_error_color"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}" />
   </LinearLayout>
 </layout>

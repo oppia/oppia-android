@@ -515,17 +515,15 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("unknown", "lang=LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
-    Iteration("ar", "lang=ARABIC", "expectedDisplayText=العربية"),
-    Iteration("en", "lang=ENGLISH", "expectedDisplayText=English"),
-    Iteration("hi", "lang=HINDI", "expectedDisplayText=हिन्दी"),
-    Iteration("hi-en", "lang=HINGLISH", "expectedDisplayText=हिन्दी"),
-    Iteration("pt", "lang=PORTUGUESE", "expectedDisplayText=Português"),
-    Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE", "expectedDisplayText=Português"),
-    Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili"),
-    Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
-  )
+  @Iteration("unknown", "lang=LANGUAGE_UNSPECIFIED", "expectedDisplayText=English")
+  @Iteration("ar", "lang=ARABIC", "expectedDisplayText=العربية")
+  @Iteration("en", "lang=ENGLISH", "expectedDisplayText=English")
+  @Iteration("hi", "lang=HINDI", "expectedDisplayText=हिन्दी")
+  @Iteration("hi-en", "lang=HINGLISH", "expectedDisplayText=हिन्दी")
+  @Iteration("pt", "lang=PORTUGUESE", "expectedDisplayText=Português")
+  @Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE", "expectedDisplayText=Português")
+  @Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili")
+  @Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
   fun testComputeLocalizedDisplayName_englishLocale_forAllDisplayLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()

@@ -48,6 +48,13 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.APP_IN_FOREGROUND_CONTEXT -> "bring_app_to_foreground"
       ActivityContextCase.EXIT_EXPLORATION_CONTEXT -> "leave_exploration"
       ActivityContextCase.FINISH_EXPLORATION_CONTEXT -> "complete_exploration"
+      ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT -> "progress_saving_success"
+      ActivityContextCase.PROGRESS_SAVING_FAILURE_CONTEXT -> "progress_saving_failure"
+      ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT -> "lesson_saved_advertently"
+      ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT ->
+        "submit_correct_ans_in_resumed_lesson"
+      ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT ->
+        "submit_incorrect_ans_in_resumed_lesson"
       ActivityContextCase.RESUME_EXPLORATION_CONTEXT -> "resume_in_progress_exploration"
       ActivityContextCase.START_OVER_EXPLORATION_CONTEXT -> "restart_in_progress_exploration"
       ActivityContextCase.DELETE_PROFILE_CONTEXT -> "delete_profile"
@@ -62,6 +69,11 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
+      ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
+      ActivityContextCase.CONSOLE_LOG -> "console_log"
+      ActivityContextCase.RETROFIT_CALL_CONTEXT -> "retrofit_call_context"
+      ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT -> "retrofit_call_failed_context"
+      ActivityContextCase.APP_IN_FOREGROUND_TIME -> "app_in_foreground_time"
     }
   }
 }
