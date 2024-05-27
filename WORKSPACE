@@ -20,7 +20,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1685832428 -0700",
+    shallow_since = "1716846301 -0700",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
