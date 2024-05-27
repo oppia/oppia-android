@@ -32,7 +32,6 @@ kt_android_library(
         "AlphaBuildFlavorModule.kt",
     ],
     visibility = [
-        "//app/src/main/java/org/oppia/android/app/application/alphakenya:__pkg__",
         "//app/src/test/java/org/oppia/android/app/application/alpha:__pkg__",
     ],
     deps = [

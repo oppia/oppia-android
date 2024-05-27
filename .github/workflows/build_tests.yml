@@ -422,7 +422,7 @@ jobs:
         run: |
           bazel build --compilation_mode=opt -- //:oppia_alpha_kitkat
 
-      # Note that caching only works on non-forks.
+      # Note that caching only works on non-forks. 4419: should remove this?
       - name: Build Oppia alpha Kenya-specific AAB (with caching, non-fork only)
         if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
         env:
