@@ -8,10 +8,12 @@ import org.oppia.proto.v1.api.TopicListResponseDto
 
 interface GaeAndroidEndpoint {
   fun fetchTopicListAsync(
-    request: TopicListRequestDto, reportProgress: (Int, Int) -> Unit = { _, _ -> }
+    request: TopicListRequestDto,
+    reportProgress: (Int, Int) -> Unit = { _, _ -> }
   ): Deferred<TopicListResponseDto>
 
   fun fetchTopicContentAsync(
-    request: TopicContentRequestDto, reportProgress: (Int, Int) -> Unit = { _, _ -> }
+    request: TopicContentRequestDto,
+    reportProgress: (Int, Int) -> Unit = { _, _ -> }
   ): Deferred<TopicContentResponseDto>
 }

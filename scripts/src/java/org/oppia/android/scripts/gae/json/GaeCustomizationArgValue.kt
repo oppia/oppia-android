@@ -62,7 +62,7 @@ sealed class GaeCustomizationArgValue {
   data class GaeImageWithRegions(
     @Json(name = "imagePath") val imagePath: String,
     @Json(name = "labeledRegions") val labeledRegions: List<GaeLabeledRegion>
-  ): GaeCustomizationArgValue() {
+  ) : GaeCustomizationArgValue() {
     override val valueType = CustomizationArgValue.ValueTypeCase.IMAGE_WITH_REGIONS_DTO
 
     @JsonClass(generateAdapter = true)
@@ -197,7 +197,8 @@ sealed class GaeCustomizationArgValue {
       imageWithRegionsAdapter: JsonAdapter<GaeImageWithRegions>
     ) {
       when (gaeCustomizationArgValue) {
-        is GaeImageWithRegions -> jsonWriter.value(gaeCustomizationArgValue, imageWithRegionsAdapter)
+        is GaeImageWithRegions ->
+          jsonWriter.value(gaeCustomizationArgValue, imageWithRegionsAdapter)
         is SingleBoolean -> jsonWriter.value(gaeCustomizationArgValue)
         is SingleInteger -> jsonWriter.value(gaeCustomizationArgValue)
         is StringList -> jsonWriter.value(gaeCustomizationArgValue)

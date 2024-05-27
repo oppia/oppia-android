@@ -69,8 +69,10 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
     entityId: String,
     imageFilename: String
   ): String {
-    return "${baseUrl.removeSuffix("/")}/$gcsBucket/${imageContainerType.httpRepresentation}/$entityId" +
-      "/assets/${imageType.httpRepresentation}/$imageFilename"
+    val containerTypeHttpRep = imageContainerType.httpRepresentation
+    val imgTypeHttpRep = imageType.httpRepresentation
+    return "${baseUrl.removeSuffix("/")}/$gcsBucket/$containerTypeHttpRep/$entityId/assets" +
+      "/$imgTypeHttpRep/$imageFilename"
   }
 
   enum class ImageContainerType(val httpRepresentation: String) {
@@ -87,7 +89,8 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
 
   private companion object {
     private fun <I, O> Call<I>.resolveAsync(
-      transform: (Request, Response<I>) -> O, default: (Request, Response<I>) -> O
+      transform: (Request, Response<I>) -> O,
+      default: (Request, Response<I>) -> O
     ): Deferred<O> {
       // Use the I/O dispatcher for blocking HTTP operations (since it's designed to handle blocking
       // operations that might otherwise stall a coroutine dispatcher).

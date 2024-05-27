@@ -3,9 +3,6 @@ package org.oppia.android.scripts.gae.json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.rawType
-import java.io.File
-import java.lang.reflect.Type
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -14,10 +11,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
-import okhttp3.Request
 import okio.Buffer
 import org.oppia.android.scripts.gae.json.AndroidActivityRequests.ActivityRequest
 import org.oppia.android.scripts.gae.json.AndroidActivityRequests.ActivityRequest.LatestVersion
@@ -27,6 +24,13 @@ import retrofit2.Call
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.File
+import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
+
+private typealias ActReq = ActivityRequest
+private typealias AndroidActReqs = AndroidActivityRequests
+private typealias VersionedStructures<S> = List<VersionedStructure<S>>
 
 class AndroidActivityHandlerService(
   private val apiSecret: String,
@@ -75,7 +79,8 @@ class AndroidActivityHandlerService(
   }
 
   fun fetchExplorationByVersionsAsync(
-    id: String, versions: List<Int>
+    id: String,
+    versions: List<Int>
   ): Deferred<List<VersionedStructure<GaeExploration>>> {
     return fetchVersionedFromServiceAsync(
       type = "exploration",
@@ -98,7 +103,8 @@ class AndroidActivityHandlerService(
   }
 
   fun fetchStoryByVersionsAsync(
-    id: String, versions: List<Int>
+    id: String,
+    versions: List<Int>
   ): Deferred<List<VersionedStructure<GaeStory>>> {
     return fetchVersionedFromServiceAsync(
       type = "story",
@@ -121,7 +127,8 @@ class AndroidActivityHandlerService(
   }
 
   fun fetchConceptCardByVersionsAsync(
-    skillId: String, versions: List<Int>
+    skillId: String,
+    versions: List<Int>
   ): Deferred<List<VersionedStructure<GaeSkill>>> {
     return fetchVersionedFromServiceAsync(
       type = "concept_card",
@@ -135,7 +142,8 @@ class AndroidActivityHandlerService(
   }
 
   fun fetchLatestRevisionCardAsync(
-    topicId: String, subtopicIndex: Int
+    topicId: String,
+    subtopicIndex: Int
   ): Deferred<VersionedStructure<GaeSubtopicPage>> {
     return fetchLatestFromServiceAsync(
       type = "revision_card",
@@ -171,7 +179,8 @@ class AndroidActivityHandlerService(
   }
 
   fun fetchTopicByVersionsAsync(
-    id: String, versions: List<Int>
+    id: String,
+    versions: List<Int>
   ): Deferred<List<VersionedStructure<GaeTopic>>> {
     return fetchVersionedFromServiceAsync(
       type = "topic",
@@ -201,9 +210,10 @@ class AndroidActivityHandlerService(
     return CoroutineScope(dispatcher).async { fullFetch.await().single() }
   }
 
-  private fun <S> Call<List<VersionedStructure<S>>>.resolveAsyncVersionsAsync(
-    expectedId: String, expectedVersions: List<Int>
-  ): Deferred<List<VersionedStructure<S>>> {
+  private fun <S> Call<VersionedStructures<S>>.resolveAsyncVersionsAsync(
+    expectedId: String,
+    expectedVersions: List<Int>
+  ): Deferred<VersionedStructures<S>> {
     val expectedIdsAndVersions = expectedVersions.map { expectedId to it }
     // Use the I/O dispatcher for blocking HTTP operations (since it's designed to handle blocking
     // operations that might otherwise stall a coroutine dispatcher).
@@ -226,7 +236,7 @@ class AndroidActivityHandlerService(
     }
   }
 
-  private fun <S> Call<List<VersionedStructure<S>>>.resolveAsync(
+  private fun <S> Call<VersionedStructures<S>>.resolveAsync(
     expectedId: String
   ): Deferred<VersionedStructure<S>> {
     return CoroutineScope(dispatcher).async {
@@ -237,7 +247,7 @@ class AndroidActivityHandlerService(
     }
   }
 
-  private suspend fun <S> Call<List<VersionedStructure<S>>>.resolveSync(): List<VersionedStructure<S>> {
+  private suspend fun <S> Call<VersionedStructures<S>>.resolveSync(): VersionedStructures<S> {
     return withContext(Dispatchers.IO) {
       try {
         val result = execute()
@@ -289,11 +299,7 @@ class AndroidActivityHandlerService(
     }
   }
 
-  private inline fun <
-    reified T,
-    R : ActivityRequest,
-    RS : AndroidActivityRequests
-    > fetchVersionedFromServiceAsync(
+  private inline fun <reified T, R : ActReq, RS : AndroidActReqs> fetchVersionedFromServiceAsync(
     type: String,
     id: String,
     versions: List<Int>,
@@ -337,7 +343,8 @@ class AndroidActivityHandlerService(
   }
 
   private suspend inline fun <reified T> tryLoadFromCache(
-    type: String, request: ActivityRequest
+    type: String,
+    request: ActivityRequest
   ): VersionedStructure<T>? {
     val expectedFilename = request.convertToFileName(type)
     val baseCacheDir = cacheDir ?: return null
@@ -353,7 +360,9 @@ class AndroidActivityHandlerService(
   }
 
   private suspend inline fun <reified T> maybeSaveToCache(
-    type: String, request: ActivityRequest, structure: VersionedStructure<T>
+    type: String,
+    request: ActivityRequest,
+    structure: VersionedStructure<T>
   ) {
     val expectedFilename = request.convertToFileName(type)
     val baseCacheDir = cacheDir ?: return
@@ -422,7 +431,9 @@ class AndroidActivityHandlerService(
     private val adapter by lazy { moshi.adapter(AndroidActivityRequests::class.java) }
 
     override fun stringConverter(
-      type: Type, annotations: Array<out Annotation>, retrofit: Retrofit
+      type: Type,
+      annotations: Array<out Annotation>,
+      retrofit: Retrofit
     ): Converter<*, String>? {
       return if (AndroidActivityRequests::class.java.isAssignableFrom(type.rawType)) {
         Converter<Any, String> { adapter.toJson(it as AndroidActivityRequests) }

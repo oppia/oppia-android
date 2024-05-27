@@ -12,7 +12,8 @@ data class GaeEntityTranslations(val translations: Map<String, GaeTranslatedCont
   object Adapter {
     @FromJson
     fun parseFromJson(
-      jsonReader: JsonReader, gaeTranslatedContentAdapter: JsonAdapter<GaeTranslatedContent>
+      jsonReader: JsonReader,
+      gaeTranslatedContentAdapter: JsonAdapter<GaeTranslatedContent>
     ): GaeEntityTranslations {
       return GaeEntityTranslations(
         jsonReader.nextObject { jsonReader.nextCustomValue(gaeTranslatedContentAdapter) }

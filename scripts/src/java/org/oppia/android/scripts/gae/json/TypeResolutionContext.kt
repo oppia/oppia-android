@@ -66,7 +66,7 @@ class TypeResolutionContext {
     }
 
   private companion object {
-    private fun <T: Any> createThreadLocal(defaultValue: T? = null): ThreadLocal<T?> =
+    private fun <T : Any> createThreadLocal(defaultValue: T? = null): ThreadLocal<T?> =
       ThreadLocal.withInitial { defaultValue }
   }
 }

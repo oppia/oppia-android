@@ -1,7 +1,5 @@
 package org.oppia.android.scripts.gae.compat
 
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -21,19 +19,21 @@ import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
 import org.oppia.android.scripts.gae.json.GaeTopic
+import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.VALID_LANGUAGE_TYPES
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.structure.LanguageType
+import org.oppia.proto.v1.structure.LanguageType.LANGUAGE_CODE_UNSPECIFIED
 import org.oppia.proto.v1.structure.SubtopicPageIdDto
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import org.oppia.android.scripts.gae.compat.VersionedStructureReference.Exploration as VersionedExploration
 import org.oppia.android.scripts.gae.compat.VersionedStructureReference.Skill as VersionedSkill
 import org.oppia.android.scripts.gae.compat.VersionedStructureReference.Story as VersionedStory
 import org.oppia.android.scripts.gae.compat.VersionedStructureReference.SubtopicPage as VersionedSubtopicPage
 import org.oppia.android.scripts.gae.compat.VersionedStructureReference.Topic as VersionedTopic
-import org.oppia.android.scripts.gae.json.VersionedStructure
-import org.oppia.android.scripts.proto.DownloadListVersions
-import org.oppia.proto.v1.structure.LanguageType.LANGUAGE_CODE_UNSPECIFIED
 
 private typealias GenericStructureReference =
   VersionedStructureReference<out StructureId, out Any?>
@@ -57,7 +57,8 @@ class TopicPackRepository(
 
   // TODO: We need to be able to retrieve assets irrespective of schemas...
   fun downloadConstructedCompleteTopicAsync(
-    topicId: String, metricCallbacks: MetricCallbacks
+    topicId: String,
+    metricCallbacks: MetricCallbacks
   ): Deferred<CompleteTopicPack> {
     // TODO:
     // Algorithm: pick the newest transitive closure of a topic & its dependencies such that all
@@ -88,7 +89,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryCreateCompatiblePack(
-    topicId: String, metricCallbacks: MetricCallbacks
+    topicId: String,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<CompleteTopicPack> {
     // Attempt to load a completely internally consistent topic pack for the latest topic version.
     // If that fails, try the next previous version of the topic and continue until either no
@@ -108,7 +110,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryCreatePackForLatestTrackedTopicVersion(
-    topicId: String, metricCallbacks: MetricCallbacks
+    topicId: String,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<CompleteTopicPack> {
     // TODO:
     // Algorithm:
@@ -124,7 +127,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadPackFragments(
-    gaeTopic: GaeTopic, metricCallbacks: MetricCallbacks
+    gaeTopic: GaeTopic,
+    metricCallbacks: MetricCallbacks
   ): List<LoadResult<TopicPackFragment>> {
     // TODO: Batch different results?
     val subtopicsResult =
@@ -153,7 +157,9 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadSubtopics(
-    topicId: String, subtopics: Map<Int, GaeSubtopic>, metricCallbacks: MetricCallbacks
+    topicId: String,
+    subtopics: Map<Int, GaeSubtopic>,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<TopicPackFragment> {
     metricCallbacks.reportGroupItemCount(DataGroupType.SUBTOPIC, subtopics.size)
     return subtopics.keys.map { subtopicIndex ->
@@ -175,7 +181,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadStories(
-    storyIds: Set<String>, metricCallbacks: MetricCallbacks
+    storyIds: Set<String>,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<TopicPackFragment> {
     metricCallbacks.reportGroupItemCount(DataGroupType.STORY, storyIds.size)
     return storyIds.mapIndexed { index, storyId ->
@@ -190,7 +197,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadExplorations(
-    expIds: Set<String>, metricCallbacks: MetricCallbacks
+    expIds: Set<String>,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<TopicPackFragment> {
     metricCallbacks.reportGroupItemCount(DataGroupType.EXPLORATION, expIds.size)
     return expIds.mapIndexed { index, expId ->
@@ -232,7 +240,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadSkillsClosure(
-    skillIds: Set<String>, metricCallbacks: MetricCallbacks
+    skillIds: Set<String>,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<List<GaeSkill>> {
     // Load skills in a loop until all known skills are loaded (since concept cards may themselves
     // reference other skills not referenced elsewhere in a topic).
@@ -247,7 +256,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadSkills(
-    skillIds: Set<String>, metricCallbacks: MetricCallbacks
+    skillIds: Set<String>,
+    metricCallbacks: MetricCallbacks
   ): LoadResult<List<GaeSkill>> {
     return skillIds.mapIndexed { index, skillId ->
       CoroutineScope(coroutineDispatcher).async {
@@ -335,7 +345,8 @@ class TopicPackRepository(
   }
 
   private suspend fun tryLoadStructure(
-    structureId: StructureId, reference: GenericStructureReference
+    structureId: StructureId,
+    reference: GenericStructureReference
   ): GenericLoadResult {
     return when (val result = versionStructureMapManager.lookUp(structureId, reference)) {
       is LoadResult.Pending -> {
@@ -528,16 +539,20 @@ private sealed class LoadResult<out T> {
 
 private interface VersionedStructureFetcher<I : StructureId, S> {
   fun fetchLatestFromRemoteAsync(
-    id: I, service: AndroidActivityHandlerService
+    id: I,
+    service: AndroidActivityHandlerService
   ): Deferred<VersionedStructure<S>>
 
   fun fetchMultiFromRemoteAsync(
-    id: I, versions: List<Int>, service: AndroidActivityHandlerService
+    id: I,
+    versions: List<Int>,
+    service: AndroidActivityHandlerService
   ): Deferred<List<VersionedStructure<S>>>
 }
 
 private sealed class VersionedStructureReference<I : StructureId, S> {
-  val defaultVersionFetchCount: Int = 1 // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
+  // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
+  val defaultVersionFetchCount: Int = 1
   abstract val structureId: I
   abstract val version: Int
   abstract val fetcher: VersionedStructureFetcher<I, S>
@@ -667,51 +682,64 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
   }
 }
 
-private class TopicFetcher: VersionedStructureFetcher<StructureId.Topic, GaeTopic> {
+private class TopicFetcher : VersionedStructureFetcher<StructureId.Topic, GaeTopic> {
   override fun fetchLatestFromRemoteAsync(
-    id: StructureId.Topic, service: AndroidActivityHandlerService
+    id: StructureId.Topic,
+    service: AndroidActivityHandlerService
   ) = service.fetchLatestTopicAsync(id.id)
 
   override fun fetchMultiFromRemoteAsync(
-    id: StructureId.Topic, versions: List<Int>, service: AndroidActivityHandlerService
+    id: StructureId.Topic,
+    versions: List<Int>,
+    service: AndroidActivityHandlerService
   ) = service.fetchTopicByVersionsAsync(id.id, versions)
 }
 
-private class StoryFetcher: VersionedStructureFetcher<StructureId.Story, GaeStory> {
+private class StoryFetcher : VersionedStructureFetcher<StructureId.Story, GaeStory> {
   override fun fetchLatestFromRemoteAsync(
-    id: StructureId.Story, service: AndroidActivityHandlerService
+    id: StructureId.Story,
+    service: AndroidActivityHandlerService
   ) = service.fetchLatestStoryAsync(id.id)
 
   override fun fetchMultiFromRemoteAsync(
-    id: StructureId.Story, versions: List<Int>, service: AndroidActivityHandlerService
+    id: StructureId.Story,
+    versions: List<Int>,
+    service: AndroidActivityHandlerService
   ) = service.fetchStoryByVersionsAsync(id.id, versions)
 }
 
-private class SubtopicFetcher: VersionedStructureFetcher<StructureId.Subtopic, GaeSubtopicPage> {
+private class SubtopicFetcher : VersionedStructureFetcher<StructureId.Subtopic, GaeSubtopicPage> {
   override fun fetchLatestFromRemoteAsync(
-    id: StructureId.Subtopic, service: AndroidActivityHandlerService
+    id: StructureId.Subtopic,
+    service: AndroidActivityHandlerService
   ) = service.fetchLatestRevisionCardAsync(id.topicId, id.subtopicIndex)
 
   override fun fetchMultiFromRemoteAsync(
-    id: StructureId.Subtopic, versions: List<Int>, service: AndroidActivityHandlerService
+    id: StructureId.Subtopic,
+    versions: List<Int>,
+    service: AndroidActivityHandlerService
   ) = service.fetchRevisionCardByVersionsAsync(id.topicId, id.subtopicIndex, versions)
 }
 
-private class SkillFetcher: VersionedStructureFetcher<StructureId.Skill, GaeSkill> {
+private class SkillFetcher : VersionedStructureFetcher<StructureId.Skill, GaeSkill> {
   override fun fetchLatestFromRemoteAsync(
-    id: StructureId.Skill, service: AndroidActivityHandlerService
+    id: StructureId.Skill,
+    service: AndroidActivityHandlerService
   ) = service.fetchLatestConceptCardAsync(id.id)
 
   override fun fetchMultiFromRemoteAsync(
-    id: StructureId.Skill, versions: List<Int>, service: AndroidActivityHandlerService
+    id: StructureId.Skill,
+    versions: List<Int>,
+    service: AndroidActivityHandlerService
   ) = service.fetchConceptCardByVersionsAsync(id.id, versions)
 }
 
 private class ExplorationFetcher(
   private val coroutineDispatcher: CoroutineDispatcher
-): VersionedStructureFetcher<StructureId.Exploration, CompleteExploration> {
+) : VersionedStructureFetcher<StructureId.Exploration, CompleteExploration> {
   override fun fetchLatestFromRemoteAsync(
-    id: StructureId.Exploration, service: AndroidActivityHandlerService
+    id: StructureId.Exploration,
+    service: AndroidActivityHandlerService
   ): Deferred<VersionedStructure<CompleteExploration>> {
     return CoroutineScope(coroutineDispatcher).async {
       val latestExp = service.fetchLatestExplorationAsync(id.id).await()
@@ -720,7 +748,9 @@ private class ExplorationFetcher(
   }
 
   override fun fetchMultiFromRemoteAsync(
-    id: StructureId.Exploration, versions: List<Int>, service: AndroidActivityHandlerService
+    id: StructureId.Exploration,
+    versions: List<Int>,
+    service: AndroidActivityHandlerService
   ): Deferred<List<VersionedStructure<CompleteExploration>>> {
     return CoroutineScope(coroutineDispatcher).async {
       service.fetchExplorationByVersionsAsync(id.id, versions).await().map {
@@ -731,7 +761,8 @@ private class ExplorationFetcher(
 
   private companion object {
     private suspend fun AndroidActivityHandlerService.downloadExploration(
-      id: StructureId.Exploration, exploration: GaeExploration
+      id: StructureId.Exploration,
+      exploration: GaeExploration
     ): CompleteExploration {
       val translations = VALID_LANGUAGE_TYPES.map { languageType ->
         fetchExplorationTranslationsAsync(
@@ -777,7 +808,8 @@ private sealed class StructureId {
 
 private interface VersionStructureMapManager {
   fun lookUp(
-    structureId: StructureId, genericReference: GenericStructureReference
+    structureId: StructureId,
+    genericReference: GenericStructureReference
   ): GenericLoadResult
 
   fun lookUpResultCount(structureId: StructureId): Int
@@ -793,21 +825,23 @@ private interface VersionStructureMapManager {
   fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference)
 
   fun update(
-    structureId: StructureId, loadResults: Map<out GenericStructureReference, GenericLoadResult>
+    structureId: StructureId,
+    loadResults: Map<out GenericStructureReference, GenericLoadResult>
   )
 }
 
 private class VersionStructureMapManagerTakeLatestImpl(
   private val androidService: AndroidActivityHandlerService,
   private val compatibilityChecker: StructureCompatibilityChecker
-): VersionStructureMapManager {
+) : VersionStructureMapManager {
   private val cachedStructures =
     mutableMapOf<StructureId, MutableMap<GenericStructureReference, GenericLoadResult>>()
   // TODO: Move over to an actor pattern to be more cooperative with coroutines.
   private val lock = ReentrantLock()
 
   override fun lookUp(
-    structureId: StructureId, genericReference: GenericStructureReference
+    structureId: StructureId,
+    genericReference: GenericStructureReference
   ) = lock.withLock { cachedStructures.getValue(structureId).getValue(genericReference) }
 
   override fun lookUpResultCount(structureId: StructureId) =
@@ -856,7 +890,8 @@ private class VersionStructureMapManagerTakeLatestImpl(
   }
 
   override fun update(
-    structureId: StructureId, loadResults: Map<out GenericStructureReference, GenericLoadResult>
+    structureId: StructureId,
+    loadResults: Map<out GenericStructureReference, GenericLoadResult>
   ) {
     lock.withLock { loadResults.forEach(cachedStructures.getValue(structureId)::put) }
   }
@@ -866,7 +901,7 @@ private class VersionStructureMapManagerFixVersionsImpl(
   private val androidService: AndroidActivityHandlerService,
   private val compatibilityChecker: StructureCompatibilityChecker,
   private val forcedVersions: DownloadListVersions
-): VersionStructureMapManager {
+) : VersionStructureMapManager {
   // Only at most one structure can be loaded per ID.
   private val cachedStructures =
     mutableMapOf<StructureId, Pair<GenericStructureReference, GenericLoadResult>>()
@@ -875,7 +910,8 @@ private class VersionStructureMapManagerFixVersionsImpl(
   private val lock = ReentrantLock()
 
   override fun lookUp(
-    structureId: StructureId, genericReference: GenericStructureReference
+    structureId: StructureId,
+    genericReference: GenericStructureReference
   ): GenericLoadResult {
     val (ref, result) = lookUp(structureId)
     check(ref == genericReference) {
@@ -916,7 +952,8 @@ private class VersionStructureMapManagerFixVersionsImpl(
   }
 
   override fun update(
-    structureId: StructureId, loadResults: Map<out GenericStructureReference, GenericLoadResult>
+    structureId: StructureId,
+    loadResults: Map<out GenericStructureReference, GenericLoadResult>
   ) {
     val (expectedRef, _) = lookUp(structureId)
     check(loadResults.size == 1) { "Expected one result for fixed version ID: $structureId." }

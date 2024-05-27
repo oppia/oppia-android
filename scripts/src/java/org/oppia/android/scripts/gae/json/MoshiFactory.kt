@@ -27,7 +27,7 @@ object MoshiFactory {
       add(GaeTranslatableContentFormat.Adapter())
       add(GaeInteractionCustomizationArgsMap.Adapter(typeResolutionContext))
       add(GaeEntityTranslations.Adapter)
-      add(KotlinJsonAdapterFactory()) // TODO: Remove this so that it can be done without reflection.
+      add(KotlinJsonAdapterFactory()) // TODO: Remove this so that it can be done w/o reflection.
     }.build()
   }
 }

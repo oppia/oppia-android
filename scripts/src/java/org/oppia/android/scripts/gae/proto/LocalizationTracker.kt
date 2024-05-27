@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.awaitAll
 import org.oppia.android.scripts.gae.gcs.GcsService
+import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -37,8 +38,6 @@ import org.oppia.proto.v1.structure.SubtitledTextDto
 import org.oppia.proto.v1.structure.SubtopicPageIdDto
 import org.oppia.proto.v1.structure.ThumbnailDto
 import org.oppia.proto.v1.structure.VoiceoverFileDto
-import java.util.Locale
-import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 
 class LocalizationTracker private constructor(
   private val oppiaWebTranslationExtractor: OppiaWebTranslationExtractor,
@@ -152,7 +151,9 @@ class LocalizationTracker private constructor(
   }
 
   fun trackTranslations(
-    id: ContainerId, languageType: LanguageType, entityTranslations: GaeEntityTranslations
+    id: ContainerId,
+    languageType: LanguageType,
+    entityTranslations: GaeEntityTranslations
   ) {
     val container = getExpectedContainer(id)
     if (!languageType.isValid()) return
@@ -571,8 +572,7 @@ class LocalizationTracker private constructor(
       LocalizationTracker(OppiaWebTranslationExtractor.createExtractor(), imageDownloader)
 
     fun String.resolveLanguageCode(): LanguageType {
-      // TODO: Switch back to .lowercase().
-      return when (toLowerCase(Locale.US)) {
+      return when (lowercase()) {
         "en", "en_us", "en-us" -> LanguageType.ENGLISH
         "ar" -> LanguageType.ARABIC
         "hi" -> LanguageType.HINDI
@@ -592,8 +592,7 @@ class LocalizationTracker private constructor(
 
     private fun String.isHexString(): Boolean = all { it.isHex() }
 
-    // TODO: Switch back to .lowercaseChar().
-    private fun Char.isHex(): Boolean = toLowerCase() in HEX_CHARACTERS
+    private fun Char.isHex(): Boolean = lowercaseChar() in HEX_CHARACTERS
 
     fun LanguageType.isValid(): Boolean =
       this != LanguageType.LANGUAGE_CODE_UNSPECIFIED && this != LanguageType.UNRECOGNIZED

@@ -12,17 +12,17 @@ import com.squareup.moshi.ToJson
 sealed class AndroidActivityRequests {
   abstract val requests: List<ActivityRequest>
 
-  data class Latest(val latestVersion: ActivityRequest.LatestVersion): AndroidActivityRequests() {
+  data class Latest(val latestVersion: ActivityRequest.LatestVersion) : AndroidActivityRequests() {
     override val requests = listOf(latestVersion)
   }
 
   data class NonLocalized(
     override val requests: List<ActivityRequest.NonLocalized>
-  ): AndroidActivityRequests()
+  ) : AndroidActivityRequests()
 
   data class Localized(
     override val requests: List<ActivityRequest.Localized>
-  ): AndroidActivityRequests()
+  ) : AndroidActivityRequests()
 
   class Adapter {
     @FromJson
@@ -45,20 +45,20 @@ sealed class AndroidActivityRequests {
   @JsonClass(generateAdapter = false)
   sealed class ActivityRequest {
     @JsonClass(generateAdapter = true)
-    data class LatestVersion(@Json(name = "id") val id: String): ActivityRequest()
+    data class LatestVersion(@Json(name = "id") val id: String) : ActivityRequest()
 
     @JsonClass(generateAdapter = true)
     data class NonLocalized(
       @Json(name = "id") val id: String,
       @Json(name = "version") val version: Int
-    ): ActivityRequest()
+    ) : ActivityRequest()
 
     @JsonClass(generateAdapter = true)
     data class Localized(
       @Json(name = "id") val id: String,
       @Json(name = "version") val version: Int,
       @Json(name = "language_code") val languageCode: String
-    ): ActivityRequest()
+    ) : ActivityRequest()
 
     class Adapter {
       @FromJson

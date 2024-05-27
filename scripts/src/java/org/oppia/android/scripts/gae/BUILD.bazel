@@ -26,6 +26,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":gae",
+        "//scripts/src/java/org/oppia/android/scripts/gae/compat",
         "//scripts/src/java/org/oppia/android/scripts/gae/json:api",
         "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
         "//scripts/src/java/org/oppia/android/scripts/gae/proto:json_to_proto_converter",

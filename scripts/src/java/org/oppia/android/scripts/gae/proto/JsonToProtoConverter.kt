@@ -1,11 +1,11 @@
 package org.oppia.android.scripts.gae.proto
 
-import org.oppia.android.scripts.gae.compat.CompleteExploration
 import org.oppia.android.scripts.gae.json.GaeAnswerGroup
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion.GaeNormalizedRectangle2d
+import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeHint
 import org.oppia.android.scripts.gae.json.GaeInteractionInstance
@@ -34,6 +34,7 @@ import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
 import org.oppia.android.scripts.gae.json.GaeTopic
 import org.oppia.android.scripts.gae.json.GaeWorkedExample
+import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.DESCRIPTION
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.TITLE
@@ -208,7 +209,7 @@ class JsonToProtoConverter(
     }
   }
 
-  fun trackExplorationTranslations(explorations: Map<String, CompleteExploration>) {
+  fun trackExplorationTranslations(explorations: Map<String, ExplorationPackage>) {
     for ((exploration, allTranslations) in explorations.values) {
       val containerId = LocalizationTracker.ContainerId.createFrom(exploration)
       val defaultLanguage = exploration.languageCode.resolveLanguageCode()
@@ -322,7 +323,7 @@ class JsonToProtoConverter(
     defaultLanguage: LanguageType,
     subtopicPages: Map<SubtopicPageIdDto, GaeSubtopicPage>,
     stories: Map<String, GaeStory>,
-    explorations: Map<String, CompleteExploration>,
+    explorations: Map<String, ExplorationPackage>,
     referencedSkills: Map<String, GaeSkill>
   ): DownloadableTopicSummaryDto {
     return DownloadableTopicSummaryDto.newBuilder().apply {
@@ -488,6 +489,11 @@ class JsonToProtoConverter(
     }.build()
   }
 
+  data class ExplorationPackage(
+    val exploration: GaeExploration,
+    val translations: Map<LanguageType, VersionedStructure<GaeEntityTranslations>>
+  )
+
   private fun GaeWorkedExample.toProto(
     containerId: LocalizationTracker.ContainerId
   ): WorkedExampleDto? {
@@ -500,14 +506,14 @@ class JsonToProtoConverter(
 
   private suspend fun GaeStory.toProto(
     defaultLanguage: LanguageType,
-    availableExplorations: Map<String, CompleteExploration>
+    availableExplorations: Map<String, ExplorationPackage>
   ): StorySummaryDto {
     return StorySummaryDto.newBuilder().apply {
       val containerId = LocalizationTracker.ContainerId.createFrom(this@toProto)
       val chapterSummaries =
         this@toProto.storyContents.nodes.map {
-          val completeExploration = availableExplorations.getValue(it.expectedExplorationId)
-          it.toProto(this@toProto, completeExploration, defaultLanguage)
+          val expPackage = availableExplorations.getValue(it.expectedExplorationId)
+          it.toProto(this@toProto, expPackage, defaultLanguage)
         }
 
       this.id = this@toProto.id
@@ -522,7 +528,7 @@ class JsonToProtoConverter(
 
   private suspend fun GaeStoryNode.toProto(
     containingStory: GaeStory,
-    matchingExploration: CompleteExploration,
+    matchingExploration: ExplorationPackage,
     defaultLanguage: LanguageType
   ): ChapterSummaryDto {
     return ChapterSummaryDto.newBuilder().apply {
@@ -533,7 +539,7 @@ class JsonToProtoConverter(
       this.title = localizationTracker.convertContainerText(containerId, TITLE)
       this.description = localizationTracker.convertContainerText(containerId, DESCRIPTION)
       this.explorationId = matchingExploration.exploration.id
-      this.contentVersion = matchingExploration.version
+      this.contentVersion = matchingExploration.exploration.version
       this.localizations =
         localizationTracker.computeCompleteLocalizationPack(containerId, defaultLanguage)
     }.build()

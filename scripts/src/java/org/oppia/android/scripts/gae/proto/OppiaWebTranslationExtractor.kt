@@ -8,7 +8,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import org.oppia.proto.v1.structure.LanguageType
 import java.net.URL
-import java.util.Locale
 
 class OppiaWebTranslationExtractor private constructor(
   private val webTranslationMapping: Map<LanguageType, Map<String, String>>
@@ -24,14 +23,12 @@ class OppiaWebTranslationExtractor private constructor(
   }
 
   sealed class TranslatableActivityId(private val activityType: String) {
-    // TODO: Switch back to .uppercase().
-    private val upperCasedActivityType by lazy { activityType.toUpperCase(Locale.US) }
+    private val upperCasedActivityType by lazy { activityType.uppercase() }
 
     abstract val activityId: String
 
-    // TODO: Switch back to .uppercase().
     internal fun computeWebKeyForContent(contentId: String): String =
-      "I18N_${upperCasedActivityType}_${activityId}_${contentId.toUpperCase(Locale.US)}"
+      "I18N_${upperCasedActivityType}_${activityId}_${contentId.uppercase()}"
 
     data class Topic(val topicId: String) : TranslatableActivityId(activityType = "topic") {
       override val activityId: String = topicId

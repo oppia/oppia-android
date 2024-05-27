@@ -1,7 +1,5 @@
 package org.oppia.android.scripts.gae
 
-import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -60,6 +58,8 @@ import org.oppia.proto.v1.api.TopicListResponseDto
 import org.oppia.proto.v1.api.TopicListResponseDto.DownloadableTopicDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.SubtopicPageIdDto
+import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 
 class GaeAndroidEndpointJsonImpl(
   apiSecret: String,
@@ -88,7 +88,8 @@ class GaeAndroidEndpointJsonImpl(
   // TODO: It would be easier to track progress by using some sort of task management & collation
   //  system (which could also account for task weights and better control over estimation).
   override fun fetchTopicListAsync(
-    request: TopicListRequestDto, reportProgress: (Int, Int) -> Unit
+    request: TopicListRequestDto,
+    reportProgress: (Int, Int) -> Unit
   ): Deferred<TopicListResponseDto> {
     return CoroutineScope(coroutineDispatcher).async {
       // First, verify the request proto version.
@@ -141,7 +142,7 @@ class GaeAndroidEndpointJsonImpl(
       contentCache.addPacks(availableTopicPacks)
       jsonConverter.trackTopicTranslations(contentCache.topics)
       jsonConverter.trackStoryTranslations(contentCache.stories)
-      jsonConverter.trackExplorationTranslations(contentCache.explorations)
+      jsonConverter.trackExplorationTranslations(contentCache.explorations.toPacks())
       jsonConverter.trackConceptCardTranslations(contentCache.skills)
       jsonConverter.trackRevisionCardTranslations(contentCache.subtopics.values.toList())
       jsonConverter.trackTopicTranslations(futureTopics)
@@ -161,7 +162,7 @@ class GaeAndroidEndpointJsonImpl(
                   defaultLanguage,
                   topicPack.subtopicPages,
                   topicPack.stories,
-                  topicPack.explorations,
+                  topicPack.explorations.toPacks(),
                   topicPack.referencedSkills
                 )
                 this.downloadSizeBytes = 0 // Not supported for local GAE endpoint emulation.
@@ -183,7 +184,8 @@ class GaeAndroidEndpointJsonImpl(
   }
 
   override fun fetchTopicContentAsync(
-    request: TopicContentRequestDto, reportProgress: (Int, Int) -> Unit
+    request: TopicContentRequestDto,
+    reportProgress: (Int, Int) -> Unit
   ): Deferred<TopicContentResponseDto> {
     val progressChannel = Channel<Int>()
     progressChannel.consumeAsFlow().withIndex().onEach { (index, _) ->
@@ -220,7 +222,8 @@ class GaeAndroidEndpointJsonImpl(
     // TODO: Double check the language verification (since sWBXKH4PZcK6 Swahili isn't 100%).
     return CoroutineScope(coroutineDispatcher).async {
       listOf(
-        "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm", "5g0nxGUmx5J5"
+        "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm",
+        "5g0nxGUmx5J5"
       ).also {
         tracker.countEstimator.setTopicCount(it.size)
         tracker.reportDownloaded("math")
@@ -299,7 +302,7 @@ class GaeAndroidEndpointJsonImpl(
     private val downloadedChapterCount = AtomicInteger()
     private val downloadedRevisionCardCount = AtomicInteger()
     private val downloadedConceptCardCount = AtomicInteger()
-    
+
     private fun resetAllItemCounts() {
       DataGroupType.values().forEach(::resetGroupItemCount)
     }
@@ -402,7 +405,8 @@ class GaeAndroidEndpointJsonImpl(
 
     companion object {
       fun createFrom(
-        downloadProgressTracker: DownloadProgressTracker, topicIds: List<String>
+        downloadProgressTracker: DownloadProgressTracker,
+        topicIds: List<String>
       ): TopicCountsTracker = TopicCountsTracker(downloadProgressTracker, topicIds)
     }
   }
@@ -476,9 +480,9 @@ class GaeAndroidEndpointJsonImpl(
     private sealed class MetricEstimator {
       abstract val currentValue: Int
 
-      data class Constant(override val currentValue: Int): MetricEstimator()
+      data class Constant(override val currentValue: Int) : MetricEstimator()
 
-      data class Derived(val estimatedRate: Int, val base: MetricEstimator): MetricEstimator() {
+      data class Derived(val estimatedRate: Int, val base: MetricEstimator) : MetricEstimator() {
         private var actualCount: Int? = null
         override val currentValue: Int get() = actualCount ?: (estimatedRate * base.currentValue)
 
@@ -487,11 +491,11 @@ class GaeAndroidEndpointJsonImpl(
         }
       }
 
-      data class Alias(val delegate: MetricEstimator): MetricEstimator() {
+      data class Alias(val delegate: MetricEstimator) : MetricEstimator() {
         override val currentValue: Int get() = delegate.currentValue
       }
 
-      data class Aggregate(val metrics: List<MetricEstimator>): MetricEstimator() {
+      data class Aggregate(val metrics: List<MetricEstimator>) : MetricEstimator() {
         override val currentValue: Int get() = metrics.sumOf(MetricEstimator::currentValue)
       }
     }
@@ -566,7 +570,7 @@ class GaeAndroidEndpointJsonImpl(
 
         return if (localizationTracker.isLanguageSupported(containerId, defaultLanguage)) {
           jsonConverter.convertToDownloadableTopicSummary(
-            topic, defaultLanguage, subtopicPages, stories, explorations, referencedSkills
+            topic, defaultLanguage, subtopicPages, stories, explorations.toPacks(), referencedSkills
           ).also { this@fetchAndSet.topicSummary = it }.contentVersion
         } else setSkippedFromFailure(identifier)
       }
@@ -869,5 +873,10 @@ class GaeAndroidEndpointJsonImpl(
         "Unsupported revision card version: $imageProtoVersion."
       }
     }
+
+    private fun Map<String, CompleteExploration>.toPacks() = mapValues { (_, exp) -> exp.toPack() }
+
+    private fun CompleteExploration.toPack() =
+      JsonToProtoConverter.ExplorationPackage(exploration, translations)
   }
 }

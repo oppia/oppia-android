@@ -1,8 +1,6 @@
 package org.oppia.android.domain.audio
 
-import android.media.MediaDataSource
 import android.media.MediaPlayer
-import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,8 +12,6 @@ import kotlinx.coroutines.launch
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.io.IOException
@@ -34,11 +30,9 @@ import kotlin.concurrent.withLock
 @Singleton
 class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val assetRepository: AssetRepository,
   private val exceptionsController: ExceptionsController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @CacheAssetsLocally private val cacheAssetsLocally: Boolean
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
 
   inner class AudioMutableLiveData :
@@ -156,37 +150,7 @@ class AudioPlayerController @Inject constructor(
 
   private fun prepareDataSource(url: String) {
     try {
-      if (cacheAssetsLocally && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val mediaDataSource: MediaDataSource = object : MediaDataSource() {
-          private val audioFileBuffer: ByteArray by lazy {
-            // Ensure that the download occurs off the main thread to avoid strict mode violations for
-            // cases when we need to stream audio.
-            assetRepository.loadRemoteBinaryAsset(url)()
-          }
-
-          // https://medium.com/@jacks205/implementing-your-own-android-mediadatasource-e67adb070731.
-          override fun readAt(position: Long, buffer: ByteArray?, offset: Int, size: Int): Int {
-            checkNotNull(buffer)
-            val intPosition = position.toInt()
-            if (intPosition >= audioFileBuffer.size) {
-              return -1
-            }
-            val availableData = audioFileBuffer.size - intPosition
-            val adjustedSize = size.coerceIn(0 until availableData)
-            audioFileBuffer.copyInto(buffer, offset, intPosition, intPosition + adjustedSize)
-            return adjustedSize
-          }
-
-          override fun getSize(): Long {
-            return audioFileBuffer.size.toLong()
-          }
-
-          override fun close() {}
-        }
-        mediaPlayer.setDataSource(mediaDataSource)
-      } else {
-        mediaPlayer.setDataSource(url)
-      }
+      mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
