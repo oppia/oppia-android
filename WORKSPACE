@@ -36,8 +36,8 @@ load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "
 # Use the 1.6 compiler since rules_kotlin 1.5 defaults to the 1.5 compiler.
 kotlin_repositories(
     compiler_release = kotlinc_version(
-        release = "1.6.21",
-        sha256 = "632166fed89f3f430482f5aa07f2e20b923b72ef688c8f5a7df3aa1502c6d8ba",
+        release = "1.6.10",
+        sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
     ),
 )
 

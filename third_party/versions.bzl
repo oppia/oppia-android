@@ -78,7 +78,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.6.10",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
