@@ -1,0 +1,30 @@
+"""
+Library for providing compatibility computations and support when determining a compatible closure
+of valid sub-structures that compose a single topic convertible by the asset pipeline (and thus
+playable by the app).
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "compat",
+    testonly = True,
+    srcs = [
+        "CompleteExploration.kt",
+        "CompleteTopicPack.kt",
+        "StructureCompatibilityChecker.kt",
+        "SubtitledHtmlCollector.kt",
+        "TopicPackRepository.kt",
+    ],
+    visibility = [
+        "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:api",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:localization_tracker",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_list_versions_java_proto",
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
