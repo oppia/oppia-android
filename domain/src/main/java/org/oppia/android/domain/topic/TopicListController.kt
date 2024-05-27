@@ -152,9 +152,8 @@ class TopicListController @Inject constructor(
   private fun loadTopicListFromJson(contentLocale: OppiaLocale.ContentLocale): TopicList {
     val topicIdList = loadCombinedClassroomTopicList()
     val topicListBuilder = TopicList.newBuilder()
-    for (i in topicIdList.indices) {
-      val ephemeralSummary =
-        createEphemeralTopicSummary(topicIdList[i], contentLocale)
+    for (topicId in topicIdList) {
+      val ephemeralSummary = createEphemeralTopicSummary(topicId, contentLocale)
       val topicPlayAvailability = ephemeralSummary.topicSummary.topicPlayAvailability
       // Only include topics currently playable in the topic list.
       if (topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
@@ -167,8 +166,8 @@ class TopicListController @Inject constructor(
   private fun computeComingSoonTopicList(): ComingSoonTopicList {
     val topicIdList = loadCombinedClassroomTopicList()
     val comingSoonTopicListBuilder = ComingSoonTopicList.newBuilder()
-    for (i in topicIdList.indices) {
-      val upcomingTopicSummary = createUpcomingTopicSummary(topicIdList[i])
+    for (topicId in topicIdList) {
+      val upcomingTopicSummary = createUpcomingTopicSummary(topicId)
       // Only include topics currently not playable in the upcoming topic list.
       if (upcomingTopicSummary.topicPlayAvailability.availabilityCase
         == AVAILABLE_TO_PLAY_IN_FUTURE
