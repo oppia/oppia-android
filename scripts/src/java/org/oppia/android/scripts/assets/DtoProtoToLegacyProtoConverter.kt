@@ -2,6 +2,7 @@ package org.oppia.android.scripts.assets
 
 import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.ChapterRecord
+import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.ConceptCard
 import org.oppia.android.app.model.ConceptCardList
 import org.oppia.android.app.model.CustomSchemaValue
@@ -30,7 +31,6 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.SubtopicRecord
-import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
@@ -47,12 +47,17 @@ import org.oppia.proto.v1.structure.ContentLocalizationsDto
 import org.oppia.proto.v1.structure.ContinueInstanceDto
 import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto
+import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.HasElementXBeforeElementYSpecDto
+import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.IsEqualToOrderingWithOneItemAtIncorrectPositionSpecDto
 import org.oppia.proto.v1.structure.ExplorationDto
 import org.oppia.proto.v1.structure.ExplorationLanguagePackDto
 import org.oppia.proto.v1.structure.FractionDto
 import org.oppia.proto.v1.structure.FractionInputInstanceDto
+import org.oppia.proto.v1.structure.FractionInputInstanceDto.RuleSpecDto.HasFractionalPartExactlyEqualToSpecDto
+import org.oppia.proto.v1.structure.FractionInputInstanceDto.RuleSpecDto.IsEquivalentToAndInSimplestFormSpecDto
 import org.oppia.proto.v1.structure.HintDto
 import org.oppia.proto.v1.structure.ImageClickInputInstanceDto
+import org.oppia.proto.v1.structure.ImageClickInputInstanceDto.RuleSpecDto.IsInRegionSpecDto
 import org.oppia.proto.v1.structure.ImageWithRegionsDto
 import org.oppia.proto.v1.structure.ImageWithRegionsDto.LabeledRegionDto
 import org.oppia.proto.v1.structure.ImageWithRegionsDto.LabeledRegionDto.NormalizedRectangle2dDto
@@ -98,8 +103,26 @@ import org.oppia.proto.v1.structure.TranslatableHtmlContentIdDto
 import org.oppia.proto.v1.structure.TranslatableSetOfNormalizedStringDto
 import org.oppia.proto.v1.structure.UpcomingTopicSummaryDto
 import org.oppia.proto.v1.structure.VoiceoverFileDto
+import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.RuleSpecDto as AlgebraRuleSpecDto
+import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as AlgebraMatchesUpToTrivialManipulationsSpecDto
+import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
+import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase as DragDropSortRuleSpecTypeCase
+import org.oppia.proto.v1.structure.FractionInputInstanceDto.RuleSpecDto as FractionRuleSpecDto
+import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
+import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto as MathEqRuleSpecDto
+import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as MathEqMatchesUpToTrivialManipulationsSpecDto
+import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.RuleSpecDto as MultChoiceRuleSpecDto
+import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto as NumExpRuleSpecDto
+import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as NumExpMatchesUpToTrivialManipulationsSpecDto
+import org.oppia.proto.v1.structure.NumericInputInstanceDto.RuleSpecDto as NumInputRuleSpecDto
+import org.oppia.proto.v1.structure.RatioExpressionInputInstanceDto.RuleSpecDto as RatioRuleSpecDto
 
 // TODO: For all "not used/unused" properties, remove them from the app's protos.
+
+private typealias XlatableContentIdsSetDto = SetOfTranslatableHtmlContentIdsDto
+private typealias XlatableContentIdsSetListDto = ListOfSetsOfTranslatableHtmlContentIdsDto
+private typealias XlatableContentIdsSet = SetOfTranslatableHtmlContentIds
+private typealias XlatableContentIdsSetList = ListOfSetsOfTranslatableHtmlContentIds
 
 object DtoProtoToLegacyProtoConverter {
   fun Iterable<DownloadableTopicSummaryDto>.convertToClassroomList(): ClassroomList {
@@ -260,11 +283,12 @@ object DtoProtoToLegacyProtoConverter {
     // correspond to those actually used within that state (since the new structure stores IDs at
     // the structure level).
     val contentIdTracker = ContentIdTracker(defaultLocalizationDto)
+    val allLocalizations = localizations + defaultLocalizationDto
     return State.newBuilder().apply {
       this.name = name
       this.content = contentIdTracker.extractSubtitledHtml(dto.content)
       this.interaction = dto.interaction.convertToInteraction(contentIdTracker)
-      putAllRecordedVoiceovers((localizations + defaultLocalizationDto).toVoiceoverMappings(contentIdTracker.contentIds))
+      putAllRecordedVoiceovers(allLocalizations.toVoiceoverMappings(contentIdTracker.contentIds))
       putAllWrittenTranslations(
         localizations.toTranslationMappings(imageReferenceReplacements, contentIdTracker.contentIds)
       )
@@ -350,34 +374,30 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EXACTLY_EQUAL_TO ->
-        isExactlyEqualTo.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO ->
-        isEquivalentTo.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO_AND_IN_SIMPLEST_FORM ->
+      FractionRuleSpecDto.RuleTypeCase.IS_EXACTLY_EQUAL_TO -> isExactlyEqualTo.convertToRuleSpec()
+      FractionRuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO -> isEquivalentTo.convertToRuleSpec()
+      FractionRuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO_AND_IN_SIMPLEST_FORM ->
         isEquivalentToAndInSimplestForm.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_LESS_THAN ->
-        isLessThan.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_GREATER_THAN ->
-        isGreaterThan.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_NUMERATOR_EQUAL_TO ->
+      FractionRuleSpecDto.RuleTypeCase.IS_LESS_THAN -> isLessThan.convertToRuleSpec()
+      FractionRuleSpecDto.RuleTypeCase.IS_GREATER_THAN -> isGreaterThan.convertToRuleSpec()
+      FractionRuleSpecDto.RuleTypeCase.HAS_NUMERATOR_EQUAL_TO ->
         hasNumeratorEqualTo.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_DENOMINATOR_EQUAL_TO ->
+      FractionRuleSpecDto.RuleTypeCase.HAS_DENOMINATOR_EQUAL_TO ->
         hasDenominatorEqualTo.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_INTEGER_PART_EQUAL_TO ->
+      FractionRuleSpecDto.RuleTypeCase.HAS_INTEGER_PART_EQUAL_TO ->
         hasIntegerPartEqualTo.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_NO_FRACTIONAL_PART ->
+      FractionRuleSpecDto.RuleTypeCase.HAS_NO_FRACTIONAL_PART ->
         RuleSpec.newBuilder().setRuleType("HasNoFractionalPart").build()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_FRACTIONAL_PART_EXACTLY_EQUAL_TO ->
+      FractionRuleSpecDto.RuleTypeCase.HAS_FRACTIONAL_PART_EXACTLY_EQUAL_TO ->
         hasFractionalPartExactlyEqualTo.convertToRuleSpec()
-      FractionInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      FractionRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.IsExactlyEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.IsExactlyEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsExactlyEqualTo"
@@ -385,7 +405,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEquivalentTo"
@@ -393,7 +413,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.IsEquivalentToAndInSimplestFormSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun IsEquivalentToAndInSimplestFormSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEquivalentToAndInSimplestForm"
@@ -401,7 +421,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.IsLessThanSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.IsLessThanSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsLessThan"
@@ -409,7 +429,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.IsGreaterThanSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.IsGreaterThanSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsGreaterThan"
@@ -417,7 +437,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.HasNumeratorEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.HasNumeratorEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasNumeratorEqualTo"
@@ -425,7 +445,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.HasDenominatorEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.HasDenominatorEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasDenominatorEqualTo"
@@ -433,7 +453,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.HasIntegerPartEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun FractionRuleSpecDto.HasIntegerPartEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasIntegerPartEqualTo"
@@ -441,7 +461,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun FractionInputInstanceDto.RuleSpecDto.HasFractionalPartExactlyEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun HasFractionalPartExactlyEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasFractionalPartExactlyEqualTo"
@@ -484,21 +504,20 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun ItemSelectionInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun ItemSelRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
-      ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.CONTAINS_AT_LEAST_ONE_OF ->
+      ItemSelRuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
+      ItemSelRuleSpecDto.RuleTypeCase.CONTAINS_AT_LEAST_ONE_OF ->
         containsAtLeastOneOf.convertToRuleSpec()
-      ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.DOES_NOT_CONTAIN_AT_LEAST_ONE_OF ->
+      ItemSelRuleSpecDto.RuleTypeCase.DOES_NOT_CONTAIN_AT_LEAST_ONE_OF ->
         doesNotContainAtLeastOneOf.convertToRuleSpec()
-      ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_PROPER_SUBSET_OF ->
-        isProperSubsetOf.convertToRuleSpec()
-      ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      ItemSelRuleSpecDto.RuleTypeCase.IS_PROPER_SUBSET_OF -> isProperSubsetOf.convertToRuleSpec()
+      ItemSelRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun ItemSelectionInputInstanceDto.RuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun ItemSelRuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "Equals"
@@ -506,7 +525,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun ItemSelectionInputInstanceDto.RuleSpecDto.ContainsAtLeastOneOfSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun ItemSelRuleSpecDto.ContainsAtLeastOneOfSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "ContainsAtLeastOneOf"
@@ -514,7 +533,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun ItemSelectionInputInstanceDto.RuleSpecDto.DoesNotContainAtLeastOneOfSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun ItemSelRuleSpecDto.DoesNotContainAtLeastOneOfSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "DoesNotContainAtLeastOneOf"
@@ -522,7 +541,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun ItemSelectionInputInstanceDto.RuleSpecDto.IsProperSubsetOfSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun ItemSelRuleSpecDto.IsProperSubsetOfSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsProperSubsetOf"
@@ -564,15 +583,15 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun MultipleChoiceInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun MultChoiceRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      MultipleChoiceInputInstanceDto.RuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
-      MultipleChoiceInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      MultChoiceRuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
+      MultChoiceRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun MultipleChoiceInputInstanceDto.RuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun MultChoiceRuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "Equals"
@@ -582,7 +601,11 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun MultipleChoiceInputInstanceDto.CustomizationArgsDto.convertToArgsMap(
     contentIdTracker: ContentIdTracker
-  ) = mapOf("choices" to choicesList.map { contentIdTracker.extractSubtitledHtml(it).wrap() }.wrap())
+  ): Map<String, SchemaObject> {
+    return mapOf(
+      "choices" to choicesList.map { contentIdTracker.extractSubtitledHtml(it).wrap() }.wrap()
+    )
+  }
 
   private fun NumericInputInstanceDto.convertToInteraction(
     contentIdTracker: ContentIdTracker
@@ -625,27 +648,24 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_LESS_THAN ->
-        isLessThan.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_GREATER_THAN ->
-        isGreaterThan.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_LESS_THAN_OR_EQUAL_TO ->
+      NumInputRuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
+      NumInputRuleSpecDto.RuleTypeCase.IS_LESS_THAN -> isLessThan.convertToRuleSpec()
+      NumInputRuleSpecDto.RuleTypeCase.IS_GREATER_THAN -> isGreaterThan.convertToRuleSpec()
+      NumInputRuleSpecDto.RuleTypeCase.IS_LESS_THAN_OR_EQUAL_TO ->
         isLessThanOrEqualTo.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_GREATER_THAN_OR_EQUAL_TO ->
+      NumInputRuleSpecDto.RuleTypeCase.IS_GREATER_THAN_OR_EQUAL_TO ->
         isGreaterThanOrEqualTo.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_INCLUSIVELY_BETWEEN ->
+      NumInputRuleSpecDto.RuleTypeCase.IS_INCLUSIVELY_BETWEEN ->
         isInclusivelyBetween.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_WITHIN_TOLERANCE ->
-        isWithinTolerance.convertToRuleSpec()
-      NumericInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      NumInputRuleSpecDto.RuleTypeCase.IS_WITHIN_TOLERANCE -> isWithinTolerance.convertToRuleSpec()
+      NumInputRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "Equals"
@@ -653,7 +673,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.IsLessThanSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.IsLessThanSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsLessThan"
@@ -661,7 +681,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.IsGreaterThanSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.IsGreaterThanSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsGreaterThan"
@@ -669,7 +689,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.IsLessThanOrEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.IsLessThanOrEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsLessThanOrEqualTo"
@@ -677,7 +697,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.IsGreaterThanOrEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.IsGreaterThanOrEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsGreaterThanOrEqualTo"
@@ -685,7 +705,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.IsInclusivelyBetweenSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.IsInclusivelyBetweenSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsInclusivelyBetween"
@@ -694,7 +714,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericInputInstanceDto.RuleSpecDto.IsWithinToleranceSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumInputRuleSpecDto.IsWithinToleranceSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsWithinTolerance"
@@ -851,22 +871,21 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun DragAndDropSortInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun DragDropSortRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUAL_TO_ORDERING ->
-        isEqualToOrdering.convertToRuleSpec()
-      DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUAL_TO_ORDERING_WITH_ONE_ITEM_AT_INCORRECT_POSITION ->
+      DragDropSortRuleSpecTypeCase.IS_EQUAL_TO_ORDERING -> isEqualToOrdering.convertToRuleSpec()
+      DragDropSortRuleSpecTypeCase.IS_EQUAL_TO_ORDERING_WITH_ONE_ITEM_AT_INCORRECT_POSITION ->
         isEqualToOrderingWithOneItemAtIncorrectPosition.convertToRuleSpec()
-      DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_ELEMENT_X_AT_POSITION_Y ->
+      DragDropSortRuleSpecTypeCase.HAS_ELEMENT_X_AT_POSITION_Y ->
         hasElementXAtPositionY.convertToRuleSpec()
-      DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_ELEMENT_X_BEFORE_ELEMENT_Y ->
+      DragDropSortRuleSpecTypeCase.HAS_ELEMENT_X_BEFORE_ELEMENT_Y ->
         hasElementXBeforeElementY.convertToRuleSpec()
-      DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      DragDropSortRuleSpecTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun DragAndDropSortInputInstanceDto.RuleSpecDto.IsEqualToOrderingSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun DragDropSortRuleSpecDto.IsEqualToOrderingSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEqualToOrdering"
@@ -874,7 +893,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun DragAndDropSortInputInstanceDto.RuleSpecDto.IsEqualToOrderingWithOneItemAtIncorrectPositionSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun IsEqualToOrderingWithOneItemAtIncorrectPositionSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEqualToOrderingWithOneItemAtIncorrectPosition"
@@ -882,7 +901,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun DragAndDropSortInputInstanceDto.RuleSpecDto.HasElementXAtPositionYSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun DragDropSortRuleSpecDto.HasElementXAtPositionYSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasElementXAtPositionY"
@@ -891,7 +910,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun DragAndDropSortInputInstanceDto.RuleSpecDto.HasElementXBeforeElementYSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun HasElementXBeforeElementYSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasElementXBeforeElementY"
@@ -942,7 +961,7 @@ object DtoProtoToLegacyProtoConverter {
     }
   }
 
-  private fun ImageClickInputInstanceDto.RuleSpecDto.IsInRegionSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun IsInRegionSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsInRegion"
@@ -995,21 +1014,20 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun RatioExpressionInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun RatioRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      RatioExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
-      RatioExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUIVALENT ->
-        isEquivalent.convertToRuleSpec()
-      RatioExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_NUMBER_OF_TERMS_EQUAL_TO ->
+      RatioRuleSpecDto.RuleTypeCase.EQUALS -> equals.convertToRuleSpec()
+      RatioRuleSpecDto.RuleTypeCase.IS_EQUIVALENT -> isEquivalent.convertToRuleSpec()
+      RatioRuleSpecDto.RuleTypeCase.HAS_NUMBER_OF_TERMS_EQUAL_TO ->
         hasNumberOfTermsEqualTo.convertToRuleSpec()
-      RatioExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_SPECIFIC_TERM_EQUAL_TO ->
+      RatioRuleSpecDto.RuleTypeCase.HAS_SPECIFIC_TERM_EQUAL_TO ->
         hasSpecificTermEqualTo.convertToRuleSpec()
-      RatioExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      RatioRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun RatioExpressionInputInstanceDto.RuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun RatioRuleSpecDto.EqualsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "Equals"
@@ -1017,7 +1035,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun RatioExpressionInputInstanceDto.RuleSpecDto.IsEquivalentSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun RatioRuleSpecDto.IsEquivalentSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEquivalent"
@@ -1025,7 +1043,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun RatioExpressionInputInstanceDto.RuleSpecDto.HasNumberOfTermsEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun RatioRuleSpecDto.HasNumberOfTermsEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasNumberOfTermsEqualTo"
@@ -1033,7 +1051,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun RatioExpressionInputInstanceDto.RuleSpecDto.HasSpecificTermEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun RatioRuleSpecDto.HasSpecificTermEqualToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "HasSpecificTermEqualTo"
@@ -1091,20 +1109,18 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun AlgebraicExpressionInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun AlgebraRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      AlgebraicExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.MATCHES_EXACTLY_WITH ->
-        matchesExactlyWith.convertToRuleSpec()
-      AlgebraicExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.MATCHES_UP_TO_TRIVIAL_MANIPULATIONS ->
+      AlgebraRuleSpecDto.RuleTypeCase.MATCHES_EXACTLY_WITH -> matchesExactlyWith.convertToRuleSpec()
+      AlgebraRuleSpecDto.RuleTypeCase.MATCHES_UP_TO_TRIVIAL_MANIPULATIONS ->
         matchesUpToTrivialManipulations.convertToRuleSpec()
-      AlgebraicExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO ->
-        isEquivalentTo.convertToRuleSpec()
-      AlgebraicExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      AlgebraRuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO -> isEquivalentTo.convertToRuleSpec()
+      AlgebraRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun AlgebraicExpressionInputInstanceDto.RuleSpecDto.MatchesExactlyWithSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun AlgebraRuleSpecDto.MatchesExactlyWithSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "MatchesExactlyWith"
@@ -1112,7 +1128,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun AlgebraicExpressionInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun AlgebraMatchesUpToTrivialManipulationsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "MatchesUpToTrivialManipulations"
@@ -1120,7 +1136,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun AlgebraicExpressionInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun AlgebraRuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEquivalentTo"
@@ -1175,20 +1191,18 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun MathEquationInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun MathEqRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      MathEquationInputInstanceDto.RuleSpecDto.RuleTypeCase.MATCHES_EXACTLY_WITH ->
-        matchesExactlyWith.convertToRuleSpec()
-      MathEquationInputInstanceDto.RuleSpecDto.RuleTypeCase.MATCHES_UP_TO_TRIVIAL_MANIPULATIONS ->
+      MathEqRuleSpecDto.RuleTypeCase.MATCHES_EXACTLY_WITH -> matchesExactlyWith.convertToRuleSpec()
+      MathEqRuleSpecDto.RuleTypeCase.MATCHES_UP_TO_TRIVIAL_MANIPULATIONS ->
         matchesUpToTrivialManipulations.convertToRuleSpec()
-      MathEquationInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO ->
-        isEquivalentTo.convertToRuleSpec()
-      MathEquationInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      MathEqRuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO -> isEquivalentTo.convertToRuleSpec()
+      MathEqRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun MathEquationInputInstanceDto.RuleSpecDto.MatchesExactlyWithSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun MathEqRuleSpecDto.MatchesExactlyWithSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "MatchesExactlyWith"
@@ -1196,7 +1210,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun MathEquationInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun MathEqMatchesUpToTrivialManipulationsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "MatchesUpToTrivialManipulations"
@@ -1204,7 +1218,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun MathEquationInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun MathEqRuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEquivalentTo"
@@ -1259,20 +1273,18 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericExpressionInputInstanceDto.RuleSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumExpRuleSpecDto.convertToRuleSpec(): RuleSpec {
     return when (ruleTypeCase) {
-      NumericExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.MATCHES_EXACTLY_WITH ->
-        matchesExactlyWith.convertToRuleSpec()
-      NumericExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.MATCHES_UP_TO_TRIVIAL_MANIPULATIONS ->
+      NumExpRuleSpecDto.RuleTypeCase.MATCHES_EXACTLY_WITH -> matchesExactlyWith.convertToRuleSpec()
+      NumExpRuleSpecDto.RuleTypeCase.MATCHES_UP_TO_TRIVIAL_MANIPULATIONS ->
         matchesUpToTrivialManipulations.convertToRuleSpec()
-      NumericExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO ->
-        isEquivalentTo.convertToRuleSpec()
-      NumericExpressionInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+      NumExpRuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO -> isEquivalentTo.convertToRuleSpec()
+      NumExpRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
         error("Invalid rule spec: $this.")
     }
   }
 
-  private fun NumericExpressionInputInstanceDto.RuleSpecDto.MatchesExactlyWithSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumExpRuleSpecDto.MatchesExactlyWithSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "MatchesExactlyWith"
@@ -1280,7 +1292,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericExpressionInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumExpMatchesUpToTrivialManipulationsSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "MatchesUpToTrivialManipulations"
@@ -1288,7 +1300,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun NumericExpressionInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
+  private fun NumExpRuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
     val dto = this
     return RuleSpec.newBuilder().apply {
       this.ruleType = "IsEquivalentTo"
@@ -1553,14 +1565,23 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun TranslatableHtmlContentIdDto.convertToInteractionObject(): InteractionObject =
-    InteractionObject.newBuilder().setTranslatableHtmlContentId(convertToTranslatableContentId()).build()
+  private fun TranslatableHtmlContentIdDto.convertToInteractionObject(): InteractionObject {
+    return InteractionObject.newBuilder().setTranslatableHtmlContentId(
+      convertToTranslatableContentId()
+    ).build()
+  }
 
-  private fun SetOfTranslatableHtmlContentIdsDto.convertToInteractionObject(): InteractionObject =
-    InteractionObject.newBuilder().setSetOfTranslatableHtmlContentIds(convertToSetOfTranslatableContentIds()).build()
+  private fun SetOfTranslatableHtmlContentIdsDto.convertToInteractionObject(): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfTranslatableHtmlContentIds(
+      convertToProtoV1Version()
+    ).build()
+  }
 
-  private fun ListOfSetsOfTranslatableHtmlContentIdsDto.convertToInteractionObject(): InteractionObject =
-    InteractionObject.newBuilder().setListOfSetsOfTranslatableHtmlContentIds(convertToListOfSetsOfTranslatableContentIds()).build()
+  private fun XlatableContentIdsSetListDto.convertToInteractionObject(): InteractionObject {
+    return InteractionObject.newBuilder().setListOfSetsOfTranslatableHtmlContentIds(
+      convertToProtoV1Version()
+    ).build()
+  }
 
   private fun String.convertToMathExpressionObject(): InteractionObject =
     InteractionObject.newBuilder().setMathExpression(this).build()
@@ -1591,17 +1612,19 @@ object DtoProtoToLegacyProtoConverter {
   private fun TranslatableHtmlContentIdDto.convertToTranslatableContentId() =
     TranslatableHtmlContentId.newBuilder().setContentId(contentId).build()
 
-  private fun SetOfTranslatableHtmlContentIdsDto.convertToSetOfTranslatableContentIds(): SetOfTranslatableHtmlContentIds {
+  // Uses a different name since the conventional version would be too long to fit on one line.
+  private fun XlatableContentIdsSetDto.convertToProtoV1Version(): XlatableContentIdsSet {
     val dto = this
     return SetOfTranslatableHtmlContentIds.newBuilder().apply {
       addAllContentIds(dto.contentIdsList.map { it.convertToTranslatableContentId() })
     }.build()
   }
 
-  private fun ListOfSetsOfTranslatableHtmlContentIdsDto.convertToListOfSetsOfTranslatableContentIds(): ListOfSetsOfTranslatableHtmlContentIds {
+  // Uses a different name since the conventional version would be too long to fit on one line.
+  private fun XlatableContentIdsSetListDto.convertToProtoV1Version(): XlatableContentIdsSetList {
     val dto = this
     return ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
-      addAllContentIdLists(dto.contentIdSetsList.map { it.convertToSetOfTranslatableContentIds() })
+      addAllContentIdLists(dto.contentIdSetsList.map { it.convertToProtoV1Version() })
     }.build()
   }
 
@@ -1665,7 +1688,8 @@ object DtoProtoToLegacyProtoConverter {
   }
 
   private fun String.replaceReferences(
-    placement: IntRange, imageReferenceReplacements: Map<String, String>
+    placement: IntRange,
+    imageReferenceReplacements: Map<String, String>
   ): String {
     return substring(placement).let { element ->
       // This could be done much more efficiently by extracting the image reference.
@@ -1695,7 +1719,8 @@ object DtoProtoToLegacyProtoConverter {
   }
 
   private fun <T, K, V> Iterable<T>.associateUniquely(
-    keySelector: (T) -> K, valueSelector: (T) -> V
+    keySelector: (T) -> K,
+    valueSelector: (T) -> V
   ): Map<K, V> {
     return groupBy(keySelector, valueSelector).mapValues { (key, values) ->
       values.singleOrNull() ?: error("Error: $key was present more than once in collection.")

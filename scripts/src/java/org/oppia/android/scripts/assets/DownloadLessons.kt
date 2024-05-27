@@ -2,34 +2,10 @@ package org.oppia.android.scripts.assets
 
 import com.google.protobuf.Message
 import com.google.protobuf.TextFormat
-import java.io.File
-import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.oppia.android.scripts.gae.GaeAndroidEndpoint
-import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl
-import org.oppia.android.scripts.gae.proto.ProtoVersionProvider
-import org.oppia.proto.v1.api.AndroidClientContextDto
-import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
-import org.oppia.proto.v1.api.TopicContentRequestDto
-import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.SKIPPED_FROM_FAILURE
-import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.SKIPPED_SHOULD_RETRY
-import org.oppia.proto.v1.api.TopicListRequestDto
-import org.oppia.proto.v1.api.TopicListResponseDto.AvailableTopicDto.AvailabilityTypeCase.DOWNLOADABLE_TOPIC
-import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
-import org.oppia.proto.v1.structure.LanguageType
-import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
-import org.oppia.proto.v1.structure.LocalizedExplorationIdDto
-import org.oppia.proto.v1.structure.LocalizedRevisionCardIdDto
-import org.oppia.proto.v1.structure.SubtopicPageIdDto
-import org.oppia.proto.v1.structure.SubtopicSummaryDto
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
@@ -38,20 +14,27 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.withIndex
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToConceptCardList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToSubtopicRecord
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicRecord
+import org.oppia.android.scripts.gae.GaeAndroidEndpoint
+import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageContainerType
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageType
 import org.oppia.android.scripts.gae.proto.ImageDownloader
+import org.oppia.android.scripts.gae.proto.ProtoVersionProvider
 import org.oppia.android.scripts.proto.DownloadListVersions
-import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
+import org.oppia.proto.v1.api.AndroidClientContextDto
+import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase
+import org.oppia.proto.v1.api.TopicContentRequestDto
 import org.oppia.proto.v1.api.TopicContentResponseDto
 import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto
 import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.CONCEPT_CARD
@@ -65,7 +48,11 @@ import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTy
 import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.REVISION_CARD
 import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.REVISION_CARD_LANGUAGE_PACK
 import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.SKIPPED_DOES_NOT_EXIST
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.SKIPPED_FROM_FAILURE
+import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.SKIPPED_SHOULD_RETRY
 import org.oppia.proto.v1.api.TopicContentResponseDto.DownloadResultDto.ResultTypeCase.TOPIC_SUMMARY
+import org.oppia.proto.v1.api.TopicListRequestDto
+import org.oppia.proto.v1.api.TopicListResponseDto.AvailableTopicDto.AvailabilityTypeCase.DOWNLOADABLE_TOPIC
 import org.oppia.proto.v1.structure.BaseAnswerGroupDto
 import org.oppia.proto.v1.structure.BaseSolutionDto
 import org.oppia.proto.v1.structure.ChapterSummaryDto
@@ -74,14 +61,18 @@ import org.oppia.proto.v1.structure.ConceptCardDto.WorkedExampleDto
 import org.oppia.proto.v1.structure.ConceptCardLanguagePackDto
 import org.oppia.proto.v1.structure.ContentLocalizationDto
 import org.oppia.proto.v1.structure.ContentLocalizationsDto
-import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto
+import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
+import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUAL_TO_ORDERING_WITH_ONE_ITEM_AT_INCORRECT_POSITION
 import org.oppia.proto.v1.structure.ExplorationDto
 import org.oppia.proto.v1.structure.ExplorationLanguagePackDto
 import org.oppia.proto.v1.structure.HintDto
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase
-import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto
+import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto
 import org.oppia.proto.v1.structure.LocalizableTextDto
+import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
+import org.oppia.proto.v1.structure.LocalizedExplorationIdDto
+import org.oppia.proto.v1.structure.LocalizedRevisionCardIdDto
 import org.oppia.proto.v1.structure.OutcomeDto
 import org.oppia.proto.v1.structure.QuestionDto
 import org.oppia.proto.v1.structure.QuestionLanguagePackDto
@@ -93,11 +84,21 @@ import org.oppia.proto.v1.structure.SetOfTranslatableHtmlContentIdsDto
 import org.oppia.proto.v1.structure.SkillSummaryDto
 import org.oppia.proto.v1.structure.StateDto
 import org.oppia.proto.v1.structure.StorySummaryDto
+import org.oppia.proto.v1.structure.SubtopicPageIdDto
+import org.oppia.proto.v1.structure.SubtopicSummaryDto
 import org.oppia.proto.v1.structure.TextInputInstanceDto
 import org.oppia.proto.v1.structure.ThumbnailDto
 import org.oppia.proto.v1.structure.TranslatableHtmlContentIdDto
 import org.oppia.proto.v1.structure.TranslatableSetOfNormalizedStringDto
 import org.oppia.proto.v1.structure.UpcomingTopicSummaryDto
+import java.io.File
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
+import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
+import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
 
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
@@ -606,22 +607,34 @@ class LessonDownloader(
     explorationPacks.values.flatten().forEach(analyzer::track)
 
     val issues = analyzer.scanForIssues().sorted()
-    val imageInvalidExtIssues = issues.filterIsInstance<CompatibilityAnalyzer.Issue.ImageHasInvalidExtension>()
-    val imageInconsistencyIssues = issues.filterIsInstance<CompatibilityAnalyzer.Issue.ImageInconsistencies>()
-    val htmlInvalidTagIssues = issues.filterIsInstance<CompatibilityAnalyzer.Issue.HtmlHasInvalidTag>()
-    val translationIssues = issues.filterIsInstance<CompatibilityAnalyzer.Issue.TextMissingTranslations>()
+    val imageInvalidExtIssues =
+      issues.filterIsInstance<CompatibilityAnalyzer.Issue.ImageHasInvalidExtension>()
+    val imageInconsistencyIssues =
+      issues.filterIsInstance<CompatibilityAnalyzer.Issue.ImageInconsistencies>()
+    val htmlInvalidTagIssues =
+      issues.filterIsInstance<CompatibilityAnalyzer.Issue.HtmlHasInvalidTag>()
+    val translationIssues =
+      issues.filterIsInstance<CompatibilityAnalyzer.Issue.TextMissingTranslations>()
     println()
     println("${issues.size} issues were found during import. High-level break-down:")
     println("- ${imageInvalidExtIssues.size}/${issues.size} correspond to invalid image extensions")
-    println("- ${imageInconsistencyIssues.size}/${issues.size} correspond to images missing across translations")
-    println("- ${htmlInvalidTagIssues.size}/${issues.size} correspond to invalid tags found in HTML")
+    println(
+      "- ${imageInconsistencyIssues.size}/${issues.size} correspond to images missing across" +
+        " translations"
+    )
+    println(
+      "- ${htmlInvalidTagIssues.size}/${issues.size} correspond to invalid tags found in HTML"
+    )
     println("- ${translationIssues.size}/${issues.size} correspond to missing translations")
     println()
     println("Images with invalid extensions:")
     imageInvalidExtIssues.groupBy { it.container }.forEach { (container, issues) ->
       println("- Within ${container.referenceString}:")
       issues.forEach { issue ->
-        println("  - Image ${issue.filename} (language: ${issue.language.name}) has invalid extension: ${issue.invalidExtension}")
+        println(
+          "  - Image ${issue.filename} (language: ${issue.language.name}) has invalid extension:" +
+            " ${issue.invalidExtension}"
+        )
       }
     }
     println()
@@ -641,7 +654,10 @@ class LessonDownloader(
       issues.groupBy { it.language }.forEach { (language, perLangIssues) ->
         println("  - For language ${language.name}:")
         perLangIssues.forEach { issue ->
-          println("    - Text with content ID ${issue.text.contentId} has references tag: ${issue.invalidTag}")
+          println(
+            "    - Text with content ID ${issue.text.contentId} has references tag:" +
+              " ${issue.invalidTag}"
+          )
         }
       }
     }
@@ -652,7 +668,10 @@ class LessonDownloader(
       issues.forEach { issue ->
         val missingLangs = issue.missingLanguages.joinToString { it.name }
         val presentLangs = issue.presentLanguages.joinToString { it.name }
-        println("  - Text with content ID ${issue.text.contentId} exists in languages: $presentLangs, but is missing in: $missingLangs")
+        println(
+          "  - Text with content ID ${issue.text.contentId} exists in languages: $presentLangs," +
+            " but is missing in: $missingLangs"
+        )
       }
     }
 
@@ -815,7 +834,9 @@ class LessonDownloader(
   }
 
   private fun writeProtosAsync(
-    protoV2Dir: File, baseName: String, message: Message
+    protoV2Dir: File,
+    baseName: String,
+    message: Message
   ): Deferred<Any> {
     val textProtoV2Dir = File(protoV2Dir, "textproto")
     val binaryProtoV2Dir = File(protoV2Dir, "binary")
@@ -841,7 +862,8 @@ class LessonDownloader(
   }
 
   private fun Collection<ImageReference>.downloadAllAsync(
-    destDir: File, reportProgress: (Int, Int) -> Unit
+    destDir: File,
+    reportProgress: (Int, Int) -> Unit
   ): Deferred<Map<ImageReference, DownloadedImage>> {
     check(destDir.deleteRecursively() && destDir.mkdir()) {
       "Failed to clear & recreate image destination dir: ${destDir.path}."
@@ -861,7 +883,9 @@ class LessonDownloader(
   }
 
   private fun ImageReference.downloadAsync(
-    destDir: File, index: Int, reportProgressChannel: SendChannel<Int>
+    destDir: File,
+    index: Int,
+    reportProgressChannel: SendChannel<Int>
   ): Deferred<DownloadedImage> {
     val reference = this
     return CoroutineScope(coroutineDispatcher).async {
@@ -943,19 +967,21 @@ class LessonDownloader(
   private sealed class DownloadedImage {
     abstract val imageRef: ImageReference
 
-    data class Succeeded(override val imageRef: ImageReference): DownloadedImage()
+    data class Succeeded(override val imageRef: ImageReference) : DownloadedImage()
 
-    data class Duplicated(override val imageRef: ImageReference): DownloadedImage()
+    data class Duplicated(override val imageRef: ImageReference) : DownloadedImage()
 
-    sealed class Renamed: DownloadedImage() {
+    sealed class Renamed : DownloadedImage() {
       abstract val oldFilename: String
       abstract val newFilename: String
 
       abstract fun readOriginalFileData(): ByteArray
 
       data class ExistingFile(
-        override val imageRef: ImageReference, val oldFile: File, override val newFilename: String
-      ): Renamed() {
+        override val imageRef: ImageReference,
+        val oldFile: File,
+        override val newFilename: String
+      ) : Renamed() {
         override val oldFilename: String get() = oldFile.name
         override fun readOriginalFileData(): ByteArray = oldFile.readBytes()
       }
@@ -965,7 +991,7 @@ class LessonDownloader(
         override val oldFilename: String,
         val oldFileData: List<Byte>,
         override val newFilename: String
-      ): Renamed() {
+      ) : Renamed() {
         override fun readOriginalFileData(): ByteArray = oldFileData.toByteArray()
       }
     }
@@ -977,9 +1003,9 @@ class LessonDownloader(
       val convertedImageData: List<Byte>,
       val width: Int,
       val height: Int
-    ): DownloadedImage()
+    ) : DownloadedImage()
 
-    data class FailedCouldNotFind(override val imageRef: ImageReference): DownloadedImage()
+    data class FailedCouldNotFind(override val imageRef: ImageReference) : DownloadedImage()
   }
 
   private fun shutdownBlocking() {
@@ -988,15 +1014,20 @@ class LessonDownloader(
   }
 
   private data class ImageContainer(
-    val imageContainerType: ImageContainerType, val entityId: String, val language: LanguageType
+    val imageContainerType: ImageContainerType,
+    val entityId: String,
+    val language: LanguageType
   )
 
   private data class ImageReference(
-    val container: ImageContainer, val imageType: ImageType, val filename: String
+    val container: ImageContainer,
+    val imageType: ImageType,
+    val filename: String
   )
 
   private fun Map<ImageReference, DownloadedImage>.computeReplacements(
-    imageContainerType: ImageContainerType, entityId: String
+    imageContainerType: ImageContainerType,
+    entityId: String
   ): Map<String, String> {
     return filterKeys { ref ->
       ref.container.imageContainerType == imageContainerType && ref.container.entityId == entityId
@@ -1028,7 +1059,9 @@ class LessonDownloader(
     fun track(dto: DownloadableTopicSummaryDto) {
       val container = Container.Topic(dto.id)
       if (dto.hasName()) texts += TextReference.Name(container, dto.name.contentId)
-      if (dto.hasDescription()) texts += TextReference.Description(container, dto.description.contentId)
+      if (dto.hasDescription()) {
+        texts += TextReference.Description(container, dto.description.contentId)
+      }
       if (dto.hasLocalizations()) track(container, dto.localizations)
       dto.storySummariesList.forEach { track(container, it) }
       dto.referencedSkillsList.forEach { track(container, it) }
@@ -1037,7 +1070,9 @@ class LessonDownloader(
     fun track(dto: UpcomingTopicSummaryDto) {
       val container = Container.Topic(dto.id)
       if (dto.hasName()) texts += TextReference.Name(container, dto.name.contentId)
-      if (dto.hasDescription()) texts += TextReference.Description(container, dto.description.contentId)
+      if (dto.hasDescription()) {
+        texts += TextReference.Description(container, dto.description.contentId)
+      }
       if (dto.hasLocalizations()) track(container, dto.localizations)
     }
 
@@ -1051,8 +1086,12 @@ class LessonDownloader(
 
     fun track(dto: ConceptCardDto) {
       val container = Container.ConceptCard(dto.skillId)
-      if (dto.hasDescription()) texts += TextReference.Description(container, dto.description.contentId)
-      if (dto.hasExplanation()) texts += TextReference.Explanation(container, dto.explanation.contentId)
+      if (dto.hasDescription()) {
+        texts += TextReference.Description(container, dto.description.contentId)
+      }
+      if (dto.hasExplanation()) {
+        texts += TextReference.Explanation(container, dto.explanation.contentId)
+      }
       if (dto.hasDefaultLocalization()) track(container, dto.defaultLocalization)
       dto.workedExamplesList.forEachIndexed { index, example -> track(container, index, example) }
     }
@@ -1090,11 +1129,17 @@ class LessonDownloader(
     private fun scanForInvalidExtensions(): List<Issue.ImageHasInvalidExtension> {
       return localizations.filterIsInstance<Localizations.ImageReferences>().flatMap { images ->
         images.filenames.filter { it.endsWith(".gif", ignoreCase = true) }.map { filename ->
-          Issue.ImageHasInvalidExtension(images.container, images.language, filename, invalidExtension = "gif")
+          Issue.ImageHasInvalidExtension(
+            images.container, images.language, filename, invalidExtension = "gif"
+          )
         }
       } + localizations.filterIsInstance<Localizations.Thumbnail>().mapNotNull { thumbnail ->
-        thumbnail.thumbnailFilename.takeIf { it.endsWith(".gif", ignoreCase = true) }?.let { filename ->
-          Issue.ImageHasInvalidExtension(thumbnail.container, thumbnail.language, filename, invalidExtension = "gif")
+        thumbnail.thumbnailFilename.takeIf {
+          it.endsWith(".gif", ignoreCase = true)
+        }?.let { filename ->
+          Issue.ImageHasInvalidExtension(
+            thumbnail.container, thumbnail.language, filename, invalidExtension = "gif"
+          )
         }
       }
     }
@@ -1110,7 +1155,9 @@ class LessonDownloader(
       ).map { (key, languages) ->
         val (container, filename) = key
         val presentLanguages = languages.toSet()
-        Issue.ImageInconsistencies(container, filename, presentLanguages, expectedLanguages - presentLanguages)
+        Issue.ImageInconsistencies(
+          container, filename, presentLanguages, expectedLanguages - presentLanguages
+        )
       }
     }
 
@@ -1133,7 +1180,9 @@ class LessonDownloader(
             // container.
             Issue.HtmlHasInvalidTag(
               translations.language,
-              textsByContentId.getValue(translations.container.findRoot() to translation.contentId).single(),
+              textsByContentId.getValue(
+                translations.container.findRoot() to translation.contentId
+              ).single(),
               html,
               invalidTag
             )
@@ -1143,14 +1192,18 @@ class LessonDownloader(
     }
 
     private fun scanForTextMissingTranslations(): List<Issue.TextMissingTranslations> {
-      val textLanguages = localizations.filterIsInstance<Localizations.Translations>().flatMap { translations ->
-        translations.translations.map { (translations.container.findRoot() to it.contentId) to translations }
+      val allTranslations = localizations.filterIsInstance<Localizations.Translations>()
+      val textLanguages = allTranslations.flatMap { translations ->
+        translations.translations.map {
+          (translations.container.findRoot() to it.contentId) to translations
+        }
       }.groupBy(
         keySelector = { (key, _) -> key },
         valueTransform = { (_, value) -> value.language }
       )
       return texts.mapNotNull { text ->
-        val languages = textLanguages[text.container.findRoot() to text.contentId]?.toSet() ?: emptySet()
+        val languages =
+          textLanguages[text.container.findRoot() to text.contentId]?.toSet() ?: emptySet()
         val missingLanguages = expectedLanguages - languages
         if (missingLanguages.isNotEmpty()) {
           Issue.TextMissingTranslations(text, languages, missingLanguages)
@@ -1159,8 +1212,11 @@ class LessonDownloader(
     }
 
     fun computeTranslationsUsageReport(): List<MetricsReport.TranslationUsage> {
-      val textLanguages = localizations.filterIsInstance<Localizations.Translations>().flatMap { translations ->
-        translations.translations.map { (translations.container.findRoot() to it.contentId) to translations }
+      val allTranslations = localizations.filterIsInstance<Localizations.Translations>()
+      val textLanguages = allTranslations.flatMap { translations ->
+        translations.translations.map {
+          (translations.container.findRoot() to it.contentId) to translations
+        }
       }.groupBy(
         keySelector = { (key, _) -> key },
         valueTransform = { (_, value) -> value.language }
@@ -1202,7 +1258,8 @@ class LessonDownloader(
     }
 
     fun computeVoiceoversUsageReport(): List<MetricsReport.VoiceoverUsage> {
-      val voiceoverLanguages = localizations.filterIsInstance<Localizations.Voiceovers>().flatMap { voiceovers ->
+      val allVoiceovers = localizations.filterIsInstance<Localizations.Voiceovers>()
+      val voiceoverLanguages = allVoiceovers.flatMap { voiceovers ->
         voiceovers.contentIds.map { (voiceovers.container.findRoot() to it) to voiceovers }
       }.groupBy(
         keySelector = { (key, _) -> key },
@@ -1247,7 +1304,9 @@ class LessonDownloader(
     private fun track(topic: Container.Topic, dto: StorySummaryDto) {
       val container = Container.Story(topic, dto.id)
       if (dto.hasTitle()) texts += TextReference.Title(container, dto.title.contentId)
-      if (dto.hasDescription()) texts += TextReference.Description(container, dto.description.contentId)
+      if (dto.hasDescription()) {
+        texts += TextReference.Description(container, dto.description.contentId)
+      }
       if (dto.hasLocalizations()) track(container, dto.localizations)
       dto.chaptersList.forEach { track(container, it) }
     }
@@ -1255,7 +1314,9 @@ class LessonDownloader(
     private fun track(story: Container.Story, dto: ChapterSummaryDto) {
       val container = Container.Chapter(story, dto.explorationId)
       if (dto.hasTitle()) texts += TextReference.Title(container, dto.title.contentId)
-      if (dto.hasDescription()) texts += TextReference.Description(container, dto.description.contentId)
+      if (dto.hasDescription()) {
+        texts += TextReference.Description(container, dto.description.contentId)
+      }
       if (dto.hasLocalizations()) track(container, dto.localizations)
     }
 
@@ -1268,7 +1329,9 @@ class LessonDownloader(
     private fun track(conceptCard: Container.ConceptCard, index: Int, dto: WorkedExampleDto) {
       val container = Container.WorkedExample(conceptCard, index)
       if (dto.hasQuestion()) texts += TextReference.Question(container, dto.question.contentId)
-      if (dto.hasExplanation()) texts += TextReference.Explanation(container, dto.explanation.contentId)
+      if (dto.hasExplanation()) {
+        texts += TextReference.Explanation(container, dto.explanation.contentId)
+      }
     }
 
     private fun track(exploration: Container.Exploration, name: String, dto: StateDto) {
@@ -1278,19 +1341,29 @@ class LessonDownloader(
         InteractionTypeCase.CONTINUE_INSTANCE -> {
           val interaction = dto.interaction.continueInstance
           val args = interaction.customizationArgs
-          if (args.hasButtonText()) texts += TextReference.CustomizationArg.ButtonText(container, args.buttonText.contentId)
+          if (args.hasButtonText()) {
+            texts += TextReference.CustomizationArg.ButtonText(container, args.buttonText.contentId)
+          }
 //          if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
         }
         InteractionTypeCase.FRACTION_INPUT -> {
           val interaction = dto.interaction.fractionInput
           val args = interaction.customizationArgs
           val solution = interaction.solution
-          if (args.hasPlaceholder()) texts += TextReference.CustomizationArg.Placeholder(container, args.placeholder.contentId)
+          if (args.hasPlaceholder()) {
+            texts += TextReference.CustomizationArg.Placeholder(
+              container, args.placeholder.contentId
+            )
+          }
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.ITEM_SELECTION_INPUT -> {
@@ -1302,26 +1375,28 @@ class LessonDownloader(
           }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { agIndex, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, agIndex, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, agIndex, answerGroup.baseAnswerGroup)
+            }
             answerGroup.ruleSpecsList.forEachIndexed { rsIndex, ruleSpecDto ->
               when (ruleSpecDto.ruleTypeCase) {
-                ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.EQUALS -> {
+                ItemSelRuleSpecDto.RuleTypeCase.EQUALS -> {
                   val ruleSpec = ruleSpecDto.equals
                   if (ruleSpec.hasInput()) track(container, agIndex, rsIndex, ruleSpec.input)
                 }
-                ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.CONTAINS_AT_LEAST_ONE_OF -> {
+                ItemSelRuleSpecDto.RuleTypeCase.CONTAINS_AT_LEAST_ONE_OF -> {
                   val ruleSpec = ruleSpecDto.containsAtLeastOneOf
                   if (ruleSpec.hasInput()) track(container, agIndex, rsIndex, ruleSpec.input)
                 }
-                ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.DOES_NOT_CONTAIN_AT_LEAST_ONE_OF -> {
+                ItemSelRuleSpecDto.RuleTypeCase.DOES_NOT_CONTAIN_AT_LEAST_ONE_OF -> {
                   val ruleSpec = ruleSpecDto.doesNotContainAtLeastOneOf
                   if (ruleSpec.hasInput()) track(container, agIndex, rsIndex, ruleSpec.input)
                 }
-                ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_PROPER_SUBSET_OF -> {
+                ItemSelRuleSpecDto.RuleTypeCase.IS_PROPER_SUBSET_OF -> {
                   val ruleSpec = ruleSpecDto.isProperSubsetOf
                   if (ruleSpec.hasInput()) track(container, agIndex, rsIndex, ruleSpec.input)
                 }
-                ItemSelectionInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+                ItemSelRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
                   error("Invalid rule spec: $ruleSpecDto.")
               }
             }
@@ -1336,29 +1411,43 @@ class LessonDownloader(
           }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.NUMERIC_INPUT -> {
           val interaction = dto.interaction.numericInput
           val solution = interaction.solution
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.TEXT_INPUT -> {
           val interaction = dto.interaction.textInput
           val args = interaction.customizationArgs
           val solution = interaction.solution
-          if (args.hasPlaceholder()) texts += TextReference.CustomizationArg.Placeholder(container, args.placeholder.contentId)
+          if (args.hasPlaceholder()) {
+            texts += TextReference.CustomizationArg.Placeholder(
+              container, args.placeholder.contentId
+            )
+          }
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { agIndex, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, agIndex, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, agIndex, answerGroup.baseAnswerGroup)
+            }
             answerGroup.ruleSpecsList.forEachIndexed { rsIndex, ruleSpecDto ->
               when (ruleSpecDto.ruleTypeCase) {
                 TextInputInstanceDto.RuleSpecDto.RuleTypeCase.EQUALS -> {
@@ -1391,30 +1480,48 @@ class LessonDownloader(
             texts += TextReference.CustomizationArg.Choice(container, choice.contentId, index)
           }
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { agIndex, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, agIndex, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, agIndex, answerGroup.baseAnswerGroup)
+            }
             answerGroup.ruleSpecsList.forEachIndexed { rsIndex, ruleSpecDto ->
               when (ruleSpecDto.ruleTypeCase) {
-                DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUAL_TO_ORDERING -> {
+                DragDropSortRuleSpecDto.RuleTypeCase.IS_EQUAL_TO_ORDERING -> {
                   val ruleSpec = ruleSpecDto.isEqualToOrdering
                   if (ruleSpec.hasInput()) track(container, agIndex, rsIndex, ruleSpec.input)
                 }
-                DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.IS_EQUAL_TO_ORDERING_WITH_ONE_ITEM_AT_INCORRECT_POSITION -> {
+                IS_EQUAL_TO_ORDERING_WITH_ONE_ITEM_AT_INCORRECT_POSITION -> {
                   val ruleSpec = ruleSpecDto.isEqualToOrderingWithOneItemAtIncorrectPosition
                   if (ruleSpec.hasInput()) track(container, agIndex, rsIndex, ruleSpec.input)
                 }
-                DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_ELEMENT_X_AT_POSITION_Y -> {
+                DragDropSortRuleSpecDto.RuleTypeCase.HAS_ELEMENT_X_AT_POSITION_Y -> {
                   val ruleSpec = ruleSpecDto.hasElementXAtPositionY
-                  if (ruleSpec.hasElement()) track(container, agIndex, rsIndex, ruleSpec.element, context = "input")
+                  if (ruleSpec.hasElement()) {
+                    track(container, agIndex, rsIndex, ruleSpec.element, context = "input")
+                  }
                 }
-                DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.HAS_ELEMENT_X_BEFORE_ELEMENT_Y -> {
+                DragDropSortRuleSpecDto.RuleTypeCase.HAS_ELEMENT_X_BEFORE_ELEMENT_Y -> {
                   val ruleSpec = ruleSpecDto.hasElementXBeforeElementY
-                  if (ruleSpec.hasConsideredElement()) track(container, agIndex, rsIndex, ruleSpec.consideredElement, context = "consideredElement")
-                  if (ruleSpec.hasLaterElement()) track(container, agIndex, rsIndex, ruleSpec.laterElement, context = "laterElement")
+                  if (ruleSpec.hasConsideredElement()) {
+                    track(
+                      container,
+                      agIndex,
+                      rsIndex,
+                      ruleSpec.consideredElement,
+                      context = "consideredElement"
+                    )
+                  }
+                  if (ruleSpec.hasLaterElement()) {
+                    track(
+                      container, agIndex, rsIndex, ruleSpec.laterElement, context = "laterElement"
+                    )
+                  }
                 }
-                DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+                DragDropSortRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
                   error("Invalid rule spec: $ruleSpecDto.")
               }
             }
@@ -1425,51 +1532,77 @@ class LessonDownloader(
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.RATIO_EXPRESSION_INPUT -> {
           val interaction = dto.interaction.ratioExpressionInput
           val args = interaction.customizationArgs
           val solution = interaction.solution
-          if (args.hasPlaceholder()) texts += TextReference.CustomizationArg.Placeholder(container, args.placeholder.contentId)
+          if (args.hasPlaceholder()) {
+            texts += TextReference.CustomizationArg.Placeholder(
+              container, args.placeholder.contentId
+            )
+          }
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.ALGEBRAIC_EXPRESSION_INPUT -> {
           val interaction = dto.interaction.algebraicExpressionInput
           val solution = interaction.solution
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.MATH_EQUATION_INPUT -> {
           val interaction = dto.interaction.mathEquationInput
           val solution = interaction.solution
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.NUMERIC_EXPRESSION_INPUT -> {
           val interaction = dto.interaction.numericExpressionInput
           val args = interaction.customizationArgs
           val solution = interaction.solution
-          if (args.hasPlaceholder()) texts += TextReference.CustomizationArg.Placeholder(container, args.placeholder.contentId)
+          if (args.hasPlaceholder()) {
+            texts += TextReference.CustomizationArg.Placeholder(
+              container, args.placeholder.contentId
+            )
+          }
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
-          if (interaction.hasSolution() && solution.hasBaseSolution()) track(container, solution.baseSolution)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
           interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
           interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
-            if (answerGroup.hasBaseAnswerGroup()) track(container, index, answerGroup.baseAnswerGroup)
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
           }
         }
         InteractionTypeCase.END_EXPLORATION -> {} // Nothing to track.
@@ -1487,7 +1620,12 @@ class LessonDownloader(
       if (dto.hasOutcome()) track(container, dto.outcome)
     }
 
-    private fun track(state: Container.State, answerGroupIndex: Int, ruleSpecIndex: Int, dto: ListOfSetsOfTranslatableHtmlContentIdsDto) {
+    private fun track(
+      state: Container.State,
+      answerGroupIndex: Int,
+      ruleSpecIndex: Int,
+      dto: ListOfSetsOfTranslatableHtmlContentIdsDto
+    ) {
       val answerGroup = Container.AnswerGroup(state, answerGroupIndex)
       val ruleSpec = Container.RuleSpec(answerGroup, ruleSpecIndex)
       dto.contentIdSetsList.forEachIndexed { index, ids ->
@@ -1495,22 +1633,40 @@ class LessonDownloader(
       }
     }
 
-    private fun track(state: Container.State, answerGroupIndex: Int, ruleSpecIndex: Int, dto: SetOfTranslatableHtmlContentIdsDto) {
+    private fun track(
+      state: Container.State,
+      answerGroupIndex: Int,
+      ruleSpecIndex: Int,
+      dto: SetOfTranslatableHtmlContentIdsDto
+    ) {
       val answerGroup = Container.AnswerGroup(state, answerGroupIndex)
       val ruleSpec = Container.RuleSpec(answerGroup, ruleSpecIndex)
       track(ruleSpec, dto)
     }
 
-    private fun track(container: Container, dto: SetOfTranslatableHtmlContentIdsDto, createExtraContext: (String) -> String = { it }) {
+    private fun track(
+      container: Container,
+      dto: SetOfTranslatableHtmlContentIdsDto,
+      createExtraContext: (String) -> String = { it }
+    ) {
       dto.contentIdsList.forEachIndexed { index, id ->
-        track(container, id, context = createExtraContext("SetOfTranslatableHtmlContentIds(idx=$index)"))
+        track(
+          container, id, context = createExtraContext("SetOfTranslatableHtmlContentIds(idx=$index)")
+        )
       }
     }
 
-    private fun track(state: Container.State, answerGroupIndex: Int, ruleSpecIndex: Int, dto: TranslatableSetOfNormalizedStringDto) {
+    private fun track(
+      state: Container.State,
+      answerGroupIndex: Int,
+      ruleSpecIndex: Int,
+      dto: TranslatableSetOfNormalizedStringDto
+    ) {
       val answerGroup = Container.AnswerGroup(state, answerGroupIndex)
       val ruleSpec = Container.RuleSpec(answerGroup, ruleSpecIndex)
-      texts += TextReference.RuleInputTranslatableHtmlContentId(ruleSpec, dto.contentId, context = "TranslatableSetOfNormalizedString")
+      texts += TextReference.RuleInputTranslatableHtmlContentId(
+        ruleSpec, dto.contentId, context = "TranslatableSetOfNormalizedString"
+      )
     }
 
     private fun track(state: Container.State, index: Int, dto: HintDto) {
@@ -1519,14 +1675,22 @@ class LessonDownloader(
     }
 
     private fun track(container: Container, dto: BaseSolutionDto) {
-      if (dto.hasExplanation()) texts += TextReference.SolutionExplanation(container, dto.explanation.contentId)
+      if (dto.hasExplanation()) {
+        texts += TextReference.SolutionExplanation(container, dto.explanation.contentId)
+      }
     }
 
     private fun track(container: Container, dto: TranslatableHtmlContentIdDto, context: String) {
       texts += TextReference.RuleInputTranslatableHtmlContentId(container, dto.contentId, context)
     }
 
-    private fun track(state: Container.State, answerGroupIndex: Int, ruleSpecIndex: Int, dto: TranslatableHtmlContentIdDto, context: String) {
+    private fun track(
+      state: Container.State,
+      answerGroupIndex: Int,
+      ruleSpecIndex: Int,
+      dto: TranslatableHtmlContentIdDto,
+      context: String
+    ) {
       val answerGroup = Container.AnswerGroup(state, answerGroupIndex)
       val ruleSpec = Container.RuleSpec(answerGroup, ruleSpecIndex)
       texts += TextReference.RuleInputTranslatableHtmlContentId(ruleSpec, dto.contentId, context)
@@ -1538,40 +1702,59 @@ class LessonDownloader(
     }
 
     private fun track(container: Container, dto: ContentLocalizationDto) {
-      if (dto.hasThumbnail()) localizations += Localizations.Thumbnail(container, dto.language, dto.thumbnail.referencedImage.filename)
+      if (dto.hasThumbnail()) {
+        localizations += Localizations.Thumbnail(
+          container, dto.language, dto.thumbnail.referencedImage.filename
+        )
+      }
       localizations += Localizations.Translations(
         container,
         dto.language,
         dto.localizableTextContentMappingMap.map { (contentId, localizableText) ->
           when (localizableText.dataFormatCase) {
-            LocalizableTextDto.DataFormatCase.SINGLE_LOCALIZABLE_TEXT ->
-              Localizations.Translation.Single(contentId, localizableText.singleLocalizableText.text)
-            LocalizableTextDto.DataFormatCase.SET_OF_LOCALIZABLE_TEXT ->
-              Localizations.Translation.Multi(contentId, localizableText.setOfLocalizableText.textList)
+            LocalizableTextDto.DataFormatCase.SINGLE_LOCALIZABLE_TEXT -> {
+              Localizations.Translation.Single(
+                contentId, localizableText.singleLocalizableText.text
+              )
+            }
+            LocalizableTextDto.DataFormatCase.SET_OF_LOCALIZABLE_TEXT -> {
+              Localizations.Translation.Multi(
+                contentId, localizableText.setOfLocalizableText.textList
+              )
+            }
             LocalizableTextDto.DataFormatCase.DATAFORMAT_NOT_SET, null ->
               error("Invalid localizable text: $localizableText.")
           }
         }
       )
-      localizations += Localizations.Voiceovers(container, dto.language, dto.voiceoverContentMappingMap.keys)
+      localizations += Localizations.Voiceovers(
+        container, dto.language, dto.voiceoverContentMappingMap.keys
+      )
       if (dto.hasLocalizedImageList()) {
-        localizations += Localizations.ImageReferences(container, dto.language, dto.localizedImageList.referencedImagesList.map { it.filename }.toSet())
+        localizations += Localizations.ImageReferences(
+          container,
+          dto.language,
+          dto.localizedImageList.referencedImagesList.map { it.filename }.toSet()
+        )
       }
     }
 
-    sealed class Container: Comparable<Container> {
+    sealed class Container : Comparable<Container> {
       abstract val parent: Container?
       protected abstract val impliedTypeOrder: Int
       protected abstract val selfReferenceString: String
 
       val referenceString: String
-        get() = parent?.let { "$selfReferenceString in ${it.referenceString}" } ?: selfReferenceString
+        get() {
+          return parent?.let { "$selfReferenceString in ${it.referenceString}" }
+            ?: selfReferenceString
+        }
 
       override fun compareTo(other: Container): Int = COMPARATOR.compare(this, other)
 
       protected abstract fun compareToInternal(other: Container): Int
 
-      data class Topic(val topicId: String): Container() {
+      data class Topic(val topicId: String) : Container() {
         override val parent = null
         override val selfReferenceString = "topic $topicId"
         override val impliedTypeOrder = 0
@@ -1584,7 +1767,7 @@ class LessonDownloader(
         }
       }
 
-      data class Story(override val parent: Topic, val storyId: String): Container() {
+      data class Story(override val parent: Topic, val storyId: String) : Container() {
         override val selfReferenceString = "story $storyId"
         override val impliedTypeOrder = 1
 
@@ -1596,7 +1779,7 @@ class LessonDownloader(
         }
       }
 
-      data class Chapter(override val parent: Story, val explorationId: String): Container() {
+      data class Chapter(override val parent: Story, val explorationId: String) : Container() {
         override val selfReferenceString = "chapter (exp: $explorationId)"
         override val impliedTypeOrder = 2
 
@@ -1608,7 +1791,7 @@ class LessonDownloader(
         }
       }
 
-      data class Skill(override val parent: Topic, val skillId: String): Container() {
+      data class Skill(override val parent: Topic, val skillId: String) : Container() {
         override val selfReferenceString = "skill $skillId"
         override val impliedTypeOrder = 3
 
@@ -1620,7 +1803,7 @@ class LessonDownloader(
         }
       }
 
-      data class RevisionCard(override val parent: Topic, val index: Int): Container() {
+      data class RevisionCard(override val parent: Topic, val index: Int) : Container() {
         override val selfReferenceString = "revision card (subtopic: $index)"
         override val impliedTypeOrder = 4
 
@@ -1632,7 +1815,7 @@ class LessonDownloader(
         }
       }
 
-      data class ConceptCard(val skillId: String): Container() {
+      data class ConceptCard(val skillId: String) : Container() {
         override val parent = null
         override val selfReferenceString = "concept card (skill: $skillId)"
         override val impliedTypeOrder = 5
@@ -1645,7 +1828,7 @@ class LessonDownloader(
         }
       }
 
-      data class WorkedExample(override val parent: ConceptCard, val index: Int): Container() {
+      data class WorkedExample(override val parent: ConceptCard, val index: Int) : Container() {
         override val selfReferenceString = "worked example $index"
         override val impliedTypeOrder = 6
 
@@ -1657,7 +1840,7 @@ class LessonDownloader(
         }
       }
 
-      data class Exploration(val explorationId: String): Container() {
+      data class Exploration(val explorationId: String) : Container() {
         override val parent = null
         override val selfReferenceString = "exploration $explorationId"
         override val impliedTypeOrder = 7
@@ -1670,7 +1853,7 @@ class LessonDownloader(
         }
       }
 
-      data class State(override val parent: Exploration, val name: String): Container() {
+      data class State(override val parent: Exploration, val name: String) : Container() {
         override val selfReferenceString = "state '$name'"
         override val impliedTypeOrder = 8
 
@@ -1682,7 +1865,7 @@ class LessonDownloader(
         }
       }
 
-      data class AnswerGroup(override val parent: State, val index: Int): Container() {
+      data class AnswerGroup(override val parent: State, val index: Int) : Container() {
         override val selfReferenceString = "answer group $index"
         override val impliedTypeOrder = 9
 
@@ -1694,7 +1877,7 @@ class LessonDownloader(
         }
       }
 
-      data class RuleSpec(override val parent: AnswerGroup, val index: Int): Container() {
+      data class RuleSpec(override val parent: AnswerGroup, val index: Int) : Container() {
         override val selfReferenceString = "rule spec $index"
         override val impliedTypeOrder = 10
 
@@ -1706,7 +1889,7 @@ class LessonDownloader(
         }
       }
 
-      data class Hint(override val parent: State, val index: Int): Container() {
+      data class Hint(override val parent: State, val index: Int) : Container() {
         override val selfReferenceString = "hint $index"
         override val impliedTypeOrder = 11
 
@@ -1719,11 +1902,14 @@ class LessonDownloader(
       }
 
       companion object {
-        private val COMPARATOR = compareBy(Container::impliedTypeOrder).thenBy(Container::parent).thenComparing(Container::compareToInternal)
+        private val COMPARATOR =
+          compareBy(Container::impliedTypeOrder)
+            .thenBy(Container::parent)
+            .thenComparing(Container::compareToInternal)
       }
     }
 
-    sealed class TextReference: Comparable<TextReference> {
+    sealed class TextReference : Comparable<TextReference> {
       abstract val container: Container
       abstract val contentId: String
       protected abstract val impliedTypeOrder: Int
@@ -1734,74 +1920,115 @@ class LessonDownloader(
 
       override fun compareTo(other: TextReference): Int = COMPARATOR.compare(this, other)
 
-      data class Name(override val container: Container, override val contentId: String): TextReference() {
+      data class Name(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "name"
         override val impliedTypeOrder = 0
       }
 
-      data class Title(override val container: Container, override val contentId: String): TextReference() {
+      data class Title(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "title"
         override val impliedTypeOrder = 1
       }
 
-      data class Description(override val container: Container, override val contentId: String): TextReference() {
+      data class Description(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "description"
         override val impliedTypeOrder = 2
       }
 
-      data class Content(override val container: Container, override val contentId: String): TextReference() {
+      data class Content(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "content"
         override val impliedTypeOrder = 3
       }
 
-      data class Explanation(override val container: Container, override val contentId: String): TextReference() {
+      data class Explanation(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "explanation"
         override val impliedTypeOrder = 4
       }
 
-      data class Question(override val container: Container, override val contentId: String): TextReference() {
+      data class Question(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "question"
         override val impliedTypeOrder = 5
       }
 
-      data class Feedback(override val container: Container, override val contentId: String): TextReference() {
+      data class Feedback(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "feedback"
         override val impliedTypeOrder = 6
       }
 
-      data class SolutionExplanation(override val container: Container, override val contentId: String): TextReference() {
+      data class SolutionExplanation(
+        override val container: Container,
+        override val contentId: String
+      ) : TextReference() {
         override val typeName = "solution explanation"
         override val impliedTypeOrder = 7
       }
 
-      data class RuleInputTranslatableHtmlContentId(override val container: Container, override val contentId: String, val context: String): TextReference() {
+      data class RuleInputTranslatableHtmlContentId(
+        override val container: Container,
+        override val contentId: String,
+        val context: String
+      ) : TextReference() {
         override val typeName = "rule input ($context)"
         override val impliedTypeOrder = 8
       }
 
-      sealed class CustomizationArg: TextReference() {
+      sealed class CustomizationArg : TextReference() {
         override val typeName get() = "customization arg ($argName)"
 
         protected abstract val argName: String
 
-        data class ButtonText(override val container: Container, override val contentId: String) : CustomizationArg() {
+        data class ButtonText(
+          override val container: Container,
+          override val contentId: String
+        ) : CustomizationArg() {
           override val argName = "button text"
           override val impliedTypeOrder = 9
         }
 
-        data class Placeholder(override val container: Container, override val contentId: String) : CustomizationArg() {
+        data class Placeholder(
+          override val container: Container,
+          override val contentId: String
+        ) : CustomizationArg() {
           override val argName = "placeholder"
           override val impliedTypeOrder = 10
         }
 
-        data class Choice(override val container: Container, override val contentId: String, val index: Int) : CustomizationArg() {
+        data class Choice(
+          override val container: Container,
+          override val contentId: String,
+          val index: Int
+        ) : CustomizationArg() {
           override val argName = "choice $index"
           override val impliedTypeOrder = 11
         }
       }
 
       private companion object {
-        private val COMPARATOR = compareBy(TextReference::container).thenBy(TextReference::contentId).thenBy(TextReference::impliedTypeOrder)
+        private val COMPARATOR =
+          compareBy(TextReference::container)
+            .thenBy(TextReference::contentId)
+            .thenBy(TextReference::impliedTypeOrder)
       }
     }
 
@@ -1813,23 +2040,38 @@ class LessonDownloader(
         override val container: Container,
         override val language: LanguageType,
         val translations: List<Translation>
-      ): Localizations()
-      data class Voiceovers(override val container: Container, override val language: LanguageType, val contentIds: Set<String>): Localizations()
-      data class ImageReferences(override val container: Container, override val language: LanguageType, val filenames: Set<String>): Localizations()
-      data class Thumbnail(override val container: Container, override val language: LanguageType, val thumbnailFilename: String): Localizations()
+      ) : Localizations()
+      data class Voiceovers(
+        override val container: Container,
+        override val language: LanguageType,
+        val contentIds: Set<String>
+      ) : Localizations()
+      data class ImageReferences(
+        override val container: Container,
+        override val language: LanguageType,
+        val filenames: Set<String>
+      ) : Localizations()
+      data class Thumbnail(
+        override val container: Container,
+        override val language: LanguageType,
+        val thumbnailFilename: String
+      ) : Localizations()
 
       sealed class Translation {
         abstract val contentId: String
         abstract val htmls: List<String>
 
-        data class Single(override val contentId: String, val html: String): Translation() {
+        data class Single(override val contentId: String, val html: String) : Translation() {
           override val htmls: List<String> get() = listOf(html)
         }
-        data class Multi(override val contentId: String, override val htmls: List<String>): Translation()
+        data class Multi(
+          override val contentId: String,
+          override val htmls: List<String>
+        ) : Translation()
       }
     }
 
-    sealed class Issue: Comparable<Issue> {
+    sealed class Issue : Comparable<Issue> {
       protected abstract val referenceContainer: Container
       protected abstract val impliedTypeOrder: Int
 
@@ -1837,7 +2079,12 @@ class LessonDownloader(
 
       protected abstract fun compareToInternal(other: Issue): Int
 
-      data class ImageHasInvalidExtension(val container: Container, val language: LanguageType, val filename: String, val invalidExtension: String): Issue() {
+      data class ImageHasInvalidExtension(
+        val container: Container,
+        val language: LanguageType,
+        val filename: String,
+        val invalidExtension: String
+      ) : Issue() {
         override val referenceContainer = container
         override val impliedTypeOrder: Int = 0
 
@@ -1845,11 +2092,19 @@ class LessonDownloader(
           COMPARATOR.compare(this, other as ImageHasInvalidExtension)
 
         private companion object {
-          private val COMPARATOR = compareBy(ImageHasInvalidExtension::language).thenBy(ImageHasInvalidExtension::filename).thenBy(ImageHasInvalidExtension::invalidExtension)
+          private val COMPARATOR =
+            compareBy(ImageHasInvalidExtension::language)
+              .thenBy(ImageHasInvalidExtension::filename)
+              .thenBy(ImageHasInvalidExtension::invalidExtension)
         }
       }
 
-      data class ImageInconsistencies(val container: Container, val filename: String, val presentLanguages: Set<LanguageType>, val missingLanguages: Set<LanguageType>): Issue() {
+      data class ImageInconsistencies(
+        val container: Container,
+        val filename: String,
+        val presentLanguages: Set<LanguageType>,
+        val missingLanguages: Set<LanguageType>
+      ) : Issue() {
         override val referenceContainer = container
         override val impliedTypeOrder: Int = 1
 
@@ -1861,7 +2116,12 @@ class LessonDownloader(
         }
       }
 
-      data class HtmlHasInvalidTag(val language: LanguageType, val text: TextReference, val html: String, val invalidTag: String): Issue() {
+      data class HtmlHasInvalidTag(
+        val language: LanguageType,
+        val text: TextReference,
+        val html: String,
+        val invalidTag: String
+      ) : Issue() {
         override val referenceContainer = text.container
         override val impliedTypeOrder: Int = 2
 
@@ -1869,11 +2129,18 @@ class LessonDownloader(
           COMPARATOR.compare(this, other as HtmlHasInvalidTag)
 
         private companion object {
-          private val COMPARATOR = compareBy(HtmlHasInvalidTag::language).thenBy(HtmlHasInvalidTag::invalidTag).thenBy(HtmlHasInvalidTag::text)
+          private val COMPARATOR =
+            compareBy(HtmlHasInvalidTag::language)
+              .thenBy(HtmlHasInvalidTag::invalidTag)
+              .thenBy(HtmlHasInvalidTag::text)
         }
       }
 
-      data class TextMissingTranslations(val text: TextReference, val presentLanguages: Set<LanguageType>, val missingLanguages: Set<LanguageType>): Issue() {
+      data class TextMissingTranslations(
+        val text: TextReference,
+        val presentLanguages: Set<LanguageType>,
+        val missingLanguages: Set<LanguageType>
+      ) : Issue() {
         override val referenceContainer = text.container
         override val impliedTypeOrder: Int = 3
 
@@ -1894,8 +2161,14 @@ class LessonDownloader(
     }
 
     sealed class MetricsReport {
-      data class TranslationUsage(val container: Container, val languageUsage: Map<LanguageType, Usage>): MetricsReport()
-      data class VoiceoverUsage(val container: Container, val languageUsage: Map<LanguageType, Usage>): MetricsReport()
+      data class TranslationUsage(
+        val container: Container,
+        val languageUsage: Map<LanguageType, Usage>
+      ) : MetricsReport()
+      data class VoiceoverUsage(
+        val container: Container,
+        val languageUsage: Map<LanguageType, Usage>
+      ) : MetricsReport()
 
       data class Usage(val usedCount: Int, val totalCount: Int) {
         val ratio: Float get() = usedCount.toFloat() / totalCount.toFloat()
@@ -2060,69 +2333,133 @@ class LessonDownloader(
     }
 
     private fun DownloadableTopicSummaryDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id, language = localizations.defaultMapping.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.TOPIC,
+          entityId = id,
+          language = localizations.defaultMapping.language
+        )
       return localizations.collectImageReferences(container) +
-        storySummariesList.flatMap { it.collectImageReferences(localizations.defaultMapping.language) } +
-        referencedSkillsList.flatMap { it.collectImageReferences() }
+        storySummariesList.flatMap {
+          it.collectImageReferences(localizations.defaultMapping.language)
+        } + referencedSkillsList.flatMap { it.collectImageReferences() }
     }
 
     private fun RevisionCardDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id.topicId, language = defaultLocalization.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.TOPIC,
+          entityId = id.topicId,
+          language = defaultLocalization.language
+        )
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun ConceptCardDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = skillId, language = defaultLocalization.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.SKILL,
+          entityId = skillId,
+          language = defaultLocalization.language
+        )
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun ExplorationDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.EXPLORATION, entityId = id, language = defaultLocalization.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.EXPLORATION,
+          entityId = id,
+          language = defaultLocalization.language
+        )
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun QuestionDto.collectImageReferences(): List<ImageReference> {
       // TODO: Should be using skill ID here?
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id, language = defaultLocalization.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.SKILL,
+          entityId = id,
+          language = defaultLocalization.language
+        )
       return defaultLocalization.collectImageReferences(container)
     }
 
     private fun RevisionCardLanguagePackDto.collectImageReferences(): List<ImageReference> {
       val container =
-        ImageContainer(imageContainerType = ImageContainerType.TOPIC, entityId = id.id.topicId, language = id.language)
+        ImageContainer(
+          imageContainerType = ImageContainerType.TOPIC,
+          entityId = id.id.topicId,
+          language = id.language
+        )
       return localization.collectImageReferences(container)
     }
 
     private fun ConceptCardLanguagePackDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id.skillId, language = id.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.SKILL,
+          entityId = id.skillId,
+          language = id.language
+        )
       return localization.collectImageReferences(container)
     }
 
     private fun ExplorationLanguagePackDto.collectImageReferences(): List<ImageReference> {
       val container =
-        ImageContainer(imageContainerType = ImageContainerType.EXPLORATION, entityId = id.explorationId, language = id.language)
+        ImageContainer(
+          imageContainerType = ImageContainerType.EXPLORATION,
+          entityId = id.explorationId,
+          language = id.language
+        )
       return localization.collectImageReferences(container)
     }
 
     private fun QuestionLanguagePackDto.collectImageReferences(): List<ImageReference> {
       // TODO: Should be using skill ID here?
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id.questionId, language = id.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.SKILL,
+          entityId = id.questionId,
+          language = id.language
+        )
       return localization.collectImageReferences(container)
     }
 
-    private fun StorySummaryDto.collectImageReferences(defaultLanguage: LanguageType): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.STORY, entityId = id, language = defaultLanguage)
+    private fun StorySummaryDto.collectImageReferences(
+      defaultLanguage: LanguageType
+    ): List<ImageReference> {
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.STORY, entityId = id, language = defaultLanguage
+        )
       return localizations.collectImageReferences(container) +
-        chaptersList.flatMap { it.collectImageReferences(this@collectImageReferences.id, defaultLanguage) }
+        chaptersList.flatMap {
+          it.collectImageReferences(this@collectImageReferences.id, defaultLanguage)
+        }
     }
 
-    private fun ChapterSummaryDto.collectImageReferences(storyId: String, defaultLanguage: LanguageType): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.STORY, entityId = storyId, language = defaultLanguage)
+    private fun ChapterSummaryDto.collectImageReferences(
+      storyId: String,
+      defaultLanguage: LanguageType
+    ): List<ImageReference> {
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.STORY,
+          entityId = storyId,
+          language = defaultLanguage
+        )
       return localizations.collectImageReferences(container)
     }
 
     private fun SkillSummaryDto.collectImageReferences(): List<ImageReference> {
-      val container = ImageContainer(imageContainerType = ImageContainerType.SKILL, entityId = id, language = localizations.defaultMapping.language)
+      val container =
+        ImageContainer(
+          imageContainerType = ImageContainerType.SKILL,
+          entityId = id,
+          language = localizations.defaultMapping.language
+        )
       return localizations.collectImageReferences(container)
     }
 
@@ -2147,9 +2484,11 @@ class LessonDownloader(
       listOf(referencedImage.convertToImageReference(container, imageType = ImageType.THUMBNAIL))
 
     private fun ReferencedImageDto.convertToImageReference(
-      container: ImageContainer, imageType: ImageType = ImageType.HTML_IMAGE
+      container: ImageContainer,
+      imageType: ImageType = ImageType.HTML_IMAGE
     ): ImageReference = ImageReference(container, imageType, filename)
 
-    private fun CompatibilityAnalyzer.Container.findRoot(): CompatibilityAnalyzer.Container = generateSequence(this) { it.parent }.last()
+    private fun CompatibilityAnalyzer.Container.findRoot(): CompatibilityAnalyzer.Container =
+      generateSequence(this) { it.parent }.last()
   }
 }

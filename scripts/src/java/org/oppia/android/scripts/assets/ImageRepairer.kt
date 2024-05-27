@@ -1,13 +1,13 @@
 package org.oppia.android.scripts.assets
 
 import com.github.weisj.jsvg.parser.SVGLoader
+import org.oppia.android.scripts.assets.ImageRepairer.Companion.resizeTo
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
-import org.oppia.android.scripts.assets.ImageRepairer.Companion.resizeTo
 
 class ImageRepairer {
   fun convertToPng(filename: String, svgImageContents: String): RepairedImage {
@@ -17,10 +17,10 @@ class ImageRepairer {
       svgImageContents.byteInputStream().use { loader.load(it) }
         ?: error("Failed to load: $filename.")
     val size = svgDocument.size()
-    val chosenWidth =
-      filename.extractWidthFromFilename().toFloat().convertOppiaPxToStandardAndroidPx().roundToInt()
-    val chosenHeight =
-      filename.extractHeightFromFilename().toFloat().convertOppiaPxToStandardAndroidPx().roundToInt()
+    val extractedWidth = filename.extractWidthFromFilename().toFloat()
+    val extractedHeight = filename.extractHeightFromFilename().toFloat()
+    val chosenWidth = extractedWidth.convertOppiaPxToStandardAndroidPx().roundToInt()
+    val chosenHeight = extractedHeight.convertOppiaPxToStandardAndroidPx().roundToInt()
     // Render at a larger size to reduce aliasing from the underlying rendering library (but render
     // at no larger than 5x the .
     val renderWidth = chosenWidth * 5
@@ -41,17 +41,23 @@ class ImageRepairer {
 
   fun areEqualImages(extension: String, imageData1: ByteArray, imageData2: ByteArray): Boolean {
     if (extension == "svg") return imageData1.decodeToString() == imageData2.decodeToString()
-    val image1 = imageData1.inputStream().use { ImageIO.read(it) } ?: error("Cannot read file of type $extension (data size: ${imageData1.size} bytes).")
-    val image2 = imageData2.inputStream().use { ImageIO.read(it) } ?: error("Cannot read file of type $extension (data size: ${imageData2.size} bytes).")
+    val image1 = imageData1.inputStream().use {
+      ImageIO.read(it)
+    } ?: error("Cannot read file of type $extension (data size: ${imageData1.size} bytes).")
+    val image2 = imageData2.inputStream().use {
+      ImageIO.read(it)
+    } ?: error("Cannot read file of type $extension (data size: ${imageData2.size} bytes).")
     return areImagesEqual(image1, image2)
   }
 
   sealed class RepairedImage {
     data class RenderedSvg(
-      val pngContents: List<Byte>, val width: Int, val height: Int
-    ): RepairedImage()
+      val pngContents: List<Byte>,
+      val width: Int,
+      val height: Int
+    ) : RepairedImage()
 
-    object NoRepairNeeded: RepairedImage()
+    object NoRepairNeeded : RepairedImage()
   }
 
   private fun areImagesEqual(image1: BufferedImage, image2: BufferedImage): Boolean {

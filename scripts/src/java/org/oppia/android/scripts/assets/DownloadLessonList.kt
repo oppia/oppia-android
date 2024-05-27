@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.assets
 
 import com.google.protobuf.TextFormat
-import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +28,7 @@ import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.StorySummaryDto
 import org.oppia.proto.v1.structure.SubtopicSummaryDto
+import java.io.File
 
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
