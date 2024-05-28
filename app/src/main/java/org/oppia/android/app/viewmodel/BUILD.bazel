@@ -2,7 +2,7 @@
 Utilities corresponding to simplify using Jetpack's view model functionality.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "observable_array_list",

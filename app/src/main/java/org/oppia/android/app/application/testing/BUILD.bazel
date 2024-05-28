@@ -3,7 +3,7 @@ This package contains testing utilities that may be needed to set up the root ap
 testing environments.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "testing_build_flavor_module",

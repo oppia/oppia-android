@@ -4,7 +4,7 @@ Package for test-only threading utilities, including classes to coordinate cross
 in a way that can improve test reliability, correctness, and performance.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "annotations",
