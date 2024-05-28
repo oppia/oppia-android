@@ -2,8 +2,7 @@
 Utilities corresponding to system utilities such as the system clock.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "oppia_clock",
@@ -31,8 +30,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":oppia_clock_impl",
+        "//:dagger",
     ],
 )
 
@@ -57,5 +56,3 @@ kt_android_library(
         ":oppia_clock_injector",
     ],
 )
-
-dagger_rules()
