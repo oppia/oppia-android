@@ -8,15 +8,8 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 kt_android_library(
     name = "api",
     srcs = [
-        "ClassroomService.kt",
-        "ConceptCardService.kt",
-        "ExplorationService.kt",
         "FeedbackReportingService.kt",
         "PlatformParameterService.kt",
-        "QuestionPlayerService.kt",
-        "StoryService.kt",
-        "SubtopicService.kt",
-        "TopicService.kt",
     ],
     custom_package = "org.oppia.android.data.backends.gae.api",
     visibility = ["//:oppia_api_visibility"],
