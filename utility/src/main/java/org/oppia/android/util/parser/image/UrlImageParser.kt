@@ -467,7 +467,6 @@ class UrlImageParser private constructor(
       drawable?.colorFilter = colorFilter
     }
 
-    @Deprecated(message = "Deprecated in Java.")
     override fun getOpacity(): Int {
       @Suppress("DEPRECATION") // Needed to pass along the call to the proxied drawable.
       return drawable?.opacity ?: PixelFormat.TRANSLUCENT

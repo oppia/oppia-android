@@ -82,6 +82,19 @@ android_library(
     ],
 )
 
+alias(
+    name = "oppia_proto_api_protos",
+    actual = "@oppia_proto_api//:android_protos",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+alias(
+    name = "oppia_proto_api_java_protos",
+    testonly = True,
+    actual = "@oppia_proto_api//:android_java_protos",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
 # Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
 # Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
 android_library(

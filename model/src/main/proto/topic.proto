@@ -547,10 +547,38 @@ message EphemeralRevisionCard {
   WrittenTranslationContext written_translation_context = 2;
 }
 
-// Corresponds to a local file cataloging all topics available to load.
-message TopicIdList {
-  // The list of IDs corresponding to topics available on the local filesystem.
-  repeated string topic_ids = 1;
+// Corresponds to a local file cataloging all available classrooms in the app.
+message ClassroomList {
+  // The list of classrooms available to the app.
+  repeated ClassroomRecord classrooms = 1;
+}
+
+// Corresponds to a loadable classroom.
+message ClassroomRecord {
+  // The classroom's ID.
+  string id = 1;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this classroom that
+  // has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 2;
+
+  // The title of the classroom.
+  SubtitledHtml translatable_title = 3;
+
+  // The thumbnail corresponding to this classroom.
+  LessonThumbnail classroom_thumbnail = 4;
+
+  // A map from topic ID to a TopicIdList indicating the prerequisite topics to suggest to the user
+  // before they play the topic given by the key. Note that the keys of this map indicate the
+  // complete list of topics contained within this classroom. The prerequisite list of topics may
+  // include topics outside of this classroom.
+  map<string, TopicIdList> topic_prerequisites = 5;
+
+  // Represents a list of topic IDs (to be used in the context of topic deps in a classroom).
+  message TopicIdList {
+    // A list of topics IDs.
+    repeated string topic_ids = 1;
+  }
 }
 
 // Corresponds to a local file cataloging all concept cards available to load.
