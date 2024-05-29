@@ -6,7 +6,7 @@ load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
 
 def generate_assets_list_from_text_protos(
         name,
-        topic_list_file_names,
+        classroom_list_file_names,
         topic_file_names,
         subtopic_file_names,
         story_file_names,
@@ -17,7 +17,7 @@ def generate_assets_list_from_text_protos(
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        topic_list_file_names: list of str. The list of topic list file names.
+        classroom_list_file_names: list of str. The classroom list file names.
         topic_file_names: list of str. The list of topic file names.
         subtopic_file_names: list of str. The list of subtopic file names.
         story_file_names: list of str. The list of story file names.
@@ -29,10 +29,10 @@ def generate_assets_list_from_text_protos(
     """
     return generate_proto_binary_assets(
         name = name,
-        names = topic_list_file_names,
+        names = classroom_list_file_names,
         proto_dep_name = "topic",
-        proto_type_name = "TopicIdList",
-        name_prefix = "topic_id_list",
+        proto_type_name = "ClassroomList",
+        name_prefix = "classroom_list",
         asset_dir = "src/main/assets",
         proto_dep_bazel_target_prefix = "//model/src/main/proto",
         proto_package = "model",
