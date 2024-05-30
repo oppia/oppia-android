@@ -42,7 +42,7 @@ class StringLanguageTranslationCheckTest {
       mapOf("nigerian_pidgin_only_string" to "Abeg select all di correct choices.")
   }
 
-  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val originalOut: PrintStream = System.out
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
