@@ -5,7 +5,7 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.ClassroomList
+import org.oppia.android.app.model.ClassroomIdList
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ClassroomRecord.TopicIdList
 import org.oppia.android.app.model.ComingSoonTopicList
@@ -796,22 +796,34 @@ class TopicListController @Inject constructor(
   // TODO(#5344): Remove this in favor of per-classroom data handling.
   private fun loadClassroom(): ClassroomRecord {
     return if (loadLessonProtosFromAssets) {
-      return assetRepository.loadProtoFromLocalAssets(
+      val defaultClassroomId = assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
-        baseMessage = ClassroomList.getDefaultInstance()
-      ).classroomsList.single() // Only one record is currently expected.
+        baseMessage = ClassroomIdList.getDefaultInstance()
+      ).getClassroomIds(0) // Only one record is currently loaded.
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = defaultClassroomId,
+        baseMessage = ClassroomRecord.getDefaultInstance()
+      )
     } else loadClassroomFromJson()
   }
 
   // TODO(#5344): Remove this in favor of per-classroom data handling.
   private fun loadClassroomFromJson(): ClassroomRecord {
-    val classroomsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
-    checkNotNull(classroomsObj) { "Failed to load classrooms.json." }
-    val classroomArray = classroomsObj.optJSONArray("classrooms")
-    checkNotNull(classroomArray) { "classrooms.json missing classrooms array." }
-    check(classroomArray.length() == 1) { "Expected classrooms.json to have one single classroom." }
-    val classroom = checkNotNull(classroomArray.optJSONObject(0)) { "Expected non-null classroom." }
-    val topicPrereqsObj = checkNotNull(classroom.optJSONObject("topic_prerequisites")) {
+    // Load the classrooms.json file.
+    val classroomIdsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
+    checkNotNull(classroomIdsObj) { "Failed to load classrooms.json." }
+    val classroomIds = classroomIdsObj.optJSONArray("classroom_id_list")
+    checkNotNull(classroomIds) { "classrooms.json missing classroom IDs." }
+
+    // Fetch the first classroom ID of the list.
+    val defaultClassroomId = checkNotNull(classroomIds.get(0)) {
+      "Expected non-null classroom ID."
+    }
+
+    // Load the classroom obj of the first classroom.
+    val defaultClassroomObj = jsonAssetRetriever.loadJsonFromAsset("$defaultClassroomId.json")
+    checkNotNull(defaultClassroomObj) { "Failed to load $defaultClassroomId.json." }
+    val topicPrereqsObj = checkNotNull(defaultClassroomObj.optJSONObject("topic_prerequisites")) {
       "Expected classroom to have non-null topic_prerequisites."
     }
     val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
@@ -825,7 +837,7 @@ class TopicListController @Inject constructor(
       }
     }
     return ClassroomRecord.newBuilder().apply {
-      this.id = checkNotNull(classroom.optString("id")) { "Expected classroom to have ID." }
+      this.id = checkNotNull(defaultClassroomObj.optString("id")) { "Expected classroom to have ID." }
       this.putAllTopicPrerequisites(
         topicPrereqs.mapValues { (_, topicIds) ->
           TopicIdList.newBuilder().apply {

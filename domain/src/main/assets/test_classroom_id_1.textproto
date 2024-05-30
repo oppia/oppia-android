@@ -1,0 +1,20 @@
+classroom_id: "test_classroom_id_1",
+classroom_title: {
+  content_id: "classroom_title",
+  html: "Science"
+},
+thumbnail_bg_color: "#00FFFFFF",
+thumbnail_filename: "",
+topic_prerequisites {
+  key: "test_topic_id_0"
+  value {
+    topic_ids: "GJ2rLXRKD5hw"
+  }
+}
+topic_prerequisites {
+  key: "test_topic_id_1"
+  value {
+    topic_ids: "test_topic_id_0"
+    topic_ids: "omzF4oqgeTXd"
+  }
+}

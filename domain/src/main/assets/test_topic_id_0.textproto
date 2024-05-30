@@ -22,3 +22,8 @@ translatable_description {
   html: "A topic investigating the interesting aspects of the Oppia Android app."
   content_id: "description"
 }
+classroom_id: "test_classroom_id_1"
+translatable_classroom_title {
+  html: "Science"
+  content_id: "classroom_title"
+}

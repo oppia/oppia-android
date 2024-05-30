@@ -1,0 +1,17 @@
+classroom_id: "test_classroom_id_0",
+classroom_title: {
+  content_id: "classroom_title",
+  html: "Maths"
+},
+thumbnail_bg_color: "#00FFFFFF",
+thumbnail_filename: "",
+topic_prerequisites {
+  key: "GJ2rLXRKD5hw"
+  value {
+  }
+}
+topic_prerequisites {
+  key: "omzF4oqgeTXd"
+  value {
+  }
+}
