@@ -23,7 +23,7 @@ translatable_description {
   html: "Many everyday problems involve thinking about proportions. For example, if 30 apples cost 6 dollars, how much would 12 apples cost? In these lessons, you\'ll learn about how to use ratios and proportional reasoning to solve problems like this."
   content_id: "description"
 }
-classroom_id: test_classroom_id_0
+classroom_id: "test_classroom_id_0"
 translatable_classroom_title {
   html: "Maths"
   content_id: "classroom_title"
