@@ -124,7 +124,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
 
 2. Provide your Feature Flag
     - Feature Flags are still a special type of Platform Parameter and are provided in a similar manner. For providing your Feature Flag in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
-    - Since feature flags can only be booleans, The return type for this @Provides annotated method will be equal to `PlatformPrameterValue\<Boolean\>`. Any other type will cause the platform parameter sync to fail. For eg- here we provide `EnableAppAndOsDeprecation` feature flag.
+    - Since feature flags can only be booleans, The return type for this @Provides annotated method will be equal to `PlatformPrameterValue<Boolean>`. Any other type will cause the platform parameter sync to fail. For eg- here we provide `EnableAppAndOsDeprecation` feature flag.
 
     <br>
 
@@ -152,7 +152,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
     - Note that permission will be required before accessing the Feature Gating console in the Oppia backend.
 
 ## How to consume a Platform Parameter or Feature Flag
-To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue\<T\>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter and the `EnableAppAndOSDeprecation` feature flag in `PlatformParameterSyncUpWorkManagerInitializer`
+To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue<T>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter and the `EnableAppAndOSDeprecation` feature flag in `PlatformParameterSyncUpWorkManagerInitializer`
 
 ```kotlin
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
@@ -210,10 +210,14 @@ The FeatureFlagsLogger contains a variable `featureFlagItemMap`, which is a map 
   )
 ```
 
-### 3. Update the Feature flags logger test
-TODO: This will be done once testing has been finalized. 
+### 3. Update the Feature Flags Logger test
+Besides the feature-flag logger, the `FeatureFlagLoggerTest` located at `domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/FeatureFlagsLoggerTest.kt` will also need to be updated to reflect the newly added feature flag(s). There are two tests that will need to be changed.
 
-## How to write tests related Platform Parameter
+- The first test that should be updated is the `testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged` test. For this, only the constant `expectedFeatureFlagCount` will need to be updated. If a new feature flag was added, increment the count and if one was removed, decrement the count.
+
+- The second test that will need to be updated is the `testLogFeatureFlags_allFeatureFlagNamesAreLogged`. This is a parameterized test that iterates through each currently existing feature flag to ensure each one of them is logged as expected. To update this test and ensure it passes after a feature flag change, modify the `RunParameterized()` section and either add the expected values for the new flag or remove the expected values for a removed feature flag.
+
+## How to write tests related to Platform Parameters
 Before writing a test we must understand the purpose of the platform parameter in our class/classes (that needs to be tested). After verifying this we can divide testing procedures into following groups - 
 
 ### 1. We actually don't test for platform parameter(s)
