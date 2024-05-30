@@ -584,12 +584,6 @@ message ClassroomIdList {
   repeated string classroom_ids = 1;
 }
 
-// Corresponds to a local file cataloging all available classrooms in the app.
-message ClassroomList {
-  // The list of classrooms available to the app.
-  repeated ClassroomRecord classrooms = 1;
-}
-
 // Corresponds to a loadable classroom.
 message ClassroomRecord {
   // The classroom's ID.
