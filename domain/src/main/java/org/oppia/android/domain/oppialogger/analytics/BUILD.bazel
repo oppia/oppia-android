@@ -199,7 +199,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//third_party:javax_inject_javax_inject",
