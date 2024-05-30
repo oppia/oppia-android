@@ -334,7 +334,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Test failing as only the topics of the default classroom is being considered (i.e., Fractions & Ratios)")
+  @Ignore("Test failing because only default classroom topics (Fractions & Ratios) are considered")
   // TODO(#5344): Update recommendation logic.
   fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0(
@@ -393,7 +393,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Test failing as only the topics of the default classroom is being considered (i.e., Fractions & Ratios)")
+  @Ignore("Test failing because only default classroom topics (Fractions & Ratios) are considered")
   // TODO(#5344): Update recommendation logic.
   fun testGetStoryList_markStoryDoneOfRatiosAndFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedTestTopic0Story0(
@@ -457,7 +457,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Test failing as only the topics of the default classroom is being considered (i.e., Fractions & Ratios)")
+  @Ignore("Test failing because only default classroom topics (Fractions & Ratios) are considered")
   // TODO(#5344): Update recommendation logic.
   fun testRetrievePromotedActivityList_markAllChapDoneInAllTopics_comingSoonTopicListIsCorrect() {
     storyProgressTestHelper.markAllTopicsAsCompleted(
@@ -472,7 +472,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Test failing as only the topics of the default classroom is being considered (i.e., Fractions & Ratios)")
+  @Ignore("Test failing because only default classroom topics (Fractions & Ratios) are considered")
   // TODO(#5344): Update recommendation logic.
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_doesNotPromoteAnyStories() {
     storyProgressTestHelper.markCompletedTestTopic1Story0(
@@ -490,7 +490,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Test failing as only the topics of the default classroom is being considered (i.e., Fractions & Ratios)")
+  @Ignore("Test failing because only default classroom topics (Fractions & Ratios) are considered")
   // TODO(#5344): Update recommendation logic.
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCorrect() {
     storyProgressTestHelper.markCompletedTestTopic1Story0(
@@ -584,7 +584,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Test failing as only the topics of the default classroom is being considered (i.e., Fractions & Ratios)")
+  @Ignore("Test failing because only default classroom topics (Fractions & Ratios) are considered")
   // TODO(#5344): Update recommendation logic.
   fun testGetStoryList_markOneStoryDoneForFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedTestTopic0Story0(

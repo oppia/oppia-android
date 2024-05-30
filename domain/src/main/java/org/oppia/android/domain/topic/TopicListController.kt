@@ -875,7 +875,9 @@ class TopicListController @Inject constructor(
       }
     }
     return ClassroomRecord.newBuilder().apply {
-      this.id = checkNotNull(defaultClassroomObj.optString("id")) { "Expected classroom to have ID." }
+      this.id = checkNotNull(defaultClassroomObj.optString("id")) {
+        "Expected classroom to have ID."
+      }
       this.putAllTopicPrerequisites(
         topicPrereqs.mapValues { (_, topicIds) ->
           TopicIdList.newBuilder().apply {
