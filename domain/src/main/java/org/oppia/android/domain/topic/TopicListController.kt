@@ -209,6 +209,8 @@ class TopicListController @Inject constructor(
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
         title = topicRecord.translatableTitle
+        classroomId = topicRecord.classroomId
+        classroomTitle = topicRecord.translatableClassroomTitle
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
         topicPlayAvailability = if (topicRecord.isPublished) {
@@ -250,10 +252,17 @@ class TopicListController @Inject constructor(
       contentId = "title"
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
+    val classroomId = jsonObject.getStringFromObject("classroom_id")
+    val classroomTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "classroom_title"
+      html = jsonObject.getStringFromObject("classroom_name")
+    }.build()
     // No written translations are included since none are retrieved from JSON.
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
+      .setClassroomId(classroomId)
+      .setClassroomTitle(classroomTitle)
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
@@ -285,9 +294,17 @@ class TopicListController @Inject constructor(
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
 
+    val classroomId = jsonObject.getStringFromObject("classroom_id")
+    val classroomTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "classroom_title"
+      html = jsonObject.getStringFromObject("classroom_name")
+    }.build()
+
     // No written translations are included since none are retrieved from JSON.
     return UpcomingTopic.newBuilder().setTopicId(topicId)
       .setTitle(topicTitle)
+      .setClassroomId(classroomId)
+      .setClassroomTitle(classroomTitle)
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
       .setLessonThumbnail(createTopicThumbnailFromJson(jsonObject))
@@ -684,6 +701,8 @@ class TopicListController @Inject constructor(
         storyTitle = storyRecord.translatableStoryName
         this.topicId = topicId
         topicTitle = topicRecord.translatableTitle
+        classroomId = topicRecord.classroomId
+        classroomTitle = topicRecord.translatableClassroomTitle
         completedChapterCount = 0
         totalChapterCount = storyRecord.chaptersCount
         lessonThumbnail = storyRecord.storyThumbnail
@@ -731,6 +750,15 @@ class TopicListController @Inject constructor(
           html = it
         }.build()
       } ?: SubtitledHtml.getDefaultInstance()
+
+      val classroomId = topicJson.optString("classroom_id")
+      val classroomTitle = topicJson.optString("classroom_name").takeIf { it.isNotEmpty() }?.let {
+        SubtitledHtml.newBuilder().apply {
+          contentId = "classroom_title"
+          html = it
+        }.build()
+      } ?: SubtitledHtml.getDefaultInstance()
+
       // No written translations are included for the topic since its name is directly fetched from
       // the JSON (and the JSON doesn't include translations for these properties, anyway).
       val promotedStoryBuilder = PromotedStory.newBuilder()
@@ -739,6 +767,8 @@ class TopicListController @Inject constructor(
         .setLessonThumbnail(storySummary.storyThumbnail)
         .setTopicId(topicId)
         .setTopicTitle(topicTitle)
+        .setClassroomId(classroomId)
+        .setClassroomTitle(classroomTitle)
         .setCompletedChapterCount(0)
         .setTotalChapterCount(totalChapterCount)
       if (storySummary.chapterList.isNotEmpty()) {
@@ -784,6 +814,8 @@ class TopicListController @Inject constructor(
       .setLessonThumbnail(storySummary.storyThumbnail)
       .setTopicId(topic.topicId)
       .setTopicTitle(topic.title)
+      .setClassroomId(topic.classroomId)
+      .setClassroomTitle(topic.classroomTitle)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
       .setIsTopicLearned(isTopicConsideredCompleted)
