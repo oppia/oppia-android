@@ -299,7 +299,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.analytics.FeatureFlagsLoggerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:feature_flags_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
