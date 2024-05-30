@@ -2,7 +2,6 @@
 Tests for lightweight exploration player domain components.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationDataControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
@@ -56,7 +55,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationProgressControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
@@ -103,7 +102,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationStorageModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
@@ -131,7 +130,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationActiveTimeControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
@@ -177,7 +176,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationProgressModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
@@ -215,5 +214,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()

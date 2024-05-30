@@ -15,6 +15,8 @@ import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
@@ -30,6 +32,7 @@ import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLes
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
@@ -328,6 +331,17 @@ class PlatformParameterAlphaModule {
     return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_ONBOARDING_FLOW_V2)
       ?: PlatformParameterValue.createDefaultParameter(
         ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
+      )
+  }
+
+  @Provides
+  @EnableMultipleClassrooms
+  fun provideEnableMultipleClassrooms(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
+      ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
       )
   }
 }

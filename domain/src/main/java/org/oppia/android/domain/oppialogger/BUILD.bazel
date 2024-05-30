@@ -2,8 +2,7 @@
 Package for providing logging support.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "application_id_seed",
@@ -66,9 +65,7 @@ kt_android_library(
     ],
     deps = [
         ":application_id_seed",
-        ":dagger",
+        "//:dagger",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
-
-dagger_rules()

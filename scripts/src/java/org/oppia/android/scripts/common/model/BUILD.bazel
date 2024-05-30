@@ -2,7 +2,7 @@
 Data structures corresponding to common utilities, such as for GitHub API integration.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "github_issue",
