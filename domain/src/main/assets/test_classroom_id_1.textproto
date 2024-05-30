@@ -1,10 +1,12 @@
 classroom_id: "test_classroom_id_1",
-classroom_title: {
+translatable_title {
   content_id: "classroom_title",
   html: "Science"
 },
-thumbnail_bg_color: "#00FFFFFF",
-thumbnail_filename: "",
+classroom_thumbnail {
+  thumbnail_filename: "",
+  background_color_rgb: "#00FFFFFF",
+}
 topic_prerequisites {
   key: "test_topic_id_0"
   value {

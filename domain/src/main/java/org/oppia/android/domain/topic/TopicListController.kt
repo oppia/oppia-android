@@ -837,7 +837,7 @@ class TopicListController @Inject constructor(
       val defaultClassroomId = assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
         baseMessage = ClassroomIdList.getDefaultInstance()
-      ).getClassroomIds(0) // Only one record is currently loaded.
+      ).classroomIdsList[0] // Only one record is currently loaded.
       assetRepository.loadProtoFromLocalAssets(
         assetName = defaultClassroomId,
         baseMessage = ClassroomRecord.getDefaultInstance()
