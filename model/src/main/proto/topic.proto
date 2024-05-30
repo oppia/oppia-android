@@ -547,6 +547,12 @@ message EphemeralRevisionCard {
   WrittenTranslationContext written_translation_context = 2;
 }
 
+// Corresponds to a local file cataloging all classrooms available to load.
+message ClassroomIdList {
+  // The list of IDs corresponding to classrooms available on the local filesystem.
+  repeated string classroom_ids = 1;
+}
+
 // Corresponds to a local file cataloging all available classrooms in the app.
 message ClassroomList {
   // The list of classrooms available to the app.
@@ -579,6 +585,25 @@ message ClassroomRecord {
     // A list of topics IDs.
     repeated string topic_ids = 1;
   }
+}
+
+// A summary of a classroom which contains a list of topic summaries.
+message ClassroomSummary {
+  // The ID of the classroom.
+  string classroom_id = 1;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this classroom that
+  // has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 2;
+
+  // The title of the classroom.
+  SubtitledHtml classroom_title = 3;
+
+  // The thumbnail corresponding to this classroom.
+  LessonThumbnail classroom_thumbnail = 4;
+
+  // A list of topic summaries contained within this classroom.
+  repeated TopicSummary topic_summary = 5;
 }
 
 // Corresponds to a local file cataloging all concept cards available to load.
