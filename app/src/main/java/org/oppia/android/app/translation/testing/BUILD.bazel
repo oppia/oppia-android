@@ -2,8 +2,7 @@
 Testing utilities for languages & locales.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "test_activity_recreator",
@@ -15,8 +14,8 @@ kt_android_library(
         "//app:app_testing_visibility",
     ],
     deps = [
-        ":dagger",
         "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -28,10 +27,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
+        ":test_activity_recreator",
+        "//:dagger",
         "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",
-        "//app/src/main/java/org/oppia/android/app/translation/testing:test_activity_recreator",
     ],
 )
-
-dagger_rules()

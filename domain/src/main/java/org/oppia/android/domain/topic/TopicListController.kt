@@ -5,6 +5,9 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ClassroomList
+import org.oppia.android.app.model.ClassroomRecord
+import org.oppia.android.app.model.ClassroomRecord.TopicIdList
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.LessonThumbnail
@@ -18,7 +21,6 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Topic
-import org.oppia.android.app.model.TopicIdList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
@@ -44,8 +46,6 @@ import javax.inject.Singleton
 private const val ONE_WEEK_IN_DAYS = 7
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
-private const val BAKER_BG_COLOR = "#0F63A3"
-private const val DUCK_BG_COLOR = "#05538F"
 
 private const val CHAPTER_BG_COLOR_1 = "#F8BF74"
 private const val CHAPTER_BG_COLOR_2 = "#D68F78"
@@ -135,15 +135,11 @@ class TopicListController @Inject constructor(
 
   private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
     return if (loadLessonProtosFromAssets) {
-      val topicIdList =
-        assetRepository.loadProtoFromLocalAssets(
-          assetName = "topics",
-          baseMessage = TopicIdList.getDefaultInstance()
-        )
+      val topicIdList = loadCombinedClassroomTopicList()
       return TopicList.newBuilder().apply {
         // Only include topics currently playable in the topic list.
         addAllTopicSummary(
-          topicIdList.topicIdsList.map {
+          topicIdList.map {
             createEphemeralTopicSummary(it, contentLocale)
           }.filter {
             it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
@@ -154,13 +150,10 @@ class TopicListController @Inject constructor(
   }
 
   private fun loadTopicListFromJson(contentLocale: OppiaLocale.ContentLocale): TopicList {
-    val topicIdJsonArray = jsonAssetRetriever
-      .loadJsonFromAsset("topics.json")!!
-      .getJSONArray("topic_id_list")
+    val topicIdList = loadCombinedClassroomTopicList()
     val topicListBuilder = TopicList.newBuilder()
-    for (i in 0 until topicIdJsonArray.length()) {
-      val ephemeralSummary =
-        createEphemeralTopicSummary(topicIdJsonArray.optString(i)!!, contentLocale)
+    for (topicId in topicIdList) {
+      val ephemeralSummary = createEphemeralTopicSummary(topicId, contentLocale)
       val topicPlayAvailability = ephemeralSummary.topicSummary.topicPlayAvailability
       // Only include topics currently playable in the topic list.
       if (topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
@@ -171,12 +164,10 @@ class TopicListController @Inject constructor(
   }
 
   private fun computeComingSoonTopicList(): ComingSoonTopicList {
-    val topicIdJsonArray = jsonAssetRetriever
-      .loadJsonFromAsset("topics.json")!!
-      .getJSONArray("topic_id_list")
+    val topicIdList = loadCombinedClassroomTopicList()
     val comingSoonTopicListBuilder = ComingSoonTopicList.newBuilder()
-    for (i in 0 until topicIdJsonArray.length()) {
-      val upcomingTopicSummary = createUpcomingTopicSummary(topicIdJsonArray.optString(i)!!)
+    for (topicId in topicIdList) {
+      val upcomingTopicSummary = createUpcomingTopicSummary(topicId)
       // Only include topics currently not playable in the upcoming topic list.
       if (upcomingTopicSummary.topicPlayAvailability.availabilityCase
         == AVAILABLE_TO_PLAY_IN_FUTURE
@@ -527,31 +518,12 @@ class TopicListController @Inject constructor(
     return TimeUnit.MILLISECONDS.toDays(oppiaClock.getCurrentTimeMs() - this.lastPlayedTimestamp)
   }
 
-  // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
   /**
    * Returns a list of topic IDs for which the specified topic ID expects to be completed before
    * being suggested.
    */
-  private fun retrieveTopicDependencies(topicId: String): List<String> {
-    // The comments describe the correct dependencies, but those might not be available until the
-    // topic is introduced into the app.
-    return when (topicId) {
-      // TEST_TOPIC_ID_0 (depends on Fractions)
-      TEST_TOPIC_ID_0 -> listOf(FRACTIONS_TOPIC_ID)
-      // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
-      TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
-      // Fractions (depends on A+S, Multiplication, Division)
-      FRACTIONS_TOPIC_ID -> listOf()
-      // Ratios (depends on A+S, Multiplication, Division)
-      RATIOS_TOPIC_ID -> listOf()
-      // Addition and Subtraction (depends on Place Values)
-      // Multiplication (depends on Addition and Subtraction)
-      // Division (depends on Multiplication)
-      // Expressions and Equations (depends on A+S, Multiplication, Division)
-      // Decimals (depends on A+S, Multiplication, Division)
-      else -> listOf()
-    }
-  }
+  private fun retrieveTopicDependencies(topicId: String): List<String> =
+    loadClassroom().topicPrerequisitesMap.getValue(topicId).topicIdsList
 
   /*
   * Explanation for logic:
@@ -577,14 +549,8 @@ class TopicListController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
     return if (loadLessonProtosFromAssets) {
-      val topicIdList =
-        assetRepository.loadProtoFromLocalAssets(
-          assetName = "topics",
-          baseMessage = TopicIdList.getDefaultInstance()
-        )
-      return computeSuggestedStoriesForTopicIds(
-        topicProgressList, topicIdList.topicIdsList, contentLocale
-      )
+      val topicIdList = loadCombinedClassroomTopicList()
+      return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList, contentLocale)
     } else computeSuggestedStoriesFromJson(topicProgressList, contentLocale)
   }
 
@@ -592,12 +558,8 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
-    val topicIdJsonArray = jsonAssetRetriever
-      .loadJsonFromAsset("topics.json")!!
-      .getJSONArray("topic_id_list")
     // All topics that could potentially be recommended.
-    val topicIdList =
-      (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+    val topicIdList = loadCombinedClassroomTopicList()
     return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList, contentLocale)
   }
 
@@ -830,6 +792,53 @@ class TopicListController @Inject constructor(
       .setChapterPlayState(nextChapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED)
       .build()
   }
+
+  // TODO(#5344): Remove this in favor of per-classroom data handling.
+  private fun loadClassroom(): ClassroomRecord {
+    return if (loadLessonProtosFromAssets) {
+      return assetRepository.loadProtoFromLocalAssets(
+        assetName = "classrooms",
+        baseMessage = ClassroomList.getDefaultInstance()
+      ).classroomsList.single() // Only one record is currently expected.
+    } else loadClassroomFromJson()
+  }
+
+  // TODO(#5344): Remove this in favor of per-classroom data handling.
+  private fun loadClassroomFromJson(): ClassroomRecord {
+    val classroomsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
+    checkNotNull(classroomsObj) { "Failed to load classrooms.json." }
+    val classroomArray = classroomsObj.optJSONArray("classrooms")
+    checkNotNull(classroomArray) { "classrooms.json missing classrooms array." }
+    check(classroomArray.length() == 1) { "Expected classrooms.json to have one single classroom." }
+    val classroom = checkNotNull(classroomArray.optJSONObject(0)) { "Expected non-null classroom." }
+    val topicPrereqsObj = checkNotNull(classroom.optJSONObject("topic_prerequisites")) {
+      "Expected classroom to have non-null topic_prerequisites."
+    }
+    val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
+      val topicIdArray = checkNotNull(topicPrereqsObj.optJSONArray(topicId)) {
+        "Expected topic $topicId to have a non-null string list."
+      }
+      return@associateWith List(topicIdArray.length()) { index ->
+        checkNotNull(topicIdArray.optString(index)) {
+          "Expected topic $topicId to have non-null string at index $index."
+        }
+      }
+    }
+    return ClassroomRecord.newBuilder().apply {
+      this.id = checkNotNull(classroom.optString("id")) { "Expected classroom to have ID." }
+      this.putAllTopicPrerequisites(
+        topicPrereqs.mapValues { (_, topicIds) ->
+          TopicIdList.newBuilder().apply {
+            addAllTopicIds(topicIds)
+          }.build()
+        }
+      )
+    }.build()
+  }
+
+  // TODO(#5344): Remove this in favor of per-classroom data handling.
+  private fun loadCombinedClassroomTopicList(): List<String> =
+    loadClassroom().topicPrerequisitesMap.keys.toList()
 }
 
 internal fun createTopicThumbnailFromJson(topicJsonObject: JSONObject): LessonThumbnail {
@@ -877,7 +886,7 @@ internal fun createTopicThumbnail0(): LessonThumbnail {
 internal fun createTopicThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
@@ -891,7 +900,7 @@ internal fun createTopicThumbnail2(): LessonThumbnail {
 internal fun createTopicThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
@@ -905,7 +914,7 @@ internal fun createDefaultStoryThumbnail(): LessonThumbnail {
 internal fun createStoryThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0x0F63A3)
+    .setBackgroundColorRgb(0xa5d3ec)
     .build()
 }
 
@@ -926,7 +935,7 @@ internal fun createStoryThumbnail2(): LessonThumbnail {
 internal fun createStoryThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0x0F63A3)
+    .setBackgroundColorRgb(0xa5a2d3)
     .build()
 }
 
@@ -947,7 +956,7 @@ internal fun createChapterThumbnail0(): LessonThumbnail {
 internal fun createChapterThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
@@ -968,21 +977,21 @@ internal fun createChapterThumbnail3(): LessonThumbnail {
 internal fun createChapterThumbnail4(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(BAKER_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(Color.parseColor(DUCK_BG_COLOR))
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 

@@ -2,7 +2,6 @@
 Tests for lightweight exploration player domain components.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.data.AsyncDataSubscriptionManagerTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -31,7 +30,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.data.AsyncResultTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -51,7 +50,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.data.DataProvidersTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
@@ -72,7 +71,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.data.InMemoryBlockingCacheTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -83,5 +82,3 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
-
-dagger_rules()

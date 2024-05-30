@@ -2,8 +2,7 @@
 Utilities for onboarding domain components.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "state_controller",
@@ -34,9 +33,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":exploration_meta_data_retriever",
         ":impl",
+        "//:dagger",
     ],
 )
 
@@ -79,5 +78,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
-
-dagger_rules()
