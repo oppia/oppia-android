@@ -10,7 +10,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

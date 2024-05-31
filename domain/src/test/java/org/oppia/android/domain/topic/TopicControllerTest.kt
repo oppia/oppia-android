@@ -135,7 +135,7 @@ class TopicControllerTest {
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
-    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
     assertThat(topic.classroomTitle.html).contains("Maths")
   }
 
@@ -164,7 +164,7 @@ class TopicControllerTest {
     val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
-    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
     assertThat(topic.classroomTitle.html).contains("Maths")
   }
 
@@ -907,11 +907,11 @@ class TopicControllerTest {
     val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
     assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
     completedStoryList.completedStoryList[0].also { completedFractionsStory ->
-      assertThat(completedFractionsStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+      assertThat(completedFractionsStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
       assertThat(completedFractionsStory.classroomTitle.html).isEqualTo("Maths")
     }
     completedStoryList.completedStoryList[1].also { completedRatiosStory ->
-      assertThat(completedRatiosStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+      assertThat(completedRatiosStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
       assertThat(completedRatiosStory.classroomTitle.html).isEqualTo("Maths")
     }
   }
