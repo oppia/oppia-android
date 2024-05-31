@@ -1,4 +1,4 @@
-classroom_id: "test_classroom_id_1",
+id: "test_classroom_id_1",
 translatable_title {
   content_id: "classroom_title",
   html: "Maths"
