@@ -1,22 +1,19 @@
 classroom_id: "test_classroom_id_1",
 translatable_title {
   content_id: "classroom_title",
-  html: "Science"
+  html: "Maths"
 },
 classroom_thumbnail {
   thumbnail_filename: "",
   background_color_rgb: "#00FFFFFF",
 }
 topic_prerequisites {
-  key: "test_topic_id_0"
+  key: "GJ2rLXRKD5hw"
   value {
-    topic_ids: "GJ2rLXRKD5hw"
   }
 }
 topic_prerequisites {
-  key: "test_topic_id_1"
+  key: "omzF4oqgeTXd"
   value {
-    topic_ids: "test_topic_id_0"
-    topic_ids: "omzF4oqgeTXd"
   }
 }

@@ -21,7 +21,7 @@ translatable_description {
   html: "A topic considering the various implications of having especially long topic descriptions. These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on small screens). Consider also that there may even be multiple points pertaining to a topic, some of which may require expanding the description section in order to read the whole topic description."
   content_id: "description"
 }
-classroom_id: "test_classroom_id_1"
+classroom_id: "test_classroom_id_0"
 translatable_classroom_title {
   html: "Science"
   content_id: "classroom_title"
