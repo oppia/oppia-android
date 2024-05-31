@@ -1,8 +1,8 @@
-id: "test_classroom_id_1",
+id: "test_classroom_id_1"
 translatable_title {
-  content_id: "classroom_title",
+  content_id: "classroom_title"
   html: "Maths"
-},
+}
 classroom_thumbnail {
 }
 topic_prerequisites {
@@ -15,5 +15,7 @@ topic_prerequisites {
   value {
   }
 }
-topic_ids: "GJ2rLXRKD5hw"
-topic_ids: "omzF4oqgeTXd"
+topic_ids: {
+  topic_ids: "GJ2rLXRKD5hw"
+  topic_ids: "omzF4oqgeTXd"
+}

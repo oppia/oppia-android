@@ -1,8 +1,8 @@
-id: "test_classroom_id_2",
+id: "test_classroom_id_2"
 translatable_title {
-  content_id: "classroom_title",
+  content_id: "classroom_title"
   html: "English"
-},
+}
 classroom_thumbnail {
 }
 topic_prerequisites {
@@ -10,4 +10,6 @@ topic_prerequisites {
   value {
   }
 }
-topic_ids: "test_topic_id_2"
+topic_ids: {
+  topic_ids: "test_topic_id_2"
+}
