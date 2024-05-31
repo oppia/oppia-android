@@ -81,7 +81,7 @@
 
     <androidx.cardview.widget.CardView
       android:id="@+id/onboarding_language_dropdown_background"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/phone_shared_margin_xl"
       android:layout_marginTop="@dimen/phone_shared_margin_medium"
@@ -89,6 +89,7 @@
       app:layout_constraintEnd_toEndOf="@id/onboarding_language_label"
       app:layout_constraintStart_toStartOf="@id/onboarding_language_label"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_label"
+      app:layout_constraintWidth_percent="0.80"
       card_view:cardCornerRadius="@dimen/onboarding_shared_corner_radius"
       card_view:cardElevation="@dimen/onboarding_shared_elevation"
       card_view:cardUseCompatPadding="false">
