@@ -18,3 +18,5 @@ topic_prerequisites {
     topic_ids: "omzF4oqgeTXd"
   }
 }
+topic_ids: "test_topic_id_0"
+topic_ids: "test_topic_id_1"

@@ -605,6 +605,9 @@ message ClassroomRecord {
   // include topics outside of this classroom.
   map<string, TopicIdList> topic_prerequisites = 5;
 
+  // A list of topics IDs that belong to this classroom.
+  TopicIdList topic_ids = 6;
+
   // Represents a list of topic IDs (to be used in the context of topic deps in a classroom).
   message TopicIdList {
     // A list of topics IDs.
