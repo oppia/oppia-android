@@ -13,11 +13,11 @@ import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.domain.topic.createTopicThumbnailFromJson
 import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.topic.createTopicThumbnailFromJson
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
