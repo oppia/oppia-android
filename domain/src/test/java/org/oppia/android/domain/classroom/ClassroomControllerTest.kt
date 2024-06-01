@@ -17,7 +17,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
@@ -28,6 +27,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -72,6 +72,7 @@ class ClassroomControllerTest {
   @Before
   fun setUp() {
     profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     setUpTestApplicationComponent()
   }
 
@@ -209,6 +210,17 @@ class ClassroomControllerTest {
   }
 
   @Test
+  fun testRetrieveTopicList_disableMultipleClassrooms_fractionsTopic_hasCorrectTopicInfo() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
+    assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
+  }
+
+  @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
 
@@ -331,7 +343,7 @@ class ClassroomControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
+      SyncStatusModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )
