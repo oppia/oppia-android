@@ -19,9 +19,14 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_2
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_2
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -138,8 +143,133 @@ class ClassroomControllerTest {
     assertThat(thirdClassroom.topicSummaryCount).isEqualTo(1)
   }
 
+  @Test
+  fun testRetrieveTopicList_isSuccessful() {
+    val topicListProvider = classroomController.getTopicList(profileId0, TEST_CLASSROOM_ID_0)
+
+    monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+  }
+
+  @Test
+  fun testRetrieveTopicList_testTopic0_hasCorrectTopicInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
+
+    val firstTopic = topicList.getTopicSummary(0).topicSummary
+    assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
+    assertThat(firstTopic.title.html).isEqualTo("First Test Topic")
+  }
+
+  @Test
+  fun testRetrieveTopicList_testTopic0_hasCorrectClassroomInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
+
+    val firstTopic = topicList.getTopicSummary(0).topicSummary
+    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(firstTopic.classroomTitle.html).isEqualTo("Science")
+  }
+
+  @Test
+  fun testRetrieveTopicList_testTopic0_hasCorrectLessonCount() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
+
+    val firstTopic = topicList.getTopicSummary(0).topicSummary
+    assertThat(firstTopic.totalChapterCount).isEqualTo(3)
+  }
+
+  @Test
+  fun testRetrieveTopicList_testTopic1_hasCorrectTopicInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
+
+    val secondTopic = topicList.getTopicSummary(1).topicSummary
+    assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
+    assertThat(secondTopic.title.html).isEqualTo("Second Test Topic")
+  }
+
+  @Test
+  fun testRetrieveTopicList_testTopic1_hasCorrectClassroomInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
+
+    val firstTopic = topicList.getTopicSummary(1).topicSummary
+    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(firstTopic.classroomTitle.html).isEqualTo("Science")
+  }
+
+  @Test
+  fun testRetrieveTopicList_testTopic1_hasCorrectLessonCount() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
+
+    val secondTopic = topicList.getTopicSummary(1).topicSummary
+    assertThat(secondTopic.totalChapterCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val fractionsTopic = topicList.getTopicSummary(0).topicSummary
+    assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
+  }
+
+  @Test
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectClassroomInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val firstTopic = topicList.getTopicSummary(0).topicSummary
+    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(firstTopic.classroomTitle.html).isEqualTo("Maths")
+  }
+
+  @Test
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val fractionsTopic = topicList.getTopicSummary(0).topicSummary
+    assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val ratiosTopic = topicList.getTopicSummary(1).topicSummary
+    assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(ratiosTopic.title.html).isEqualTo("Ratios and Proportional Reasoning")
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectClassroomInfo() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val firstTopic = topicList.getTopicSummary(1).topicSummary
+    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(firstTopic.classroomTitle.html).isEqualTo("Maths")
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
+
+    val ratiosTopic = topicList.getTopicSummary(1).topicSummary
+    assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
+  }
+
+  @Test
+  fun testRetrieveTopicList_doesNotContainUnavailableTopic() {
+    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_2)
+
+    // Verify that the topic list does not contain a not-yet published topic (since it can't be
+    // played by the user).
+    val topicIds = topicList.topicSummaryList.map { it.topicSummary }.map { it.topicId }
+    assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
+  }
+
   private fun getClassroomList() =
     monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId0))
+
+  private fun retrieveTopicList(classroomId: String) = monitorFactory.waitForNextSuccessfulResult(
+    classroomController.getTopicList(profileId0, classroomId)
+  )
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
