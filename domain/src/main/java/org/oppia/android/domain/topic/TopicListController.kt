@@ -198,7 +198,7 @@ class TopicListController @Inject constructor(
     }.build()
   }
 
-  fun createTopicSummary(topicId: String): TopicSummary {
+  private fun createTopicSummary(topicId: String): TopicSummary {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(
