@@ -16,8 +16,8 @@ import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.topic.createTopicThumbnailFromJson
 import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
+import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
@@ -32,6 +32,7 @@ private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
+/** Controller for retrieving the list of classrooms & topics available to the learner. */
 @Singleton
 class ClassroomController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
@@ -136,13 +137,31 @@ class ClassroomController @Inject constructor(
   private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
     return TopicList.newBuilder().apply {
       addAllTopicSummary(
-        createClassroomSummary(classroomId).topicSummaryList.map { topicSummary ->
-          createEphemeralTopicSummary(topicSummary.topicId, contentLocale)
+        getTopicIdListFromClassroomRecord(classroomId).topicIdsList.map { topicId ->
+          createEphemeralTopicSummary(topicId, contentLocale)
         }.filter {
           it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
         }
       )
     }.build()
+  }
+
+  private fun getTopicIdListFromClassroomRecord(classroomId: String): ClassroomRecord.TopicIdList {
+    return if (loadLessonProtosFromAssets) {
+      val classroomRecord = assetRepository.loadProtoFromLocalAssets(
+        assetName = classroomId,
+        baseMessage = ClassroomRecord.getDefaultInstance()
+      )
+      classroomRecord.topicIds
+    } else {
+      val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
+      val topicIdArray = classroomJsonObject.getJSONArray("topic_ids")
+      ClassroomRecord.TopicIdList.newBuilder().apply {
+        for (i in 0 until topicIdArray.length()) {
+          addTopicIds(topicIdArray.optString(i))
+        }
+      }.build()
+    }
   }
 
   private fun createEphemeralTopicSummary(
