@@ -21,9 +21,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_0
-import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_1
-import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_2

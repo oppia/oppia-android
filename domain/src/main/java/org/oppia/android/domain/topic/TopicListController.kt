@@ -60,11 +60,6 @@ const val SUBTOPIC_TOPIC_ID = 1
 const val SUBTOPIC_TOPIC_ID_2 = 2
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 
-// TODO(#5344): Move these classroom ids to [ClassroomController].
-const val TEST_CLASSROOM_ID_0 = "test_classroom_id_0"
-const val TEST_CLASSROOM_ID_1 = "test_classroom_id_1"
-const val TEST_CLASSROOM_ID_2 = "test_classroom_id_2"
-
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
   RATIOS_TOPIC_ID to createTopicThumbnail1(),

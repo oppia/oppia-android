@@ -18,6 +18,9 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.UpcomingTopic
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule

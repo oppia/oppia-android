@@ -13,7 +13,6 @@ import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.domain.topic.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.createTopicThumbnailFromJson
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -26,6 +25,10 @@ import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+
+const val TEST_CLASSROOM_ID_0 = "test_classroom_id_0"
+const val TEST_CLASSROOM_ID_1 = "test_classroom_id_1"
+const val TEST_CLASSROOM_ID_2 = "test_classroom_id_2"
 
 private const val GET_CLASSROOM_LIST_PROVIDER_ID = "get_classroom_list_provider_id"
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
