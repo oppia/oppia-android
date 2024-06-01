@@ -28,6 +28,10 @@ class ClassroomController @Inject constructor(
   private val topicListController: TopicListController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
 ) {
+  /**
+   * Returns the list of [ClassroomSummary]s currently tracked by the app, possibly up to
+   * [EVICTION_TIME_MILLIS] old.
+   */
   fun getClassroomList(profileId: ProfileId): DataProvider<List<ClassroomSummary>> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
