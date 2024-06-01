@@ -119,7 +119,7 @@ class ClassroomController @Inject constructor(
   private fun loadClassroomSummaryFromJson(classroomId: String): ClassroomSummary {
     val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
     return ClassroomSummary.newBuilder().apply {
-      setClassroomId(classroomJsonObject.getString("classroom_id"))
+      setClassroomId(classroomJsonObject.getStringFromObject("classroom_id"))
       classroomTitle = SubtitledHtml.newBuilder().apply {
         val classroomTitleObj = classroomJsonObject.getJSONObject("classroom_title")
         contentId = classroomTitleObj.getStringFromObject("content_id")
@@ -128,7 +128,7 @@ class ClassroomController @Inject constructor(
       val topicIdArray = classroomJsonObject.getJSONArray("topic_ids")
       val topicSummaryList = mutableListOf<TopicSummary>()
       for (i in 0 until topicIdArray.length()) {
-        topicSummaryList.add(createTopicSummary(topicIdArray.getString(i)))
+        topicSummaryList.add(createTopicSummary(topicIdArray.optString(i)))
       }
       addAllTopicSummary(topicSummaryList)
     }.build()
