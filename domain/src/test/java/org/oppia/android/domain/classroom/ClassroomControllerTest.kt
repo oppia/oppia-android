@@ -141,7 +141,6 @@ class ClassroomControllerTest {
   private fun getClassroomList() =
     monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId0))
 
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -209,7 +208,7 @@ class ClassroomControllerTest {
       PlatformParameterSingletonModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -221,7 +220,7 @@ class ClassroomControllerTest {
     fun inject(classroomControllerTest: ClassroomControllerTest)
   }
 
-  class TestApplication: Application(), DataProvidersInjectorProvider {
+  class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerClassroomControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
