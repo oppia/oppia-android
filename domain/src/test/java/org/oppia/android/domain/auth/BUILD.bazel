@@ -2,7 +2,6 @@
 Tests for libraries providing authentication with Firebase functionality.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.auth.AuthenticationControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -35,7 +34,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.auth.AuthenticationModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -57,7 +56,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.auth.FirebaseAuthWrapperImplTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -72,5 +71,3 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
-
-dagger_rules()
