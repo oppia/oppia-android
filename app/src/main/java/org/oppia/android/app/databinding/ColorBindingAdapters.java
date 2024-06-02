@@ -1,8 +1,6 @@
 package org.oppia.android.app.databinding;
 
 import android.view.View;
-
-import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
 /** Holds all custom binding adapters that set color values. */
