@@ -644,7 +644,5 @@
   <string name="onboarding_language_activity_button_text">Let\'s go!</string>
 
   <!-- Onboarding Shared Strings -->
-  <string name="onboarding_language_dropdown_arrow_icon_description">Dropdown arrow icon</string>
-  <string name="onboarding_language_dropdown_icon_description">Dropdown language icon</string>
   <string name="onboarding_otter_content_description">Cute otter wearing glasses.</string>
 </resources>

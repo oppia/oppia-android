@@ -87,7 +87,7 @@
       app:layout_constraintTop_toBottomOf="@id/onboarding_app_language_image"
       app:layout_constraintVertical_chainStyle="packed" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
       android:id="@+id/onboarding_language_dropdown_background"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
           android:inputType="none"
           android:padding="@dimen/onboarding_shared_padding_small" />
       </com.google.android.material.textfield.TextInputLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
       android:id="@+id/onboarding_language_explanation"
