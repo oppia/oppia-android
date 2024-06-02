@@ -85,11 +85,8 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_13 to createChapterThumbnail0(),
 )
 
-private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
 private const val GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID =
   "get_recommended_actvity_list_provider_id"
-
-private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
 /** Controller for retrieving the list of topics available to the learner to play. */
 @Singleton
@@ -102,17 +99,6 @@ class TopicListController @Inject constructor(
   private val translationController: TranslationController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
-
-  /**
-   * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
-   * [EVICTION_TIME_MILLIS] old.
-   */
-  fun getTopicList(profileId: ProfileId): DataProvider<TopicList> {
-    val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
-    return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
-  }
-
   /**
    * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen.
    * The total number of promoted stories should correspond to the ongoing story count within the
@@ -134,36 +120,6 @@ class TopicListController @Inject constructor(
     )
   }
 
-  private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
-    return if (loadLessonProtosFromAssets) {
-      val topicIdList = loadCombinedClassroomsTopicIdList()
-      return TopicList.newBuilder().apply {
-        // Only include topics currently playable in the topic list.
-        addAllTopicSummary(
-          topicIdList.map {
-            createEphemeralTopicSummary(it, contentLocale)
-          }.filter {
-            it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
-          }
-        )
-      }.build()
-    } else loadTopicListFromJson(contentLocale)
-  }
-
-  private fun loadTopicListFromJson(contentLocale: OppiaLocale.ContentLocale): TopicList {
-    val topicIdList = loadCombinedClassroomsTopicIdList()
-    val topicListBuilder = TopicList.newBuilder()
-    for (topicId in topicIdList) {
-      val ephemeralSummary = createEphemeralTopicSummary(topicId, contentLocale)
-      val topicPlayAvailability = ephemeralSummary.topicSummary.topicPlayAvailability
-      // Only include topics currently playable in the topic list.
-      if (topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
-        topicListBuilder.addTopicSummary(ephemeralSummary)
-      }
-    }
-    return topicListBuilder.build()
-  }
-
   private fun computeComingSoonTopicList(): ComingSoonTopicList {
     val topicIdList = loadCombinedClassroomsTopicIdList()
     val comingSoonTopicListBuilder = ComingSoonTopicList.newBuilder()
@@ -179,97 +135,10 @@ class TopicListController @Inject constructor(
     return comingSoonTopicListBuilder.build()
   }
 
-  private fun createEphemeralTopicSummary(
-    topicId: String,
-    contentLocale: OppiaLocale.ContentLocale
-  ): EphemeralTopicSummary {
-    val topicSummary = createTopicSummary(topicId)
-    return EphemeralTopicSummary.newBuilder().apply {
-      this.topicSummary = topicSummary
-      writtenTranslationContext =
-        translationController.computeWrittenTranslationContext(
-          topicSummary.writtenTranslationsMap, contentLocale
-        )
-    }.build()
-  }
-
-  private fun createTopicSummary(topicId: String): TopicSummary {
-    return if (loadLessonProtosFromAssets) {
-      val topicRecord =
-        assetRepository.loadProtoFromLocalAssets(
-          assetName = topicId,
-          baseMessage = TopicRecord.getDefaultInstance()
-        )
-      val storyRecords = topicRecord.canonicalStoryIdsList.map {
-        assetRepository.loadProtoFromLocalAssets(
-          assetName = it,
-          baseMessage = StoryRecord.getDefaultInstance()
-        )
-      }
-      TopicSummary.newBuilder().apply {
-        this.topicId = topicId
-        putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
-        title = topicRecord.translatableTitle
-        classroomId = topicRecord.classroomId
-        classroomTitle = topicRecord.translatableClassroomTitle
-        totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
-        topicThumbnail = topicRecord.topicThumbnail
-        topicPlayAvailability = if (topicRecord.isPublished) {
-          TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
-        } else {
-          TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
-        }
-        storyRecords.firstOrNull()?.storyId?.let { this.firstStoryId = it }
-      }.build()
-    } else {
-      createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)
-    }
-  }
-
   private fun createUpcomingTopicSummary(topicId: String): UpcomingTopic {
     val topicJson =
       jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
     return createUpcomingTopicSummaryFromJson(topicId, topicJson)
-  }
-
-  private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
-    var totalChapterCount = 0
-    val storyData = jsonObject.getJSONArray("canonical_story_dicts")
-    for (i in 0 until storyData.length()) {
-      totalChapterCount += storyData
-        .getJSONObject(i)
-        .getJSONArray("node_titles")
-        .length()
-    }
-    val firstStoryId =
-      if (storyData.length() == 0) "" else storyData.getJSONObject(0).getStringFromObject("id")
-
-    val topicPlayAvailability = if (jsonObject.getBoolean("published")) {
-      TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
-    } else {
-      TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
-    }
-    val topicTitle = SubtitledHtml.newBuilder().apply {
-      contentId = "title"
-      html = jsonObject.getStringFromObject("topic_name")
-    }.build()
-    val classroomId = jsonObject.getStringFromObject("classroom_id")
-    val classroomTitle = SubtitledHtml.newBuilder().apply {
-      contentId = "classroom_title"
-      html = jsonObject.getStringFromObject("classroom_name")
-    }.build()
-    // No written translations are included since none are retrieved from JSON.
-    return TopicSummary.newBuilder()
-      .setTopicId(topicId)
-      .setTitle(topicTitle)
-      .setClassroomId(classroomId)
-      .setClassroomTitle(classroomTitle)
-      .setVersion(jsonObject.optInt("version"))
-      .setTotalChapterCount(totalChapterCount)
-      .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
-      .setTopicPlayAvailability(topicPlayAvailability)
-      .setFirstStoryId(firstStoryId)
-      .build()
   }
 
   private fun createUpcomingTopicSummaryFromJson(
