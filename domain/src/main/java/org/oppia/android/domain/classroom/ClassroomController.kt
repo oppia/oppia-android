@@ -29,8 +29,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** ID of test classroom 0. */
 const val TEST_CLASSROOM_ID_0 = "test_classroom_id_0"
+
+/** ID of test classroom 1. */
 const val TEST_CLASSROOM_ID_1 = "test_classroom_id_1"
+
+/** ID of test classroom 2. */
 const val TEST_CLASSROOM_ID_2 = "test_classroom_id_2"
 
 private const val GET_CLASSROOM_LIST_PROVIDER_ID = "get_classroom_list_provider_id"
