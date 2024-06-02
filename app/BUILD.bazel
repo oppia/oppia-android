@@ -486,6 +486,7 @@ BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
 BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/AppCompatCheckBoxBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/CircularProgressIndicatorAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/ColorBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ConstraintLayoutAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
