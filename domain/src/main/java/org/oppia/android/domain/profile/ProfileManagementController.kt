@@ -18,7 +18,6 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
-import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
@@ -899,8 +898,8 @@ class ProfileManagementController @Inject constructor(
   ): DataProvider<String> {
     return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
       val lastSelectedClassroomId =
-        it.profilesMap[profileId.internalId]?.lastSelectedClassroomId ?: TEST_CLASSROOM_ID_0
-      AsyncResult.Success(lastSelectedClassroomId.ifBlank { TEST_CLASSROOM_ID_0 })
+        it.profilesMap[profileId.internalId]?.lastSelectedClassroomId ?: "test_classroom_id_0"
+      AsyncResult.Success(lastSelectedClassroomId.ifBlank { "test_classroom_id_0" })
     }
   }
 
