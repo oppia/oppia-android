@@ -111,9 +111,7 @@ class ClassroomController @Inject constructor(
         classroomThumbnail = classroomRecord.classroomThumbnail
         addAllTopicSummary(
           classroomRecord.topicIds.topicIdsList.map { topicId ->
-            TopicSummary.newBuilder().apply {
-              createTopicSummary(topicId)
-            }.build()
+            createTopicSummary(topicId)
           }
         )
       }.build()
