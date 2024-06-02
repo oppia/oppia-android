@@ -9,7 +9,6 @@ import org.oppia.android.app.model.ClassroomIdList
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ClassroomRecord.TopicIdList
 import org.oppia.android.app.model.ComingSoonTopicList
-import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
@@ -27,7 +26,6 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
-import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -36,7 +34,6 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
