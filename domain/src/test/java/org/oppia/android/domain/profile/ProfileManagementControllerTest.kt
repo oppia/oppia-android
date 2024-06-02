@@ -134,6 +134,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.lastSelectedClassroomId).isEqualTo("")
   }
 
   @Test
