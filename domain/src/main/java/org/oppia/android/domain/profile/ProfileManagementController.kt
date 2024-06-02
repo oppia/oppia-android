@@ -895,11 +895,10 @@ class ProfileManagementController @Inject constructor(
    */
   fun retrieveLastSelectedClassroomId(
     profileId: ProfileId
-  ): DataProvider<String> {
+  ): DataProvider<String?> {
     return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
-      val lastSelectedClassroomId =
-        it.profilesMap[profileId.internalId]?.lastSelectedClassroomId ?: "test_classroom_id_0"
-      AsyncResult.Success(lastSelectedClassroomId.ifBlank { "test_classroom_id_0" })
+      val lastSelectedClassroomId = it.profilesMap[profileId.internalId]?.lastSelectedClassroomId
+      AsyncResult.Success(lastSelectedClassroomId)
     }
   }
 

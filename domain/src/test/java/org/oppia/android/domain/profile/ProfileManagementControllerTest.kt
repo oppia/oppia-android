@@ -25,7 +25,6 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
-import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
@@ -1235,7 +1234,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testFetchLastSelectedClassroomId_withoutUpdatingClassroomId_checkDefaultClassroomIsFetched() {
+  fun testFetchLastSelectedClassroomId_withoutUpdatingClassroomId_returnEmptyClassroomId() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
@@ -1245,7 +1244,7 @@ class ProfileManagementControllerTest {
     val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
     )
-    assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(lastSelectedClassroomId).isEmpty()
   }
 
   private fun addTestProfiles() {
