@@ -26,6 +26,7 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -131,6 +132,15 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveTopic_fractionsTopic_hasCorrectClassroomInfo() {
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(topic.classroomTitle.html).contains("Maths")
+  }
+
+  @Test
   fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
     val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
@@ -148,6 +158,15 @@ class TopicControllerTest {
     assertThat(topic.description.html).contains(
       "Many everyday problems involve thinking about proportions"
     )
+  }
+
+  @Test
+  fun testRetrieveTopic_ratiosTopic_hasCorrectClassroomInfo() {
+    val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(topic.classroomTitle.html).contains("Maths")
   }
 
   @Test
@@ -875,6 +894,27 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
+  }
+
+  @Test
+  fun testCompletedStoryList_finishTwoStories_completedStoryListHasCorrectClassroomInfo() {
+    markFractionsStory0Chapter0AsCompleted()
+    markFractionsStory0Chapter1AsCompleted()
+    markRatiosStory0Chapter0AsCompleted()
+    markRatiosStory0Chapter1AsCompleted()
+
+    val storyList = topicController.getCompletedStoryList(profileId1)
+
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
+    assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
+    completedStoryList.completedStoryList[0].also { completedFractionsStory ->
+      assertThat(completedFractionsStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+      assertThat(completedFractionsStory.classroomTitle.html).isEqualTo("Maths")
+    }
+    completedStoryList.completedStoryList[1].also { completedRatiosStory ->
+      assertThat(completedRatiosStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+      assertThat(completedRatiosStory.classroomTitle.html).isEqualTo("Maths")
+    }
   }
 
   /* Localization-based tests. */

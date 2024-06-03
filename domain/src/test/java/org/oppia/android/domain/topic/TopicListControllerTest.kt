@@ -18,6 +18,9 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.UpcomingTopic
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -83,98 +86,6 @@ class TopicListControllerTest {
     // Use uptime millis for time tracking since that allows proper time management for recorded
     // activities that need to be measurably apart from one another (such as completed chapters).
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-  }
-
-  @Test
-  fun testRetrieveTopicList_isSuccessful() {
-    val topicListProvider = topicListController.getTopicList(profileId0)
-
-    monitorFactory.waitForNextSuccessfulResult(topicListProvider)
-  }
-
-  @Test
-  fun testRetrieveTopicList_providesListOfMultipleTopics() {
-    val topicList = retrieveTopicList()
-
-    assertThat(topicList.topicSummaryCount).isGreaterThan(1)
-  }
-
-  @Test
-  fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
-    val topicList = retrieveTopicList()
-
-    val firstTopic = topicList.getTopicSummary(0).topicSummary
-    assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(firstTopic.title.html).isEqualTo("First Test Topic")
-  }
-
-  @Test
-  fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
-    val topicList = retrieveTopicList()
-
-    val firstTopic = topicList.getTopicSummary(0).topicSummary
-    assertThat(firstTopic.totalChapterCount).isEqualTo(3)
-  }
-
-  @Test
-  fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
-    val topicList = retrieveTopicList()
-
-    val secondTopic = topicList.getTopicSummary(1).topicSummary
-    assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
-    assertThat(secondTopic.title.html).isEqualTo("Second Test Topic")
-  }
-
-  @Test
-  fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
-    val topicList = retrieveTopicList()
-
-    val secondTopic = topicList.getTopicSummary(1).topicSummary
-    assertThat(secondTopic.totalChapterCount).isEqualTo(1)
-  }
-
-  @Test
-  fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
-    val topicList = retrieveTopicList()
-
-    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
-    assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
-  }
-
-  @Test
-  fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
-    val topicList = retrieveTopicList()
-
-    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
-    assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
-  }
-
-  @Test
-  fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
-    val topicList = retrieveTopicList()
-
-    val ratiosTopic = topicList.getTopicSummary(3).topicSummary
-    assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(ratiosTopic.title.html).isEqualTo("Ratios and Proportional Reasoning")
-  }
-
-  @Test
-  fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
-    val topicList = retrieveTopicList()
-
-    val ratiosTopic = topicList.getTopicSummary(3).topicSummary
-    assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
-  }
-
-  @Test
-  fun testRetrieveTopicList_doesNotContainUnavailableTopic() {
-    val topicList = retrieveTopicList()
-
-    // Verify that the topic list does not contain a not-yet published topic (since it can't be
-    // played by the user).
-    val topicIds = topicList.topicSummaryList.map { it.topicSummary }.map { it.getTopicId() }
-    assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
   @Test
@@ -679,6 +590,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(promotedStory.topicTitle.html).isEqualTo("First Test Topic")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Science")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -690,6 +603,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(promotedStory.topicTitle.html).isEqualTo("First Test Topic")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Science")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -701,6 +616,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_2)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_1)
     assertThat(promotedStory.topicTitle.html).isEqualTo("Second Test Topic")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Science")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Fifth Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -712,6 +629,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -723,6 +642,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -734,6 +655,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("The Meaning of Equal Parts")
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -744,6 +667,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Ratio?")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -755,6 +680,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Ratio?")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
@@ -767,6 +694,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Order is important")
     assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -775,6 +704,8 @@ class TopicListControllerTest {
   private fun verifyUpcomingTopic1(upcomingTopic: UpcomingTopic) {
     assertThat(upcomingTopic.topicId).isEqualTo(UPCOMING_TOPIC_ID_1)
     assertThat(upcomingTopic.title.html).isEqualTo("Third Test Topic")
+    assertThat(upcomingTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_2)
+    assertThat(upcomingTopic.classroomTitle.html).isEqualTo("English")
   }
 
   private fun verifyOngoingStoryAsRatioStory1Exploration2(
@@ -786,6 +717,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Equivalent Ratios")
     assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isEqualTo(expectedToBeLearned)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
@@ -797,13 +730,12 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Writing Ratios in Simplest Form")
     assertThat(promotedStory.topicTitle.html).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
-
-  private fun retrieveTopicList() =
-    monitorFactory.waitForNextSuccessfulResult(topicListController.getTopicList(profileId0))
 
   private fun retrievePromotedActivityList(): PromotedActivityList {
     return monitorFactory.waitForNextSuccessfulResult(

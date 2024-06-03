@@ -71,6 +71,10 @@ private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "record_survey_last_shown_timestamp_provider_id"
 private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "retrieve_survey_last_shown_timestamp_provider_id"
+private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
+  "set_last_selected_classroom_id_provider_id"
+private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
+  "retrieve_last_selected_classroom_id_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -848,6 +852,53 @@ class ProfileManagementController @Inject constructor(
       val surveyLastShownTimestampMs =
         it.profilesMap[profileId.internalId]?.surveyLastShownTimestampMs ?: 0L
       AsyncResult.Success(surveyLastShownTimestampMs)
+    }
+  }
+
+  /**
+   * Updates the last selected classroom ID for the specified profile.
+   *
+   * @param profileId The ID of the profile to update.
+   * @param classroomId The ID of the classroom selected by the user.
+   * @return A [DataProvider] representing the asynchronous operation result.
+   */
+  fun updateLastSelectedClassroomId(
+    profileId: ProfileId,
+    classroomId: String
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { profileDatabase ->
+      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val updatedProfile = profile?.toBuilder()?.setLastSelectedClassroomId(
+        classroomId
+      )?.build()
+      val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Retrieves the last selected classroom ID for the specified profile.
+   *
+   * @param profileId The ID of the profile to retrieve the last selected
+   * classroom ID for.
+   * @return A [DataProvider] containing the last selected classroom ID.
+   */
+  fun retrieveLastSelectedClassroomId(
+    profileId: ProfileId
+  ): DataProvider<String?> {
+    return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
+      val lastSelectedClassroomId = it.profilesMap[profileId.internalId]?.lastSelectedClassroomId
+      AsyncResult.Success(lastSelectedClassroomId)
     }
   }
 

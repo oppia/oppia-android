@@ -25,6 +25,12 @@ message Topic {
   // A brief description of the topic.
   SubtitledHtml description = 11;
 
+  // The ID of the classroom this topic is part of.
+  string classroom_id = 12;
+
+  // The title of the classroom this topic is part of.
+  SubtitledHtml classroom_title = 13;
+
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
 
@@ -242,6 +248,12 @@ message CompletedStory {
   // The title of the topic this story is part of.
   SubtitledHtml topic_title = 9;
 
+  // The ID of the classroom this story is part of.
+  string classroom_id = 10;
+
+  // The title of the classroom this story is part of.
+  SubtitledHtml classroom_title = 11;
+
   // The thumbnail that should be displayed for this completed story.
   LessonThumbnail lesson_thumbnail = 5;
 
@@ -289,6 +301,12 @@ message PromotedStory {
   // The title of the next chapter (exploration title) to complete.
   SubtitledHtml next_chapter_title = 17;
 
+  // The ID of the classroom this story is part of.
+  string classroom_id = 18;
+
+  // The title of the classroom this story is part of.
+  SubtitledHtml classroom_title = 19;
+
   // The exploration id next chapter to complete.
   string exploration_id = 6;
 
@@ -330,6 +348,13 @@ message TopicSummary {
 
   // The title of the topic.
   SubtitledHtml title = 8;
+
+  // The ID of the classroom this topic is part of.
+  string classroom_id = 10;
+
+  // The title of the classroom this topic is part of.
+  SubtitledHtml classroom_title = 11;
+
 
   // The structural version of the topic.
   int32 version = 3;
@@ -444,6 +469,12 @@ message UpcomingTopic {
   // The title of the topic.
   SubtitledHtml title = 7;
 
+  // The ID of the classroom this topic is part of.
+  string classroom_id = 8;
+
+  // The title of the classroom this topic is part of.
+  SubtitledHtml classroom_title = 9;
+
   // The structural version of the topic.
   int32 version = 3;
 
@@ -547,10 +578,10 @@ message EphemeralRevisionCard {
   WrittenTranslationContext written_translation_context = 2;
 }
 
-// Corresponds to a local file cataloging all available classrooms in the app.
-message ClassroomList {
-  // The list of classrooms available to the app.
-  repeated ClassroomRecord classrooms = 1;
+// Corresponds to a local file cataloging all classrooms available to load.
+message ClassroomIdList {
+  // The list of IDs corresponding to classrooms available on the local filesystem.
+  repeated string classroom_ids = 1;
 }
 
 // Corresponds to a loadable classroom.
@@ -574,11 +605,33 @@ message ClassroomRecord {
   // include topics outside of this classroom.
   map<string, TopicIdList> topic_prerequisites = 5;
 
+  // A list of topics IDs that belong to this classroom.
+  TopicIdList topic_ids = 6;
+
   // Represents a list of topic IDs (to be used in the context of topic deps in a classroom).
   message TopicIdList {
     // A list of topics IDs.
     repeated string topic_ids = 1;
   }
+}
+
+// A summary of a classroom which contains a list of topic summaries.
+message ClassroomSummary {
+  // The ID of the classroom.
+  string classroom_id = 1;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this classroom that
+  // has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 2;
+
+  // The title of the classroom.
+  SubtitledHtml classroom_title = 3;
+
+  // The thumbnail corresponding to this classroom.
+  LessonThumbnail classroom_thumbnail = 4;
+
+  // A list of topic summaries contained within this classroom.
+  repeated TopicSummary topic_summary = 5;
 }
 
 // Corresponds to a local file cataloging all concept cards available to load.
@@ -602,6 +655,12 @@ message TopicRecord {
 
   // The topic's description.
   SubtitledHtml translatable_description = 10;
+
+  // The ID of the classroom this topic is part of.
+  string classroom_id = 11;
+
+  // The title of the classroom this topic is part of.
+  SubtitledHtml translatable_classroom_title = 12;
 
   // The list of canonical story IDs that can be used to load stories from the local filesystem.
   repeated string canonical_story_ids = 4;

@@ -5,9 +5,9 @@ import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.topic.TopicController
-import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
@@ -23,7 +23,7 @@ private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 @Singleton
 class ModifyLessonProgressController @Inject constructor(
   private val topicController: TopicController,
-  private val topicListController: TopicListController,
+  private val classroomController: ClassroomController,
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock
 ) {
@@ -35,7 +35,7 @@ class ModifyLessonProgressController @Inject constructor(
    * @return a [DataProvider] for [List] of [EphemeralTopic] combined with [TopicProgress]
    */
   fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<EphemeralTopic>> {
-    val topicListProvider = topicListController.getTopicList(profileId)
+    val topicListProvider = classroomController.getTopicList(profileId)
     // TODO(#4564): Migrate this to use transformDynamic to avoid the awkward force-retrieve
     //  mechanism (which also breaks notifications for downstream topics changing).
     return topicListProvider.transformAsync(GET_ALL_TOPICS_COMBINED_PROVIDER_ID) { topicList ->

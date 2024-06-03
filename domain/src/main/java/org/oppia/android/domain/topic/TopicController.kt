@@ -394,6 +394,8 @@ class TopicController @Inject constructor(
           .setStoryTitle(storySummary.storyTitle)
           .setTopicId(topic.topicId)
           .setTopicTitle(topic.title)
+          .setClassroomId(topic.classroomId)
+          .setClassroomTitle(topic.classroomTitle)
           .setLessonThumbnail(storySummary.storyThumbnail)
         completedStoryList.add(completedStoryBuilder.build())
       }
@@ -473,6 +475,8 @@ class TopicController @Inject constructor(
           putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
           title = topicRecord.translatableTitle
           description = topicRecord.translatableDescription
+          classroomId = topicRecord.classroomId
+          classroomTitle = topicRecord.translatableClassroomTitle
           addAllStory(stories)
           topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
           diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
@@ -554,6 +558,11 @@ class TopicController @Inject constructor(
       contentId = "title"
       html = topicData.getStringFromObject("topic_name")
     }.build()
+    val classroomId = topicData.getStringFromObject("classroom_id")
+    val classroomTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "classroom_title"
+      html = topicData.getStringFromObject("classroom_name")
+    }
     val topicDescription = SubtitledHtml.newBuilder().apply {
       contentId = "description"
       html = topicData.getStringFromObject("topic_description")
@@ -562,6 +571,8 @@ class TopicController @Inject constructor(
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
+      .setClassroomId(classroomId)
+      .setClassroomTitle(classroomTitle)
       .setDescription(topicDescription)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
