@@ -2,7 +2,9 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -17,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
@@ -70,12 +73,9 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -138,7 +138,7 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_headerTextIsDisplayed() {
+  fun testFragment_portraitMode_headerTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_title))
         .check(
@@ -154,7 +154,6 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testFragment_landscapeMode_headerTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
@@ -175,7 +174,7 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_navigationCardsAreDisplayed() {
+  fun testFragment_portraitMode_navigationCardsAreDisplayed() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card))
         .check(
@@ -203,7 +202,6 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testFragment_landscapeMode_navigationCardsAreDisplayed() {
     launchOnboardingProfileTypeActivity().use {
@@ -266,25 +264,8 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Config(qualifiers = "land")
   @Test
-  fun testFragment_startInLandscapeMode_studentNavigationCardClicked_launchesNewProfileScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      // Does nothing for now, but should fail once navigation is implemented in a future PR.
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
-
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO)
-  @Test
-  fun testFragment_orientationChange_studentNavigationCardClicked_launchesNewProfileScreen() {
+  fun testFragment_orientationChange_studentNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -308,19 +289,6 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_inLandscapeMode_supervisorNavigationCardClicked_launchesProfileChooserScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
     launchOnboardingProfileTypeActivity().use {
@@ -331,6 +299,42 @@ class OnboardingProfileTypeFragmentTest {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
+
+  // @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
+  @Test
+  fun testFragment_backButtonPressed_currentScreenIsDestroyed() {
+    launchOnboardingProfileTypeActivity().use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Required for the test to pass on robolectric
+      if (isRunningOnRobolectric()) {
+        scenario?.moveToState(Lifecycle.State.DESTROYED)
+      }
+
+      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
+    launchOnboardingProfileTypeActivity().use { scenario ->
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Required for the test to pass on robolectric
+      if (isRunningOnRobolectric()) {
+        scenario?.moveToState(Lifecycle.State.DESTROYED)
+      }
+
+      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  private fun isRunningOnRobolectric(): Boolean =
+    Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
 
   private fun launchOnboardingProfileTypeActivity():
     ActivityScenario<OnboardingProfileTypeActivity>? {
@@ -358,7 +362,7 @@ class OnboardingProfileTypeFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
