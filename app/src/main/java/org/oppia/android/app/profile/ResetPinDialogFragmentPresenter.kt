@@ -13,7 +13,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResetPinDialogBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -26,13 +25,9 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ResetPinViewModel>,
+  private val resetViewModel: ResetPinViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val resetViewModel by lazy {
-    getResetPinViewModel()
-  }
-
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
     profileId: Int,
@@ -115,9 +110,5 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       }
     }
     return dialog
-  }
-
-  private fun getResetPinViewModel(): ResetPinViewModel {
-    return viewModelProvider.getForFragment(fragment, ResetPinViewModel::class.java)
   }
 }

@@ -4,11 +4,10 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
@@ -46,10 +45,10 @@ class LogUploadWorker private constructor(
     const val FIRESTORE_WORKER = "firestore_worker"
   }
 
-  @ExperimentalCoroutinesApi
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
-    val result = backgroundScope.async {
+    // TODO(#4463): Add withTimeout() to avoid potential hanging.
+    return backgroundScope.async {
       when (inputData.getStringFromData(WORKER_CASE_KEY)) {
         EVENT_WORKER -> uploadEvents()
         EXCEPTION_WORKER -> uploadExceptions()
@@ -57,18 +56,7 @@ class LogUploadWorker private constructor(
         FIRESTORE_WORKER -> uploadFirestoreData()
         else -> Result.failure()
       }
-    }
-
-    val future = SettableFuture.create<Result>()
-    result.invokeOnCompletion { failure ->
-      if (failure != null) {
-        future.setException(failure)
-      } else {
-        future.set(result.getCompleted())
-      }
-    }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
-    return future
+    }.asListenableFuture()
   }
 
   /** Extracts exception logs from the cache store and logs them to the remote service. */

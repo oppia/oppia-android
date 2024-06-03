@@ -33,7 +33,6 @@ import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -57,7 +56,7 @@ const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLO
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
+  private val exploreViewModel: ExplorationViewModel,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
@@ -82,10 +81,6 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
   private lateinit var binding: ExplorationActivityBinding
-
-  private val exploreViewModel by lazy {
-    getExplorationViewModel()
-  }
 
   fun handleOnCreate(
     context: Context,
@@ -116,6 +111,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
 
@@ -357,10 +353,6 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  private fun getExplorationViewModel(): ExplorationViewModel {
-    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
-  }
-
   /** Helper for subscribeToExploration. */
   private fun getEphemeralExploration(
     exploration: LiveData<AsyncResult<EphemeralExploration>>
@@ -535,7 +527,7 @@ class ExplorationActivityPresenter @Inject constructor(
       object : Observer<AsyncResult<Boolean>> {
         override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
           when (gatingResult) {
-            is AsyncResult.Pending -> {
+            null, is AsyncResult.Pending -> {
               oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
             }
             is AsyncResult.Failure -> {

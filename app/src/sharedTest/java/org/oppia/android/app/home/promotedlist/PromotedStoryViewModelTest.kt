@@ -408,7 +408,9 @@ class PromotedStoryViewModelTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(promotedStoryViewModelTest: PromotedStoryViewModelTest)
   }

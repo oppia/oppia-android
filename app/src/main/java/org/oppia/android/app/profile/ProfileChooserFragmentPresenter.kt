@@ -19,7 +19,6 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
 import org.oppia.android.databinding.ProfileChooserProfileViewBinding
@@ -64,7 +63,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
-  private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
+  private val chooserViewModel: ProfileChooserViewModel,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
@@ -72,10 +71,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
-
-  private val chooserViewModel: ProfileChooserViewModel by lazy {
-    getProfileChooserViewModel()
-  }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -146,10 +141,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     return COLORS_LIST.map {
       ContextCompat.getColor(context, it)
     }.minus(chooserViewModel.usedColors).random()
-  }
-
-  private fun getProfileChooserViewModel(): ProfileChooserViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {

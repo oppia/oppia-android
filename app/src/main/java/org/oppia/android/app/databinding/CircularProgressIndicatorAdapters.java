@@ -18,7 +18,7 @@ public final class CircularProgressIndicatorAdapters {
    * @param progress the numerical progress to set on the indicator (which will be displayed based
    *     on the indicator's customized minimum and maximum progress values)
    */
-  @BindingAdapter("app:animatedProgress")
+  @BindingAdapter("animatedProgress")
   public static void setAnimatedProgress(CircularProgressIndicator indicator, int progress) {
     if (progress > 0) {
       indicator.setProgressCompat(progress, /* animated = */ true);

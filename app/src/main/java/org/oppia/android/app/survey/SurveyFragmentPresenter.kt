@@ -334,6 +334,7 @@ class SurveyFragmentPresenter @Inject constructor(
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
       fragment.view!!.windowToken,
+      @Suppress("DEPRECATION") // TODO(#5406): Use the correct constant value here.
       InputMethodManager.SHOW_FORCED
     )
   }

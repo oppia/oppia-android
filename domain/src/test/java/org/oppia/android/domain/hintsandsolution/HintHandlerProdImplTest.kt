@@ -54,7 +54,6 @@ import javax.inject.Singleton
 
 /** Tests for [HintHandlerProdImpl]. */
 @Suppress("FunctionName")
-@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HintHandlerProdImplTest.TestApplication::class)
@@ -2053,6 +2052,7 @@ class HintHandlerProdImplTest {
     reset(mockHelpIndexFlowMonitor)
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun runSynchronouslyInBackground(operation: suspend () -> Unit) {
     val result = blockingCoroutineScope.async { operation() }
     testCoroutineDispatchers.runCurrent()

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ThirdPartyDependencyItemBinding
 import org.oppia.android.databinding.ThirdPartyDependencyListFragmentBinding
 import javax.inject.Inject
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ThirdPartyDependencyListViewModel>,
+  private val thirdPartyDependencyListViewModel: ThirdPartyDependencyListViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: ThirdPartyDependencyListFragmentBinding
@@ -29,8 +28,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     isMultipane: Boolean
   ): View {
-    val viewModel = getThirdPartyDependencyListViewModel()
-    viewModel.isMultipane.set(isMultipane)
+    thirdPartyDependencyListViewModel.isMultipane.set(isMultipane)
     binding = ThirdPartyDependencyListFragmentBinding.inflate(
       inflater,
       container,
@@ -45,7 +43,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = viewModel
+      it.viewModel = thirdPartyDependencyListViewModel
     }
     return binding.root
   }
@@ -57,9 +55,5 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
         setViewModel = ThirdPartyDependencyItemBinding::setViewModel
       )
       .build()
-  }
-
-  private fun getThirdPartyDependencyListViewModel(): ThirdPartyDependencyListViewModel {
-    return viewModelProvider.getForFragment(fragment, ThirdPartyDependencyListViewModel::class.java)
   }
 }

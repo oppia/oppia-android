@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -30,7 +29,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
-      profile:src="@{profile.avatar}" />
+      app:profileImageSource="@{profile.avatar}" />
 
     <TextView
       android:id="@+id/profile_list_name"

@@ -1,0 +1,41 @@
+"""
+Configurations for a codebase-wide build toolchain for Kotlin.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_compiler_plugin", "kt_javac_options", "kt_kotlinc_options")
+
+# This exposes a patch that fixes an issue with duplicate processor arguments. See:
+# github.com/bazelbuild/rules_kotlin/pull/940.
+exports_files(["remove_processor_duplicates.patch"])
+
+kt_kotlinc_options(
+    name = "oppia_kotlinc_options",
+    warn = "report",
+    x_optin = ["kotlin.RequiresOptIn"],
+)
+
+# TODO(#4936): Fix "warnings as errors" for processor-generated Java code.
+kt_javac_options(
+    name = "oppia_javac_options",
+    warn = "error",
+)
+
+define_kt_toolchain(
+    name = "kotlin_16_jdk9_toolchain",
+    api_version = "1.6",
+    javac_options = ":oppia_javac_options",
+    jvm_target = "9",
+    kotlinc_options = ":oppia_kotlinc_options",
+    language_version = "1.6",
+)
+
+# Define the compose compiler plugin
+# Used by referencing //tools/kotlin:jetpack_compose_compiler_plugin
+
+kt_compiler_plugin(
+    name = "jetpack_compose_compiler_plugin",
+    id = "androidx.compose.compiler",
+    target_embedded_compiler = True,
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:androidx_compose_compiler_compiler"],
+)

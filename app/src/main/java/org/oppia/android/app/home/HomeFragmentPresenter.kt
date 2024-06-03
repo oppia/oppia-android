@@ -4,6 +4,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -105,9 +119,38 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
+    binding.composeView.apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent {
+        MaterialTheme {
+          GroupedList()
+        }
+      }
+    }
+
     logAppOnboardedEvent()
 
     return binding.root
+  }
+
+  @OptIn(ExperimentalFoundationApi::class)
+  @Composable
+  fun GroupedList() {
+    val sections = listOf("A", "B", "C", "D", "E", "F", "G")
+
+    LazyColumn(contentPadding = PaddingValues(6.dp)) {
+      sections.forEach { sectionName ->
+        stickyHeader {
+          Text(
+            "Section $sectionName",
+            Modifier.fillMaxWidth().background(Color.LightGray).padding(8.dp)
+          )
+        }
+        items(10) { item ->
+          Text(text = "Some item $item")
+        }
+      }
+    }
   }
 
   private fun logAppOnboardedEvent() {
@@ -118,7 +161,7 @@ class HomeFragmentPresenter @Inject constructor(
       object : Observer<AsyncResult<AppStartupState>> {
         override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
           when (startUpStateResult) {
-            is AsyncResult.Pending -> {
+            null, is AsyncResult.Pending -> {
               // Do nothing
             }
             is AsyncResult.Success -> {

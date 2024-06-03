@@ -8,9 +8,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +21,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.BackgroundTestDispatcher
+import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -46,9 +50,9 @@ class ConsoleLoggerTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @field:[Inject BackgroundTestDispatcher]
+  lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
 
   @Before
   fun setUp() {
@@ -56,18 +60,18 @@ class ConsoleLoggerTest {
   }
 
   @Test
-  fun testConsoleLogger_logError_withMessage_logsMessage() = runBlockingTest {
-    consoleLogger.e(testTag, testMessage)
-
-    val consoleJob = launch {
-      consoleLogger.logErrorMessagesFlow.collect {
-        assertThat(it.logTag).isEqualTo(testTag)
-        assertThat(it.logLevel).isEqualTo(testLogLevel.toString())
-        assertThat(it.fullErrorLog).isEqualTo(testMessage)
-      }
+  @OptIn(ExperimentalCoroutinesApi::class)
+  fun testConsoleLogger_logError_withMessage_logsMessage() {
+    val firstErrorContextsDeferred = CoroutineScope(backgroundTestDispatcher).async {
+      consoleLogger.logErrorMessagesFlow.take(1).toList()
     }
+    consoleLogger.e(testTag, testMessage)
+    testCoroutineDispatchers.advanceUntilIdle()
 
-    consoleJob.cancel()
+    val firstErrorContext = firstErrorContextsDeferred.getCompleted().single()
+    assertThat(firstErrorContext.logTag).isEqualTo(testTag)
+    assertThat(firstErrorContext.logLevel).isEqualTo(testLogLevel.toString())
+    assertThat(firstErrorContext.fullErrorLog).isEqualTo(testMessage)
   }
 
   private fun setUpTestApplicationComponent() {
