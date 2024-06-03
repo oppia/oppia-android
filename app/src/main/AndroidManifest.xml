@@ -331,7 +331,7 @@
       android:windowSoftInputMode="adjustNothing" />
 
     <activity
-      android:name=".app.onboardingv2.OnboardingProfileTypeActivity"
+      android:name=".app.onboarding.OnboardingProfileTypeActivity"
       android:label="@string/onboarding_profile_type_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
 

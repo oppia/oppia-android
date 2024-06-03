@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.onboardingv2.OnboardingFragmentPresenter as OnboardingFragmentPresenterV2
+import org.oppia.android.app.onboarding.OnboardingFragmentPresenter as OnboardingFragmentPresenterV2
 
 /** Fragment that contains an onboarding flow of the app. */
 class OnboardingFragment : InjectableFragment() {
