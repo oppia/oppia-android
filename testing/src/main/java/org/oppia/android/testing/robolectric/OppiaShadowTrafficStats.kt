@@ -28,6 +28,7 @@ class OppiaShadowTrafficStats {
     uidRxBytes = bytes
   }
 
+  @Suppress("UNUSED_PARAMETER") // The parameters below must be present for Robolectric.
   companion object {
     /**
      * Robolectric shadow override of [TrafficStats.getUidRxBytes]. Note that the value of

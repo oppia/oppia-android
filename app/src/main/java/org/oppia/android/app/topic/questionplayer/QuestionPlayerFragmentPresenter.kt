@@ -27,7 +27,6 @@ import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.utility.SplitScreenManager
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -43,7 +42,7 @@ import javax.inject.Inject
 class QuestionPlayerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
+  private val questionViewModel: QuestionPlayerViewModel,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
@@ -56,7 +55,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
   private val hasConversationView = false
 
-  private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion().toLiveData()
   }
@@ -317,6 +315,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
       fragment.view!!.windowToken,
+      @Suppress("DEPRECATION") // TODO(#5406): Use the correct constant value here.
       InputMethodManager.SHOW_FORCED
     )
   }
@@ -345,10 +344,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       )
       .addConceptCardSupport()
       .build()
-  }
-
-  private fun getQuestionPlayerViewModel(): QuestionPlayerViewModel {
-    return viewModelProvider.getForFragment(fragment, QuestionPlayerViewModel::class.java)
   }
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {

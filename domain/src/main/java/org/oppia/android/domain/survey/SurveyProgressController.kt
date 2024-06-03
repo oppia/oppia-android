@@ -3,6 +3,8 @@ package org.oppia.android.domain.survey
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -15,6 +17,7 @@ import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
+import org.oppia.android.app.model.SurveySelectedAnswer.AnswerCase
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -280,6 +283,7 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
 
@@ -396,6 +400,7 @@ class SurveyProgressController @Inject constructor(
     }
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun ControllerState.saveSelectedAnswer(questionId: String, answer: SurveySelectedAnswer) {
     val deferred = recordSelectedAnswerAsync(questionId, answer)
 
@@ -479,9 +484,9 @@ class SurveyProgressController @Inject constructor(
         surveyLogger.logMandatoryResponses(
           surveyId,
           profileId,
-          getStoredResponse(SurveyQuestionName.USER_TYPE)!!,
-          getStoredResponse(SurveyQuestionName.MARKET_FIT)!!,
-          getStoredResponse(SurveyQuestionName.NPS)!!
+          getStoredResponseToUserType(),
+          getStoredResponseToMarketFitAnswer(),
+          getStoredResponseToNpsScore()
         )
       }
       else -> {
@@ -499,24 +504,37 @@ class SurveyProgressController @Inject constructor(
     answerDataStore.clearCacheAsync()
   }
 
-  private suspend inline fun <reified T : Any> getStoredResponse(
-    questionName: SurveyQuestionName
-  ): T? {
-    val answerDatabase = answerDataStore.readDataAsync().await()
-    val savedAnswer =
-      answerDatabase.selectedAnswerMap.values.find { it.questionName == questionName }
-    return savedAnswer?.let { getAnswerTypeCase(it) }
+  private suspend fun getStoredResponseToUserType(): UserTypeAnswer {
+    return getStoredResponse(
+      SurveyQuestionName.USER_TYPE, AnswerCase.USER_TYPE, SurveySelectedAnswer::getUserType
+    )
   }
 
-  private inline fun <reified T : Any> getAnswerTypeCase(surveyAnswer: SurveySelectedAnswer): T? {
-    return when {
-      surveyAnswer.userType != null && T::class == UserTypeAnswer::class ->
-        surveyAnswer.userType as? T
-      surveyAnswer.marketFit != null && T::class == MarketFitAnswer::class ->
-        surveyAnswer.marketFit as? T
-      surveyAnswer.npsScore != null && T::class == Int::class -> surveyAnswer.npsScore as? T
-      else -> null
-    }
+  private suspend fun getStoredResponseToMarketFitAnswer(): MarketFitAnswer {
+    return getStoredResponse(
+      SurveyQuestionName.MARKET_FIT, AnswerCase.MARKET_FIT, SurveySelectedAnswer::getMarketFit
+    )
+  }
+
+  private suspend fun getStoredResponseToNpsScore(): Int {
+    return getStoredResponse(
+      SurveyQuestionName.NPS, AnswerCase.NPS_SCORE, SurveySelectedAnswer::getNpsScore
+    )
+  }
+
+  private suspend inline fun <reified T : Any> getStoredResponse(
+    questionName: SurveyQuestionName,
+    expectedAnswerType: AnswerCase,
+    extractValue: SurveySelectedAnswer.() -> T
+  ): T {
+    val answerDatabase = answerDataStore.readDataAsync().await()
+    return answerDatabase.selectedAnswerMap.values.find { it.questionName == questionName }?.let {
+      check(it.answerCase == expectedAnswerType) {
+        "Expected answer for question $questionName to be type $expectedAnswerType, not" +
+          " ${it.answerCase}."
+      }
+      return@let it.extractValue()
+    } ?: error("Expected answer $expectedAnswerType in question $questionName (was missing).")
   }
 
   /**

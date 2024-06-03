@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -39,8 +38,7 @@
       android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_margin_end_profile_already_added : @dimen/profile_view_not_added_margin}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_margin_top_profile_not_added}"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      profile:ignore="RtlSymmetry">
+      app:layout_constraintTop_toTopOf="parent">
 
       <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_avatar_img"
@@ -50,7 +48,7 @@
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
         app:strokeColor="@color/component_color_profile_chooser_activity_avatar_border_color"
         app:strokeWidth="1dp"
-        profile:src="@{viewModel.profile.avatar}" />
+        app:profileImageSource="@{viewModel.profile.avatar}" />
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -81,7 +79,7 @@
           android:textColor="@color/component_color_shared_secondary_4_text_color"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_last_visited_margin_top_profile_already_added : @dimen/profile_chooser_profile_view_last_visited_margin_top_profile_not_added}"
-          profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
+          app:profileLastVisitedTime="@{viewModel.profile.lastLoggedInTimestampMs}" />
         <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
         <TextView
           android:id="@+id/profile_is_admin_text"

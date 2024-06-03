@@ -52,7 +52,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
   private lateinit var explorationId: String
-  private lateinit var viewModel: HintsAndSolutionViewModel
+  private lateinit var hintsViewModel: HintsAndSolutionViewModel
 
   /**
    * Sets up data binding and toolbar.
@@ -86,7 +86,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.explorationId = explorationId
 
     // Check if hints are available for this state.
-    viewModel = hintsAndSolutionViewModelFactory.create(state, helpIndex, writtenTranslationContext)
+    hintsViewModel =
+      hintsAndSolutionViewModelFactory.create(state, helpIndex, writtenTranslationContext)
 
     val binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -98,7 +99,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()
     }
     binding.let {
-      it.viewModel = this.viewModel
+      it.viewModel = hintsViewModel
       it.lifecycleOwner = fragment
     }
 
@@ -147,7 +148,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private fun bindHintViewModel(binding: HintSummaryBinding, hintViewModel: HintViewModel) {
     binding.viewModel = hintViewModel
 
-    val position: Int = viewModel.itemList.indexOf(hintViewModel)
+    val position: Int = hintsViewModel.itemList.indexOf(hintViewModel)
 
     binding.isListExpanded = position in expandedItemIndexes
 
@@ -217,7 +218,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = solutionViewModel
 
-    val position: Int = viewModel.itemList.indexOf(solutionViewModel)
+    val position: Int = hintsViewModel.itemList.indexOf(solutionViewModel)
     binding.isListExpanded = expandedItemIndexes.contains(position)
 
     solutionIndex?.let { solutionIndex ->
@@ -300,13 +301,13 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   fun handleRevealSolution() {
-    viewModel.isSolutionRevealed.set(true)
+    hintsViewModel.isSolutionRevealed.set(true)
     expandedHintListIndexListener.onRevealSolutionClicked(
-      solutionIndex = viewModel.solutionIndex,
+      solutionIndex = hintsViewModel.solutionIndex,
       isSolutionRevealed = true
     )
     (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution()
-    expandOrCollapseItem(position = viewModel.solutionIndex)
+    expandOrCollapseItem(position = hintsViewModel.solutionIndex)
   }
 
   fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {

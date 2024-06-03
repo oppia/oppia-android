@@ -48,26 +48,25 @@ class ConceptCardRetriever @Inject constructor(
       }
       val skillContents = skillData.getJSONObject("skill_contents")
       val workedExamplesList = createWorkedExamplesFromJson(
-        skillContents.getJSONArray(
-          "worked_examples"
-        )
+        skillContents.getJSONArray("worked_examples")
       )
 
       val recordedVoiceoverMapping = hashMapOf<String, VoiceoverMapping>()
-      recordedVoiceoverMapping["explanation"] = createRecordedVoiceoversFromJson(
+      val explanationContentId = skillContents.optJSONObject("explanation")?.optString("content_id")
+      val explanationVoiceovers = explanationContentId?.let {
         skillContents
           .optJSONObject("recorded_voiceovers")
-          .optJSONObject("voiceovers_mapping")
-          .optJSONObject(
-            skillContents.optJSONObject("explanation").optString("content_id")
-          )!!
-      )
+          ?.optJSONObject("voiceovers_mapping")
+          ?.optJSONObject(it)
+      }
+      recordedVoiceoverMapping["explanation"] =
+        createRecordedVoiceoversFromJson(explanationVoiceovers)
       for (workedExample in workedExamplesList) {
         recordedVoiceoverMapping[workedExample.contentId] = createRecordedVoiceoversFromJson(
           skillContents
             .optJSONObject("recorded_voiceovers")
-            .optJSONObject("voiceovers_mapping")
-            .optJSONObject(workedExample.contentId)
+            ?.optJSONObject("voiceovers_mapping")
+            ?.optJSONObject(workedExample.contentId)
         )
       }
 
@@ -126,26 +125,6 @@ class ConceptCardRetriever @Inject constructor(
     html = subtitledHtmlJson.getStringFromObject("html")
   }.build()
 
-  private fun createWrittenTranslationFromJson(
-    translationMappingJsonObject: JSONObject?
-  ): TranslationMapping {
-    if (translationMappingJsonObject == null) {
-      return TranslationMapping.getDefaultInstance()
-    }
-    val translationMappingBuilder = TranslationMapping.newBuilder()
-    val languages = translationMappingJsonObject.keys()
-    while (languages.hasNext()) {
-      val language = languages.next()
-      val translationJson = translationMappingJsonObject.optJSONObject(language)
-      val translation = Translation.newBuilder()
-        .setHtml(translationJson.optString("translation"))
-        .setNeedsUpdate(translationJson.optBoolean("needs_update"))
-        .build()
-      translationMappingBuilder.putTranslationMapping(language, translation)
-    }
-    return translationMappingBuilder.build()
-  }
-
   private fun createRecordedVoiceoversFromJson(
     voiceoverMappingJsonObject: JSONObject?
   ): VoiceoverMapping {
@@ -157,23 +136,23 @@ class ConceptCardRetriever @Inject constructor(
     while (languages.hasNext()) {
       val language = languages.next()
       val voiceoverJson = voiceoverMappingJsonObject.optJSONObject(language)
-      val voiceover = Voiceover.newBuilder()
-        .setFileName(voiceoverJson.optString("filename"))
-        .setNeedsUpdate(voiceoverJson.optBoolean("needs_update"))
-        .setFileSizeBytes(voiceoverJson.optLong("file_size_bytes"))
-        .build()
+      val voiceover = Voiceover.newBuilder().apply {
+        voiceoverJson?.optString("filename")?.let { fileName = it }
+        voiceoverJson?.optBoolean("needs_update")?.let { needsUpdate = it }
+        voiceoverJson?.optLong("file_size_bytes")?.let { fileSizeBytes = it }
+      }.build()
       voiceoverMappingBuilder.putVoiceoverMapping(language, voiceover)
     }
     return voiceoverMappingBuilder.build()
   }
 
   private fun createWrittenTranslationMappingsFromJson(
-    writtenTranslations: JSONObject
+    writtenTranslations: JSONObject?
   ): Map<String, TranslationMapping> {
-    val translationsMappingJson = writtenTranslations.getJSONObject("translations_mapping")
-    return translationsMappingJson.keys().asSequence().filter { contentId ->
+    val translationsMappingJson = writtenTranslations?.optJSONObject("translations_mapping")
+    return translationsMappingJson?.keys()?.asSequence()?.filter { contentId ->
       translationsMappingJson.getJSONObject(contentId).length() != 0
-    }.associateWith { contentId ->
+    }?.associateWith { contentId ->
       val translationJson = translationsMappingJson.getJSONObject(contentId)
       TranslationMapping.newBuilder().apply {
         putAllTranslationMapping(
@@ -182,7 +161,7 @@ class ConceptCardRetriever @Inject constructor(
           }
         )
       }.build()
-    }
+    } ?: mapOf()
   }
 
   private fun createTranslationFromJson(translatorJson: JSONObject): Translation =

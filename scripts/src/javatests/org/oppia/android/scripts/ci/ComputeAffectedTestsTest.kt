@@ -718,15 +718,14 @@ class ComputeAffectedTestsTest {
     computeAllTargets: Boolean = false
   ): List<String> {
     val outputLog = tempFolder.newFile("output.log")
-    val currentHeadHash =
-      main(
-        arrayOf(
-          tempFolder.root.absolutePath,
-          outputLog.absolutePath,
-          currentHeadHash,
-          "compute_all_tests=$computeAllTargets"
-        )
+    main(
+      arrayOf(
+        tempFolder.root.absolutePath,
+        outputLog.absolutePath,
+        currentHeadHash,
+        "compute_all_tests=$computeAllTargets"
       )
+    )
     return outputLog.readLines()
   }
 
