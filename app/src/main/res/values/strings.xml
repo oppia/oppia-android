@@ -647,7 +647,7 @@
   <string name="onboarding_profile_type_activity_title">Select Profile Type</string>
   <string name="onboarding_profile_type_activity_header">Tell us more about you!</string>
   <string name="onboarding_profile_type_activity_student_text">I\'m a student and I want to learn new things!</string>
-  <string name="onboarding_profile_type_activity_parent_text">I\'m the parent, teacher or guardian of a student.</string>
+  <string name="onboarding_profile_type_activity_parent_text">I\'m the parent, teacher, or guardian of a student.</string>
   <string name="onboarding_step_count_two">STEP 2 OF 5</string>
 
   <!-- Onboarding Shared Strings -->
