@@ -10,7 +10,7 @@ android {
   buildToolsVersion "29.0.2"
   defaultConfig {
     applicationId "org.oppia.android"
-    minSdkVersion 19
+    minSdkVersion 21
     targetSdkVersion 33
     versionCode 1
     versionName "1.0"
@@ -31,6 +31,14 @@ android {
   }
   kotlinOptions {
     jvmTarget = JavaVersion.VERSION_1_8
+    useIR = true
+  }
+  buildFeatures {
+    compose true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion compose_version
+    kotlinCompilerVersion kotlin_version
   }
   buildTypes {
     release {
@@ -182,7 +190,15 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4',
       'org.mockito:mockito-core:2.7.22',
-      'com.github.oppia:android-spotlight:cc23499d37dc8533a2876e45b5063e981a4583f4'
+      'com.github.oppia:android-spotlight:cc23499d37dc8533a2876e45b5063e981a4583f4',
+      "androidx.compose.runtime:runtime:$compose_version",
+      "androidx.compose.ui:ui:$compose_version",
+      "androidx.compose.foundation:foundation:$compose_version",
+      "androidx.compose.foundation:foundation-layout:$compose_version",
+      "androidx.compose.material:material:$compose_version",
+      "androidx.compose.runtime:runtime-livedata:$compose_version",
+      "androidx.compose.ui:ui-tooling:$compose_version",
+      "com.google.android.material:compose-theme-adapter:$compose_version"
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
