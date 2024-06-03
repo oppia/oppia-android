@@ -10,8 +10,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
-import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -21,7 +21,7 @@ import javax.inject.Inject
 /** The ObservableViewModel for [WalkthroughTopicListFragment]. */
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
-  private val classroomController: ClassroomController,
+  private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -34,7 +34,7 @@ class WalkthroughTopicViewModel @Inject constructor(
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    classroomController.getTopicList(profileId).toLiveData()
+    topicListController.getTopicList(profileId).toLiveData()
   }
 
   private val topicListSummaryLiveData: LiveData<TopicList> by lazy {

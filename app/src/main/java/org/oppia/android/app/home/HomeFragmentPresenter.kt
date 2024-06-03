@@ -26,7 +26,6 @@ import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
-import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -46,7 +45,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
-  private val classroomController: ClassroomController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
@@ -76,7 +74,6 @@ class HomeFragmentPresenter @Inject constructor(
       internalProfileId,
       profileManagementController,
       topicListController,
-      classroomController,
       topicEntityType,
       storyEntityType,
       resourceHandler,

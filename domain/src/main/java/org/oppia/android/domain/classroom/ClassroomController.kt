@@ -20,11 +20,8 @@ import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,12 +43,10 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 /** Controller for retrieving the list of classrooms & topics available to the learner. */
 @Singleton
 class ClassroomController @Inject constructor(
-  private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
   private val translationController: TranslationController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) {
   private var classroomId: String = TEST_CLASSROOM_ID_0
 
@@ -59,26 +54,28 @@ class ClassroomController @Inject constructor(
    * Returns the list of [ClassroomSummary]s currently tracked by the app.
    */
   fun getClassroomList(profileId: ProfileId): DataProvider<List<ClassroomSummary>> {
-    return dataProviders.createInMemoryDataProvider(GET_CLASSROOM_LIST_PROVIDER_ID) {
-      createClassroomList()
-    }
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return translationLocaleProvider.transform(
+      GET_CLASSROOM_LIST_PROVIDER_ID,
+      ::createClassroomList
+    )
   }
 
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(
-    profileId: ProfileId,
-    classroomId: String = TEST_CLASSROOM_ID_0
-  ): DataProvider<TopicList> {
+  fun getTopicList(profileId: ProfileId, classroomId: String): DataProvider<TopicList> {
     this.classroomId = classroomId
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
   }
 
-  private fun createClassroomList(): List<ClassroomSummary> {
+  private fun createClassroomList(
+    contentLocale: OppiaLocale.ContentLocale
+  ): List<ClassroomSummary> {
     return if (loadLessonProtosFromAssets) {
       val classroomIdList = assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
@@ -87,10 +84,12 @@ class ClassroomController @Inject constructor(
       return classroomIdList.classroomIdsList.map {
         createClassroomSummary(it)
       }
-    } else loadClassroomListFromJson()
+    } else loadClassroomListFromJson(contentLocale)
   }
 
-  private fun loadClassroomListFromJson(): List<ClassroomSummary> {
+  private fun loadClassroomListFromJson(
+    contentLocale: OppiaLocale.ContentLocale
+  ): List<ClassroomSummary> {
     val classroomIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("classrooms.json")!!
       .getJSONArray("classroom_id_list")
@@ -142,20 +141,9 @@ class ClassroomController @Inject constructor(
   }
 
   private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
-    val topicIdList = if (enableMultipleClassrooms.value) {
-      // Topic ID list of the selected classroom.
-      getTopicIdListFromClassroomRecord(classroomId).topicIdsList
-    } else {
-      // Combined topic ID list of all the available classrooms.
-      createClassroomList().flatMap { classroomSummary ->
-        classroomSummary.topicSummaryList.map {
-          it.topicId
-        }
-      }
-    }
     return TopicList.newBuilder().apply {
       addAllTopicSummary(
-        topicIdList.map { topicId ->
+        getTopicIdListFromClassroomRecord(classroomId).topicIdsList.map { topicId ->
           createEphemeralTopicSummary(topicId, contentLocale)
         }.filter {
           it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW

@@ -210,17 +210,6 @@ class ClassroomControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_disableMultipleClassrooms_fractionsTopic_hasCorrectTopicInfo() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-
-    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
-
-    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
-    assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
-  }
-
-  @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
 
