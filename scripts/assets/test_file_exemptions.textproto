@@ -708,7 +708,6 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/testing/oppia
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/ConceptCardRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/PrimeTopicAssetsController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/PrimeTopicAssetsControllerImpl.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/PrimeTopicAssetsControllerModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/RevisionCardRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/JsonAssetRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
