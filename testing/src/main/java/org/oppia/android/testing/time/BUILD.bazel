@@ -4,8 +4,7 @@ Package for test-only utilities for coordinating time, particularly in simulated
 environments (i.e. Robolectric).
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "fake_oppia_clock",
@@ -41,9 +40,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
         ":fake_oppia_clock",
+        "//:dagger",
     ],
 )
-
-dagger_rules()

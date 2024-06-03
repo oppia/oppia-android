@@ -10,6 +10,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/AppCompatChe
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/AudioFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/CircularProgressIndicatorAdaptersTestActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ColorBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ConceptCardFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DragDropTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DrawableBindingAdaptersTestActivity"

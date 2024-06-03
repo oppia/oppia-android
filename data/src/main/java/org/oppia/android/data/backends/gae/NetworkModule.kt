@@ -6,10 +6,8 @@ import com.google.common.base.Optional
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
-import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -47,20 +45,6 @@ class NetworkModule {
           .build()
       )
     } else Optional.absent()
-  }
-
-  @Provides
-  @Singleton
-  fun provideTopicService(@OppiaRetrofit retrofit: Optional<Retrofit>): Optional<TopicService> {
-    return retrofit.map { it.create(TopicService::class.java) }
-  }
-
-  @Provides
-  @Singleton
-  fun provideClassroomService(
-    @OppiaRetrofit retrofit: Optional<Retrofit>
-  ): Optional<ClassroomService> {
-    return retrofit.map { it.create(ClassroomService::class.java) }
   }
 
   @Provides

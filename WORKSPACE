@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -14,6 +14,22 @@ android_sdk_repository(
     api_level = 33,
     build_tools_version = "29.0.2",
 )
+
+# Oppia's backend proto API definitions.
+git_repository(
+    name = "oppia_proto_api",
+    commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
+    remote = "https://github.com/oppia/oppia-proto-api",
+    shallow_since = "1716846301 -0700",
+)
+
+load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
+
+initializeDepsForWorkspace()
+
+load("@oppia_proto_api//repo:toolchains.bzl", "initializeToolchainsForWorkspace")
+
+initializeToolchainsForWorkspace()
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
 http_archive(
@@ -30,14 +46,11 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
-
-kt_download_local_dev_dependencies()
-
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
 
 kotlin_repositories()
+
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_register_toolchains")
 
 kt_register_toolchains()
 
@@ -96,8 +109,9 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.5",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.5.tar.gz"],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["robolectric"]["sha"],
+    strip_prefix = "robolectric-bazel-%s" % HTTP_DEPENDENCY_VERSIONS["robolectric"]["version"],
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["robolectric"]["version"]],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
@@ -109,6 +123,7 @@ git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
     remote = "https://github.com/bazelbuild/tools_android",
+    shallow_since = "1594238320 -0400",
 )
 
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
@@ -137,7 +152,7 @@ git_repository(
     name = "kotlitex",
     commit = "43139c140833c7120f351d63d74b42c253d2b213",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1647554845 -0700",
+    shallow_since = "1675741075 -0800",
 )
 
 bind(
@@ -147,6 +162,7 @@ bind(
 
 http_archive(
     name = "protobuf_tools",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["sha"],
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
@@ -178,16 +194,28 @@ http_jar(
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    duplicate_version_warning = "error",
     fail_if_repin_required = True,
-    fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
-    repositories = DAGGER_REPOSITORIES + [
-        "https://maven.fabric.io/public",
-        "https://maven.google.com",
-        "https://repo1.maven.org/maven2",
-    ],
+    override_targets = {
+        "com.google.guava:guava": "@//third_party:com_google_guava_guava",
+    },
+    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
+    strict_visibility = True,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
+
+http_jar(
+    name = "guava_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
+    urls = [
+        "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)

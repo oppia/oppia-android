@@ -84,7 +84,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -709,6 +708,13 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
     }
   }
 
@@ -726,6 +732,38 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_tabletPortrait_screenIsCorrectlyDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_language_title)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_subtitle)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_app_language_image)).check(
+        matches(
+          withContentDescription(
+            R.string.onboarding_otter_content_description
+          )
+        )
+      )
     }
   }
 
@@ -744,126 +782,10 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_language_dropdown_background)).check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_language_explanation)).check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_language_lets_go_button)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_onboardingV2Enabled_allIcons_haveCorrectContentDescriptions() {
-    setUpTestWithOnboardingV2Enabled()
-
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_arrow_icon_description
-          )
-        )
-      )
       onView(withId(R.id.onboarding_app_language_image)).check(
         matches(
           withContentDescription(
             R.string.onboarding_otter_content_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_icon_description
-          )
-        )
-      )
-    }
-  }
-
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_onboardingV2Enabled_mobileLandscape_allIcons_haveCorrectContentDescriptions() {
-    setUpTestWithOnboardingV2Enabled()
-
-    launch(OnboardingActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_arrow_icon_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_app_language_image)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_icon_description
-          )
-        )
-      )
-    }
-  }
-
-  @Config(qualifiers = "sw600dp-port")
-  @Test
-  fun testFragment_onboardingV2Enabled_mobilePortrait_allIcons_haveCorrectContentDescriptions() {
-    setUpTestWithOnboardingV2Enabled()
-
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_arrow_icon_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_app_language_image)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_icon_description
-          )
-        )
-      )
-    }
-  }
-
-  @Config(qualifiers = "sw600dp-land")
-  @Test
-  fun testFragment_onboardingV2Enabled_tabletLandscape_allIcons_haveCorrectContentDescriptions() {
-    setUpTestWithOnboardingV2Enabled()
-
-    launch(OnboardingActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_language_dropdown_arrow)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_arrow_icon_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_app_language_image)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
-      )
-      onView(withId(R.id.onboarding_language_dropdown_icon)).check(
-        matches(
-          withContentDescription(
-            R.string.onboarding_language_dropdown_icon_description
           )
         )
       )
@@ -924,7 +846,7 @@ class OnboardingFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
