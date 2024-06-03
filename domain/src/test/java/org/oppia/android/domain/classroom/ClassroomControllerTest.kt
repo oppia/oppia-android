@@ -78,7 +78,7 @@ class ClassroomControllerTest {
 
   @Test
   fun testGetClassroomList_isSuccessful() {
-    val classroomListProvider = classroomController.getClassroomList(profileId0)
+    val classroomListProvider = classroomController.getClassroomList()
 
     monitorFactory.waitForNextSuccessfulResult(classroomListProvider)
   }
@@ -263,7 +263,7 @@ class ClassroomControllerTest {
   }
 
   private fun getClassroomList() =
-    monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId0))
+    monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList())
 
   private fun retrieveTopicList(classroomId: String) = monitorFactory.waitForNextSuccessfulResult(
     classroomController.getTopicList(profileId0, classroomId)

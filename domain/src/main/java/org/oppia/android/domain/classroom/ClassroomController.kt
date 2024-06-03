@@ -20,6 +20,7 @@ import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
@@ -43,6 +44,7 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 /** Controller for retrieving the list of classrooms & topics available to the learner. */
 @Singleton
 class ClassroomController @Inject constructor(
+  private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
   private val translationController: TranslationController,
@@ -53,13 +55,10 @@ class ClassroomController @Inject constructor(
   /**
    * Returns the list of [ClassroomSummary]s currently tracked by the app.
    */
-  fun getClassroomList(profileId: ProfileId): DataProvider<List<ClassroomSummary>> {
-    val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
-    return translationLocaleProvider.transform(
-      GET_CLASSROOM_LIST_PROVIDER_ID,
-      ::createClassroomList
-    )
+  fun getClassroomList(): DataProvider<List<ClassroomSummary>> {
+    return dataProviders.createInMemoryDataProvider(GET_CLASSROOM_LIST_PROVIDER_ID) {
+      createClassroomList()
+    }
   }
 
   /**
@@ -73,9 +72,7 @@ class ClassroomController @Inject constructor(
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
   }
 
-  private fun createClassroomList(
-    contentLocale: OppiaLocale.ContentLocale
-  ): List<ClassroomSummary> {
+  private fun createClassroomList(): List<ClassroomSummary> {
     return if (loadLessonProtosFromAssets) {
       val classroomIdList = assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
@@ -84,12 +81,10 @@ class ClassroomController @Inject constructor(
       return classroomIdList.classroomIdsList.map {
         createClassroomSummary(it)
       }
-    } else loadClassroomListFromJson(contentLocale)
+    } else loadClassroomListFromJson()
   }
 
-  private fun loadClassroomListFromJson(
-    contentLocale: OppiaLocale.ContentLocale
-  ): List<ClassroomSummary> {
+  private fun loadClassroomListFromJson(): List<ClassroomSummary> {
     val classroomIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("classrooms.json")!!
       .getJSONArray("classroom_id_list")
