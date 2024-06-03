@@ -55,9 +55,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.45" />
+      app:layout_constraintGuide_percent="0.40" />
 
-    <com.google.android.material.card.MaterialCardView
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:id="@+id/onboarding_app_language_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
@@ -79,7 +79,7 @@
     <TextView
       android:id="@+id/onboarding_language_label"
       style="@style/OnboardingLanguageLabelStyle"
-      android:layout_marginTop="@dimen/tablet_shared_margin_large"
+      android:layout_marginTop="@dimen/tablet_shared_margin_small"
       android:text="@string/onboarding_language_activity_select_label"
       app:layout_constraintBottom_toTopOf="@id/onboarding_language_dropdown_background"
       app:layout_constraintEnd_toEndOf="parent"
@@ -87,11 +87,11 @@
       app:layout_constraintTop_toBottomOf="@id/onboarding_app_language_image"
       app:layout_constraintVertical_chainStyle="packed" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
       android:id="@+id/onboarding_language_dropdown_background"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/tablet_shared_margin_medium"
+      android:layout_marginTop="@dimen/tablet_shared_margin_small"
       android:layout_marginBottom="@dimen/tablet_shared_margin_medium"
       app:layout_constraintBottom_toTopOf="@id/onboarding_language_explanation"
       app:layout_constraintEnd_toEndOf="parent"
@@ -121,13 +121,13 @@
           android:inputType="none"
           android:padding="@dimen/onboarding_shared_padding_small" />
       </com.google.android.material.textfield.TextInputLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
       android:id="@+id/onboarding_language_explanation"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/tablet_shared_margin_small"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_x_small"
       android:fontFamily="sans-serif"
       android:gravity="center"
       android:text="@string/onboarding_language_activity_explanation_text"
@@ -141,7 +141,7 @@
     <Button
       android:id="@+id/onboarding_language_lets_go_button"
       style="@style/OnboardingLanguageLetsGoButton"
-      android:layout_marginBottom="@dimen/tablet_shared_margin_medium"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_xl"
       android:text="@string/onboarding_language_activity_button_text"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

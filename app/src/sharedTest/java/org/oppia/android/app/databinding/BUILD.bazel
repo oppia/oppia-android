@@ -369,7 +369,7 @@ app_test(
     processed_src = test_with_resources("ColorBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.ColorBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",

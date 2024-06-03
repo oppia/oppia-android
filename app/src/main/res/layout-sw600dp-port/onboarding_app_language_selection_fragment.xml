@@ -13,7 +13,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.20" />
+      app:layout_constraintGuide_percent="0.10" />
 
     <TextView
       android:id="@+id/onboarding_language_title"
@@ -48,14 +48,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.41" />
+      app:layout_constraintGuide_percent="0.39" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/onboarding_language_center_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.50" />
+      app:layout_constraintGuide_percent="0.45" />
 
     <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:id="@+id/onboarding_app_language_background"
@@ -70,7 +70,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:contentDescription="@string/onboarding_otter_content_description"
-      android:scaleType="centerCrop"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_language_image_guide"
@@ -79,7 +78,6 @@
     <TextView
       android:id="@+id/onboarding_language_label"
       style="@style/OnboardingLanguageLabelStyle"
-      android:layout_marginTop="@dimen/tablet_shared_margin_xl"
       android:text="@string/onboarding_language_activity_select_label"
       app:layout_constraintBottom_toTopOf="@id/onboarding_language_dropdown_background"
       app:layout_constraintEnd_toEndOf="parent"
