@@ -78,7 +78,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/Updates
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivityPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenterV1.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingSlideFinalViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/RouteToProfileListListener.kt"
