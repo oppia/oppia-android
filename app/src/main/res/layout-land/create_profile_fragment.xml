@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.onboardingv2.CreateProfileViewModel" />
+      type="org.oppia.android.app.onboarding.CreateProfileViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

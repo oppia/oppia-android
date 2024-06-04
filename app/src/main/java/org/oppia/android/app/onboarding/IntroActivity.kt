@@ -1,4 +1,4 @@
-package org.oppia.android.app.onboardingv2
+package org.oppia.android.app.onboarding
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.INTRO_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -49,7 +49,7 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     ): Intent {
       return Intent(context, IntroActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
-        decorateWithScreenName(ScreenName.INTRO_ACTIVITY)
+        decorateWithScreenName(INTRO_ACTIVITY)
       }
     }
 
