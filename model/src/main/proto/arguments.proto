@@ -354,7 +354,6 @@ message QuestionPlayerActivityParams {
 
 // The bundle of properties that are saved upon configuration changes in AdministratorControlActivity.
 message AdministratorControlActivityStateBundle {
-
   // Title for the loaded fragment.
   string selected_controls_title = 1;
 
@@ -375,7 +374,7 @@ message AdministratorControlsFragmentArguments {
 }
 
 // Represents the parameters needed to create MarkChaptersCompletedTestActivity.
-message MarkChaptersCompletedTestActivityParams{
+message MarkChaptersCompletedTestActivityParams {
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
 
@@ -384,7 +383,7 @@ message MarkChaptersCompletedTestActivityParams{
 }
 
 // Represents the parameters needed to create MarkChaptersCompletedActivity.
-message MarkChaptersCompletedActivityParams{
+message MarkChaptersCompletedActivityParams {
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
 
@@ -393,7 +392,7 @@ message MarkChaptersCompletedActivityParams{
 }
 
 // Arguments required when creating a MarkChaptersCompletedFragment.
-message MarkChaptersCompletedFragmentArguments{
+message MarkChaptersCompletedFragmentArguments {
   // The ID of the profile that wants to mark chapters as completed.
   int32 internal_profile_id = 1;
 
@@ -402,7 +401,7 @@ message MarkChaptersCompletedFragmentArguments{
 }
 
 // The bundle of properties that are saved upon configuration changes in MarkChaptersCompletedFragment.
-message MarkChaptersCompletedFragmentStateBundle{
+message MarkChaptersCompletedFragmentStateBundle {
   // List of selected exploration IDs.
   repeated string exploration_ids = 1;
 
@@ -411,7 +410,7 @@ message MarkChaptersCompletedFragmentStateBundle{
 }
 
 // The bundle of properties that are saved upon configuration changes in MarkStoriesCompletedFragment.
-message MarkStoriesCompletedFragmentStateBundle{
+message MarkStoriesCompletedFragmentStateBundle {
   // List of selected story IDs.
   repeated string story_ids = 1;
 }
@@ -456,7 +455,7 @@ message LicenseTextViewerActivityParams {
 }
 
 // Arguments required when creating a LicenseTextViewerFragment.
-message LicenseTextViewerFragmentArguments{
+message LicenseTextViewerFragmentArguments {
   // Dependency index for a third-party dependency.
   int32 dependency_index = 1;
 
@@ -477,7 +476,7 @@ message HelpActivityParams {
 }
 
 // The bundle of properties that are saved upon configuration changes in HelpActivity.
-message HelpActivityStateBundle{
+message HelpActivityStateBundle {
   // Title for loaded fragment.
   string help_options_title = 1;
 
@@ -571,7 +570,6 @@ message LanguageDialogFragmentArguments {
 
 // Represents the parameters needed to create StateFragmentTestActivity.
 message StateFragmentTestActivityParams {
-
   // The ID of the current profile.
   int32 internal_profile_id = 1;
 
@@ -590,7 +588,6 @@ message StateFragmentTestActivityParams {
 
 // Arguments required when creating a StateFragment.
 message StateFragmentArguments {
-
   // The ID of the current profile.
   int32 internal_profile_id = 1;
 
@@ -765,7 +762,6 @@ message TopicPracticeFragmentArguments {
 
 // The bundle of properties that are saved upon configuration changes in TopicPracticeFragment.
 message TopicPracticeFragmentStateBundle {
-
   // List of selected sub topic id lists.
   repeated int32 subtopic_ids = 1;
 
