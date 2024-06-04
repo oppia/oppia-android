@@ -9,7 +9,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -28,7 +27,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val oppiaLogger: OppiaLogger,
-  private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
+  private val stateFragmentTestViewModel: StateFragmentTestViewModel
 ) {
 
   private var profileId: Int = 1
@@ -44,7 +43,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     )
     binding.apply {
       lifecycleOwner = activity
-      viewModel = getStateFragmentTestViewModel()
+      viewModel = stateFragmentTestViewModel
     }
 
     profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
@@ -121,7 +120,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     storyId: String,
     explorationId: String
   ) {
-    getStateFragmentTestViewModel().hasExplorationStarted.set(true)
+    stateFragmentTestViewModel.hasExplorationStarted.set(true)
 
     val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     activity.supportFragmentManager.beginTransaction().add(
@@ -145,7 +144,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().remove(fragment).commitNow()
     }
 
-    getStateFragmentTestViewModel().hasExplorationStarted.set(false)
+    stateFragmentTestViewModel.hasExplorationStarted.set(false)
   }
 
   private fun getStateFragment(): StateFragment? {
@@ -158,9 +157,5 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
     ) as HintsAndSolutionExplorationManagerFragment?
-  }
-
-  private fun getStateFragmentTestViewModel(): StateFragmentTestViewModel {
-    return viewModelProvider.getForActivity(activity, StateFragmentTestViewModel::class.java)
   }
 }

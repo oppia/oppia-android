@@ -12,6 +12,8 @@ import javax.inject.Inject
 class ExpirationMetaDataRetrieverImpl @Inject constructor(
   private val context: Context
 ) : ExpirationMetaDataRetriever {
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+  @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
   override fun getMetaData(): Bundle? {
     return context.packageManager.getApplicationInfo(
       context.packageName, PackageManager.GET_META_DATA

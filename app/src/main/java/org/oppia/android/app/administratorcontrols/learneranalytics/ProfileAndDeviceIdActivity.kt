@@ -28,6 +28,7 @@ class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       onBackPressed()
     }
     return super.onOptionsItemSelected(item)

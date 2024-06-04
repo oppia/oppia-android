@@ -31,11 +31,11 @@ class ParameterizedMethod(
     // may change (due to Robolectric instrumentation including custom class loading & bytecode
     // changes).
     val baseClass = testClassInstance.javaClass
-    val fieldSetters = parameterFields.map { field ->
+    val fieldSetters = parameterFields.associate { field ->
       val setterMethod =
         baseClass.getDeclaredMethod("set${field.name.capitalize(Locale.US)}", field.type)
       field.name to setterMethod
-    }.toMap()
+    }
     values.getValue(iterationName).forEach { parameterValue ->
       val fieldSetter = fieldSetters.getValue(parameterValue.key)
       fieldSetter.invoke(testClassInstance, parameterValue.value)

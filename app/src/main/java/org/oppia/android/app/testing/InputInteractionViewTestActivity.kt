@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -58,10 +57,9 @@ class InputInteractionViewTestActivity :
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.numericInputViewModel = numericInputViewModel
-  }
-
-  fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
+      numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(

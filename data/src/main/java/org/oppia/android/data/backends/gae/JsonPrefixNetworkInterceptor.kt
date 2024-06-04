@@ -2,7 +2,7 @@ package org.oppia.android.data.backends.gae
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,7 +27,7 @@ class JsonPrefixNetworkInterceptor @Inject constructor(
         var rawJson = responseBody.string()
         rawJson = removeXssiPrefix(rawJson)
         val contentType = responseBody.contentType()
-        val body = ResponseBody.create(contentType, rawJson)
+        val body = rawJson.toResponseBody(contentType)
         return response.newBuilder().body(body).build()
       }
     }
