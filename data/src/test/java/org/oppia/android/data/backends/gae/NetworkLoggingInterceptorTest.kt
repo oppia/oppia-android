@@ -9,10 +9,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -34,6 +35,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.ConnectException
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,9 +54,12 @@ class NetworkLoggingInterceptorTest {
     private const val headerString = "$testApiKey: $testApiKeyValue"
   }
 
-  @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
@@ -72,10 +77,7 @@ class NetworkLoggingInterceptorTest {
 
     mockWebServerUrl = mockWebServer.url(testUrl)
 
-    request = Request.Builder()
-      .url(mockWebServerUrl)
-      .addHeader(testApiKey, testApiKeyValue)
-      .build()
+    request = Request.Builder().url(mockWebServerUrl).addHeader(testApiKey, testApiKeyValue).build()
   }
 
   @After
@@ -84,76 +86,77 @@ class NetworkLoggingInterceptorTest {
   }
 
   @Test
-  fun testLoggingInterceptor_makeNetworkCall_succeeds() = runBlockingTest {
+  fun testLoggingInterceptor_makeNetworkCall_succeeds() {
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
+
+    // Collect requests.
+    val firstRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
+      networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
+    }
     client.newCall(request).execute()
     testCoroutineDispatchers.advanceUntilIdle()
 
-    val networkJob = launch {
-      networkLoggingInterceptor.logNetworkCallFlow.collect {
-        assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
-        assertThat(it.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
-        assertThat(it.headers).contains(headerString)
-        assertThat(it.body).isEqualTo(testResponseBody)
-      }
-    }
-
-    networkJob.cancel()
+    val firstRequest = firstRequestsDeferred.getCompleted().single()
+    assertThat(firstRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
+    assertThat(firstRequest.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
+    assertThat(firstRequest.headers).contains(headerString)
+    assertThat(firstRequest.body).isEqualTo(testResponseBody)
   }
 
   @Test
-  fun testLoggingInterceptor_makeNetworkCallWithInvalidUrl_failsAndCompletes() =
-    runBlockingTest {
-      val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
-      val mockResponse = MockResponse()
-        .setResponseCode(pageNotFound)
-        .setBody(testResponseBody)
+  fun testLoggingInterceptor_makeNetworkCallWithInvalidUrl_failsAndCompletes() {
+    val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
+    val mockResponse = MockResponse().setResponseCode(pageNotFound).setBody(testResponseBody)
 
-      mockWebServer.enqueue(mockResponse)
-      client.newCall(request).execute()
-
-      val networkJob = launch {
-        networkLoggingInterceptor.logNetworkCallFlow.collect {
-          assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
-          assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
-          assertThat(it.headers).contains(headerString)
-          assertThat(it.body).isEqualTo(testResponseBody)
-        }
-      }
-
-      val failedNetworkJob = launch {
-        networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
-          assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
-          assertThat(it.responseStatusCode).isEqualTo(pageNotFound)
-          assertThat(it.headers).contains(headerString)
-          assertThat(it.body).isEmpty()
-          assertThat(it.errorMessage).isNotEmpty()
-          assertThat(it.errorMessage).isEqualTo(testResponseBody)
-        }
-      }
-
-      networkJob.cancel()
-      failedNetworkJob.cancel()
+    // Collect requests & failures.
+    val firstRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
+      networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
     }
+    val firstFailingRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
+      networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
+    }
+    mockWebServer.enqueue(mockResponse)
+    client.newCall(request).execute()
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val firstRequest = firstRequestsDeferred.getCompleted().single()
+    val firstFailingRequest = firstFailingRequestsDeferred.getCompleted().single()
+    assertThat(firstRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
+    assertThat(firstRequest.responseStatusCode).isEqualTo(pageNotFound)
+    assertThat(firstRequest.headers).contains(headerString)
+    assertThat(firstRequest.body).isEqualTo(testResponseBody)
+    assertThat(firstFailingRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
+    assertThat(firstFailingRequest.responseStatusCode).isEqualTo(pageNotFound)
+    assertThat(firstFailingRequest.headers).contains(headerString)
+    assertThat(firstFailingRequest.body).isEmpty()
+    assertThat(firstFailingRequest.errorMessage).isNotEmpty()
+    assertThat(firstFailingRequest.errorMessage).isEqualTo(testResponseBody)
+  }
 
   @Test
-  fun testLoggingInterceptor_makeCrashingNetworkCall_failsAndCompletes() =
-    runBlockingTest {
-      mockWebServer.shutdown()
-      try { client.newCall(request).execute() } catch (e: Exception) { }
+  fun testLoggingInterceptor_makeCrashingNetworkCall_failsAndCompletes() {
+    mockWebServer.shutdown()
 
-      val failedNetworkJob = launch {
-        networkLoggingInterceptor.logFailedNetworkCallFlow.collect {
-          assertThat(it.requestUrl).isEqualTo(mockWebServerUrl.toString())
-          assertThat(it.responseStatusCode).isEqualTo(0)
-          assertThat(it.headers).contains(headerString)
-          assertThat(it.body).isEmpty()
-          assertThat(it.errorMessage).isNotEmpty()
-          assertThat(it.errorMessage).contains("Failed to connect to localhost")
-        }
-      }
-      failedNetworkJob.cancel()
+    // Collect failures.
+    val firstFailingRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
+      networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
     }
+    try {
+      client.newCall(request).execute()
+    } catch (e: ConnectException) {
+      // Ignore exception thrown at this point since the test is verifying that the failure
+      // correctly logs to networkLoggingInterceptor.logFailedNetworkCallFlow.
+    }
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val firstFailingRequest = firstFailingRequestsDeferred.getCompleted().single()
+    assertThat(firstFailingRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
+    assertThat(firstFailingRequest.responseStatusCode).isEqualTo(0)
+    assertThat(firstFailingRequest.headers).contains(headerString)
+    assertThat(firstFailingRequest.body).isEmpty()
+    assertThat(firstFailingRequest.errorMessage).isNotEmpty()
+    assertThat(firstFailingRequest.errorMessage).contains("Failed to connect to localhost")
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

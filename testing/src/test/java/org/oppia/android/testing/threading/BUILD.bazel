@@ -3,8 +3,7 @@
 Tests for threading-specific test utilities.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 kt_android_library(
@@ -26,7 +25,7 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.threading.CoroutineExecutorServiceTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
@@ -43,8 +42,8 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherEspressoImplTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
         ":test_coroutine_dispatcher_test_base",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:robolectric_android-all",
@@ -59,8 +58,8 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherRobolectricImplTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
         ":test_coroutine_dispatcher_test_base",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:robolectric_android-all",
@@ -75,12 +74,10 @@ oppia_android_test(
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:robolectric_android-all",
         "//utility",
     ],
 )
-
-dagger_rules()

@@ -17,7 +17,7 @@
     android:id="@+id/app_language_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex ? @drawable/general_item_background_border_cyan : @drawable/general_item_background_border}"
+    android:background="@{commonViewModel.selectedFragmentIndex.equals(viewModel.itemIndex) ? @drawable/general_item_background_border_cyan : @drawable/general_item_background_border}"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.onAppLanguageClicked()}"
     android:paddingStart="16dp"

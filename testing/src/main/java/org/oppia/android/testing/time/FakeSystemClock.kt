@@ -32,7 +32,7 @@ class FakeSystemClock @Inject constructor(@IsOnRobolectric private val isOnRobol
    * Advances the clock time by the specific number of milliseconds, and returns the new value. It's
    * recommended to *never* use this method directly as it may result in UI-scheduled tasks
    * executing before background tasks, and may cause background tasks to execute at the wrong time.
-   * If a test needs time to be advanced, it should use [TestCoroutineDispatchers.advanceTimeBy].
+   * If a test needs time to be advanced, it should use ``TestCoroutineDispatchers.advanceTimeBy``.
    */
   fun advanceTime(millis: Long): Long {
     val newTime = currentTimeMillis.addAndGet(millis)
@@ -57,7 +57,7 @@ class FakeSystemClock @Inject constructor(@IsOnRobolectric private val isOnRobol
      */
     abstract fun setCurrentTimeMillis(timeMillis: Long)
 
-    internal companion object {
+    companion object {
       /** Returns the [TimeCoordinator] based on the current test platform being used. */
       internal fun retrieveTimeCoordinator(isOnRobolectric: Boolean): TimeCoordinator {
         return if (isOnRobolectric) {
@@ -73,14 +73,25 @@ class FakeSystemClock @Inject constructor(@IsOnRobolectric private val isOnRobol
      * coordination.
      */
     private object RobolectricTimeCoordinator : TimeCoordinator() {
-      private val robolectricClass by lazy { loadRobolectricClass() }
-      private val foregroundScheduler by lazy { loadForegroundScheduler() }
-      private val retrieveCurrentTimeMethod by lazy { loadRetrieveCurrentTimeMethod() }
-      private val retrieveAdvanceToMethod by lazy { loadAdvanceToMethod() }
-
-      override fun getCurrentTimeMillis(): Long {
-        return retrieveCurrentTimeMethod.invoke(foregroundScheduler) as Long
+      private val robolectricClass by lazy {
+        checkNotNull(loadRobolectricClass()) { "Failed to load Robolectric base class." }
       }
+      private val foregroundScheduler by lazy {
+        checkNotNull(loadForegroundScheduler()) {
+          "Failed to retrieve getForegroundThreadScheduler method."
+        }
+      }
+      private val retrieveCurrentTimeMethod by lazy {
+        checkNotNull(loadRetrieveCurrentTimeMethod()) {
+          "Failed to retrieve getCurrentTime method."
+        }
+      }
+      private val retrieveAdvanceToMethod by lazy {
+        checkNotNull(loadAdvanceToMethod()) { "Failed to retrieve advanceTo method." }
+      }
+
+      override fun getCurrentTimeMillis(): Long =
+        retrieveCurrentTimeMethod.invoke(foregroundScheduler) as Long
 
       override fun advanceTimeMillisTo(timeMillis: Long) {
         retrieveAdvanceToMethod.invoke(foregroundScheduler, timeMillis)
@@ -91,26 +102,20 @@ class FakeSystemClock @Inject constructor(@IsOnRobolectric private val isOnRobol
         SystemClock.setCurrentTimeMillis(timeMillis)
       }
 
-      private fun loadRobolectricClass(): Class<*> {
-        val classLoader = FakeSystemClock::class.java.classLoader!!
-        return classLoader.loadClass("org.robolectric.Robolectric")
-      }
+      private fun loadRobolectricClass(): Class<*>? =
+        FakeSystemClock::class.java.classLoader?.loadClass("org.robolectric.Robolectric")
 
-      private fun loadForegroundScheduler(): Any {
+      private fun loadForegroundScheduler(): Any? {
         val retrieveSchedulerMethod =
           robolectricClass.getDeclaredMethod("getForegroundThreadScheduler")
-        return retrieveSchedulerMethod.invoke(/* obj= */ null)
+        return retrieveSchedulerMethod.invoke(/* obj = */ null)
       }
 
-      private fun loadRetrieveCurrentTimeMethod(): Method {
-        val schedulerClass = foregroundScheduler.javaClass
-        return schedulerClass.getDeclaredMethod("getCurrentTime")
-      }
+      private fun loadRetrieveCurrentTimeMethod(): Method? =
+        foregroundScheduler.javaClass.getDeclaredMethod("getCurrentTime")
 
-      private fun loadAdvanceToMethod(): Method {
-        val schedulerClass = foregroundScheduler.javaClass
-        return schedulerClass.getDeclaredMethod("advanceTo", Long::class.java)
-      }
+      private fun loadAdvanceToMethod(): Method? =
+        foregroundScheduler.javaClass.getDeclaredMethod("advanceTo", Long::class.java)
     }
 
     /** Espresso-specific [TimeCoordinator] that no-ops in favor of using the real clock. */

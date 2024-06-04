@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HelpFragmentBinding
 import org.oppia.android.databinding.HelpItemBinding
 import javax.inject.Inject
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class HelpFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<HelpListViewModel>,
+  private val helpListViewModel: HelpListViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: HelpFragmentBinding
@@ -28,7 +27,7 @@ class HelpFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     isMultipane: Boolean
   ): View? {
-    val viewModel = getHelpListViewModel()
+    val viewModel = helpListViewModel
     viewModel.isMultipane.set(isMultipane)
 
     binding = HelpFragmentBinding.inflate(
@@ -54,9 +53,5 @@ class HelpFragmentPresenter @Inject constructor(
         inflateDataBinding = HelpItemBinding::inflate,
         setViewModel = HelpItemBinding::setViewModel
       ).build()
-  }
-
-  private fun getHelpListViewModel(): HelpListViewModel {
-    return viewModelProvider.getForFragment(fragment, HelpListViewModel::class.java)
   }
 }

@@ -33,10 +33,10 @@ import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.survey.SurveyGatingController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
@@ -56,10 +56,11 @@ const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLO
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
+  private val exploreViewModel: ExplorationViewModel,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val resourceHandler: AppLanguageResourceHandler,
   private val surveyGatingController: SurveyGatingController
 ) {
@@ -80,10 +81,6 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
   private lateinit var binding: ExplorationActivityBinding
-
-  private val exploreViewModel by lazy {
-    getExplorationViewModel()
-  }
 
   fun handleOnCreate(
     context: Context,
@@ -114,6 +111,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
 
@@ -328,7 +326,7 @@ class ExplorationActivityPresenter @Inject constructor(
       return
     }
     // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
-    // fragment.
+    // fragment and log lesson saved advertently event.
     showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
@@ -353,10 +351,6 @@ class ExplorationActivityPresenter @Inject constructor(
           it.writtenTranslationContext
         )
     }
-  }
-
-  private fun getExplorationViewModel(): ExplorationViewModel {
-    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
   }
 
   /** Helper for subscribeToExploration. */
@@ -514,9 +508,11 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           stopExploration(isCompletion = false)
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
+          learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           showProgressDatabaseFullDialogFragment()
         }
         else -> showUnsavedExplorationDialogFragment()
@@ -531,7 +527,7 @@ class ExplorationActivityPresenter @Inject constructor(
       object : Observer<AsyncResult<Boolean>> {
         override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
           when (gatingResult) {
-            is AsyncResult.Pending -> {
+            null, is AsyncResult.Pending -> {
               oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
             }
             is AsyncResult.Failure -> {

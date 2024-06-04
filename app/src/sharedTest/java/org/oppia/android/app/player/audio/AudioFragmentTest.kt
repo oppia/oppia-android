@@ -83,7 +83,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -385,7 +384,9 @@ class AudioFragmentTest {
       addMediaInfo(dataSource, mediaInfo)
       addMediaInfo(dataSource2, mediaInfo)
 
-      shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
+      shadowMediaPlayer = checkNotNull(shadowOf(audioPlayerController.getTestMediaPlayer())) {
+        "Failed to create shadow for MediaPlayer."
+      }
       setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
 
       invokePreparedListener(shadowMediaPlayer)
@@ -400,10 +401,10 @@ class AudioFragmentTest {
   // USE BAZEL TO PROPERLY BUILD THIS TEST SPECIFICALLY FOR ROBOLECTRIC AND NOT FOR ESPRESSO.
 
   /** Calls Robolectric's Shadows.shadowOf() using reflection. */
-  private fun shadowOf(mediaPlayer: MediaPlayer): Any {
+  private fun shadowOf(mediaPlayer: MediaPlayer): Any? {
     val shadowsClass = Class.forName("org.robolectric.Shadows")
     return shadowsClass.getMethod("shadowOf", MediaPlayer::class.java)
-      .invoke(/* obj= */ null, mediaPlayer)
+      .invoke(/* obj = */ null, mediaPlayer)
   }
 
   /** Calls ShadowMediaPlayer.setDataSource() using reflection. */
@@ -440,7 +441,7 @@ class AudioFragmentTest {
     )
     val addMediaInfoMethod =
       shadowMediaPlayerClass.getMethod("addMediaInfo", dataSourceClass, mediaInfoClass)
-    addMediaInfoMethod.invoke(/* obj= */ null, dataSource, mediaInfo)
+    addMediaInfoMethod.invoke(/* obj = */ null, dataSource, mediaInfo)
   }
 
   /** Calls DataSource.toDataSource() using reflection. */
@@ -448,7 +449,9 @@ class AudioFragmentTest {
     val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
     val toDataSourceMethod =
       dataSourceClass.getMethod("toDataSource", Context::class.java, Uri::class.java)
-    return toDataSourceMethod.invoke(/* obj= */ null, context, uri)
+    return checkNotNull(toDataSourceMethod.invoke(/* obj = */ null, context, uri)) {
+      "Failed to create DataSource for URI: $uri."
+    }
   }
 
   private fun isOnRobolectric(): Boolean {
@@ -469,7 +472,7 @@ class AudioFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -489,7 +492,9 @@ class AudioFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(audioFragmentTest: AudioFragmentTest)
 
