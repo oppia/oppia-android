@@ -85,11 +85,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
-      if (nickname.isNotBlank()) {
-        createProfileViewModel.hasError.set(false)
-      } else {
-        createProfileViewModel.hasError.set(true)
-      }
+      createProfileViewModel.hasErrorMessage.set(nickname.isBlank())
     }
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }

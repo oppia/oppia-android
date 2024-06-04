@@ -28,7 +28,7 @@
       android:id="@+id/create_profile_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@color/component_color_onboarding_shared_white_color"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
       app:layout_constraintTop_toBottomOf="@id/create_profile_picture_guide" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -112,7 +112,7 @@
       android:layout_marginTop="@dimen/phone_shared_margin_small"
       android:layout_marginEnd="@dimen/phone_shared_margin_xl"
       android:autofillHints="false"
-      android:background="@{viewModel.hasError ? @drawable/edit_text_white_background_error_border: @drawable/edit_text_white_background_with_border}"
+      android:background="@{viewModel.hasErrorMessage ? @drawable/edit_text_white_background_error_border: @drawable/edit_text_white_background_with_border}"
       android:fontFamily="sans-serif"
       android:imeOptions="actionDone"
       android:inputType="text|textCapSentences"
@@ -138,7 +138,7 @@
       android:text="@string/create_profile_activity_nickname_error"
       android:textColor="@color/component_color_shared_error_color"
       android:textSize="@dimen/onboarding_shared_text_size_medium"
-      android:visibility="@{viewModel.hasError ? View.VISIBLE : View.GONE}"
+      android:visibility="@{viewModel.hasErrorMessage ? View.VISIBLE : View.GONE}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_edittext" />
 
