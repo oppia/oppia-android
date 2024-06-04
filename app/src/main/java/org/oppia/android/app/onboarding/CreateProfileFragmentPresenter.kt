@@ -1,4 +1,4 @@
-package org.oppia.android.app.onboardingv2
+package org.oppia.android.app.onboarding
 
 import android.app.Activity
 import android.content.Intent

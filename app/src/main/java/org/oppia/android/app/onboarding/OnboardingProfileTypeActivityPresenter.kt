@@ -1,4 +1,4 @@
-package org.oppia.android.app.onboardingv2
+package org.oppia.android.app.onboarding
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil

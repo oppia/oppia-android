@@ -1,4 +1,4 @@
-package org.oppia.android.app.onboardingv2
+package org.oppia.android.app.onboarding
 
 import androidx.databinding.ObservableField
 import org.oppia.android.app.fragment.FragmentScope
