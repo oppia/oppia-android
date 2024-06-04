@@ -6,7 +6,7 @@ import org.oppia.android.R
 import org.oppia.android.databinding.CreateProfileActivityBinding
 import javax.inject.Inject
 
-const val TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT = "TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT"
+private const val TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT = "TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT"
 
 /** Presenter for [CreateProfileActivity]. */
 class CreateProfileActivityPresenter @Inject constructor(
