@@ -245,6 +245,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/testing/Forc
 exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/testing/GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/testing/OptionalAppDeprecationNoticeDialogFragmentTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/testing/OsDeprecationNoticeDialogFragmentTestActivity.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileActivityPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivityPresenter.kt"
