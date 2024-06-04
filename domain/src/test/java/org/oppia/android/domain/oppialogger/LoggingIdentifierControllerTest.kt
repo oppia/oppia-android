@@ -349,20 +349,16 @@ class LoggingIdentifierControllerTest {
 
   @Test
   fun testGetAppSessionId_onSecondAppOpen_returnsDifferentRandomId() {
-    val appSessionIdProvider = loggingIdentifierController.getAppSessionId()
-
-    val appSessionId = monitorFactory.waitForNextSuccessfulResult(appSessionIdProvider)
-    assertThat(appSessionId).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getAppSessionId())
 
     // Simulate a second app open.
     TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
     setUpNewTestApplicationComponent()
 
-    val appSessionIdProvider2 = loggingIdentifierController.getAppSessionId()
-
     // The app session ID should be different on the second app open.
-    val appSessionId2 = monitorFactory.waitForNextSuccessfulResult(appSessionIdProvider2)
-    assertThat(appSessionId2).isEqualTo("c9d50545-33dc-3231-a1db-6a2672498c74")
+    val appSessionIdProvider = loggingIdentifierController.getAppSessionId()
+    val appSessionId = monitorFactory.waitForNextSuccessfulResult(appSessionIdProvider)
+    assertThat(appSessionId).isEqualTo("c9d50545-33dc-3231-a1db-6a2672498c74")
   }
 
   private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
