@@ -1,9 +1,15 @@
 package org.oppia.android.app.onboarding
 
+import android.app.Activity
 import android.app.Application
+import android.app.Instrumentation
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -12,13 +18,21 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -70,10 +84,11 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -98,8 +113,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [CreateProfileFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -159,14 +172,6 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_nicknameEditTextIsDisplayed() {
-    launchNewLearnerProfileActivity().use {
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
   fun testFragment_stepCountText_isDisplayed() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.onboarding_steps_count))
@@ -198,6 +203,9 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+
       // No screen change as the navigation to the next screen is not implemented yet.
       // This should fail in the future once the screen has been implemented.
       onView(withId(R.id.create_profile_nickname_label))
@@ -210,6 +218,24 @@ class CreateProfileFragmentTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  fun testFragment_continueButtonClicked_filledNickname_doseNotShowErrorText() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
   }
 
@@ -258,9 +284,8 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
   @Test
-  fun testFragment_landscapeMode_continueButtonClicked_launchesLearnerIntroScreen() {
+  fun testFragment_landscapeMode_filledNickname_continueButtonClicked_launchesLearnerIntroScreen() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
@@ -287,7 +312,24 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
+  @Test
+  fun testFragment_landscapeMode_filledNickname_continueButtonClicked_doesNotShowErrorText() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_emptyNickname_showNicknameErrorText() {
     launchNewLearnerProfileActivity().use {
@@ -300,7 +342,6 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
   @Test
   fun testFragment_landscape_continueButtonClicked_afterErrorShown_launchesLearnerIntroScreen() {
     launchNewLearnerProfileActivity().use {
@@ -337,6 +378,28 @@ class CreateProfileFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
+  @Test
+  fun testFragment_backButtonPressed_currentScreenIsDestroyed() {
+    launchNewLearnerProfileActivity().use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
+  @Test
+  fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
+    launchNewLearnerProfileActivity().use { scenario ->
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
   @Test
   fun testFragment_tapToAddPictureClicked_hasGalleryIntent() {
     launchNewLearnerProfileActivity().use {
@@ -347,9 +410,8 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @Config(qualifiers = "land")
   @Test
-  fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
+  fun testFragment_landscapeMode_tapToAddPictureClicked_hasGalleryIntent() {
     launchNewLearnerProfileActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -358,6 +420,35 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
       intended(hasAction(Intent.ACTION_PICK))
     }
+  }
+
+  @Test
+  fun testFragment_tapToAddPictureClicked_loadsTheImageFromGallery() {
+    val expectedIntent: Matcher<Intent> = hasAction(Intent.ACTION_PICK)
+
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+
+    launchNewLearnerProfileActivity().use {
+      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(expectedIntent)
+    }
+  }
+
+  private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
+    val resources: Resources = context.resources
+    val imageUri = Uri.parse(
+      ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+        resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
+        resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
+        resources.getResourceEntryName(R.mipmap.launcher_icon)
+    )
+    val resultIntent = Intent()
+    resultIntent.data = imageUri
+    return Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent)
   }
 
   private fun launchNewLearnerProfileActivity():
@@ -386,7 +477,7 @@ class CreateProfileFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
