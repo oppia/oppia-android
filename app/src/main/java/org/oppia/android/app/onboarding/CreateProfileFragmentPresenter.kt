@@ -6,6 +6,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,6 +89,14 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
       createProfileViewModel.hasErrorMessage.set(nickname.isBlank())
     }
+
+    binding.createProfileNicknameEdittext.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.hasErrorMessage.set(false)
+      }
+    })
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
     binding.createProfileEditPictureIcon.setOnClickListener { openGalleryIntent() }
