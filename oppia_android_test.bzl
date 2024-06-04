@@ -2,7 +2,7 @@
 Central macros pertaining to setting up tests across the codebase.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def oppia_android_module_level_test(

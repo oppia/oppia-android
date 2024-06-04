@@ -2,8 +2,7 @@
 Domain definitions for managing languages & locales.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "locale_controller",
@@ -13,7 +12,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":content_locale_impl",
-        ":dagger",
         ":language_config_retriever",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//model/src/main/proto:languages_java_proto_lite",
@@ -49,7 +47,6 @@ kt_android_library(
         "//domain:domain_testing_visibility",
     ],
     deps = [
-        ":dagger",
         "//model/src/main/proto:languages_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
@@ -83,5 +80,3 @@ kt_android_library(
         ":locale_application_injector",
     ],
 )
-
-dagger_rules()

@@ -2,8 +2,7 @@
 Classifiers for the 'FractionInput' interaction.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "fraction_input_providers",
@@ -20,7 +19,6 @@ kt_android_library(
         "FractionInputIsLessThanRuleClassifierProvider.kt",
     ],
     deps = [
-        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:classification_context",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
@@ -39,11 +37,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":fraction_input_providers",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
     ],
 )
-
-dagger_rules()

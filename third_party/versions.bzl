@@ -55,6 +55,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.3.0",
     "com.google.auto.value:auto-value-annotations": "1.8.1",
+    "com.google.errorprone:error_prone_annotations": "2.11.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-appcheck": "16.0.0",
     "com.google.firebase:firebase-appcheck-debug": "16.0.0",
@@ -64,7 +65,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.firebase:firebase-firestore-ktx": "24.2.1",
     "com.google.gms:google-services": "4.3.3",
-    "com.google.guava:guava": "28.1-android",
+    "com.google.guava:failureaccess": "1.0.1",
+    "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.protobuf:protobuf-javalite": "3.17.3",
     "com.squareup.moshi:moshi-kotlin": "1.11.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.11.0",
@@ -75,7 +77,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
-    "org.checkerframework:checker-qual": "3.13.0",
+    "org.checkerframework:checker-compat-qual": "2.5.5",
+    "org.checkerframework:checker-qual": "3.21.3",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.3",
@@ -126,29 +129,47 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "1.8.0",
     },
     "dagger": {
-        "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
-        "version": "2.28.1",
+        "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
+        "version": "2.41",
+    },
+    "guava_android": {
+        "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
+        "version": "31.0.1",
+    },
+    "oppia_proto_api": {
+        "version": "9cf993ea0b798a67b3faa21c690c30b9027fb371",
     },
     "protobuf_tools": {
+        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
         "version": "3.11.0",
+    },
+    "robolectric": {
+        "sha": "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
+        "version": "4.5",
     },
     "rules_java": {
         "sha": "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
         "version": "4.0.0",
     },
     "rules_jvm": {
-        "sha": "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
-        "version": "4.1",
+        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
+        "version": "5.1",
     },
     "rules_kotlin": {
-        "sha": "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",
-        "version": "v1.5.0-alpha-2",
+        "sha": "58edd86f0f3c5b959c54e656b8e7eb0b0becabd412465c37a2078693c2571f7f",
+        "version": "v1.5.0-beta-3",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
     },
 }
+
+MAVEN_REPOSITORIES = [
+    "https://maven.fabric.io/public",
+    "https://maven.google.com",
+    "https://repo1.maven.org/maven2",
+]
 
 def get_maven_dependencies():
     """
