@@ -3,9 +3,9 @@ package org.oppia.android.app.onboarding
 import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +13,11 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.databinding.CreateProfileFragmentBinding
+import org.oppia.android.util.parser.image.ImageLoader
+import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
 
 private const val GALLERY_INTENT_RESULT_CODE = 1
@@ -31,11 +27,12 @@ private const val GALLERY_INTENT_RESULT_CODE = 1
 class CreateProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val createProfileViewModel: CreateProfileViewModel
+  private val createProfileViewModel: CreateProfileViewModel,
+  private val imageLoader: ImageLoader
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
-  private var selectedImage: Uri? = null
+  private lateinit var selectedImage: String
 
   /** Initialize layout bindings. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -50,49 +47,36 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
 
     uploadImageView = binding.createProfileUserImageView
-    Glide.with(activity)
-      .load(R.drawable.ic_default_avatar)
-      .listener(object : RequestListener<Drawable> {
-        override fun onLoadFailed(
-          e: GlideException?,
-          model: Any?,
-          target: Target<Drawable>?,
-          isFirstResource: Boolean
-        ): Boolean {
-          return false
-        }
 
-        override fun onResourceReady(
-          resource: Drawable?,
-          model: Any?,
-          target: Target<Drawable>?,
-          dataSource: DataSource?,
-          isFirstResource: Boolean
-        ): Boolean {
-          uploadImageView.setColorFilter(
-            ResourcesCompat.getColor(
-              activity.resources,
-              R.color.component_color_avatar_background_25_color,
-              null
-            ),
-            PorterDuff.Mode.DST_OVER
-          )
-          return false
-        }
-      })
-      .into(uploadImageView)
+    uploadImageView.apply {
+      setColorFilter(
+        ResourcesCompat.getColor(
+          activity.resources,
+          R.color.component_color_avatar_background_25_color,
+          null
+        ),
+        PorterDuff.Mode.DST_OVER
+      )
+
+      imageLoader.loadDrawable(
+        R.drawable.ic_default_avatar,
+        ImageViewTarget(this)
+      )
+    }
 
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
-      if (nickname.isNotBlank()) {
-        createProfileViewModel.hasError.set(false)
-        val intent = IntroActivity.createIntroActivity(activity, nickname)
-        fragment.startActivity(intent)
-      } else {
-        createProfileViewModel.hasError.set(true)
-      }
+      createProfileViewModel.hasErrorMessage.set(nickname.isBlank())
     }
+
+    binding.createProfileNicknameEdittext.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.hasErrorMessage.set(false)
+      }
+    })
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
     binding.createProfileEditPictureIcon.setOnClickListener { openGalleryIntent() }
@@ -102,17 +86,16 @@ class CreateProfileFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  /** Receive the result of image upload and load it into the image view. **/
+  /** Receive the result of image upload and load it into the image view. */
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
       binding.createProfilePicturePrompt.visibility = View.GONE
       data?.let {
-        selectedImage = data.data
-        Glide.with(activity)
-          .load(selectedImage)
-          .centerCrop()
-          .apply(RequestOptions.circleCropTransform())
-          .into(uploadImageView)
+        selectedImage = checkNotNull(data.data.toString()) { "Could not find the selected image." }
+        imageLoader.loadBitmap(
+          selectedImage,
+          ImageViewTarget(uploadImageView)
+        )
       }
     }
   }

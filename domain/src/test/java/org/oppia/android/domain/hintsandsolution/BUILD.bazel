@@ -2,7 +2,6 @@
 Tests for hints and solution domain components.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,6 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.hintsandsolution.HelpIndexExtensionsTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//:dagger",
         "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -28,7 +28,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.hintsandsolution.HintHandlerDebugImplTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//testing",
@@ -54,7 +54,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.hintsandsolution.HintHandlerProdImplTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//testing",
@@ -80,7 +80,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.hintsandsolution.HintsAndSolutionDebugModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -100,7 +100,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -112,5 +112,3 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
-
-dagger_rules()

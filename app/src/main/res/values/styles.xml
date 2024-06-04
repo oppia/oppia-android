@@ -637,7 +637,6 @@
     <item name="android:textSize">20sp</item>
   </style>
 
-
   <style name="OnboardingHeaderStyle" parent="TextViewCenterHorizontal">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
@@ -751,6 +750,26 @@
     <item name="android:textColor">@color/component_color_onboarding_shared_green_color</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
     <item name="android:fontFamily">sans-serif</item>
+  </style>
+
+  <style name="NicknameTextStyle" parent="TextViewStart">
+    <item name="android:paddingStart">@dimen/onboarding_shared_padding_medium</item>
+    <item name="android:paddingTop">@dimen/onboarding_shared_padding_small</item>
+    <item name="android:paddingEnd">@dimen/onboarding_shared_padding_medium</item>
+    <item name="android:paddingBottom">@dimen/onboarding_shared_padding_small</item>
+    <item name="android:autofillHints">false</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:inputType">text|textCapSentences</item>
+    <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
+  </style>
+
+  <style name="NicknameLabelStyle" parent="TextViewStart">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
+    <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
   </style>
 
   <style name="OnboardingLearnerIntroBulletsStyle" parent="TextViewStart">

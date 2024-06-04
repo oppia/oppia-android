@@ -14,10 +14,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
-import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
@@ -49,30 +47,6 @@ class NetworkModuleTest {
   @Config(sdk = [Build.VERSION_CODES.KITKAT])
   fun testRetrofitInstance_kitkat_isEmpty() {
     assertThat(getTestApplication().getRetrofit()).isAbsent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-  fun testTopicService_lollipop_isProvided() {
-    assertThat(getTestApplication().getTopicService()).isPresent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.KITKAT])
-  fun testTopicService_kitkat_isEmpty() {
-    assertThat(getTestApplication().getTopicService()).isAbsent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-  fun testClassroomService_lollipop_isProvided() {
-    assertThat(getTestApplication().getClassroomService()).isPresent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.KITKAT])
-  fun testClassroomService_kitkat_isEmpty() {
-    assertThat(getTestApplication().getClassroomService()).isAbsent()
   }
 
   @Test
@@ -138,8 +112,6 @@ class NetworkModuleTest {
 
     fun inject(networkModuleTest: NetworkModuleTest)
     @OppiaRetrofit fun getRetrofit(): Optional<Retrofit>
-    fun getTopicService(): Optional<TopicService>
-    fun getClassroomService(): Optional<ClassroomService>
     fun getFeedbackReportingService(): Optional<FeedbackReportingService>
     fun getPlatformParameterService(): Optional<PlatformParameterService>
   }
@@ -156,8 +128,6 @@ class NetworkModuleTest {
     }
 
     fun getRetrofit() = component.getRetrofit()
-    fun getTopicService() = component.getTopicService()
-    fun getClassroomService() = component.getClassroomService()
     fun getFeedbackReportingService() = component.getFeedbackReportingService()
     fun getPlatformParameterService() = component.getPlatformParameterService()
   }

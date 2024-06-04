@@ -28,7 +28,7 @@
       android:id="@+id/create_profile_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@color/component_color_onboarding_shared_white_color"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
       app:layout_constraintTop_toTopOf="@id/create_profile_picture_guide" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -93,34 +93,21 @@
 
     <TextView
       android:id="@+id/create_profile_nickname_label"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/NicknameLabelStyle"
       android:layout_marginTop="@dimen/tablet_shared_margin_large"
-      android:fontFamily="sans-serif"
       android:labelFor="@id/create_profile_nickname_edittext"
       android:text="@string/create_profile_activity_nickname_label"
-      android:textColor="@color/component_color_onboarding_shared_text_color"
-      android:textSize="@dimen/onboarding_shared_text_size_medium"
       app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
       app:layout_constraintTop_toBottomOf="@id/create_profile_title" />
 
     <EditText
       android:id="@+id/create_profile_nickname_edittext"
+      style="@style/NicknameTextStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/tablet_shared_margin_x_small"
       android:layout_marginBottom="@dimen/tablet_shared_margin_x_small"
-      android:autofillHints="false"
-      android:background="@{viewModel.hasError ? @drawable/edit_text_white_background_error_border: @drawable/edit_text_white_background_with_border}"
-      android:fontFamily="sans-serif"
-      android:imeOptions="actionDone"
-      android:inputType="text|textCapSentences"
-      android:minHeight="@dimen/clickable_item_min_height"
-      android:paddingStart="@dimen/onboarding_shared_padding_medium"
-      android:paddingTop="@dimen/onboarding_shared_padding_small"
-      android:paddingEnd="@dimen/onboarding_shared_padding_medium"
-      android:paddingBottom="@dimen/onboarding_shared_padding_small"
-      android:textColor="@color/component_color_onboarding_shared_text_color"
+      android:background="@{viewModel.hasErrorMessage ? @drawable/edit_text_white_background_error_border: @drawable/edit_text_white_background_with_border}"
       android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -137,8 +124,8 @@
       android:fontFamily="sans-serif"
       android:text="@string/create_profile_activity_nickname_error"
       android:textColor="@color/component_color_shared_error_color"
-      android:textSize="@dimen/onboarding_shared_text_size_small"
-      android:visibility="@{viewModel.hasError ? View.VISIBLE : View.GONE}"
+      android:textSize="@dimen/onboarding_shared_text_size_medium"
+      android:visibility="@{viewModel.hasErrorMessage ? View.VISIBLE : View.GONE}"
       app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_edittext" />
 

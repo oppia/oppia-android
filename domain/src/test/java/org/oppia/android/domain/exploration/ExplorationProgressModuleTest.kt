@@ -10,7 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoSet
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,12 +62,6 @@ class ExplorationProgressModuleTest {
   interface TestModule {
     @Binds
     fun provideContext(application: Application): Context
-
-    @Binds
-    @IntoSet
-    fun bindExplorationProgressListener(
-      activeTimeController: ExplorationActiveTimeController
-    ): ExplorationProgressListener
   }
 
   @Module

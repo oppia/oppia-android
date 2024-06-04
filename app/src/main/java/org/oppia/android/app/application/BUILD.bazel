@@ -5,8 +5,7 @@ Dagger graph.
 Specific application implementations can be found in subpackages.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "abstract_application",
@@ -82,7 +81,6 @@ kt_android_library(
         "ApplicationStartupListenerModule.kt",
     ],
     deps = [
-        ":dagger",
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
@@ -134,5 +132,3 @@ android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
     ],
 )
-
-dagger_rules()

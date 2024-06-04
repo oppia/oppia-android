@@ -27,8 +27,7 @@ class CreateProfileActivityPresenter @Inject constructor(
         R.id.profile_fragment_placeholder,
         createLearnerProfileFragment,
         TAG_CREATE_PROFILE_ACTIVITY_FRAGMENT
-      )
-        .commitNow()
+      ).commitNow()
     }
   }
 

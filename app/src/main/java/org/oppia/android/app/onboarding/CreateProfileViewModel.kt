@@ -9,6 +9,6 @@ import javax.inject.Inject
 @FragmentScope
 class CreateProfileViewModel @Inject constructor() : ObservableViewModel() {
 
-  /** ObservableField that tracks whether a nickname has been entered. */
-  val hasError = ObservableField(false)
+  /** ObservableField that tracks whether creating a nickname has triggered an error condition. */
+  val hasErrorMessage = ObservableField(false)
 }
