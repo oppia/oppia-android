@@ -35,8 +35,8 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
-import org.oppia.android.app.onboarding.OnboardingFragment
 import org.oppia.android.app.onboarding.CreateProfileFragment
+import org.oppia.android.app.onboarding.OnboardingFragment
 import org.oppia.android.app.onboarding.OnboardingProfileTypeFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
