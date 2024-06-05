@@ -25,9 +25,8 @@ class RunCoverageForTestTarget() {
   /**
    * Analyzes target file for coverage, generates chosen reports accordingly.
    *
+   * @param repoRoot the absolute path to the working root directory
    * @param targetFile Path to the file to analyze.
-   * @param outputFormats Output formats for the coverage reports.
-   * @throws IllegalStateException if computed coverage is below min required.
    */
   fun runCoverage(repoRoot: File, targetPath: String) {
     runWithCoverageAnalysis(repoRoot, targetPath)
@@ -36,8 +35,9 @@ class RunCoverageForTestTarget() {
   /**
    * Runs coverage analysis on the specified target file asynchronously.
    *
+   * @param repoRoot the absolute path to the working root directory
    * @param targetFile Path to the target file to analyze coverage.
-   * @return A deferred result representing the coverage report.
+   * @return [A deferred result representing the coverage report].
    */
   fun runWithCoverageAnalysis(repoRoot: File, targetPath: String) {
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
