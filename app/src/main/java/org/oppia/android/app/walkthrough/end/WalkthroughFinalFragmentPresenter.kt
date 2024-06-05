@@ -103,6 +103,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   }
 
   override fun goBack() {
+    @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
     activity.onBackPressed()
   }
 }

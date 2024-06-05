@@ -6,15 +6,21 @@ import android.content.Context
 
 /** Returns the current app version name. */
 fun Context.getVersionName(): String {
-  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionName
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+  @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
+  return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).versionName
 }
 
 /** Returns the current app version code. */
 fun Context.getVersionCode(): Int {
-  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionCode
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+  @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
+  return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).versionCode
 }
 
 /** Returns the time at which the app was last updated. */
 fun Context.getLastUpdateTime(): Long {
-  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).lastUpdateTime
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+  @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
+  return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).lastUpdateTime
 }

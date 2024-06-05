@@ -20,7 +20,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.api.TopicService
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
@@ -57,7 +57,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   private lateinit var client: OkHttpClient
 
-  private lateinit var topicService: TopicService
+  private lateinit var platformParameterService: PlatformParameterService
 
   private val testVersionName = "1.0"
 
@@ -80,7 +80,7 @@ class RemoteAuthNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutAnyHeaders_addsCorrectHeaders() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-    val call = topicService.getTopicByName(topicName)
+    val call = platformParameterService.getPlatformParametersByVersion(testVersionName)
     val serviceRequest = call.request()
     assertThat(serviceRequest.header("api_key")).isNull()
     assertThat(serviceRequest.header("app_package_name")).isNull()
@@ -136,6 +136,7 @@ class RemoteAuthNetworkInterceptorTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = testVersionName
+    @Suppress("DEPRECATION") // versionCode is needed to test production code.
     packageInfo.versionCode = testVersionCode
     packageManager.installPackage(packageInfo)
   }
@@ -156,7 +157,7 @@ class RemoteAuthNetworkInterceptorTest {
       .client(client)
       .build()
 
-    topicService = retrofit.create(TopicService::class.java)
+    platformParameterService = retrofit.create(PlatformParameterService::class.java)
   }
 
   private fun verifyRequestHeaders(headers: Headers?) {

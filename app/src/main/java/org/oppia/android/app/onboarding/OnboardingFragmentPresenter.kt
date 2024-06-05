@@ -14,7 +14,6 @@ import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
@@ -28,8 +27,8 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
-  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
+  private val onboardingViewModel: OnboardingViewModel,
+  private val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val htmlParserFactory: HtmlParser.Factory,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
@@ -48,7 +47,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
       it.presenter = this
-      it.viewModel = getOnboardingViewModel()
+      it.viewModel = onboardingViewModel
     }
     setUpViewPager()
     addDots()
@@ -68,7 +67,7 @@ class OnboardingFragmentPresenter @Inject constructor(
         OnboardingSlideViewModel(
           context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_2, resourceHandler
         ),
-        getOnboardingSlideFinalViewModel()
+        onboardingSlideFinalViewModel
       )
     )
     binding.onboardingSlideViewPager.adapter = onboardingViewPagerBindableAdapter
@@ -87,12 +86,9 @@ class OnboardingFragmentPresenter @Inject constructor(
         override fun onPageSelected(position: Int) {
           if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
             binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
-            getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+            onboardingViewModel.slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
           } else {
-            getOnboardingViewModel().slideChanged(
-              ViewPagerSlide.getSlideForPosition(position)
-                .ordinal
-            )
+            onboardingViewModel.slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
           }
           selectDot(position)
           onboardingStatusBarColorUpdate(position)
@@ -154,13 +150,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
-    return viewModelProviderFinalSlide.getForFragment(
-      fragment,
-      OnboardingSlideFinalViewModel::class.java
-    )
-  }
-
   private enum class ViewType {
     ONBOARDING_MIDDLE_SLIDE,
     ONBOARDING_FINAL_SLIDE
@@ -204,15 +193,11 @@ class OnboardingFragmentPresenter @Inject constructor(
     val position: Int = binding.onboardingSlideViewPager.currentItem + 1
     binding.onboardingSlideViewPager.currentItem = position
     if (position != TOTAL_NUMBER_OF_SLIDES - 1) {
-      getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+      onboardingViewModel.slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
     } else {
-      getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+      onboardingViewModel.slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
     }
     selectDot(position)
-  }
-
-  private fun getOnboardingViewModel(): OnboardingViewModel {
-    return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
   }
 
   private fun addDots() {

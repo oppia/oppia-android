@@ -30,8 +30,8 @@ class DrawableMatcher constructor(
     if (expectedId == ANY) {
       return target.drawable != null
     }
-    val resources = target.getContext().resources
-    val expectedDrawable = resources.getDrawable(expectedId)
+    val resources = target.context.resources
+    val expectedDrawable = resources.getDrawable(expectedId, target.context.theme)
     resourceName = resources.getResourceEntryName(expectedId)
 
     if (expectedDrawable == null) {

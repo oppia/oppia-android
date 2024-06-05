@@ -171,12 +171,12 @@ class OptionsActivity :
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
 
-  override fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
+  override fun loadAppLanguageFragment(oppiaLanguage: OppiaLanguage) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.app_language)
     )
-    optionActivityPresenter.loadAppLanguageFragment(appLanguage)
+    optionActivityPresenter.loadAppLanguageFragment(oppiaLanguage)
   }
 
   override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {

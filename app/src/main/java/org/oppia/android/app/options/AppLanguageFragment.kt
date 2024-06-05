@@ -65,7 +65,6 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
     val oppiaLanguage =
       checkNotNull(
         savedInstanceState?.retrieveLanguageFromSavedState()
@@ -76,7 +75,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,
       container,
-      oppiaLanguage!!,
+      oppiaLanguage,
       profileId!!
     )
   }
@@ -89,7 +88,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
     outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
   }
 
-  override fun onLanguageSelected(selectedLanguage: OppiaLanguage) {
-    appLanguageFragmentPresenter.onLanguageSelected(selectedLanguage)
+  override fun onLanguageSelected(appLanguage: OppiaLanguage) {
+    appLanguageFragmentPresenter.onLanguageSelected(appLanguage)
   }
 }

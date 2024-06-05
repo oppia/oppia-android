@@ -54,7 +54,6 @@ class TopicPracticeFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
     var selectedIdList = ArrayList<Int>()
     var selectedSkillId = HashMap<Int, MutableList<String>>()
     if (savedInstanceState != null) {
@@ -97,7 +96,6 @@ class TopicPracticeFragment : InjectableFragment() {
         )
       }
     }.build()
-
     outState.putProto(TOPIC_PRACTICE_FRAGMENT_STATE_KEY, args)
   }
 }

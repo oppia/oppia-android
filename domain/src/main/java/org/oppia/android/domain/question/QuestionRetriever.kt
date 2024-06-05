@@ -31,13 +31,10 @@ class QuestionRetriever @Inject constructor(
     for (skillId in skillIdsList) {
       for (i in 0 until questionJsonArray.length()) {
         val questionJsonObject = questionJsonArray.getJSONObject(i)
-        val questionLinkedSkillsJsonArray =
-          questionJsonObject.optJSONArray("linked_skill_ids")
-        val linkedSkillIdList = mutableListOf<String>()
-        for (j in 0 until questionLinkedSkillsJsonArray.length()) {
-          linkedSkillIdList.add(questionLinkedSkillsJsonArray.getStringFromArray(j))
-        }
-        if (linkedSkillIdList.contains(skillId)) {
+        val linkedSkillIdList = questionJsonObject.optJSONArray("linked_skill_ids")?.let { array ->
+          (0 until array.length()).map(array::getStringFromArray)
+        } ?: listOf()
+        if (skillId in linkedSkillIdList) {
           questionsList.add(createQuestionFromJsonObject(questionJsonObject))
         }
       }

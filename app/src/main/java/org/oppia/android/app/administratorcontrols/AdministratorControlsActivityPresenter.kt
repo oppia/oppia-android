@@ -3,7 +3,6 @@ package org.oppia.android.app.administratorcontrols
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -64,14 +63,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     if (isMultipane) {
       val adminControlsActivity = activity as AdministratorControlsActivity
       when (lastLoadedFragment) {
-        PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
-        APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
+        PROFILE_LIST_FRAGMENT -> activity.loadProfileList()
+        APP_VERSION_FRAGMENT -> activity.loadAppVersion()
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           if (extraControlsTitle != null) {
-            (activity as AdministratorControlsActivity).loadProfileEdit(
-              profileId = profileId,
-              profileName = extraControlsTitle
-            )
+            activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
             if (isProfileDeletionDialogVisible && profileId != 0) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
@@ -90,7 +86,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   /** Sets up the navigation drawer. */
   private fun setUpNavigationDrawer() {
-    val toolbar = binding.administratorControlsActivityToolbar as Toolbar
+    val toolbar = binding.administratorControlsActivityToolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity
@@ -210,7 +206,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
           selectedControlsTitle = titleTextView.text.toString()
         }
         lastLoadedFragment = this@AdministratorControlsActivityPresenter.lastLoadedFragment
-        this@AdministratorControlsActivityPresenter.isProfileDeletionDialogVisible?.let {
+        this@AdministratorControlsActivityPresenter.isProfileDeletionDialogVisible.let {
           isProfileDeletionDialogVisible = it
         }
         selectedProfileId = this@AdministratorControlsActivityPresenter.selectedProfileId

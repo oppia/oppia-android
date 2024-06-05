@@ -13,7 +13,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
@@ -23,13 +22,10 @@ import javax.inject.Inject
 class AdminAuthActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<AdminAuthViewModel>,
+  private val authViewModel: AdminAuthViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AdminAuthActivityBinding
-  private val authViewModel by lazy {
-    getAdminAuthViewModel()
-  }
   private val args by lazy {
     activity.intent.getProtoExtra(
       ADMIN_AUTH_ACTIVITY_PARAMS_KEY,
@@ -138,9 +134,5 @@ class AdminAuthActivityPresenter @Inject constructor(
           resourceHandler.getStringInLocale(R.string.admin_auth_sub)
       }
     }
-  }
-
-  private fun getAdminAuthViewModel(): AdminAuthViewModel {
-    return viewModelProvider.getForActivity(activity, AdminAuthViewModel::class.java)
   }
 }

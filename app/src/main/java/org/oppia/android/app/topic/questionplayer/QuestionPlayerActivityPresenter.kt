@@ -50,6 +50,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     activity.setSupportActionBar(binding.questionPlayerToolbar)
 
     binding.questionPlayerToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
 

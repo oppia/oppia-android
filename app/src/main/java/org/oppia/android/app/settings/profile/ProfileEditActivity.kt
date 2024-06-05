@@ -52,6 +52,7 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
     )
     val isMultipane = args?.isMultipane ?: false
     if (isMultipane) {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       super.onBackPressed()
     } else {
       val intent = Intent(this, ProfileListActivity::class.java)
