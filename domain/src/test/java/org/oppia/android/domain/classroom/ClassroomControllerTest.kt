@@ -78,67 +78,67 @@ class ClassroomControllerTest {
 
   @Test
   fun testGetClassroomList_isSuccessful() {
-    val classroomListProvider = classroomController.getClassroomList()
+    val classroomListProvider = classroomController.getClassroomList(profileId0)
 
     monitorFactory.waitForNextSuccessfulResult(classroomListProvider)
   }
 
   @Test
   fun testGetClassroomList_providesListOfMultipleClassrooms() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    assertThat(classroomList.size).isGreaterThan(1)
+    assertThat(classroomList.classroomSummaryList.size).isGreaterThan(1)
   }
 
   @Test
   fun testGetClassroomList_firstClassroom_hasCorrectClassroomInfo() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    val firstClassroom = classroomList[0]
-    assertThat(firstClassroom.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
-    assertThat(firstClassroom.classroomTitle.html).isEqualTo("Science")
+    val firstClassroom = classroomList.classroomSummaryList[0]
+    assertThat(firstClassroom.classroomSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(firstClassroom.classroomSummary.classroomTitle.html).isEqualTo("Science")
   }
 
   @Test
   fun testGetClassroomList_firstClassroom_hasCorrectTopicCount() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    val firstClassroom = classroomList[0]
-    assertThat(firstClassroom.topicSummaryCount).isEqualTo(2)
+    val firstClassroom = classroomList.classroomSummaryList[0]
+    assertThat(firstClassroom.classroomSummary.topicSummaryCount).isEqualTo(2)
   }
 
   @Test
   fun testGetClassroomList_secondClassroom_hasCorrectClassroomInfo() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    val secondClassroom = classroomList[1]
-    assertThat(secondClassroom.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-    assertThat(secondClassroom.classroomTitle.html).isEqualTo("Maths")
+    val secondClassroom = classroomList.classroomSummaryList[1]
+    assertThat(secondClassroom.classroomSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(secondClassroom.classroomSummary.classroomTitle.html).isEqualTo("Maths")
   }
 
   @Test
   fun testGetClassroomList_secondClassroom_hasCorrectTopicCount() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    val secondClassroom = classroomList[1]
-    assertThat(secondClassroom.topicSummaryCount).isEqualTo(2)
+    val secondClassroom = classroomList.classroomSummaryList[1]
+    assertThat(secondClassroom.classroomSummary.topicSummaryCount).isEqualTo(2)
   }
 
   @Test
   fun testGetClassroomList_thirdClassroom_hasCorrectClassroomInfo() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    val thirdClassroom = classroomList[2]
-    assertThat(thirdClassroom.classroomId).isEqualTo(TEST_CLASSROOM_ID_2)
-    assertThat(thirdClassroom.classroomTitle.html).isEqualTo("English")
+    val thirdClassroom = classroomList.classroomSummaryList[2]
+    assertThat(thirdClassroom.classroomSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_2)
+    assertThat(thirdClassroom.classroomSummary.classroomTitle.html).isEqualTo("English")
   }
 
   @Test
   fun testGetClassroomList_thirdClassroom_hasCorrectTopicCount() {
-    val classroomList = getClassroomList()
+    val classroomList = getClassroomList(profileId0)
 
-    val thirdClassroom = classroomList[2]
-    assertThat(thirdClassroom.topicSummaryCount).isEqualTo(1)
+    val thirdClassroom = classroomList.classroomSummaryList[2]
+    assertThat(thirdClassroom.classroomSummary.topicSummaryCount).isEqualTo(1)
   }
 
   @Test
@@ -262,8 +262,8 @@ class ClassroomControllerTest {
     assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
-  private fun getClassroomList() =
-    monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList())
+  private fun getClassroomList(profileId: ProfileId) =
+    monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId))
 
   private fun retrieveTopicList(classroomId: String) = monitorFactory.waitForNextSuccessfulResult(
     classroomController.getTopicList(profileId0, classroomId)
