@@ -18,9 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.junit.Before
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Rule
