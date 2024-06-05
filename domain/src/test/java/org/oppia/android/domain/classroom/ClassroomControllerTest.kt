@@ -78,7 +78,7 @@ class ClassroomControllerTest {
 
   @Test
   fun testGetClassroomList_isSuccessful() {
-    val classroomListProvider = classroomController.getClassroomList(profileId0)
+    val classroomListProvider = classroomController.getClassroomList()
 
     monitorFactory.waitForNextSuccessfulResult(classroomListProvider)
   }
@@ -210,17 +210,6 @@ class ClassroomControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_disableMultipleClassrooms_fractionsTopic_hasCorrectTopicInfo() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-
-    val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
-
-    val fractionsTopic = topicList.getTopicSummary(2).topicSummary
-    assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
-  }
-
-  @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList(TEST_CLASSROOM_ID_1)
 
@@ -274,7 +263,7 @@ class ClassroomControllerTest {
   }
 
   private fun getClassroomList() =
-    monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId0))
+    monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList())
 
   private fun retrieveTopicList(classroomId: String) = monitorFactory.waitForNextSuccessfulResult(
     classroomController.getTopicList(profileId0, classroomId)
