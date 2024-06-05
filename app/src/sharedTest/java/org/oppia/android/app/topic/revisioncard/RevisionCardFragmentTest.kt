@@ -60,6 +60,10 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
+import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -134,10 +138,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
-import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2

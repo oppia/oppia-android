@@ -113,10 +113,10 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val EXTRA_LARGE_FONT_SIZE=67F
-const val LARGE_FONT_SIZE=58F
-const val MEDIUM_FONT_SIZE=48F
-const val SMALL_FONT_SIZE=38F
+const val EXTRA_LARGE_FONT_SIZE = 67F
+const val LARGE_FONT_SIZE = 58F
+const val MEDIUM_FONT_SIZE = 48F
+const val SMALL_FONT_SIZE = 38F
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)

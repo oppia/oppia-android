@@ -28,7 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.FlakyTest
 import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
@@ -77,6 +76,10 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
+import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
+import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.FontSizeMatcher
@@ -161,10 +164,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
-import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -613,16 +612,18 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  private fun verifyFontMatches(fontSize:Float){
+  private fun verifyFontMatches(fontSize: Float) {
     scrollToViewType(CONTENT)
-    onView(atPositionOnView(
+    onView(
+      atPositionOnView(
         recyclerViewId = R.id.question_recycler_view,
         position = 0,
         targetViewId = R.id.content_text_view
-      )).check(
+      )
+    ).check(
       matches(
         FontSizeMatcher.withFontSize(
-          fontSize= fontSize
+          fontSize = fontSize
         )
       )
     )
