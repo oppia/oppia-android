@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -25,7 +25,7 @@
     <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@color/component_color_onboarding_shared_white_color"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toBottomOf="@id/audio_language_header_guide" />
 
@@ -33,7 +33,7 @@
       android:id="@+id/audio_language_image"
       android:layout_width="150dp"
       android:layout_height="150dp"
-      android:layout_marginTop="@dimen/onboarding_shared_margin_small"
+      android:layout_marginTop="@dimen/tablet_shared_margin_small"
       android:contentDescription="@string/onboarding_otter_content_description"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
       android:fontFamily="sans-serif"
       android:text="@string/audio_language_fragment_text"
       android:textColor="@color/component_color_onboarding_shared_text_color"
-      android:textSize="@dimen/onboarding_shared_text_size_medium_large"
+      android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintBottom_toTopOf="@id/audio_language_subtitle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -63,43 +63,41 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/audio_language_text" />
 
-    <RelativeLayout
+    <com.google.android.material.card.MaterialCardView
       android:id="@+id/audio_language_dropdown_background"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/onboarding_shared_margin_medium"
-      android:background="@drawable/dropdown_background"
-      android:elevation="@dimen/onboarding_shared_elevation"
-      android:padding="@dimen/onboarding_shared_padding_medium_small"
-      app:layout_constraintBottom_toTopOf="@id/onboarding_navigation_back"
+      android:layout_marginStart="@dimen/phone_shared_margin_xl"
+      android:layout_marginTop="@dimen/phone_shared_margin_medium"
+      android:layout_marginEnd="@dimen/phone_shared_margin_xl"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/audio_language_subtitle"
-      app:layout_constraintWidth_percent="0.30">
+      app:layout_constraintWidth_percent="0.70"
+      card_view:cardCornerRadius="@dimen/onboarding_shared_corner_radius"
+      card_view:cardElevation="@dimen/onboarding_shared_elevation"
+      card_view:cardUseCompatPadding="false">
 
-      <Spinner
-        android:id="@+id/audio_language_dropdown"
-        android:layout_width="wrap_content"
+      <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/onboarding_shared_margin_2xl"
-        android:layout_toStartOf="@id/audio_language_dropdown_arrow"
-        android:background="@drawable/transparent_background"
         android:textColor="@color/component_color_onboarding_shared_text_color"
-        tools:listheader="English" />
+        app:boxBackgroundColor="@color/component_color_onboarding_shared_white_color"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:endIconDrawable="@drawable/ic_arrow_drop_down_black_24dp"
+        app:endIconTint="@color/component_color_shared_black_background_color"
+        app:startIconDrawable="@drawable/ic_language_icon_black_24dp"
+        app:startIconTint="@color/component_color_shared_black_background_color">
 
-      <ImageView
-        android:id="@+id/audio_language_dropdown_arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/onboarding_shared_margin_small"
-        android:layout_marginTop="@dimen/onboarding_shared_margin_x_small"
-        android:layout_marginEnd="@dimen/onboarding_shared_margin_small"
-        android:layout_marginBottom="@dimen/onboarding_shared_margin_x_small"
-        android:contentDescription="@string/onboarding_language_dropdown_arrow_icon_description"
-        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
-    </RelativeLayout>
+        <AutoCompleteTextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="none"
+          android:padding="@dimen/onboarding_shared_padding_small" />
+      </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <Button
       android:id="@+id/onboarding_navigation_back"
