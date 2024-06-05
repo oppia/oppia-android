@@ -131,6 +131,19 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
+   * Runs code coverage for the specified Bazel test target.
+   *
+   * @param bazelTestTarget Bazel test target for which code coverage will be run.
+   * @return generated coverageResult output
+   */
+  fun runCoverageForTestTarget(bazelTestTarget: String): List<String> {
+    return executeBazelCommand(
+      "coverage",
+      bazelTestTarget
+    )
+  }
+
+  /**
    * Returns the results of a query command with a potentially large list of [values] that will be
    * split up into multiple commands to avoid overflow the system's maximum argument limit.
    *
