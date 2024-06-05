@@ -15,7 +15,7 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.onboardingv2.AudioLanguageFragmentPresenter as AudioLanguageFragmentPresenterV2
+import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter as AudioLanguageFragmentPresenterV2
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonListener {
