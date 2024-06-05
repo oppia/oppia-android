@@ -60,7 +60,7 @@
       android:id="@+id/onboarding_learner_intro_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@color/component_color_onboarding_shared_white_color"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
       app:layout_constraintTop_toBottomOf="@id/learner_intro_center_guide" />
 
     <ImageView
