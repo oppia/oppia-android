@@ -78,11 +78,13 @@ class OppiaTestRunner : AndroidJUnitRunner() {
   }
 
   private fun overrideApplicationInContext(context: Context, application: Application) {
-    val packageInfo = getPrivateFieldFromObject(context, "mPackageInfo")
+    val packageInfo = checkNotNull(getPrivateFieldFromObject(context, "mPackageInfo")) {
+      "Failed to retrieve mPackageInfo from context: $context."
+    }
     setPrivateFieldFromObject(packageInfo, "mApplication", application)
   }
 
-  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any {
+  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any? {
     return retrieveAccessibleFieldFromObject(container, fieldName).get(container)
   }
 

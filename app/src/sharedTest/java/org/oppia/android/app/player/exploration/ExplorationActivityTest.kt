@@ -119,7 +119,6 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
@@ -2681,7 +2680,7 @@ class ExplorationActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -2701,7 +2700,9 @@ class ExplorationActivityTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(explorationActivityTest: ExplorationActivityTest)
 

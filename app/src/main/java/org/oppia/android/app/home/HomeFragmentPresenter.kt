@@ -115,7 +115,7 @@ class HomeFragmentPresenter @Inject constructor(
       object : Observer<AsyncResult<AppStartupState>> {
         override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
           when (startUpStateResult) {
-            is AsyncResult.Pending -> {
+            null, is AsyncResult.Pending -> {
               // Do nothing
             }
             is AsyncResult.Success -> {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:playState="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -45,7 +44,7 @@
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:importantForAccessibility="no"
-        playState:image="@{viewModel.chapterSummary.chapterPlayState}" />
+        app:playStateImage="@{viewModel.chapterSummary.chapterPlayState}" />
 
       <ImageView
         android:id="@+id/completed_chapter_image_view"
@@ -88,7 +87,7 @@
             android:layout_height="0dp"
             app:entityId="@{viewModel.storyId}"
             app:entityType="@{viewModel.entityType}"
-            app:isBlurred="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
+            app:isBlurred="@{viewModel.chapterSummary.chapterPlayState.equals(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)}"
             app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +99,7 @@
             android:layout_height="0dp"
             android:alpha="0.5"
             android:background="@{viewModel.chapterThumbnail.backgroundColorRgb}"
-            android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{viewModel.chapterSummary.chapterPlayState.equals(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
             app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
             app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
@@ -110,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="center"
-            android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{viewModel.chapterSummary.chapterPlayState.equals(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
             app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
             app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
@@ -167,7 +166,7 @@
               android:layout_marginEnd="8dp"
               android:layout_marginBottom="4dp"
               android:contentDescription="@{@string/chapter_completed}"
-              android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
+              android:visibility="@{viewModel.chapterSummary.chapterPlayState.equals(ChapterPlayState.COMPLETED) ? View.VISIBLE : View.GONE}"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
@@ -186,7 +185,7 @@
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="16dp"
         android:background="@color/component_color_story_activity_container_background_color"
-        android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
+        android:visibility="@{viewModel.chapterSummary.chapterPlayState.equals(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) ? View.VISIBLE : View.INVISIBLE}" />
     </FrameLayout>
   </LinearLayout>
 </layout>

@@ -3,8 +3,7 @@
 Package for test-specific platform parameter utilities and helpers.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "test_constants",
@@ -30,11 +29,9 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
-        ":dagger",
         ":test_constants",
+        "//:dagger",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
-
-dagger_rules()

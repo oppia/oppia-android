@@ -47,9 +47,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -238,14 +236,6 @@ class ExplorationCheckpointTestHelperTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @CacheAssetsLocally
-    @Provides
-    fun provideCacheAssetsLocally(): Boolean = false
-
-    @Provides
-    @TopicListToCache
-    fun provideTopicListToCache(): List<String> = listOf()
 
     @Provides
     @LoadLessonProtosFromAssets

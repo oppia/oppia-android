@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -71,14 +70,10 @@ class RatioInputInteractionViewTestActivity :
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
-  }
-
-  /**
-   * Checks for submit time errors.
-   */
-  fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    ratioExpressionInputInteractionViewModel
-      .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
+      ratioExpressionInputInteractionViewModel
+        .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    }
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) { }

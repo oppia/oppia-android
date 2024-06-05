@@ -20,7 +20,7 @@ public final class DrawableBindingAdapters {
   }
 
   /** Used to set a rounded-rect background drawable with a data-bound color. */
-  @BindingAdapter("app:roundedRectDrawableWithColor")
+  @BindingAdapter("roundedRectDrawableWithColor")
   public static void setBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
     view.setBackgroundResource(R.drawable.rounded_rect_background);
     // The input color needs to have alpha channel prepended to it.
@@ -29,7 +29,7 @@ public final class DrawableBindingAdapters {
   }
 
   /** Used to set a top rounded-rect background drawable with a data-bound color. */
-  @BindingAdapter("app:topRoundedRectDrawableWithColor")
+  @BindingAdapter("topRoundedRectDrawableWithColor")
   public static void setTopBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
     view.setBackgroundResource(R.drawable.top_rounded_rect_background);
     // The input color needs to have alpha channel prepended to it.

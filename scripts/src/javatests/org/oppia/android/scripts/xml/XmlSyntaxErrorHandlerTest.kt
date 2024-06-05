@@ -14,9 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 class XmlSyntaxErrorHandlerTest {
   private val builderFactory = DocumentBuilderFactory.newInstance()
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {

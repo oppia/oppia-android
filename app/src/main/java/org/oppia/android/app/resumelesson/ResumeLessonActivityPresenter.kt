@@ -71,7 +71,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
         context = activity,
         ReadingTextSize.MEDIUM_TEXT_SIZE
       )
-
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
   }

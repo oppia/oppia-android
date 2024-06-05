@@ -58,7 +58,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -137,7 +136,7 @@ class ProfileChooserFragmentLocalTest {
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
@@ -157,7 +156,9 @@ class ProfileChooserFragmentLocalTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest)
   }

@@ -99,7 +99,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_withOneDep_containsCorrectList() {
+  fun testSetUpWorkspaceForRulesJvmExternal_withOneDep_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
@@ -112,7 +112,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_withOneDep_setsUpBazelVersion() {
+  fun testSetUpWorkspaceForRulesJvmExternal_withOneDep_setsUpBazelVersion() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
@@ -124,7 +124,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_withOneDep_setsUpBazelRc() {
+  fun testSetUpWorkspaceForRulesJvmExternal_withOneDep_setsUpBazelRc() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
@@ -136,7 +136,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_withTwoDeps_containsCorrectList() {
+  fun testSetUpWorkspaceForRulesJvmExternal_withTwoDeps_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
@@ -154,7 +154,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_withMultipleDeps_containsCorrectList() {
+  fun testSetUpWorkspaceForRulesJvmExternal_withMultipleDeps_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
@@ -176,7 +176,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_multipleCalls_containsOnlyFirstTimeContent() {
+  fun testSetUpWorkspaceForRulesJvmExternal_multipleCalls_containsOnlyFirstTimeContent() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
@@ -195,7 +195,7 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testSetupWorkspaceForRulesJvmExternal_addsMavenInstall() {
+  fun testSetUpWorkspaceForRulesJvmExternal_addsMavenInstall() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
