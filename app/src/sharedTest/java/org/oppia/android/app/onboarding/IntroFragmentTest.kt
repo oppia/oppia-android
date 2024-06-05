@@ -10,12 +10,12 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -34,7 +34,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.onboardingv2.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -68,7 +67,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -153,13 +151,12 @@ class IntroFragmentTest {
             context.getString(R.string.app_name)
           )
         )
-      )
-        .check(matches(isDisplayed()))
+      ).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testFragment_stepCountText_isDisplayed() {
+  fun testFragment_portraitMode_stepCountText_isDisplayed() {
     launchOnboardingLearnerIntroActivity().use {
       onView(withId(R.id.onboarding_steps_count))
         .check(matches(isDisplayed()))
@@ -168,31 +165,75 @@ class IntroFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
-  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
+  fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
+      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
-  fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
+  fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
+      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @Test
+  fun testFragment_portraitMode_continueButtonClicked_launchesAudioLanguageScreen() {
+    launchOnboardingLearnerIntroActivity().use {
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Do nothing for now, but will fail once navigation is implemented
+      onView(withId(R.id.onboarding_learner_intro_title))
+        .check(matches(withText("Welcome, John!")))
+      onView(withText(R.string.onboarding_learner_intro_classroom_text))
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.onboarding_learner_intro_practice_text))
+        .check(matches(isDisplayed()))
+      onView(
+        withText(
+          context.getString(
+            R.string.onboarding_learner_intro_feedback_text,
+            context.getString(R.string.app_name)
+          )
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_continueButtonClicked_launchesAudioLanguageScreen() {
+    launchOnboardingLearnerIntroActivity().use {
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Do nothing for now, but will fail once navigation is implemented
+      onView(withId(R.id.onboarding_learner_intro_title))
+        .check(matches(withText("Welcome, John!")))
+      onView(withText(R.string.onboarding_learner_intro_classroom_text))
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.onboarding_learner_intro_practice_text))
+        .check(matches(isDisplayed()))
+      onView(
+        withText(
+          context.getString(
+            R.string.onboarding_learner_intro_feedback_text,
+            context.getString(R.string.app_name)
+          )
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -225,7 +266,7 @@ class IntroFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,

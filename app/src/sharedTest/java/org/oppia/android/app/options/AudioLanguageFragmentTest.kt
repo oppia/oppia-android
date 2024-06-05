@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.junit.Before
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.Matchers.not
@@ -88,7 +89,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -377,14 +377,6 @@ class AudioLanguageFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

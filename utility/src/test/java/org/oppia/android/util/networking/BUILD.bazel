@@ -2,7 +2,6 @@
 Tests for networking-specific utilities.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilProdModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -34,7 +33,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilProdImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -56,7 +55,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilDebugModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -78,7 +77,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilDebugImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -92,5 +91,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()

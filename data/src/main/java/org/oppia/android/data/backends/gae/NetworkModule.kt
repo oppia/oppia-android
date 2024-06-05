@@ -6,10 +6,8 @@ import com.google.common.base.Optional
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
-import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -28,6 +26,7 @@ class NetworkModule {
   fun provideRetrofitInstance(
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
+    networkLoggingInterceptor: NetworkLoggingInterceptor,
     @BaseUrl baseUrl: String
   ): Optional<Retrofit> {
     // TODO(#1720): Make this a compile-time dep once Hilt provides it as an option.
@@ -35,6 +34,7 @@ class NetworkModule {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
+        .addInterceptor(networkLoggingInterceptor)
         .build()
 
       Optional.of(
@@ -45,20 +45,6 @@ class NetworkModule {
           .build()
       )
     } else Optional.absent()
-  }
-
-  @Provides
-  @Singleton
-  fun provideTopicService(@OppiaRetrofit retrofit: Optional<Retrofit>): Optional<TopicService> {
-    return retrofit.map { it.create(TopicService::class.java) }
-  }
-
-  @Provides
-  @Singleton
-  fun provideClassroomService(
-    @OppiaRetrofit retrofit: Optional<Retrofit>
-  ): Optional<ClassroomService> {
-    return retrofit.map { it.create(ClassroomService::class.java) }
   }
 
   @Provides

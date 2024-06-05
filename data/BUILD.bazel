@@ -3,7 +3,6 @@
 This library provides data to the rest of the application.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//data:data_test.bzl", "data_test")
 
 filegroup(
@@ -14,7 +13,7 @@ filegroup(
 
 # keep sorted
 TEST_DEPS = [
-    ":dagger",
+    "//:dagger",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae:oppia_retrofit",
     "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
@@ -27,6 +26,9 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//third_party:androidx_test_ext_junit",
@@ -40,6 +42,8 @@ TEST_DEPS = [
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
     "//utility",
+    "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/threading:annotations",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
@@ -53,5 +57,3 @@ MIGRATED_TESTS = [
     filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
 ) for test_file_path in glob(["src/test/java/org/oppia/android/data/**/*Test.kt"])]
-
-dagger_rules()

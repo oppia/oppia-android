@@ -2,8 +2,7 @@
 Test utilities for broad logging functionality.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "event_log_subject",
@@ -27,7 +26,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager_impl",
     ],
@@ -41,10 +39,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
         ":test_sync_status_manager",
+        "//:dagger",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
     ],
 )
-
-dagger_rules()

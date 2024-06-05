@@ -20,6 +20,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,8 +38,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.onboardingv2.CreateProfileActivity
-import org.oppia.android.app.onboardingv2.OnboardingProfileTypeActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -73,7 +72,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -141,15 +139,16 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_headerTextIsDisplayed() {
+  fun testFragment_portraitMode_headerTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_title))
-        .check(matches(isDisplayed()))
       onView(withId(R.id.profile_type_title))
         .check(
           matches(
-            withText(
-              R.string.onboarding_profile_type_activity_header
+            allOf(
+              isDisplayed(),
+              withText(
+                R.string.onboarding_profile_type_activity_header
+              )
             )
           )
         )
@@ -157,26 +156,78 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_navigationCardsAreDisplayed() {
+  fun testFragment_landscapeMode_headerTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_type_title))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                R.string.onboarding_profile_type_activity_header
+              )
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testFragment_portraitMode_navigationCardsAreDisplayed() {
+    launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card))
         .check(
           matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_student_text)
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_student_text)
+              )
             )
           )
         )
 
       onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_parent_text)
+              )
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_navigationCardsAreDisplayed() {
+    launchOnboardingProfileTypeActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_type_learner_navigation_card))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_student_text)
+              )
+            )
+          )
+        )
+
       onView(withId(R.id.profile_type_supervisor_navigation_card))
         .check(
           matches(
-            hasDescendant(
-              withText(R.string.onboarding_profile_type_activity_parent_text)
+            allOf(
+              isDisplayed(),
+              hasDescendant(
+                withText(R.string.onboarding_profile_type_activity_parent_text)
+              )
             )
           )
         )
@@ -187,39 +238,16 @@ class OnboardingProfileTypeFragmentTest {
   fun testFragment_portrait_stepCountTextIsDisplayed() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.onboarding_steps_count))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.onboarding_steps_count))
-        .check(matches(withText(R.string.onboarding_step_count_two)))
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_backButtonClicked_currentScreenIsDestroyed() {
-    launchOnboardingProfileTypeActivity().use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO) // Robolectric is usually not used to test the interaction of
-  // Android components
-  @Test
-  fun testFragment_landscapeMode_backButtonClicked_currentScreenIsDestroyed() {
-    launchOnboardingProfileTypeActivity().use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (scenario != null) {
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-      }
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                R.string.onboarding_step_count_two
+              )
+            )
+          )
+        )
     }
   }
 
@@ -228,22 +256,15 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(CreateProfileActivity::class.java.name))
+      // Does nothing for now, but should fail once navigation is implemented in a future PR.
+      onView(withId(R.id.profile_type_learner_navigation_card))
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.profile_type_supervisor_navigation_card))
+        .check(matches(isDisplayed()))
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_startInLandscapeMode_studentNavigationCardClicked_launchesCreateProfileScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(CreateProfileActivity::class.java.name))
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testFragment_orientationChange_studentNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
@@ -264,19 +285,6 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Config(qualifiers = "land")
-  @Test
-  fun testFragment_inLandscapeMode_supervisorNavigationCardClicked_launchesProfileChooserScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-    }
-  }
-
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
     launchOnboardingProfileTypeActivity().use {
@@ -285,6 +293,28 @@ class OnboardingProfileTypeFragmentTest {
       onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
+  @Test
+  fun testFragment_backButtonPressed_currentScreenIsDestroyed() {
+    launchOnboardingProfileTypeActivity().use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
+  @Test
+  fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
+    launchOnboardingProfileTypeActivity().use { scenario ->
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
   }
 
@@ -314,7 +344,7 @@ class OnboardingProfileTypeFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,

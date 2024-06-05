@@ -175,6 +175,40 @@ message EventLog {
 
       // The event being logged is related to the response to the optional survey question.
       OptionalSurveyResponseContext optional_response = 42;
+
+      // The event being logged indicates that the user has reached the home screen for the first time.
+      CompleteAppOnboardingContext complete_app_onboarding = 44;
+
+      // The event being logged is related to an error logged on the console logger.
+      ConsoleLoggerContext console_log = 45;
+
+      // The event being logged is a retrofit call.
+      RetrofitCallContext retrofit_call_context = 46;
+
+      // The event being logged is a retrofit call.
+      RetrofitCallFailedContext retrofit_call_failed_context = 47;
+
+      // The event being logged is related to the amount spent by the user with the app in
+      // foreground.
+      AppInForegroundTimeContext app_in_foreground_time = 48;
+      
+      // The event being logged is related to lesson progress(checkpoint) saving success.
+      ExplorationContext progress_saving_success_context = 49;
+
+      // The event being logged is related to lesson progress(checkpoint) saving failure.
+      ExplorationContext progress_saving_failure_context = 50;
+
+      // The event being logged is related to lesson progress(checkpoint) saving attempt
+      // advertently(intentionally).
+      ExplorationContext lesson_saved_advertently_context = 51;
+
+      // The event being logged is related to correct answer submission after returning back to the
+      // lesson.
+      ExplorationContext resume_lesson_submit_correct_answer_context = 52;
+
+      // The event being logged is related to incorrect answer submission after returning back to
+      // the lesson.
+      ExplorationContext resume_lesson_submit_incorrect_answer_context = 53;
     }
   }
 
@@ -366,6 +400,69 @@ message EventLog {
 
     // The ID of the Oppia profile currently logged in, responding to the survey.
     string profile_id = 2;
+  }
+
+  // Structure for the app onboarding context.
+  message CompleteAppOnboardingContext {
+    // Boolean showing the app onboarding happened. The value will always be true.
+    bool complete_app_onboarding = 1;
+  }
+
+  // Structure for the ConsoleLogger context
+  message ConsoleLoggerContext {
+    // String containing the LogLevel of the log.
+    string log_level = 1;
+
+    // String containing the tag of the error.
+    string log_tag = 2;
+
+    // String containing the full error description.
+    string full_error_log = 3;
+  }
+
+  // Structure for the retrofit call context.
+  message RetrofitCallContext {
+    // String of the url being called.
+    string request_url = 1;
+
+    // Headers passed as part of the retrofit call.
+    string headers = 2;
+
+    // Body of the retrofit call.
+    string body = 3;
+
+    // Http response code from the call.
+    int32 response_status_code = 4;
+  }
+
+  // Structure for the retrofit call failed context.
+  message RetrofitCallFailedContext {
+    // String of the url being called.
+    string request_url = 1;
+
+    // Headers passed as part of the retrofit call.
+    string headers = 2;
+
+    // Body of the retrofit call.
+    string body = 3;
+
+    // Response code from the call.
+    int32 response_status_code = 4;
+
+    // The error body of the failed network call
+    string error_message = 5;
+  }
+
+  // Structure for the foreground time context.
+  message AppInForegroundTimeContext {
+    // String containing the installation id.
+    string installation_id = 1;
+
+    // String containing the app session id.
+    string app_session_id = 2;
+
+    // Foreground time in millis.
+    float foreground_time = 3;
   }
 
   // Supported priority of events for event logging

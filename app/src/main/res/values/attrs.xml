@@ -5,8 +5,4 @@
     <attr name="isPasswordInput" format="boolean" />
     <attr name="inputLength" format="integer" />
   </declare-styleable>
-
-  <declare-styleable name="OppiaCurveBackgroundView">
-    <attr name="customBackgroundColor" format="color" />
-  </declare-styleable>
 </resources>

@@ -6,10 +6,8 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -17,18 +15,12 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -54,6 +46,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.scrollToPosition
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyItemDisplayedOnListItem
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyItemDisplayedOnListItemDoesNotExist
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyTextOnListItemAtPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -88,7 +84,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -144,6 +139,8 @@ class AdministratorControlsFragmentTest {
   @Inject
   lateinit var context: Context
 
+  private val administratorControlsListRecyclerViewId: Int = R.id.administrator_controls_list
+
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
@@ -172,20 +169,25 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnAdministratorControlListItem(
+
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetView = R.id.general_text_view
       )
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
       )
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_profiles
@@ -201,17 +203,20 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
         stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetView = R.id.topic_update_on_wifi_constraint_layout
       )
-      scrollToPosition(position = 2)
-      verifyItemDisplayedOnAdministratorControlListItem(
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -227,12 +232,14 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      verifyItemDoesNotExistInAdministratorControlListItem(
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetView = R.id.download_permissions_text_view
       )
-      verifyItemDoesNotExistInAdministratorControlListItem(
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -247,21 +254,25 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
-      verifyItemDisplayedOnAdministratorControlListItem(
+      scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 3,
         targetView = R.id.app_information_text_view
       )
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
         stringIdToMatch = R.string.administrator_controls_app_version
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 4,
         targetView = R.id.account_actions_text_view
       )
-      verifyTextOnAdministratorListItemAtPosition(
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
         stringIdToMatch = R.string.administrator_controls_log_out
@@ -289,7 +300,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateSwitchIsUnchecked()
     }
   }
@@ -302,7 +313,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       clickUpdateOnWifiSwitch()
       atAdminControlsItem(position = 2, viewId = R.id.topic_update_on_wifi_constraint_layout)
       testCoroutineDispatchers.runCurrent()
@@ -318,12 +329,12 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       clickUpdateOnWifiSwitch()
       atAdminControlsItem(position = 2, viewId = R.id.topic_update_on_wifi_constraint_layout)
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkUpdateOnWifiSwitchIsChecked()
     }
   }
@@ -336,13 +347,13 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       clickUpdateOnWifiSwitch()
       atAdminControlsItem(position = 2, viewId = R.id.topic_update_on_wifi_constraint_layout)
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(isRoot()).perform(orientationPortrait())
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkUpdateOnWifiSwitchIsChecked()
     }
   }
@@ -355,11 +366,11 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       clickAutoUpdateTopicSwitch()
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateTopicSwitchIsChecked()
     }
   }
@@ -372,12 +383,12 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       clickAutoUpdateTopicSwitch()
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(isRoot()).perform(orientationPortrait())
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateTopicSwitchIsChecked()
     }
   }
@@ -390,7 +401,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       clickAutoUpdateTopicContainer()
       testCoroutineDispatchers.runCurrent()
       checkAutoUpdateTopicSwitchIsChecked()
@@ -405,7 +416,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkUpdateOnWifiSwitchNotClickable()
     }
   }
@@ -418,7 +429,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateTopicSwitchNotClickable()
     }
   }
@@ -426,7 +437,7 @@ class AdministratorControlsFragmentTest {
   private fun clickAutoUpdateTopicContainer() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.auto_update_topic_constraint_layout
       )
@@ -436,7 +447,7 @@ class AdministratorControlsFragmentTest {
   private fun checkUpdateOnWifiSwitchNotClickable() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.topic_update_on_wifi_switch
       )
@@ -446,7 +457,7 @@ class AdministratorControlsFragmentTest {
   private fun checkAutoUpdateTopicSwitchNotClickable() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.auto_update_topic_switch
       )
@@ -456,7 +467,7 @@ class AdministratorControlsFragmentTest {
   private fun checkUpdateOnWifiSwitchNotChecked() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.topic_update_on_wifi_switch
       )
@@ -466,7 +477,7 @@ class AdministratorControlsFragmentTest {
   private fun clickAutoUpdateTopicSwitch() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.auto_update_topic_switch
       )
@@ -476,7 +487,7 @@ class AdministratorControlsFragmentTest {
   private fun checkAutoUpdateTopicSwitchIsChecked() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.auto_update_topic_switch
       )
@@ -486,7 +497,7 @@ class AdministratorControlsFragmentTest {
   private fun checkAutoUpdateSwitchIsUnchecked() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.auto_update_topic_switch
       )
@@ -496,7 +507,7 @@ class AdministratorControlsFragmentTest {
   private fun checkUpdateOnWifiSwitchIsChecked() {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
+        recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
         targetViewId = R.id.topic_update_on_wifi_switch
       )
@@ -510,7 +521,11 @@ class AdministratorControlsFragmentTest {
   }
 
   private fun atAdminControlsItem(position: Int, viewId: Int): Matcher<View> {
-    return atPositionOnView(recyclerViewId = R.id.administrator_controls_list, position, viewId)
+    return atPositionOnView(
+      recyclerViewId = administratorControlsListRecyclerViewId,
+      position,
+      viewId
+    )
   }
 
   private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {
@@ -575,60 +590,6 @@ class AdministratorControlsFragmentTest {
     return view.getParent()
   }
 
-  private fun verifyItemDisplayedOnAdministratorControlListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(isDisplayed()))
-  }
-
-  private fun verifyItemDoesNotExistInAdministratorControlListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(doesNotExist())
-  }
-
-  private fun verifyTextOnAdministratorListItemAtPosition(
-    itemPosition: Int,
-    targetViewId: Int,
-    @StringRes stringIdToMatch: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetViewId
-      )
-    ).check(matches(withText(context.getString(stringIdToMatch))))
-  }
-
-  private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.administrator_controls_list)).perform(
-      scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
-    )
-  }
-
-  private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
-    onView(withText(context.getString(textInDialogId)))
-      .inRoot(RootMatchers.isDialog())
-      .check(matches(isDisplayed()))
-  }
-
   @Singleton
   @Component(
     modules = [
@@ -642,7 +603,7 @@ class AdministratorControlsFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,

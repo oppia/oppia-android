@@ -2,8 +2,7 @@
 Logging utility implementations backed by Firebase.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "firebase_exception_logger",
@@ -46,11 +45,11 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":debug_module",
         ":firebase_exception_logger",
         ":firestore_logger_impl",
         ":prod_impl",
+        "//:dagger",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:javax_inject_javax_inject",
@@ -82,10 +81,10 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":debug_event_logger",
         ":debug_firestore_logger_impl",
         ":firebase_exception_logger",
+        "//:dagger",
     ],
 )
 
@@ -150,9 +149,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":firestore_wrapper",
+        "//:dagger",
     ],
 )
-
-dagger_rules()
