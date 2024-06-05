@@ -37,5 +37,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     ],
 )
-
-dagger_rules()
