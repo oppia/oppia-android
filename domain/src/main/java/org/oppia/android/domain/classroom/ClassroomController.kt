@@ -2,8 +2,10 @@ package org.oppia.android.domain.classroom
 
 import org.json.JSONObject
 import org.oppia.android.app.model.ClassroomIdList
+import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ClassroomSummary
+import org.oppia.android.app.model.EphemeralClassroomSummary
 import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StoryRecord
@@ -20,7 +22,6 @@ import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
@@ -44,7 +45,6 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 /** Controller for retrieving the list of classrooms & topics available to the learner. */
 @Singleton
 class ClassroomController @Inject constructor(
-  private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
   private val translationController: TranslationController,
@@ -55,10 +55,13 @@ class ClassroomController @Inject constructor(
   /**
    * Returns the list of [ClassroomSummary]s currently tracked by the app.
    */
-  fun getClassroomList(): DataProvider<List<ClassroomSummary>> {
-    return dataProviders.createInMemoryDataProvider(GET_CLASSROOM_LIST_PROVIDER_ID) {
-      createClassroomList()
-    }
+  fun getClassroomList(profileId: ProfileId): DataProvider<ClassroomList> {
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return translationLocaleProvider.transform(
+      GET_CLASSROOM_LIST_PROVIDER_ID,
+      ::createClassroomList
+    )
   }
 
   /**
@@ -72,29 +75,49 @@ class ClassroomController @Inject constructor(
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
   }
 
-  private fun createClassroomList(): List<ClassroomSummary> {
+  private fun createClassroomList(
+    contentLocale: OppiaLocale.ContentLocale
+  ): ClassroomList {
     return if (loadLessonProtosFromAssets) {
       val classroomIdList = assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
         baseMessage = ClassroomIdList.getDefaultInstance()
       )
-      return classroomIdList.classroomIdsList.map {
-        createClassroomSummary(it)
-      }
-    } else loadClassroomListFromJson()
+      return ClassroomList.newBuilder().apply {
+        addAllClassroomSummary(
+          classroomIdList.classroomIdsList.map { classroomId ->
+            createEphemeralClassroomSummary(classroomId, contentLocale)
+          }
+        )
+      }.build()
+    } else loadClassroomListFromJson(contentLocale)
   }
 
-  private fun loadClassroomListFromJson(): List<ClassroomSummary> {
+  private fun loadClassroomListFromJson(contentLocale: OppiaLocale.ContentLocale): ClassroomList {
     val classroomIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("classrooms.json")!!
       .getJSONArray("classroom_id_list")
-    val classroomSummaryList = mutableListOf<ClassroomSummary>()
+    val classroomListBuilder = ClassroomList.newBuilder()
     for (i in 0 until classroomIdJsonArray.length()) {
-      classroomSummaryList.add(
-        createClassroomSummary(classroomIdJsonArray.optString(i))
+      val classroomId = classroomIdJsonArray.optString(i)
+      classroomListBuilder.addClassroomSummary(
+        createEphemeralClassroomSummary(classroomId, contentLocale)
       )
     }
-    return classroomSummaryList
+    return classroomListBuilder.build()
+  }
+
+  private fun createEphemeralClassroomSummary(
+    classroomId: String,
+    contentLocale: OppiaLocale.ContentLocale
+  ): EphemeralClassroomSummary {
+    return EphemeralClassroomSummary.newBuilder().apply {
+      classroomSummary = createClassroomSummary(classroomId)
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          classroomSummary.writtenTranslationsMap, contentLocale
+        )
+    }.build()
   }
 
   private fun createClassroomSummary(classroomId: String): ClassroomSummary {

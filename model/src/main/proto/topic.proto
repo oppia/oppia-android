@@ -634,6 +634,21 @@ message ClassroomSummary {
   repeated TopicSummary topic_summary = 5;
 }
 
+// Corresponds to a classroom summary that is currently being viewed.
+message EphemeralClassroomSummary {
+  // The classroom summary to view.
+  ClassroomSummary classroom_summary = 1;
+
+  // The translation context that should be used for this classroom summary.
+  WrittenTranslationContext written_translation_context = 2;
+}
+
+// Corresponds to the list of classrooms that can be shown on the classroom list screen.
+message ClassroomList {
+  // All classrooms that are available to the player.
+  repeated EphemeralClassroomSummary classroom_summary = 1;
+}
+
 // Corresponds to a local file cataloging all concept cards available to load.
 message ConceptCardList {
   // The list of concept cards stored on the local filesystem.
