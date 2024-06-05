@@ -60,10 +60,6 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
-import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -249,7 +245,7 @@ class RevisionCardFragmentTest {
           .loadRevisionCardFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(EXTRA_LARGE_FONT_SIZE))
+        matches(withFontSize(67F))
       )
     }
   }
@@ -271,7 +267,7 @@ class RevisionCardFragmentTest {
           .loadRevisionCardFragment(ReadingTextSize.LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(LARGE_FONT_SIZE))
+        matches(withFontSize(58F))
       )
     }
   }
@@ -295,7 +291,7 @@ class RevisionCardFragmentTest {
           )
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(MEDIUM_FONT_SIZE))
+        matches(withFontSize(48F))
       )
     }
   }
@@ -317,7 +313,7 @@ class RevisionCardFragmentTest {
           .loadRevisionCardFragment(ReadingTextSize.SMALL_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(SMALL_FONT_SIZE))
+        matches(withFontSize(38F))
       )
     }
   }

@@ -113,11 +113,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val EXTRA_LARGE_FONT_SIZE = 67F
-const val LARGE_FONT_SIZE = 58F
-const val MEDIUM_FONT_SIZE = 48F
-const val SMALL_FONT_SIZE = 38F
-
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -310,7 +305,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(EXTRA_LARGE_FONT_SIZE))
+        matches(withFontSize(67F))
       )
     }
   }
@@ -324,7 +319,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(LARGE_FONT_SIZE))
+        matches(withFontSize(58F))
       )
     }
   }
@@ -338,7 +333,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(MEDIUM_FONT_SIZE))
+        matches(withFontSize(48F))
       )
     }
   }
@@ -352,7 +347,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.SMALL_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(SMALL_FONT_SIZE))
+        matches(withFontSize(38F))
       )
     }
   }

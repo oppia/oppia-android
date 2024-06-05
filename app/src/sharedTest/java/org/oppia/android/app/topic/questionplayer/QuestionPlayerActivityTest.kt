@@ -76,10 +76,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
-import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
-import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
-import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.FontSizeMatcher
@@ -571,7 +567,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
-      verifyFontSizeMatches(EXTRA_LARGE_FONT_SIZE)
+      verifyFontSizeMatches(67F)
     }
   }
 
@@ -584,7 +580,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
       }
-      verifyFontSizeMatches(LARGE_FONT_SIZE)
+      verifyFontSizeMatches(58F)
     }
   }
 
@@ -596,7 +592,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
-      verifyFontSizeMatches(MEDIUM_FONT_SIZE)
+      verifyFontSizeMatches(48F)
     }
   }
 
@@ -608,7 +604,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
       }
-      verifyFontSizeMatches(SMALL_FONT_SIZE)
+      verifyFontSizeMatches(38F)
     }
   }
 
