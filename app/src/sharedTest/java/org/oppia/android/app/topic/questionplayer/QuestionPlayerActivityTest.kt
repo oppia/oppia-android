@@ -571,7 +571,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
-      verifyFontMatches(EXTRA_LARGE_FONT_SIZE)
+      verifyFontSizeMatches(EXTRA_LARGE_FONT_SIZE)
     }
   }
 
@@ -584,7 +584,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
       }
-      verifyFontMatches(LARGE_FONT_SIZE)
+      verifyFontSizeMatches(LARGE_FONT_SIZE)
     }
   }
 
@@ -596,7 +596,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
-      verifyFontMatches(MEDIUM_FONT_SIZE)
+      verifyFontSizeMatches(MEDIUM_FONT_SIZE)
     }
   }
 
@@ -608,11 +608,11 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
       }
-      verifyFontMatches(SMALL_FONT_SIZE)
+      verifyFontSizeMatches(SMALL_FONT_SIZE)
     }
   }
 
-  private fun verifyFontMatches(fontSize: Float) {
+  private fun verifyFontSizeMatches(fontSize: Float) {
     scrollToViewType(CONTENT)
     onView(
       atPositionOnView(
