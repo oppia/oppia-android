@@ -161,6 +161,10 @@ import org.robolectric.annotation.LooperMode
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
+import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -559,8 +563,8 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @FlakyTest
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
+  @Config(qualifiers = "w360dp-h640dp-xxhdpi")
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_extraLargeTextSize_hasCorrectDimension() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -568,69 +572,61 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
-      onView(withId(R.id.question_progress_text)).check(
-        matches(
-          FontSizeMatcher.withFontSize(
-            50F
-          )
-        )
-      )
+      verifyFontMatches(EXTRA_LARGE_FONT_SIZE)
     }
   }
-//
-//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-//  @RunOn(TestPlatform.ROBOLECTRIC)
-//  fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
-//    launchForSkillList(SKILL_ID_LIST).use {
-//      it.onActivity { activity ->
-//        activity.questionPlayerActivityPresenter
-//          .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
-//      }
-//      onView(withId(R.id.question_progress_text)).check(
-//        matches(
-//          FontSizeMatcher.withFontSize(
-//            43F
-//          )
-//        )
-//      )
-//    }
-//  }
-//
-//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-//  @RunOn(TestPlatform.ROBOLECTRIC)
-//  fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
-//    launchForSkillList(SKILL_ID_LIST).use {
-//      it.onActivity { activity ->
-//        activity.questionPlayerActivityPresenter
-//          .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
-//      }
-//      onView(withId(R.id.question_progress_text)).check(
-//        matches(
-//          FontSizeMatcher.withFontSize(
-//            36F
-//          )
-//        )
-//      )
-//    }
-//  }
-//
-//  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
-//  @RunOn(TestPlatform.ROBOLECTRIC)
-//  fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
-//    launchForSkillList(SKILL_ID_LIST).use {
-//      it.onActivity { activity ->
-//        activity.questionPlayerActivityPresenter
-//          .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
-//      }
-//      onView(withId(R.id.question_progress_text)).check(
-//        matches(
-//          FontSizeMatcher.withFontSize(
-//            29F
-//          )
-//        )
-//      )
-//    }
-//  }
+
+  @Test
+  @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      verifyFontMatches(LARGE_FONT_SIZE)
+    }
+  }
+
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      }
+      verifyFontMatches(MEDIUM_FONT_SIZE)
+    }
+  }
+
+  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      verifyFontMatches(SMALL_FONT_SIZE)
+    }
+  }
+
+  private fun verifyFontMatches(fontSize:Float){
+    scrollToViewType(CONTENT)
+    onView(atPositionOnView(
+        recyclerViewId = R.id.question_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )).check(
+      matches(
+        FontSizeMatcher.withFontSize(
+          fontSize= fontSize
+        )
+      )
+    )
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

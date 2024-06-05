@@ -134,6 +134,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.resumelesson.EXTRA_LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.LARGE_FONT_SIZE
+import org.oppia.android.app.resumelesson.MEDIUM_FONT_SIZE
+import org.oppia.android.app.resumelesson.SMALL_FONT_SIZE
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -245,11 +249,7 @@ class RevisionCardFragmentTest {
           .loadRevisionCardFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(
-          withFontSize(
-            67F
-          )
-        )
+        matches(withFontSize(EXTRA_LARGE_FONT_SIZE))
       )
     }
   }
@@ -271,11 +271,7 @@ class RevisionCardFragmentTest {
           .loadRevisionCardFragment(ReadingTextSize.LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(
-          withFontSize(
-            58F
-          )
-        )
+        matches(withFontSize(LARGE_FONT_SIZE))
       )
     }
   }
@@ -299,11 +295,7 @@ class RevisionCardFragmentTest {
           )
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(
-          withFontSize(
-            48F
-          )
-        )
+        matches(withFontSize(MEDIUM_FONT_SIZE))
       )
     }
   }
@@ -325,11 +317,7 @@ class RevisionCardFragmentTest {
           .loadRevisionCardFragment(ReadingTextSize.SMALL_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(
-          withFontSize(
-            38F
-          )
-        )
+        matches(withFontSize(SMALL_FONT_SIZE))
       )
     }
   }
