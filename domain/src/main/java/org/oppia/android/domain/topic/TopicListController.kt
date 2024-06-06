@@ -859,7 +859,7 @@ class TopicListController @Inject constructor(
     val classroomIdsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
     checkNotNull(classroomIdsObj) { "Failed to load classrooms.json." }
     val classroomIds = classroomIdsObj.optJSONArray("classroom_id_list")
-    checkNotNull(classroomIds) { "classrooms.json missing classroom IDs." }
+    checkNotNull(classroomIds) { "classrooms.json is missing classroom IDs." }
 
     // Initialize a list to store the classroom records.
     val classroomRecords = mutableListOf<ClassroomRecord>()
