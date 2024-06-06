@@ -50,6 +50,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CA
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -615,6 +617,58 @@ class KenyaAlphaEventBundleCreatorTest {
   }
 
   @Test
+  fun testFillEventBundle_viewExistingHintEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_hint_context")
+    assertThat(bundle).hasSize(18)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingHintEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_hint_context")
+    assertThat(bundle).hasSize(20)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
   fun testFillEventBundle_solutionUnlockedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
@@ -701,6 +755,56 @@ class KenyaAlphaEventBundleCreatorTest {
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingSolutionEvent_studyOff_fillsNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_solution_context")
+    assertThat(bundle).hasSize(17)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_solution_context")
+    assertThat(bundle).hasSize(19)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1349,6 +1453,9 @@ class KenyaAlphaEventBundleCreatorTest {
   private fun createRevealHintContext(hintContext: HintContext = createHintContext()) =
     createEventContext(hintContext, EventContextBuilder::setRevealHintContext)
 
+  private fun createViewExistingHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setViewExistingHintContext)
+
   private fun createSolutionUnlockedContext(
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
@@ -1356,6 +1463,10 @@ class KenyaAlphaEventBundleCreatorTest {
   private fun createRevealSolutionContext(
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setRevealSolutionContext)
+
+  private fun createViewExistingSolutionContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setViewExistingSolutionContext)
 
   private fun createSubmitAnswerContext(
     submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()
