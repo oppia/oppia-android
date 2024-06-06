@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -17,6 +18,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -30,7 +33,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val pinViewModel: PinPasswordViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val accessibilityService: AccessibilityService
+  private val accessibilityService: AccessibilityService,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) {
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
@@ -90,13 +94,17 @@ class PinPasswordActivityPresenter @Inject constructor(
                 ProfileId.newBuilder().setInternalId(profileId).build()
               ).toLiveData()
               .observe(
-                activity,
-                {
-                  if (it is AsyncResult.Success) {
-                    activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
-                  }
+                activity
+              ) {
+                if (it is AsyncResult.Success) {
+                  activity.startActivity(
+                    if (enableMultipleClassrooms.value)
+                      ClassroomListActivity.createClassroomListActivity(activity, profileId)
+                    else
+                      HomeActivity.createHomeActivity(activity, profileId)
+                  )
                 }
-              )
+              }
           } else {
             pinViewModel.errorMessage.set(
               resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
