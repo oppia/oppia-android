@@ -37,8 +37,6 @@
     <TextView
       android:id="@+id/audio_language_subtitle"
       style="@style/AudioLanguageSubtitleStyle"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/phone_shared_margin_xl"
       android:layout_marginTop="@dimen/phone_shared_margin_small"
       android:layout_marginEnd="@dimen/phone_shared_margin_xl"

@@ -13,14 +13,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.20" />
+      app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/audio_language_image_guide"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.25" />
+      app:layout_constraintGuide_percent="0.20" />
 
     <org.oppia.android.app.customview.OppiaCurveBackgroundView
       android:layout_width="match_parent"
@@ -42,12 +42,10 @@
 
     <TextView
       android:id="@+id/audio_language_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:fontFamily="sans-serif"
+      style="@style/AudioLanguageTextStyle"
+      android:layout_marginTop="@dimen/tablet_shared_margin_xl"
       android:text="@string/audio_language_fragment_text"
       android:textColor="@color/component_color_onboarding_shared_text_color"
-      android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintBottom_toTopOf="@id/audio_language_subtitle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -57,39 +55,30 @@
     <TextView
       android:id="@+id/audio_language_subtitle"
       style="@style/AudioLanguageSubtitleStyle"
+      android:layout_marginTop="@dimen/tablet_shared_margin_medium"
       android:text="@string/audio_language_fragment_subtitle"
       app:layout_constraintBottom_toTopOf="@id/audio_language_dropdown_background"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/audio_language_text" />
+      app:layout_constraintTop_toBottomOf="@id/audio_language_text"
+      app:layout_constraintWidth_percent="0.30" />
 
     <com.google.android.material.card.MaterialCardView
       android:id="@+id/audio_language_dropdown_background"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/phone_shared_margin_xl"
-      android:layout_marginTop="@dimen/phone_shared_margin_medium"
-      android:layout_marginEnd="@dimen/phone_shared_margin_xl"
+      android:layout_marginStart="@dimen/tablet_shared_margin_xl"
+      android:layout_marginTop="@dimen/tablet_shared_margin_medium"
+      android:layout_marginEnd="@dimen/tablet_shared_margin_xl"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/audio_language_subtitle"
-      app:layout_constraintWidth_percent="0.70"
+      app:layout_constraintWidth_percent="0.20"
       card_view:cardCornerRadius="@dimen/onboarding_shared_corner_radius"
       card_view:cardElevation="@dimen/onboarding_shared_elevation"
       card_view:cardUseCompatPadding="false">
 
-      <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/component_color_onboarding_shared_text_color"
-        app:boxBackgroundColor="@color/component_color_onboarding_shared_white_color"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:endIconDrawable="@drawable/ic_arrow_drop_down_black_24dp"
-        app:endIconTint="@color/component_color_shared_black_background_color"
-        app:startIconDrawable="@drawable/ic_language_icon_black_24dp"
-        app:startIconTint="@color/component_color_shared_black_background_color">
+      <com.google.android.material.textfield.TextInputLayout style="@style/LanguageDropdownStyle">
 
         <AutoCompleteTextView
           android:layout_width="match_parent"
@@ -104,6 +93,7 @@
       style="@style/OnboardingNavigationSecondaryButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_margin="@dimen/tablet_shared_margin_large"
       android:text="@string/onboarding_navigation_back"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
@@ -113,6 +103,7 @@
       style="@style/OnboardingNavigationPrimaryButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_margin="@dimen/tablet_shared_margin_large"
       android:text="@string/onboarding_navigation_continue"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
