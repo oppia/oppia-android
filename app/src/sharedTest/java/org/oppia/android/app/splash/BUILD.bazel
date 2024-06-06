@@ -2,7 +2,6 @@
 Tests for the splash/app UI initialization process.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
@@ -11,7 +10,7 @@ app_test(
     processed_src = test_with_resources("SplashActivityTest.kt"),
     test_class = "org.oppia.android.app.splash.SplashActivityTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
@@ -51,5 +50,3 @@ app_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
     ],
 )
-
-dagger_rules()

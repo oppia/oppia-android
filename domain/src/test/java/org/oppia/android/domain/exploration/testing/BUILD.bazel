@@ -2,7 +2,6 @@
 Tests for test-only exploration domain utilities.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.testing.ExplorationStorageTestModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:fake_exploration_retriever",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
@@ -40,7 +39,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.testing.FakeExplorationRetrieverTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:fake_exploration_retriever",
         "//testing",
@@ -58,5 +57,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     ],
 )
-
-dagger_rules()

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AppVersionFragmentBinding
 import javax.inject.Inject
 
@@ -13,7 +12,7 @@ import javax.inject.Inject
 @FragmentScope
 class AppVersionFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<AppVersionViewModel>
+  private val appVersionViewModel: AppVersionViewModel
 ) {
   private lateinit var binding: AppVersionFragmentBinding
 
@@ -26,12 +25,8 @@ class AppVersionFragmentPresenter @Inject constructor(
     )
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = getAppVersionViewModel()
+      it.viewModel = appVersionViewModel
     }
     return binding.root
-  }
-
-  private fun getAppVersionViewModel(): AppVersionViewModel {
-    return viewModelProvider.getForFragment(fragment, AppVersionViewModel::class.java)
   }
 }

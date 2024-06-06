@@ -2,7 +2,6 @@
 Tests for clipboard management domain services & definitions.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.clipboard.ClipboardControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
@@ -32,5 +31,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-dagger_rules()

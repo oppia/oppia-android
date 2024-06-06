@@ -2,6 +2,8 @@ package org.oppia.android.domain.exploration
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -435,6 +437,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
@@ -463,6 +466,15 @@ class ExplorationProgressController @Inject constructor(
                 ControllerState(
                   ExplorationProgress(),
                   message.isRestart,
+                  // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
+                  // in the following 3 cases.
+                  //  - New exploration is started.
+                  //  - Saved Exploration is restarted.
+                  //  - Completed exploration is replayed.
+                  // The [message.explorationCheckpoint] will contain the exploration checkpoint
+                  // only when a saved exploration is resumed.
+                  isResume = message.explorationCheckpoint
+                    != ExplorationCheckpoint.getDefaultInstance(),
                   message.sessionId,
                   message.ephemeralStateFlow,
                   commandQueue,
@@ -657,6 +669,14 @@ class ExplorationProgressController @Inject constructor(
         stateAnalyticsLogger?.logSubmitAnswer(
           topPendingState.interaction, userAnswer, answerOutcome.labelledAsCorrectAnswer
         )
+
+        // Log correct & incorrect answer submission in a resumed exploration.
+        if (isResume) {
+          if (answerOutcome.labelledAsCorrectAnswer)
+            explorationAnalyticsLogger.logResumeLessonSubmitCorrectAnswer()
+          else
+            explorationAnalyticsLogger.logResumeLessonSubmitIncorrectAnswer()
+        }
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
@@ -965,6 +985,7 @@ class ExplorationProgressController @Inject constructor(
    * Note that while this is changing internal ephemeral state, it does not notify of changes (it
    * instead expects callers to do this when it's best to notify frontend observers of the changes).
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun ControllerState.saveExplorationCheckpoint() {
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.
@@ -990,9 +1011,11 @@ class ExplorationProgressController @Inject constructor(
 
     deferred.invokeOnCompletion {
       val checkpointState = if (it == null) {
+        explorationAnalyticsLogger.logProgressSavingSuccess()
         deferred.getCompleted()
       } else {
         oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
+        explorationAnalyticsLogger.logProgressSavingFailure()
         // CheckpointState is marked as CHECKPOINT_UNSAVED because the deferred did not
         // complete successfully.
         CheckpointState.CHECKPOINT_UNSAVED
@@ -1137,6 +1160,7 @@ class ExplorationProgressController @Inject constructor(
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
     val isRestart: Boolean,
+    val isResume: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
     val commandQueue: SendChannel<ControllerMessage<*>>,

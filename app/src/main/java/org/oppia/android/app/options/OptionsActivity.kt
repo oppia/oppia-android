@@ -83,6 +83,7 @@ class OptionsActivity :
     selectedFragment = if (savedInstanceState == null) {
       READING_TEXT_SIZE_FRAGMENT
     } else {
+      @Suppress("DEPRECATION") // TODO(#5405): Ensure the correct type is being retrieved.
       savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
     }
     val extraOptionsTitle =
@@ -151,12 +152,12 @@ class OptionsActivity :
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
 
-  override fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
+  override fun loadAppLanguageFragment(oppiaLanguage: OppiaLanguage) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.app_language)
     )
-    optionActivityPresenter.loadAppLanguageFragment(appLanguage)
+    optionActivityPresenter.loadAppLanguageFragment(oppiaLanguage)
   }
 
   override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {

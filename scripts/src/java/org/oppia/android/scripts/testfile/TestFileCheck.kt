@@ -48,7 +48,7 @@ fun main(vararg args: String) {
     }
   }
 
-  logFailures(matchedFiles, testFileExemptiontextProto)
+  logFailures(matchedFiles)
 
   if (matchedFiles.isNotEmpty()) {
     println(
@@ -78,9 +78,8 @@ private fun computeExpectedTestFileName(prodFile: File): String {
  * Logs the file names of all the prod files that do not have a test file.
  *
  * @param matchedFiles list of all the files missing a test file
- * @param testFileExemptiontextProto the location of the test file exemption textproto file
  */
-private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: String) {
+private fun logFailures(matchedFiles: List<File>) {
   if (matchedFiles.isNotEmpty()) {
     matchedFiles.sorted().forEach { file ->
       println("File $file does not have a corresponding test file.")

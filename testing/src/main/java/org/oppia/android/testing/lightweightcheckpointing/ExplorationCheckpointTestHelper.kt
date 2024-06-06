@@ -74,6 +74,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
 ) {
 
   init {
+    @Suppress("DEPRECATION") // This is a reasonably clean way to initialize mocks in a non-test.
     MockitoAnnotations.initMocks(this)
   }
 

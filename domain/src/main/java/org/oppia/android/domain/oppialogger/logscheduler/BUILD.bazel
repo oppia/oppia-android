@@ -2,8 +2,7 @@
 Library for providing log scheduling functionality to the Oppia android app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "performance_metrics_log_scheduler",
@@ -54,11 +53,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":performance_metrics_log_scheduler",
+        "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
     ],
 )
-
-dagger_rules()

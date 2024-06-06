@@ -1,7 +1,6 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import android.view.View
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -51,11 +50,9 @@ class TextInputInteractionViewTestActivity :
 
     writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     binding.textInputViewModel = textInputViewModel
-  }
-
-  /** Checks submit-time errors. */
-  fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    textInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
+      textInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(

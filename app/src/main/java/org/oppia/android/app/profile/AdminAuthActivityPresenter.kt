@@ -10,7 +10,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
 import javax.inject.Inject
 
@@ -19,13 +18,10 @@ import javax.inject.Inject
 class AdminAuthActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<AdminAuthViewModel>,
+  private val authViewModel: AdminAuthViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AdminAuthActivityBinding
-  private val authViewModel by lazy {
-    getAdminAuthViewModel()
-  }
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
@@ -125,9 +121,5 @@ class AdminAuthActivityPresenter @Inject constructor(
           resourceHandler.getStringInLocale(R.string.admin_auth_sub)
       }
     }
-  }
-
-  private fun getAdminAuthViewModel(): AdminAuthViewModel {
-    return viewModelProvider.getForActivity(activity, AdminAuthViewModel::class.java)
   }
 }
