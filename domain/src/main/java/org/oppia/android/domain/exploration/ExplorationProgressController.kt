@@ -274,7 +274,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the controller that the user wishes to view a hint.
+   * Notifies the controller that the user has viewed a hint.
    *
    * @param hintIndex index of the hint that is being viewed
    */
@@ -303,7 +303,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the controller that the user wishes to view the answer.
+   * Notifies the controller that the user has viewed the answer.
    */
   fun submitSolutionIsViewed() {
     val message = ControllerMessage.LogSolutionIsViewed(activeSessionId)
@@ -1373,7 +1373,7 @@ class ExplorationProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
 
     /**
-     * [ControllerMessage] to log cases when user viewed hint for the current session.
+     * [ControllerMessage] to log cases when the user has viewed a hint for the current session.
      *
      * Specific measures are taken to ensure that the handler for this message does not log the
      * change if the current active session has changed (since that's generally indicative of an
@@ -1386,7 +1386,8 @@ class ExplorationProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
 
     /**
-     * [ControllerMessage] to log cases when user viewed solution for the current session.
+     * [ControllerMessage] to log cases when the user has viewed the solution for the current
+     * session.
      *
      * Specific measures are taken to ensure that the handler for this message does not log the
      * change if the current active session has changed.
