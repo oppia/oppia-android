@@ -81,18 +81,9 @@
       card_view:cardElevation="@dimen/onboarding_shared_elevation"
       card_view:cardUseCompatPadding="false">
 
-      <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/component_color_onboarding_shared_text_color"
-        app:boxBackgroundColor="@color/component_color_onboarding_shared_white_color"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:endIconDrawable="@drawable/ic_arrow_drop_down_black_24dp"
-        app:endIconTint="@color/component_color_shared_black_background_color">
+      <com.google.android.material.textfield.TextInputLayout style="@style/LanguageDropdownStyle">
 
-        <AutoCompleteTextView
+      <AutoCompleteTextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:inputType="none"
