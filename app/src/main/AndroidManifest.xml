@@ -329,6 +329,10 @@
       android:label="@string/survey_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustNothing" />
+    <activity
+      android:name=".app.classroom.ClassroomListActivity"
+      android:label="@string/classroom_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
