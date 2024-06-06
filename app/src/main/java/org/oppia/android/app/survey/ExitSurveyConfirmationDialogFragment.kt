@@ -9,7 +9,6 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
@@ -54,20 +53,9 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    val args =
-      checkNotNull(
-        arguments
-      ) { "Expected arguments to be passed to ExitSurveyConfirmationDialogFragment" }
-
-    val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
-
     dialog?.setCanceledOnTouchOutside(false)
     dialog?.setCancelable(false)
-
-    return exitSurveyConfirmationDialogFragmentPresenter.handleCreateView(
-      inflater,
-      container
-    )
+    return exitSurveyConfirmationDialogFragmentPresenter.handleCreateView(inflater, container)
   }
 
   override fun onStart() {

@@ -1,3 +1,6 @@
+// TODO(#3616): Migrate to the proper SDK 31+ APIs (migrate away from RenderScript).
+@file:Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
+
 package org.oppia.android.util.parser.image
 
 import android.content.Context
@@ -30,10 +33,10 @@ class BitmapBlurrer(private val context: Context) {
    * Note that this function is expensive, so the result should be cached & reused when possible.
    */
   fun blur(bitmap: Bitmap): Bitmap {
-    // The following [tutorial](https://futurestud.io/tutorials/glide-custom-transformation)
-    // was used as a reference, as well as this [article](https://stackoverflow.com/a/23119957).
+    // References: https://futurestud.io/tutorials/glide-custom-transformation and
+    // https://stackoverflow.com/a/23119957.
 
-    val blurredBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, /* isMutable= */ true)
+    val blurredBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, /* isMutable = */ true)
     // Create a RenderScript allocation pointing to a copy.
     val inputAllocation = Allocation.createFromBitmap(
       renderScript,

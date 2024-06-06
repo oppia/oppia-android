@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // These references are needed for testing prod classes.
+
 package org.oppia.android.util.networking
 
 import android.app.Application

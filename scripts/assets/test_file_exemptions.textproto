@@ -582,8 +582,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/view/ViewComponentI
 exempted_file_path: "app/src/main/java/org/oppia/android/app/view/ViewScope.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/viewmodel/ViewModelBridgeFactory.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/viewmodel/ViewModelProvider.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughActivityListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughFragmentChangeListener.kt"
