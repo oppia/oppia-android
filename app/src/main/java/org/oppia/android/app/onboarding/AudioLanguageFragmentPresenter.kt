@@ -7,12 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import javax.inject.Inject
 
-/** The presenter for [AudioLanguageFragment] V2. */
+/** The presenter for [AudioLanguageFragment]. */
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
@@ -21,8 +20,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
 
   /**
-   * Returns a newly inflated view to render the fragment with the specified [audioLanguage] as the
-   * initial selected language.
+   * Returns a newly inflated view to render the fragment with an evaluated [audioLanguage] as the
+   * initial selected language, based on current locale.
    */
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -47,21 +46,5 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       activity.finish()
     }
     return binding.root
-  }
-
-  private fun getAudioLanguageList(): List<String> {
-    return AudioLanguage.values()
-      .filter { it.isValid() }
-      .map { audioLanguage ->
-        appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
-      }
-  }
-
-  private fun AudioLanguage.isValid(): Boolean {
-    return when (this) {
-      AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
-      AudioLanguage.NO_AUDIO -> false
-      else -> true
-    }
   }
 }
