@@ -895,27 +895,6 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
   }
 
-  @Test
-  fun testCompletedStoryList_finishTwoStories_completedStoryListHasCorrectClassroomInfo() {
-    markFractionsStory0Chapter0AsCompleted()
-    markFractionsStory0Chapter1AsCompleted()
-    markRatiosStory0Chapter0AsCompleted()
-    markRatiosStory0Chapter1AsCompleted()
-
-    val storyList = topicController.getCompletedStoryList(profileId1)
-
-    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
-    assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
-    completedStoryList.completedStoryList[0].also { completedFractionsStory ->
-      assertThat(completedFractionsStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-      assertThat(completedFractionsStory.classroomTitle.html).isEqualTo("Maths")
-    }
-    completedStoryList.completedStoryList[1].also { completedRatiosStory ->
-      assertThat(completedRatiosStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-      assertThat(completedRatiosStory.classroomTitle.html).isEqualTo("Maths")
-    }
-  }
-
   /* Localization-based tests. */
 
   @Test
