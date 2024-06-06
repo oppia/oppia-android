@@ -861,10 +861,10 @@ class TopicListController @Inject constructor(
     val classroomIds = classroomIdsObj.optJSONArray("classroom_id_list")
     checkNotNull(classroomIds) { "classrooms.json is missing classroom IDs." }
 
-    // Initialize a list to store the classroom records.
+    // Initialize a list to store the [ClassroomRecord]s.
     val classroomRecords = mutableListOf<ClassroomRecord>()
 
-    // Iterate over all classroom IDs and load each classroom's JSON.
+    // Iterate over all classroomIds and load each classroom's JSON.
     for (i in 0 until classroomIds.length()) {
       val classroomId = checkNotNull(classroomIds.optString(i)) {
         "Expected non-null classroom ID at index $i."
