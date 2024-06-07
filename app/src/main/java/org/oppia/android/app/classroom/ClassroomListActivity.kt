@@ -10,14 +10,22 @@ import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
+import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import org.oppia.android.app.home.RouteToTopicListener
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.CLASSROOM_LIST_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
-class ClassroomListActivity : InjectableAutoLocalizedAppCompatActivity() {
+class ClassroomListActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
+  RouteToTopicListener,
+  RouteToTopicPlayStoryListener,
+  RouteToRecentlyPlayedListener {
   @Inject
   lateinit var classroomListActivityPresenter: ClassroomListActivityPresenter
 
@@ -62,5 +70,17 @@ class ClassroomListActivity : InjectableAutoLocalizedAppCompatActivity() {
     val dialogFragment = ExitProfileDialogFragment
       .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
+  }
+
+  override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
+    TODO("Not yet implemented")
+  }
+
+  override fun routeToTopic(internalProfileId: Int, topicId: String) {
+    TODO("Not yet implemented")
+  }
+
+  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+    TODO("Not yet implemented")
   }
 }

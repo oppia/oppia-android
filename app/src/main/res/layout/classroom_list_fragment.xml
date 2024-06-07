@@ -7,10 +7,10 @@
     android:background="@color/component_color_shared_screen_primary_background_color"
     android:gravity="center">
 
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Classroom" />
+    <androidx.compose.ui.platform.ComposeView
+      android:id="@+id/compose_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
 
     <View
       android:layout_width="match_parent"

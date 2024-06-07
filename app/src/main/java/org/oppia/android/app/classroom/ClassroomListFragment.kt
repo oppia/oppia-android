@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.android.app.model.TopicSummary
 import javax.inject.Inject
 
-class ClassroomListFragment : InjectableFragment() {
+class ClassroomListFragment : InjectableFragment(), TopicSummaryClickListener {
   @Inject
   lateinit var classroomListFragmentPresenter: ClassroomListFragmentPresenter
 
@@ -24,5 +26,9 @@ class ClassroomListFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     return classroomListFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+    TODO("Not yet implemented")
   }
 }
