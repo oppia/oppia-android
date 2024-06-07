@@ -1,5 +1,6 @@
 package org.oppia.android.domain.classroom
 
+import android.graphics.Color
 import org.json.JSONObject
 import org.oppia.android.app.model.ClassroomIdList
 import org.oppia.android.app.model.ClassroomList
@@ -7,6 +8,8 @@ import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.EphemeralClassroomSummary
 import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.model.LessonThumbnail
+import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.SubtitledHtml
@@ -36,6 +39,15 @@ const val TEST_CLASSROOM_ID_1 = "test_classroom_id_1"
 
 /** ID of test classroom 2. */
 const val TEST_CLASSROOM_ID_2 = "test_classroom_id_2"
+
+/** Map of classroom ID to its thumbnail. */
+val CLASSROOM_THUMBNAILS = mapOf(
+  TEST_CLASSROOM_ID_0 to createClassroomThumbnail0(),
+  TEST_CLASSROOM_ID_1 to createClassroomThumbnail1(),
+  TEST_CLASSROOM_ID_2 to createClassroomThumbnail2(),
+)
+
+private const val CLASSROOM_BG_COLOR = "#C6DCDA"
 
 private const val GET_CLASSROOM_LIST_PROVIDER_ID = "get_classroom_list_provider_id"
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
@@ -130,7 +142,10 @@ class ClassroomController @Inject constructor(
         this.classroomId = classroomId
         putAllWrittenTranslations(classroomRecord.writtenTranslationsMap)
         classroomTitle = classroomRecord.translatableTitle
-        classroomThumbnail = classroomRecord.classroomThumbnail
+        classroomThumbnail = createClassroomThumbnailFromProto(
+          classroomId,
+          classroomRecord.classroomThumbnail
+        )
         addAllTopicSummary(
           classroomRecord.topicIds.topicIdsList.map { topicId ->
             createTopicSummary(topicId)
@@ -149,6 +164,7 @@ class ClassroomController @Inject constructor(
         contentId = classroomTitleObj.getStringFromObject("content_id")
         html = classroomTitleObj.getStringFromObject("html")
       }.build()
+      classroomThumbnail = createClassroomThumbnailFromJson(classroomJsonObject)
       val topicIdArray = classroomJsonObject.getJSONArray("topic_ids")
       val topicSummaryList = mutableListOf<TopicSummary>()
       for (i in 0 until topicIdArray.length()) {
@@ -275,3 +291,63 @@ class ClassroomController @Inject constructor(
       .build()
   }
 }
+
+internal fun createClassroomThumbnailFromJson(classroomJsonObject: JSONObject): LessonThumbnail {
+  val classroomId = classroomJsonObject.optString("classroom_id")
+  val thumbnailBgColor = classroomJsonObject.optString("thumbnail_bg_color")
+  val thumbnailFilename = classroomJsonObject.optString("thumbnail_filename")
+  return if (thumbnailFilename.isNotNullOrEmpty() && thumbnailBgColor.isNotNullOrEmpty()) {
+    LessonThumbnail.newBuilder()
+      .setThumbnailFilename(thumbnailFilename)
+      .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
+      .build()
+  } else if (CLASSROOM_THUMBNAILS.containsKey(classroomId)) {
+    CLASSROOM_THUMBNAILS.getValue(classroomId)
+  } else {
+    createDefaultClassroomThumbnail()
+  }
+}
+
+internal fun createClassroomThumbnailFromProto(
+  classroomId: String,
+  lessonThumbnail: LessonThumbnail
+): LessonThumbnail {
+  val thumbnailFilename = lessonThumbnail.thumbnailFilename
+  return when {
+    thumbnailFilename.isNotNullOrEmpty() -> lessonThumbnail
+    CLASSROOM_THUMBNAILS.containsKey(classroomId) -> CLASSROOM_THUMBNAILS.getValue(classroomId)
+    else -> createDefaultClassroomThumbnail()
+  }
+}
+
+internal fun createDefaultClassroomThumbnail(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.MATHS_CLASSROOM)
+    .setBackgroundColorRgb(Color.parseColor(CLASSROOM_BG_COLOR))
+    .build()
+}
+
+internal fun createClassroomThumbnail0(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.SCIENCE_CLASSROOM)
+    .setBackgroundColorRgb(Color.parseColor(CLASSROOM_BG_COLOR))
+    .build()
+}
+
+internal fun createClassroomThumbnail1(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.MATHS_CLASSROOM)
+    .setBackgroundColorRgb(Color.parseColor(CLASSROOM_BG_COLOR))
+    .build()
+}
+
+internal fun createClassroomThumbnail2(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.ENGLISH_CLASSROOM)
+    .setBackgroundColorRgb(Color.parseColor(CLASSROOM_BG_COLOR))
+    .build()
+}
+
+private fun String?.isNullOrEmpty(): Boolean = this == null || this.isEmpty() || this == "null"
+
+private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
