@@ -51,6 +51,124 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   }
 
   /**
+   * Adds a source file with the specified name and content to the specified subpackage,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param subpackage the subpackage under which the source file should be added
+   * @return the target name of the added source file
+   */
+  fun addSourceContentAndBuildFile(
+    filename: String,
+    sourceContent: String,
+    sourceSubpackage: String
+  ): String {
+    initEmptyWorkspace() // Ensure the workspace is at least initialized.
+
+    // Create the source subpackage directory if it doesn't exist
+    if (!File(temporaryRootFolder.root, sourceSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(sourceSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create the source file
+    val sourceFile = temporaryRootFolder.newFile("${sourceSubpackage.replace(".", "/")}/$filename.kt")
+    sourceFile.writeText(sourceContent)
+
+    // Create or update the BUILD file for the source file
+    val buildFileRelativePath = "${sourceSubpackage.replace(".", "/")}/BUILD.bazel"
+    val buildFile = File(temporaryRootFolder.root, buildFileRelativePath)
+    if (!buildFile.exists()) {
+      temporaryRootFolder.newFile(buildFileRelativePath)
+    }
+
+    prepareBuildFileForLibraries(buildFile)
+
+    val libTargetName = "${sourceSubpackage}:${filename}_lib"
+    buildFile.appendText(
+      """"
+      kt_jvm_library(
+        name = "${filename}_lib",
+        srcs=["$filename}.kt"],
+      )
+      """.trimIndent() + "\n"
+    )
+    return libTargetName
+  }
+
+  /**
+   * Adds a test file with the specified name and content to the specified subpackage,
+   * and updates the corresponding build configuration.
+   *
+   * @param testName the name of the test file (without the .kt extension)
+   * @param testContent the content of the test file
+   * @param libTargetName the target name of the library the test depends on
+   * @param testSubpackage the subpackage for the test file
+   */
+  fun addTestContentAndBuildFile(
+    testName: String,
+    testContent: String,
+    libTargetName: String,
+    testSubpackage: String
+  ) {
+    initEmptyWorkspace() // Ensure the workspace is at least initialized.
+
+    // Create the test subpackage directory for the test file if it doesn't exist
+    if (!File(temporaryRootFolder.root, testSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(testSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create the test file
+    val testFile = temporaryRootFolder.newFile("${testSubpackage.replace(".", "/")}/$testName.kt")
+    testFile.writeText(testContent)
+
+    // Create or update the BUILD file for the test file
+    val testBuildFileRelativePath = "${testSubpackage.replace(".", "/")}/BUILD.bazel"
+    val testBuildFile = File(temporaryRootFolder.root, testBuildFileRelativePath)
+    if (!testBuildFile.exists()) {
+      temporaryRootFolder.newFile(testBuildFileRelativePath)
+    }
+    prepareBuildFileForTests(testBuildFile)
+
+    // Add the test file to the BUILD file with appropriate dependencies
+    testBuildFile.appendText(
+      """
+      kt_jvm_test(
+        name = "$testName",
+        srcs = ["${testName}.kt"],
+        deps = [
+          "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+          "$libTargetName",
+        ],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  /**
+   * Adds a file with the specified name and content, along with its corresponding test file and
+   * test content, to the specified subpackage. Ensures the appropriate build configurations are created.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param testContent the content of the test file
+   * @param subpackage the subpackage for the source and test files
+   */
+  fun addSourceFileAndItsTestFileWithContent(
+    filename: String,
+    sourceContent: String,
+    testContent: String,
+    subpackage: String,
+  ) {
+    val sourceSubpackage = "$subpackage/source"
+    val libTargetName = addSourceContentAndBuildFile(filename, sourceContent, sourceSubpackage)
+
+    val testSubpackage = "$subpackage/test"
+    val testFileName = "${filename}Test"
+    addTestContentAndBuildFile(testFileName, testContent, libTargetName, testSubpackage)
+  }
+
+  /**
    * Generates and adds a new kt_jvm_test target with the target name [testName] and test file
    * [testFile]. This can be used to add multiple tests to the same build file, and will
    * automatically set up the local WORKSPACE file, if needed, to support kt_jvm_test.
