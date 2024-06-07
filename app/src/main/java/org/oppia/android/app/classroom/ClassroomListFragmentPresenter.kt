@@ -5,19 +5,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
@@ -98,18 +112,31 @@ class ClassroomListFragmentPresenter @Inject constructor(
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   fun ClassroomListScreen(homeItemViewModelList: List<HomeItemViewModel>) {
+    val groupedItems = homeItemViewModelList.groupBy { it::class }
     LazyColumn {
-      homeItemViewModelList.forEach {
-        when (it) {
-          is WelcomeViewModel -> item { WelcomeComponent(welcomeViewModel = it) }
-          is PromotedStoryListViewModel -> item {
-            PromotedStoryListComponent(promotedStoryListViewModel = it)
+      groupedItems.forEach { (type, items) ->
+        when (type) {
+          WelcomeViewModel::class -> items.forEach { item ->
+            item {
+              WelcomeComponent(welcomeViewModel = item as WelcomeViewModel)
+            }
           }
-          is ClassroomSummaryViewModel -> stickyHeader {
-            ClassroomListComponent(classroomSummaryViewModel = it)
+          PromotedStoryListViewModel::class -> items.forEach { item ->
+            item {
+              PromotedStoryListComponent(promotedStoryListViewModel = item as PromotedStoryListViewModel)
+            }
           }
-          is AllTopicsViewModel -> item { AllTopicsHeaderComponent(allTopicsViewModel = it) }
-          is TopicSummaryViewModel -> item { TopicListComponent(topicSummaryViewModel = it) }
+          ClassroomSummaryViewModel::class -> stickyHeader {
+            ClassroomListComponent(classroomSummaryList = items.map { it as ClassroomSummaryViewModel })
+          }
+          AllTopicsViewModel::class -> items.forEach { item ->
+            item {
+              AllTopicsHeaderComponent(allTopicsViewModel = item as AllTopicsViewModel)
+            }
+          }
+          TopicSummaryViewModel::class -> item {
+            TopicListComponent(topicSummaryList = items.map { it as TopicSummaryViewModel })
+          }
         }
       }
     }
@@ -130,7 +157,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
           start = outerPadding,
           top = outerPadding,
           end = outerPadding + textMarginEnd,
-          bottom = outerPadding
         )
         .drawBehind {
           val strokeWidthPx = 6.dp.toPx()
@@ -154,17 +180,74 @@ class ClassroomListFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  fun ClassroomListComponent(classroomSummaryViewModel: ClassroomSummaryViewModel) {
-    Text(text = "ClassroomSummary")
+  fun ClassroomListComponent(classroomSummaryList: List<ClassroomSummaryViewModel>) {
+    Text(
+      text = stringResource(id = R.string.classrooms),
+      color = colorResource(id = R.color.component_color_shared_primary_text_color),
+      fontFamily = FontFamily.SansSerif,
+      fontWeight = FontWeight.Medium,
+      fontSize = 18.sp,
+      modifier = Modifier
+        .padding(
+          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
+          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+          bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+        )
+    )
+    LazyRow(
+      modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+    ) {
+      items(classroomSummaryList) {
+        ClassroomCard(classroomSummaryViewModel = it)
+      }
+    }
+
   }
 
   @Composable
-  fun TopicListComponent(topicSummaryViewModel: TopicSummaryViewModel) {
-    Text(text = "TopicSummary")
+  fun TopicListComponent(topicSummaryList: List<TopicSummaryViewModel>) {
+    Text(text = "TopicList")
   }
 
   @Composable
   fun AllTopicsHeaderComponent(allTopicsViewModel: AllTopicsViewModel) {
     Text(text = "AllTopics")
+  }
+
+  @Composable
+  fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
+    Card(
+      modifier = Modifier
+        .height(182.dp)
+        .width(150.dp)
+        .padding(
+          start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
+          end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
+        ),
+      border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
+      elevation = 4.dp,
+    ) {
+      Column(
+        modifier = Modifier.padding(all = 20.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        Image(
+          painter = painterResource(id = classroomSummaryViewModel.thumbnailResourceId),
+          contentDescription = "${classroomSummaryViewModel.title} Card",
+          modifier = Modifier
+            .padding(bottom = 20.dp)
+            .size(80.dp),
+        )
+        Text(
+          text = classroomSummaryViewModel.title,
+          color = colorResource(id = R.color.component_color_shared_primary_text_color),
+          fontFamily = FontFamily.SansSerif,
+          fontWeight = FontWeight.Medium,
+          fontSize = 18.sp,
+        )
+      }
+    }
   }
 }

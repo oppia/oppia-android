@@ -773,4 +773,10 @@
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">28dp</dimen>
+  <dimen name="classrooms_text_margin_top">28dp</dimen>
+  <dimen name="classrooms_text_margin_end">32dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
 </resources>
