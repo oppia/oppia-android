@@ -147,7 +147,7 @@ class ClassroomController @Inject constructor(
           classroomRecord.classroomThumbnail
         )
         addAllTopicSummary(
-          classroomRecord.topicIds.topicIdsList.map { topicId ->
+          classroomRecord.topicPrerequisitesMap.keys.toList().map { topicId ->
             createTopicSummary(topicId)
           }
         )
@@ -192,7 +192,9 @@ class ClassroomController @Inject constructor(
         assetName = classroomId,
         baseMessage = ClassroomRecord.getDefaultInstance()
       )
-      classroomRecord.topicIds
+      ClassroomRecord.TopicIdList.newBuilder().apply {
+        addAllTopicIds(classroomRecord.topicPrerequisitesMap.keys.toList())
+      }.build()
     } else {
       val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
       val topicIdArray = classroomJsonObject.getJSONArray("topic_ids")
