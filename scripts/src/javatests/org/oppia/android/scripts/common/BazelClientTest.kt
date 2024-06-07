@@ -379,6 +379,50 @@ class BazelClientTest {
     assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
   }
 
+  @Test
+  fun testRunCodeCoverageForATestTarget() {
+//    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.createTest("FirstTest")
+
+
+    // Verify the test file is created
+    val testFile = File(tempFolder.root, "FirstTest.kt")
+    assertThat(testFile.exists()).isTrue()
+    assertThat(testFile.isFile).isTrue()
+
+    val addsource = testBazelWorkspace.addSourceFileAndItsTestFileWithContent("test1", "Hi", "@Test", "cc")
+    println("Add Source result: $addsource")
+
+    listFilesInDirectory(tempFolder.root)
+//    bazelClient.runCoverageForTestTarget("//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest")
+
+    // Verify the WORKSPACE file exists
+    val workspaceFile = File(tempFolder.root, "WORKSPACE")
+    assertThat(workspaceFile.exists()).isTrue()
+    assertThat(workspaceFile.isFile).isTrue()
+
+    // Print the contents of the WORKSPACE file
+    println("\nContents of WORKSPACE file:")
+    println(workspaceFile.readText())
+
+    // Verify the BUILD.bazel file exists
+    val bazelFile = File(tempFolder.root, "BUILD.bazel")
+    assertThat(bazelFile.exists()).isTrue()
+    assertThat(bazelFile.isFile).isTrue()
+
+    // Print the contents of the BUILD.bazel file
+    println("Contents of BUILD BAZEL file:")
+    println(bazelFile.readText())
+
+  }
+
+  private fun listFilesInDirectory(directory: File) {
+    directory.walk().forEach {
+      println(it.relativeTo(directory))
+    }
+  }
+
   private fun fakeCommandExecutorWithResult(singleLine: String) {
     // Fake a Bazel command's results to return jumbled results. This has been observed to happen
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
