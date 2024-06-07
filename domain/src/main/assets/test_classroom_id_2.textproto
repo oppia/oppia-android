@@ -10,6 +10,3 @@ topic_prerequisites {
   value {
   }
 }
-topic_ids: {
-  topic_ids: "test_topic_id_2"
-}

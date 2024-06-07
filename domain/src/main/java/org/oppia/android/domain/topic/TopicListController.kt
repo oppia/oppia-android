@@ -854,12 +854,12 @@ class TopicListController @Inject constructor(
     val classroomIdsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
     checkNotNull(classroomIdsObj) { "Failed to load classrooms.json." }
     val classroomIds = classroomIdsObj.optJSONArray("classroom_id_list")
-    checkNotNull(classroomIds) { "classrooms.json missing classroom IDs." }
+    checkNotNull(classroomIds) { "classrooms.json is missing classroom IDs." }
 
-    // Initialize a list to store the classroom records.
+    // Initialize a list to store the [ClassroomRecord]s.
     val classroomRecords = mutableListOf<ClassroomRecord>()
 
-    // Iterate over all classroom IDs and load each classroom's JSON.
+    // Iterate over all classroomIds and load each classroom's JSON.
     for (i in 0 until classroomIds.length()) {
       val classroomId = checkNotNull(classroomIds.optString(i)) {
         "Expected non-null classroom ID at index $i."
@@ -883,16 +883,6 @@ class TopicListController @Inject constructor(
           }
         }
       }
-
-      // Load the topic ids of the current classroom.
-      val topicIdJsonArray = checkNotNull(classroomObj.getJSONArray("topic_ids")) {
-        "Expected classroom to have non-null topic_ids."
-      }
-      val topicIdListBuilder = TopicIdList.newBuilder()
-      for (i in 0 until topicIdJsonArray.length()) {
-        topicIdListBuilder.addTopicIds(topicIdJsonArray.optString(i)!!)
-      }
-
       val classroomRecord = ClassroomRecord.newBuilder().apply {
         this.id = checkNotNull(classroomObj.optString("id")) {
           "Expected classroom to have ID."
@@ -904,7 +894,6 @@ class TopicListController @Inject constructor(
             }.build()
           }
         )
-        this.topicIds = topicIdListBuilder.build()
       }.build()
 
       classroomRecords.add(classroomRecord)
@@ -915,7 +904,7 @@ class TopicListController @Inject constructor(
 
   // TODO(#5344): Remove this in favor of per-classroom data handling.
   private fun loadCombinedClassroomsTopicIdList(): List<String> =
-    loadClassrooms().flatMap { it.topicIds.topicIdsList }
+    loadClassrooms().flatMap { it.topicPrerequisitesMap.keys.toList() }
 }
 
 internal fun createTopicThumbnailFromJson(topicJsonObject: JSONObject): LessonThumbnail {
