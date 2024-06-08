@@ -62,8 +62,6 @@ class ClassroomController @Inject constructor(
   private val translationController: TranslationController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
 ) {
-  private var classroomId: String = TEST_CLASSROOM_ID_0
-
   /**
    * Returns the list of [ClassroomSummary]s currently tracked by the app.
    */
@@ -81,10 +79,11 @@ class ClassroomController @Inject constructor(
    * [EVICTION_TIME_MILLIS] old.
    */
   fun getTopicList(profileId: ProfileId, classroomId: String): DataProvider<TopicList> {
-    this.classroomId = classroomId
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
-    return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
+    return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID) { contentLocale ->
+      createTopicList(classroomId, contentLocale)
+    }
   }
 
   private fun createClassroomList(
@@ -175,7 +174,10 @@ class ClassroomController @Inject constructor(
     }.build()
   }
 
-  private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
+  private fun createTopicList(
+    classroomId: String,
+    contentLocale: OppiaLocale.ContentLocale
+  ): TopicList {
     return TopicList.newBuilder().apply {
       addAllTopicSummary(
         getTopicIdListFromClassroomRecord(classroomId).topicIdsList.map { topicId ->
