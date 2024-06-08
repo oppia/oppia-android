@@ -8,8 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -32,6 +37,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
@@ -41,6 +48,7 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -176,7 +184,27 @@ class ClassroomListFragmentPresenter @Inject constructor(
 
   @Composable
   fun PromotedStoryListComponent(promotedStoryListViewModel: PromotedStoryListViewModel) {
-    Text(text = "PromotedStoryList")
+    Text(
+      text = promotedStoryListViewModel.getHeader(),
+      color = colorResource(id = R.color.component_color_shared_primary_text_color),
+      fontFamily = FontFamily.SansSerif,
+      fontWeight = FontWeight.Medium,
+      fontSize = 18.sp,
+      modifier = Modifier
+        .padding(
+          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
+          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+          bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+        )
+    )
+    LazyRow(
+      modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+    ) {
+      items(promotedStoryListViewModel.promotedStoryList) {
+        PromotedStoryCard(promotedStoryViewModel = it)
+      }
+    }
   }
 
   @Composable
@@ -202,7 +230,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
         ClassroomCard(classroomSummaryViewModel = it)
       }
     }
-
   }
 
   @Composable
@@ -246,6 +273,87 @@ class ClassroomListFragmentPresenter @Inject constructor(
           fontFamily = FontFamily.SansSerif,
           fontWeight = FontWeight.Medium,
           fontSize = 18.sp,
+        )
+      }
+    }
+  }
+
+  @Composable
+  fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
+    Card(
+      modifier = Modifier
+        .width(280.dp)
+        .padding(
+          start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
+          end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
+          bottom = 8.dp,
+        ),
+      elevation = 4.dp,
+    ) {
+      Column(
+        verticalArrangement = Arrangement.Center,
+      ) {
+        Image(
+          painter = painterResource(id = promotedStoryViewModel.thumbnailResourceId),
+          contentDescription = "${promotedStoryViewModel.storyTitle} Card",
+          modifier = Modifier
+            .aspectRatio(16f / 9f)
+            .background(
+              Color(
+                (0xff000000L or promotedStoryViewModel.promotedStory.lessonThumbnail
+                  .backgroundColorRgb.toLong()).toInt()
+              )
+            )
+        )
+        Text(
+          text = promotedStoryViewModel.nextChapterTitle,
+          modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+          color = colorResource(id = R.color.component_color_shared_primary_text_color),
+          fontFamily = FontFamily.SansSerif,
+          fontWeight = FontWeight.Medium,
+          fontSize = 18.sp,
+          textAlign = TextAlign.Start,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
+        )
+        /*Text(
+          text = promotedStoryViewModel.storyTitle,
+          modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+          color = colorResource(id = R.color.component_color_shared_primary_text_color),
+          fontFamily = FontFamily.SansSerif,
+          fontSize = 16.sp,
+          textAlign = TextAlign.Start,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
+        )*/
+        Text(
+          text = promotedStoryViewModel.topicTitle.uppercase(),
+          modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+          color = colorResource(id = R.color.component_color_shared_story_card_topic_name_text_color),
+          fontFamily = FontFamily.SansSerif,
+          fontWeight = FontWeight.Light,
+          fontSize = 14.sp,
+          textAlign = TextAlign.Start,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+          text = promotedStoryViewModel.classroomTitle.uppercase(),
+          modifier = Modifier
+            .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
+            .border(
+              width = 2.dp,
+              color = colorResource(id = R.color.color_def_persian_blue),
+              shape = RoundedCornerShape(50)
+            )
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+          color = colorResource(id = R.color.color_def_persian_blue),
+          fontFamily = FontFamily.SansSerif,
+          fontWeight = FontWeight.Medium,
+          fontSize = 14.sp,
+          textAlign = TextAlign.Start,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
         )
       }
     }

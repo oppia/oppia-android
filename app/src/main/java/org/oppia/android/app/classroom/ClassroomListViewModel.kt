@@ -92,16 +92,16 @@ class ClassroomListViewModel(
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
     profileDataProvider.combineWith(
-      classroomSummaryListDataProvider,
-      HOME_FRAGMENT_COMBINED_PROVIDER_ID
-    ) { profile, classroomSummaryList ->
-      listOfNotNull(computeWelcomeViewModel(profile)) +
-        computeClassroomItemViewModelList(classroomSummaryList)
-    }.combineWith(
       promotedActivityListSummaryDataProvider,
       PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
-    ) { homeItemViewModelList, promotedActivityList ->
-      homeItemViewModelList + listOfNotNull(computePromotedActivityListViewModel(promotedActivityList))
+    ) { profile, promotedActivityList ->
+      listOfNotNull(computeWelcomeViewModel(profile)) +
+        listOfNotNull(computePromotedActivityListViewModel(promotedActivityList))
+    }.combineWith(
+      classroomSummaryListDataProvider,
+      HOME_FRAGMENT_COMBINED_PROVIDER_ID
+    ) { homeItemViewModelList, classroomSummaryList ->
+      homeItemViewModelList + computeClassroomItemViewModelList(classroomSummaryList)
     }.combineWith(
       topicListSummaryDataProvider,
       "TOPIC_SUMMARY"
