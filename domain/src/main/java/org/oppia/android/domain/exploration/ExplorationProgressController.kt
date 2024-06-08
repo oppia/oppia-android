@@ -61,6 +61,8 @@ private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_answer_result"
 private const val SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_hint_revealed_result"
+private const val SUBMIT_HINT_VIEWED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_hint_revealed_result"
 private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_solution_revealed_result"
 private const val MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID =
@@ -281,11 +283,13 @@ class ExplorationProgressController @Inject constructor(
    * @param hintIndex index of the hint that is being viewed
    */
 
-  fun submitHintIsViewed(hintIndex: Int) {
-    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId)
+  fun submitHintIsViewed(hintIndex: Int): DataProvider<Any?>{
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId,submitResultFlow)
     sendCommandForOperation(message) {
       "Failed to schedule command for viewing hint: $hintIndex."
     }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_HINT_VIEWED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -512,7 +516,7 @@ class ExplorationProgressController @Inject constructor(
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
             is ControllerMessage.LogHintIsViewed ->
-              controllerState.maybeLogViewedHint(activeSessionId, message.hintIndex)
+              controllerState.logViewedHintImpl(activeSessionId, message.hintIndex,message.callbackFlow)
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.LogSolutionIsViewed ->
@@ -815,6 +819,25 @@ class ExplorationProgressController @Inject constructor(
         profileManagementController.markContinueButtonAnimationSeen(profileId)
       }
       isContinueButtonAnimationSeen = true
+    }
+  }
+
+  private suspend fun ControllerState.logViewedHintImpl(
+    sessionId: String,
+    hintIndex: Int,
+    submitLogHintViewedResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(submitLogHintViewedResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot log hint viewed if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot log hint viewed if an exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot log hint viewed if an answer submission is pending."
+      }
+      maybeLogViewedHint(sessionId,hintIndex)
     }
   }
 
@@ -1406,7 +1429,7 @@ class ExplorationProgressController @Inject constructor(
     data class LogHintIsViewed(
       val hintIndex: Int,
       override val sessionId: String,
-      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
     /**

@@ -2466,7 +2466,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_offeredThenViewed_logsViewHintEvent_logsProgressSavingSuccessEvent() {
+  fun testHint_offeredThenViewed_logsRevealHint_logsPgrssSavSuccEvent_logsViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2478,7 +2478,10 @@ class ExplorationProgressControllerTest {
     monitorFactory.ensureDataProviderExecutes(
       explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     )
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsViewed(hintIndex = 0)
+    )
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(3)
     assertThat(eventLogList[0]).hasRevealHintContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
@@ -2486,6 +2489,34 @@ class ExplorationProgressControllerTest {
     }
     assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
       containsTestExp2Details()
+    }
+    assertThat(eventLogList[2]).hasViewExistingHintContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasHintIndexThat().isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testHint_hintViewed_logsHintViewedEvent(){
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger a hint becoming available.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsViewed(hintIndex = 0)
+    )
+
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(1)
+
+    assertThat(eventLogList[0]).hasViewExistingHintContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasHintIndexThat().isEqualTo(0)
     }
   }
 
