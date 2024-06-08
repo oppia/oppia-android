@@ -62,8 +62,6 @@ class ClassroomController @Inject constructor(
   private val translationController: TranslationController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
 ) {
-  private var classroomId: String = TEST_CLASSROOM_ID_0
-
   /**
    * Returns the list of [ClassroomSummary]s currently tracked by the app.
    */
@@ -81,10 +79,11 @@ class ClassroomController @Inject constructor(
    * [EVICTION_TIME_MILLIS] old.
    */
   fun getTopicList(profileId: ProfileId, classroomId: String): DataProvider<TopicList> {
-    this.classroomId = classroomId
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
-    return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
+    return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID) { contentLocale ->
+      createTopicList(classroomId, contentLocale)
+    }
   }
 
   private fun createClassroomList(
@@ -147,7 +146,7 @@ class ClassroomController @Inject constructor(
           classroomRecord.classroomThumbnail
         )
         addAllTopicSummary(
-          classroomRecord.topicIds.topicIdsList.map { topicId ->
+          classroomRecord.topicPrerequisitesMap.keys.toList().map { topicId ->
             createTopicSummary(topicId)
           }
         )
@@ -165,16 +164,20 @@ class ClassroomController @Inject constructor(
         html = classroomTitleObj.getStringFromObject("html")
       }.build()
       classroomThumbnail = createClassroomThumbnailFromJson(classroomJsonObject)
-      val topicIdArray = classroomJsonObject.getJSONArray("topic_ids")
+      val topicIdArray = classroomJsonObject
+        .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       val topicSummaryList = mutableListOf<TopicSummary>()
-      for (i in 0 until topicIdArray.length()) {
-        topicSummaryList.add(createTopicSummary(topicIdArray.optString(i)))
+      topicIdArray.forEach { topicId ->
+        topicSummaryList.add(createTopicSummary(topicId))
       }
       addAllTopicSummary(topicSummaryList)
     }.build()
   }
 
-  private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
+  private fun createTopicList(
+    classroomId: String,
+    contentLocale: OppiaLocale.ContentLocale
+  ): TopicList {
     return TopicList.newBuilder().apply {
       addAllTopicSummary(
         getTopicIdListFromClassroomRecord(classroomId).topicIdsList.map { topicId ->
@@ -192,13 +195,20 @@ class ClassroomController @Inject constructor(
         assetName = classroomId,
         baseMessage = ClassroomRecord.getDefaultInstance()
       )
-      classroomRecord.topicIds
+      ClassroomRecord.TopicIdList.newBuilder().apply {
+        addAllTopicIds(classroomRecord.topicPrerequisitesMap.keys.toList())
+      }.build()
     } else {
       val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
-      val topicIdArray = classroomJsonObject.getJSONArray("topic_ids")
+      val topicIdArray = classroomJsonObject
+        .getJSONObject("topic_prerequisites").keys().asSequence().toList()
+      val topicSummaryList = mutableListOf<TopicSummary>()
+      topicIdArray.forEach { topicId ->
+        topicSummaryList.add(createTopicSummary(topicId))
+      }
       ClassroomRecord.TopicIdList.newBuilder().apply {
-        for (i in 0 until topicIdArray.length()) {
-          addTopicIds(topicIdArray.optString(i))
+        topicIdArray.forEach { topicId ->
+          addTopicIds(topicId)
         }
       }.build()
     }
@@ -292,6 +302,7 @@ class ClassroomController @Inject constructor(
   }
 }
 
+/** Creates a [LessonThumbnail] from a classroomJsonObject. */
 internal fun createClassroomThumbnailFromJson(classroomJsonObject: JSONObject): LessonThumbnail {
   val classroomId = classroomJsonObject.optString("classroom_id")
   val thumbnailBgColor = classroomJsonObject.optString("thumbnail_bg_color")
@@ -308,6 +319,7 @@ internal fun createClassroomThumbnailFromJson(classroomJsonObject: JSONObject): 
   }
 }
 
+/** Creates a [LessonThumbnail] from a classroom proto. */
 internal fun createClassroomThumbnailFromProto(
   classroomId: String,
   lessonThumbnail: LessonThumbnail
@@ -320,6 +332,7 @@ internal fun createClassroomThumbnailFromProto(
   }
 }
 
+/** Creates a default [LessonThumbnail]. */
 internal fun createDefaultClassroomThumbnail(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.MATHS_CLASSROOM)
@@ -327,6 +340,7 @@ internal fun createDefaultClassroomThumbnail(): LessonThumbnail {
     .build()
 }
 
+/** Creates a [LessonThumbnail] for [TEST_CLASSROOM_ID_0]. */
 internal fun createClassroomThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.SCIENCE_CLASSROOM)
@@ -334,6 +348,7 @@ internal fun createClassroomThumbnail0(): LessonThumbnail {
     .build()
 }
 
+/** Creates a [LessonThumbnail] for [TEST_CLASSROOM_ID_1]. */
 internal fun createClassroomThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.MATHS_CLASSROOM)
@@ -341,6 +356,7 @@ internal fun createClassroomThumbnail1(): LessonThumbnail {
     .build()
 }
 
+/** Creates a [LessonThumbnail] for [TEST_CLASSROOM_ID_2]. */
 internal fun createClassroomThumbnail2(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.ENGLISH_CLASSROOM)

@@ -394,8 +394,6 @@ class TopicController @Inject constructor(
           .setStoryTitle(storySummary.storyTitle)
           .setTopicId(topic.topicId)
           .setTopicTitle(topic.title)
-          .setClassroomId(topic.classroomId)
-          .setClassroomTitle(topic.classroomTitle)
           .setLessonThumbnail(storySummary.storyThumbnail)
         completedStoryList.add(completedStoryBuilder.build())
       }

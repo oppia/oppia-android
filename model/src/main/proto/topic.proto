@@ -248,12 +248,6 @@ message CompletedStory {
   // The title of the topic this story is part of.
   SubtitledHtml topic_title = 9;
 
-  // The ID of the classroom this story is part of.
-  string classroom_id = 10;
-
-  // The title of the classroom this story is part of.
-  SubtitledHtml classroom_title = 11;
-
   // The thumbnail that should be displayed for this completed story.
   LessonThumbnail lesson_thumbnail = 5;
 
@@ -604,9 +598,6 @@ message ClassroomRecord {
   // complete list of topics contained within this classroom. The prerequisite list of topics may
   // include topics outside of this classroom.
   map<string, TopicIdList> topic_prerequisites = 5;
-
-  // A list of topics IDs that belong to this classroom.
-  TopicIdList topic_ids = 6;
 
   // Represents a list of topic IDs (to be used in the context of topic deps in a classroom).
   message TopicIdList {
