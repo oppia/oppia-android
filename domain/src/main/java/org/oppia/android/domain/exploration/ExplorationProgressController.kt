@@ -283,9 +283,9 @@ class ExplorationProgressController @Inject constructor(
    * @param hintIndex index of the hint that is being viewed
    */
 
-  fun submitHintIsViewed(hintIndex: Int): DataProvider<Any?>{
+  fun submitHintIsViewed(hintIndex: Int): DataProvider<Any?> {
     val submitResultFlow = createAsyncResultStateFlow<Any?>()
-    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId,submitResultFlow)
+    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId, submitResultFlow)
     sendCommandForOperation(message) {
       "Failed to schedule command for viewing hint: $hintIndex."
     }
@@ -516,7 +516,9 @@ class ExplorationProgressController @Inject constructor(
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
             is ControllerMessage.LogHintIsViewed ->
-              controllerState.logViewedHintImpl(activeSessionId, message.hintIndex,message.callbackFlow)
+              controllerState.logViewedHintImpl(
+                activeSessionId, message.hintIndex, message.callbackFlow
+              )
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.LogSolutionIsViewed ->
@@ -837,7 +839,7 @@ class ExplorationProgressController @Inject constructor(
       check(explorationProgress.playStage != SUBMITTING_ANSWER) {
         "Cannot log hint viewed if an answer submission is pending."
       }
-      maybeLogViewedHint(sessionId,hintIndex)
+      maybeLogViewedHint(sessionId, hintIndex)
     }
   }
 
