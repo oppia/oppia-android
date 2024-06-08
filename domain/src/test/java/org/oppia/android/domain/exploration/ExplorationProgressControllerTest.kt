@@ -2627,12 +2627,49 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitSolutionIsRevealed()
     )
 
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsViewed()
+    )
+
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(3)
     assertThat(eventLogList[0]).hasRevealSolutionContextThat {
       containsTestExp2Details()
       hasStateNameThat().isEqualTo("Fractions")
     }
     assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat().containsTestExp2Details()
+    assertThat(eventLogList[2]).hasViewExistingSolutionContextThat {
+      containsTestExp2Details()
+      hasStateNameThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testSolution_viewSolution_logsSolutionViewedEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger the hint.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    // Submit another wrong answer to trigger the solution.
+    submitWrongAnswerForPrototypeState2()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsRevealed()
+    )
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsViewed()
+    )
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(1)
+    assertThat(eventLogList[0]).hasViewExistingSolutionContextThat {
+      containsTestExp2Details()
+      hasStateNameThat().isEqualTo("Fractions")
+    }
   }
 
   @Test

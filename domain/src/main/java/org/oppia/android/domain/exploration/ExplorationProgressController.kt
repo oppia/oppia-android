@@ -65,6 +65,8 @@ private const val SUBMIT_HINT_VIEWED_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_hint_revealed_result"
 private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_solution_revealed_result"
+private const val SUBMIT_SOLUTION_VIEWED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_solution_revealed_result"
 private const val MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_previous_state_result"
 private const val MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID =
@@ -281,6 +283,9 @@ class ExplorationProgressController @Inject constructor(
    * Notifies the controller that the user has viewed a hint.
    *
    * @param hintIndex index of the hint that is being viewed
+   *
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
    */
 
   fun submitHintIsViewed(hintIndex: Int): DataProvider<Any?> {
@@ -310,10 +315,14 @@ class ExplorationProgressController @Inject constructor(
 
   /**
    * Notifies the controller that the user has viewed the answer.
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
    */
-  fun submitSolutionIsViewed() {
-    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId)
+  fun submitSolutionIsViewed(): DataProvider<Any?> {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId, submitResultFlow)
     sendCommandForOperation(message) { "Failed to schedule command for viewing the solution." }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_SOLUTION_VIEWED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -522,7 +531,7 @@ class ExplorationProgressController @Inject constructor(
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.LogSolutionIsViewed ->
-              controllerState.maybeLogViewedSolution(activeSessionId)
+              controllerState.logViewedSolutionImpl(activeSessionId, message.callbackFlow)
             is ControllerMessage.MoveToPreviousState ->
               controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
@@ -840,6 +849,24 @@ class ExplorationProgressController @Inject constructor(
         "Cannot log hint viewed if an answer submission is pending."
       }
       maybeLogViewedHint(sessionId, hintIndex)
+    }
+  }
+
+  private suspend fun ControllerState.logViewedSolutionImpl(
+    sessionId: String,
+    submitLogSolutionViewedResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(submitLogSolutionViewedResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot log solution viewed if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot log solution viewed while the exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot log solution viewed if an answer submission is pending."
+      }
+      maybeLogViewedSolution(sessionId)
     }
   }
 
@@ -1443,7 +1470,7 @@ class ExplorationProgressController @Inject constructor(
      */
     data class LogSolutionIsViewed(
       override val sessionId: String,
-      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
     /**
