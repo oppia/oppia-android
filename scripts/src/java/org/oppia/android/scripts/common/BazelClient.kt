@@ -136,44 +136,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    * @param bazelTestTarget Bazel test target for which code coverage will be run.
    * @return generated coverageResult output
    */
-//  fun runCoverageForTestTarget(bazelTestTarget: String): List<String> {
-  fun runCoverageForTestTarget(bazelTestTarget: String): String? {
-    /*return executeBazelCommand(
-      "coverage",
-      bazelTestTarget
-    )*/
-    val result = executeBazelCommand(
+  fun runCoverageForTestTarget(bazelTestTarget: String): List<String> {
+    return executeBazelCommand(
       "coverage",
       bazelTestTarget
     )
-
-    println("Coverage data from exe: $result")
-    val filedata = parseCoverageDataFile(result)
-
-    println("Coverage data path from exe: $filedata")
-    val file = File(filedata)
-
-    if (file.exists() && file.isFile) {
-      val contents = file.readText()
-      println(contents)
-    } else {
-      println("File does not exist or is not a valid file: $filedata")
-    }
-
-    return filedata
-  }
-
-  fun parseCoverageDataFile(data: List<String>) : String? {
-    val regex = ".*coverage\\.dat$".toRegex()
-    for (line in data) {
-      val match = regex.find(line)
-      val extractedPath = match?.value?.substringAfterLast(",")?.trim()
-      if (extractedPath != null) {
-        println("Parsed Coverage Data File: $extractedPath")
-        return extractedPath
-      }
-    }
-    return null
   }
 
   /**

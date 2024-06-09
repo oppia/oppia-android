@@ -16,6 +16,12 @@ import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+
+
+
+
+
+
 /**
  * Tests for [BazelClient].
  *
@@ -519,8 +525,81 @@ class BazelClientTest {
     println("Temp root: ${tempFolder.root}")
     println("Temp root: ${tempFolder.root}")
 
-    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test2")
     println("Result: $result")
+  }
+
+  @Test
+  fun testRunCodeCoverage_forSampleTestTarget_returnsCoverageResult() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent = """
+      package com.example;
+
+      public class Collatz {
+      
+        public static int getCollatzFinal(int n) {
+          if (n == 1) {
+            return 1;
+          }
+          if (n % 2 == 0) {
+            return getCollatzFinal(n / 2);
+          } else {
+            return getCollatzFinal(n * 3 + 1);
+          }
+        }
+      }
+    """.trimIndent()
+
+    val testContent = """
+      package com.example;
+      
+      import static org.junit.Assert.assertEquals;
+      import org.junit.Test;
+      
+      public class TestCollatz {
+      
+        @Test
+        public void testGetCollatzFinal() {
+          assertEquals(Collatz.getCollatzFinal(1), 1);
+          assertEquals(Collatz.getCollatzFinal(5), 1);
+          assertEquals(Collatz.getCollatzFinal(10), 1);
+          assertEquals(Collatz.getCollatzFinal(21), 1);
+        }
+      }
+    """.trimIndent()
+
+    testBazelWorkspace.addSampleSourceAndTestFile(
+      filename = "Collatz",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      subpackage = "coverage"
+    )
+
+    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+
+    // Check that the test has "PASSED"
+    val containsPassedValue = result.any { it.contains("PASSED") }
+    assert(containsPassedValue) { "The test is not 'PASSED'" }
+
+    // Check if the coverage.dat file is generated
+    val containsCoverageData = result.any { it.contains("coverage.dat") }
+    assert(containsCoverageData) { "The coverage.dat is not generated" }
+  }
+
+  @Test
+  fun testRunCodeCoverage_forNonTestTarget_fails() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val exception = assertThrows<IllegalStateException>() {
+      bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    }
+
+    // Verify that the underlying Bazel command failed since the test target was not available.
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+    assertThat(exception).hasMessageThat().contains("no such package")
   }
 
   private fun listFilesAndContents(directory: File) {
