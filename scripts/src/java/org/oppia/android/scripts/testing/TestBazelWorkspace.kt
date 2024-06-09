@@ -50,6 +50,97 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     assertThat(bazelRcFile.exists()).isTrue()
   }
 
+  fun addSampleSourceAndTestFile(
+    filename: String,
+    sourceContent: String,
+    testContent: String,
+    subpackage: String
+  ) {
+    val sourceSubpackage = "$subpackage/main/java/com/example"
+    addSampleSourceContentAndBuildFile(filename, sourceContent, sourceSubpackage)
+
+    val testSubpackage = "$subpackage/test/java/com/example"
+    val testFileName = "Test${filename}"
+    addSampleTestContentAndBuildFile(testFileName, testContent, testSubpackage)
+  }
+
+  fun addSampleSourceContentAndBuildFile(
+    filename: String,
+    sourceContent: String,
+    sourceSubpackage: String
+  ) {
+    initEmptyWorkspace()
+
+    // Create the source subpackage directory if it doesn't exist
+    if (!File(temporaryRootFolder.root, sourceSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(sourceSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create the source file
+    val sourceFile = temporaryRootFolder.newFile("${sourceSubpackage.replace(".", "/")}/$filename.java")
+    sourceFile.writeText(sourceContent)
+
+    // Create or update the BUILD file for the source file
+    val buildFileRelativePath = "${sourceSubpackage.replace(".", "/")}/BUILD.bazel"
+    val buildFile = File(temporaryRootFolder.root, buildFileRelativePath)
+    if (!buildFile.exists()) {
+      temporaryRootFolder.newFile(buildFileRelativePath)
+    }
+
+    //prepareBuildFileForLibraries(buildFile)
+
+    //val libTargetName = "//${sourceSubpackage}:${filename}_lib"
+    buildFile.appendText(
+      """
+      package(
+        default_visibility = ["//visibility:public"],
+      )
+      
+      java_library(
+        name = "collatz_lib",
+        srcs=["Collatz.java"],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  fun addSampleTestContentAndBuildFile(
+    testName: String,
+    testContent: String,
+    testSubpackage: String
+  ) {
+    initEmptyWorkspace()
+
+    // Create the test subpackage directory for the test file if it doesn't exist
+    if (!File(temporaryRootFolder.root, testSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(testSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create the test file
+    val testFile = temporaryRootFolder.newFile("${testSubpackage.replace(".", "/")}/$testName.java")
+    testFile.writeText(testContent)
+
+    // Create or update the BUILD file for the test file
+    val testBuildFileRelativePath = "${testSubpackage.replace(".", "/")}/BUILD.bazel"
+    val testBuildFile = File(temporaryRootFolder.root, testBuildFileRelativePath)
+    if (!testBuildFile.exists()) {
+      temporaryRootFolder.newFile(testBuildFileRelativePath)
+    }
+    //prepareBuildFileForTests(testBuildFile)
+
+    // Add the test file to the BUILD file with appropriate dependencies
+    testBuildFile.appendText(
+      """
+      java_test(
+        name = "test",
+        srcs = ["TestCollatz.java"],
+        test_class = "com.example.TestCollatz",
+        deps = ["//coverage/main/java/com/example:collatz_lib"],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
   /**
    * Adds a source file with the specified name and content to the specified subpackage,
    * and updates the corresponding build configuration.
@@ -65,6 +156,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     sourceSubpackage: String
   ): String {
     initEmptyWorkspace() // Ensure the workspace is at least initialized.
+    ensureWorkspaceIsConfiguredForKotlin()
 
     // Create the source subpackage directory if it doesn't exist
     if (!File(temporaryRootFolder.root, sourceSubpackage.replace(".", "/")).exists()) {
@@ -84,9 +176,9 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
     prepareBuildFileForLibraries(buildFile)
 
-    val libTargetName = "${sourceSubpackage}:${filename}_lib"
+    val libTargetName = "//${sourceSubpackage}:${filename}_lib"
     buildFile.appendText(
-      """"
+      """
       kt_jvm_library(
         name = "${filename}_lib",
         srcs=["$filename}.kt"],
@@ -112,6 +204,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testSubpackage: String
   ) {
     initEmptyWorkspace() // Ensure the workspace is at least initialized.
+    ensureWorkspaceIsConfiguredForKotlin()
 
     // Create the test subpackage directory for the test file if it doesn't exist
     if (!File(temporaryRootFolder.root, testSubpackage.replace(".", "/")).exists()) {
@@ -137,11 +230,44 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         name = "$testName",
         srcs = ["${testName}.kt"],
         deps = [
-          "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+          "@maven//:junit_junit",
           "$libTargetName",
         ],
       )
       """.trimIndent() + "\n"
+    )
+  }
+
+  fun setupGeneralCoverageBuildFile(
+    sourceLibTargetName: String,
+    testTargetName: String,
+    coverageSubpackage: String
+  ) {
+    initEmptyWorkspace() // Ensure the workspace is at least initialized.
+    ensureWorkspaceIsConfiguredForKotlin() // Ensure Kotlin rules are set up.
+
+    // Create the coverage subpackage directory if it doesn't exist
+    if (!File(temporaryRootFolder.root, coverageSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(coverageSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create or update the BUILD file for the coverage package
+    val coverageBuildFileRelativePath = "${coverageSubpackage.replace(".", "/")}/BUILD.bazel"
+    val coverageBuildFile = File(temporaryRootFolder.root, coverageBuildFileRelativePath)
+    if (!coverageBuildFile.exists()) {
+      temporaryRootFolder.newFile(coverageBuildFileRelativePath)
+    }
+
+    coverageBuildFile.appendText(
+      """        
+        kt_jvm_binary(
+            name = "coverage_runner",
+            srcs = ["//${coverageSubpackage.replace(".", "/")}:$testTargetName"],
+            deps = [
+                "$sourceLibTargetName",
+            ],
+        )
+        """.trimIndent() + "\n"
     )
   }
 
@@ -166,6 +292,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     val testSubpackage = "$subpackage/test"
     val testFileName = "${filename}Test"
     addTestContentAndBuildFile(testFileName, testContent, libTargetName, testSubpackage)
+
+    setupGeneralCoverageBuildFile(libTargetName, testFileName, subpackage)
   }
 
   /**
