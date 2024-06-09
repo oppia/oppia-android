@@ -379,23 +379,63 @@ class BazelClientTest {
     assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
   }
 
-  @Test
+  /*@Test
   fun testRunCodeCoverageForATestTarget() {
-//    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.createTest("FirstTest")
-
+    //testBazelWorkspace.createTest("FirstTest")
 
     // Verify the test file is created
-    val testFile = File(tempFolder.root, "FirstTest.kt")
+    *//*val testFile = File(tempFolder.root, "FirstTest.kt")
+    assertThat(testFile.exists()).isTrue()
+    assertThat(testFile.isFile).isTrue()*//*
+
+    val sourceContent = """
+      class SumTwoNumbers {
+        fun add(a: Int, b: Int): Int = a + b
+      }
+    """.trimIndent()
+
+    val testContent = """
+      import org.junit.Test
+      import com.google.common.truth.Truth.assertThat
+      
+      class SumTwoNumbersTest {
+        @Test
+        fun addTwoNumbers() {
+          val sumTwoNumbers = SumTwoNumbers()
+          assertThat(sumTwoNumbers.add(2, 3)).isEqualTo(5)
+        }
+      }
+    """.trimIndent()
+
+    testBazelWorkspace.addSourceFileAndItsTestFileWithContent(
+      filename = "SumTwoNumbers",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      subpackage = "coverage"
+    )
+
+    // Verify the source file is created
+    val sourceFile = File(tempFolder.root, "coverage/source/SumTwoNumbers.kt")
+    assertThat(sourceFile.exists()).isTrue()
+    assertThat(sourceFile.isFile).isTrue()
+    assertThat(sourceFile.readText()).isEqualTo(sourceContent)
+
+    // Verify the test file is created
+    val testFile = File(tempFolder.root, "coverage/test/SumTwoNumbersTest.kt")
     assertThat(testFile.exists()).isTrue()
     assertThat(testFile.isFile).isTrue()
+    assertThat(testFile.readText()).isEqualTo(testContent)
 
-    val addsource = testBazelWorkspace.addSourceFileAndItsTestFileWithContent("test1", "Hi", "@Test", "cc")
-    println("Add Source result: $addsource")
+    // Optionally, list all files and their contents for verification
+    println("Workspace directory structure and file contents:")
+    listFilesAndContents(tempFolder.root)
 
-    listFilesInDirectory(tempFolder.root)
-//    bazelClient.runCoverageForTestTarget("//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest")
+    bazelClient.runCoverageForTestTarget("coverage/test:SumTwoNumbersTest")
+
+    *//*listFilesInDirectory(tempFolder.root)
+    //bazelClient.runCoverageForTestTarget("//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest")
 
     // Verify the WORKSPACE file exists
     val workspaceFile = File(tempFolder.root, "WORKSPACE")
@@ -406,15 +446,92 @@ class BazelClientTest {
     println("\nContents of WORKSPACE file:")
     println(workspaceFile.readText())
 
+    // Verify the test file exists
+    val realtedTestFile = File(tempFolder.root, "/cc/source/test1.kt")
+    assertThat(realtedTestFile.exists()).isTrue()
+    assertThat(realtedTestFile.isFile).isTrue()
+
+    // Print the contents of the test.bazel file
+    println("Contents of test file:")
+    println(realtedTestFile.readText())
+
     // Verify the BUILD.bazel file exists
-    val bazelFile = File(tempFolder.root, "BUILD.bazel")
+    val bazelFile = File(tempFolder.root, "/cc/test/BUILD.bazel")
     assertThat(bazelFile.exists()).isTrue()
     assertThat(bazelFile.isFile).isTrue()
 
     // Print the contents of the BUILD.bazel file
-    println("Contents of BUILD BAZEL file:")
-    println(bazelFile.readText())
+    println("\nContents of BUILD BAZEL file:")
+    println(bazelFile.readText())*//*
+  }*/
 
+  @Test
+  fun testRunCodeCoverageForATestTarget() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent = """
+      package com.example;
+
+      public class Collatz {
+      
+        public static int getCollatzFinal(int n) {
+          if (n == 1) {
+            return 1;
+          }
+          if (n % 2 == 0) {
+            return getCollatzFinal(n / 2);
+          } else {
+            return getCollatzFinal(n * 3 + 1);
+          }
+        }
+      }
+    """.trimIndent()
+
+    val testContent = """
+      package com.example;
+      
+      import static org.junit.Assert.assertEquals;
+      import org.junit.Test;
+      
+      public class TestCollatz {
+      
+        @Test
+        public void testGetCollatzFinal() {
+          assertEquals(Collatz.getCollatzFinal(1), 1);
+          assertEquals(Collatz.getCollatzFinal(5), 1);
+          assertEquals(Collatz.getCollatzFinal(10), 1);
+          assertEquals(Collatz.getCollatzFinal(21), 1);
+        }
+      }
+    """.trimIndent()
+
+    testBazelWorkspace.addSampleSourceAndTestFile(
+      filename = "Collatz",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      subpackage = "coverage"
+    )
+
+    listFilesAndContents(tempFolder.root)
+
+    println("Temp dir: ${tempFolder}")
+    println("Temp root: ${tempFolder.root}")
+    println("Temp root: ${tempFolder.root}")
+
+    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    println("Result: $result")
+  }
+
+  private fun listFilesAndContents(directory: File) {
+    directory.walk().forEach { file ->
+      if (file.isFile) {
+        println("File: ${file.relativeTo(directory)}")
+        println("Contents:\n${file.readText()}\n")
+      } else if (file.isDirectory) {
+        println("Directory: ${file.relativeTo(directory)}")
+      }
+    }
   }
 
   private fun listFilesInDirectory(directory: File) {
