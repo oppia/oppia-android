@@ -7,12 +7,16 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
  * Class responsible for running coverage analysis asynchronously.
  */
-class CoverageRunner {
+class CoverageRunner(
+    private val repoRoot: File,
+    private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  ) {
 
   /**
    * Runs coverage analysis asynchronously for the Bazel test target.
@@ -23,13 +27,11 @@ class CoverageRunner {
    * @return a deferred value that contains the path of the coverage data file [will contain the proto for the coverage data].
    */
   suspend fun runWithCoverageAsync(
-    repoRoot: File,
-    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
     bazelTestTarget: String
   ): Deferred<String?> {
     return CoroutineScope(scriptBgDispatcher).async {
-      val coverageData = getCoverage(repoRoot, scriptBgDispatcher, bazelTestTarget)
-      val data = coverageData.await()
+      val coverageData = getCoverage(bazelTestTarget)
+      val data = coverageData
       parseCoverageDataFile(data)
     }
   }
@@ -40,19 +42,15 @@ class CoverageRunner {
    * @param repoRoot the absolute path to the working root directory
    * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
    * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return a deferred value that contains the result of the coverage execution.
+   * @return a lisf of string that contains the result of the coverage execution.
    */
   fun getCoverage(
-    repoRoot: File,
-    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
     bazelTestTarget: String
-  ): Deferred<List<String>> {
-    return CoroutineScope(scriptBgDispatcher).async {
+  ): List<String> {
       val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
       val bazelClient = BazelClient(repoRoot, commandExecutor)
       val coverageData = bazelClient.runCoverageForTestTarget(bazelTestTarget)
-      coverageData
-    }
+      return coverageData
   }
 
   /**
