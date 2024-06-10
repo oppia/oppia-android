@@ -14,13 +14,16 @@ fun main(vararg args: String) {
   val repoRoot = File(args[0]).absoluteFile.normalize()
   val targetPath = args[1]
 
-  RunCoverageForTestTarget().runCoverage(repoRoot, targetPath)
+  RunCoverageForTestTarget(repoRoot, targetPath).runCoverage()
 }
 
 /**
  * Class responsible for analyzing target files for coverage and generating reports.
  */
-class RunCoverageForTestTarget() {
+class RunCoverageForTestTarget(
+  private val repoRoot: File,
+  private val targetPath : String
+) {
 
   /**
    * Analyzes target file for coverage, generates chosen reports accordingly.
@@ -28,8 +31,8 @@ class RunCoverageForTestTarget() {
    * @param repoRoot the absolute path to the working root directory
    * @param targetFile Path to the file to analyze.
    */
-  fun runCoverage(repoRoot: File, targetPath: String) {
-    runWithCoverageAnalysis(repoRoot, targetPath)
+  fun runCoverage() {
+    runWithCoverageAnalysis()
   }
 
   /**
@@ -39,10 +42,10 @@ class RunCoverageForTestTarget() {
    * @param targetFile Path to the target file to analyze coverage.
    * @return [A deferred result representing the coverage report].
    */
-  fun runWithCoverageAnalysis(repoRoot: File, targetPath: String) {
+  fun runWithCoverageAnalysis() {
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
-        CoverageRunner().runWithCoverageAsync(repoRoot, scriptBgDispatcher, targetPath).await()
+        CoverageRunner(repoRoot, scriptBgDispatcher).runWithCoverageAsync(targetPath).await()
       }
     }
   }
