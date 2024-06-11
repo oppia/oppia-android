@@ -33,6 +33,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
     activity.setSupportActionBar(resumeLessonToolbar)
 
     resumeLessonToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
 

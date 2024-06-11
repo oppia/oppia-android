@@ -17,7 +17,7 @@ import org.oppia.android.app.model.ProfileAvatar;
 
 /** Holds all custom binding adapters that bind to [ImageView]. */
 public final class ImageViewBindingAdapters {
-  @BindingAdapter("app:srcCompat")
+  @BindingAdapter("srcCompat")
   public static void setImageDrawableCompat(
       @NonNull ImageView imageView,
       @DrawableRes int drawableResourceId
@@ -25,7 +25,7 @@ public final class ImageViewBindingAdapters {
     imageView.setImageResource(drawableResourceId);
   }
 
-  @BindingAdapter("app:srcCompat")
+  @BindingAdapter("srcCompat")
   public static void setImageDrawableCompat(
       @NonNull ImageView imageView,
       Drawable drawable
@@ -40,7 +40,7 @@ public final class ImageViewBindingAdapters {
    * @param imageView view where the profile avatar will be loaded into
    * @param profileAvatar represents either a colorId or local image uri
    */
-  @BindingAdapter("profile:src")
+  @BindingAdapter("profileImageSource")
   public static void setProfileImage(ImageView imageView, ProfileAvatar profileAvatar) {
     if (profileAvatar != null) {
       if (profileAvatar.getAvatarTypeCase() == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
@@ -86,7 +86,7 @@ public final class ImageViewBindingAdapters {
    * <p/>
    * Reference: https://stackoverflow.com/a/35809319/3689782.
    */
-  @BindingAdapter("playState:image")
+  @BindingAdapter("playStateImage")
   public static void setPlayStateDrawable(
       @NonNull ImageView imageView,
       ChapterPlayState chapterPlayState

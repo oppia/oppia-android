@@ -506,7 +506,7 @@ class AppLanguageResourceHandlerTest {
     Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English"),
     Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
   )
-  fun testComputeLocalizedDisplayName_englishLocale_forAllAudioLanguages_hasTheExpectedOutput() {
+  fun testComputeLocalizedDisplayName_englishLocale_forAllLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
