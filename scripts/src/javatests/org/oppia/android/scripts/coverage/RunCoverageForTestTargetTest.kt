@@ -7,24 +7,20 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.testing.TestBazelWorkspace
-import kotlin.test.assertEquals
-import java.io.File
+import org.oppia.android.testing.assertThrows
 
-/** Tests for [CoverageRunner] */
-class CoverageRunnerTest {
+/** Tests for [RunCoverageForTestTarget] */
+class RunCoverageForTestTargetTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
-  private lateinit var coverageRunner: CoverageRunner
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var bazelTestTarget: String
 
   @Before
   fun setUp() {
-    coverageRunner = CoverageRunner(tempFolder.root, scriptBgDispatcher)
     bazelTestTarget = "//:testTarget"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
   }
@@ -35,44 +31,26 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testParseCoverageDataFile_invalidData_returnsNull() {
-    // Result data from coverage execution that doesn't contain path to coverage data file [coverage.dat]
-    val invalidResultData = listOf("data1", "data2", "data3")
-
-    val parsedData = coverageRunner.parseCoverageDataFile(invalidResultData)
-    // Return Null when the coverage data file path is not found
-    assertThat(parsedData).isNull()
-  }
-
-  @Test
-  fun testParseCoverageDataFile_validData_returnsNull() {
-    // Result data from coverage execution that contains path to coverage data file [coverage.dat]
-    val validResultData = listOf(
-      "//package/test/example:test   PASSED in 0.4s",
-      "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat",
-      "Executed 1 out of 1 test: 1 test  passes."
-    )
-    val expectedResultParsedData = "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat"
-
-    val parsedData = coverageRunner.parseCoverageDataFile(validResultData)
-    assertThat(parsedData).isEqualTo(expectedResultParsedData)
-  }
-
-  @Test
-  fun testRunCoverage_emptyDirectory_throwsException() {
+  fun testRunCoverageForTestTarget_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.getCoverage(bazelTestTarget)
+      RunCoverageForTestTarget(
+        tempFolder.root,
+        bazelTestTarget
+      ).runCoverage()
     }
 
     assertThat(exception).hasMessageThat().contains("not invoked from within a workspace")
   }
 
   @Test
-  fun testRunCoverage_invalidTestTarget_throwsException() {
+  fun testRunCoverageForTestTarget_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.getCoverage(bazelTestTarget)
+      RunCoverageForTestTarget(
+        tempFolder.root,
+        bazelTestTarget
+      ).runCoverage()
     }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -80,7 +58,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_validSampleTestTarget_returnsCoverageData() {
+  fun testRunCoverageForTestTarget_validSampleTestTarget_returnsCoverageDataPath() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent = """
@@ -126,14 +104,13 @@ class CoverageRunnerTest {
       subpackage = "coverage"
     )
 
-    val result = coverageRunner.getCoverage("//coverage/test/java/com/example:test")
+    val result = RunCoverageForTestTarget(
+      tempFolder.root,
+      "//coverage/test/java/com/example:test"
+    ).runCoverage()
 
-    // Check that the test has "PASSED"
-    val containsPassedValue = result.any { it.contains("PASSED") }
-    assert(containsPassedValue) { "The test is not 'PASSED'" }
-
-    // Check if the coverage.dat file is generated
-    val containsCoverageData = result.any { it.contains("coverage.dat") }
-    assert(containsCoverageData) { "The coverage.dat is not generated" }
+    // Check if the coverage.dat file is generated and parsed as result
+    val parsedCoverageDataPath = result?.endsWith("coverage.dat")
+    assert(parsedCoverageDataPath!!) { "The coverage.dat is not generated" }
   }
 }

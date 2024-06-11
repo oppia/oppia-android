@@ -12,6 +12,9 @@ import java.io.File
 
 /**
  * Class responsible for running coverage analysis asynchronously.
+ *
+ * @param repoRoot the absolute path to the working root directory
+ * @param targetFile Path to the target file to analyze coverage.
  */
 class CoverageRunner(
     private val repoRoot: File,
