@@ -2,6 +2,7 @@
 Configurations for a codebase-wide build toolchain for Kotlin.
 """
 
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
 
 # This exposes a patch file that retroactively adds opt-in support to kt_kotlinc_options (which was
@@ -9,9 +10,28 @@ load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac
 # time of this introduction).
 exports_files(["add_kotlinc_optin_support.patch"])
 
+string_flag(
+    name = "warn_mode",
+    values = ["warning", "failure"],
+    build_setting_default = "failure",
+)
+
+config_setting(
+    name = "errors_as_warnings",
+    flag_values = {":warn_mode": "warning"},
+)
+
+config_setting(
+    name = "errors_as_failures",
+    flag_values = {":warn_mode": "failure"},
+)
+
 kt_kotlinc_options(
     name = "oppia_kotlinc_options",
-    warn = "error",
+    warn = select({
+        ":errors_as_warnings": "report",
+        ":errors_as_failures": "error",
+    }),
     x_optin = ["kotlin.RequiresOptIn"],
     x_use_experimental = False,
 )
@@ -19,7 +39,10 @@ kt_kotlinc_options(
 # TODO(#4936): Fix "warnings as errors" for processor-generated Java code.
 kt_javac_options(
     name = "oppia_javac_options",
-    warn = "error",
+    warn = select({
+        ":errors_as_warnings": "report",
+        ":errors_as_failures": "error",
+    }),
 )
 
 define_kt_toolchain(
