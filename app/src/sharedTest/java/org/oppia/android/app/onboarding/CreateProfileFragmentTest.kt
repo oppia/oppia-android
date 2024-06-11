@@ -112,6 +112,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Matchers.not
 
 /** Tests for [CreateProfileFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -280,6 +281,26 @@ class CreateProfileFragmentTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  fun testFragment_onTextChanged_afterError_hidesErrorMessage() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(not(isDisplayed())))
     }
   }
 
