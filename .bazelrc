@@ -7,5 +7,9 @@ build --android_databinding_use_v3_4_args \
 # reduce code smell & potential bugs during development.
 build --javacopt="-Werror"
 
+# Note that this doesn't stop 'Werror' from being passed above, but that shouldn't affect most of
+# the Oppia Android-specific build.
+build:ignore_build_warnings --//tools/kotlin:warn_mode=warning
+
 # Show all test output by default (for better debugging).
 test --test_output=all

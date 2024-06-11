@@ -56,7 +56,7 @@ import kotlin.reflect.KClass
  * specified parameter value corresponding to each iteration will be injected into the parameter
  * field for use by the test.
  *
- * Note that with Bazel specific iterations can be run by utilizing the test and iteration name,
+ * Note that with Bazel specifically iterations can be run by utilizing the test and iteration name,
  * e.g.:
  *
  * ```bash
