@@ -51,61 +51,20 @@ sudo apt update && sudo apt upgrade
 
 After that, follow each of the subsections below as needed to install prerequisite dependencies:
 
-**Java**
+**Installing JDK 17+**
 
-Bazel Setup requires both JDK 11 and JDK>=17 to complete the setup.
+Setting up Bazel for Oppia Android requires JDK>=17 for [Android Package Manager](#3-installing-the-android-sdk).
 
-- JDK >= 17 is required for [Android Package Manager](#3-installing-the-android-sdk).
-- JDK 11 is required for the [Android build tools](#6-verifying-the-build), and we suggest installing OpenJDK.
-
-(Note: Our recommendation is to install both JDK 11 and JDK 17 and always make sure to run sdkmanager commands with JDK 17 and build commands with JDK 11. `sudo update-alternatives --config java` is used to set the default Java version).
-
-**Install JDK 11**
-
-```sh
-sudo apt install openjdk-11-jdk-headless
-```
-
-**Install JDK 17**
+For Ubuntu systems, this can be set up using:
 
 ```sh
 sudo apt install openjdk-17-jdk
 ```
 
-#### For Fedora 25+
+For Fedora 25+, this can be set up using:
 
-- Install JDK 11 by running this command on the terminal:
-```
-sudo dnf install java-11-openjdk
-```
-
-- Install JDK 17 by running this command on the terminal:
 ```
 sudo dnf install java-17-openjdk
-```
-
-#### Follow [these instructions](https://www.java.com/en/download/help/path.html) to correctly set up $JAVA_HOME.
-
-**Python 2**
-
-Unfortunately, some of the Bazel build actions in the Android pipeline require Python 2 to be installed:
-
-```sh
-sudo apt install python
-```
-
-(This might throw an error - **E**: Package 'python' has no installation candidate)
-
-Alternatively, installl Python 2 using:
-
-```sh
-sudo apt install python2
-```
-
-To make python2 command accessible as python create a symbolic link from python2 to python:
-
-```sh
-sudo ln -s /usr/bin/python2 /usr/bin/python
 ```
 
 **GCC**
@@ -161,18 +120,7 @@ source ~/.bashrc
 
 (The last line reloads your Bash configuration file so that the variable adjustments above become live in your local terminal).
 
-The ``sdkmanager`` command can now be used to install the necessary packages.
-
-**Set the default Java version to JDK-17**
-
-Prior to executing the sdkmanager commands, make sure to set the default Java version to jdk-17 by running the following command:
-
-```sh
-sudo update-alternatives --config java
-```
-Select the number with JDK-17.
-
-Run each of the following commands in succession (you may need to accept licenses for the SDK packages in the same way you would when using Android Studio):
+The ``sdkmanager`` command can now be used to install the necessary packages. Run each of the following commands in succession (you may need to accept licenses for the SDK packages in the same way you would when using Android Studio):
 
 ```sh
 sdkmanager
@@ -225,21 +173,8 @@ scripts/setup.sh
 
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this & all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
-To build, it is necessary to configure JDK 11 as the default. To accomplish this, follow these steps:
-
-**Set Default version to JDK 11**
-
-Prior to executing the build commands, make sure to set the default Java version to JDK 11 by running the following command:
-
 ```sh
-sudo update-alternatives --config java
-```
-
-Select the number with JDK 11.
-
-**Build**
-```sh
-bazel build //:oppia
+bazel build //:oppia_dev
 ```
 
 (Note that this command may take 10-20 minutes to complete depending on the performance of your machine).
@@ -247,10 +182,8 @@ bazel build //:oppia
 If everything is working, you should see output like the following:
 
 ```
-Target //:oppia up-to-date:
-  bazel-bin/oppia_deploy.jar
-  bazel-bin/oppia_unsigned/apk
-  bazel-bin/oppia/apk
+Target //:oppia_dev up-to-date:
+  bazel-bin/oppia_dev.aab
 INFO: Elapsed time: ...
 INFO: 1 process...
 INFO: Build completed successfully, ...
@@ -258,7 +191,17 @@ INFO: Build completed successfully, ...
 
 If you see the above, you can proceed to use your subsystem for Bazel commands while developing Oppia. If you instead see an error, please [file an issue](https://github.com/oppia/oppia-android/issues/new/choose).
 
-Note also that the ``oppia.apk`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using ``adb`` (though we recommend using ADB from within a Windows command prompt or shell since the Ubuntu subsystem may not have correct support to access devices or emulators connected to the native Windows machine).
+Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the following Bazel command:
+
+```sh
+bazel run //:install_oppia_dev
+```
+
+If this fails, you may need to use ADB from within a Windows command prompt and install ``bazel-bin/oppia.apk`` which can be produced via the following command to build an APK directly:
+
+```sh
+bazel build //:oppia
+```
 
 ### 7. Next steps
 
