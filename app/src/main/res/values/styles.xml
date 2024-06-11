@@ -771,4 +771,10 @@
     <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
     <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
   </style>
+
+  <style name="OnboardingErrorStyle" parent="TextViewStart">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
+    <item name="android:textColor">@color/component_color_shared_error_color</item>
+  </style>
 </resources>
