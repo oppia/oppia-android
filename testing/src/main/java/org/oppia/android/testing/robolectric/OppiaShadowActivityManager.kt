@@ -37,6 +37,7 @@ class OppiaShadowActivityManager : ShadowActivityManager() {
    * [pids] isn't taken into account in this implementation unlike the actual one.
    */
   @Implementation
+  @Suppress("UNUSED_PARAMETER") // The pids parameter must be present for Robolectric.
   fun getProcessMemoryInfo(pids: IntArray?): Array<Debug.MemoryInfo?>? {
     return processMemoryInfo
   }

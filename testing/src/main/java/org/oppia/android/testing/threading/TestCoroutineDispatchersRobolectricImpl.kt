@@ -1,5 +1,7 @@
 package org.oppia.android.testing.threading
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import org.oppia.android.testing.time.FakeSystemClock
 import java.lang.reflect.Method
 import java.time.Duration
@@ -34,6 +36,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     } while (hasPendingCompletableTasks())
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   override fun advanceTimeBy(delayTimeMillis: Long) {
     var remainingDelayMillis = delayTimeMillis
     while (remainingDelayMillis > 0) {
@@ -49,6 +52,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   override fun advanceUntilIdle() {
     // First, run through all tasks that are currently pending and can be run immediately.
     runCurrent()
@@ -67,6 +71,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   private fun advanceToNextFutureTask(
     currentTimeMillis: Long,
     maxDelayMs: Long = Long.MAX_VALUE
@@ -94,6 +99,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   /** Returns whether any of the dispatchers have any tasks to run, including in the future. */
+  @RequiresApi(Build.VERSION_CODES.O)
   private fun hasPendingTasks(): Boolean {
     return backgroundTestDispatcher.hasPendingTasks() ||
       blockingTestDispatcher.hasPendingTasks() ||
@@ -107,6 +113,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
       !uiTaskCoordinator.isIdle()
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   private fun getNextFutureTaskTimeMillis(timeMillis: Long): Long? {
     val nextBackgroundFutureTaskTimeMills =
       backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
@@ -120,6 +127,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     return futureTimes.firstOrNull()
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   private fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
     return uiTaskCoordinator.getNextUiThreadFutureTaskTimeMillis(timeMillis)
   }
@@ -139,6 +147,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
       idleMethod.invoke(shadowUiLooper)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
       val nextScheduledTime = nextScheduledTimeMethod.invoke(shadowUiLooper) as Duration
       val delayMs = nextScheduledTime.toMillis()
@@ -154,10 +163,8 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
       return classLoader.loadClass("org.robolectric.shadows.ShadowLooper")
     }
 
-    private fun loadMainShadowLooper(): Any {
-      val shadowMainLooperMethod = shadowLooperClass.getDeclaredMethod("shadowMainLooper")
-      return shadowMainLooperMethod.invoke(/* obj= */ null)
-    }
+    private fun loadMainShadowLooper(): Any? =
+      shadowLooperClass.getDeclaredMethod("shadowMainLooper").invoke(/* obj = */ null)
 
     private fun loadIsIdleMethod(): Method {
       return shadowLooperClass.getDeclaredMethod("isIdle")

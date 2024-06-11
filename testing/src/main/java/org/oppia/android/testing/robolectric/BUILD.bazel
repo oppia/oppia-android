@@ -3,8 +3,7 @@
 Package for Robolectric-specific utilities and configurations.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "is_on_robolectric",
@@ -26,8 +25,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
         ":is_on_robolectric",
+        "//:dagger",
     ],
 )
 
@@ -73,5 +72,3 @@ kt_android_library(
         "//third_party:org_robolectric_robolectric",
     ],
 )
-
-dagger_rules()

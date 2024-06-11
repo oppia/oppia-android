@@ -2,8 +2,7 @@
 General purpose utilities for logging.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "annotations",
@@ -25,6 +24,8 @@ kt_android_library(
     deps = [
         ":annotations",
         ":log_level",
+        "//:dagger",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
@@ -128,9 +129,9 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":annotations",
-        ":dagger",
         ":log_level",
         ":sync_status_manager_impl",
+        "//:dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -143,8 +144,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":event_type_to_human_readable_name_converter",
+        "//:dagger",
     ],
 )
 
@@ -156,8 +157,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":event_type_to_human_readable_name_converter",
+        "//:dagger",
     ],
 )
 
@@ -211,5 +212,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
     ],
 )
-
-dagger_rules()

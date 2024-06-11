@@ -23,9 +23,7 @@ class TodoIssueResolvedCheckTest {
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#todo-issue-resolved-check for more details on how to fix this."
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -45,7 +43,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // Test comment 1
-      
+
       // Test comment 2
       """.trimIndent()
     val testContent2 =
@@ -57,7 +55,7 @@ class TodoIssueResolvedCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    main(retrieveTestFilesDirectoryPath(), "1200", "abmzuyt")
+    runScript(1200, "abmzuyt")
 
     assertThat(outContent.toString().trim()).isEqualTo(CLOSED_ISSUE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -69,7 +67,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -81,7 +79,7 @@ class TodoIssueResolvedCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    main(retrieveTestFilesDirectoryPath(), "1200", "abmzuyt")
+    runScript(1200, "abmzuyt")
 
     assertThat(outContent.toString().trim()).isEqualTo(CLOSED_ISSUE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -93,7 +91,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -105,17 +103,15 @@ class TodoIssueResolvedCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() {
-      main(retrieveTestFilesDirectoryPath(), "169877", "abmzuyt")
-    }
+    val exception = assertThrows<Exception>() { runScript(169877, "abmzuyt") }
 
     assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       The following TODOs are unresolved for the closed issue:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.bazel:3
-      
+      - TempFile1.kt:1
+      - TempFile2.bazel:3
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -123,13 +119,14 @@ class TodoIssueResolvedCheckTest {
 
   @Test
   fun testClosedIssueCheck_todosCorrespondsToClosedIssue_logsShouldBeLexicographicallySorted() {
+    tempFolder.newFolder("testfiles/extra_dir")
     val tempFile3 = tempFolder.newFile("testfiles/TempFile3.xml")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.bazel")
-    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile1 = tempFolder.newFile("testfiles/extra_dir/TempFile1.kt")
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -141,7 +138,7 @@ class TodoIssueResolvedCheckTest {
     val testContent3 =
       """
       <!-- TODO(#169877): test description 4 -->
-      
+
       <!-- TODO(#174144): test description 5 -->
       <!-- TODO(#169877): test description 6 -->
       """.trimIndent()
@@ -149,19 +146,17 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows<Exception>() {
-      main(retrieveTestFilesDirectoryPath(), "169877", "abmzuyt")
-    }
+    val exception = assertThrows<Exception>() { runScript(169877, "abmzuyt") }
 
     assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
       The following TODOs are unresolved for the closed issue:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.bazel:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile3.xml:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile3.xml:4
-      
+      - TempFile2.bazel:3
+      - TempFile3.xml:1
+      - TempFile3.xml:4
+      - extra_dir/TempFile1.kt:1
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -175,7 +170,7 @@ class TodoIssueResolvedCheckTest {
     val testContent1 =
       """
       // TODO(#169877): test description 1
-      
+
       // TODO(#1021211): test description 2
       """.trimIndent()
     val testContent2 =
@@ -187,7 +182,7 @@ class TodoIssueResolvedCheckTest {
     val testContent3 =
       """
       <!-- TODO(#169877): test description 4 -->
-      
+
       <!-- TODO(#174144): test description 5 -->
       <!-- TODO(#169877): test description 6 -->
       """.trimIndent()
@@ -195,11 +190,8 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows<Exception>() {
-      main(retrieveTestFilesDirectoryPath(), "169877", "abmzuyt")
-    }
-    val fileContentList =
-      File("${retrieveTestFilesDirectoryPath()}/script_failures.txt").readLines()
+    assertThrows<Exception>() { runScript(169877, "abmzuyt") }
+    val fileContentList = File("${tempFolder.root}/testfiles/script_failures.txt").readLines()
     assertThat(fileContentList).containsExactly(
       "The issue is reopened because of the following unresolved TODOs:",
       "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile1.kt#L1",
@@ -209,8 +201,7 @@ class TodoIssueResolvedCheckTest {
     ).inOrder()
   }
 
-  /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
+  private fun runScript(closedIssueNumber: Int, latestCommitHash: String) {
+    main("${tempFolder.root}/testfiles", closedIssueNumber.toString(), latestCommitHash)
   }
 }

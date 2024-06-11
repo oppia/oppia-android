@@ -18,9 +18,7 @@ import java.io.PrintStream
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class RetrieveAffectedTestsTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private lateinit var pendingOutputStream: ByteArrayOutputStream
   private lateinit var originalStandardOutputStream: OutputStream

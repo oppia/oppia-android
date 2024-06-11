@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,8 +46,6 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   longTaskDelayDeltaCheckMillis = 1000L
 ) {
   @Before
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   override fun setUp() {
     setUpTestApplicationComponent()
     verifyDispatcherImplementation<TestCoroutineDispatcherEspressoImpl>()

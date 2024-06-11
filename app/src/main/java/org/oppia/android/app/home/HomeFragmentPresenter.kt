@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
@@ -13,6 +14,7 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -24,11 +26,14 @@ import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -47,7 +52,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val appStartupStateController: AppStartupStateController
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
@@ -96,7 +102,43 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
+    logAppOnboardedEvent()
+
     return binding.root
+  }
+
+  private fun logAppOnboardedEvent() {
+    val startupStateProvider = appStartupStateController.getAppStartupState()
+    val liveData = startupStateProvider.toLiveData()
+    liveData.observe(
+      activity,
+      object : Observer<AsyncResult<AppStartupState>> {
+        override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
+          when (startUpStateResult) {
+            null, is AsyncResult.Pending -> {
+              // Do nothing
+            }
+            is AsyncResult.Success -> {
+              liveData.removeObserver(this)
+
+              if (startUpStateResult.value.startupMode ==
+                AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
+              ) {
+                analyticsController.logAppOnboardedEvent(
+                  ProfileId.newBuilder().setInternalId(internalProfileId).build()
+                )
+              }
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "HomeFragment",
+                "Failed to retrieve app startup state"
+              )
+            }
+          }
+        }
+      }
+    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {

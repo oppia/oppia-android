@@ -14,11 +14,11 @@ public final class StateAssemblerMarginBindingAdapters {
   /** Used to set a margin for exploration split-view. */
   @BindingAdapter(
       value = {
-          "app:explorationSplitViewMarginApplicable",
-          "app:explorationSplitViewMarginStart",
-          "app:explorationSplitViewMarginTop",
-          "app:explorationSplitViewMarginEnd",
-          "app:explorationSplitViewMarginBottom",
+          "explorationSplitViewMarginApplicable",
+          "explorationSplitViewMarginStart",
+          "explorationSplitViewMarginTop",
+          "explorationSplitViewMarginEnd",
+          "explorationSplitViewMarginBottom",
       },
       requireAll = false
   )
@@ -36,11 +36,11 @@ public final class StateAssemblerMarginBindingAdapters {
   /** Used to set a margin for exploration view. */
   @BindingAdapter(
       value = {
-          "app:explorationViewMarginApplicable",
-          "app:explorationViewMarginStart",
-          "app:explorationViewMarginTop",
-          "app:explorationViewMarginEnd",
-          "app:explorationViewMarginBottom",
+          "explorationViewMarginApplicable",
+          "explorationViewMarginStart",
+          "explorationViewMarginTop",
+          "explorationViewMarginEnd",
+          "explorationViewMarginBottom",
       },
       requireAll = false
   )
@@ -58,11 +58,11 @@ public final class StateAssemblerMarginBindingAdapters {
   /** Used to set a margin for question view. */
   @BindingAdapter(
       value = {
-          "app:questionViewMarginApplicable",
-          "app:questionViewMarginStart",
-          "app:questionViewMarginTop",
-          "app:questionViewMarginEnd",
-          "app:questionViewMarginBottom",
+          "questionViewMarginApplicable",
+          "questionViewMarginStart",
+          "questionViewMarginTop",
+          "questionViewMarginEnd",
+          "questionViewMarginBottom",
       },
       requireAll = false
   )
@@ -80,11 +80,11 @@ public final class StateAssemblerMarginBindingAdapters {
   /** Used to set a margin for question split-view. */
   @BindingAdapter(
       value = {
-          "app:questionSplitViewMarginApplicable",
-          "app:questionSplitViewMarginStart",
-          "app:questionSplitViewMarginTop",
-          "app:questionSplitViewMarginEnd",
-          "app:questionSplitViewMarginBottom",
+          "questionSplitViewMarginApplicable",
+          "questionSplitViewMarginStart",
+          "questionSplitViewMarginTop",
+          "questionSplitViewMarginEnd",
+          "questionSplitViewMarginBottom",
       },
       requireAll = false
   )

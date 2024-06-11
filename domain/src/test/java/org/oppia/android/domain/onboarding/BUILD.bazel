@@ -2,7 +2,6 @@
 Tests for domain components pertaining to onboarding the user to the app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.onboarding.AppStartupStateControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
@@ -43,7 +42,7 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.onboarding.DeprecationControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:deprecation_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
@@ -66,5 +65,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
-
-dagger_rules()

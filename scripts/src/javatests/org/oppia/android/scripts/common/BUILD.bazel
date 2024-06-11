@@ -3,7 +3,7 @@ Tests corresponding to common libraries that potentially support multiple script
 common or generic operations.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "BazelClientTest",
@@ -41,6 +41,18 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "GitHubClientTest",
+    srcs = ["GitHubClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:github_client",
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
+)
+
+kt_jvm_test(
     name = "ProtoStringEncoderTest",
     srcs = ["ProtoStringEncoderTest.kt"],
     deps = [
@@ -59,5 +71,16 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "ScriptBackgroundCoroutineDispatcherTest",
+    srcs = ["ScriptBackgroundCoroutineDispatcherTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//testing:assertion_helpers",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_mockito_mockito-core",
     ],
 )

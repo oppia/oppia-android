@@ -79,26 +79,20 @@ class ExceptionsController @Inject constructor(
     }
   }
 
-  /** Returns an [ExceptionLog] from a [throwable]. */
+  /** Returns an [ExceptionLog] from this [Throwable]. */
   private fun Throwable.toExceptionLog(
     timestampInMillis: Long,
     exceptionType: ExceptionType
   ): ExceptionLog {
-    val exceptionLogBuilder = ExceptionLog.newBuilder()
-    this.message?.let {
-      exceptionLogBuilder.message = it
-    }
-    exceptionLogBuilder.timestampInMillis = timestampInMillis
-    this.cause?.let {
-      exceptionLogBuilder.cause = it.toExceptionLog(timestampInMillis, exceptionType)
-    }
-    this.stackTrace?.let {
-      exceptionLogBuilder.addAllStacktraceElement(
-        it.map(this@ExceptionsController::convertStackTraceElementToLog)
-      )
-    }
-    exceptionLogBuilder.exceptionType = exceptionType
-    return exceptionLogBuilder.build()
+    return ExceptionLog.newBuilder().apply {
+      this@toExceptionLog.message?.let { this.message = it }
+      this.timestampInMillis = timestampInMillis
+      this@toExceptionLog.cause?.let {
+        this.cause = it.toExceptionLog(timestampInMillis, exceptionType)
+      }
+      addAllStacktraceElement(this@toExceptionLog.stackTrace.map(::convertStackTraceElementToLog))
+      this.exceptionType = exceptionType
+    }.build()
   }
 
   /** Builds the [ExceptionLog.StackTraceElement] from a [stackTraceElement]. */
@@ -131,12 +125,12 @@ class ExceptionsController @Inject constructor(
             .addExceptionLog(exceptionLog)
             .build()
         } else {
-          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             NullPointerException(
               "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0"
             )
           consoleLogger.e(EXCEPTIONS_CONTROLLER, exception.toString())
+          exceptionLogger.logException(exception)
         }
       }
       return@storeDataAsync oppiaExceptionLogs.toBuilder().addExceptionLog(exceptionLog).build()
@@ -160,13 +154,13 @@ class ExceptionsController @Inject constructor(
   private fun getLeastRecentExceptionIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
       .filter { it.value.exceptionType == ExceptionType.NON_FATAL }
-      .minBy { it.value.timestampInMillis }?.index
+      .minByOrNull { it.value.timestampInMillis }?.index
       ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
 
   /** Returns the index of the least recent exception regardless of their exception type. */
   private fun getLeastRecentGeneralEventIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
-      .minBy { it.value.timestampInMillis }?.index
+      .minByOrNull { it.value.timestampInMillis }?.index
 
   /** Returns a data provider for exception log reports that have been recorded for upload. */
   fun getExceptionLogStore(): DataProvider<OppiaExceptionLogs> {

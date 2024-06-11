@@ -2,6 +2,7 @@ package org.oppia.android.scripts.license
 
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.TextFormat
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -11,7 +12,8 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.maven.model.MavenListDependency
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.license.MavenDependenciesRetriever.MavenListDependency
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -19,74 +21,28 @@ import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.ScrapableLink
 import org.oppia.android.scripts.testing.TestBazelWorkspace
+import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /** Tests for [MavenDependenciesRetriever]. */
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 class MavenDependenciesRetrieverTest {
-
-  private val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
-  private val DEP_WITH_NO_LICENSE = "com.google.protobuf:protobuf-lite:3.0.0"
-  private val DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES =
-    "com.github.bumptech.glide:annotations:4.11.0"
-  private val DEP_WITH_DIRECT_LINK_ONLY_LICENSE = "com.google.firebase:firebase-analytics:17.5.0"
-  private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
-
-  private val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:androidx_databinding_databinding-adapters"
-  private val PROTO_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_protobuf_protobuf-javalite"
-  private val GLIDE_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_github_bumptech_glide_annotations"
-  private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_firebase_firebase-analytics"
-  private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX = "//third_party:io_fabric_sdk_android_fabric"
-
-  private val DATA_BINDING_DEP = "androidx_databinding_databinding_adapters"
-  private val PROTO_DEP = "com_google_protobuf_protobuf_lite"
-  private val GLIDE_DEP = "com_github_bumptech_glide_annotations"
-  private val FIREBASE_DEP = "com_google_firebase_firebase_analytics"
-  private val IO_FABRIC_DEP = "io_fabric_sdk_android_fabric"
-
-  private val DATA_BINDING_VERSION = "3.4.2"
-  private val PROTO_LITE_VERSION = "3.0.0"
-  private val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
-  private val FIREBASE_ANALYTICS_VERSION = "17.5.0"
-  private val IO_FABRIC_VERSION = "1.4.7"
-
-  private val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/databinding-" +
-    "adapters/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION.pom"
-  private val PROTO_LITE_POM = "https://repo1.maven.org/maven2/com/google/protobuf/protobuf" +
-    "-lite/$PROTO_LITE_VERSION/protobuf-lite-$PROTO_LITE_VERSION.pom"
-  private val IO_FABRIC_POM = "https://maven.google.com/io/fabric/sdk/android/fabric/" +
-    "$IO_FABRIC_VERSION/fabric-$IO_FABRIC_VERSION.pom"
-  private val GLIDE_ANNOTATIONS_POM = "https://repo1.maven.org/maven2/com/github/bumptech/glide" +
-    "/annotations/$GLIDE_ANNOTATIONS_VERSION/annotations-$GLIDE_ANNOTATIONS_VERSION.pom"
-  private val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/firebase-" +
-    "analytics/$FIREBASE_ANALYTICS_VERSION/firebase-analytics-$FIREBASE_ANALYTICS_VERSION.pom"
-
-  private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
-  private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
-    "License links are invalid or not available for some dependencies"
-  private val SCRIPT_PASSED_MESSAGE =
-    "Script executed succesfully: maven_dependencies.textproto updated successfully."
-
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
-  private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
+  private val mockArtifactPropertyFetcher by lazy { initializeArtifactPropertyFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
-  private val mavenDependenciesRetriever by lazy {
-    initializeMavenDependenciesRetriever()
-  }
+  private val retriever by lazy { initializeMavenDependenciesRetriever() }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -99,6 +55,7 @@ class MavenDependenciesRetrieverTest {
   @After
   fun restoreStreams() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -109,7 +66,7 @@ class MavenDependenciesRetrieverTest {
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
 
-    val depsList = mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val depsList = retriever.retrieveThirdPartyMavenDependenciesList()
 
     assertThat(depsList).contains(DATA_BINDING_DEP)
   }
@@ -130,7 +87,7 @@ class MavenDependenciesRetrieverTest {
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
 
-    val depsList = mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val depsList = retriever.retrieveThirdPartyMavenDependenciesList()
 
     assertThat(depsList).contains(DATA_BINDING_DEP)
     assertThat(depsList).contains(IO_FABRIC_DEP)
@@ -182,7 +139,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesRetriever.addChangesFromTextProto(
+    val finalDepsList = retriever.addChangesFromTextProto(
       mavenDependenciesList,
       updatedMavenDependenciesList
     )
@@ -239,11 +196,10 @@ class MavenDependenciesRetrieverTest {
         this.addAllLicense(listOf(license2))
       }.build()
     )
-    val updatedMavenDependenciesList = mavenDependenciesList
 
-    val finalDepsList = mavenDependenciesRetriever.addChangesFromTextProto(
-      mavenDependenciesList,
-      updatedMavenDependenciesList
+    val finalDepsList = retriever.addChangesFromTextProto(
+      dependencyListFromPom = mavenDependenciesList,
+      dependencyListFromProto = mavenDependenciesList
     )
     assertThat(finalDepsList).hasSize(2)
     assertIsDependency(
@@ -293,9 +249,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
-      mavenDependenciesList
-    )
+    val licenseSet = retriever.retrieveManuallyUpdatedLicensesSet(mavenDependenciesList)
     assertThat(licenseSet).isEmpty()
   }
 
@@ -325,9 +279,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
-      mavenDependenciesList
-    )
+    val licenseSet = retriever.retrieveManuallyUpdatedLicensesSet(mavenDependenciesList)
     assertThat(licenseSet).hasSize(1)
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseSet.elementAt(0),
@@ -378,9 +330,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
-      mavenDependenciesList
-    )
+    val licenseSet = retriever.retrieveManuallyUpdatedLicensesSet(mavenDependenciesList)
     assertThat(licenseSet).hasSize(3)
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseSet.elementAt(0),
@@ -428,10 +378,10 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesRetriever.updateMavenDependenciesList(
-      mavenDependenciesList,
-      setOf<License>()
-    )
+    val finalDepsList =
+      retriever.updateMavenDependenciesList(
+        mavenDependenciesList, manuallyUpdatedLicenses = setOf()
+      )
     assertThat(finalDepsList).isEqualTo(mavenDependenciesList)
   }
 
@@ -468,7 +418,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesRetriever.updateMavenDependenciesList(
+    val finalDepsList = retriever.updateMavenDependenciesList(
       mavenDependenciesList,
       setOf<License>(updatedLicense2)
     )
@@ -502,7 +452,7 @@ class MavenDependenciesRetrieverTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val mavenDependencyList = MavenDependencyList.newBuilder().build()
 
-    mavenDependenciesRetriever.writeTextProto(
+    retriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
@@ -542,7 +492,7 @@ class MavenDependenciesRetrieverTest {
       )
     }.build()
 
-    mavenDependenciesRetriever.writeTextProto(
+    retriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
@@ -608,7 +558,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = retriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).isEmpty()
   }
 
@@ -635,7 +585,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = retriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).hasSize(2)
     verifyLicenseHasVerifiedLinkNotSet(
       license = brokenLicenses.elementAt(0),
@@ -676,7 +626,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = retriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).doesNotContain(license2)
   }
 
@@ -710,9 +660,8 @@ class MavenDependenciesRetrieverTest {
     )
 
     val licenseToDepNameMap =
-      mavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
-        mavenDependenciesList,
-        setOf<License>()
+      retriever.findFirstDependenciesWithBrokenLicenses(
+        mavenDependenciesList, brokenLicenses = setOf()
       )
     assertThat(licenseToDepNameMap).isEmpty()
   }
@@ -751,7 +700,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val licenseToDepNameMap =
-      mavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
+      retriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList,
         setOf<License>(license1, license2)
       )
@@ -795,7 +744,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val depsThatNeedInterventionSet =
-      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      retriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet).isEmpty()
   }
 
@@ -831,7 +780,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val depsThatNeedInterventionSet =
-      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      retriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet).hasSize(2)
     assertIsDependency(
       dependency = depsThatNeedInterventionSet.elementAt(0),
@@ -852,7 +801,7 @@ class MavenDependenciesRetrieverTest {
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = mavenDependenciesRetriever.retrieveMavenDependencyList(
+    val mavenDependenciesList = retriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -893,7 +842,7 @@ class MavenDependenciesRetrieverTest {
 
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = mavenDependenciesRetriever.retrieveMavenDependencyList(
+    val mavenDependenciesList = retriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -927,11 +876,14 @@ class MavenDependenciesRetrieverTest {
   fun testGetDepListFromMavenInstall_emptyBazelQueryDepsList_returnsEmptyDepList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesRetriever
-      .generateDependenciesListFromMavenInstall(
+
+    val mavenListDependencies = runBlocking {
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
-      )
+      ).await()
+    }
+
     assertThat(mavenListDependencies).isEmpty()
   }
 
@@ -939,45 +891,52 @@ class MavenDependenciesRetrieverTest {
   fun testGetDepListFromMavenInstall_commonBazelQueryDepsList_returnsCorrectDepsList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesRetriever
-      .generateDependenciesListFromMavenInstall(
+
+    val mavenListDependencies = runBlocking {
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(DATA_BINDING_DEP, FIREBASE_DEP)
-      )
+      ).await()
+    }
+
     assertThat(mavenListDependencies).containsExactly(
       MavenListDependency(
-        coord = DEP_WITH_SCRAPABLE_LICENSE,
-        url = "${DATA_BINDING_POM.dropLast(3)}aar"
+        coord = DEP_WITH_SCRAPABLE_LICENSE.coordStrToMavenCoord(),
+        repoUrls = listOf(GOOGLE_MAVEN_URL)
       ),
       MavenListDependency(
-        coord = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
-        url = "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
+        coord = DEP_WITH_DIRECT_LINK_ONLY_LICENSE.coordStrToMavenCoord(),
+        repoUrls = listOf(GOOGLE_MAVEN_URL)
       )
     )
   }
 
   @Test
   fun testRetrieveDepListFromPom_emptyMavenListDependencies_returnsEmptyMavenDepList() {
-    val mavenDependencyList = mavenDependenciesRetriever.retrieveDependencyListFromPom(
-      listOf()
-    )
+    val mavenDependencyList = runBlocking {
+      retriever.retrieveDependencyListFromPomAsync(listOf()).await()
+    }
+
     assertThat(mavenDependencyList.mavenDependencyList).isEmpty()
   }
 
   @Test
   fun testRetrieveDepListFromPom_mixedDepTypes_returnsCorrectMavenDepList() {
-    val mavenDependencyList = mavenDependenciesRetriever.retrieveDependencyListFromPom(
-      listOf(
-        MavenListDependency(
-          coord = DEP_WITH_SCRAPABLE_LICENSE,
-          url = "${DATA_BINDING_POM.dropLast(3)}aar"
-        ),
-        MavenListDependency(
-          coord = DEP_WITH_NO_LICENSE,
-          url = "${PROTO_LITE_POM.dropLast(3)}jar"
+    val mavenDependencyList = runBlocking {
+      retriever.retrieveDependencyListFromPomAsync(
+        listOf(
+          MavenListDependency(
+            coord = DEP_WITH_SCRAPABLE_LICENSE.coordStrToMavenCoord(),
+            repoUrls = listOf(GOOGLE_MAVEN_URL)
+          ),
+          MavenListDependency(
+            coord = DEP_WITH_NO_LICENSE.coordStrToMavenCoord(),
+            repoUrls = listOf(PUBLIC_MAVEN_URL)
+          )
         )
-      )
-    )
+      ).await()
+    }
+
     assertThat(mavenDependencyList.mavenDependencyList.size).isEqualTo(2)
     val dependency1 = mavenDependencyList.mavenDependencyList[0]
     val dependency2 = mavenDependencyList.mavenDependencyList[1]
@@ -1004,11 +963,14 @@ class MavenDependenciesRetrieverTest {
   fun testGenerateDepsListFromMavenInstall_emptyBazelQueryDeps_returnsEmptyList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesRetriever
-      .generateDependenciesListFromMavenInstall(
+
+    val mavenListDependencies = runBlocking {
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
-      )
+      ).await()
+    }
+
     assertThat(mavenListDependencies).isEmpty()
   }
 
@@ -1016,20 +978,380 @@ class MavenDependenciesRetrieverTest {
   fun testGenerateDepsListFromMavenInstall_nonEmptyBazelQueryDepNames_returnsCorrectList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesRetriever
-      .generateDependenciesListFromMavenInstall(
+
+    val mavenListDependencies = runBlocking {
+      retriever.generateDependenciesListFromMavenInstallAsync(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(DATA_BINDING_DEP, FIREBASE_DEP)
-      )
+      ).await()
+    }
+
     assertThat(mavenListDependencies).containsExactly(
       MavenListDependency(
-        coord = DEP_WITH_SCRAPABLE_LICENSE,
-        url = "${DATA_BINDING_POM.dropLast(3)}aar"
+        coord = DEP_WITH_SCRAPABLE_LICENSE.coordStrToMavenCoord(),
+        repoUrls = listOf(GOOGLE_MAVEN_URL)
       ),
       MavenListDependency(
-        coord = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
-        url = "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
+        coord = DEP_WITH_DIRECT_LINK_ONLY_LICENSE.coordStrToMavenCoord(),
+        repoUrls = listOf(GOOGLE_MAVEN_URL)
       )
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_parseFrom_oneComponent_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Invalid Maven coordinate string")
+  }
+
+  @Test
+  fun testMavenCoordinate_parseFrom_twoComponents_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle:lifecycle-viewmodel")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Invalid Maven coordinate string")
+  }
+
+  @Test
+  fun testMavenCoordinate_parseFrom_threeComponents_returnsCoordinateWithGroupArtifactVersion() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+        "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+      )
+
+    assertThat(coord.groupId).isEqualTo("androidx.lifecycle")
+    assertThat(coord.artifactId).isEqualTo("lifecycle-viewmodel")
+    assertThat(coord.version).isEqualTo("2.2.0")
+    assertThat(coord.classifier).isNull()
+    assertThat(coord.extension).isNull()
+  }
+
+  @Test
+  fun testMavenCoordinate_parseFrom_fourComponents_returnsCoordinateWithExtension() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+        "androidx.lifecycle:lifecycle-viewmodel:aar:2.2.0"
+      )
+
+    assertThat(coord.groupId).isEqualTo("androidx.lifecycle")
+    assertThat(coord.artifactId).isEqualTo("lifecycle-viewmodel")
+    assertThat(coord.version).isEqualTo("2.2.0")
+    assertThat(coord.classifier).isNull()
+    assertThat(coord.extension).isEqualTo("aar")
+  }
+
+  @Test
+  fun testMavenCoordinate_parseFrom_fiveComponents_returnsCoordinateWithClassifierAndExtension() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+        "androidx.lifecycle:lifecycle-viewmodel:aar:sources:2.2.0"
+      )
+
+    assertThat(coord.groupId).isEqualTo("androidx.lifecycle")
+    assertThat(coord.artifactId).isEqualTo("lifecycle-viewmodel")
+    assertThat(coord.version).isEqualTo("2.2.0")
+    assertThat(coord.classifier).isEqualTo("sources")
+    assertThat(coord.extension).isEqualTo("aar")
+  }
+
+  @Test
+  fun testMavenCoordinate_parseFrom_sixComponents_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      MavenDependenciesRetriever.MavenCoordinate.parseFrom(
+        "androidx.lifecycle:lifecycle-viewmodel:aar:sources:fake:2.2.0"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("Invalid Maven coordinate string")
+  }
+
+  @Test
+  fun testMavenCoordinate_reducedCoordinateString_simpleCoordinate_returnsCorrectValue() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0"
+      )
+
+    val reducedCoordStr = coord.reducedCoordinateString
+
+    // The group ID, artifact ID, and version should all be included in a reduced coordinate string.
+    assertThat(reducedCoordStr).isEqualTo("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
+  }
+
+  @Test
+  fun testMavenCoordinate_reducedCoordinateString_coordWithExtension_returnsCoordStrNoExtension() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar"
+      )
+
+    val reducedCoordStr = coord.reducedCoordinateString
+
+    // The extension is ignored in the reduced coordinate string.
+    assertThat(reducedCoordStr).isEqualTo("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
+  }
+
+  @Test
+  fun testMavenCoordinate_reducedCoordinateString_coordWithClassifier_returnsCoordStrNoClass() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        classifier = "sources"
+      )
+
+    val reducedCoordStr = coord.reducedCoordinateString
+
+    // The classifier is ignored in the reduced coordinate string.
+    assertThat(reducedCoordStr).isEqualTo("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
+  }
+
+  @Test
+  fun testMavenCoordinate_reducedCoordinateString_coordWithClassAndExt_returnsStrWithoutBoth() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar",
+        classifier = "sources"
+      )
+
+    val reducedCoordStr = coord.reducedCoordinateString
+
+    // Both the extension and classifier are ignored in the reduced coordinate string.
+    assertThat(reducedCoordStr).isEqualTo("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
+  }
+
+  @Test
+  fun testMavenCoordinate_bazelTarget_simpleCoordinate_returnsTargetIgnoringVersion() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0"
+      )
+
+    val bazelTarget = coord.bazelTarget
+
+    // Only the group & artifact IDs should be included in the base Bazel target.
+    assertThat(bazelTarget).isEqualTo("androidx_lifecycle_lifecycle_viewmodel")
+  }
+
+  @Test
+  fun testMavenCoordinate_bazelTarget_coordWithExtension_returnsTargetIgnoringExtension() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar"
+      )
+
+    val bazelTarget = coord.bazelTarget
+
+    // The extension is ignored in the base Bazel target.
+    assertThat(bazelTarget).isEqualTo("androidx_lifecycle_lifecycle_viewmodel")
+  }
+
+  @Test
+  fun testMavenCoordinate_bazelTarget_coordWithClassifier_returnsTargetIgnoringClassifier() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        classifier = "sources"
+      )
+
+    val bazelTarget = coord.bazelTarget
+
+    // The classifier is ignored in the base Bazel target.
+    assertThat(bazelTarget).isEqualTo("androidx_lifecycle_lifecycle_viewmodel")
+  }
+
+  @Test
+  fun testMavenCoordinate_bazelTarget_coordWithClassAndExt_returnsTargetIgnoringBoth() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar",
+        classifier = "sources"
+      )
+
+    val bazelTarget = coord.bazelTarget
+
+    // Both the extension and classifier are ignored the base Bazel target.
+    assertThat(bazelTarget).isEqualTo("androidx_lifecycle_lifecycle_viewmodel")
+  }
+
+  @Test
+  fun testMavenCoordinate_computeArtifactUrl_simpleCoordinate_returnsCorrectMavenUrl() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0"
+      )
+
+    val artifactUrl = coord.computeArtifactUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the artifact URL. If
+    // there's no extension defined, it should default to 'jar' per:
+    // https://maven.apache.org/repositories/artifacts.html.
+    assertThat(artifactUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0.jar"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computeArtifactUrl_coordWithExtension_returnsUrlWithExtension() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar"
+      )
+
+    val artifactUrl = coord.computeArtifactUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the artifact URL.
+    assertThat(artifactUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0.aar"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computeArtifactUrl_coordWithClassifier_returnsUrlWithClassifier() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        classifier = "sources"
+      )
+
+    val artifactUrl = coord.computeArtifactUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the artifact URL.
+    assertThat(artifactUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0-sources.jar"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computeArtifactUrl_coordWithClassAndExt_returnsUrlWithBoth() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar",
+        classifier = "sources"
+      )
+
+    val artifactUrl = coord.computeArtifactUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the artifact URL.
+    assertThat(artifactUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0-sources.aar"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computePomUrl_simpleCoordinate_returnsCorrectMavenUrl() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0"
+      )
+
+    val pomUrl = coord.computePomUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the POM URL except for
+    // extension since the ending of the URL is always 'pom'.
+    assertThat(pomUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0.pom"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computePomUrl_coordWithExtension_returnsUrlWithExtension() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar"
+      )
+
+    val pomUrl = coord.computePomUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the POM URL except for
+    // extension since the ending of the URL is always 'pom'.
+    assertThat(pomUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0.pom"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computePomUrl_coordWithClassifier_returnsUrlWithClassifier() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        classifier = "sources"
+      )
+
+    val pomUrl = coord.computePomUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the POM URL except for
+    // extension since the ending of the URL is always 'pom'.
+    assertThat(pomUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0-sources.pom"
+    )
+  }
+
+  @Test
+  fun testMavenCoordinate_computePomUrl_coordWithClassAndExt_returnsUrlWithBoth() {
+    val coord =
+      MavenDependenciesRetriever.MavenCoordinate(
+        groupId = "androidx.lifecycle",
+        artifactId = "lifecycle-viewmodel",
+        version = "2.2.0",
+        extension = "aar",
+        classifier = "sources"
+      )
+
+    val pomUrl = coord.computePomUrl("https://maven.google.com")
+
+    // All properties of the coordinate should be included when computing the POM URL except for
+    // extension since the ending of the URL is always 'pom'.
+    assertThat(pomUrl).isEqualTo(
+      "https://maven.google.com/androidx/lifecycle/lifecycle-viewmodel/2.2.0" +
+        "/lifecycle-viewmodel-2.2.0-sources.pom"
     )
   }
 
@@ -1089,17 +1411,6 @@ class MavenDependenciesRetrieverTest {
     assertThat(license.isOriginalLinkInvalid).isFalse()
   }
 
-  private fun verifyLicenseHasOriginalLinkInvalid(
-    license: License,
-    originalLink: String,
-    licenseName: String
-  ) {
-    assertThat(license.licenseName).isEqualTo(licenseName)
-    assertThat(license.verifiedLinkCase).isEqualTo(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
-    assertThat(license.originalLink).isEqualTo(originalLink)
-    assertThat(license.isOriginalLinkInvalid).isTrue()
-  }
-
   private fun assertIsDependency(
     dependency: MavenDependency,
     artifactName: String,
@@ -1116,23 +1427,6 @@ class MavenDependenciesRetrieverTest {
     val builder = proto.newBuilderForType()
     TextFormat.merge(textProtoFile.readText(), builder)
     return builder.build()
-  }
-
-  private fun setUpBazelEnvironment(coordsList: List<String>) {
-    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
-    writeMavenInstallJson(mavenInstallJson)
-    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
-    val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      when (coordinate) {
-        DEP_WITH_SCRAPABLE_LICENSE -> DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX
-        DEP_WITH_DIRECT_LINK_ONLY_LICENSE -> FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
-        DEP_WITH_INVALID_LINKS -> IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX
-        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES -> GLIDE_DEP_WITH_THIRD_PARTY_PREFIX
-        else -> PROTO_DEP_WITH_THIRD_PARTY_PREFIX
-      }
-    }
-    createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
-    writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
   }
 
   private fun writeThirdPartyBuildFile(
@@ -1196,43 +1490,49 @@ class MavenDependenciesRetrieverTest {
     file.writeText(
       """
       {
-        "dependency_tree": {
-          "dependencies": [
-            {
-              "coord": "androidx.databinding:databinding-adapters:3.4.2",
-              "url": "${DATA_BINDING_POM.dropLast(3)}aar"
-            },
-            {
-              "coord": "com.github.bumptech.glide:annotations:4.11.0",
-              "url": "${GLIDE_ANNOTATIONS_POM.dropLast(3)}jar"
-            },
-            {
-              "coord": "com.google.firebase:firebase-analytics:17.5.0",
-              "url": "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
-            },
-            {
-               "coord": "com.google.protobuf:protobuf-lite:3.0.0",
-               "url": "${PROTO_LITE_POM.dropLast(3)}jar"
-            },
-            {
-              "coord": "io.fabric.sdk.android:fabric:1.4.7",
-              "url": "${IO_FABRIC_POM.dropLast(3)}aar"
-            }
+        "artifacts": {
+          "androidx.databinding:databinding-adapters": {
+            "version": "3.4.2"
+          },
+          "com.github.bumptech.glide:annotations": {
+            "version": "4.11.0"
+          },
+          "com.google.firebase:firebase-analytics": {
+            "version": "17.5.0"
+          },
+          "com.google.protobuf:protobuf-lite": {
+            "version": "3.0.0"
+          },
+          "io.fabric.sdk.android:fabric": {
+            "version": "1.4.7"
+          }
+        },
+        "repositories": {
+          "$GOOGLE_MAVEN_URL": [
+            "androidx.databinding:databinding-adapters",
+            "com.google.firebase:firebase-analytics",
+            "io.fabric.sdk.android:fabric"
+          ],
+          "$PUBLIC_MAVEN_URL": [
+            "com.github.bumptech.glide:annotations",
+            "com.google.protobuf:protobuf-lite"
           ]
         }
-      }  
+      }
       """.trimIndent()
     )
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
   }
 
-  /** Returns a mock for the [LicenseFetcher]. */
-  private fun initializeLicenseFetcher(): LicenseFetcher {
-    return mock<LicenseFetcher> {
-      on { scrapeText(eq(DATA_BINDING_POM)) }
+  /** Returns a mock for the [MavenArtifactPropertyFetcher]. */
+  private fun initializeArtifactPropertyFetcher(): MavenArtifactPropertyFetcher {
+    return mock {
+      on { scrapeText(eq(DATA_BINDING_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1245,7 +1545,7 @@ class MavenDependenciesRetrieverTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(GLIDE_ANNOTATIONS_POM)) }
+      on { scrapeText(eq(GLIDE_ANNOTATIONS_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1263,7 +1563,7 @@ class MavenDependenciesRetrieverTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(FIREBASE_ANALYTICS_POM)) }
+      on { scrapeText(eq(FIREBASE_ANALYTICS_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1276,7 +1576,7 @@ class MavenDependenciesRetrieverTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(IO_FABRIC_POM)) }
+      on { scrapeText(eq(IO_FABRIC_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
@@ -1289,21 +1589,88 @@ class MavenDependenciesRetrieverTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(PROTO_LITE_POM)) }
+      on { scrapeText(eq(PROTO_LITE_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <project>Random Project</project>
           """.trimIndent()
         )
+      on { isValidArtifactFileUrl(eq(DATA_BINDING_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(PROTO_LITE_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(IO_FABRIC_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(GLIDE_ANNOTATIONS_ARTIFACT_URL)) }.thenReturn(true)
+      on { isValidArtifactFileUrl(eq(FIREBASE_ANALYTICS_ARTIFACT_URL)) }.thenReturn(true)
     }
   }
 
   private fun initializeMavenDependenciesRetriever(): MavenDependenciesRetriever {
     return MavenDependenciesRetriever(
       "${tempFolder.root}",
-      mockLicenseFetcher,
+      mockArtifactPropertyFetcher,
+      ScriptBackgroundCoroutineDispatcher(),
       commandExecutor
     )
+  }
+
+  private fun String.coordStrToMavenCoord() =
+    MavenDependenciesRetriever.MavenCoordinate.parseFrom(this)
+
+  private companion object {
+    private const val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
+    private const val DEP_WITH_NO_LICENSE = "com.google.protobuf:protobuf-lite:3.0.0"
+    private const val DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES =
+      "com.github.bumptech.glide:annotations:4.11.0"
+    private const val DEP_WITH_DIRECT_LINK_ONLY_LICENSE =
+      "com.google.firebase:firebase-analytics:17.5.0"
+    private const val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
+
+    private const val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
+      "//third_party:androidx_databinding_databinding-adapters"
+    private const val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
+      "//third_party:com_google_firebase_firebase-analytics"
+    private const val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX =
+      "//third_party:io_fabric_sdk_android_fabric"
+
+    private const val DATA_BINDING_DEP = "androidx_databinding_databinding_adapters"
+    private const val FIREBASE_DEP = "com_google_firebase_firebase_analytics"
+    private const val IO_FABRIC_DEP = "io_fabric_sdk_android_fabric"
+
+    private const val GOOGLE_MAVEN_URL = "https://maven.google.com"
+    private const val PUBLIC_MAVEN_URL = "https://repo1.maven.org/maven2"
+
+    private const val DATA_BINDING_VERSION = "3.4.2"
+    private const val DATA_BINDING_BASE_URL =
+      "$GOOGLE_MAVEN_URL/androidx/databinding/databinding-adapters" +
+        "/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION"
+    private const val DATA_BINDING_ARTIFACT_URL = "$DATA_BINDING_BASE_URL.jar"
+    private const val DATA_BINDING_POM_URL = "$DATA_BINDING_BASE_URL.pom"
+
+    private const val PROTO_LITE_VERSION = "3.0.0"
+    private const val PROTO_LITE_BASE_URL =
+      "$PUBLIC_MAVEN_URL/com/google/protobuf/protobuf-lite/$PROTO_LITE_VERSION" +
+        "/protobuf-lite-$PROTO_LITE_VERSION"
+    private const val PROTO_LITE_POM_URL = "$PROTO_LITE_BASE_URL.pom"
+    private const val PROTO_LITE_ARTIFACT_URL = "$PROTO_LITE_BASE_URL.jar"
+
+    private const val IO_FABRIC_VERSION = "1.4.7"
+    private const val IO_FABRIC_BASE_URL =
+      "$GOOGLE_MAVEN_URL/io/fabric/sdk/android/fabric/$IO_FABRIC_VERSION/fabric-$IO_FABRIC_VERSION"
+    private const val IO_FABRIC_POM_URL = "$IO_FABRIC_BASE_URL.pom"
+    private const val IO_FABRIC_ARTIFACT_URL = "$IO_FABRIC_BASE_URL.jar"
+
+    private const val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
+    private const val GLIDE_ANNOTATIONS_BASE_URL =
+      "$PUBLIC_MAVEN_URL/com/github/bumptech/glide/annotations/$GLIDE_ANNOTATIONS_VERSION" +
+        "/annotations-$GLIDE_ANNOTATIONS_VERSION"
+    private const val GLIDE_ANNOTATIONS_POM_URL = "$GLIDE_ANNOTATIONS_BASE_URL.pom"
+    private const val GLIDE_ANNOTATIONS_ARTIFACT_URL = "$GLIDE_ANNOTATIONS_BASE_URL.jar"
+
+    private const val FIREBASE_ANALYTICS_VERSION = "17.5.0"
+    private const val FIREBASE_ANALYTICS_BASE_URL =
+      "$GOOGLE_MAVEN_URL/com/google/firebase/firebase-analytics/$FIREBASE_ANALYTICS_VERSION" +
+        "/firebase-analytics-$FIREBASE_ANALYTICS_VERSION"
+    private const val FIREBASE_ANALYTICS_POM_URL = "$FIREBASE_ANALYTICS_BASE_URL.pom"
+    private const val FIREBASE_ANALYTICS_ARTIFACT_URL = "$FIREBASE_ANALYTICS_BASE_URL.jar"
   }
 }

@@ -165,7 +165,7 @@ annotation class EnableNpsSurvey
 const val ENABLE_NPS_SURVEY = "enable_nps_survey"
 
 /** Default value of the feature flag corresponding to [EnableNpsSurvey]. */
-const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = false
+const val ENABLE_NPS_SURVEY_DEFAULT_VALUE = true
 
 /** Qualifier for the feature flag that toggles the new onboarding flow. */
 @Qualifier
@@ -176,3 +176,13 @@ const val ENABLE_ONBOARDING_FLOW_V2 = "enable_onboarding_flow_v2"
 
 /** Default value of the feature flag corresponding to [EnableOnboardingFlowV2]. */
 const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = false
+
+/** Qualifier for the feature flag that toggles the new multiple classrooms. */
+@Qualifier
+annotation class EnableMultipleClassrooms
+
+/** Name of the feature flag that toggles the new multiple classrooms. */
+const val ENABLE_MULTIPLE_CLASSROOMS = "enable_multiple_classrooms"
+
+/** Default value of the feature flag corresponding to [EnableMultipleClassrooms]. */
+const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = false

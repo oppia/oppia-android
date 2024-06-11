@@ -3,22 +3,14 @@
 Library for providing test-only HTTP mocks for the app's networking layer.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "network",
     testonly = True,
     srcs = [
-        "MockClassroomService.kt",
-        "MockConceptCardService.kt",
-        "MockExplorationService.kt",
         "MockFeedbackReportingService.kt",
         "MockPlatformParameterService.kt",
-        "MockQuestionPlayerService.kt",
-        "MockStoryService.kt",
-        "MockSubtopicService.kt",
-        "MockTopicService.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
@@ -51,11 +43,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
+        "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae:oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
     ],
 )
-
-dagger_rules()

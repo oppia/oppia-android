@@ -37,14 +37,6 @@ load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPEND
     ],
 ) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
 
-android_library(
-    name = "circularimageview_circular_image_view",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@circularimageview//circularimageview:circular_image_view",
-    ],
-)
-
 # A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
 # library still routes through //third_party).
 android_library(
@@ -87,6 +79,34 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         "@kotlitex//kotlitex",
+    ],
+)
+
+alias(
+    name = "oppia_proto_api_protos",
+    actual = "@oppia_proto_api//:android_protos",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+alias(
+    name = "oppia_proto_api_java_protos",
+    testonly = True,
+    actual = "@oppia_proto_api//:android_java_protos",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+# Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
+# Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
+android_library(
+    name = "com_google_guava_guava",
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_android//jar",
     ],
 )
 

@@ -11,7 +11,6 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminSettingsDialogBinding
 import javax.inject.Inject
 
@@ -20,13 +19,9 @@ import javax.inject.Inject
 class AdminSettingsDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>,
+  private val adminViewModel: AdminSettingsViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private val adminViewModel by lazy {
-    getAdminSettingsViewModel()
-  }
-
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
     adminPin: String?
@@ -99,9 +94,5 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       }
     }
     return dialog
-  }
-
-  private fun getAdminSettingsViewModel(): AdminSettingsViewModel {
-    return viewModelProvider.getForFragment(fragment, AdminSettingsViewModel::class.java)
   }
 }
