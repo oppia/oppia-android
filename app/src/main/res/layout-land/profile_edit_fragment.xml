@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -44,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
-        profile:src="@{viewModel.profile.avatar}" />
+        app:profileImageSource="@{viewModel.profile.avatar}" />
 
       <TextView
         android:id="@+id/profile_edit_name"
@@ -70,7 +69,7 @@
         app:layout_constraintStart_toStartOf="@+id/profile_edit_name"
         app:layout_constraintTop_toBottomOf="@+id/profile_edit_name"
         app:layout_constraintVertical_chainStyle="packed"
-        profile:created="@{viewModel.profile.dateCreatedTimestampMs}" />
+        app:profileCreatedTime="@{viewModel.profile.dateCreatedTimestampMs}" />
 
       <Button
         android:id="@+id/profile_rename_button"

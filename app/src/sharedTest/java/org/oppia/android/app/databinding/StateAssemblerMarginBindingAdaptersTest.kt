@@ -515,7 +515,9 @@ class StateAssemblerMarginBindingAdaptersTest {
   interface TestApplicationComponent : ApplicationComponent {
     /** Build the TestApplicationComponent. */
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     /** Inject [StateAssemblerMarginBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(StateAssemblerMarginBindingAdaptersTest: StateAssemblerMarginBindingAdaptersTest)

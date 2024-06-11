@@ -10,7 +10,7 @@ import androidx.databinding.BindingAdapter;
 public final class MarginBindingAdapters {
 
   /** Sets the start margin for a view, accounting for RTL scenarios. */
-  @BindingAdapter("app:layoutMarginStart")
+  @BindingAdapter("layoutMarginStart")
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
@@ -20,7 +20,7 @@ public final class MarginBindingAdapters {
   }
 
   /** Sets the end margin for a view, accounting for RTL scenarios. */
-  @BindingAdapter("app:layoutMarginEnd")
+  @BindingAdapter("layoutMarginEnd")
   public static void setLayoutMarginEnd(@NonNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
@@ -30,7 +30,7 @@ public final class MarginBindingAdapters {
   }
 
   /** Used to set a margin-top for views. */
-  @BindingAdapter("app:layoutMarginTop")
+  @BindingAdapter("layoutMarginTop")
   public static void setLayoutMarginTop(@NonNull View view, float marginTop) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
@@ -41,7 +41,7 @@ public final class MarginBindingAdapters {
   }
 
   /** Used to set a margin-bottom for views. */
-  @BindingAdapter("app:layoutMarginBottom")
+  @BindingAdapter("layoutMarginBottom")
   public static void setLayoutMarginBottom(@NonNull View view, float marginBottom) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
@@ -52,7 +52,7 @@ public final class MarginBindingAdapters {
   }
 
   /** Used to set a margin for views. */
-  @BindingAdapter("app:layoutMargin")
+  @BindingAdapter("layoutMargin")
   public static void setLayoutMargin(@NonNull View view, float margin) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
