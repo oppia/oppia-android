@@ -542,4 +542,10 @@
 
   <!-- ProfileListFragment -->
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">108dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">72dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">72dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package org.oppia.android.app.classroom
 
 import ClassroomListViewModel
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -213,7 +215,12 @@ class ClassroomListFragmentPresenter @Inject constructor(
         )
     )
     LazyRow(
-      modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+      modifier = Modifier
+        .padding(
+          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+          end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+          bottom = 20.dp,
+        )
     ) {
       items(promotedStoryListViewModel.promotedStoryList) {
         PromotedStoryCard(promotedStoryViewModel = it)
@@ -223,25 +230,40 @@ class ClassroomListFragmentPresenter @Inject constructor(
 
   @Composable
   fun ClassroomListComponent(classroomSummaryList: List<ClassroomSummaryViewModel>) {
-    Text(
-      text = stringResource(id = R.string.classrooms),
-      color = colorResource(id = R.color.component_color_shared_primary_text_color),
-      fontFamily = FontFamily.SansSerif,
-      fontWeight = FontWeight.Medium,
-      fontSize = 18.sp,
+    Column(
       modifier = Modifier
-        .padding(
-          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
-          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-          bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+        .background(
+          color = colorResource(
+            id = R.color.component_color_shared_screen_primary_background_color
+          )
         )
-    )
-    LazyRow(
-      modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+        .fillMaxWidth()
     ) {
-      items(classroomSummaryList) {
-        ClassroomCard(classroomSummaryViewModel = it)
+      Text(
+        text = stringResource(id = R.string.classrooms),
+        color = colorResource(id = R.color.component_color_shared_primary_text_color),
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
+        modifier = Modifier
+          .padding(
+            start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+            top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
+            end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+            bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+          )
+      )
+      LazyRow(
+        modifier = Modifier
+          .padding(
+            start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+            end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+            bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+          )
+      ) {
+        items(classroomSummaryList) {
+          ClassroomCard(classroomSummaryViewModel = it)
+        }
       }
     }
   }
@@ -266,9 +288,11 @@ class ClassroomListFragmentPresenter @Inject constructor(
 
   @Composable
   fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
+    val isOrientationPortrait =
+      LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     Card(
       modifier = Modifier
-        .height(182.dp)
+        .height(if (isOrientationPortrait) 182.dp else 60.dp)
         .width(150.dp)
         .padding(
           start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
@@ -282,13 +306,15 @@ class ClassroomListFragmentPresenter @Inject constructor(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {
-        Image(
-          painter = painterResource(id = classroomSummaryViewModel.thumbnailResourceId),
-          contentDescription = "${classroomSummaryViewModel.title} Card",
-          modifier = Modifier
-            .padding(bottom = 20.dp)
-            .size(80.dp),
-        )
+        if (isOrientationPortrait) {
+          Image(
+            painter = painterResource(id = classroomSummaryViewModel.thumbnailResourceId),
+            contentDescription = "${classroomSummaryViewModel.title} Card",
+            modifier = Modifier
+              .padding(bottom = 20.dp)
+              .size(80.dp),
+          )
+        }
         Text(
           text = classroomSummaryViewModel.title,
           color = colorResource(id = R.color.component_color_shared_primary_text_color),
