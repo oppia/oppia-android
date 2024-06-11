@@ -13,7 +13,6 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -29,7 +28,7 @@ import javax.inject.Inject
 class ResumeLessonFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ResumeLessonViewModel>,
+  private val resumeLessonViewModel: ResumeLessonViewModel,
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
   private val htmlParserFactory: HtmlParser.Factory,
@@ -42,7 +41,6 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
   private lateinit var binding: ResumeLessonFragmentBinding
-  private val resumeLessonViewModel = getResumeLessonViewModel()
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -146,10 +144,6 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     } else {
       binding.resumeLessonChapterDescriptionTextView.visibility = View.GONE
     }
-  }
-
-  private fun getResumeLessonViewModel(): ResumeLessonViewModel {
-    return viewModelProvider.getForFragment(fragment, ResumeLessonViewModel::class.java)
   }
 
   private fun getChapterSummary(): LiveData<EphemeralChapterSummary> {

@@ -9,7 +9,7 @@ import androidx.databinding.BindingAdapter;
 public final class GuidelineBindingAdapters {
 
   /** Binding adapter for setting the `guidePercent` for a [Guideline]. */
-  @BindingAdapter("app:layout_constraintGuide_percent")
+  @BindingAdapter("layout_constraintGuide_percent")
   public static void setGuidelinePercentage(@NonNull Guideline guideline, float percentage) {
     ConstraintLayout.LayoutParams params =
         (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
@@ -18,7 +18,7 @@ public final class GuidelineBindingAdapters {
   }
 
   /** Binding adapter for setting the `guideEnd` for a [Guideline]. */
-  @BindingAdapter("app:layout_constraintGuide_end")
+  @BindingAdapter("layout_constraintGuide_end")
   public static void setConstraintGuidelineEnd(@NonNull Guideline guideline, float guideEndPx) {
     ConstraintLayout.LayoutParams params =
         (ConstraintLayout.LayoutParams) guideline.getLayoutParams();

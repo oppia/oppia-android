@@ -286,7 +286,7 @@ class RevisionCardActivityTest {
       profileId = profileId,
       topicId = "test_topic_id_0",
       subtopicId = 1
-    ).use { scenario ->
+    ).use {
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("sample subtopic with dummy content"))))
     }
@@ -301,7 +301,7 @@ class RevisionCardActivityTest {
       profileId = profileId,
       topicId = "test_topic_id_0",
       subtopicId = 1
-    ).use { scenario ->
+    ).use {
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
     }
@@ -487,7 +487,9 @@ class RevisionCardActivityTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(revisionCardActivityTest: RevisionCardActivityTest)
   }

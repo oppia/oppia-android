@@ -1652,7 +1652,6 @@ class MathExpressionInteractionsViewTest {
 
       typeExpressionInput(text)
 
-      // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
         assertThat(answerError).isNull()
@@ -1674,7 +1673,6 @@ class MathExpressionInteractionsViewTest {
 
       typeExpressionInput(text)
 
-      // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
         assertThat(answerError).isNotEmpty()
@@ -1699,7 +1697,6 @@ class MathExpressionInteractionsViewTest {
 
       typeExpressionInput(text)
 
-      // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(REAL_TIME)
         assertThat(answerError).isNull()
@@ -1874,7 +1871,9 @@ class MathExpressionInteractionsViewTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(mathExpressionInteractionsViewTest: MathExpressionInteractionsViewTest)
   }

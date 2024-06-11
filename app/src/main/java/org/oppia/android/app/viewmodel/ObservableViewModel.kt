@@ -2,10 +2,9 @@ package org.oppia.android.app.viewmodel
 
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
-import androidx.lifecycle.ViewModel
 
-/** A [ViewModel] that behaves the same as [androidx.databinding.BaseObservable]. */
-open class ObservableViewModel : ViewModel(), Observable {
+/** A view model that behaves the same as [androidx.databinding.BaseObservable]. */
+open class ObservableViewModel : Observable {
   private val callbacks by lazy {
     PropertyChangeRegistry()
   }

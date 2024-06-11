@@ -13,11 +13,11 @@ public final class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for exploration split-view. */
   @BindingAdapter(
       value = {
-          "app:explorationSplitViewPaddingApplicable",
-          "app:explorationSplitViewPaddingStart",
-          "app:explorationSplitViewPaddingTop",
-          "app:explorationSplitViewPaddingEnd",
-          "app:explorationSplitViewPaddingBottom",
+          "explorationSplitViewPaddingApplicable",
+          "explorationSplitViewPaddingStart",
+          "explorationSplitViewPaddingTop",
+          "explorationSplitViewPaddingEnd",
+          "explorationSplitViewPaddingBottom",
       },
       requireAll = false
   )
@@ -35,11 +35,11 @@ public final class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for exploration view. */
   @BindingAdapter(
       value = {
-          "app:explorationViewPaddingApplicable",
-          "app:explorationViewPaddingStart",
-          "app:explorationViewPaddingTop",
-          "app:explorationViewPaddingEnd",
-          "app:explorationViewPaddingBottom",
+          "explorationViewPaddingApplicable",
+          "explorationViewPaddingStart",
+          "explorationViewPaddingTop",
+          "explorationViewPaddingEnd",
+          "explorationViewPaddingBottom",
       },
       requireAll = false
   )
@@ -57,11 +57,11 @@ public final class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for question view. */
   @BindingAdapter(
       value = {
-          "app:questionViewPaddingApplicable",
-          "app:questionViewPaddingStart",
-          "app:questionViewPaddingTop",
-          "app:questionViewPaddingEnd",
-          "app:questionViewPaddingBottom",
+          "questionViewPaddingApplicable",
+          "questionViewPaddingStart",
+          "questionViewPaddingTop",
+          "questionViewPaddingEnd",
+          "questionViewPaddingBottom",
       },
       requireAll = false
   )
@@ -79,11 +79,11 @@ public final class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for question split-view. */
   @BindingAdapter(
       value = {
-          "app:questionSplitViewPaddingApplicable",
-          "app:questionSplitViewPaddingStart",
-          "app:questionSplitViewPaddingTop",
-          "app:questionSplitViewPaddingEnd",
-          "app:questionSplitViewPaddingBottom",
+          "questionSplitViewPaddingApplicable",
+          "questionSplitViewPaddingStart",
+          "questionSplitViewPaddingTop",
+          "questionSplitViewPaddingEnd",
+          "questionSplitViewPaddingBottom",
       },
       requireAll = false
   )

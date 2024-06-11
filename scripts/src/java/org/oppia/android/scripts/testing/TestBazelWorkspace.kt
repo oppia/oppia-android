@@ -246,7 +246,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     if (!isConfiguredForKotlin) {
       // Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
       val rulesKotlinReleaseUrl =
-        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.5.0-beta-3" +
+        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.7.1" +
           "/rules_kotlin_release.tgz"
       val rulesKotlinArchiveName = "io_bazel_rules_kotlin"
       val rulesKotlinBazelPrefix = "@$rulesKotlinArchiveName//kotlin"
@@ -256,7 +256,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
         http_archive(
             name = "$rulesKotlinArchiveName",
-            sha256 = "58edd86f0f3c5b959c54e656b8e7eb0b0becabd412465c37a2078693c2571f7f",
+            sha256 = "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
             urls = ["$rulesKotlinReleaseUrl"],
         )
         load("$rulesKotlinBazelPrefix:repositories.bzl", "kotlin_repositories")
@@ -273,7 +273,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
   private fun prepareBuildFileForTests(buildFile: File) {
     if (buildFile !in filesConfiguredForTests) {
-      buildFile.appendText("load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\", \"kt_jvm_test\")\n")
+      buildFile.appendText("load(\"@io_bazel_rules_kotlin//kotlin:jvm.bzl\", \"kt_jvm_test\")\n")
       filesConfiguredForTests += buildFile
     }
   }
@@ -281,7 +281,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   private fun prepareBuildFileForLibraries(buildFile: File) {
     if (buildFile !in filesConfiguredForLibraries) {
       buildFile.appendText(
-        "load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\", \"kt_jvm_library\")\n"
+        "load(\"@io_bazel_rules_kotlin//kotlin:jvm.bzl\", \"kt_jvm_library\")\n"
       )
       filesConfiguredForLibraries += buildFile
     }

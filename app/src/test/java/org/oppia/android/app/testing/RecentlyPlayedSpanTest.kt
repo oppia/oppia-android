@@ -285,7 +285,7 @@ class RecentlyPlayedSpanTest {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setInternalId(profileId).build())
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
@@ -327,7 +327,9 @@ class RecentlyPlayedSpanTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(recentlyPlayedSpanTest: RecentlyPlayedSpanTest)
   }
