@@ -34,6 +34,7 @@ import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -219,7 +220,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_continueButtonClicked_filledNickname_doseNotShowErrorText() {
+  fun testFragment_continueButtonClicked_filledNickname_doesNotShowErrorText() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
@@ -273,6 +274,26 @@ class CreateProfileFragmentTest {
           hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_onTextChanged_afterError_hidesErrorMessage() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(not(isDisplayed())))
     }
   }
 
