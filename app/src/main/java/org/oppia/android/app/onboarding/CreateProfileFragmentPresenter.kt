@@ -91,7 +91,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
       binding.createProfilePicturePrompt.visibility = View.GONE
       intent?.let {
-        selectedImage = checkNotNull(intent.data.toString()) { "Could not find the selected image." }
+        selectedImage =
+          checkNotNull(intent.data.toString()) { "Could not find the selected image." }
         imageLoader.loadBitmap(
           selectedImage,
           ImageViewTarget(uploadImageView)
