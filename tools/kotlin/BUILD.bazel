@@ -11,8 +11,11 @@ exports_files(["remove_processor_duplicates.patch"])
 
 string_flag(
     name = "warn_mode",
-    values = ["warning", "failure"],
     build_setting_default = "failure",
+    values = [
+        "warning",
+        "failure",
+    ],
 )
 
 config_setting(
@@ -28,8 +31,8 @@ config_setting(
 kt_kotlinc_options(
     name = "oppia_kotlinc_options",
     warn = select({
-        ":errors_as_warnings": "report",
         ":errors_as_failures": "error",
+        ":errors_as_warnings": "report",
     }),
     x_optin = ["kotlin.RequiresOptIn"],
 )
@@ -38,8 +41,8 @@ kt_kotlinc_options(
 kt_javac_options(
     name = "oppia_javac_options",
     warn = select({
-        ":errors_as_warnings": "report",
         ":errors_as_failures": "error",
+        ":errors_as_warnings": "report",
     }),
 )
 
