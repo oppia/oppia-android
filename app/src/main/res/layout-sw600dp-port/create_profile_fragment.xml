@@ -107,7 +107,6 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/tablet_shared_margin_small"
       android:layout_marginEnd="@dimen/tablet_shared_margin_xl"
-      android:autofillHints="false"
       android:background="@{viewModel.hasErrorMessage ? @drawable/edit_text_white_background_error_border: @drawable/edit_text_white_background_with_border}"
       android:textSize="@dimen/onboarding_shared_text_size_medium"
       app:layout_constraintEnd_toEndOf="parent"

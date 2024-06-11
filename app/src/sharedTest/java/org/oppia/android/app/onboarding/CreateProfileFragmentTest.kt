@@ -222,7 +222,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_continueButtonClicked_filledNickname_doseNotShowErrorText() {
+  fun testFragment_continueButtonClicked_filledNickname_doesNotShowErrorText() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
