@@ -11,13 +11,19 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,9 +39,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -121,6 +129,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   @Composable
   fun ClassroomListScreen(homeItemViewModelList: List<HomeItemViewModel>) {
     val groupedItems = homeItemViewModelList.groupBy { it::class }
+    val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     LazyColumn {
       groupedItems.forEach { (type, items) ->
         when (type) {
@@ -137,13 +146,18 @@ class ClassroomListFragmentPresenter @Inject constructor(
           ClassroomSummaryViewModel::class -> stickyHeader {
             ClassroomListComponent(classroomSummaryList = items.map { it as ClassroomSummaryViewModel })
           }
-          AllTopicsViewModel::class -> items.forEach { item ->
+          AllTopicsViewModel::class -> items.forEach { _ ->
             item {
-              AllTopicsHeaderComponent(allTopicsViewModel = item as AllTopicsViewModel)
+              AllTopicsHeaderComponent()
             }
           }
-          TopicSummaryViewModel::class -> item {
-            TopicListComponent(topicSummaryList = items.map { it as TopicSummaryViewModel })
+          TopicSummaryViewModel::class -> gridItems(
+            data = items.map { it as TopicSummaryViewModel },
+            columnCount = topicListSpanCount,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(horizontal = 28.dp, vertical = 10.dp)
+          ) { itemData ->
+            TopicCard(topicSummaryViewModel = itemData)
           }
         }
       }
@@ -192,10 +206,10 @@ class ClassroomListFragmentPresenter @Inject constructor(
       fontSize = 18.sp,
       modifier = Modifier
         .padding(
-          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
-          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-          bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+          top = 24.dp,
+          end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+          bottom = 20.dp,
         )
     )
     LazyRow(
@@ -233,13 +247,21 @@ class ClassroomListFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  fun TopicListComponent(topicSummaryList: List<TopicSummaryViewModel>) {
-    Text(text = "TopicList")
-  }
-
-  @Composable
-  fun AllTopicsHeaderComponent(allTopicsViewModel: AllTopicsViewModel) {
-    Text(text = "AllTopics")
+  fun AllTopicsHeaderComponent() {
+    Text(
+      text = stringResource(id = R.string.select_a_topic_to_start),
+      color = colorResource(id = R.color.component_color_shared_primary_text_color),
+      fontFamily = FontFamily.SansSerif,
+      fontWeight = FontWeight.Medium,
+      fontSize = 18.sp,
+      modifier = Modifier
+        .padding(
+          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+          top = 24.dp,
+          end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+          bottom = 20.dp,
+        )
+    )
   }
 
   @Composable
@@ -355,6 +377,97 @@ class ClassroomListFragmentPresenter @Inject constructor(
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
         )
+      }
+    }
+  }
+
+  @Composable
+  fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
+    Card(
+      modifier = Modifier
+        .padding(
+          start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
+          end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
+        ),
+      elevation = 4.dp,
+    ) {
+      Column(
+        verticalArrangement = Arrangement.Center,
+      ) {
+        Image(
+          painter = painterResource(id = topicSummaryViewModel.thumbnailResourceId),
+          contentDescription = "${topicSummaryViewModel.title} Card",
+          modifier = Modifier
+            .aspectRatio(4f / 3f)
+            .background(
+              Color(
+                (0xff000000L or topicSummaryViewModel.topicSummary.topicThumbnail
+                  .backgroundColorRgb.toLong()).toInt()
+              )
+            )
+        )
+        Column(
+          modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.component_color_shared_topic_card_item_background_color)),
+          verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+          Text(
+            text = topicSummaryViewModel.title,
+            modifier = Modifier
+              .padding(start = 8.dp, top = 8.dp, end = 8.dp),
+            color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
+            fontFamily = FontFamily.SansSerif,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+          )
+          Text(
+            text = topicSummaryViewModel.computeLessonCountText(),
+            modifier = Modifier
+              .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp),
+            color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Light,
+            fontSize = 14.sp,
+            fontStyle = FontStyle.Italic,
+            textAlign = TextAlign.Start,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+          )
+        }
+      }
+    }
+  }
+}
+
+fun <T> LazyListScope.gridItems(
+  data: List<T>,
+  columnCount: Int,
+  modifier: Modifier,
+  horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+  itemContent: @Composable BoxScope.(T) -> Unit,
+) {
+  val size = data.count()
+  val rows = if (size == 0) 0 else 1 + (size - 1) / columnCount
+  items(rows, key = { it.hashCode() }) { rowIndex ->
+    Row(
+      horizontalArrangement = horizontalArrangement,
+      modifier = modifier
+    ) {
+      for (columnIndex in 0 until columnCount) {
+        val itemIndex = rowIndex * columnCount + columnIndex
+        if (itemIndex < size) {
+          Box(
+            modifier = Modifier.weight(1F, fill = true),
+            propagateMinConstraints = true
+          ) {
+            itemContent(data[itemIndex])
+          }
+        } else {
+          Spacer(Modifier.weight(1F, fill = true))
+        }
       }
     }
   }
