@@ -8,7 +8,16 @@ import java.io.File
 /**
  * Entry point function for running coverage analysis for a single test target.
  *
- * @param args Command-line arguments.
+ * Usage:
+ *   bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <//:test_targetname>
+ *
+ * Arguments:
+ * - path_to_root: directory path to the root of the Oppia Android repository.
+ * - test_targetname: bazel target name of the test
+ *
+ * Example:
+ *     bazel run //scripts:run_coverage_for_test_target -- $(pwd)
+ *     //utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest
  */
 fun main(vararg args: String) {
   val repoRoot = File(args[0]).absoluteFile.normalize()
@@ -27,25 +36,22 @@ class RunCoverageForTestTarget(
 
   /**
    * Analyzes target file for coverage, generates chosen reports accordingly.
-   *
-   * @param repoRoot the absolute path to the working root directory
-   * @param targetFile Path to the file to analyze.
    */
-  fun runCoverage() {
-    runWithCoverageAnalysis()
+  fun runCoverage(): String? {
+    return runWithCoverageAnalysis()
   }
 
   /**
    * Runs coverage analysis on the specified target file asynchronously.
    *
-   * @param repoRoot the absolute path to the working root directory
-   * @param targetFile Path to the target file to analyze coverage.
-   * @return [A deferred result representing the coverage report].
+   * @return [Path of the coverage data file].
    */
-  fun runWithCoverageAnalysis() {
-    ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+  fun runWithCoverageAnalysis(): String? {
+    return ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
-        CoverageRunner(repoRoot, scriptBgDispatcher).runWithCoverageAsync(targetPath).await()
+        val result =
+          CoverageRunner(repoRoot, scriptBgDispatcher).runWithCoverageAsync(targetPath).await()
+        result
       }
     }
   }
