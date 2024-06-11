@@ -10,7 +10,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.OnboardingAppLanguageSelectionFragmentBinding
 import javax.inject.Inject
 
-/** The presenter for [OnboardingFragment] V2. */
+/** The presenter for [OnboardingFragment]. */
 @FragmentScope
 class OnboardingFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
@@ -18,7 +18,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
 
-  /** Handle creation and binding of the [OnboardingFragment] V2 layout. */
+  /** Handle creation and binding of the [OnboardingFragment] layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = OnboardingAppLanguageSelectionFragmentBinding.inflate(
       inflater,

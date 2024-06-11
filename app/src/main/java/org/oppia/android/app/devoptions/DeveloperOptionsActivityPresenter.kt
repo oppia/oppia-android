@@ -1,7 +1,6 @@
 package org.oppia.android.app.devoptions
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -33,7 +32,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   }
 
   private fun setUpNavigationDrawer() {
-    val toolbar = binding.developerOptionsActivityToolbar as Toolbar
+    val toolbar = binding.developerOptionsActivityToolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity

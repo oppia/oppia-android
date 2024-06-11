@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
@@ -15,7 +14,6 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OptionAppLanguageBinding
 import org.oppia.android.databinding.OptionAudioLanguageBinding
 import org.oppia.android.databinding.OptionStoryTextSizeBinding
@@ -44,7 +42,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
+  private val optionControlsViewModel: OptionControlsViewModel,
   private val oppiaLogger: OppiaLogger,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val translationController: TranslationController
@@ -55,7 +53,6 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private var appLanguage = OppiaLanguage.ENGLISH
   private var audioLanguage = AudioLanguage.NO_AUDIO
-  private val viewModel = getOptionControlsItemViewModel()
 
   /** Initializes and creates the views for [OptionsFragment]. */
   fun handleCreateView(
@@ -65,8 +62,8 @@ class OptionsFragmentPresenter @Inject constructor(
     isFirstOpen: Boolean,
     selectedFragment: String
   ): View? {
-    viewModel.isUIInitialized(false)
-    viewModel.isMultipane.set(isMultipane)
+    optionControlsViewModel.isUIInitialized(false)
+    optionControlsViewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
       inflater,
       container,
@@ -75,7 +72,7 @@ class OptionsFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    viewModel.setProfileId(profileId)
+    optionControlsViewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)
     binding.optionsRecyclerview.apply {
@@ -84,13 +81,13 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter = optionsRecyclerViewAdapter
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = viewModel
+      it.viewModel = optionControlsViewModel
     }
     setSelectedFragment(selectedFragment)
-    viewModel.isUIInitialized(true)
+    optionControlsViewModel.isUIInitialized(true)
 
     var hasDefaultInitializedFragment = false
-    viewModel.optionsListLiveData.observe(fragment) { viewModels ->
+    optionControlsViewModel.optionsListLiveData.observe(fragment) { viewModels ->
       if (!hasDefaultInitializedFragment) {
         viewModels.filterIsInstance<OptionsReadingTextSizeViewModel>().singleOrNull()?.let {
           if (isMultipane && isFirstOpen) {
@@ -146,7 +143,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionStoryTextSizeBinding,
     model: OptionsReadingTextSizeViewModel
   ) {
-    binding.commonViewModel = viewModel
+    binding.commonViewModel = optionControlsViewModel
     binding.viewModel = model
   }
 
@@ -154,7 +151,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionAppLanguageBinding,
     model: OptionsAppLanguageViewModel
   ) {
-    binding.commonViewModel = viewModel
+    binding.commonViewModel = optionControlsViewModel
     binding.viewModel = model
   }
 
@@ -162,13 +159,13 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionAudioLanguageBinding,
     model: OptionsAudioLanguageViewModel
   ) {
-    binding.commonViewModel = viewModel
+    binding.commonViewModel = optionControlsViewModel
     binding.viewModel = model
   }
 
   /** Sets the selected fragment index in [OptionsControlViewModel]. */
   fun setSelectedFragment(selectedFragment: String) {
-    viewModel.selectedFragmentIndex.set(
+    optionControlsViewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(
         selectedFragment
       )
@@ -182,10 +179,6 @@ class OptionsFragmentPresenter @Inject constructor(
       AUDIO_LANGUAGE_FRAGMENT -> 2
       else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
-  }
-
-  private fun getOptionControlsItemViewModel(): OptionControlsViewModel {
-    return viewModelProvider.getForFragment(fragment, OptionControlsViewModel::class.java)
   }
 
   private enum class ViewType {
@@ -204,19 +197,17 @@ class OptionsFragmentPresenter @Inject constructor(
    * @param textSize new textSize to be set as current
    */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
-    profileManagementController.updateReadingTextSize(profileId, textSize).toLiveData().observe(
-      fragment,
-      {
-        when (it) {
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: updating to $textSize", it.error
-            )
-          }
-          else -> {} // Nothing needs to be done unless the update failed.
+    val sizeUpdateResult = profileManagementController.updateReadingTextSize(profileId, textSize)
+    sizeUpdateResult.toLiveData().observe(fragment) {
+      when (it) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: updating to $textSize", it.error
+          )
         }
+        else -> {} // Nothing needs to be done unless the update failed.
       }
-    )
+    }
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
@@ -272,13 +263,10 @@ class OptionsFragmentPresenter @Inject constructor(
    * @param action what to execute after the UI is initialized.
    */
   fun runAfterUIInitialization(action: () -> Unit) {
-    viewModel.uiLiveData.observe(
-      fragment,
-      Observer {
-        if (it) {
-          action.invoke()
-        }
+    optionControlsViewModel.uiLiveData.observe(fragment) {
+      if (it) {
+        action.invoke()
       }
-    )
+    }
   }
 }
