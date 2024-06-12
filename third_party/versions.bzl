@@ -146,6 +146,7 @@ HTTP_DEPENDENCY_VERSIONS = {
     },
     "oppia_proto_api": {
         "version": "9cf993ea0b798a67b3faa21c690c30b9027fb371",
+    },
     "guava_jre": {
         "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
         "version": "31.0.1",
