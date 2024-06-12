@@ -99,9 +99,9 @@ class DecodeUserStudyEventString {
   }
 
   private companion object {
-    private const val CARRIAGE_RETURN = '\r'.toInt()
-    private const val NEW_LINE = '\n'.toInt()
-    private const val SPACE = ' '.toInt()
+    private const val CARRIAGE_RETURN = '\r'.code
+    private const val NEW_LINE = '\n'.code
+    private const val SPACE = ' '.code
     private val base64Decoder by lazy { Base64.getDecoder() }
 
     private inline fun <reified M : Message> InputStream.fromCompressedBase64(baseMessage: M): M {

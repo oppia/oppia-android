@@ -163,10 +163,8 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
       return classLoader.loadClass("org.robolectric.shadows.ShadowLooper")
     }
 
-    private fun loadMainShadowLooper(): Any {
-      val shadowMainLooperMethod = shadowLooperClass.getDeclaredMethod("shadowMainLooper")
-      return shadowMainLooperMethod.invoke(/* obj= */ null)
-    }
+    private fun loadMainShadowLooper(): Any? =
+      shadowLooperClass.getDeclaredMethod("shadowMainLooper").invoke(/* obj = */ null)
 
     private fun loadIsIdleMethod(): Method {
       return shadowLooperClass.getDeclaredMethod("isIdle")

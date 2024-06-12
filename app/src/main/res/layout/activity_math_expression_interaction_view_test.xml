@@ -10,6 +10,10 @@
     <variable
       name="mathExpressionInteractionsViewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
+
+    <variable
+      name="getPendingAnswerErrorOnSubmitClick"
+      type="java.lang.Runnable" />
   </data>
   <ScrollView
     android:layout_width="match_parent"
@@ -56,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/submit_button_text"
-        android:onClick="getPendingAnswerErrorOnSubmitClick"
+        android:onClick="@{(v) -> getPendingAnswerErrorOnSubmitClick.run()}"
         android:textColor="@color/component_color_shared_secondary_4_text_color" />
 
     </LinearLayout>

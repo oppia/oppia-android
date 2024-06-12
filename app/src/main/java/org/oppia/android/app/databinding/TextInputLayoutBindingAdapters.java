@@ -8,7 +8,7 @@ import com.google.android.material.textfield.TextInputLayout;
 public final class TextInputLayoutBindingAdapters {
 
   /** Binding adapter for setting an error message. */
-  @BindingAdapter("app:errorMessage")
+  @BindingAdapter("errorMessage")
   public static void setErrorMessage(
       @NonNull TextInputLayout textInputLayout,
       String errorMessage

@@ -42,17 +42,22 @@ http_archive(
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
     name = "io_bazel_rules_kotlin",
+    patches = ["//tools/kotlin:add_kotlinc_optin_support.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 
-kotlin_repositories()
+# Use the 1.6 compiler since rules_kotlin 1.5 defaults to the 1.5 compiler.
+kotlin_repositories(
+    compiler_release = kotlinc_version(
+        release = "1.6.10",
+        sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
+    ),
+)
 
-load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_register_toolchains")
-
-kt_register_toolchains()
+register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -141,18 +146,18 @@ git_repository(
 
 git_repository(
     name = "android-spotlight",
-    commit = "ebde38335bfb56349eae57e705b611ead9addb15",
+    commit = "cc23499d37dc8533a2876e45b5063e981a4583f4",
     remote = "https://github.com/oppia/android-spotlight",
-    shallow_since = "1668824029 -0800",
+    shallow_since = "1680147372 -0700",
 )
 
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "43139c140833c7120f351d63d74b42c253d2b213",
+    commit = "ccdf4170817fa3b48b8e1e452772dd58ecb71cf2",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1675741075 -0800",
+    shallow_since = "1679426649 -0700",
 )
 
 bind(
@@ -199,6 +204,7 @@ maven_install(
     maven_install_json = "//third_party:maven_install.json",
     override_targets = {
         "com.google.guava:guava": "@//third_party:com_google_guava_guava",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "@//third_party:kotlinx-coroutines-core-jvm",
     },
     repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
     strict_visibility = True,
@@ -215,6 +221,18 @@ http_jar(
         "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
             url_base,
             HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)
+
+http_jar(
+    name = "kotlinx-coroutines-core-jvm",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
+    urls = [
+        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
         )
         for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
     ],
