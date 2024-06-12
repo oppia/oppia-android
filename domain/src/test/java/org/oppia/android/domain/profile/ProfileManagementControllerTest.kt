@@ -1222,10 +1222,10 @@ class ProfileManagementControllerTest {
     )
 
     // Verify that last selected classroom of profile 0 is classroom 1.
-    val classroomIdProfile0 = monitorFactory.waitForNextSuccessfulResult(
+    val profile0SelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
     )
-    assertThat(classroomIdProfile0).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(profile0SelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
 
     // Verify that last selected classroom of profile 1 is classroom 2.
     val classroomIdProfile1 = monitorFactory.waitForNextSuccessfulResult(
