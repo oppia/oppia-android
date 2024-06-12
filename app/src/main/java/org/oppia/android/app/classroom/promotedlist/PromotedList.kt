@@ -63,12 +63,13 @@ fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
 fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
   Card(
     modifier = Modifier
-      .width(280.dp)
+      .width(width = dimensionResource(id = R.dimen.promoted_story_card_layout_width))
       .padding(
         start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
         end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
         bottom = 8.dp,
       ),
+    backgroundColor = Color.Transparent,
     elevation = 4.dp,
   ) {
     Column(

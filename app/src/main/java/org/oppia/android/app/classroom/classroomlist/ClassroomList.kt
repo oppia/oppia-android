@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -82,6 +83,7 @@ fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
         start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
         end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
       ),
+    backgroundColor = Color.Transparent,
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = 4.dp,
   ) {
