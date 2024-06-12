@@ -6,5 +6,13 @@ build --android_databinding_use_v3_4_args \
     --define=android_standalone_dexing_tool=d8_compat_dx \
     --android_databinding_use_androidx
 
+# Ensure all built Java files treat warnings as errors (similar to the Kotlin configuration) to help
+# reduce code smell & potential bugs during development.
+build --javacopt="-Werror"
+
+# Note that this doesn't stop 'Werror' from being passed above, but that shouldn't affect most of
+# the Oppia Android-specific build.
+build:ignore_build_warnings --//tools/kotlin:warn_mode=warning
+
 # Show all test output by default (for better debugging).
 test --test_output=all

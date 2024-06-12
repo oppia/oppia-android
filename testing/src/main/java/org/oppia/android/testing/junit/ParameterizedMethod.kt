@@ -32,8 +32,10 @@ class ParameterizedMethod(
     // changes).
     val baseClass = testClassInstance.javaClass
     val fieldSetters = parameterFields.associate { field ->
-      val setterMethod =
-        baseClass.getDeclaredMethod("set${field.name.capitalize(Locale.US)}", field.type)
+      val fieldName = field.name.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+      }
+      val setterMethod = baseClass.getDeclaredMethod("set$fieldName", field.type)
       field.name to setterMethod
     }
     values.getValue(iterationName).forEach { parameterValue ->
