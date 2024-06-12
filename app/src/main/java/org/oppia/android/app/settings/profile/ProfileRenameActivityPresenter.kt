@@ -4,16 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */
 @ActivityScope
-class ProfileRenameActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>,
-) {
+class ProfileRenameActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
   /** Handles onCreate() of [ProfileRenameActivity]. */
   fun handleOnCreate(profileId: Int) {
@@ -45,9 +41,5 @@ class ProfileRenameActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.profile_rename_fragment_placeholder
       ) as ProfileRenameFragment?
-  }
-
-  private fun getProfileRenameViewModel(): ProfileRenameViewModel {
-    return viewModelProvider.getForActivity(activity, ProfileRenameViewModel::class.java)
   }
 }

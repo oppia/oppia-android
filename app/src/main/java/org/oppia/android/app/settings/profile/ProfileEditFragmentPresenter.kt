@@ -75,7 +75,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       )
     }
 
-    binding.profileMarkChaptersForCompletionButton?.setOnClickListener {
+    binding.profileMarkChaptersForCompletionButton.setOnClickListener {
       activity.startActivity(
         MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
           activity, internalProfileId, showConfirmationNotice = true

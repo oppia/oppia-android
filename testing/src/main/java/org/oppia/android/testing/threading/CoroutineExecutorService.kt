@@ -4,15 +4,16 @@ import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.guava.asListenableFuture
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
-import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -53,6 +54,7 @@ private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
  * allow cooperation with Oppia's test coroutine dispatchers utility (which is the purpose of this
  * class).
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineExecutorService(
   private val backgroundDispatcher: CoroutineDispatcher
 ) : ExecutorService {
@@ -75,7 +77,7 @@ class CoroutineExecutorService(
   }
 
   override fun <T : Any?> submit(task: Callable<T>?): Future<T> {
-    return dispatchAsync(task ?: throw NullPointerException()).toFuture()
+    return dispatchAsync(task ?: throw NullPointerException()).asListenableFuture()
   }
 
   override fun <T : Any?> submit(task: Runnable?, result: T): Future<T> {
@@ -91,7 +93,7 @@ class CoroutineExecutorService(
   }
 
   override fun submit(task: Runnable?): Future<*> {
-    return dispatchAsync(task ?: throw NullPointerException()).toFuture()
+    return dispatchAsync(task ?: throw NullPointerException()).asListenableFuture()
   }
 
   override fun shutdownNow(): MutableList<Runnable> {
@@ -167,7 +169,6 @@ class CoroutineExecutorService(
         // timeout due to cooperation.
         val timeoutMillis = unit?.toMillis(timeout) ?: 0
         if (timeoutMillis > 0) {
-          @Suppress("EXPERIMENTAL_API_USAGE")
           onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
         resultChannel.onReceive { it }
@@ -212,12 +213,12 @@ class CoroutineExecutorService(
             null
           }
         }
-        val future = task.toFuture()
+        val future = task.asListenableFuture()
         if (result == null && timeoutMillis > 0) {
           // Cancel the operation if it's taking too long, but only if there's a timeout set. This
           // won't cancel the future if the deferred is completed with a failure, or passing with a
           // null result.
-          check(future.cancel(/* mayInterruptIfRunning= */ true)) { "Failed to cancel task." }
+          check(future.cancel(/* mayInterruptIfRunning = */ true)) { "Failed to cancel task." }
         }
         return@async future
       }
@@ -298,54 +299,7 @@ class CoroutineExecutorService(
 
   private data class Task<T>(val runnable: Runnable, val deferred: Deferred<T>)
 
-  /**
-   * Returns a new [Future] based on a [Deferred]. Note that the APIs between these two async
-   * constructs are different, so there may be some subtle inconsistencies in practice.
-   */
-  private fun <T> Deferred<T>.toFuture(): Future<T> {
-    val deferred: Deferred<T> = this
-    return object : Future<T> {
-      override fun isDone(): Boolean = deferred.isCompleted
-
-      override fun get(): T = get(/* timeout= */ 0, TimeUnit.MILLISECONDS)
-
-      override fun get(timeout: Long, unit: TimeUnit?): T {
-        return runBlocking {
-          try {
-            maybeWithTimeout(unit?.toMillis(timeout) ?: 0) {
-              deferred.await()
-            }
-          } catch (e: Exception) {
-            // Rethrow the failure if the computation failed.
-            throw ExecutionException(e)
-          }
-        }
-      }
-
-      override fun cancel(mayInterruptIfRunning: Boolean): Boolean {
-        return if (!deferred.isCompleted) {
-          deferred.cancel()
-          true
-        } else {
-          false
-        }
-      }
-
-      override fun isCancelled(): Boolean = deferred.isCancelled
-    }
-  }
-
   private companion object {
-    /**
-     * Wraps the specified block in a withTimeout() only if the specified timeout is larger than 0.
-     */
-    private suspend fun <T> maybeWithTimeout(
-      timeoutMillis: Long,
-      block: TimeoutBlock<T>
-    ): T {
-      return maybeWithTimeoutDelegated(timeoutMillis, block, ::withTimeout)
-    }
-
     /**
      * Wraps the specified block in a withTimeoutOrNull() only if the specified timeout is larger
      * than 0.
@@ -354,18 +308,10 @@ class CoroutineExecutorService(
       timeoutMillis: Long,
       block: TimeoutBlock<T>
     ): T? {
-      return maybeWithTimeoutDelegated(timeoutMillis, block, ::withTimeoutOrNull)
-    }
-
-    private suspend fun <T : R, R> maybeWithTimeoutDelegated(
-      timeoutMillis: Long,
-      block: TimeoutBlock<T>,
-      withTimeoutDelegate: suspend (Long, TimeoutBlock<T>) -> R
-    ): R {
       return coroutineScope {
         if (timeoutMillis > 0) {
           try {
-            withTimeoutDelegate(timeoutMillis, block)
+            withTimeoutOrNull(timeoutMillis, block)
           } catch (e: TimeoutCancellationException) {
             // Treat timeouts in this service as a standard TimeoutException (which should result in
             // the coroutine being completed with a failure).
