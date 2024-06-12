@@ -65,6 +65,14 @@ android_library(
     ],
 )
 
+android_library(
+    name = "com_google_archivepatcher",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@archive_patcher//tools",
+    ],
+)
+
 java_library(
     name = "moshi",
     exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
@@ -132,6 +140,19 @@ kt_jvm_library(
     exports = [":_kotlinx-coroutines-core-jvm_import_do_not_depend"],
 )
 
+java_library(
+    name = "com_google_guava_guava_jre",
+    visibility = ["//scripts:__subpackages__"],
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_jre//jar",
+    ],
+)
+
 # This solution is based on https://github.com/Bencodes/bazel_issue_13553 for Bazel issue:
 # https://github.com/bazelbuild/bazel/issues/13553.
 genrule(
@@ -162,14 +183,17 @@ java_library(
     name = "glide_compiler",
     exported_plugins = ["//tools:glide_compiler_plugin"],
     visibility = ["//visibility:public"],
-    exports = [
-        "//third_party:com_github_bumptech_glide_compiler",
-    ],
+)
+
+android_library(
+    name = "android_bundletool",
+    visibility = ["//visibility:public"],
+    exports = ["@android_bundletool//jar"],
 )
 
 java_binary(
-    name = "android_bundletool",
+    name = "android_bundletool_binary",
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
-    runtime_deps = ["@android_bundletool//jar"],
+    runtime_deps = [":android_bundletool"],
 )

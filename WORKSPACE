@@ -4,6 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -11,8 +12,8 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORI
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 33,
-    build_tools_version = "29.0.2",
+    api_level = BUILD_SDK_VERSION,
+    build_tools_version = BUILD_TOOLS_VERSION,
 )
 
 # Oppia's backend proto API definitions.
@@ -160,6 +161,13 @@ git_repository(
     shallow_since = "1679426649 -0700",
 )
 
+git_repository(
+    name = "archive_patcher",
+    commit = "d1c18b0035d5f669ddaefadade49cae0748f9df2",
+    remote = "https://github.com/oppia/archive-patcher",
+    shallow_since = "1642022460 -0800",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
@@ -214,17 +222,24 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
 
-http_jar(
-    name = "guava_android",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
-    urls = [
-        "{0}/com/google/guava/guava/{1}-android/guava-{1}-android.jar".format(
-            url_base,
-            HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"],
-        )
-        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
-    ],
-)
+[
+    http_jar(
+        name = "guava_%s" % guava_type,
+        sha256 = HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["sha"],
+        urls = [
+            "{0}/com/google/guava/guava/{1}-{2}/guava-{1}-{2}.jar".format(
+                url_base,
+                HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["version"],
+                guava_type,
+            )
+            for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+        ],
+    )
+    for guava_type in [
+        "android",
+        "jre",
+    ]
+]
 
 http_jar(
     name = "kotlinx-coroutines-core-jvm",
