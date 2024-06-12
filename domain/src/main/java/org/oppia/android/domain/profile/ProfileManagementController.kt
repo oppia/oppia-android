@@ -856,11 +856,8 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the last selected classroom ID for the specified profile.
-   *
-   * @param profileId The ID of the profile to update.
-   * @param classroomId The ID of the classroom selected by the user.
-   * @return A [DataProvider] representing the asynchronous operation result.
+   * Sets the last selected [classroomId] for the specified [profileId]. Returns a [DataProvider]
+   * indicating whether the save was a success.
    */
   fun updateLastSelectedClassroomId(
     profileId: ProfileId,
@@ -887,11 +884,8 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Retrieves the last selected classroom ID for the specified profile.
-   *
-   * @param profileId The ID of the profile to retrieve the last selected
-   * classroom ID for.
-   * @return A [DataProvider] containing the last selected classroom ID.
+   * Returns a [DataProvider] containing a nullable last selected classroom ID for the specified
+   * [profileId].
    */
   fun retrieveLastSelectedClassroomId(
     profileId: ProfileId
