@@ -62,9 +62,7 @@ class ClassroomController @Inject constructor(
   private val translationController: TranslationController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
 ) {
-  /**
-   * Returns the list of [ClassroomSummary]s currently tracked by the app.
-   */
+  /** Returns the list of [ClassroomSummary]s currently tracked by the app. */
   fun getClassroomList(profileId: ProfileId): DataProvider<ClassroomList> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
@@ -106,8 +104,9 @@ class ClassroomController @Inject constructor(
 
   private fun loadClassroomListFromJson(contentLocale: OppiaLocale.ContentLocale): ClassroomList {
     val classroomIdJsonArray = jsonAssetRetriever
-      .loadJsonFromAsset("classrooms.json")!!
-      .getJSONArray("classroom_id_list")
+      .loadJsonFromAsset("classrooms.json")
+      ?.getJSONArray("classroom_id_list")
+      ?: return ClassroomList.getDefaultInstance()
     val classroomListBuilder = ClassroomList.newBuilder()
     for (i in 0 until classroomIdJsonArray.length()) {
       val classroomId = classroomIdJsonArray.optString(i)
@@ -155,7 +154,9 @@ class ClassroomController @Inject constructor(
   }
 
   private fun loadClassroomSummaryFromJson(classroomId: String): ClassroomSummary {
-    val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
+    val classroomJsonObject = jsonAssetRetriever
+      .loadJsonFromAsset("$classroomId.json")
+      ?: return ClassroomSummary.getDefaultInstance()
     return ClassroomSummary.newBuilder().apply {
       setClassroomId(classroomJsonObject.getStringFromObject("classroom_id"))
       classroomTitle = SubtitledHtml.newBuilder().apply {
@@ -199,7 +200,9 @@ class ClassroomController @Inject constructor(
         addAllTopicIds(classroomRecord.topicPrerequisitesMap.keys.toList())
       }.build()
     } else {
-      val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
+      val classroomJsonObject = jsonAssetRetriever
+        .loadJsonFromAsset("$classroomId.json")
+        ?: return ClassroomRecord.TopicIdList.getDefaultInstance()
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       val topicSummaryList = mutableListOf<TopicSummary>()
@@ -257,7 +260,10 @@ class ClassroomController @Inject constructor(
         storyRecords.firstOrNull()?.storyId?.let { this.firstStoryId = it }
       }.build()
     } else {
-      createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)
+      val topicJsonObject = jsonAssetRetriever
+        .loadJsonFromAsset("$topicId.json")
+        ?: return TopicSummary.getDefaultInstance()
+      createTopicSummaryFromJson(topicId, topicJsonObject)
     }
   }
 
