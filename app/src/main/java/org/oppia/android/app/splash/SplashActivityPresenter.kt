@@ -42,9 +42,9 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
