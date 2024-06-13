@@ -349,7 +349,6 @@ message TopicSummary {
   // The title of the classroom this topic is part of.
   SubtitledHtml classroom_title = 11;
 
-
   // The structural version of the topic.
   int32 version = 3;
 
