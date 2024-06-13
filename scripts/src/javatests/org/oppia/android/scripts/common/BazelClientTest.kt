@@ -381,6 +381,11 @@ class BazelClientTest {
 
   @Test
   fun testRunCodeCoverage_forSampleTestTarget_returnsCoverageResult() {
+    val commandExecutor = CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES
+    )
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 

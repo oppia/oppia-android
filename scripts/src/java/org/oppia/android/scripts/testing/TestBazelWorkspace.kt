@@ -70,7 +70,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
     val testSubpackage = "$subpackage/test/java/com/example"
     val testFileName = "${filename}Test"
-    addTestContentAndBuildFile(filename, testFileName, testContent, testSubpackage)
+    addTestContentAndBuildFile(filename, testFileName, testContent, sourceSubpackage, testSubpackage)
   }
 
   /**
@@ -110,16 +110,14 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     if (!buildFile.exists()) {
       temporaryRootFolder.newFile(buildFileRelativePath)
     }
+    prepareBuildFileForLibraries(buildFile)
 
     buildFile.appendText(
       """
-      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-
       kt_jvm_library(
           name = "${filename.lowercase()}",
           srcs = ["$filename.kt"],
-          visibility = ["//visibility:public"],
-          deps = [],
+          visibility = ["//visibility:public"]
       )
       """.trimIndent() + "\n"
     )
@@ -138,6 +136,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     filename: String,
     testName: String,
     testContent: String,
+    sourceSubpackage: String,
     testSubpackage: String
   ) {
     initEmptyWorkspace()
@@ -157,17 +156,16 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     if (!testBuildFile.exists()) {
       temporaryRootFolder.newFile(testBuildFileRelativePath)
     }
+    prepareBuildFileForTests(testBuildFile)
 
     // Add the test file to the BUILD file with appropriate dependencies
     testBuildFile.appendText(
       """
-      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
-
       kt_jvm_test(
           name = "test",
           srcs = ["$testName.kt"],
           deps = [
-              "//coverage/main/java/com/example:${filename.lowercase()}",
+              "//$sourceSubpackage:${filename.lowercase()}",
               "@maven//:junit_junit",
           ],
           visibility = ["//visibility:public"],

@@ -8,6 +8,7 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * Class responsible for running coverage analysis asynchronously.
@@ -49,7 +50,9 @@ class CoverageRunner(
   fun getCoverage(
     bazelTestTarget: String
   ): List<String> {
-    val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+    val commandExecutor: CommandExecutor = CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+    )
     val bazelClient = BazelClient(repoRoot, commandExecutor)
     val coverageData = bazelClient.runCoverageForTestTarget(bazelTestTarget)
     return coverageData
