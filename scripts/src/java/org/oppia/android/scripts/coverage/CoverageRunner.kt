@@ -1,13 +1,12 @@
 package org.oppia.android.scripts.coverage
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -17,9 +16,9 @@ import java.io.File
  * @param targetFile Path to the target file to analyze coverage.
  */
 class CoverageRunner(
-    private val repoRoot: File,
-    private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
-  ) {
+  private val repoRoot: File,
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+) {
 
   /**
    * Runs coverage analysis asynchronously for the Bazel test target.
@@ -50,10 +49,10 @@ class CoverageRunner(
   fun getCoverage(
     bazelTestTarget: String
   ): List<String> {
-      val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
-      val bazelClient = BazelClient(repoRoot, commandExecutor)
-      val coverageData = bazelClient.runCoverageForTestTarget(bazelTestTarget)
-      return coverageData
+    val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+    val bazelClient = BazelClient(repoRoot, commandExecutor)
+    val coverageData = bazelClient.runCoverageForTestTarget(bazelTestTarget)
+    return coverageData
   }
 
   /**
@@ -62,7 +61,7 @@ class CoverageRunner(
    * @param data the result from the execution of the coverage command
    * @return the extracted path of the coverage data file.
    */
-  fun parseCoverageDataFile(data: List<String>) : String? {
+  fun parseCoverageDataFile(data: List<String>): String? {
     val regex = ".*coverage\\.dat$".toRegex()
     for (line in data) {
       val match = regex.find(line)
