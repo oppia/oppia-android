@@ -20,6 +20,8 @@ import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -36,6 +38,10 @@ class HomeActivity :
 
   @Inject
   lateinit var activityRouter: ActivityRouter
+
+  @Inject
+  @field:EnableOnboardingFlowV2
+  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 
   private var internalProfileId: Int = -1
 
@@ -66,19 +72,23 @@ class HomeActivity :
   }
 
   override fun onBackPressed() {
-    val previousFragment =
-      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
-    if (previousFragment != null) {
-      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    if (enableOnboardingFlowV2.value) {
+      finishAffinity()
+    } else {
+      val previousFragment =
+        supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+      if (previousFragment != null) {
+        supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+      }
+      val exitProfileDialogArguments =
+        ExitProfileDialogArguments
+          .newBuilder()
+          .setHighlightItem(HighlightItem.NONE)
+          .build()
+      val dialogFragment = ExitProfileDialogFragment
+        .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+      dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
     }
-    val exitProfileDialogArguments =
-      ExitProfileDialogArguments
-        .newBuilder()
-        .setHighlightItem(HighlightItem.NONE)
-        .build()
-    val dialogFragment = ExitProfileDialogFragment
-      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
-    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
