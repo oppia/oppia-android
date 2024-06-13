@@ -84,43 +84,41 @@ class CoverageRunnerTest {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent = """
-      package com.example;
-
-      public class Collatz {
-      
-        public static int getCollatzFinal(int n) {
-          if (n == 1) {
-            return 1;
-          }
-          if (n % 2 == 0) {
-            return getCollatzFinal(n / 2);
-          } else {
-            return getCollatzFinal(n * 3 + 1);
-          }
+    package com.example
+    
+    class TwoSum {
+    
+        companion object {
+            fun sumNumbers(a: Int, b: Int): Any {
+                return if (a ==0 && b == 0) {
+                    "Both numbers are zero"
+                } else {
+                    a + b
+                }
+            }
         }
-      }
+    }
     """.trimIndent()
 
     val testContent = """
-      package com.example;
-      
-      import static org.junit.Assert.assertEquals;
-      import org.junit.Test;
-      
-      public class TestCollatz {
-      
+    package com.example
+    
+    import org.junit.Assert.assertEquals
+    import org.junit.Test
+    
+    class TwoSumTest {
+    
         @Test
-        public void testGetCollatzFinal() {
-          assertEquals(Collatz.getCollatzFinal(1), 1);
-          assertEquals(Collatz.getCollatzFinal(5), 1);
-          assertEquals(Collatz.getCollatzFinal(10), 1);
-          assertEquals(Collatz.getCollatzFinal(21), 1);
+        fun testSumNumbers() {
+            assertEquals(TwoSum.sumNumbers(0, 1), 1)
+            assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+            assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
         }
-      }
+    }
     """.trimIndent()
 
-    testBazelWorkspace.addSampleSourceAndTestFile(
-      filename = "Collatz",
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
       sourceContent = sourceContent,
       testContent = testContent,
       subpackage = "coverage"
