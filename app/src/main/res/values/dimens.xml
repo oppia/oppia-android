@@ -773,6 +773,7 @@
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
+  <dimen name="audio_fragment_title_text_size">24sp</dimen>
 
   <!-- Clickable Item Min width -->
   <dimen name="clickable_item_min_width">144dp</dimen>
@@ -783,30 +784,25 @@
   <dimen name="onboarding_profile_picture_stroke_width">4dp</dimen>
   <dimen name="onboarding_profile_picture_padding">2dp</dimen>
 
-  <dimen name="onboarding_shared_margin_x_small">4dp</dimen>
-  <dimen name="onboarding_shared_margin_small">8dp</dimen>
-  <dimen name="onboarding_shared_margin_medium_small">12dp</dimen>
-  <dimen name="onboarding_shared_margin_medium">16dp</dimen>
-  <dimen name="onboarding_shared_margin_medium_large">20dp</dimen>
-  <dimen name="onboarding_shared_margin_large">24dp</dimen>
-  <dimen name="onboarding_shared_margin_xl">28dp</dimen>
-  <dimen name="onboarding_shared_margin_2xl">32dp</dimen>
-  <dimen name="onboarding_shared_margin_3xl">36dp</dimen>
-  <dimen name="onboarding_shared_margin_4xl">48dp</dimen>
-  <dimen name="onboarding_shared_margin_5xl">52dp</dimen>
-
-  <dimen name="onboarding_shared_text_size_small">12sp</dimen>
-  <dimen name="onboarding_shared_text_size_medium_small">14sp</dimen>
-  <dimen name="onboarding_shared_text_size_medium">16sp</dimen>
-  <dimen name="onboarding_shared_text_size_medium_large">18sp</dimen>
-  <dimen name="onboarding_shared_text_size_large">20sp</dimen>
-  <dimen name="onboarding_shared_text_size_xl">24sp</dimen>
-  <dimen name="onboarding_shared_text_size_2xl">28sp</dimen>
-  <dimen name="onboarding_shared_text_size_3xl">32sp</dimen>
-
   <dimen name="onboarding_shared_padding_small">4dp</dimen>
-  <dimen name="onboarding_shared_padding_medium_small">8dp</dimen>
-  <dimen name="onboarding_shared_padding_medium">12dp</dimen>
-  <dimen name="onboarding_shared_padding_medium_large">16dp</dimen>
-  <dimen name="onboarding_shared_padding_large">20dp</dimen>
+  <dimen name="onboarding_shared_padding_medium">8dp</dimen>
+
+  <dimen name="onboarding_shared_text_size_x_small">12sp</dimen>
+  <dimen name="onboarding_shared_text_size_small">14sp</dimen>
+  <dimen name="onboarding_shared_text_size_medium">16sp</dimen>
+  <dimen name="onboarding_shared_text_size_large">20sp</dimen>
+  <dimen name="onboarding_shared_text_size_xl">32sp</dimen>
+
+  <!-- Shared Margins -->
+  <dimen name="phone_shared_margin_x_small">4dp</dimen>
+  <dimen name="phone_shared_margin_small">8dp</dimen>
+  <dimen name="phone_shared_margin_medium">16dp</dimen>
+  <dimen name="phone_shared_margin_large">20dp</dimen>
+  <dimen name="phone_shared_margin_xl">28dp</dimen>
+
+  <dimen name="tablet_shared_margin_x_small">8dp</dimen>
+  <dimen name="tablet_shared_margin_small">12dp</dimen>
+  <dimen name="tablet_shared_margin_medium">16dp</dimen>
+  <dimen name="tablet_shared_margin_large">28dp</dimen>
+  <dimen name="tablet_shared_margin_xl">36dp</dimen>
 </resources>

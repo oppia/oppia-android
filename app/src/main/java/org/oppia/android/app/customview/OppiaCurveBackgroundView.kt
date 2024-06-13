@@ -3,7 +3,6 @@ package org.oppia.android.app.customview
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -13,7 +12,6 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
@@ -48,12 +46,9 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
   private lateinit var path: Path
   private var strokeWidth = 2f
 
-  init {
-    val typedArray: TypedArray =
-      context.obtainStyledAttributes(attrs, R.styleable.OppiaCurveBackgroundView)
-    customBackgroundColor =
-      typedArray.getColor(R.styleable.OppiaCurveBackgroundView_customBackgroundColor, Color.WHITE)
-    typedArray.recycle()
+  /** Sets the desired background color to the view and initializes the view. */
+  fun setCustomBackgroundColor(colorRes: Int) {
+    this.customBackgroundColor = colorRes
     setupCurvePaint()
   }
 
@@ -119,7 +114,7 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
     path = Path()
     paint = Paint(Paint.ANTI_ALIAS_FLAG)
     paint.apply {
-      style = Paint.Style.FILL_AND_STROKE
+      style = Paint.Style.FILL
       strokeWidth = this@OppiaCurveBackgroundView.strokeWidth
       color = customBackgroundColor
     }

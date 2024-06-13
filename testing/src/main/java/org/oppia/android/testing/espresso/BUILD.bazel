@@ -3,8 +3,7 @@
 Package for common Espresso matchers & other test utilities.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "edit_text_input_action",
@@ -14,7 +13,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//third_party:androidx_test_espresso_espresso-core",
     ],
@@ -69,5 +67,3 @@ kt_android_library(
         "//third_party:com_google_android_material_material",
     ],
 )
-
-dagger_rules()

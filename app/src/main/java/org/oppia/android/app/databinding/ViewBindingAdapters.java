@@ -37,8 +37,8 @@ public final class ViewBindingAdapters {
   /** Adapter to animate-rotate a view by the specified angle in the specified direction. */
   @BindingAdapter(
       value = {
-          "app:isRotationAnimationClockwise",
-          "app:rotationAnimationAngle"
+          "isRotationAnimationClockwise",
+          "rotationAnimationAngle"
       },
       requireAll = true
   )

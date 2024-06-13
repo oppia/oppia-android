@@ -10,15 +10,14 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.onboardingv2.OnboardingFragmentPresenter as OnboardingFragmentPresenterV2
 
 /** Fragment that contains an onboarding flow of the app. */
 class OnboardingFragment : InjectableFragment() {
   @Inject
-  lateinit var onboardingFragmentPresenter: OnboardingFragmentPresenter
+  lateinit var onboardingFragmentPresenterV1: OnboardingFragmentPresenterV1
 
   @Inject
-  lateinit var onboardingFragmentPresenterV2: OnboardingFragmentPresenterV2
+  lateinit var onboardingFragmentPresenter: OnboardingFragmentPresenter
 
   @Inject
   @field:EnableOnboardingFlowV2
@@ -35,9 +34,9 @@ class OnboardingFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     return if (enableOnboardingFlowV2.value) {
-      onboardingFragmentPresenterV2.handleCreateView(inflater, container)
-    } else {
       onboardingFragmentPresenter.handleCreateView(inflater, container)
+    } else {
+      onboardingFragmentPresenterV1.handleCreateView(inflater, container)
     }
   }
 }

@@ -329,39 +329,38 @@ class BazelClientTest {
   fun testRetrieveMavenDepsList_binaryDependsOnArtifactViaThirdParty_returnsArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("androidx.annotation:annotation:1.1.0")
     )
     tempFolder.newFile("AndroidManifest.xml")
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "AndroidManifest.xml",
-      dependencyName = "//third_party:com_android_support_support-annotations"
+      dependencyName = "//third_party:androidx_annotation_annotation",
     )
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
     createAndroidLibrary(
-      artifactName = "com.android.support:support-annotations:28.0.0",
+      artifactName = "androidx.annotation:annotation:1.1.0",
       buildFile = thirdPartyBuild
     )
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
-    assertThat(thirdPartyDependenciesList)
-      .contains("@maven//:com_android_support_support_annotations")
+    assertThat(thirdPartyDependenciesList).contains("@maven//:androidx_annotation_annotation")
   }
 
   @Test
   fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("androidx.annotation:annotation:1.1.0")
     )
     tempFolder.newFile("AndroidManifest.xml")
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "AndroidManifest.xml",
-      dependencyName = ":com_android_support_support-annotations"
+      dependencyName = ":androidx_annotation_annotation"
     )
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
@@ -370,15 +369,14 @@ class BazelClientTest {
       buildFile = thirdPartyBuild
     )
     createAndroidLibrary(
-      artifactName = "com.android.support:support-annotations:28.0.0",
+      artifactName = "androidx.annotation:annotation:1.1.0",
       buildFile = testBazelWorkspace.rootBuildFile
     )
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
-    assertThat(thirdPartyDependenciesList)
-      .doesNotContain("@maven//:com_android_support_support_annotations")
+    assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {
@@ -442,7 +440,7 @@ class BazelClientTest {
     val secondNewFile = File(tempFolder.root, secondFilename)
     firstNewFile.appendText(
       """
-      load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
       def custom_jvm_test_base(name, srcs, deps):
           kt_jvm_test(
               name = name,

@@ -245,6 +245,31 @@ class LearnerAnalyticsLogger @Inject constructor(
       getExpectedStateLogger()?.logFinishExploration()
     }
 
+    /** Logs that the current exploration progress has been saved successfully. */
+    fun logProgressSavingSuccess() {
+      getExpectedStateLogger()?.logProgressSavingSuccess()
+    }
+
+    /** Logs that the current exploration progress has failed to save. */
+    fun logProgressSavingFailure() {
+      getExpectedStateLogger()?.logProgressSavingFailure()
+    }
+
+    /** Logs that the user has left the lesson advertently (attempted to save). */
+    fun logLessonSavedAdvertently() {
+      getExpectedStateLogger()?.logLessonSavedAdvertently()
+    }
+
+    /** Logs that correct answer was submitted in a resumed lesson. */
+    fun logResumeLessonSubmitCorrectAnswer() {
+      getExpectedStateLogger()?.logResumeLessonSubmitCorrectAnswer()
+    }
+
+    /** Logs that incorrect answer was submitted in a resumed lesson. */
+    fun logResumeLessonSubmitIncorrectAnswer() {
+      getExpectedStateLogger()?.logResumeLessonSubmitIncorrectAnswer()
+    }
+
     /**
      * Begins analytics logging for the specified [newState], returning the [StateAnalyticsLogger]
      * that can be used to log events for the [State].
@@ -304,6 +329,31 @@ class LearnerAnalyticsLogger @Inject constructor(
     /** Logs that the current exploration has been finished (at this state). */
     internal fun logFinishExploration() {
       logStateEvent(EventBuilder::setFinishExplorationContext)
+    }
+
+    /** Logs that the current exploration progress has been saved successfully. */
+    internal fun logProgressSavingSuccess() {
+      logStateEvent(EventBuilder::setProgressSavingSuccessContext)
+    }
+
+    /** Logs that the current exploration progress has failed to save. */
+    internal fun logProgressSavingFailure() {
+      logStateEvent(EventBuilder::setProgressSavingFailureContext)
+    }
+
+    /** Logs that the user has left the lesson advertently (attempted to save). */
+    internal fun logLessonSavedAdvertently() {
+      logStateEvent(EventBuilder::setLessonSavedAdvertentlyContext)
+    }
+
+    /** Logs that correct answer was submitted in a resumed lesson. */
+    internal fun logResumeLessonSubmitCorrectAnswer() {
+      logStateEvent(EventBuilder::setResumeLessonSubmitCorrectAnswerContext)
+    }
+
+    /** Logs that incorrect answer was submitted in a resumed lesson. */
+    internal fun logResumeLessonSubmitIncorrectAnswer() {
+      logStateEvent(EventBuilder::setResumeLessonSubmitIncorrectAnswerContext)
     }
 
     /** Logs that this card has been started. */

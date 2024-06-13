@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Test
@@ -960,7 +961,7 @@ class AsyncResultTest {
       .inject(this)
   }
 
-  @Suppress("EXPERIMENTAL_API_USAGE")
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T, O> AsyncResult<T>.blockingTransformAsync(
     transformFunction: suspend (T) -> AsyncResult<O>
   ): AsyncResult<O> {
@@ -969,7 +970,7 @@ class AsyncResultTest {
     return deferred.getCompleted()
   }
 
-  @Suppress("EXPERIMENTAL_API_USAGE")
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T1, T2, O> AsyncResult<T1>.blockingCombineWithAsync(
     otherResult: AsyncResult<T2>,
     combineFunction: suspend (T1, T2) -> AsyncResult<O>

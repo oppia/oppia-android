@@ -35,7 +35,6 @@ import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.DeprecationController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -60,7 +59,6 @@ class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
   private val appStartupStateController: AppStartupStateController,
-  private val primeTopicAssetsController: PrimeTopicAssetsController,
   private val translationController: TranslationController,
   private val localeController: LocaleController,
   private val deprecationController: DeprecationController,
@@ -82,8 +80,6 @@ class SplashActivityPresenter @Inject constructor(
       isOnBetaFlavor = currentBuildFlavor == BuildFlavor.BETA
     }
 
-    // Initiate download support before any additional processing begins.
-    primeTopicAssetsController.downloadAssets(R.style.OppiaAlertDialogTheme)
     subscribeToOnboardingFlow()
   }
 

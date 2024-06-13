@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools"
   xmlns:tools="http://schemas.android.com/tools">
 
   <data>
@@ -47,7 +46,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout"
-      profile:src="@{viewModel.profileAvatar}"
+      app:profileImageSource="@{viewModel.profileAvatar}"
       tools:src="@drawable/ic_default_avatar"
       android:contentDescription="@string/profile_picture_image_view_content_description" />
 

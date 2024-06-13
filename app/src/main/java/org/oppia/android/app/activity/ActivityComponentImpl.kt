@@ -31,10 +31,10 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
+import org.oppia.android.app.onboarding.CreateProfileActivity
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
-import org.oppia.android.app.onboardingv2.CreateProfileActivity
-import org.oppia.android.app.onboardingv2.IntroActivity
-import org.oppia.android.app.onboardingv2.OnboardingProfileTypeActivity
+import org.oppia.android.app.onboarding.OnboardingProfileTypeActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.options.AppLanguageActivity
 import org.oppia.android.app.options.AudioLanguageActivity
@@ -62,6 +62,7 @@ import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.testing.CircularProgressIndicatorAdaptersTestActivity
+import org.oppia.android.app.testing.ColorBindingAdaptersTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
@@ -219,6 +220,7 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
   fun inject(surveyActivity: SurveyActivity)
+  fun inject(colorBindingAdaptersTestActivity: ColorBindingAdaptersTestActivity)
   fun inject(onboardingProfileTypeActivity: OnboardingProfileTypeActivity)
   fun inject(createProfileActivity: CreateProfileActivity)
   fun inject(introActivity: IntroActivity)

@@ -2,7 +2,6 @@
 Tests for UI databinding utilities and adapters.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
@@ -46,7 +45,7 @@ app_test(
     processed_src = test_with_resources("AppCompatCheckBoxBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -82,7 +81,7 @@ app_test(
     processed_src = test_with_resources("CircularProgressIndicatorAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.CircularProgressIndicatorAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -118,7 +117,7 @@ app_test(
     processed_src = "DrawableBindingAdaptersTest_updated.kt",
     test_class = "org.oppia.android.app.databinding.DrawableBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -154,7 +153,7 @@ app_test(
     processed_src = "ImageViewBindingAdaptersTest_updated.kt",
     test_class = "org.oppia.android.app.databinding.ImageViewBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -190,7 +189,7 @@ app_test(
     processed_src = test_with_resources("MarginBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.MarginBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -226,7 +225,7 @@ app_test(
     processed_src = test_with_resources("StateAssemblerMarginBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.StateAssemblerMarginBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -262,7 +261,7 @@ app_test(
     processed_src = test_with_resources("StateAssemblerPaddingBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -298,7 +297,7 @@ app_test(
     processed_src = "TextViewBindingAdaptersTest_updated.kt",
     test_class = "org.oppia.android.app.databinding.TextViewBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -334,7 +333,7 @@ app_test(
     processed_src = test_with_resources("ViewBindingAdaptersTest.kt"),
     test_class = "org.oppia.android.app.databinding.ViewBindingAdaptersTest",
     deps = [
-        ":dagger",
+        "//:dagger",
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
@@ -365,4 +364,38 @@ app_test(
     ],
 )
 
-dagger_rules()
+app_test(
+    name = "ColorBindingAdaptersTest",
+    processed_src = test_with_resources("ColorBindingAdaptersTest.kt"),
+    test_class = "org.oppia.android.app.databinding.ColorBindingAdaptersTest",
+    deps = [
+        "//:dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
+        "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    ],
+)

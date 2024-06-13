@@ -10,18 +10,18 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
+import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.onboardingv2.AudioLanguageFragmentPresenter as AudioLanguageFragmentPresenterV2
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonListener {
-  @Inject lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
+  @Inject lateinit var audioLanguageFragmentPresenterV1: AudioLanguageFragmentPresenterV1
 
-  @Inject lateinit var audioLanguageFragmentPresenterV2: AudioLanguageFragmentPresenterV2
+  @Inject lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
 
   @Inject
   @field:EnableOnboardingFlowV2
@@ -46,22 +46,22 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
     val internalProfileId = arguments?.retrieveProfileIdFromArguments() ?: -1
 
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenterV2.handleCreateView(inflater, container, internalProfileId)
+      audioLanguageFragmentPresenter.handleCreateView(inflater, container)
     } else {
-      audioLanguageFragmentPresenter.handleOnCreateView(inflater, container, audioLanguage)
+      audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
     }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
-      audioLanguage = audioLanguageFragmentPresenter.getLanguageSelected()
+      audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
     }.build()
     outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
   }
 
   override fun onLanguageSelected(audioLanguage: AudioLanguage) {
-    audioLanguageFragmentPresenter.onLanguageSelected(audioLanguage)
+    audioLanguageFragmentPresenterV1.onLanguageSelected(audioLanguage)
   }
 
   companion object {

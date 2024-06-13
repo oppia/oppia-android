@@ -3,6 +3,7 @@ package org.oppia.android.app.options
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -17,10 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -75,10 +74,11 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -89,7 +89,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -231,20 +230,14 @@ class AudioLanguageFragmentTest {
   fun testAudioLanguage_onboardingV2Enabled_languageSelectionDropdownIsDisplayed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_dropdown_background)).check(
         matches(
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
-      // This should fail once implemented and the "not" check should be removed
-      onView(withId(R.id.audio_language_dropdown)).check(
-        matches(not(withText("English")))
-      )
     }
   }
 
-  @Config(qualifiers = "sw600dp")
   @Test
   fun testAudioLanguage_onboardingV2Enabled_configChange_languageDropdownIsDisplayed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
@@ -256,10 +249,6 @@ class AudioLanguageFragmentTest {
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
-      // This should fail once implemented and the "not" check should be removed
-      onView(withId(R.id.audio_language_dropdown)).check(
-        matches(not(withText("English")))
-      )
     }
   }
 
@@ -267,6 +256,26 @@ class AudioLanguageFragmentTest {
   fun testAudioLanguage_onboardingV2Enabled_allViewsAreDisplayed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(withId(R.id.audio_language_text)).check(
+        matches(withText("In Oppia, you can listen to lessons!"))
+      )
+      onView(withId(R.id.audio_language_subtitle)).check(
+        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+      )
+      onView(withId(R.id.onboarding_navigation_back)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+      onView(withId(R.id.onboarding_navigation_continue)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_onboardingV2Enabled_configChange_allViewsAreDisplayed() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_text)).check(
         matches(withText("In Oppia, you can listen to lessons!"))
@@ -283,12 +292,61 @@ class AudioLanguageFragmentTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp")
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
-  fun testAudioLanguage_onboardingV2Enabled_configChange_allViewsAreDisplayed() {
+  fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
+      assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
+  @Test
+  fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_back)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @Test
+  fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Do nothing for now, but will fail once navigation is implemented
+      onView(withId(R.id.audio_language_text)).check(
+        matches(withText("In Oppia, you can listen to lessons!"))
+      )
+      onView(withId(R.id.audio_language_subtitle)).check(
+        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+      )
+      onView(withId(R.id.onboarding_navigation_back)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+      onView(withId(R.id.onboarding_navigation_continue)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Do nothing for now, but will fail once navigation is implemented
       onView(withId(R.id.audio_language_text)).check(
         matches(withText("In Oppia, you can listen to lessons!"))
       )
@@ -380,14 +438,6 @@ class AudioLanguageFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -400,7 +450,7 @@ class AudioLanguageFragmentTest {
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
@@ -421,7 +471,9 @@ class AudioLanguageFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }
