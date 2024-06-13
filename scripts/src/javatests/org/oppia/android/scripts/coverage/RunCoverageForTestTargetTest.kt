@@ -10,7 +10,7 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 
-/** Tests for [RunCoverageForTestTarget] */
+/** Tests for [RunCoverageForTestTarget]. */
 class RunCoverageForTestTargetTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
