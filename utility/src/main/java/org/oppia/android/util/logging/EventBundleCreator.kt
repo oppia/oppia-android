@@ -20,6 +20,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
@@ -52,6 +53,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SUR
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
@@ -81,6 +83,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Hi
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.MandatorySurveyResponseContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.OptionalSurveyResponseContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ProfileOnboardingContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.QuestionContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RetrofitCallContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RetrofitCallFailedContext
@@ -114,6 +117,7 @@ import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
 import org.oppia.android.app.model.EventLog.OptionalSurveyResponseContext as OptionalSurveyResponseEventContext
+import org.oppia.android.app.model.EventLog.ProfileOnboardingContext as ProfileOnboardingEventContext
 import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
 import org.oppia.android.app.model.EventLog.RetrofitCallContext as RetrofitCallEventContext
 import org.oppia.android.app.model.EventLog.RetrofitCallFailedContext as RetrofitCallFailedEventContext
@@ -268,6 +272,10 @@ class EventBundleCreator @Inject constructor(
       APP_IN_FOREGROUND_TIME -> ForegroundAppTimeContext(activityName, appInForegroundTime)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
+      START_PROFILE_ONBOARDING_EVENT ->
+        ProfileOnboardingContext(activityName, startProfileOnboardingEvent)
+      END_PROFILE_ONBOARDING_EVENT ->
+        ProfileOnboardingContext(activityName, endProfileOnboardingEvent)
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
     }
   }
@@ -659,6 +667,16 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("installation_id", installationId)
         store.putNonSensitiveValue("app_session_id", appSessionId)
         store.putNonSensitiveValue("foreground_time", foregroundTime)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [ProfileOnboardingEventContext]s. */
+    class ProfileOnboardingContext(
+      activityName: String,
+      value: ProfileOnboardingEventContext
+    ) : EventActivityContext<ProfileOnboardingEventContext>(activityName, value) {
+      override fun ProfileOnboardingEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("profile_id", profileId)
       }
     }
   }

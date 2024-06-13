@@ -2,6 +2,7 @@ package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -217,9 +218,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     }.build()
   }
 
-  /**
-   * Returns the context of the event indicating that the user saw the survey popup dialog.
-   */
+  /** Returns the context of the event indicating that the user saw the survey popup dialog. */
   fun createShowSurveyPopupContext(
     explorationId: String,
     topicId: String,
@@ -234,9 +233,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
       .build()
   }
 
-  /**
-   * Returns the context of the event indicating that the user began a survey session.
-   */
+  /** Returns the context of the event indicating that the user began a survey session. */
   fun createBeginSurveyContext(
     explorationId: String,
     topicId: String,
@@ -259,6 +256,24 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     return EventLog.Context.newBuilder().setCompleteAppOnboarding(
       EventLog.CompleteAppOnboardingContext.newBuilder()
         .setCompleteAppOnboarding(true)
+        .build()
+    ).build()
+  }
+
+  /** Returns the context of the event indicating that a profile started onboarding. */
+  fun createProfileOnboardingStartedContext(profileId: ProfileId): EventLog.Context {
+    return EventLog.Context.newBuilder().setStartProfileOnboardingEvent(
+      EventLog.ProfileOnboardingContext.newBuilder()
+        .setProfileId(profileId)
+        .build()
+    ).build()
+  }
+
+  /** Returns the context of the event indicating that a profile completed onboarding. */
+  fun createProfileOnboardingEndedContext(profileId: ProfileId): EventLog.Context {
+    return EventLog.Context.newBuilder().setEndProfileOnboardingEvent(
+      EventLog.ProfileOnboardingContext.newBuilder()
+        .setProfileId(profileId)
         .build()
     ).build()
   }

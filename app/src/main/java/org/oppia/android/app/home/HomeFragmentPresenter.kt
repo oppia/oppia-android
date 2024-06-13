@@ -111,6 +111,7 @@ class HomeFragmentPresenter @Inject constructor(
 
     if (enableOnboardingFlowV2.value) {
       profileManagementController.updateProfileOnboardingState(profileId)
+      analyticsController.logEndProfileOnboardingEvent(profileId)
     } else {
       logAppOnboardedEvent(profileId)
     }
