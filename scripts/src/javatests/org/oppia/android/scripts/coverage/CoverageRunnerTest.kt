@@ -7,10 +7,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.testing.TestBazelWorkspace
-import kotlin.test.assertEquals
-import java.io.File
+import org.oppia.android.testing.assertThrows
 
 /** Tests for [CoverageRunner] */
 class CoverageRunnerTest {
@@ -52,7 +50,8 @@ class CoverageRunnerTest {
       "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat",
       "Executed 1 out of 1 test: 1 test  passes."
     )
-    val expectedResultParsedData = "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat"
+    val expectedResultParsedData =
+      "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat"
 
     val parsedData = coverageRunner.parseCoverageDataFile(validResultData)
     assertThat(parsedData).isEqualTo(expectedResultParsedData)
@@ -83,39 +82,41 @@ class CoverageRunnerTest {
   fun testRunCoverage_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent = """
-    package com.example
-    
-    class TwoSum {
-    
-        companion object {
-            fun sumNumbers(a: Int, b: Int): Any {
-                return if (a ==0 && b == 0) {
-                    "Both numbers are zero"
-                } else {
-                    a + b
-                }
-            }
-        }
-    }
-    """.trimIndent()
+    val sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a ==0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
 
-    val testContent = """
-    package com.example
-    
-    import org.junit.Assert.assertEquals
-    import org.junit.Test
-    
-    class TwoSumTest {
-    
-        @Test
-        fun testSumNumbers() {
-            assertEquals(TwoSum.sumNumbers(0, 1), 1)
-            assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-            assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-        }
-    }
-    """.trimIndent()
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",

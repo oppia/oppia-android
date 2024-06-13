@@ -1,8 +1,7 @@
 package org.oppia.android.scripts.coverage
 
-import org.oppia.android.scripts.coverage.CoverageRunner
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
 /**
@@ -31,7 +30,7 @@ fun main(vararg args: String) {
  */
 class RunCoverageForTestTarget(
   private val repoRoot: File,
-  private val targetPath : String
+  private val targetPath: String
 ) {
 
   /**

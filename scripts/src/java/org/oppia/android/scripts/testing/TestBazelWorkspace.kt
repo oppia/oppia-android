@@ -50,6 +50,15 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     assertThat(bazelRcFile.exists()).isTrue()
   }
 
+  /**
+   * Adds a source file and test file with the specified name and content,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param testContent the content of the test file
+   * @param subpackage the subpackage under which the source and test files should be added
+   */
   fun addSourceAndTestFileWithContent(
     filename: String,
     sourceContent: String,
@@ -90,7 +99,9 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     }
 
     // Create the source file
-    val sourceFile = temporaryRootFolder.newFile("${sourceSubpackage.replace(".", "/")}/$filename.kt")
+    val sourceFile = temporaryRootFolder.newFile(
+      "${sourceSubpackage.replace(".", "/")}/$filename.kt"
+    )
     sourceFile.writeText(sourceContent)
 
     // Create or update the BUILD file for the source file
@@ -106,7 +117,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
       kt_jvm_library(
           name = "${filename.lowercase()}",
-          srcs = ["${filename}.kt"],
+          srcs = ["$filename.kt"],
           visibility = ["//visibility:public"],
           deps = [],
       )
@@ -154,13 +165,13 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
       kt_jvm_test(
           name = "test",
-          srcs = ["${testName}.kt"],
+          srcs = ["$testName.kt"],
           deps = [
               "//coverage/main/java/com/example:${filename.lowercase()}",
               "@maven//:junit_junit",
           ],
           visibility = ["//visibility:public"],
-          test_class = "com.example.${testName}",
+          test_class = "com.example.$testName",
       )
       """.trimIndent() + "\n"
     )

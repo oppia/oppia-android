@@ -61,39 +61,41 @@ class RunCoverageForTestTargetTest {
   fun testRunCoverageForTestTarget_validSampleTestTarget_returnsCoverageDataPath() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent = """
-    package com.example
-    
-    class TwoSum {
-    
-        companion object {
-            fun sumNumbers(a: Int, b: Int): Any {
-                return if (a ==0 && b == 0) {
-                    "Both numbers are zero"
-                } else {
-                    a + b
-                }
-            }
-        }
-    }
-    """.trimIndent()
+    val sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a ==0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
 
-    val testContent = """
-    package com.example
-    
-    import org.junit.Assert.assertEquals
-    import org.junit.Test
-    
-    class TwoSumTest {
-    
-        @Test
-        fun testSumNumbers() {
-            assertEquals(TwoSum.sumNumbers(0, 1), 1)
-            assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-            assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-        }
-    }
-    """.trimIndent()
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
