@@ -66,11 +66,21 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     subpackage: String
   ) {
     val sourceSubpackage = "$subpackage/main/java/com/example"
-    addSourceContentAndBuildFile(filename, sourceContent, sourceSubpackage)
+    addSourceContentAndBuildFile(
+      filename,
+      sourceContent,
+      sourceSubpackage
+    )
 
     val testSubpackage = "$subpackage/test/java/com/example"
     val testFileName = "${filename}Test"
-    addTestContentAndBuildFile(filename, testFileName, testContent, sourceSubpackage, testSubpackage)
+    addTestContentAndBuildFile(
+      filename,
+      testFileName,
+      testContent,
+      sourceSubpackage,
+      testSubpackage
+    )
   }
 
   /**
