@@ -46,7 +46,7 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
     val internalProfileId = arguments?.retrieveProfileIdFromArguments() ?: -1
 
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenter.handleCreateView(inflater, container)
+      audioLanguageFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
     } else {
       audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
     }

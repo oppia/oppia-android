@@ -24,6 +24,7 @@ import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -52,8 +53,10 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -111,6 +114,7 @@ class ProfileManagementControllerTest {
   @After
   fun tearDown() {
     TestModule.enableLearnerStudyAnalytics = false
+    TestModule.enableOnboardingFlowV2 = false
   }
 
   @Test
@@ -132,6 +136,138 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+  }
+
+  @Test
+  fun testAddProfile_addSoleLearnerProfile_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addAdminProfile(name = "James", pin = "")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testAddProfile_addSupervisorProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addAdminProfile(name = "James")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("12345")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+  }
+
+  @Test
+  fun testAddProfile_addAdditionalLearnerProfile_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addNonAdminProfile(name = "James", pin = "")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+  }
+
+  @Test
+  fun testAddProfile_addAdditionalLearnerProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addNonAdminProfile(name = "James")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("12345")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+  }
+
+  @Test
+  fun testAddProfile_addProfile_withPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
+    setUpTestWithOnboardingV2Enabled(false)
+    val dataProvider = addAdminProfile(name = "James")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("12345")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testAddProfile_addProfile_withoutPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
+    setUpTestWithOnboardingV2Enabled(false)
+    val dataProvider = addAdminProfile(name = "James", pin = "")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
   }
 
   @Test
@@ -1315,6 +1451,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
   }
 
+  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingV2: Boolean) {
+    TestModule.enableOnboardingFlowV2 = enableOnboardingV2
+    setUpTestApplicationComponent()
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1326,6 +1467,7 @@ class ProfileManagementControllerTest {
       // This is expected to be off by default, so this helps the tests above confirm that the
       // feature's default value is, indeed, off.
       var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+      var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
     }
 
     @Provides
@@ -1367,6 +1509,16 @@ class ProfileManagementControllerTest {
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
+    }
+
+    @Provides
+    @EnableOnboardingFlowV2
+    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
+      // Snapshot the value so that it doesn't change between injection and use.
+      val enableFeature = enableOnboardingFlowV2
       return PlatformParameterValue.createDefaultParameter(
         defaultValue = enableFeature
       )

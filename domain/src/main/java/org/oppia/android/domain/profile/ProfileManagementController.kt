@@ -297,7 +297,7 @@ class ProfileManagementController @Inject constructor(
         }.build()
 
         if (enableOnboardingFlowV2.value) {
-          this.profileType = computeProfileType(it)
+          this.profileType = computeProfileType(isAdmin, pin)
         }
       }.build()
 
@@ -315,29 +315,22 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  private fun computeProfileType(profileDatabase: ProfileDatabase): ProfileType {
-    return if (isAdminWithPin(profileDatabase)) {
-      ProfileType.SUPERVISOR
-    } else {
-      if (profileDatabase.profilesCount == 1) {
-        ProfileType.SOLE_LEARNER
-      } else {
-        ProfileType.ADDITIONAL_LEARNER
-      }
+  private fun computeProfileType(isAdmin: Boolean, pin: String?): ProfileType {
+    return when {
+      isAdminWithPin(isAdmin, pin) -> ProfileType.SUPERVISOR
+      isAdmin -> ProfileType.SOLE_LEARNER
+      else -> ProfileType.ADDITIONAL_LEARNER
     }
   }
 
-  private fun isAdminWithPin(profileDatabase: ProfileDatabase): Boolean {
-    profileDatabase.profilesMap.values.forEach {
-      if (it.isAdmin && !it.pin.isNullOrBlank()) {
-        return true
-      }
-    }
-    return false
+  private fun isAdminWithPin(isAdmin: Boolean, pin: String?): Boolean {
+    return isAdmin && !pin.isNullOrBlank()
   }
 
-/** Updates the onboarding status of the profile so that the onboarding flow is not shown after the
-   * initial login.
+  /**
+   * Updates the onboarding status of the profile so that the onboarding flow is not shown after the initial login.
+   * @param profileId The ID of the profile to update.
+   * @return A [DataProvider] that represents the result of the update operation.
    */
   fun updateProfileOnboardingState(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(

@@ -111,6 +111,7 @@ class IntroActivityTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val testProfileNickname = "John"
+  private val testInternalProfileId = 0
 
   @Before
   fun setUp() {
@@ -128,7 +129,8 @@ class IntroActivityTest {
     val screenName =
       IntroActivity.createIntroActivity(
         context,
-        testProfileNickname
+        testProfileNickname,
+        testInternalProfileId
       )
         .extractCurrentAppScreenName()
 
@@ -153,7 +155,8 @@ class IntroActivityTest {
       val scenario = ActivityScenario.launch<IntroActivity>(
         IntroActivity.createIntroActivity(
           context,
-          testProfileNickname
+          testProfileNickname,
+          testInternalProfileId
         )
       )
       testCoroutineDispatchers.runCurrent()

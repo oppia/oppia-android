@@ -15,21 +15,19 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.databinding.CreateProfileFragmentBinding
-import org.oppia.android.util.parser.image.ImageLoader
-import org.oppia.android.util.parser.image.ImageViewTarget
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.ADD_PROFILE_COLOR_RGB_EXTRA_KEY
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.AddProfileActivityBinding
+import org.oppia.android.databinding.CreateProfileFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.parser.image.ImageLoader
+import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 private const val GALLERY_INTENT_RESULT_CODE = 1
 
@@ -38,8 +36,7 @@ private const val GALLERY_INTENT_RESULT_CODE = 1
 class CreateProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val createProfileViewModel: CreateProfileViewModel,
-  private val imageLoader: ImageLoader
+  private val imageLoader: ImageLoader,
   private val createProfileViewModel: CreateProfileViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController,
@@ -49,6 +46,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
   private lateinit var selectedImage: String
+  private var allowDownloadAccess = enableDownloadsSupport.value
 
   /** Initialize layout bindings. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -82,12 +80,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
-
-      createProfileViewModel.hasErrorMessage.set(nickname.isBlank())
-
-      if (createProfileViewModel.hasErrorMessage.get() != true) {
-        val intent = IntroActivity.createIntroActivity(activity, nickname)
-        fragment.startActivity(intent)
+      if (!checkNicknameAndUpdateError(nickname)) {
+        createProfile(nickname)
       }
     }
 
@@ -105,6 +99,12 @@ class CreateProfileFragmentPresenter @Inject constructor(
     binding.createProfileUserImageView.setOnClickListener { openGalleryIntent() }
 
     return binding.root
+  }
+
+  private fun checkNicknameAndUpdateError(nickname: String): Boolean {
+    val hasError = nickname.isBlank()
+    createProfileViewModel.hasErrorMessage.set(hasError)
+    return hasError
   }
 
   /** Receive the result of image upload and load it into the image view. */
@@ -131,10 +131,10 @@ class CreateProfileFragmentPresenter @Inject constructor(
     profileManagementController.addProfile(
       name = nickname,
       pin = "",
-      avatarImagePath = selectedImage,
+      avatarImagePath = null,
       allowDownloadAccess = allowDownloadAccess,
       colorRgb = activity.intent.getIntExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, -10710042),
-      isAdmin = false
+      isAdmin = true
     ).toLiveData()
       .observe(
         fragment,
@@ -151,8 +151,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   ) {
     when (result) {
       is AsyncResult.Success -> {
-        createProfileViewModel.hasError.set(false)
-
+        createProfileViewModel.hasErrorMessage.set(false)
         val currentUserProfileId = retrieveNewProfileId()
 
         val intent =
@@ -163,7 +162,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       is AsyncResult.Failure -> {
         when (result.error) {
           is ProfileManagementController.ProfileNameNotUniqueException -> {
-            createProfileViewModel.hasError.set(true)
+            createProfileViewModel.hasErrorMessage.set(true)
 
             binding.createProfileNicknameError.text =
               resourceHandler.getStringInLocale(
@@ -172,7 +171,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
           }
 
           is ProfileManagementController.ProfileNameOnlyLettersException -> {
-            createProfileViewModel.hasError.set(true)
+            createProfileViewModel.hasErrorMessage.set(true)
 
             binding.createProfileNicknameError.text = resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_only_letters
@@ -200,7 +199,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
           is AsyncResult.Pending -> {}
           is AsyncResult.Success -> {
             val sortedProfileList = profilesResult.value.sortedBy { it.id.internalId }
-            profileId = sortedProfileList.last().id
+            profileId = sortedProfileList.lastOrNull()?.id ?: ProfileId.getDefaultInstance()
           }
         }
       }

@@ -121,6 +121,7 @@ class IntroFragmentTest {
   lateinit var context: Context
 
   private val testProfileNickname = "John"
+  private val testInternalProfileId = 0
 
   @Before
   fun setUp() {
@@ -242,7 +243,8 @@ class IntroFragmentTest {
       val scenario = ActivityScenario.launch<IntroActivity>(
         IntroActivity.createIntroActivity(
           context,
-          testProfileNickname
+          testProfileNickname,
+          testInternalProfileId
         )
       )
       testCoroutineDispatchers.runCurrent()
