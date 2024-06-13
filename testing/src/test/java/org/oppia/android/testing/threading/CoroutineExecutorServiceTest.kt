@@ -339,8 +339,8 @@ class CoroutineExecutorServiceTest {
 
     val getResult = testDispatcherScope.async {
       try {
-        AsyncResult.Success(callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS))
-      } catch (e: ExecutionException) {
+        AsyncResult.Success(callableFuture.get(/* timeout = */ 1, TimeUnit.SECONDS))
+      } catch (e: Exception) {
         AsyncResult.Failure<String>(e)
       }
     }
@@ -349,8 +349,7 @@ class CoroutineExecutorServiceTest {
     // The getter should return since the task has finished.
     assertThat(getResult.isCompleted).isTrue()
     assertThat(getResult.getCompleted()).isFailureThat().apply {
-      isInstanceOf(ExecutionException::class.java)
-      hasCauseThat().isInstanceOf(TimeoutException::class.java)
+      isInstanceOf(TimeoutException::class.java)
     }
   }
 
