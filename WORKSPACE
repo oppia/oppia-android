@@ -43,14 +43,14 @@ http_archive(
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
     name = "io_bazel_rules_kotlin",
-    patches = ["//tools/kotlin:add_kotlinc_optin_support.patch"],
+    patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
 load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 
-# Use the 1.6 compiler since rules_kotlin 1.5 defaults to the 1.5 compiler.
+# Use the 1.6 compiler since Kotlin 1.6 is the current supported version in the repository.
 kotlin_repositories(
     compiler_release = kotlinc_version(
         release = "1.6.10",
@@ -212,7 +212,6 @@ maven_install(
     maven_install_json = "//third_party:maven_install.json",
     override_targets = {
         "com.google.guava:guava": "@//third_party:com_google_guava_guava",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "@//third_party:kotlinx-coroutines-core-jvm",
     },
     repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
     strict_visibility = True,
@@ -240,15 +239,3 @@ pinned_maven_install()
         "jre",
     ]
 ]
-
-http_jar(
-    name = "kotlinx-coroutines-core-jvm",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
-    urls = [
-        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}.jar".format(
-            url_base,
-            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
-        )
-        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
-    ],
-)
