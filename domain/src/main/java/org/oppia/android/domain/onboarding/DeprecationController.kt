@@ -15,7 +15,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getVersionCode
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
@@ -42,9 +41,7 @@ class DeprecationController @Inject constructor(
   @ForcedAppUpdateVersionCode
   private val forcedAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
   @LowestSupportedApiLevel
-  private val lowestSupportedApiLevel: Provider<PlatformParameterValue<Int>>,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val lowestSupportedApiLevel: Provider<PlatformParameterValue<Int>>
 ) {
   /** Create an instance of [PersistentCacheStore] that contains a [DeprecationResponseDatabase]. */
   private val deprecationStore by lazy {
@@ -174,10 +171,6 @@ class DeprecationController @Inject constructor(
 
       if (optionalAppUpdateIsAvailable && optionalAppDeprecationDialogHasNotBeenShown) {
         return StartupMode.OPTIONAL_UPDATE_AVAILABLE
-      }
-
-      if (enableOnboardingFlowV2.value) {
-        return StartupMode.ONBOARDING_FLOW_V2
       }
 
       return StartupMode.USER_IS_ONBOARDED

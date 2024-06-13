@@ -44,6 +44,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -67,7 +68,9 @@ class SplashActivityPresenter @Inject constructor(
   private val currentBuildFlavor: BuildFlavor,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   lateinit var startupMode: StartupMode
 
@@ -239,10 +242,14 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun processStartupMode() {
-    if (enableAppAndOsDeprecation.value) {
-      processAppAndOsDeprecationEnabledStartUpMode()
-    } else {
-      processLegacyStartupMode()
+    when {
+      enableAppAndOsDeprecation.value -> {
+        processAppAndOsDeprecationEnabledStartUpMode()
+      }
+      enableOnboardingFlowV2.value -> {
+        getProfileOnboardingState()
+      }
+      else -> processLegacyStartupMode()
     }
   }
 
@@ -290,9 +297,6 @@ class SplashActivityPresenter @Inject constructor(
           AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
           AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
-      }
-      StartupMode.ONBOARDING_FLOW_V2 -> {
-        getProfileOnboardingState()
       }
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
