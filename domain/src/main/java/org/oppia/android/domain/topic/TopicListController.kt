@@ -305,8 +305,8 @@ class TopicListController @Inject constructor(
     val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
     val classroomTitle = classroomJsonObject.getJSONObject("classroom_title").let {
       SubtitledHtml.newBuilder().apply {
-        contentId = it.getString("content_id")
-        html = it.getString("html")
+        contentId = it.getStringFromObject("content_id")
+        html = it.getStringFromObject("html")
       }.build()
     }
 
@@ -792,8 +792,8 @@ class TopicListController @Inject constructor(
 
       val classroomTitle = classroomJson.getJSONObject("classroom_title").let {
         SubtitledHtml.newBuilder().apply {
-          contentId = it.getString("content_id")
-          html = it.getString("html")
+          contentId = it.getStringFromObject("content_id")
+          html = it.getStringFromObject("html")
         }.build()
       }
 
