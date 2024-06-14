@@ -6,6 +6,7 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.EphemeralChapterSummary
@@ -474,7 +475,6 @@ class TopicController @Inject constructor(
           title = topicRecord.translatableTitle
           description = topicRecord.translatableDescription
           classroomId = topicRecord.classroomId
-          classroomTitle = topicRecord.translatableClassroomTitle
           addAllStory(stories)
           topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
           diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
@@ -557,10 +557,6 @@ class TopicController @Inject constructor(
       html = topicData.getStringFromObject("topic_name")
     }.build()
     val classroomId = topicData.getStringFromObject("classroom_id")
-    val classroomTitle = SubtitledHtml.newBuilder().apply {
-      contentId = "classroom_title"
-      html = topicData.getStringFromObject("classroom_name")
-    }
     val topicDescription = SubtitledHtml.newBuilder().apply {
       contentId = "description"
       html = topicData.getStringFromObject("topic_description")
@@ -570,7 +566,6 @@ class TopicController @Inject constructor(
       .setTopicId(topicId)
       .setTitle(topicTitle)
       .setClassroomId(classroomId)
-      .setClassroomTitle(classroomTitle)
       .setDescription(topicDescription)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
@@ -871,14 +866,20 @@ class TopicController @Inject constructor(
   private fun Topic.toEphemeral(
     contentLocale: OppiaLocale.ContentLocale
   ): EphemeralTopic {
+    val classroomRecord = loadClassroomById(classroomId)
     return EphemeralTopic.newBuilder().apply {
       topic = this@toEphemeral
       writtenTranslationContext =
         translationController.computeWrittenTranslationContext(
           topic.writtenTranslationsMap, contentLocale
         )
+      classroomWrittenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          classroomRecord.writtenTranslationsMap, contentLocale
+        )
       addAllStories(topic.storyList.map { it.toEphemeral(contentLocale) })
       addAllSubtopics(topic.subtopicList.map { it.toEphemeral(contentLocale) })
+      classroomTitle = classroomRecord.translatableTitle
     }.build()
   }
 
@@ -918,6 +919,56 @@ class TopicController @Inject constructor(
         translationController.computeWrittenTranslationContext(
           subtopic.writtenTranslationsMap, contentLocale
         )
+    }.build()
+  }
+
+  // TODO(#5344): Move this to classroom controller.
+  fun loadClassroomById(classroomId: String): ClassroomRecord {
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = classroomId,
+        baseMessage = ClassroomRecord.getDefaultInstance()
+      )
+    } else loadClassroomByIdFromJson(classroomId)
+  }
+
+  // TODO(#5344): Remove this in favor of per-classroom data handling.
+  private fun loadClassroomByIdFromJson(classroomId: String): ClassroomRecord {
+    // Load the classroom obj.
+    val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
+    checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
+
+    val classroomTitle = classroomObj.getJSONObject("classroom_title")
+
+    // Load the topic prerequisite map.
+    val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
+      "Expected classroom to have non-null topic_prerequisites."
+    }
+    val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
+      val topicIdArray = checkNotNull(topicPrereqsObj.optJSONArray(topicId)) {
+        "Expected topic $topicId to have a non-null string list."
+      }
+      return@associateWith List(topicIdArray.length()) { index ->
+        checkNotNull(topicIdArray.optString(index)) {
+          "Expected topic $topicId to have non-null string at index $index."
+        }
+      }
+    }
+    return ClassroomRecord.newBuilder().apply {
+      id = checkNotNull(classroomObj.optString("id")) {
+        "Expected classroom to have ID."
+      }
+      translatableTitle = SubtitledHtml.newBuilder().apply {
+        contentId = classroomTitle.getStringFromObject("content_id")
+        html = classroomTitle.getStringFromObject("html")
+      }.build()
+      putAllTopicPrerequisites(
+        topicPrereqs.mapValues { (_, topicIds) ->
+          ClassroomRecord.TopicIdList.newBuilder().apply {
+            addAllTopicIds(topicIds)
+          }.build()
+        }
+      )
     }.build()
   }
 

@@ -136,7 +136,6 @@ class TopicControllerTest {
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-    assertThat(topic.classroomTitle.html).contains("Maths")
   }
 
   @Test
@@ -165,7 +164,6 @@ class TopicControllerTest {
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-    assertThat(topic.classroomTitle.html).contains("Maths")
   }
 
   @Test
