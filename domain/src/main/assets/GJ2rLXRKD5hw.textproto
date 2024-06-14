@@ -26,7 +26,3 @@ translatable_description {
   content_id: "description"
 }
 classroom_id: "test_classroom_id_1"
-translatable_classroom_title {
-  html: "Maths"
-  content_id: "classroom_title"
-}
