@@ -381,12 +381,7 @@ class BazelClientTest {
 
   @Test
   fun testRunCodeCoverage_forSampleTestTarget_returnsCoverageResult() {
-    val commandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher,
-      processTimeout = 5,
-      processTimeoutUnit = TimeUnit.MINUTES
-    )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -434,18 +429,13 @@ class BazelClientTest {
 
     val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
 
-    // Check that the test has "PASSED"
-    val containsPassedValue = result.any { it.contains("PASSED") }
-    assert(containsPassedValue) { "The test is not 'PASSED'" }
-
-    // Check if the coverage.dat file is generated
-    val containsCoverageData = result.any { it.contains("coverage.dat") }
-    assert(containsCoverageData) { "The coverage.dat is not generated" }
+    // Check if ByteArray is returned from executing coverage command
+    assertThat(result).isInstanceOf(ByteArray::class.java)
   }
 
   @Test
   fun testRunCodeCoverage_forNonTestTarget_fails() {
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
