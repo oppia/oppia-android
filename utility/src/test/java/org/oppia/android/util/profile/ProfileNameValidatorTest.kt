@@ -11,7 +11,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -50,32 +49,26 @@ class ProfileNameValidatorTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("Ben#Henning", "name=Ben#Henning"),
-    Iteration("Rajay@T", "name=Rajay@T"),
-    Iteration("جيشنو^&&", "name=جيشنو^&&"),
-    Iteration("_Jishnu", "name=_Jishnu")
-  )
+  @Iteration("Ben#Henning", "name=Ben#Henning")
+  @Iteration("Rajay@T", "name=Rajay@T")
+  @Iteration("جيشنو^&&", "name=جيشنو^&&")
+  @Iteration("_Jishnu", "name=_Jishnu")
   fun testIsNameValid_nameWithDisallowedSymbol_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
   }
 
   @Test
-  @RunParameterized(
-    Iteration("Ben-Henning", "name=Ben-Henning"),
-    Iteration("Rajat.T", "name=Rajat.T"),
-    Iteration("G'Jishnu", "name=G'Jishnu")
-  )
+  @Iteration("Ben-Henning", "name=Ben-Henning")
+  @Iteration("Rajat.T", "name=Rajat.T")
+  @Iteration("G'Jishnu", "name=G'Jishnu")
   fun testIsNameValid_nameWithAllowedSymbols_returnsTrue() {
     assertThat(profileNameValidator.isNameValid(name)).isTrue()
   }
 
   @Test
-  @RunParameterized(
-    Iteration("Ben-.Henning", "name=Ben-.Henning"),
-    Iteration("Rajat..T", "name=Rajat..T"),
-    Iteration("Name   WithTooManySpaces", "name=Name   WithTooManySpaces")
-  )
+  @Iteration("Ben-.Henning", "name=Ben-.Henning")
+  @Iteration("Rajat..T", "name=Rajat..T")
+  @Iteration("Name   WithTooManySpaces", "name=Name   WithTooManySpaces")
   fun testIsNameValid_nameWithRepeatedAllowedSymbols_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
   }

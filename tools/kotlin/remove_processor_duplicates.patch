@@ -1,0 +1,17 @@
+--- kotlin/internal/jvm/compile.bzl
++++ kotlin/internal/jvm/compile.bzl
+@@ -363,12 +363,14 @@ def _run_kt_builder_action(
+         annotation_processors,
+         map_each = _plugin_mappers.kt_plugin_to_processor,
+         omit_if_empty = True,
++        uniquify = True,
+     )
+     args.add_all(
+         "--processorpath",
+         annotation_processors,
+         map_each = _plugin_mappers.kt_plugin_to_processorpath,
+         omit_if_empty = True,
++        uniquify = True,
+     )
+
+     compiler_plugins = [

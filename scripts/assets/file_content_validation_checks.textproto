@@ -31,10 +31,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "SettableFuture"
-  failure_message: "SettableFuture should only be used in pre-approved locations since it's easy to potentially mess up & lead to a hanging ListenableFuture."
-  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
-  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
-  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
+  failure_message: "SettableFuture should only be used in pre-approved locations since it's easy to potentially mess up & lead to a hanging ListenableFuture. If using a Deferred, convert it to a ListenableFuture using asListenableFuture()."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
@@ -136,7 +133,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
-  prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase|capitalize|decapitalize|lowercase|uppercase)\\("
+  prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase|capitalize|decapitalize|lowercase|uppercase|replaceFirstChar)\\("
   failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/translation/AppLanguageResourceHandler.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"

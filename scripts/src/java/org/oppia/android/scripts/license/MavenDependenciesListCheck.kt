@@ -8,7 +8,7 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
- * The main entrypoint for verifying the list of third-party maven dependencies in
+ * The main entrypoint for verifying the list of third-party Maven dependencies in
  * maven_dependencies.textproto is up-to-date.
  *
  * Usage:
@@ -18,7 +18,7 @@ import org.oppia.android.scripts.proto.MavenDependency
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
- * - path_to_maven_install_json: relative path to the maven_install.json file.
+ * - path_to_maven_install_json: relative path to the Maven installation manifest file.
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  *
  * Example:
@@ -41,7 +41,7 @@ class MavenDependenciesListCheck(
   private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   /**
-   * Verifies that the list of third-party maven dependencies in maven_dependnecies.textproto is
+   * Verifies that the list of third-party Maven dependencies in maven_dependnecies.textproto is
    * up-to-date.
    */
   fun main(args: Array<String>) {

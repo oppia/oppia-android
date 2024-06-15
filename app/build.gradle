@@ -147,7 +147,6 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--list-shards"
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'android.arch.lifecycle:extensions:1.1.1',
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.constraintlayout:constraintlayout:1.1.3',
       'androidx.core:core-ktx:1.0.2',
@@ -166,7 +165,7 @@ dependencies {
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.flexbox:flexbox:3.0.0',
       'com.google.android.material:material:1.3.0',
-      'com.google.dagger:dagger:2.24',
+      'com.google.dagger:dagger:2.41',
       'com.google.firebase:firebase-analytics:17.5.0',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-appcheck:16.0.0',
@@ -180,10 +179,10 @@ dependencies {
       'com.google.protobuf:protobuf-javalite:3.17.3',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4',
       'org.mockito:mockito-core:2.7.22',
-      'com.github.oppia:android-spotlight:ebde38335bfb56349eae57e705b611ead9addb15'
+      'com.github.oppia:android-spotlight:cc23499d37dc8533a2876e45b5063e981a4583f4'
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
@@ -203,7 +202,7 @@ dependencies {
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'org.robolectric:annotations:4.5',
       'org.robolectric:robolectric:4.5',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
       project(":testing"),
@@ -219,7 +218,7 @@ dependencies {
       'com.google.truth:truth:1.1.3',
       'androidx.work:work-testing:2.4.0',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
       'org.mockito:mockito-android:2.7.22',
       'org.robolectric:annotations:4.5',
   )
@@ -243,13 +242,13 @@ dependencies {
       'androidx.test:orchestrator:1.2.0',
   )
   kapt(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   kaptAndroidTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   // TODO(#59): Remove this once Bazel is introduced
   api project(':data')
