@@ -138,24 +138,14 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    * @param bazelTestTarget Bazel test target for which code coverage will be run
    * @return the coverage data file path generated from bazel coverage
    */
-  fun runCoverageForTestTarget(bazelTestTarget: String): String? {
+  fun runCoverageForTestTarget(bazelTestTarget: String): ByteArray? {
     val coverageData = executeBazelCommand(
       "coverage",
       bazelTestTarget
     )
     val coverageDataFilePath = parseCoverageDataFile(coverageData)
     val coverageDataFileContent = readDatFileAsBinary(coverageDataFilePath!!)
-    println("Binary Data: $coverageDataFileContent")
-    println("Converated Data: ${convertByteArrayToString(coverageDataFileContent)}")
-    return "Stringing"
-    /*return executeBazelCommand(
-      "coverage",
-      bazelTestTarget
-    )*/
-  }
-
-  fun convertByteArrayToString(bytes: ByteArray?): String {
-    return String(bytes!!, Charsets.UTF_8)
+    return coverageDataFileContent
   }
 
   /**
@@ -177,6 +167,12 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     return null
   }
 
+  /**
+   * Reads the content of the .dat file as a binary blob.
+   *
+   * @param filePath path to the .dat file
+   * @return content of the .dat file as binary data
+   */
   fun readDatFileAsBinary(filePath: String?): ByteArray? {
     val path = Paths.get(filePath!!)
     return Files.readAllBytes(path!!)

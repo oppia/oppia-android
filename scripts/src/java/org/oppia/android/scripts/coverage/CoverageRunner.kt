@@ -53,25 +53,19 @@ class CoverageRunner(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
     val bazelClient = BazelClient(repoRoot, commandExecutor)
-    val coverageData = bazelClient.runCoverageForTestTarget(bazelTestTarget)
-    return coverageData
+    val coverageDataBinary = bazelClient.runCoverageForTestTarget(bazelTestTarget)
+    val coverageDataString = convertByteArrayToString(coverageDataBinary!!)
+
+    return coverageDataString
   }
 
   /**
-   * Parse the coverage command result to extract the path of the coverage data file.
+   * Converts a ByteArray to a String using UTF-8 encoding.
    *
-   * @param data the result from the execution of the coverage command
-   * @return the extracted path of the coverage data file.
-  fun parseCoverageDataFile(data: List<String>): String? {
-    val regex = ".*coverage\\.dat$".toRegex()
-    for (line in data) {
-      val match = regex.find(line)
-      val extractedPath = match?.value?.substringAfterLast(",")?.trim()
-      if (extractedPath != null) {
-        println("Parsed Coverage Data File: $extractedPath")
-        return extractedPath
-      }
-    }
-    return null
-  }*/
+   * @param bytes byte array to convert
+   * @return string representation of the byte array
+   */
+  fun convertByteArrayToString(coverageBinaryData: ByteArray?): String? {
+    return String(coverageBinaryData!!, Charsets.UTF_8)
+  }
 }
