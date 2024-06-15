@@ -3,6 +3,8 @@ package org.oppia.android.scripts.common
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.Locale
+import java.nio.file.Files
+import java.nio.file.Paths
 
 /**
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
@@ -133,14 +135,51 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   /**
    * Runs code coverage for the specified Bazel test target.
    *
-   * @param bazelTestTarget Bazel test target for which code coverage will be run.
-   * @return generated coverageResult output
+   * @param bazelTestTarget Bazel test target for which code coverage will be run
+   * @return the coverage data file path generated from bazel coverage
    */
-  fun runCoverageForTestTarget(bazelTestTarget: String): List<String> {
-    return executeBazelCommand(
+  fun runCoverageForTestTarget(bazelTestTarget: String): String? {
+    val coverageData = executeBazelCommand(
       "coverage",
       bazelTestTarget
     )
+    val coverageDataFilePath = parseCoverageDataFile(coverageData)
+    val coverageDataFileContent = readDatFileAsBinary(coverageDataFilePath!!)
+    println("Binary Data: $coverageDataFileContent")
+    println("Converated Data: ${convertByteArrayToString(coverageDataFileContent)}")
+    return "Stringing"
+    /*return executeBazelCommand(
+      "coverage",
+      bazelTestTarget
+    )*/
+  }
+
+  fun convertByteArrayToString(bytes: ByteArray?): String {
+    return String(bytes!!, Charsets.UTF_8)
+  }
+
+  /**
+   * Parse the coverage command result to extract the path of the coverage data file.
+   *
+   * @param data the result from the execution of the coverage command
+   * @return the extracted path of the coverage data file.
+   */
+  fun parseCoverageDataFile(data: List<String>): String? {
+    val regex = ".*coverage\\.dat$".toRegex()
+    for (line in data) {
+      val match = regex.find(line)
+      val extractedPath = match?.value?.substringAfterLast(",")?.trim()
+      if (extractedPath != null) {
+        println("Parsed Coverage Data File: $extractedPath")
+        return extractedPath
+      }
+    }
+    return null
+  }
+
+  fun readDatFileAsBinary(filePath: String?): ByteArray? {
+    val path = Paths.get(filePath!!)
+    return Files.readAllBytes(path!!)
   }
 
   /**

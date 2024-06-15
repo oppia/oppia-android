@@ -33,9 +33,8 @@ class CoverageRunner(
     bazelTestTarget: String
   ): Deferred<String?> {
     return CoroutineScope(scriptBgDispatcher).async {
-      val coverageData = getCoverage(bazelTestTarget)
-      val data = coverageData
-      parseCoverageDataFile(data)
+      val coverageDataFilePath = getCoverage(bazelTestTarget)
+      coverageDataFilePath
     }
   }
 
@@ -49,7 +48,7 @@ class CoverageRunner(
    */
   fun getCoverage(
     bazelTestTarget: String
-  ): List<String> {
+  ): String? {
     val commandExecutor: CommandExecutor = CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
@@ -63,7 +62,6 @@ class CoverageRunner(
    *
    * @param data the result from the execution of the coverage command
    * @return the extracted path of the coverage data file.
-   */
   fun parseCoverageDataFile(data: List<String>): String? {
     val regex = ".*coverage\\.dat$".toRegex()
     for (line in data) {
@@ -75,5 +73,5 @@ class CoverageRunner(
       }
     }
     return null
-  }
+  }*/
 }
