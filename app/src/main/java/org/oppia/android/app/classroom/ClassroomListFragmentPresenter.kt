@@ -29,11 +29,13 @@ import org.oppia.android.app.classroom.topiclist.TopicCard
 import org.oppia.android.app.classroom.welcome.WelcomeText
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeItemViewModel
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.databinding.ClassroomListFragmentBinding
@@ -59,6 +61,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
 ) {
+  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: ClassroomListFragmentBinding
   private var internalProfileId: Int = -1
 
@@ -137,6 +140,14 @@ class ClassroomListFragmentPresenter @Inject constructor(
         }
       }
     }
+  }
+
+  fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+    routeToTopicPlayStoryListener.routeToTopicPlayStory(
+      internalProfileId,
+      topicSummary.topicId,
+      topicSummary.firstStoryId
+    )
   }
 }
 

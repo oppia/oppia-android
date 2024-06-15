@@ -13,9 +13,13 @@ import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
+import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.model.ScreenName.CLASSROOM_LIST_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -35,6 +39,8 @@ class ClassroomListActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
+  private var internalProfileId: Int = -1
+
   companion object {
     fun createClassroomListActivity(context: Context, profileId: Int?): Intent {
       return Intent(context, ClassroomListActivity::class.java).apply {
@@ -47,6 +53,7 @@ class ClassroomListActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     classroomListActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
   }
@@ -73,14 +80,32 @@ class ClassroomListActivity :
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
-    TODO("Not yet implemented")
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(recentlyPlayedActivityTitle).build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+        .build()
+    )
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    TODO("Not yet implemented")
+    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
   }
 
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
-    TODO("Not yet implemented")
+    startActivity(
+      TopicActivity.createTopicPlayStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
   }
 }

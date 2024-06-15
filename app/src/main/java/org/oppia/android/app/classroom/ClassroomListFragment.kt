@@ -29,6 +29,6 @@ class ClassroomListFragment : InjectableFragment(), TopicSummaryClickListener {
   }
 
   override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    TODO("Not yet implemented")
+    classroomListFragmentPresenter.onTopicSummaryClicked(topicSummary)
   }
 }

@@ -3,6 +3,7 @@ package org.oppia.android.app.classroom.promotedlist
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -68,7 +69,8 @@ fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
         start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
         end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
         bottom = 8.dp,
-      ),
+      )
+      .clickable { promotedStoryViewModel.clickOnStoryTile() },
     backgroundColor = Color.Transparent,
     elevation = 4.dp,
   ) {
