@@ -907,10 +907,10 @@ class TopicListController @Inject constructor(
   // TODO(#5344): Move this to classroom controller.
   private fun loadClassroomById(classroomId: String): ClassroomRecord {
     return if (loadLessonProtosFromAssets) {
-      assetRepository.loadProtoFromLocalAssets(
+      assetRepository.tryLoadProtoFromLocalAssets(
         assetName = classroomId,
-        baseMessage = ClassroomRecord.getDefaultInstance()
-      )
+        defaultMessage = ClassroomRecord.getDefaultInstance()
+      ) ?: ClassroomRecord.getDefaultInstance()
     } else loadClassroomByIdFromJson(classroomId)
   }
 
