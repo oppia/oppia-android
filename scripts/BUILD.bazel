@@ -43,6 +43,16 @@ package_group(
 )
 
 kt_jvm_binary(
+    name = "compute_aab_differences",
+    testonly = True,
+    data = ["@androidsdk//:aapt2_binary"],
+    main_class = "org.oppia.android.scripts.apkstats.ComputeAabDifferencesKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:compute_aab_differences_lib",
+    ],
+)
+
+kt_jvm_binary(
     name = "compute_affected_tests",
     testonly = True,
     main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",

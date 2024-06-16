@@ -83,9 +83,9 @@ dependencies {
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.github.oppia:androidsvg:5bc9c7553e94c3476e8ea32baea3c77567228fcd',
-      'com.github.oppia:kotlitex:43139c140833c7120f351d63d74b42c253d2b213',
+      'com.github.oppia:kotlitex:ccdf4170817fa3b48b8e1e452772dd58ecb71cf2',
       'com.github.bumptech.glide:glide:4.11.0',
-      'com.google.dagger:dagger:2.24',
+      'com.google.dagger:dagger:2.41',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
@@ -93,7 +93,7 @@ dependencies {
       'com.google.firebase:firebase-auth-ktx:19.3.1',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
@@ -103,12 +103,12 @@ dependencies {
   testImplementation(
       'androidx.test.ext:junit:1.1.1',
       'androidx.test.ext:truth:1.4.0',
-      'com.google.dagger:dagger:2.24',
+      'com.google.dagger:dagger:2.41',
       'com.google.truth:truth:1.1.3',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.5',
       project(":data"),
@@ -116,10 +116,10 @@ dependencies {
   )
   kapt(
       'com.github.bumptech.glide:compiler:4.11.0',
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.41'
   )
   // TODO(#59): Remove this once Bazel is introduced
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be

@@ -1,7 +1,7 @@
 # Contains common operations to set up a hermetic Android + Bazel build environment for Oppia
 # Android CI workflows. Action prerequisites:
-# - JDK 9 must be installed & set as the default version via JAVA_HOME
-# - Bazel must be installed, in the path, and be version 4.0.0
+# - JDK 11 must be installed & set as the default version via JAVA_HOME
+# - Bazel must be installed, in the path, and be version 6.5.0
 
 # TODO(#1861): Revert SDK pinning for improved CI performance once Bazel is sufficiently stable that
 # we can rely on the automatic SDK provided by GitHub's CI environment.
@@ -19,20 +19,20 @@ runs:
         $JAVA_HOME/bin/java -version
 
         # Verify that the correct version of Java is installed.
-        java -version 2>&1 | grep -q -E "1.9|9.0"
+        java -version 2>&1 | grep -q -E "11.0"
         HAS_CORRECT_JAVA_VERSION=$(echo $?)
         if [[ "$HAS_CORRECT_JAVA_VERSION" == 1 ]] ; then
-          echo "Expected Java 9 to be installed"
+          echo "Expected Java 11 to be installed"
           exit 1
         fi
       shell: bash
 
     - name: Verify Bazel version
       run: |
-        bazel --version | grep -q 4.0.0
+        bazel --version | grep -q 6.5.0
         HAS_CORRECT_BAZEL_VERSION=$(echo $?)
         if [[ "$HAS_CORRECT_JAVA_VERSION" == 1 ]] ; then
-          echo "Expected Bazel 4.0.0 to be installed"
+          echo "Expected Bazel 6.5.0 to be installed"
           exit 1
         fi
       shell: bash
@@ -77,26 +77,13 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-33"
       shell: bash
 
-    - name: Install build tools 29.0.2
+    - name: Install build tools 32.0.0
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;29.0.2"
-      shell: bash
-
-    - name: Configure Bazel to use JDK 9 for building
-      run: |
-        echo "build --java_language_version=9" >> $HOME/.bazelrc
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;32.0.0"
       shell: bash
 
     - name: Configure Bazel to use specific sandbox tmpfs
       run: |
         echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
         echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
-      shell: bash
-
-    - name: Set up Oppia Bazel Android Tools
-      run: |
-        mkdir $HOME/opensource
-        cd $HOME/opensource
-        git clone https://github.com/oppia/oppia-bazel-tools
-        echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
       shell: bash
