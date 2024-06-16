@@ -17,7 +17,6 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -60,11 +59,9 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("0==0", "answer=0", "input=0"),
-    Iteration("1==1", "answer=1", "input=1"),
-    Iteration("2==2", "answer=2", "input=2")
-  )
+  @Iteration("0==0", "answer=0", "input=0")
+  @Iteration("1==1", "answer=1", "input=1")
+  @Iteration("2==2", "answer=2", "input=2")
   fun testMatches_sameSingleTerms_returnsTrue() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -76,19 +73,17 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("-2==-2", "answer=-2", "input=-2"),
-    Iteration("1+3.14==1+3.14", "answer=1+3.14", "input=1+3.14"),
-    Iteration(" 1 +   3.14 ==1+3.14", "answer= 1 +   3.14 ", "input=1+3.14"),
-    Iteration("1+2+3==1+2+3", "answer=1+2+3", "input=1+2+3"),
-    Iteration("1-3.14==1-3.14", "answer=1-3.14", "input=1-3.14"),
-    Iteration("2*3.14==2*3.14", "answer=2*3.14", "input=2*3.14"),
-    Iteration("2/3==2/3", "answer=2/3", "input=2/3"),
-    Iteration("2/3.14==2/3.14", "answer=2/3.14", "input=2/3.14"),
-    Iteration("2^3==2^3", "answer=2^3", "input=2^3"),
-    Iteration("2^3.14==2^3.14", "answer=2^3.14", "input=2^3.14"),
-    Iteration("sqrt(2)==sqrt(2)", "answer=sqrt(2)", "input=sqrt(2)")
-  )
+  @Iteration("-2==-2", "answer=-2", "input=-2")
+  @Iteration("1+3.14==1+3.14", "answer=1+3.14", "input=1+3.14")
+  @Iteration(" 1 +   3.14 ==1+3.14", "answer= 1 +   3.14 ", "input=1+3.14")
+  @Iteration("1+2+3==1+2+3", "answer=1+2+3", "input=1+2+3")
+  @Iteration("1-3.14==1-3.14", "answer=1-3.14", "input=1-3.14")
+  @Iteration("2*3.14==2*3.14", "answer=2*3.14", "input=2*3.14")
+  @Iteration("2/3==2/3", "answer=2/3", "input=2/3")
+  @Iteration("2/3.14==2/3.14", "answer=2/3.14", "input=2/3.14")
+  @Iteration("2^3==2^3", "answer=2^3", "input=2^3")
+  @Iteration("2^3.14==2^3.14", "answer=2^3.14", "input=2^3.14")
+  @Iteration("sqrt(2)==sqrt(2)", "answer=sqrt(2)", "input=sqrt(2)")
   fun testMatches_sameSingleOperations_returnsTrue() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -100,12 +95,10 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("1!=0", "answer=1", "input=0"),
-    Iteration("0!=1", "answer=0", "input=1"),
-    Iteration("3.14!=1", "answer=3.14", "input=1"),
-    Iteration("1!=3.14", "answer=1", "input=3.14")
-  )
+  @Iteration("1!=0", "answer=1", "input=0")
+  @Iteration("0!=1", "answer=0", "input=1")
+  @Iteration("3.14!=1", "answer=3.14", "input=1")
+  @Iteration("1!=3.14", "answer=1", "input=3.14")
   fun testMatches_differentSingleTerms_returnsFalse() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -118,12 +111,10 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("3.14+1==1+3.14", "answer=3.14+1", "input=1+3.14"),
-    Iteration("3+2+1==1+2+3", "answer=3+2+1", "input=1+2+3"),
-    Iteration("-3.14+1==1-3.14", "answer=-3.14+1", "input=1-3.14"),
-    Iteration("3.14*2==2*3.14", "answer=3.14*2", "input=2*3.14")
-  )
+  @Iteration("3.14+1==1+3.14", "answer=3.14+1", "input=1+3.14")
+  @Iteration("3+2+1==1+2+3", "answer=3+2+1", "input=1+2+3")
+  @Iteration("-3.14+1==1-3.14", "answer=-3.14+1", "input=1-3.14")
+  @Iteration("3.14*2==2*3.14", "answer=3.14*2", "input=2*3.14")
   fun testMatches_operationsDiffer_byCommutativity_returnsTrue() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -135,10 +126,8 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("1+(2+3)==(1+2)+3", "answer=1+(2+3)", "input=(1+2)+3"),
-    Iteration("2*(3*4)==(2*3)*4", "answer=2*(3*4)", "input=(2*3)*4")
-  )
+  @Iteration("1+(2+3)==(1+2)+3", "answer=1+(2+3)", "input=(1+2)+3")
+  @Iteration("2*(3*4)==(2*3)*4", "answer=2*(3*4)", "input=(2*3)*4")
   fun testMatches_operationsDiffer_byAssociativity_returnsTrue() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -150,17 +139,15 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("3.14-1!=1-3.14", "answer=3.14-1", "input=1-3.14"),
-    Iteration("1-(2-3)!=(1-2)-3", "answer=1-(2-3)", "input=(1-2)-3"),
-    Iteration("3.14/2!=2/3.14", "answer=3.14/2", "input=2/3.14"),
-    Iteration("2/(3/4)!=(2/3)/4", "answer=2/(3/4)", "input=(2/3)/4"),
-    Iteration("3.14^2!=2^3.14", "answer=3.14^2", "input=2^3.14"),
-    Iteration("3.14-x!=x-3.14", "answer=3.14-x", "input=x-3.14"),
-    Iteration("x-(y-z)!=(x-y)-z", "answer=x-(y-z)", "input=(x-y)-z"),
-    Iteration("3.14/x!=x/3.14", "answer=3.14/x", "input=x/3.14"),
-    Iteration("x/(y/z)!=(x/y)/z", "answer=x/(y/z)", "input=(x/y)/z")
-  )
+  @Iteration("3.14-1!=1-3.14", "answer=3.14-1", "input=1-3.14")
+  @Iteration("1-(2-3)!=(1-2)-3", "answer=1-(2-3)", "input=(1-2)-3")
+  @Iteration("3.14/2!=2/3.14", "answer=3.14/2", "input=2/3.14")
+  @Iteration("2/(3/4)!=(2/3)/4", "answer=2/(3/4)", "input=(2/3)/4")
+  @Iteration("3.14^2!=2^3.14", "answer=3.14^2", "input=2^3.14")
+  @Iteration("3.14-x!=x-3.14", "answer=3.14-x", "input=x-3.14")
+  @Iteration("x-(y-z)!=(x-y)-z", "answer=x-(y-z)", "input=(x-y)-z")
+  @Iteration("3.14/x!=x/3.14", "answer=3.14/x", "input=x/3.14")
+  @Iteration("x/(y/z)!=(x/y)/z", "answer=x/(y/z)", "input=(x/y)/z")
   fun testMatches_operationsDiffer_byNonCommutativeOrAssociativeReordering_returnsFalse() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -173,9 +160,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("1+2==1-(-2)", "answer=1+2", "input=1-(-2)")
-  )
+  @Iteration("1+2==1-(-2)", "answer=1+2", "input=1-(-2)")
   fun testMatches_operationsDiffer_byDistributingNegation_returnsTrue() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -187,16 +172,14 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("1-2==-(2-1)", "answer=1-2", "input=-(2-1)"),
-    Iteration("1+2!=1+1+1", "answer=1+2", "input=1+1+1"),
-    Iteration("4-6!=1-2-1", "answer=4-6", "input=1-2-1"),
-    Iteration("2*3*2*2!=2*3*4", "answer=2*3*2*2", "input=2*3*4"),
-    Iteration("-6-2!=2*-(3+1)", "answer=-6-2", "input=2*-(3+1)"),
-    Iteration("2/3/2/2!=2/3/4", "answer=2/3/2/2", "input=2/3/4"),
-    Iteration("2^(2+1)!=2^3", "answer=2^(2+1)", "input=2^3"),
-    Iteration("2^(-1)!=1/2", "answer=2^(-1)", "input=1/2")
-  )
+  @Iteration("1-2==-(2-1)", "answer=1-2", "input=-(2-1)")
+  @Iteration("1+2!=1+1+1", "answer=1+2", "input=1+1+1")
+  @Iteration("4-6!=1-2-1", "answer=4-6", "input=1-2-1")
+  @Iteration("2*3*2*2!=2*3*4", "answer=2*3*2*2", "input=2*3*4")
+  @Iteration("-6-2!=2*-(3+1)", "answer=-6-2", "input=2*-(3+1)")
+  @Iteration("2/3/2/2!=2/3/4", "answer=2/3/2/2", "input=2/3/4")
+  @Iteration("2^(2+1)!=2^3", "answer=2^(2+1)", "input=2^3")
+  @Iteration("2^(-1)!=1/2", "answer=2^(-1)", "input=1/2")
   fun testMatches_operationsDiffer_byDistributionAndCombining_returnsFalse() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)
@@ -208,59 +191,57 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("2*(2+6+3+4)==2*(2+6+3+4)", "answer=2*(2+6+3+4)", "input=2*(2+6+3+4)"),
-    Iteration("2 × (2+6+3+4)==2*(2+6+3+4)", "answer=2 × (2+6+3+4)", "input=2*(2+6+3+4)"),
-    Iteration(
-      "15 - (6 × 2) + 3==15 - (6 × 2) + 3", "answer=15 - (6 × 2) + 3", "input=15 - (6 × 2) + 3"
-    ),
-    Iteration(
-      "2 × (50 + 150 + 100 + 25) ==(50 + 150 + 100 + 25) × 2",
-      "answer=2 × (50 + 150 + 100 + 25) ",
-      "input=(50 + 150 + 100 + 25) × 2"
-    ),
-    Iteration(
-      "2 * (50 + 150 + 100 + 25) ==2 × (50 + 150 + 100 + 25)",
-      "answer=2 * (50 + 150 + 100 + 25) ",
-      "input=2 × (50 + 150 + 100 + 25)"
-    ),
-    Iteration("2+5==5+2", "answer=2+5", "input=5+2"),
-    Iteration("5+2==5+2", "answer=5+2", "input=5+2"),
-    Iteration("6 − (− 4)==6 − (− 4)", "answer=6 − (− 4)", "input=6 − (− 4)"),
-    Iteration("6-(-4)==6 − (− 4)", "answer=6-(-4)", "input=6 − (− 4)"),
-    Iteration("− (− 4) + 6==6 − (− 4)", "answer=− (− 4) + 6", "input=6 − (− 4)"),
-    Iteration("6 + 4!=6 − (− 4)", "answer=6 + 4", "input=6 − (− 4)"),
-    Iteration("3 * 10^-5==3 * 10^-5", "answer=3 * 10^-5", "input=3 * 10^-5"),
-    Iteration("10^−5 * 3==3 * 10^-5", "answer=10^−5 * 3", "input=3 * 10^-5"),
-    Iteration(
-      "1000 + 200 + 30 + 4 + 0.5 + 0.06==1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "200 + 30 + 4 + 0.5 + 0.06 + 1000==1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=200 + 30 + 4 + 0.5 + 0.06 + 1000",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "0.06 + 0.5 + 4 + 30 + 200 + 1000==1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=0.06 + 0.5 + 4 + 30 + 200 + 1000",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration("2 * 2 * 3 * 3==2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3", "input=2 * 2 * 3 * 3"),
-    Iteration("(2+6+3+4)*2==2*(2+6+3+4)", "answer=(2+6+3+4)*2", "input=2*(2+6+3+4)"),
-    Iteration("(2+6+3+4) × 2==2*(2+6+3+4)", "answer=(2+6+3+4) × 2", "input=2*(2+6+3+4)"),
-    Iteration(
-      "3 - (6 * 2) + 15==15 - (6 × 2) + 3", "answer=3 - (6 * 2) + 15", "input=15 - (6 × 2) + 3"
-    ),
-    Iteration(
-      "15 - (2 × 6) + 3==15 - (6 × 2) + 3", "answer=15 - (2 × 6) + 3", "input=15 - (6 × 2) + 3"
-    ),
-    Iteration(
-      "2* ( 25+50+100+150)==(50 + 150 + 100 + 25) × 2",
-      "answer=2* ( 25+50+100+150)",
-      "input=(50 + 150 + 100 + 25) × 2"
-    )
+  @Iteration("2*(2+6+3+4)==2*(2+6+3+4)", "answer=2*(2+6+3+4)", "input=2*(2+6+3+4)")
+  @Iteration("2 × (2+6+3+4)==2*(2+6+3+4)", "answer=2 × (2+6+3+4)", "input=2*(2+6+3+4)")
+  @Iteration(
+    "15 - (6 × 2) + 3==15 - (6 × 2) + 3", "answer=15 - (6 × 2) + 3", "input=15 - (6 × 2) + 3"
+  )
+  @Iteration(
+    "2 × (50 + 150 + 100 + 25) ==(50 + 150 + 100 + 25) × 2",
+    "answer=2 × (50 + 150 + 100 + 25) ",
+    "input=(50 + 150 + 100 + 25) × 2"
+  )
+  @Iteration(
+    "2 * (50 + 150 + 100 + 25) ==2 × (50 + 150 + 100 + 25)",
+    "answer=2 * (50 + 150 + 100 + 25) ",
+    "input=2 × (50 + 150 + 100 + 25)"
+  )
+  @Iteration("2+5==5+2", "answer=2+5", "input=5+2")
+  @Iteration("5+2==5+2", "answer=5+2", "input=5+2")
+  @Iteration("6 − (− 4)==6 − (− 4)", "answer=6 − (− 4)", "input=6 − (− 4)")
+  @Iteration("6-(-4)==6 − (− 4)", "answer=6-(-4)", "input=6 − (− 4)")
+  @Iteration("− (− 4) + 6==6 − (− 4)", "answer=− (− 4) + 6", "input=6 − (− 4)")
+  @Iteration("6 + 4!=6 − (− 4)", "answer=6 + 4", "input=6 − (− 4)")
+  @Iteration("3 * 10^-5==3 * 10^-5", "answer=3 * 10^-5", "input=3 * 10^-5")
+  @Iteration("10^−5 * 3==3 * 10^-5", "answer=10^−5 * 3", "input=3 * 10^-5")
+  @Iteration(
+    "1000 + 200 + 30 + 4 + 0.5 + 0.06==1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "200 + 30 + 4 + 0.5 + 0.06 + 1000==1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=200 + 30 + 4 + 0.5 + 0.06 + 1000",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "0.06 + 0.5 + 4 + 30 + 200 + 1000==1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=0.06 + 0.5 + 4 + 30 + 200 + 1000",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration("2 * 2 * 3 * 3==2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3", "input=2 * 2 * 3 * 3")
+  @Iteration("(2+6+3+4)*2==2*(2+6+3+4)", "answer=(2+6+3+4)*2", "input=2*(2+6+3+4)")
+  @Iteration("(2+6+3+4) × 2==2*(2+6+3+4)", "answer=(2+6+3+4) × 2", "input=2*(2+6+3+4)")
+  @Iteration(
+    "3 - (6 * 2) + 15==15 - (6 × 2) + 3", "answer=3 - (6 * 2) + 15", "input=15 - (6 × 2) + 3"
+  )
+  @Iteration(
+    "15 - (2 × 6) + 3==15 - (6 × 2) + 3", "answer=15 - (2 × 6) + 3", "input=15 - (6 × 2) + 3"
+  )
+  @Iteration(
+    "2* ( 25+50+100+150)==(50 + 150 + 100 + 25) × 2",
+    "answer=2* ( 25+50+100+150)",
+    "input=(50 + 150 + 100 + 25) × 2"
   )
   fun testMatches_assortedExpressions_withMatchingCharacteristics_returnsTrue() {
     val answerExpression = createMathExpression(answer)
@@ -274,78 +255,76 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }
 
   @Test
-  @RunParameterized(
-    Iteration("10!=6 − (− 4)", "answer=10", "input=6 − (− 4)"),
-    Iteration("6 + 2^2!=6 − (− 4)", "answer=6 + 2^2", "input=6 − (− 4)"),
-    Iteration("3 * 2 − (− 4)!=6 − (− 4)", "answer=3 * 2 − (− 4)", "input=6 − (− 4)"),
-    Iteration("100/10!=6 − (− 4)", "answer=100/10", "input=6 − (− 4)"),
-    Iteration("3/(10 * 10^4)!=3 * 10^-5", "answer=3/(10 * 10^4)", "input=3 * 10^-5"),
-    Iteration(
-      "1234.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=1234.56",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "123456/100!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=123456/100",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "61728/50!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=61728/50",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "1234 + 56/10!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=1234 + 56/10",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "1230 + 4.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=1230 + 4.56",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3 * 1", "input=2 * 2 * 3 * 3"
-    ),
-    Iteration("2 * 2 * 9!=2 * 2 * 3 * 3", "answer=2 * 2 * 9", "input=2 * 2 * 3 * 3"),
-    Iteration("4 * 3^2!=2 * 2 * 3 * 3", "answer=4 * 3^2", "input=2 * 2 * 3 * 3"),
-    Iteration("8/2 * 3 * 3!=2 * 2 * 3 * 3", "answer=8/2 * 3 * 3", "input=2 * 2 * 3 * 3"),
-    Iteration("36!=2 * 2 * 3 * 3", "answer=36", "input=2 * 2 * 3 * 3"),
-    Iteration("sqrt(4-2)!=sqrt(2)", "answer=sqrt(4-2)", "input=sqrt(2)"),
-    Iteration("3 * 10^5!=3 * 10^-5", "answer=3 * 10^5", "input=3 * 10^-5"),
-    Iteration("2 * 10^−5!=3 * 10^-5", "answer=2 * 10^−5", "input=3 * 10^-5"),
-    Iteration("5 * 10^−3!=3 * 10^-5", "answer=5 * 10^−3", "input=3 * 10^-5"),
-    Iteration("30 * 10^−6!=3 * 10^-5", "answer=30 * 10^−6", "input=3 * 10^-5"),
-    Iteration("0.00003!=3 * 10^-5", "answer=0.00003", "input=3 * 10^-5"),
-    Iteration("3/10^5!=3 * 10^-5", "answer=3/10^5", "input=3 * 10^-5"),
-    Iteration(
-      "123456!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=123456",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration(
-      "1000 + 200 + 30!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-      "answer=1000 + 200 + 30",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
-    ),
-    Iteration("3 *2 – (− 4)!=6 − (− 4)", "answer=3 *2 – (− 4)", "input=6 − (− 4)"),
-    Iteration("6 − 4!=6 − (− 4)", "answer=6 − 4", "input=6 − (− 4)"),
-    Iteration("6 + (− 4)!=6 − (− 4)", "answer=6 + (− 4)", "input=6 − (− 4)"),
-    Iteration("100!=6 − (− 4)", "answer=100", "input=6 − (− 4)"),
-    Iteration("7!=5+2", "answer=7", "input=5+2"),
-    Iteration("3+4!=5+2", "answer=3+4", "input=5+2"),
-    Iteration("2 * 2 * 3!=2 * 2 * 3 * 3", "answer=2 * 2 * 3", "input=2 * 2 * 3 * 3"),
-    Iteration("2 * 3 * 3 * 3!=2 * 2 * 3 * 3", "answer=2 * 3 * 3 * 3", "input=2 * 2 * 3 * 3"),
-    Iteration(
-      "2 *(50 + 150) + 2*(100 + 25)!=(50 + 150 + 100 + 25) × 2",
-      "answer=2 *(50 + 150) + 2*(100 + 25)",
-      "input=(50 + 150 + 100 + 25) × 2"
-    ),
-    Iteration("15 - 12 + 3!=15 - (6 × 2) + 3", "answer=15 - 12 + 3", "input=15 - (6 × 2) + 3"),
-    Iteration("2*(6+3+4) + 4!=2*(2+6+3+4)", "answer=2*(6+3+4) + 4", "input=2*(2+6+3+4)"),
-    Iteration("2*(2+6+3) + 8!=2*(2+6+3+4)", "answer=2*(2+6+3) + 8", "input=2*(2+6+3+4)")
+  @Iteration("10!=6 − (− 4)", "answer=10", "input=6 − (− 4)")
+  @Iteration("6 + 2^2!=6 − (− 4)", "answer=6 + 2^2", "input=6 − (− 4)")
+  @Iteration("3 * 2 − (− 4)!=6 − (− 4)", "answer=3 * 2 − (− 4)", "input=6 − (− 4)")
+  @Iteration("100/10!=6 − (− 4)", "answer=100/10", "input=6 − (− 4)")
+  @Iteration("3/(10 * 10^4)!=3 * 10^-5", "answer=3/(10 * 10^4)", "input=3 * 10^-5")
+  @Iteration(
+    "1234.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=1234.56",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
   )
+  @Iteration(
+    "123456/100!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=123456/100",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "61728/50!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=61728/50",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "1234 + 56/10!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=1234 + 56/10",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "1230 + 4.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=1230 + 4.56",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3 * 1", "input=2 * 2 * 3 * 3"
+  )
+  @Iteration("2 * 2 * 9!=2 * 2 * 3 * 3", "answer=2 * 2 * 9", "input=2 * 2 * 3 * 3")
+  @Iteration("4 * 3^2!=2 * 2 * 3 * 3", "answer=4 * 3^2", "input=2 * 2 * 3 * 3")
+  @Iteration("8/2 * 3 * 3!=2 * 2 * 3 * 3", "answer=8/2 * 3 * 3", "input=2 * 2 * 3 * 3")
+  @Iteration("36!=2 * 2 * 3 * 3", "answer=36", "input=2 * 2 * 3 * 3")
+  @Iteration("sqrt(4-2)!=sqrt(2)", "answer=sqrt(4-2)", "input=sqrt(2)")
+  @Iteration("3 * 10^5!=3 * 10^-5", "answer=3 * 10^5", "input=3 * 10^-5")
+  @Iteration("2 * 10^−5!=3 * 10^-5", "answer=2 * 10^−5", "input=3 * 10^-5")
+  @Iteration("5 * 10^−3!=3 * 10^-5", "answer=5 * 10^−3", "input=3 * 10^-5")
+  @Iteration("30 * 10^−6!=3 * 10^-5", "answer=30 * 10^−6", "input=3 * 10^-5")
+  @Iteration("0.00003!=3 * 10^-5", "answer=0.00003", "input=3 * 10^-5")
+  @Iteration("3/10^5!=3 * 10^-5", "answer=3/10^5", "input=3 * 10^-5")
+  @Iteration(
+    "123456!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=123456",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration(
+    "1000 + 200 + 30!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
+    "answer=1000 + 200 + 30",
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+  )
+  @Iteration("3 *2 – (− 4)!=6 − (− 4)", "answer=3 *2 – (− 4)", "input=6 − (− 4)")
+  @Iteration("6 − 4!=6 − (− 4)", "answer=6 − 4", "input=6 − (− 4)")
+  @Iteration("6 + (− 4)!=6 − (− 4)", "answer=6 + (− 4)", "input=6 − (− 4)")
+  @Iteration("100!=6 − (− 4)", "answer=100", "input=6 − (− 4)")
+  @Iteration("7!=5+2", "answer=7", "input=5+2")
+  @Iteration("3+4!=5+2", "answer=3+4", "input=5+2")
+  @Iteration("2 * 2 * 3!=2 * 2 * 3 * 3", "answer=2 * 2 * 3", "input=2 * 2 * 3 * 3")
+  @Iteration("2 * 3 * 3 * 3!=2 * 2 * 3 * 3", "answer=2 * 3 * 3 * 3", "input=2 * 2 * 3 * 3")
+  @Iteration(
+    "2 *(50 + 150) + 2*(100 + 25)!=(50 + 150 + 100 + 25) × 2",
+    "answer=2 *(50 + 150) + 2*(100 + 25)",
+    "input=(50 + 150 + 100 + 25) × 2"
+  )
+  @Iteration("15 - 12 + 3!=15 - (6 × 2) + 3", "answer=15 - 12 + 3", "input=15 - (6 × 2) + 3")
+  @Iteration("2*(6+3+4) + 4!=2*(2+6+3+4)", "answer=2*(6+3+4) + 4", "input=2*(2+6+3+4)")
+  @Iteration("2*(2+6+3) + 8!=2*(2+6+3+4)", "answer=2*(2+6+3) + 8", "input=2*(2+6+3+4)")
   fun testMatches_assortedExpressions_withoutMatchingCharacteristics_returnsFalse() {
     val answerExpression = createMathExpression(answer)
     val inputExpression = createMathExpression(input)

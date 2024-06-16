@@ -1,0 +1,216 @@
+# Contains jobs corresponding to stats, including build stats due to changes in a PR.
+
+name: Stats Checks & Reports
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 02 * * *"
+
+permissions:
+  pull-requests: write
+
+jobs:
+  find_open_pull_requests:
+    name: Find open PRs
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.compute-pull-request-matrix.outputs.matrix }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute PR matrix
+        id: compute-pull-request-matrix
+        # Remove spaces to ensure the matrix output is on one line. Reference:
+        # https://stackoverflow.com/a/3232433.
+        run: |
+          CURRENT_OPEN_PR_INFO="$(gh pr list --json number,baseRefName,headRefName,headRepository,headRepositoryOwner | tr -d '[:space:]')"
+          echo "matrix={\"prInfo\": $CURRENT_OPEN_PR_INFO}" >> "$GITHUB_OUTPUT"
+
+  build_stats:
+    name: Build Stats
+    needs: find_open_pull_requests
+    runs-on: ubuntu-20.04
+    # Reduce parallelization due to high build times, and allow individual PRs to fail.
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.find_open_pull_requests.outputs.matrix) }}
+    env:
+      ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - name: Compute PR head owner/repo reference
+        env:
+          PR_HEAD_REPO: ${{ matrix.prInfo.headRepository.name }}
+          PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
+        run: |
+          echo "PR_HEAD=$PR_HEAD_REPO_OWNER/$PR_HEAD_REPO" >> "$GITHUB_ENV"
+      - name: Print PR information for this run
+        env:
+          PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
+          PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
+          PR_NUMBER: ${{ matrix.prInfo.number }}
+        run: |
+          echo "PR $PR_NUMBER is merging into $PR_BASE_REF_NAME from https://github.com/$PR_HEAD branch $PR_HEAD_REF_NAME."
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      # For reference on this & the later cache actions, see:
+      # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
+      # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
+      # with Bazel since Bazel can share the most recent cache from an unrelated build and still
+      # benefit from incremental build performance (assuming that actions/cache aggressively removes
+      # older caches due to the 5GB cache limit size & Bazel's large cache size).
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      # This checks out the actual true develop branch separately to ensure that the stats check is
+      # run from the latest develop rather than the base branch (which might be different for
+      # chained PRs).
+      - name: Check out develop repository
+        uses: actions/checkout@v4
+        with:
+          path: develop
+
+      - name: Set up build environment
+        uses: ./develop/.github/actions/set-up-android-bazel-build-environment
+
+      - name: Check Bazel environment
+        run: |
+          cd develop
+          bazel info
+
+      - name: Check out base repository and branch
+        env:
+          PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.PR_BASE_REF_NAME }}
+          path: base
+
+      - name: Check out head repository and branch
+        env:
+          PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: ${{ env.PR_HEAD }}
+          ref: ${{ env.PR_HEAD_REF_NAME }}
+          path: head
+
+      # Note that Bazel is shutdown between builds since multiple Bazel servers will otherwise end
+      # up being active (due to multiple repositories being used) and this can quickly overwhelm CI
+      # worker resources.
+      - name: Build Oppia dev, alpha, beta, and GA (feature branch)
+        run: |
+          cd head
+          git log -n 1
+          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
+          cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_with_changes.aab
+          cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_with_changes.aab
+          cp bazel-bin/oppia_beta.aab ../develop/oppia_beta_with_changes.aab
+          cp bazel-bin/oppia_ga.aab ../develop/oppia_ga_with_changes.aab
+          bazel shutdown
+
+      - name: Build Oppia dev, alpha, beta, and GA (base branch)
+        run: |
+          cd base
+          git log -n 1
+          bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
+          cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_without_changes.aab
+          cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_without_changes.aab
+          cp bazel-bin/oppia_beta.aab ../develop/oppia_beta_without_changes.aab
+          cp bazel-bin/oppia_ga.aab ../develop/oppia_ga_without_changes.aab
+          bazel shutdown
+
+      - name: Run stats analysis tool (develop branch)
+        run: |
+          cd develop
+          git log -n 1
+          bazel run //scripts:compute_aab_differences -- \
+            $(pwd)/brief_build_summary.log $(pwd)/full_build_summary.log \
+            dev $(pwd)/oppia_dev_without_changes.aab $(pwd)/oppia_dev_with_changes.aab \
+            alpha $(pwd)/oppia_alpha_without_changes.aab $(pwd)/oppia_alpha_with_changes.aab \
+            beta $(pwd)/oppia_beta_without_changes.aab $(pwd)/oppia_beta_with_changes.aab \
+            ga $(pwd)/oppia_ga_without_changes.aab $(pwd)/oppia_ga_with_changes.aab
+
+      # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
+      # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
+      - name: Extract reports for uploading & commenting
+        env:
+          PR_NUMBER: ${{ matrix.prInfo.number }}
+        id: compute-comment-body
+        run: |
+          {
+            echo 'comment_body<<EOF'
+            cat $GITHUB_WORKSPACE/develop/brief_build_summary.log
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+          FULL_BUILD_SUMMARY_FILE_NAME="full_build_summary_pr_$PR_NUMBER.log"
+          FULL_BUILD_SUMMARY_FILE_PATH="$GITHUB_WORKSPACE/develop/$FULL_BUILD_SUMMARY_FILE_NAME"
+          echo "FULL_BUILD_SUMMARY_FILE_NAME=$FULL_BUILD_SUMMARY_FILE_NAME" >> "$GITHUB_ENV"
+          echo "FULL_BUILD_SUMMARY_FILE_PATH=$FULL_BUILD_SUMMARY_FILE_PATH" >> "$GITHUB_ENV"
+          cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
+
+      - name: Add build stats summary comment
+        env:
+          PR_NUMBER: ${{ matrix.prInfo.number }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body: ${{ steps.compute-comment-body.outputs.comment_body }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
+          path: ${{ env.FULL_BUILD_SUMMARY_FILE_PATH }}

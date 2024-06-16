@@ -23,6 +23,5 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         "//third_party:androidx_databinding_databinding-adapters",
-        "//third_party:androidx_lifecycle_lifecycle-extensions",
     ],
 )
