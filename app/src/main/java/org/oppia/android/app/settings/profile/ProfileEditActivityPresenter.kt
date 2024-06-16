@@ -25,14 +25,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     val isMultipane = activity.intent.getBooleanExtra(IS_MULTIPANE_EXTRA_KEY, false)
 
     toolbar.setNavigationOnClickListener {
-      if (isMultipane) {
-        @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-        activity.onBackPressed()
-      } else {
-        val intent = Intent(activity, ProfileListActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        activity.startActivity(intent)
-      }
+      getProfileEditActivity()?.handleBackPressFromPresenter()
     }
 
     if (getProfileEditFragment() == null) {
@@ -43,6 +36,9 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
   }
 
+  private fun getProfileEditActivity(): ProfileEditActivity? {
+    return activity as ProfileEditActivity?
+  }
   private fun setUpToolbar() {
     toolbar = activity.findViewById<View>(R.id.profile_edit_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)

@@ -2,7 +2,9 @@ package org.oppia.android.app.settings.profile
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
@@ -41,19 +43,44 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      onBackInvokedDispatcher.registerOnBackInvokedCallback(1000){
+        Log.w("profile-edit", "dispatch")
+        val isMultipane: Boolean = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
+        if (isMultipane) {
+          onBackPressedDispatcher.onBackPressed()
+        } else {
+          val intent = Intent(this, ProfileListActivity::class.java)
+          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+          startActivity(intent)
+        }
+      }
+    }
     (activityComponent as ActivityComponentImpl).inject(this)
     profileEditActivityPresenter.handleOnCreate()
   }
 
   override fun onBackPressed() {
-    val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
-    if (isMultipane) {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      super.onBackPressed()
+    Log.w("profile-edit", "back pressed")
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      val isMultipane: Boolean = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
+      if (isMultipane) {
+        @Suppress("DEPRECATION")
+        super.onBackPressed()
+      } else {
+        val intent = Intent(this, ProfileListActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+      }
+    }
+  }
+
+  fun handleBackPressFromPresenter(){
+    Log.w("profile-edit", "here")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      onBackPressedDispatcher.onBackPressed()
     } else {
-      val intent = Intent(this, ProfileListActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      startActivity(intent)
+      onBackPressed()
     }
   }
 }
