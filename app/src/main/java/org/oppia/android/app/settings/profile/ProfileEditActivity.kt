@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
@@ -44,8 +43,7 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      onBackInvokedDispatcher.registerOnBackInvokedCallback(1000){
-        Log.w("profile-edit", "dispatch")
+      onBackInvokedDispatcher.registerOnBackInvokedCallback(1000) {
         val isMultipane: Boolean = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
         if (isMultipane) {
           onBackPressedDispatcher.onBackPressed()
@@ -61,7 +59,6 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    Log.w("profile-edit", "back pressed")
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
       val isMultipane: Boolean = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
       if (isMultipane) {
@@ -75,8 +72,7 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
     }
   }
 
-  fun handleBackPressFromPresenter(){
-    Log.w("profile-edit", "here")
+  fun handleBackPressFromPresenter() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       onBackPressedDispatcher.onBackPressed()
     } else {
