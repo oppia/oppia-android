@@ -101,7 +101,6 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedAutoAndroidTestRunner
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -419,12 +418,10 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
-    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
-    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
-    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
-  )
+  @Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA")
+  @Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA")
+  @Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA")
+  @Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
   fun testSplashActivity_newUser_betaFlavorTransitions_showsBetaNotice() {
     simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
 
@@ -437,12 +434,10 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
-    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
-    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
-    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
-  )
+  @Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA")
+  @Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA")
+  @Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA")
+  @Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
   fun testSplashActivity_newUser_betaFlavorTransitions_closeNotice_routesToOnboardingFlow() {
     simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
     initializeTestApplicationWithFlavor(secondOpenFlavor)
@@ -458,12 +453,10 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
-    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
-    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
-    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
-  )
+  @Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA")
+  @Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA")
+  @Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA")
+  @Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
   fun testSplashActivity_newUser_betaFlavorTransitions_doNotShowAgain_routesToOnboardingFlow() {
     simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
     initializeTestApplicationWithFlavor(secondOpenFlavor)
@@ -558,10 +551,8 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
-  )
+  @Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
   fun testSplashActivity_onboarded_gaFlavorTransitions_showsGaUpgradeNotice() {
     simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
 
@@ -575,10 +566,8 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
-  )
+  @Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
   fun testSplashActivity_onboarded_gaFlavorTransitions_closeNotice_routesToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
     initializeTestApplicationWithFlavor(secondOpenFlavor)
@@ -595,10 +584,8 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
-  )
+  @Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
   fun testSplashActivity_onboarded_gaFlavorTransitions_doNotShowAgain_routesToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
     initializeTestApplicationWithFlavor(secondOpenFlavor)
@@ -768,27 +755,25 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING"),
-    Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER"),
-    Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA"),
-    Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING"),
-    Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER"),
-    Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA"),
-    Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING"),
-    Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER"),
-    Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA"),
-    Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING"),
-    Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER"),
-    Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA"),
-    Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA"),
-    Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING"),
-    Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER"),
-    Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA"),
-    Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
-  )
+  @Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING")
+  @Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER")
+  @Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA")
+  @Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING")
+  @Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER")
+  @Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA")
+  @Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING")
+  @Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER")
+  @Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA")
+  @Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING")
+  @Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER")
+  @Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA")
+  @Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA")
+  @Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING")
+  @Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER")
+  @Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA")
+  @Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
   fun testSplashActivity_newUser_ignoredFlavorTransitions_routesToOnboardingFlow() {
     simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
 
@@ -802,27 +787,25 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING"),
-    Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER"),
-    Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA"),
-    Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING"),
-    Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER"),
-    Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA"),
-    Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING"),
-    Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER"),
-    Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA"),
-    Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING"),
-    Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER"),
-    Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA"),
-    Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA"),
-    Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING"),
-    Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER"),
-    Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA"),
-    Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
-  )
+  @Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING")
+  @Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER")
+  @Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA")
+  @Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING")
+  @Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER")
+  @Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA")
+  @Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING")
+  @Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER")
+  @Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA")
+  @Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING")
+  @Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER")
+  @Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA")
+  @Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA")
+  @Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING")
+  @Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER")
+  @Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA")
+  @Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
   fun testSplashActivity_onboarded_ignoredFlavorTransitions_routesToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
 
@@ -836,33 +819,31 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING"),
-    Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER"),
-    Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA"),
-    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
-    Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING"),
-    Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER"),
-    Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA"),
-    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
-    Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING"),
-    Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER"),
-    Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA"),
-    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
-    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING"),
-    Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER"),
-    Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA"),
-    Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA"),
-    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY"),
-    Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING"),
-    Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER"),
-    Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA"),
-    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA"),
-    Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
-  )
+  @Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING")
+  @Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER")
+  @Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA")
+  @Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA")
+  @Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING")
+  @Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER")
+  @Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA")
+  @Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA")
+  @Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING")
+  @Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER")
+  @Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA")
+  @Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA")
+  @Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING")
+  @Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER")
+  @Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA")
+  @Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA")
+  @Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
+  @Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING")
+  @Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER")
+  @Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA")
+  @Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
+  @Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
   fun testSplashActivity_appDeprecated_allFlavorTransitions_showsDeprecationNotice() {
     simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
 
