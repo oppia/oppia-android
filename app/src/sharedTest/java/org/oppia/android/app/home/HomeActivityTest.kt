@@ -153,10 +153,9 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
