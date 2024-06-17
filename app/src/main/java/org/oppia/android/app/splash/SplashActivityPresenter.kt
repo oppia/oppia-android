@@ -308,7 +308,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun getProfileOnboardingState() {
-    appStartupStateController.getProfileOnboardingState().toLiveData().observe(
+    profileManagementController.getProfileOnboardingState().toLiveData().observe(
       activity,
       { result ->
         when (result) {
@@ -335,30 +335,38 @@ class SplashActivityPresenter @Inject constructor(
         activity.finish()
       }
       ProfileOnboardingState.SOLE_LEARNER_PROFILE -> {
-        profileManagementController.getProfiles().toLiveData().observe(
-          activity,
-          { result ->
-            when (result) {
-              is AsyncResult.Success -> {
-                val internalProfileId = getSoleLearnerProfile(result.value)?.id?.internalId
-                activity.startActivity(HomeActivity.createHomeActivity(activity, internalProfileId))
-                activity.finish()
-              }
-              is AsyncResult.Pending -> {} // no-op
-              is AsyncResult.Failure -> {
-                oppiaLogger.e(
-                  "SplashActivity", "Failed to retrieve the list of profiles", result.error
-                )
-              }
-            }
-          }
-        )
+        processFetchSoleLearnerProfile()
       }
       else -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         activity.finish()
       }
     }
+  }
+
+  private fun processFetchSoleLearnerProfile() {
+    profileManagementController.getProfiles().toLiveData().observe(
+      activity,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            val internalProfileId = getSoleLearnerProfile(result.value)?.id?.internalId
+            // Prevent launching if the current activity is finishing, which would cause duplicate
+            // intents.
+            if (!activity.isFinishing) {
+              activity.startActivity(HomeActivity.createHomeActivity(activity, internalProfileId))
+              activity.finish()
+            }
+          }
+          is AsyncResult.Pending -> {} // no-op
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "SplashActivity", "Failed to retrieve the list of profiles", result.error
+            )
+          }
+        }
+      }
+    )
   }
 
   private fun getSoleLearnerProfile(profiles: List<Profile>): Profile? {

@@ -87,7 +87,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -134,6 +133,9 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
@@ -146,26 +148,18 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SplashActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SplashActivityTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject
-  lateinit var appStartupStateController: AppStartupStateController
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var appStartupStateController: AppStartupStateController
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
-  @Parameter
-  lateinit var firstOpen: String
-  @Parameter
-  lateinit var secondOpen: String
+  @Parameter lateinit var firstOpen: String
+  @Parameter lateinit var secondOpen: String
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
   private val firstOpenFlavor by lazy { BuildFlavor.valueOf(firstOpen) }
@@ -1069,6 +1063,53 @@ class SplashActivityTest {
     }
   }
 
+  @Test
+  fun testSplashActivity_initialOpen_OnboardingV2Enabled_routesToOnboardingActivity() {
+    setUpTestWithOnboardingV2Enabled()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_OnboardingV2Enabled_existingSoleLearnerProfile_routesToHomeActivity() {
+    setUpTestWithOnboardingV2Enabled()
+
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_OnboardingV2Enabled_existingAdminProfile_routesToProfileChooserActivity() {
+    setUpTestWithOnboardingV2Enabled()
+
+    profileTestHelper.addOnlyAdminProfile()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testActivity_OnboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
+    setUpTestWithOnboardingV2Enabled()
+
+    profileTestHelper.addMoreProfiles(5)
+
+    launchSplashActivityPartially {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  private fun setUpTestWithOnboardingV2Enabled() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    initializeTestApplication()
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
@@ -1223,7 +1264,7 @@ class SplashActivityTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, PlatformParameterModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, TestPlatformParameterModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

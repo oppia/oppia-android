@@ -14,6 +14,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -74,6 +75,7 @@ private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
 private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "retrieve_survey_last_shown_timestamp_provider_id"
 private const val UPDATE_ONBOARDING_STATE_PROVIDER_ID = "update_onboarding_state_provider_id"
+private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -351,6 +353,28 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_ONBOARDING_STATE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
+  }
+
+  /** Returns the state of the app based on the number and type of existing profiles. */
+  fun getProfileOnboardingState(): DataProvider<ProfileOnboardingState> {
+    return getProfiles()
+      .transform(PROFILE_ONBOARDING_STATE_PROVIDER_ID) { profileList ->
+        when {
+          profileList.size > 1 -> {
+            ProfileOnboardingState.MULTIPLE_PROFILES
+          }
+          profileList.size == 1 -> {
+            if (profileList.first().isAdmin && profileList.first().pin.isNotBlank()) {
+              ProfileOnboardingState.ADMIN_PROFILE_ONLY
+            } else {
+              ProfileOnboardingState.SOLE_LEARNER_PROFILE
+            }
+          }
+          else -> {
+            ProfileOnboardingState.NEW_INSTALL
+          }
+        }
+      }
   }
 
   /**

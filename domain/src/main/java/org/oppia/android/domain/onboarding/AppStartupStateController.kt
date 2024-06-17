@@ -5,31 +5,22 @@ import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.OnboardingState
-import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
-private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
 
 /** Controller for persisting and retrieving the user's initial app state upon opening the app. */
 @Singleton
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
-  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
-  private val machineLocale: OppiaLocale.MachineLocale,
   private val currentBuildFlavor: BuildFlavor,
-  private val deprecationController: DeprecationController,
-  private val profileManagementController: ProfileManagementController
+  private val deprecationController: DeprecationController
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -160,41 +151,5 @@ class AppStartupStateController @Inject constructor(
         BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY -> BuildFlavorNoticeMode.NO_NOTICE
       }
     }
-  }
-
-  private fun hasAppExpired(): Boolean {
-    val applicationMetadata = expirationMetaDataRetriever.getMetaData()
-    val isAppExpirationEnabled =
-      applicationMetadata?.getBoolean(
-        "automatic_app_expiration_enabled", /* defaultValue= */ true
-      ) ?: true
-    return if (isAppExpirationEnabled) {
-      val expirationDateString = applicationMetadata?.getStringFromBundle("expiration_date")
-      val expirationDate = expirationDateString?.let { machineLocale.parseOppiaDate(it) }
-      // Assume the app is in an expired state if something fails when comparing the date.
-      expirationDate?.isBeforeToday() ?: true
-    } else false
-  }
-
-  /** Returns the state of the app based on the number and type of existing profiles. */
-  fun getProfileOnboardingState(): DataProvider<ProfileOnboardingState> {
-    return profileManagementController.getProfiles()
-      .transform(PROFILE_ONBOARDING_STATE_PROVIDER_ID) { profileList ->
-        when {
-          profileList.size > 1 -> {
-            ProfileOnboardingState.MULTIPLE_PROFILES
-          }
-          profileList.size == 1 -> {
-            if (profileList.first().isAdmin && profileList.first().pin.isNotBlank()) {
-              ProfileOnboardingState.ADMIN_PROFILE_ONLY
-            } else {
-              ProfileOnboardingState.SOLE_LEARNER_PROFILE
-            }
-          }
-          else -> {
-            ProfileOnboardingState.NEW_INSTALL
-          }
-        }
-      }
   }
 }
