@@ -2,7 +2,10 @@ package org.oppia.android.scripts.coverage
 
 import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * Entry point function for running coverage analysis for a single test target.
@@ -17,23 +20,40 @@ import java.io.File
  * Example:
  *     bazel run //scripts:run_coverage_for_test_target -- $(pwd)
  *     //utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest
+ * Example with custom process timeout:
+ *     bazel run //scripts:run_coverage_for_test_target -- $(pwd)
+ *     //utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest processTimeout=10
+ *
  */
 fun main(vararg args: String) {
   val repoRoot = File(args[0]).absoluteFile.normalize()
   val targetPath = args[1]
 
-  RunCoverageForTestTarget(repoRoot, targetPath).runCoverage()
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
+      ?.substringAfter("=")
+      ?.toLongOrNull() ?: 5
+
+    val commandExecutor: CommandExecutor = CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
+    )
+
+    RunCoverageForTestTarget(repoRoot, targetPath, commandExecutor, scriptBgDispatcher).runCoverage()
+  }
 }
 
 /**
  * Class responsible for analyzing target files for coverage and generating reports.
  *
  * @param repoRoot the root directory of the repository
- * @param targetPath Bazel test target to analyze coverage.
+ * @param targetPath Bazel test target to analyze coverage
+ * @param commandExecutor Executes the specified command in the specified working directory
  */
 class RunCoverageForTestTarget(
   private val repoRoot: File,
-  private val targetPath: String
+  private val targetPath: String,
+  private val commandExecutor: CommandExecutor,
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
 
   /**
@@ -49,12 +69,12 @@ class RunCoverageForTestTarget(
    * @return the generated coverage data.
    */
   fun runWithCoverageAnalysis(): String? {
-    return ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-      runBlocking {
+      return runBlocking {
         val result =
-          CoverageRunner(repoRoot, scriptBgDispatcher).runWithCoverageAsync(targetPath).await()
+          CoverageRunner(repoRoot, scriptBgDispatcher, commandExecutor)
+            .runWithCoverageAsync(targetPath)
+            .await()
         result
       }
     }
   }
-}

@@ -6,15 +6,19 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
+import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverageForTestTarget]. */
 class RunCoverageForTestTargetTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var bazelTestTarget: String
@@ -35,7 +39,9 @@ class RunCoverageForTestTargetTest {
     val exception = assertThrows<IllegalStateException>() {
       RunCoverageForTestTarget(
         tempFolder.root,
-        bazelTestTarget
+        bazelTestTarget,
+        commandExecutor,
+        scriptBgDispatcher
       ).runCoverage()
     }
 
@@ -49,7 +55,9 @@ class RunCoverageForTestTargetTest {
     val exception = assertThrows<IllegalStateException>() {
       RunCoverageForTestTarget(
         tempFolder.root,
-        bazelTestTarget
+        bazelTestTarget,
+        commandExecutor,
+        scriptBgDispatcher
       ).runCoverage()
     }
 
@@ -106,7 +114,9 @@ class RunCoverageForTestTargetTest {
 
     val result = RunCoverageForTestTarget(
       tempFolder.root,
-      "//coverage/test/java/com/example:test"
+      "//coverage/test/java/com/example:test",
+      longCommandExecutor,
+      scriptBgDispatcher
     ).runCoverage()
 
     assertThat(result).isEqualTo(
@@ -131,6 +141,12 @@ class RunCoverageForTestTargetTest {
       LH:3
       LF:4
       end_of_record""".trimIndent() + "\n"
+    )
+  }
+
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }

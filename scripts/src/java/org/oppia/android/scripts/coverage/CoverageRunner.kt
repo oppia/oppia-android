@@ -5,20 +5,20 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
-import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 /**
  * Class responsible for running coverage analysis asynchronously.
  *
  * @param repoRoot the root directory of the repository
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
+ * @param commandExecutor Executes the specified command in the specified working directory
  */
 class CoverageRunner(
   private val repoRoot: File,
-  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val commandExecutor: CommandExecutor
 ) {
 
   /**
@@ -45,9 +45,6 @@ class CoverageRunner(
   fun getCoverage(
     bazelTestTarget: String
   ): String? {
-    val commandExecutor: CommandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
-    )
     val bazelClient = BazelClient(repoRoot, commandExecutor)
     val coverageDataBinary = bazelClient.runCoverageForTestTarget(bazelTestTarget)
     val coverageDataString = convertByteArrayToString(coverageDataBinary!!)

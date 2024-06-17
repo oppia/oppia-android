@@ -6,15 +6,18 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
+import java.util.concurrent.TimeUnit
 
 /** Tests for [CoverageRunner]. */
 class CoverageRunnerTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
   private lateinit var coverageRunner: CoverageRunner
   private lateinit var testBazelWorkspace: TestBazelWorkspace
@@ -22,7 +25,7 @@ class CoverageRunnerTest {
 
   @Before
   fun setUp() {
-    coverageRunner = CoverageRunner(tempFolder.root, scriptBgDispatcher)
+    coverageRunner = CoverageRunner(tempFolder.root, scriptBgDispatcher, longCommandExecutor)
     bazelTestTarget = "//:testTarget"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
   }
@@ -124,6 +127,12 @@ class CoverageRunnerTest {
       LH:3
       LF:4
       end_of_record""".trimIndent() + "\n"
+    )
+  }
+
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
