@@ -34,6 +34,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -68,12 +69,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -120,8 +123,12 @@ class IntroFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   private val testProfileNickname = "John"
   private val testInternalProfileId = 0
+  private val testProfileId = ProfileId.newBuilder().setInternalId(testInternalProfileId).build()
 
   @Before
   fun setUp() {
@@ -235,6 +242,16 @@ class IntroFragmentTest {
           )
         )
       ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
+    launchOnboardingLearnerIntroActivity().use {
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event).hasStartProfileOnboardingContextThat {
+        hasProfileIdThat().isEqualTo(testProfileId)
+      }
     }
   }
 

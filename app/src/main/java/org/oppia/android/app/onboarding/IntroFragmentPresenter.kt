@@ -11,6 +11,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LearnerIntroFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import javax.inject.Inject
 
@@ -19,7 +20,8 @@ class IntroFragmentPresenter @Inject constructor(
   private var fragment: Fragment,
   private val activity: AppCompatActivity,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val analyticsController: AnalyticsController
+  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var binding: LearnerIntroFragmentBinding
 
@@ -40,8 +42,11 @@ class IntroFragmentPresenter @Inject constructor(
 
     setLearnerName(profileNickname)
 
-    analyticsController.logStartProfileOnboardingEvent(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
+    analyticsController.logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingStartedContext(profileId),
+      profileId = profileId
     )
 
     binding.onboardingNavigationBack.setOnClickListener {
