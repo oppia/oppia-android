@@ -27,6 +27,9 @@ fun main(vararg args: String) {
 
 /**
  * Class responsible for analyzing target files for coverage and generating reports.
+ *
+ * @param repoRoot the root directory of the repository
+ * @param targetPath Bazel test target to analyze coverage.
  */
 class RunCoverageForTestTarget(
   private val repoRoot: File,
@@ -43,7 +46,7 @@ class RunCoverageForTestTarget(
   /**
    * Runs coverage analysis on the specified target file asynchronously.
    *
-   * @return [Path of the coverage data file].
+   * @return the generated coverage data.
    */
   fun runWithCoverageAnalysis(): String? {
     return ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
