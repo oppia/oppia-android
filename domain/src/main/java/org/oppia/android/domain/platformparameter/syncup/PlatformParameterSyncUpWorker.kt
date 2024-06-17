@@ -5,11 +5,10 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
@@ -54,26 +53,15 @@ class PlatformParameterSyncUpWorker private constructor(
     const val WORKER_TYPE_KEY = "worker_type_key"
   }
 
-  @ExperimentalCoroutinesApi
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
-    val result = backgroundScope.async {
+    // TODO(#4463): Add withTimeout() to avoid potential hanging.
+    return backgroundScope.async {
       when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
         PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }
-    }
-
-    val future = SettableFuture.create<Result>()
-    result.invokeOnCompletion { failure ->
-      if (failure != null) {
-        future.setException(failure)
-      } else {
-        future.set(result.getCompleted())
-      }
-    }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
-    return future
+    }.asListenableFuture()
   }
 
   /**

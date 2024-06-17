@@ -106,13 +106,13 @@ class DispatcherModule {
 Here is an example of testing with Oppia Dagger. This shows setting up a test component and using it to inject dependencies for testing purposes. It also shows how to create a test-specific dependency that can be injected into a test for manipulation.
 ```
 class InMemoryBlockingCacheTest {
- @ExperimentalCoroutinesApi @Inject @field:TestDispatcher lateinit var testDispatcher: TestCoroutineDispatcher
- @ExperimentalCoroutinesApi private val backgroundTestCoroutineScope by lazy { CoroutineScope(backgroundTestCoroutineDispatcher) }
- @ExperimentalCoroutinesApi private val backgroundTestCoroutineDispatcher by lazy { TestCoroutineDispatcher() }
+ @field:[Inject TestDispatcher] lateinit var testDispatcher: TestCoroutineDispatcher
+ private val backgroundTestCoroutineScope by lazy { CoroutineScope(backgroundTestCoroutineDispatcher) }
+ private val backgroundTestCoroutineDispatcher by lazy { TestCoroutineDispatcher() }
 
- @Before @ExperimentalCoroutinesApi fun setUp() { setUpTestApplicationComponent() }
+ @Before fun setUp() { setUpTestApplicationComponent() }
 
- @Test @ExperimentalCoroutinesApi fun `test with testDispatcher since it's connected to the blocking dispatcher`() = runBlockingTest(testDispatcher) { /* ... */ }
+ @Test fun `test with testDispatcher since it's connected to the blocking dispatcher`() = runBlockingTest(testDispatcher) { /* ... */ }
 
  private fun setUpTestApplicationComponent() {
    DaggerInMemoryBlockingCacheTest_TestApplicationComponent.builder().setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
@@ -121,8 +121,8 @@ class InMemoryBlockingCacheTest {
  @Qualifier annotation class TestDispatcher
  @Module
  class TestModule {
-   @ExperimentalCoroutinesApi @Singleton @Provides @TestDispatcher fun provideTestDispatcher(): TestCoroutineDispatcher { return TestCoroutineDispatcher() }
-   @ExperimentalCoroutinesApi @Singleton @Provides @BlockingDispatcher
+   @Singleton @Provides @TestDispatcher fun provideTestDispatcher(): TestCoroutineDispatcher { return TestCoroutineDispatcher() }
+   @Singleton @Provides @BlockingDispatcher
    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher { return testDispatcher }
  }
 
