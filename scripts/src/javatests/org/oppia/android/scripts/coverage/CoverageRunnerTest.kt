@@ -102,12 +102,28 @@ class CoverageRunnerTest {
 
     val result = coverageRunner.getCoverage("//coverage/test/java/com/example:test")
 
-    // Check that the test has "PASSED"
-    val containsPassedValue = result.any { it.contains("PASSED") }
-    assert(containsPassedValue) { "The test is not 'PASSED'" }
-
-    // Check if the coverage.dat file is generated
-    val containsCoverageData = result.any { it.contains("coverage.dat") }
-    assert(containsCoverageData) { "The coverage.dat is not generated" }
+    assertThat(result).isEqualTo(
+      """
+      SF:coverage/main/java/com/example/TwoSum.kt
+      FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;
+      FN:3,com/example/TwoSum::<init> ()V
+      FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;
+      FNDA:0,com/example/TwoSum::<init> ()V
+      FNF:2
+      FNH:1
+      BRDA:7,0,0,1
+      BRDA:7,0,1,1
+      BRDA:7,0,2,1
+      BRDA:7,0,3,1
+      BRF:4
+      BRH:4
+      DA:3,0
+      DA:7,1
+      DA:8,1
+      DA:10,1
+      LH:3
+      LF:4
+      end_of_record""".trimIndent() + "\n"
+    )
   }
 }
