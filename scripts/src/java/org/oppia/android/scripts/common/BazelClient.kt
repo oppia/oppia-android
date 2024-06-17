@@ -148,7 +148,13 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     return coverageDataFileContent
   }
 
-  private fun parseCoverageDataFile(data: List<String>): String? {
+  /**
+   * Parse the coverage command result to extract the path of the coverage data file.
+   *
+   * @param data the result from the execution of the coverage command
+   * @return the extracted path of the coverage data file.
+   */
+  fun parseCoverageDataFile(data: List<String>): String? {
     val regex = ".*coverage\\.dat$".toRegex()
     for (line in data) {
       val match = regex.find(line)
@@ -161,7 +167,13 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     return null
   }
 
-  private fun readDatFileAsBinary(filePath: String?): ByteArray? {
+  /**
+   * Reads the content of the .dat file as a binary blob.
+   *
+   * @param filePath path to the .dat file
+   * @return content of the .dat file as binary data
+   */
+  fun readDatFileAsBinary(filePath: String?): ByteArray? {
     val path = Paths.get(filePath!!)
     return Files.readAllBytes(path!!)
   }
