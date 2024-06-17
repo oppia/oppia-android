@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -82,7 +83,8 @@ fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
       .padding(
         start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
         end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
-      ),
+      )
+      .clickable { classroomSummaryViewModel.handleClassroomClick(classroomSummaryViewModel.classroomId) },
     backgroundColor = colorResource(id = R.color.component_color_shared_screen_primary_background_color),
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = 4.dp,

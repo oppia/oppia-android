@@ -1,5 +1,7 @@
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -7,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
+import org.oppia.android.app.home.classroomlist.RouteToTopic
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
@@ -33,6 +36,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 
@@ -55,7 +59,7 @@ class ClassroomListViewModel(
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController
-) : ObservableViewModel() {
+) : ObservableViewModel(), RouteToTopic {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val promotedStoryListLimit = activity.resources.getInteger(
@@ -70,6 +74,8 @@ class ClassroomListViewModel(
    * that the operation has completed.
    */
   val isProgressBarVisible = ObservableField(true)
+
+  val topicList: ObservableList<HomeItemViewModel> = ObservableArrayList()
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -101,12 +107,33 @@ class ClassroomListViewModel(
       classroomSummaryListDataProvider,
       HOME_FRAGMENT_COMBINED_PROVIDER_ID
     ) { homeItemViewModelList, classroomSummaryList ->
-      homeItemViewModelList + computeClassroomItemViewModelList(classroomSummaryList)
-    }.combineWith(
-      topicListSummaryDataProvider,
-      "TOPIC_SUMMARY"
-    ) { homeItemViewModelList, topicList ->
-      homeItemViewModelList + computeAllTopicsItemsViewModelList(topicList)
+      homeItemViewModelList + computeClassroomItemViewModelList(classroomSummaryList) /*+
+        getTopicList(classroomSummaryList.classroomSummaryList[0].classroomSummary.classroomId)*/
+    }
+  }
+
+  fun getTopicList(classroomId: String): List<HomeItemViewModel> {
+    var topicList: List<HomeItemViewModel> = listOf()
+    Transformations.map(classroomController.getTopicList(profileId, classroomId).toLiveData()) {
+      topicList = when (it) {
+        is AsyncResult.Success -> computeAllTopicsItemsViewModelList(it.value)
+        is AsyncResult.Failure -> listOf()
+        is AsyncResult.Pending -> listOf()
+      }
+    }
+    return topicList
+  }
+
+  override fun onClassroomClicked(classroomId: String) {
+    /*print(classroomId)
+    getTopicList(classroomId)*/
+    oppiaLogger.d("topicList", topicList.toString())
+
+    classroomController.getTopicList(profileId, classroomId).transform("ID") {
+      computeAllTopicsItemsViewModelList(it).map {
+        topicList.add(it)
+      }
+      oppiaLogger.d("topicList", topicList.toString())
     }
   }
 
@@ -277,6 +304,7 @@ class ClassroomListViewModel(
   ): List<HomeItemViewModel> {
     return classroomList.classroomSummaryList.map { ephemeralClassroomSummary ->
       ClassroomSummaryViewModel(
+        this,
         ephemeralClassroomSummary,
         translationController
       )

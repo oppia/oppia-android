@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
+import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
@@ -94,7 +95,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
           MaterialTheme {
-            ClassroomListScreen(it)
+            ClassroomListScreen(it, classroomListViewModel.topicList)
           }
         }
       }
@@ -105,7 +106,9 @@ class ClassroomListFragmentPresenter @Inject constructor(
 
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
-  fun ClassroomListScreen(homeItemViewModelList: List<HomeItemViewModel>) {
+  // WelcomeViewModel, PromotedStoryListVM, classrom: {CLassroomVM, CLassroomVM, CLassroomVM}, TopicHeading, topic: {TopicSummmaryVM, TopicSummmaryVM}
+  fun ClassroomListScreen(homeItemViewModelList: List<HomeItemViewModel>, topicList: ObservableList<HomeItemViewModel>) {
+    oppiaLogger.d("topicList", topicList.toString())
     val groupedItems = homeItemViewModelList.groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     LazyColumn {
@@ -130,7 +133,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
             }
           }
           TopicSummaryViewModel::class -> gridItems(
-            data = items.map { it as TopicSummaryViewModel },
+            data = topicList.map { it as TopicSummaryViewModel },
             columnCount = topicListSpanCount,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 10.dp)

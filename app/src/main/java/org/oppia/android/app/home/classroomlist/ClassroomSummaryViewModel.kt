@@ -1,5 +1,6 @@
 package org.oppia.android.app.home.classroomlist
 
+import ClassroomListViewModel
 import java.util.Objects
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
@@ -9,9 +10,14 @@ import org.oppia.android.domain.translation.TranslationController
 
 /** The view model corresponding to individual classroom summaries in the classroom summary RecyclerView. */
 class ClassroomSummaryViewModel(
+  viewModel: ClassroomListViewModel,
   ephemeralClassroomSummary: EphemeralClassroomSummary,
   translationController: TranslationController
 ) : HomeItemViewModel() {
+
+  val routeToTopic = viewModel as RouteToTopic
+
+  val classroomId = ephemeralClassroomSummary.classroomSummary.classroomId
 
   val title: String by lazy {
     translationController.extractString(
@@ -29,6 +35,10 @@ class ClassroomSummaryViewModel(
     }
   }
 
+  fun handleClassroomClick(classroomId: String) {
+    routeToTopic.onClassroomClicked(classroomId)
+  }
+
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
@@ -37,4 +47,8 @@ class ClassroomSummaryViewModel(
   }
 
   override fun hashCode() = Objects.hash()
+}
+
+interface RouteToTopic {
+  fun onClassroomClicked(classroomId: String)
 }
