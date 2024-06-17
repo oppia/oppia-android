@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
@@ -53,30 +54,22 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
           startActivity(intent)
         }
       }
+    } else {
+      onBackPressedDispatcher.addCallback(
+        this@ProfileEditActivity, object: OnBackPressedCallback(true) {
+          override fun handleOnBackPressed() {
+            val isMultipane: Boolean = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
+            if (isMultipane) {
+              onBackPressedDispatcher.onBackPressed()
+            } else {
+              val intent = Intent(this@ProfileEditActivity, ProfileListActivity::class.java)
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              startActivity(intent)
+            }
+          }
+        })
     }
     (activityComponent as ActivityComponentImpl).inject(this)
     profileEditActivityPresenter.handleOnCreate()
-  }
-
-  override fun onBackPressed() {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-      val isMultipane: Boolean = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
-      if (isMultipane) {
-        @Suppress("DEPRECATION")
-        super.onBackPressed()
-      } else {
-        val intent = Intent(this, ProfileListActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-      }
-    }
-  }
-
-  fun handleBackPressFromPresenter() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      onBackPressedDispatcher.onBackPressed()
-    } else {
-      onBackPressed()
-    }
   }
 }

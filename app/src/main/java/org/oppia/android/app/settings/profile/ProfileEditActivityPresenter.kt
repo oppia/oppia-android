@@ -24,7 +24,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     val isMultipane = activity.intent.getBooleanExtra(IS_MULTIPANE_EXTRA_KEY, false)
 
     toolbar.setNavigationOnClickListener {
-      getProfileEditActivity()?.handleBackPressFromPresenter()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
 
     if (getProfileEditFragment() == null) {
