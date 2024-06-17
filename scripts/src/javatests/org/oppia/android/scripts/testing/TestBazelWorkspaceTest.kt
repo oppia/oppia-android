@@ -55,7 +55,7 @@ class TestBazelWorkspaceTest {
     // A .bazelversion file should now exist with the correct version.
     val bazelVersionFile = File(tempFolder.root, ".bazelversion")
     assertThat(bazelVersionFile.exists()).isTrue()
-    assertThat(bazelVersionFile.readText().trim()).isEqualTo("4.0.0")
+    assertThat(bazelVersionFile.readText().trim()).isEqualTo("6.5.0")
   }
 
   @Test
@@ -120,7 +120,7 @@ class TestBazelWorkspaceTest {
     )
 
     val bazelVersionContent = tempFolder.getBazelVersionFile().readText().trim()
-    assertThat(bazelVersionContent).isEqualTo("4.0.0")
+    assertThat(bazelVersionContent).isEqualTo("6.5.0")
   }
 
   @Test
@@ -292,7 +292,7 @@ class TestBazelWorkspaceTest {
     )
 
     val bazelVersionContent = tempFolder.getBazelVersionFile().readText().trim()
-    assertThat(bazelVersionContent).isEqualTo("4.0.0")
+    assertThat(bazelVersionContent).isEqualTo("6.5.0")
   }
 
   @Test
@@ -570,7 +570,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.createTest(testName = "FirstTest")
 
     val bazelVersionContent = tempFolder.getBazelVersionFile().readText().trim()
-    assertThat(bazelVersionContent).isEqualTo("4.0.0")
+    assertThat(bazelVersionContent).isEqualTo("6.5.0")
   }
 
   @Test
@@ -790,7 +790,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.createLibrary(dependencyName = "ExampleDep")
 
     val bazelVersionContent = tempFolder.getBazelVersionFile().readText().trim()
-    assertThat(bazelVersionContent).isEqualTo("4.0.0")
+    assertThat(bazelVersionContent).isEqualTo("6.5.0")
   }
 
   @Test

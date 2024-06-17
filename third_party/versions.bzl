@@ -47,7 +47,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.work:work-runtime": "2.4.0",
     "androidx.work:work-runtime-ktx": "2.4.0",
-    "com.android.support:support-annotations": "28.0.0",
     "com.android.tools.build:aapt2-proto": "7.3.1-8691043",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:compiler": "4.11.0",
@@ -68,8 +67,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.guava:failureaccess": "1.0.1",
     "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.protobuf:protobuf-javalite": "3.17.3",
-    "com.squareup.moshi:moshi-kotlin": "1.11.0",
-    "com.squareup.moshi:moshi-kotlin-codegen": "1.11.0",
+    "com.squareup.moshi:moshi-kotlin": "1.13.0",
+    "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
     "com.squareup.okhttp3:okhttp": "4.7.2",
     "com.squareup.retrofit2:converter-moshi": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
@@ -79,9 +78,11 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.3",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.6.10",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -89,7 +90,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 # This list should only contain test-only dependencies. These are dependencies that are guaranteed
 # cannot be included in production builds of the app.
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
-    "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
@@ -100,6 +100,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:core": "1.0.0",
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
+    "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.protobuf:protobuf-java-util": "3.17.3",
@@ -114,7 +115,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.6.4",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.5",
@@ -136,6 +137,10 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         "version": "31.0.1",
     },
+    "guava_jre": {
+        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
+        "version": "31.0.1",
+    },
     "oppia_proto_api": {
         "version": "9cf993ea0b798a67b3faa21c690c30b9027fb371",
     },
@@ -148,16 +153,16 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "4.5",
     },
     "rules_java": {
-        "sha": "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
-        "version": "4.0.0",
+        "sha": "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
+        "version": "5.3.5",
     },
     "rules_jvm": {
         "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
         "version": "5.1",
     },
     "rules_kotlin": {
-        "sha": "58edd86f0f3c5b959c54e656b8e7eb0b0becabd412465c37a2078693c2571f7f",
-        "version": "v1.5.0-beta-3",
+        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
+        "version": "v1.7.1",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",

@@ -432,21 +432,15 @@ class QuestionAssessmentProgressController @Inject constructor(
     message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
-    // TODO(#4119): Switch this to use trySend(), instead, which is much cleaner and doesn't require
-    //  catching an exception.
-    val flowResult: AsyncResult<T> = try {
-      val commandQueue = mostRecentCommandQueue
-      when {
-        commandQueue == null ->
-          AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
-        !commandQueue.offer(message) ->
-          AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
-        // Ensure that the result is first reset since there will be a delay before the message is
-        // processed (if there's a flow).
-        else -> AsyncResult.Pending()
-      }
-    } catch (e: Exception) {
-      AsyncResult.Failure(e)
+    val commandQueue = mostRecentCommandQueue
+    val flowResult: AsyncResult<T> = when {
+      commandQueue == null ->
+        AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
+      !commandQueue.trySend(message).isSuccess ->
+        AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
+      // Ensure that the result is first reset since there will be a delay before the message is
+      // processed (if there's a flow).
+      else -> AsyncResult.Pending()
     }
 
     // This must be assigned separately since flowResult should always be calculated, even if
