@@ -14,8 +14,8 @@ import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
-import java.util.concurrent.TimeUnit
 import java.nio.file.NoSuchFileException
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for [BazelClient].
@@ -412,16 +412,17 @@ class BazelClientTest {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     // Create a temporary coverage.dat file with sample data
     val tempFile = tempFolder.newFile("coverage.dat")
-    val content = """
-            SF:/path/to/sourcefile.kt
-            FN:3,com/example/source::<init> ()V
-            FNF:1
-            FNH:1
-            DA:3,0
-            DA:6,1
-            LF:6
-            end_of_record
-        """.trimIndent()
+    val content =
+      """
+      SF:/path/to/sourcefile.kt
+      FN:3,com/example/source::<init> ()V
+      FNF:1
+      FNH:1
+      DA:3,0
+      DA:6,1
+      LF:6
+      end_of_record
+      """.trimIndent()
     tempFile.appendText(content)
 
     // Call the function with the valid file path

@@ -1,9 +1,9 @@
 package org.oppia.android.scripts.coverage
 
 import kotlinx.coroutines.runBlocking
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -38,7 +38,12 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    RunCoverageForTestTarget(repoRoot, targetPath, commandExecutor, scriptBgDispatcher).runCoverage()
+    RunCoverageForTestTarget(
+      repoRoot,
+      targetPath,
+      commandExecutor,
+      scriptBgDispatcher
+    ).runCoverage()
   }
 }
 
@@ -69,12 +74,12 @@ class RunCoverageForTestTarget(
    * @return the generated coverage data.
    */
   fun runWithCoverageAnalysis(): String? {
-      return runBlocking {
-        val result =
-          CoverageRunner(repoRoot, scriptBgDispatcher, commandExecutor)
-            .runWithCoverageAsync(targetPath)
-            .await()
-        result
-      }
+    return runBlocking {
+      val result =
+        CoverageRunner(repoRoot, scriptBgDispatcher, commandExecutor)
+          .runWithCoverageAsync(targetPath)
+          .await()
+      result
     }
   }
+}

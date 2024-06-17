@@ -2,9 +2,9 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 import java.lang.IllegalArgumentException
-import java.util.Locale
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.Locale
 
 /**
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
