@@ -20,6 +20,7 @@ class CoverageRunner(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   private val commandExecutor: CommandExecutor
 ) {
+  private val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
 
   /**
    * Runs coverage analysis asynchronously for the Bazel test target.
@@ -45,7 +46,6 @@ class CoverageRunner(
   fun getCoverage(
     bazelTestTarget: String
   ): String? {
-    val bazelClient = BazelClient(repoRoot, commandExecutor)
     val coverageDataBinary = bazelClient.runCoverageForTestTarget(bazelTestTarget)
     val coverageDataString = convertByteArrayToString(coverageDataBinary!!)
 
