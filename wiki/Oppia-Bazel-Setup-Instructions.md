@@ -16,7 +16,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 
 ### Installation
 
-1. Download and Install Java 8 using the links from the [Java website](https://www.java.com/en/download/).
+1. Download and Install Java 11 using the links from the [Java website](https://www.java.com/en/download/).
 
 2. **Select your Operating System for instructions on setting up Bazel:**
 

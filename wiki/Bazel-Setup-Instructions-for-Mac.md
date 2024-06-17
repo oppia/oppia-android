@@ -4,12 +4,9 @@
 
 **The steps to install Bazel on Mac are:**
 1. Set up Rosetta Terminal
-2. Install Bazel 
-3. Install OpenJDK 8
-4. Install Python 2 and make sure it is active in your environment
-5. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
-6. Prepare the build environment
-7. Verify that the build is working
+2. Install Bazel
+3. Set Bazel and ANDROID_HOME paths permanently in your terminal
+4. Verify that the build is working
 
 ### 1. Set up Rosetta Terminal
 
@@ -21,7 +18,7 @@
 
 ### 2. Install Bazel
 
-1. Install Bazel following the instructions [here](https://docs.bazel.build/versions/4.0.0/install-os-x.html#install-with-installer-mac-os-x). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 4.0.0 and won't build on other versions). 
+1. Install Bazel following the instructions [here](https://docs.bazel.build/versions/4.0.0/install-os-x.html#install-with-installer-mac-os-x). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 6.5.0 and won't build on other versions).
 
 2. That’s it, now Bazel is installed, and you can verify it by running the command:
    ```
@@ -29,61 +26,33 @@
    ```
    - **Expected Output**
    ```
-   bazel 4.0.0
+   bazel 6.5.0
    ```
 
-### 3. Install OpenJDK 8
+### 3. Set Bazel and ANDROID_HOME paths permanently in your terminal
 
-Oppia Android also requires OpenJDK 8.
-Follow the instructions [here](https://installvirtual.com/install-openjdk-8-on-mac-using-brew-adoptopenjdk/) to install OpenJDK 8. 
-Note that this requires the installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html). You can then set up your `$JAVA_HOME` environment variable using these [instructions](https://stackoverflow.com/a/75167958/11396524).
-
-
-### 4. Install Python 2 and make sure it is active in your environment
-
-To install Python 2 in MacOS follow the follows the commands given below. Note that this requires installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html). 
-```
-brew install pyenv
-pyenv install 2.7.18
-pyenv global 2.7.18
-```
-
-- To make sure Python 2 is successfully installed and active in your environment, navigate to the **oppia-android** directory and run the following commands:
-
-```
-export PATH="$(pyenv root)/shims:${PATH}"
-python --version
-```
-
-### 5. Set Bazel, Python 2, ANDROID_HOME paths permanently in your terminal
-
-- To set the `Bazel`, `Python 2`, `ANDROID_HOME` path permanently in your terminal run these commands:
+- To set the `Bazel` and `ANDROID_HOME` path permanently in your terminal run these commands:
     ```
     sudo nano /etc/paths
     ```
    - Enter your password, when prompted.
-   - Go to the bottom of the file, and enter these paths 
+   - Go to the bottom of the file, and enter these paths
      ```
      /Users/{YourMacUserName}/bin
-     $(pyenv root)/shims:${PATH}
      $HOME/Library/Android/sdk
      ```
    - Hit control-x to quit.
    - Enter “Y” to save the modified buffer.
    - That’s it!  To test it, in a new terminal window, type: `echo $PATH`
 
-**Note: You must set the path for `Bazel`, `Python 2`, `ANDROID_HOME` before running bazel build for oppia-android, otherwise you will get an error.**
+**Note: You must set the path for `Bazel` and `ANDROID_HOME` before running bazel build for oppia-android, otherwise you will get an error.**
 
-### 6. Prepare the build environment
-
-Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools#readme), in order to prepare your environment to support Oppia Android builds.
-
-### 7. Verify that the build is working
+### 4. Verify that the build is working
 
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this and all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
 ```
-bazel build //:oppia
+bazel build //:oppia_dev
 ```
 
 (Note that this command may take 10-20 minutes to complete depending on the performance of your machine).
@@ -91,13 +60,15 @@ bazel build //:oppia
 If everything is working, you should see output like the following:
 
 ```
-Target //:oppia up-to-date:
-  bazel-bin/oppia_deploy.jar
-  bazel-bin/oppia_unsigned/apk
-  bazel-bin/oppia/apk
+Target //:oppia_dev up-to-date:
+  bazel-bin/oppia_dev.aab
 INFO: Elapsed time: ...
 INFO: 1 process...
 INFO: Build completed successfully, ...
 ```
 
-Note also that the ``oppia.apk`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using ``adb`` 
+Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the following Bazel command:
+
+```sh
+bazel run //:install_oppia_dev
+```
