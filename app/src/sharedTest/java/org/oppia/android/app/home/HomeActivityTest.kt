@@ -156,6 +156,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -261,6 +262,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_loadingItemsSuccess_checkProgressbarIsNotDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -286,6 +288,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -302,6 +305,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed_withAdminProfileName() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -317,6 +321,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed_withAdminProfileName() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -332,6 +337,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed_withAdminProfileName() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -355,6 +361,7 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStorySpotlight_setToShowOnSecondLogin_notSeenBefore_checkSpotlightShown() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -365,6 +372,7 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightNotShown() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -389,6 +397,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -412,6 +421,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_viewAllTextIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -436,6 +446,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_storiesPlayedOneWeekAgo_displaysLastPlayedStoriesText() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -460,6 +471,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForFraction_displaysRecommendedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId1,
@@ -492,6 +504,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markCompletedRatiosStory0_recommendsFractions() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId1,
@@ -517,6 +530,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -543,6 +557,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_forPromotedActivityList_hideViewAll() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -563,6 +578,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
@@ -592,6 +608,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markAtLeastOneStoryCompletedForAllTopics_displaysComingSoonTopicsList() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId1,
@@ -629,6 +646,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markFullProgressForSecondTestTopic_displaysComingSoonTopicsText() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId1,
@@ -671,6 +689,7 @@ class HomeActivityTest {
    */
   @Test
   fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
@@ -716,6 +735,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0OfRatiosAndTestTopics0And1Done_playTestTopicStory0_noPromotions() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId1,
@@ -753,6 +773,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneFirstTestTopic_recommendedStoriesIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
@@ -778,6 +799,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForFrac_recommendedStoriesIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId1,
@@ -809,6 +831,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
+    setUpTestWithOnboardingV2Disabled()
     markSpotlightSeen(profileId1)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -840,6 +863,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -859,6 +883,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_promotedCard_storyNameIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -878,6 +903,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -902,6 +928,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markFullProgressForFractions_playRatios_displaysRecommendedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
@@ -937,6 +964,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
+    setUpTestWithOnboardingV2Disabled()
     markSpotlightSeen(profileId1)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -964,6 +992,7 @@ class HomeActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#4700): Make this test work on Espresso.
   fun testHomeActivity_promotedStoryHasScalableWidth() {
+    setUpTestWithOnboardingV2Disabled()
     fontScaleConfigurationUtil.adjustFontScale(context, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -996,6 +1025,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_promotedCard_topicNameIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -1019,6 +1049,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_opensTopicActivityThroughPlayIntent() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     markSpotlightSeen(profileId1)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -1040,6 +1071,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1054,6 +1086,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1068,6 +1101,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_secondTestTopic_topicSummary_allTopics_topicNameIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -1087,6 +1121,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1104,6 +1139,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+port-mdpi")
   @Test
   fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
@@ -1122,6 +1158,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+land-mdpi")
   @Test
   fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -1141,6 +1178,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
@@ -1159,6 +1197,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -1175,6 +1214,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1190,6 +1230,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
+    setUpTestWithOnboardingV2Disabled()
     logIntoUserTwice()
     markSpotlightSeen(profileId1)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -1203,6 +1244,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -1214,6 +1256,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
 
       testCoroutineDispatchers.runCurrent()
@@ -1227,6 +1270,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -1239,6 +1283,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
@@ -1251,6 +1296,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
@@ -1259,6 +1305,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1268,6 +1315,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
@@ -1289,6 +1337,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
@@ -1316,6 +1365,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
@@ -1336,6 +1386,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+port")
   @Test
   fun testHomeActivity_allTopicsCompleted_mobilePortrait_displaysAllTopicCardsIn2Columns() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1352,6 +1403,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+land")
   @Test
   fun testHomeActivity_allTopicsCompleted_mobileLandscape_displaysAllTopicCardsIn3Columns() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1368,6 +1420,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_allTopicsCompleted_tabletPortrait_displaysAllTopicCardsIn3Columns() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1384,6 +1437,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_allTopicsCompleted_tabletLandscape_displaysAllTopicCardsIn4Columns() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
@@ -1399,6 +1453,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_noTopicsCompleted_displaysAllTopicsHeader() {
+    setUpTestWithOnboardingV2Disabled()
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1415,6 +1470,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+port")
   @Test
   fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
+    setUpTestWithOnboardingV2Disabled()
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1434,6 +1490,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+land")
   @Test
   fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
+    setUpTestWithOnboardingV2Disabled()
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1454,6 +1511,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
+    setUpTestWithOnboardingV2Disabled()
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     markSpotlightSeen(profileId)
@@ -1470,6 +1528,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
+    setUpTestWithOnboardingV2Disabled()
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
     markSpotlightSeen(profileId)
@@ -1486,6 +1545,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
@@ -1523,6 +1583,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
@@ -1561,6 +1622,7 @@ class HomeActivityTest {
   @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
@@ -1598,6 +1660,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
+    setUpTestWithOnboardingV2Disabled()
     // This test is to catch a bug introduced and then fixed in #2246
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -1626,6 +1689,7 @@ class HomeActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
   fun testHomeActivity_defaultState_displaysStringsInEnglish() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1644,6 +1708,7 @@ class HomeActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
   fun testHomeActivity_defaultState_hasEnglishAndroidLocale() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -1657,6 +1722,7 @@ class HomeActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
+    setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -1671,6 +1737,7 @@ class HomeActivityTest {
   @Test
   @Ignore("Current language switching mechanism doesn't work correctly in Robolectric")
   fun testHomeActivity_changeSystemLocaleAndConfigChange_recreatesActivity() {
+    setUpTestWithOnboardingV2Disabled()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use { scenario ->
@@ -1714,6 +1781,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1739,6 +1807,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_isInRtlLayout() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1761,6 +1830,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1784,6 +1854,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_displayStringsInPortuguese() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1810,6 +1881,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_isInLtrLayout() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1833,6 +1905,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1856,6 +1929,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialNigerianPidginContext_isInLtrLayout() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1879,6 +1953,7 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
+    setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1956,6 +2031,12 @@ class HomeActivityTest {
   private fun setUpTestWithOnboardingV2Enabled() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
+  }
+
+  private fun setUpTestWithOnboardingV2Disabled() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
   }
 
   private fun markSpotlightSeen(profileId: ProfileId) {
