@@ -21,7 +21,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -220,47 +219,45 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration(
-      "zeroDoubleValue",
-      "firstCpuValue=1000",
-      "secondCpuValue=1000",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=1665790700",
-      "firstNumberOfOnlineCoresValue=6",
-      "secondNumberOfOnlineCoresValue=2",
-      "relativeCpuUsage=0.00"
-    ),
-    Iteration(
-      "nonZeroDoubleValueTillTwoDecimalPoints",
-      "firstCpuValue=1000",
-      "secondCpuValue=1100",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=1665790700",
-      "firstNumberOfOnlineCoresValue=6",
-      "secondNumberOfOnlineCoresValue=2",
-      "relativeCpuUsage=0.50"
-    ),
-    Iteration(
-      "nonZeroDoubleValueTillSevenDecimalPoints",
-      "firstCpuValue=1000",
-      "secondCpuValue=12100",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=1869790700",
-      "firstNumberOfOnlineCoresValue=6",
-      "secondNumberOfOnlineCoresValue=8",
-      "relativeCpuUsage=0.0000077"
-    ),
-    Iteration(
-      "nonZeroDoubleValueTillElevenDecimalPoints",
-      "firstCpuValue=1000",
-      "secondCpuValue=2100",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=186933790700",
-      "firstNumberOfOnlineCoresValue=6",
-      "secondNumberOfOnlineCoresValue=3",
-      "relativeCpuUsage=0.00000000239"
-    )
+  @Iteration(
+    "zeroDoubleValue",
+    "firstCpuValue=1000",
+    "secondCpuValue=1000",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=1665790700",
+    "firstNumberOfOnlineCoresValue=6",
+    "secondNumberOfOnlineCoresValue=2",
+    "relativeCpuUsage=0.00"
+  )
+  @Iteration(
+    "nonZeroDoubleValueTillTwoDecimalPoints",
+    "firstCpuValue=1000",
+    "secondCpuValue=1100",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=1665790700",
+    "firstNumberOfOnlineCoresValue=6",
+    "secondNumberOfOnlineCoresValue=2",
+    "relativeCpuUsage=0.50"
+  )
+  @Iteration(
+    "nonZeroDoubleValueTillSevenDecimalPoints",
+    "firstCpuValue=1000",
+    "secondCpuValue=12100",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=1869790700",
+    "firstNumberOfOnlineCoresValue=6",
+    "secondNumberOfOnlineCoresValue=8",
+    "relativeCpuUsage=0.0000077"
+  )
+  @Iteration(
+    "nonZeroDoubleValueTillElevenDecimalPoints",
+    "firstCpuValue=1000",
+    "secondCpuValue=2100",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=186933790700",
+    "firstNumberOfOnlineCoresValue=6",
+    "secondNumberOfOnlineCoresValue=3",
+    "relativeCpuUsage=0.00000000239"
   )
   fun testAssessor_setFirstAndSecondSnapshot_returnsCorrectRelativeCpuUsage() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
@@ -279,17 +276,15 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration(
-      "zeroDeltaOnlineCores",
-      "firstNumberOfOnlineCoresValue=6",
-      "secondNumberOfOnlineCoresValue=0"
-    ),
-    Iteration(
-      "negativeOnlineCores",
-      "firstNumberOfOnlineCoresValue=-1",
-      "secondNumberOfOnlineCoresValue=6"
-    )
+  @Iteration(
+    "zeroDeltaOnlineCores",
+    "firstNumberOfOnlineCoresValue=6",
+    "secondNumberOfOnlineCoresValue=0"
+  )
+  @Iteration(
+    "negativeOnlineCores",
+    "firstNumberOfOnlineCoresValue=-1",
+    "secondNumberOfOnlineCoresValue=6"
   )
   fun testAssessor_inputInvalidOnlineCoresValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
@@ -310,11 +305,9 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("negativeDeltaCpuValue", "firstCpuValue=1000", "secondCpuValue=900"),
-    Iteration("negativeCpuValue", "firstCpuValue=1000", "secondCpuValue=-900"),
-    Iteration("outOfBoundsCpuValue", "firstCpuValue=1000", "secondCpuValue=9223372036854775807"),
-  )
+  @Iteration("negativeDeltaCpuValue", "firstCpuValue=1000", "secondCpuValue=900")
+  @Iteration("negativeCpuValue", "firstCpuValue=1000", "secondCpuValue=-900")
+  @Iteration("outOfBoundsCpuValue", "firstCpuValue=1000", "secondCpuValue=9223372036854775807")
   fun testAssessor_inputInvalidCpuTimeValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       firstAppTimeValue,
@@ -334,22 +327,20 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration(
-      "negativeDeltaAppTimeValue",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=1665790050"
-    ),
-    Iteration(
-      "negativeAppTimeValue",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=-1665790050"
-    ),
-    Iteration(
-      "zeroDeltaAppTimeValue",
-      "firstAppTimeValue=1665790650",
-      "secondAppTimeValue=1665790650"
-    ),
+  @Iteration(
+    "negativeDeltaAppTimeValue",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=1665790050"
+  )
+  @Iteration(
+    "negativeAppTimeValue",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=-1665790050"
+  )
+  @Iteration(
+    "zeroDeltaAppTimeValue",
+    "firstAppTimeValue=1665790650",
+    "secondAppTimeValue=1665790650"
   )
   fun testAssessor_inputInvalidAppTimeValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
@@ -380,11 +371,9 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("memoryEqualToLowerBound", "totalMemory=0"),
-    Iteration("memoryInRange", "totalMemory=1147483648"),
-    Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
-  )
+  @Iteration("memoryEqualToLowerBound", "totalMemory=0")
+  @Iteration("memoryInRange", "totalMemory=1147483648")
+  @Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
   fun testAssessor_setTotalMemoryForLowMemoryRange_returnsCorrectLowMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
@@ -395,11 +384,9 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("memoryEqualToLowerBound", "totalMemory=2147483649"),
-    Iteration("memoryInRange", "totalMemory=2684354560"),
-    Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
-  )
+  @Iteration("memoryEqualToLowerBound", "totalMemory=2147483649")
+  @Iteration("memoryInRange", "totalMemory=2684354560")
+  @Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
   fun testAssessor_setTotalMemoryForMediumMemoryRange_retsCorrectMediumMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
@@ -410,13 +397,11 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("memoryEqualToLowerBound", "totalMemory=3221225473"),
-    Iteration("memoryInRange", "totalMemory=5221225472"),
-    Iteration(
-      "memoryEqualToMaxValue",
-      "totalMemory=9223372036854775807"
-    )
+  @Iteration("memoryEqualToLowerBound", "totalMemory=3221225473")
+  @Iteration("memoryInRange", "totalMemory=5221225472")
+  @Iteration(
+    "memoryEqualToMaxValue",
+    "totalMemory=9223372036854775807"
   )
   fun testAssessor_setTotalMemoryForHighMemoryRange_retsCorrectHighMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()

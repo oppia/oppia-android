@@ -20,7 +20,6 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
@@ -199,14 +198,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_forceStatus_noConnectivity_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -221,14 +218,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_forceStatus_noEvents_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -243,14 +238,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_forceStatus_withEvents_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -267,14 +260,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_forceStatus_withEvents_allRemoved_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -293,14 +284,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogs_forceStatus_reportUploadingStarted_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -317,14 +306,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_forceStatus_reportUploadingEnded_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -344,14 +331,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_forceStatus_reportError_returnsForcedStatus() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -367,14 +352,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_initialState_resetStatus_returnsInitialUnknown() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.forceSyncStatus(syncStatus)
@@ -389,14 +372,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_noConnectivity_returnsNoConnectivity() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -414,14 +395,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_noEvents_returnsInitialUnknown() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -438,14 +417,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_withEvents_returnsWaitingToStartUploading() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -464,14 +441,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_withEvents_allRemoved_returnsDataUploaded() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -492,14 +467,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_reportUploadingStarted_returnsUploading() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -518,14 +491,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_reportUploadingEnded_returnsUploaded() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -546,14 +517,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatus_withInitedLogStore_resetStatus_reportError_returnsUploadError() {
     val syncStatusProvider = impl.getSyncStatus()
     impl.initializeEventLogStore(logsCacheStore)
@@ -745,14 +714,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_initialState_forceStatus_returnsWithForcedStatus() {
     impl.forceSyncStatus(syncStatus)
     testCoroutineDispatchers.runCurrent()
@@ -764,14 +731,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withInitedLogStore_forceStatus_noConnectivity_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     disconnectNetwork()
@@ -785,14 +750,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withInitedLogStore_forceStatus_noEvents_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     connectNetwork()
@@ -806,14 +769,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withInitedLogStore_forceStatus_withEvents_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     connectNetwork()
@@ -829,14 +790,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withLogStore_forceStatus_withEvents_allRemoved_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     connectNetwork()
@@ -854,14 +813,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withLogStore_forceStatus_reportUploading_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     connectNetwork()
@@ -878,14 +835,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withLogStore_forceStatus_reportUploadingEnded_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     connectNetwork()
@@ -905,14 +860,12 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("initial_unknown", "status=INITIAL_UNKNOWN"),
-    Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING"),
-    Iteration("data_uploading", "status=DATA_UPLOADING"),
-    Iteration("data_uploaded", "status=DATA_UPLOADED"),
-    Iteration("no_connectivity", "status=NO_CONNECTIVITY"),
-    Iteration("upload_error", "status=UPLOAD_ERROR")
-  )
+  @Iteration("initial_unknown", "status=INITIAL_UNKNOWN")
+  @Iteration("waiting_to_start_uploading", "status=WAITING_TO_START_UPLOADING")
+  @Iteration("data_uploading", "status=DATA_UPLOADING")
+  @Iteration("data_uploaded", "status=DATA_UPLOADED")
+  @Iteration("no_connectivity", "status=NO_CONNECTIVITY")
+  @Iteration("upload_error", "status=UPLOAD_ERROR")
   fun testGetSyncStatuses_withInitedLogStore_forceStatus_reportError_returnsWithForcedStatus() {
     impl.initializeEventLogStore(logsCacheStore)
     connectNetwork()

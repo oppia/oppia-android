@@ -30,7 +30,7 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
    ```
    Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
-   ``` 
+   ```
 
    then it's fine to ignore it. The message just appears to be a warning. We don't use Gradle 7.0, so this warning is fine to ignore.
 
@@ -64,9 +64,9 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 1. No matching toolchains (sdk_toolchain_type)
     ```
-    ERROR: While resolving toolchains for target //:oppia: no matching toolchains found for types         
+    ERROR: While resolving toolchains for target //:oppia: no matching toolchains found for types
     @bazel_tools//tools/android:sdk_toolchain_type
-    ERROR: Analysis of target '//:oppia' failed; build aborted: no matching toolchains found for types 
+    ERROR: Analysis of target '//:oppia' failed; build aborted: no matching toolchains found for types
     @bazel_tools//tools/android:sdk_toolchain_type
     INFO: Elapsed time: 12.805s
     INFO: 0 processes.
@@ -76,18 +76,21 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 
 2. If you encounter the following:
+   ```
+      external/bazel_tools/src/tools/android/java/com/google/devtools/build/android/dexer/DexFileSplitter.java:21: error: package com.android.dex does not exist
+   import com.android.dex.DexFormat;
+                         ^
+   ```
+
+   This means that you're still configured for using the custom Oppia Android tool repository for Bazel 4.x (which is no longer needed with Bazel 6.x+). You can fix this by updating your ~/.bazelrc file and either commenting out (e.g. by adding a ``#`` at the start of the line), or removing, the following line:
 
    ```
-   ERROR: While parsing option --override_repository=android_tools=~/oppia-bazel/android_tools: Repository 
-   override directory must be an absolute path
+   build --override_repository=android_tools=/home/user/opensource/oppia-bazel-tools
    ```
-   
-   Try to delete the `.bazelrc` file to solve the above error. 
-
 
 3. **java.lang.ClassNotFoundException: com.android.tools.r8.compatdx.CompatDx**
 
-   If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 29.0.2). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
+   If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 32.0.0). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
 
 
 4. If you encounter this error while building bazel in Mac M1:
@@ -122,4 +125,4 @@ The `--noexperimental_check_desugar_deps` flag is explained in the [bazel blog](
 
 ### Can’t find a particular issue?
 
-If the error you get is not in the Troubleshooting section above, please create an issue providing all the necessary information and assign it to **@MohitGupta121**.
+If the error you get is not in the Troubleshooting section above, please post a request for help on the team's discussions board for installation problems: https://github.com/oppia/oppia-android/discussions/categories/q-a-installation.
