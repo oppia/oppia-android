@@ -25,9 +25,9 @@ class CoverageRunner(
    * Runs coverage analysis asynchronously for the Bazel test target.
    *
    * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return a deferred value that contains the path of the coverage data file [will contain the proto for the coverage data].
+   * @return a deferred value that contains the coverage data [will contain the proto for the coverage data].
    */
-  suspend fun runWithCoverageAsync(
+  fun runWithCoverageAsync(
     bazelTestTarget: String
   ): Deferred<String?> {
     return CoroutineScope(scriptBgDispatcher).async {
