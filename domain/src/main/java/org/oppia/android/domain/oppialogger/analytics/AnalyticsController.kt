@@ -388,22 +388,6 @@ class AnalyticsController @Inject constructor(
     )
   }
 
-  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId ]. */
-  fun logStartProfileOnboardingEvent(profileId: ProfileId) {
-    logLowPriorityEvent(
-      oppiaLogger.createProfileOnboardingStartedContext(profileId),
-      profileId = profileId
-    )
-  }
-
-  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId]. */
-  fun logEndProfileOnboardingEvent(profileId: ProfileId) {
-    logLowPriorityEvent(
-      oppiaLogger.createProfileOnboardingEndedContext(profileId),
-      profileId = profileId
-    )
-  }
-
   // TODO(#4119): Migrate this to Flow.lastOrNull() once Kotlin 1.5 is available.
   private suspend fun <T : Any> Flow<T>.lastOrNull(): T? {
     return CoroutineScope(backgroundDispatcher).async {

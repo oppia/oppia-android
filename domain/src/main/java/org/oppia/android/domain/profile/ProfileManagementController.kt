@@ -76,6 +76,7 @@ private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "retrieve_survey_last_shown_timestamp_provider_id"
 private const val UPDATE_ONBOARDING_STATE_PROVIDER_ID = "update_onboarding_state_provider_id"
 private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
+private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -199,6 +200,11 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
+        if (enableOnboardingFlowV2.value) {
+          if (profile.profileType.equals(ProfileType.PROFILE_TYPE_UNSPECIFIED)) {
+            updateProfileType(profileId, computeProfileType(profile.isAdmin, profile.pin))
+          }
+        }
         AsyncResult.Success(profile)
       } else {
         AsyncResult.Failure(
@@ -351,6 +357,35 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_ONBOARDING_STATE_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Updates the profile type field of an existing profile to migrate onboarding flow v2 support.
+   * @param profileId The ID of the profile to update.
+   * @return A [DataProvider] that represents the result of the update operation.
+   */
+  private fun updateProfileType(
+    profileId: ProfileId,
+    profileType: ProfileType
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfile = profile.toBuilder().setProfileType(profileType).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_TYPE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }

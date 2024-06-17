@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,7 +16,9 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.AppStartupState
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -63,6 +66,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private val exitProfileListener = activity as ExitProfileListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -110,13 +114,47 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     if (enableOnboardingFlowV2.value) {
-      profileManagementController.updateProfileOnboardingState(profileId)
-      analyticsController.logEndProfileOnboardingEvent(profileId)
-    } else {
-      logAppOnboardedEvent(profileId)
+      subscribeToProfileResult(profileId)
     }
 
+    logAppOnboardedEvent(profileId)
+
     return binding.root
+  }
+
+  private fun subscribeToProfileResult(profileId: ProfileId) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+      processProfileResult(it)
+    }
+  }
+
+  private fun processProfileResult(result: AsyncResult<Profile>) {
+    when (result) {
+      is AsyncResult.Success -> {
+        val profile = result.value
+        handleProfileOnboardingState(profile)
+        handleBackPress(profile.profileType)
+      }
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> {
+        Profile.getDefaultInstance()
+      }
+    }
+  }
+
+  private fun handleProfileOnboardingState(profile: Profile) {
+    if (!profile.alreadyOnboardedProfile) {
+      profileManagementController.updateProfileOnboardingState(profileId)
+      analyticsController.logLowPriorityEvent(
+        oppiaLogger.createProfileOnboardingEndedContext(
+          profileId
+        ),
+        profileId
+      )
+    }
   }
 
   private fun logAppOnboardedEvent(profileId: ProfileId) {
@@ -215,6 +253,17 @@ class HomeFragmentPresenter @Inject constructor(
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    )
+  }
+
+  private fun handleBackPress(profileType: ProfileType) {
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          exitProfileListener.exitProfile(profileType)
+        }
+      }
     )
   }
 }

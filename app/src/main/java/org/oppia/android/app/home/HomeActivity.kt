@@ -14,6 +14,7 @@ import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
@@ -29,7 +30,8 @@ class HomeActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
-  RouteToRecentlyPlayedListener {
+  RouteToRecentlyPlayedListener,
+  ExitProfileListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
 
@@ -71,26 +73,6 @@ class HomeActivity :
     startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
   }
 
-  override fun onBackPressed() {
-    if (enableOnboardingFlowV2.value) {
-      finishAffinity()
-    } else {
-      val previousFragment =
-        supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
-      if (previousFragment != null) {
-        supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-      }
-      val exitProfileDialogArguments =
-        ExitProfileDialogArguments
-          .newBuilder()
-          .setHighlightItem(HighlightItem.NONE)
-          .build()
-      val dialogFragment = ExitProfileDialogFragment
-        .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
-      dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
-    }
-  }
-
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
@@ -115,5 +97,25 @@ class HomeActivity :
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
         .build()
     )
+  }
+
+  override fun exitProfile(profileType: ProfileType) {
+    if (enableOnboardingFlowV2.value && profileType == ProfileType.SOLE_LEARNER) {
+      finishAffinity()
+    } else {
+      val previousFragment =
+        supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+      if (previousFragment != null) {
+        supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+      }
+      val exitProfileDialogArguments =
+        ExitProfileDialogArguments
+          .newBuilder()
+          .setHighlightItem(HighlightItem.NONE)
+          .build()
+      val dialogFragment = ExitProfileDialogFragment
+        .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+      dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
+    }
   }
 }

@@ -9,11 +9,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.Espresso.pressBackUnconditionally
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -151,7 +153,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -226,7 +228,6 @@ class HomeActivityTest {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
     testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -1890,6 +1891,71 @@ class HomeActivityTest {
       val localeContext = displayLocale.localeContext
       assertThat(localeContext.languageDefinition.language).isEqualTo(NIGERIAN_PIDGIN)
     }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testHomeActivity_soleLearnerProfile_backPress_exitsApp() {
+    setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    markSpotlightSeen(profileId)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use { scenario ->
+      pressBackUnconditionally()
+      // Pressing back should close the activity (and thus, the app) since the Sole learner has
+      // no profile chooser.
+      // Using Lifecycle.State.DESTROYED instead of activity.isFinishing because the app is already
+      // closed, therefore we cannot run `onActivity`
+      assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onBackPressed_nonSoleLearner_exitToProfileChooserDialogIsDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.initializeProfiles()
+    markSpotlightSeen(profileId)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testActivity_onBackPressed_nonSoleLearner_configChange_exitToProfileDialogIsDisplayed() {
+    setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.initializeProfiles()
+    markSpotlightSeen(profileId)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      pressBack()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onboardingV2_onBackPressed_clickExit_opensProfileActivity() {
+    setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.initializeProfiles()
+    markSpotlightSeen(profileId)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_exit))
+        .inRoot(isDialog())
+        .perform(click())
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  private fun setUpTestWithOnboardingV2Enabled() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
   }
 
   private fun markSpotlightSeen(profileId: ProfileId) {

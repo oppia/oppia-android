@@ -1358,6 +1358,31 @@ class ProfileManagementControllerTest {
     assertThat(profileOnboardingStateResult).isEqualTo(ProfileOnboardingState.NEW_INSTALL)
   }
 
+  @Test
+  fun testGetProfile_createAdmin_returnsSupervisorType() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James")
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+  }
+
+  @Test
+  fun testGetProfile_createSoleLearner_returnsSoleLearnerType() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James", pin = "")
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testGetProfile_createAdditionalLearner_returnsAdditionalLearnerType() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James")
+    addNonAdminProfile(name = "Rajat")
+    val profile = retrieveProfile(PROFILE_ID_1)
+    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+  }
+
   private fun addTestProfiles() {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
