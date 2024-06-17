@@ -71,7 +71,7 @@ fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
         bottom = 8.dp,
       )
       .clickable { promotedStoryViewModel.clickOnStoryTile() },
-    backgroundColor = Color.Transparent,
+    backgroundColor = colorResource(id = R.color.component_color_shared_screen_primary_background_color),
     elevation = 4.dp,
   ) {
     Column(

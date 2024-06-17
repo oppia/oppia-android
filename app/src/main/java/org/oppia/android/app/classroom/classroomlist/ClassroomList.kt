@@ -83,7 +83,7 @@ fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
         start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
         end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
       ),
-    backgroundColor = Color.Transparent,
+    backgroundColor = colorResource(id = R.color.component_color_shared_screen_primary_background_color),
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = 4.dp,
   ) {
