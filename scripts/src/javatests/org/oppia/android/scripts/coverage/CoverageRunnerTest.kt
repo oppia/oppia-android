@@ -33,31 +33,6 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testParseCoverageDataFile_invalidData_returnsNull() {
-    // Result data from coverage execution that doesn't contain path to coverage data file [coverage.dat]
-    val invalidResultData = listOf("data1", "data2", "data3")
-
-    val parsedData = coverageRunner.parseCoverageDataFile(invalidResultData)
-    // Return Null when the coverage data file path is not found
-    assertThat(parsedData).isNull()
-  }
-
-  @Test
-  fun testParseCoverageDataFile_validData_returnsNull() {
-    // Result data from coverage execution that contains path to coverage data file [coverage.dat]
-    val validResultData = listOf(
-      "//package/test/example:test   PASSED in 0.4s",
-      "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat",
-      "Executed 1 out of 1 test: 1 test  passes."
-    )
-    val expectedResultParsedData =
-      "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat"
-
-    val parsedData = coverageRunner.parseCoverageDataFile(validResultData)
-    assertThat(parsedData).isEqualTo(expectedResultParsedData)
-  }
-
-  @Test
   fun testRunCoverage_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       coverageRunner.getCoverage(bazelTestTarget)

@@ -15,6 +15,7 @@ import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
 import java.util.concurrent.TimeUnit
+import java.nio.file.NoSuchFileException
 
 /**
  * Tests for [BazelClient].
@@ -377,6 +378,89 @@ class BazelClientTest {
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
     assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
+  }
+
+  @Test
+  fun testParseCoverageDataFile_invalidData_returnsNull() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    // Result data from coverage execution that doesn't contain path to coverage data file [coverage.dat]
+    val invalidResultData = listOf("data1", "data2", "data3")
+
+    val parsedData = bazelClient.parseCoverageDataFile(invalidResultData)
+    // Return Null when the coverage data file path is not found
+    assertThat(parsedData).isNull()
+  }
+
+  @Test
+  fun testParseCoverageDataFile_validData_returnsNull() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    // Result data from coverage execution that contains path to coverage data file [coverage.dat]
+    val validResultData = listOf(
+      "//package/test/example:test   PASSED in 0.4s",
+      "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat",
+      "Executed 1 out of 1 test: 1 test  passes."
+    )
+    val expectedResultParsedData =
+      "/path/.cache/bazel/4654367352564/sandbox/__main__/__tmp/coverage/package/test/coverage.dat"
+
+    val parsedData = bazelClient.parseCoverageDataFile(validResultData)
+    assertThat(parsedData).isEqualTo(expectedResultParsedData)
+  }
+
+  @Test
+  fun testReadDatFileAsBinary_WithValidCoverageDatFile_returnsBinaryData() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    // Create a temporary coverage.dat file with sample data
+    val tempFile = tempFolder.newFile("coverage.dat")
+    val content = """
+            SF:/path/to/sourcefile.kt
+            FN:3,com/example/source::<init> ()V
+            FNF:1
+            FNH:1
+            DA:3,0
+            DA:6,1
+            LF:6
+            end_of_record
+        """.trimIndent()
+    tempFile.appendText(content)
+
+    // Call the function with the valid file path
+    val result = bazelClient.readDatFileAsBinary(tempFile.toPath().toString())
+
+    // Assert the content matches
+    assertThat(result).isEqualTo(content.toByteArray())
+  }
+
+  @Test
+  fun testReadDatFileAsBinary_WithNullFilePath_throwsException() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+
+    assertThrows<NullPointerException>() {
+      bazelClient.readDatFileAsBinary(null)
+    }
+  }
+
+  @Test
+  fun testReadDatFileAsBinary_WithInvalidFilePath_throwsException() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val invalidFilePath = "invalid_coverage.dat"
+
+    assertThrows<NoSuchFileException>() {
+      bazelClient.readDatFileAsBinary(invalidFilePath)
+    }
+  }
+
+  @Test
+  fun testReadDatFileAsBinary_WithEmptyCoverageDatFile_returnsEmptyBinaryData() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    // Create a temporary coverage.dat file with empty data
+    val tempFile = tempFolder.newFile("coverage.dat")
+
+    // Call the function with the valid file path
+    val result = bazelClient.readDatFileAsBinary(tempFile.toPath().toString())
+
+    // Assert the content matches
+    assertThat(result).isEqualTo(ByteArray(0))
   }
 
   @Test
