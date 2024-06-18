@@ -26,7 +26,6 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.domain.audio.CellularAudioDialogController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -51,7 +50,7 @@ class AudioFragmentPresenter @Inject constructor(
   private val cellularAudioDialogController: CellularAudioDialogController,
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  private val viewModelProvider: ViewModelProvider<AudioViewModel>,
+  private val audioViewModel: AudioViewModel,
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler,
   @EnableSpotlightUi private val enableSpotlightUi: PlatformParameterValue<Boolean>
@@ -63,9 +62,6 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
-  private val viewModel by lazy {
-    getAudioViewModel()
-  }
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -102,11 +98,11 @@ class AudioFragmentPresenter @Inject constructor(
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-          viewModel.handleSeekTo(userProgress)
+          audioViewModel.handleSeekTo(userProgress)
           userIsSeeking = false
         }
       })
-    viewModel.playStatusLiveData.observe(
+    audioViewModel.playStatusLiveData.observe(
       fragment,
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
@@ -124,7 +120,7 @@ class AudioFragmentPresenter @Inject constructor(
     )
 
     binding.let {
-      it.viewModel = viewModel
+      it.viewModel = audioViewModel
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
@@ -162,8 +158,8 @@ class AudioFragmentPresenter @Inject constructor(
     getProfileData().observe(
       activity,
       Observer<String> { result ->
-        viewModel.selectedLanguageCode = result
-        viewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
+        audioViewModel.selectedLanguageCode = result
+        audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
       }
     )
   }
@@ -196,8 +192,8 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Sets selected language code in presenter and ViewModel. */
   fun languageSelected(language: String) {
-    if (viewModel.selectedLanguageCode != language) {
-      viewModel.setAudioLanguageCode(language)
+    if (audioViewModel.selectedLanguageCode != language) {
+      audioViewModel.setAudioLanguageCode(language)
     }
   }
 
@@ -208,8 +204,8 @@ class AudioFragmentPresenter @Inject constructor(
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      ArrayList(viewModel.languages),
-      viewModel.selectedLanguageCode
+      ArrayList(audioViewModel.languages),
+      audioViewModel.selectedLanguageCode
     )
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
@@ -217,30 +213,30 @@ class AudioFragmentPresenter @Inject constructor(
   /** Pauses audio if in prepared state. */
   fun handleOnStop() {
     if (!activity.isChangingConfigurations && prepared) {
-      viewModel.pauseAudio()
+      audioViewModel.pauseAudio()
     }
   }
 
   /** Releases audio player resources. */
   fun handleOnDestroy() {
     if (!activity.isChangingConfigurations) {
-      viewModel.handleRelease()
+      audioViewModel.handleRelease()
     }
   }
 
   fun setStateAndExplorationId(newState: State, explorationId: String) =
-    viewModel.setStateAndExplorationId(newState, explorationId)
+    audioViewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
-    viewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+    audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
-    viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+    audioViewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
     isPauseAudioRequestPending = true
     if (prepared && isPauseAudioRequestPending) {
-      viewModel.pauseAudio()
+      audioViewModel.pauseAudio()
       isPauseAudioRequestPending = false
     }
   }
@@ -342,9 +338,5 @@ class AudioFragmentPresenter @Inject constructor(
       ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
-  }
-
-  private fun getAudioViewModel(): AudioViewModel {
-    return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
   }
 }

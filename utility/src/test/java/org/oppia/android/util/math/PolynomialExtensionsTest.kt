@@ -11,7 +11,6 @@ import org.oppia.android.app.model.Real
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
@@ -1213,14 +1212,12 @@ class PolynomialExtensionsTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("x+y+z", "var1=x", "var2=y", "var3=z"),
-    Iteration("x+z+y", "var1=x", "var2=z", "var3=y"),
-    Iteration("y+x+z", "var1=y", "var2=x", "var3=z"),
-    Iteration("y+z+x", "var1=y", "var2=z", "var3=x"),
-    Iteration("z+x+y", "var1=z", "var2=x", "var3=y"),
-    Iteration("z+y+x", "var1=z", "var2=y", "var3=x")
-  )
+  @Iteration("x+y+z", "var1=x", "var2=y", "var3=z")
+  @Iteration("x+z+y", "var1=x", "var2=z", "var3=y")
+  @Iteration("y+x+z", "var1=y", "var2=x", "var3=z")
+  @Iteration("y+z+x", "var1=y", "var2=z", "var3=x")
+  @Iteration("z+x+y", "var1=z", "var2=x", "var3=y")
+  @Iteration("z+y+x", "var1=z", "var2=y", "var3=x")
   fun testSort_xPlusYPlusZ_inAnyOrder_returnsXPlusYPlusZ() {
     val polynomial = createPolynomial(
       createTerm(coefficient = ONE, createVariable(name = var1, power = 1)),

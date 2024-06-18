@@ -16,7 +16,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 
 ### Installation
 
-1. Download and Install Java 8 using the links from the [Java website](https://www.java.com/en/download/).
+1. Download and Install Java 11 using the links from the [Java website](https://www.java.com/en/download/).
 
 2. **Select your Operating System for instructions on setting up Bazel:**
 
@@ -26,7 +26,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 
 ### Building the app
 
-After the installation completes you can build the app using Bazel. 
+After the installation completes you can build the app using Bazel.
 
 **Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
@@ -59,7 +59,7 @@ See our [troubleshooting wiki page](https://github.com/oppia/oppia-android/wiki/
 
 ## Concepts and Terminology
 **[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**<br>
-A workspace is a directory where we add targeted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory. 
+A workspace is a directory where we add targeted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory.
 
 **[Packages](https://github.com/oppia/oppia-android/tree/develop/app)**<br>
 A package is defined as a directory containing a file named BUILD or BUILD.bazel.
@@ -69,14 +69,14 @@ A rule specifies the relationship between inputs and outputs, and the steps to b
 In Android, rules are defined using `android_binary`. Android rules for testing are `android_instrumentation_test` and `android_local_test`.
 
 **[BUILD files](https://github.com/oppia/oppia-android/blob/develop/app/BUILD.bazel)**<br>
-Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement. 
+Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
 
 **[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**<br>
 A target A depends upon a target B if B is needed by A at build. `A -> B`<br>
 ```
 deps = [ "//app",]
 ```
-Here, `deps` is used to define the dependencies which is a type of dependencies called `deps dependencies` and it includes the files/directory/target which are dependent. From the above example the dependency is the `app` target which is defined in the [Build file of app package](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L616). 
+Here, `deps` is used to define the dependencies which is a type of dependencies called `deps dependencies` and it includes the files/directory/target which are dependent. From the above example the dependency is the `app` target which is defined in the [Build file of app package](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L616).
 
 Example of Dependencies
 1. [srcs dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L617)
@@ -85,9 +85,9 @@ Example of Dependencies
 **[Loading an extension](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L13)**<br>
 Bazel extensions are files ending in .bzl. Use the load statement to import a symbol from an extension.<br>
 ```
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 ```
-Here, we are loading `kotlin.bzl` and we are going to use it with a symbol name `kt_android_library`.
+Here, we are loading `android.bzl` and we are going to use it with a symbol name `kt_android_library`.
 Arguments to the load function must be string literals. load statements must appear at top-level in the file.
 
 **[Visibility of a file target](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L621)**<br>

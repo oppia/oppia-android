@@ -18,9 +18,7 @@ class TodoIssueCommentCheckTest {
   private val dummySha1 = "51ab6a0341cfb86d95a387438fc993b5eb977b83"
   private val dummySha2 = "74cd6a0341cfb86d95a387438fc993b5eb977b83"
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {

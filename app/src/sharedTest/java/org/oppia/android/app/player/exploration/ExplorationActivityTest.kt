@@ -68,6 +68,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
@@ -118,7 +119,6 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
@@ -128,6 +128,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -221,6 +222,9 @@ class ExplorationActivityTest {
 
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId: Int = 0
 
@@ -1933,6 +1937,129 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExpActivity_startNewExploration_pressBack_logsLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingNewExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testExpActivity_startNewExploration_pressToolbarBackIcon_logsLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    markAllSpotlightsSeen()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingNewExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // Click on 'X' icon on toolbar.
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testExpActivity_replayExploration_pressBack_doesNotLogLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    )
+    explorationDataController.replayExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testExpActivity_replayExp_pressToolbarBackIcon_doesNotLogLessonSavedAdvertentlyEvent() {
+    setUpAudioForFractionLesson()
+    markAllSpotlightsSeen()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    )
+    explorationDataController.replayExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // Click on 'X' icon on toolbar.
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    val lessonSavedAdvertentlyEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == LESSON_SAVED_ADVERTENTLY_CONTEXT
+    }
+    assertThat(lessonSavedAdvertentlyEventCount).isEqualTo(0)
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
@@ -2553,7 +2680,7 @@ class ExplorationActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -2573,7 +2700,9 @@ class ExplorationActivityTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(explorationActivityTest: ExplorationActivityTest)
 

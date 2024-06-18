@@ -2,6 +2,7 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -70,6 +71,7 @@ class CpuPerformanceSnapshotter(
     }
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createCommandQueueActor(): SendChannel<CommandMessage> {
     var previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
     var switchIconificationCount = 0
@@ -124,7 +126,7 @@ class CpuPerformanceSnapshotter(
   }
 
   private fun sendSwitchIconificationCommand(newIconification: AppIconification) {
-    commandQueue.offer(CommandMessage.SwitchIconification(newIconification)).apply {
+    commandQueue.trySend(CommandMessage.SwitchIconification(newIconification)).isSuccess.apply {
       if (!this) {
         val exception = IllegalStateException("Iconification switching failed")
         consoleLogger.e(

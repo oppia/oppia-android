@@ -63,7 +63,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -74,7 +73,6 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -495,19 +493,17 @@ class AppLanguageResourceHandlerTest {
   // testing functionality that's expected to go away with later language selection work.
   // TODO(#3793): Remove this once OppiaLanguage is used as the source of truth.
   @Test
-  @RunParameterized(
-    Iteration("hi", "lang=HINDI_AUDIO_LANGUAGE", "expectedDisplayText=हिन्दी"),
-    Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français"),
-    Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文"),
-    Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português"),
-    Iteration("ar", "lang=ARABIC_LANGUAGE", "expectedDisplayText=العربية"),
-    Iteration("pcm", "lang=NIGERIAN_PIDGIN_LANGUAGE", "expectedDisplayText=Naijá"),
-    Iteration("unsp", "lang=AUDIO_LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
-    Iteration("none", "lang=NO_AUDIO", "expectedDisplayText=English"),
-    Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English"),
-    Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
-  )
-  fun testComputeLocalizedDisplayName_englishLocale_forAllAudioLanguages_hasTheExpectedOutput() {
+  @Iteration("hi", "lang=HINDI_AUDIO_LANGUAGE", "expectedDisplayText=हिन्दी")
+  @Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français")
+  @Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文")
+  @Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português")
+  @Iteration("ar", "lang=ARABIC_LANGUAGE", "expectedDisplayText=العربية")
+  @Iteration("pcm", "lang=NIGERIAN_PIDGIN_LANGUAGE", "expectedDisplayText=Naijá")
+  @Iteration("unsp", "lang=AUDIO_LANGUAGE_UNSPECIFIED", "expectedDisplayText=English")
+  @Iteration("none", "lang=NO_AUDIO", "expectedDisplayText=English")
+  @Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English")
+  @Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
+  fun testComputeLocalizedDisplayName_englishLocale_forAllLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
@@ -518,17 +514,15 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("unknown", "lang=LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
-    Iteration("ar", "lang=ARABIC", "expectedDisplayText=العربية"),
-    Iteration("en", "lang=ENGLISH", "expectedDisplayText=English"),
-    Iteration("hi", "lang=HINDI", "expectedDisplayText=हिन्दी"),
-    Iteration("hi-en", "lang=HINGLISH", "expectedDisplayText=हिन्दी"),
-    Iteration("pt", "lang=PORTUGUESE", "expectedDisplayText=Português"),
-    Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE", "expectedDisplayText=Português"),
-    Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili"),
-    Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
-  )
+  @Iteration("unknown", "lang=LANGUAGE_UNSPECIFIED", "expectedDisplayText=English")
+  @Iteration("ar", "lang=ARABIC", "expectedDisplayText=العربية")
+  @Iteration("en", "lang=ENGLISH", "expectedDisplayText=English")
+  @Iteration("hi", "lang=HINDI", "expectedDisplayText=हिन्दी")
+  @Iteration("hi-en", "lang=HINGLISH", "expectedDisplayText=हिन्दी")
+  @Iteration("pt", "lang=PORTUGUESE", "expectedDisplayText=Português")
+  @Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE", "expectedDisplayText=Português")
+  @Iteration("sw", "lang=SWAHILI", "expectedDisplayText=Kiswahili")
+  @Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
   fun testComputeLocalizedDisplayName_englishLocale_forAllDisplayLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
@@ -609,7 +603,7 @@ class AppLanguageResourceHandlerTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,

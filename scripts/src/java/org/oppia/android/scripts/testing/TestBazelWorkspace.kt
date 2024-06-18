@@ -5,7 +5,7 @@ import org.junit.rules.TemporaryFolder
 import java.io.File
 
 /** The version of Bazel to use in tests that set up Bazel workspaces. */
-const val BAZEL_VERSION = "4.0.0"
+const val BAZEL_VERSION = "6.5.0"
 
 /**
  * Test utility for generating various test & library targets in the specified [TemporaryFolder].
@@ -246,7 +246,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     if (!isConfiguredForKotlin) {
       // Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
       val rulesKotlinReleaseUrl =
-        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.5.0-alpha-2" +
+        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.7.1" +
           "/rules_kotlin_release.tgz"
       val rulesKotlinArchiveName = "io_bazel_rules_kotlin"
       val rulesKotlinBazelPrefix = "@$rulesKotlinArchiveName//kotlin"
@@ -256,13 +256,12 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
         http_archive(
             name = "$rulesKotlinArchiveName",
-            sha256 = "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",
+            sha256 = "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
             urls = ["$rulesKotlinReleaseUrl"],
         )
-        load("$rulesKotlinBazelPrefix:dependencies.bzl", "kt_download_local_dev_dependencies")
-        load("$rulesKotlinBazelPrefix:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
-        kt_download_local_dev_dependencies()
+        load("$rulesKotlinBazelPrefix:repositories.bzl", "kotlin_repositories")
         kotlin_repositories()
+        load("$rulesKotlinBazelPrefix:core.bzl", "kt_register_toolchains")
         kt_register_toolchains()
         """.trimIndent() + "\n"
       )
@@ -274,7 +273,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
   private fun prepareBuildFileForTests(buildFile: File) {
     if (buildFile !in filesConfiguredForTests) {
-      buildFile.appendText("load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\", \"kt_jvm_test\")\n")
+      buildFile.appendText("load(\"@io_bazel_rules_kotlin//kotlin:jvm.bzl\", \"kt_jvm_test\")\n")
       filesConfiguredForTests += buildFile
     }
   }
@@ -282,7 +281,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   private fun prepareBuildFileForLibraries(buildFile: File) {
     if (buildFile !in filesConfiguredForLibraries) {
       buildFile.appendText(
-        "load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\", \"kt_jvm_library\")\n"
+        "load(\"@io_bazel_rules_kotlin//kotlin:jvm.bzl\", \"kt_jvm_library\")\n"
       )
       filesConfiguredForLibraries += buildFile
     }

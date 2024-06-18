@@ -33,7 +33,8 @@ class RegexPatternValidationCheckTest {
       "file_content_validation_checks.textproto."
   private val settableFutureUsageErrorMessage =
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
-      "mess up & lead to a hanging ListenableFuture."
+      "mess up & lead to a hanging ListenableFuture. If using a Deferred, convert it to a " +
+      "ListenableFuture using asListenableFuture()."
   private val androidLayoutIncludeTagErrorMessage =
     "Remove <include .../> tag from layouts and instead use the widget directly, e.g. AppBarLayout."
   private val androidGravityLeftErrorMessage =
@@ -221,15 +222,11 @@ class RegexPatternValidationCheckTest {
   private val referenceComputeIfAbsent =
     "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic" +
       " Kotlin-specific solution, instead."
-  private val cdataShouldNotBeUsed =
-    "CDATA isn't handled by Translatewiki correctly. Use escaped HTML, instead."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
 
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -2750,28 +2747,6 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $referenceComputeIfAbsent
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
-  fun testFileContent_includesCdataContentInStringsXml_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-      <string name="test"><![CDATA[<p>Some nested HTML.</p>]]></string>
-      """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
-    val stringFilePath = "app/src/main/res/values/strings.xml"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
-
-    val exception = assertThrows<Exception>() { runScript() }
-
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath:1: $cdataShouldNotBeUsed
         $wikiReferenceNote
         """.trimIndent()
       )

@@ -36,6 +36,8 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   }
 
   override fun getApkSize(): Long {
+    // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+    @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val apkPath =
       context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo.sourceDir
     return File(apkPath).length()

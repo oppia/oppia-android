@@ -6,9 +6,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.stateIn
@@ -199,7 +199,6 @@ class AnalyticsController @Inject constructor(
             .addEventLogsToUpload(eventLog)
             .build()
         } else {
-          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             IllegalStateException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
           consoleLogger.e("AnalyticsController", "Failure while caching event.", exception)
@@ -391,17 +390,6 @@ class AnalyticsController @Inject constructor(
       oppiaLogger.createAppOnBoardingContext(),
       profileId = profileId
     )
-  }
-
-  // TODO(#4119): Migrate this to Flow.lastOrNull() once Kotlin 1.5 is available.
-  private suspend fun <T : Any> Flow<T>.lastOrNull(): T? {
-    return CoroutineScope(backgroundDispatcher).async {
-      var lastValue: T? = null
-      this@lastOrNull.collect {
-        lastValue = it
-      }
-      return@async lastValue
-    }.await()
   }
 
   private companion object {

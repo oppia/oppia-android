@@ -23,3 +23,12 @@
 -dontwarn sun.misc.SignalHandler
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+# The entirety of ClassValueCtorCache is ignored for warnings because it tries to reference an
+# inherited method from java.lang.ClassValue (which isn't available in the Android SDK). It will
+# eventually be an option per https://issuetracker.google.com/issues/196063118, though only on U+
+# devices. This is safe to ignore because kotlinx.coroutines avoids using ExceptionConstructors.kt
+# (which houses ClassValueCtorCache & the cache it's referencing) when on Android, per:
+# https://github.com/Kotlin/kotlinx.coroutines/pull/2997, specifically:
+# https://github.com/Kotlin/kotlinx.coroutines/blob/3574c2/kotlinx-coroutines-core/jvm/src/internal/ExceptionsConstructor.kt#L17.
+-dontwarn kotlinx.coroutines.internal.ClassValueCtorCache

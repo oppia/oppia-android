@@ -2,8 +2,7 @@
 Domain definitions and controllers for managing spotlights.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "spotlight_state_controller",
@@ -21,5 +20,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
-
-dagger_rules()

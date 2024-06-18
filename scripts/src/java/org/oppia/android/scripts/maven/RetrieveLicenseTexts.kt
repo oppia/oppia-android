@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.maven
 
-import org.oppia.android.scripts.license.LicenseFetcher
-import org.oppia.android.scripts.license.LicenseFetcherImpl
+import org.oppia.android.scripts.license.MavenArtifactPropertyFetcher
+import org.oppia.android.scripts.license.MavenArtifactPropertyFetcherImpl
 import org.oppia.android.scripts.license.model.CopyrightLicense
 import org.oppia.android.scripts.license.model.Dependency
 import org.oppia.android.scripts.proto.License
@@ -42,7 +42,7 @@ const val MAX_LICENSE_LENGTH = 16383
  *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  RetrieveLicenseTexts(LicenseFetcherImpl()).main(args)
+  RetrieveLicenseTexts(MavenArtifactPropertyFetcherImpl()).main(args)
 }
 
 /**
@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
  * texts of the dependencies.
  */
 class RetrieveLicenseTexts(
-  private val licenseFetcher: LicenseFetcher
+  private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher
 ) {
 
   /** Generates a resource xml file that contains license texts of the third-party dependencies. */
@@ -59,7 +59,7 @@ class RetrieveLicenseTexts(
       println(
         """
         Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
-        <path_to_pb_file>  
+        <path_to_pb_file>
         """.trimIndent()
       )
       throw Exception("Too few arguments passed.")
@@ -93,7 +93,7 @@ class RetrieveLicenseTexts(
   }
 
   /**
-   * Retrieve the list of maven dependencies from maven_dependencies.textproto.
+   * Retrieve the list of Maven dependencies from maven_dependencies.textproto.
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @return list of [MavenDependency]s
@@ -172,7 +172,9 @@ class RetrieveLicenseTexts(
   }
 
   private fun fetchViewableLicenseText(licenseLink: String): String {
-    val licenseText = fetchLicenseText(licenseLink)
+    val licenseText = checkNotNull(fetchLicenseText(licenseLink)) {
+      "Failed to fetch license text from link: $licenseLink."
+    }
     // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
     return if (licenseText.length <= MAX_LICENSE_LENGTH) {
       licenseText
@@ -393,9 +395,7 @@ class RetrieveLicenseTexts(
     return arrayElement
   }
 
-  private fun fetchLicenseText(url: String): String {
-    return licenseFetcher.scrapeText(url)
-  }
+  private fun fetchLicenseText(url: String): String? = mavenArtifactPropertyFetcher.scrapeText(url)
 
   private fun omitVersion(artifactName: String): String {
     return artifactName.substring(0, artifactName.lastIndexOf(':'))

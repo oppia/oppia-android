@@ -3,7 +3,19 @@ Package for common libraries that potentially support multiple scripts by perfor
 generic operations.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+
+kt_jvm_library(
+    name = "android_build_sdk_properties",
+    testonly = True,
+    srcs = [
+        "AndroidBuildSdkProperties.kt",
+    ],
+    resource_strip_prefix = "scripts/src/java",
+    resources = [":_sdk_info_properties"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
 
 kt_jvm_library(
     name = "bazel_client",
@@ -87,4 +99,14 @@ kt_jvm_library(
     deps = [
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
+)
+
+genrule(
+    name = "_sdk_info_properties",
+    srcs = [],
+    outs = ["sdk_info.properties"],
+    cmd = """
+    echo build_sdk_version={0} > \"$@\"
+    echo build_tools_version={1} >> \"$@\"
+    """.format(BUILD_SDK_VERSION, BUILD_TOOLS_VERSION),
 )
