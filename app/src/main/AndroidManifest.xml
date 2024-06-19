@@ -332,7 +332,6 @@
     <activity
       android:name=".app.testing.ColorBindingAdaptersTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-
     <activity
       android:name=".app.onboarding.OnboardingProfileTypeActivity"
       android:label="@string/onboarding_profile_type_activity_title"

@@ -307,7 +307,7 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      scenario?.onActivity { activity->
+      scenario?.onActivity { activity ->
         assertThat(activity.isFinishing).isTrue()
       }
     }
@@ -320,7 +320,7 @@ class OnboardingProfileTypeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      scenario?.onActivity { activity->
+      scenario?.onActivity { activity ->
         assertThat(activity.isFinishing).isTrue()
       }
     }

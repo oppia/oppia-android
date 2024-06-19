@@ -7,7 +7,7 @@ import androidx.databinding.BindingAdapter;
 public final class ColorBindingAdapters {
 
   /** Binding adapter for setting the `customBackgroundColor` for a [View]. */
-  @BindingAdapter("app:customBackgroundColor")
+  @BindingAdapter("customBackgroundColor")
   public static void setCustomBackgroundColor(View view, int color) {
     view.setBackgroundColor(color);
   }
