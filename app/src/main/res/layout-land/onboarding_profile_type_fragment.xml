@@ -9,9 +9,9 @@
     <TextView
       android:id="@+id/profile_type_title"
       style="@style/OnboardingProfileTypeHeaderStyleLandscape"
+      android:layout_marginTop="@dimen/phone_shared_margin_xl"
       android:text="@string/onboarding_profile_type_activity_header"
       app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="@dimen/phone_shared_margin_xl"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,95 +29,83 @@
       app:customBackgroundColor="@{@color/component_color_onboarding_profile_type_background_color}"
       app:layout_constraintTop_toBottomOf="@id/profile_type_center_guide" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/profile_type_learner_navigation_container"
-      android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/profile_type_learner_navigation_card"
+      style="@style/OnboardingProfileTypeNavigationCardStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      android:layout_marginStart="@dimen/phone_shared_margin_medium"
+      android:layout_marginEnd="@dimen/phone_shared_margin_medium"
+      app:layout_constraintBottom_toBottomOf="@id/profile_type_supervisor_navigation_card"
+      app:layout_constraintEnd_toStartOf="@id/profile_type_supervisor_navigation_card"
+      app:layout_constraintHorizontal_chainStyle="packed"
+      app:layout_constraintStart_toStartOf="parent">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+          android:id="@+id/profile_type_learner_image"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:contentDescription="@string/onboarding_learner_otter_content_description"
+          android:scaleType="centerCrop"
+          app:layout_constraintBottom_toTopOf="@id/profile_type_learner_text"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/learner_otter" />
+
+        <TextView
+          android:id="@+id/profile_type_learner_text"
+          style="@style/OnboardingProfileTypeTextStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/onboarding_profile_type_activity_student_text"
+          app:layout_constraintEnd_toEndOf="@id/profile_type_learner_image"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_type_learner_image" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/profile_type_supervisor_navigation_card"
+      style="@style/OnboardingProfileTypeNavigationCardStyle"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/phone_shared_margin_x_small"
-      app:layout_constraintBottom_toTopOf="@id/onboarding_navigation_back"
+      android:layout_marginStart="@dimen/phone_shared_margin_medium"
+      android:layout_marginEnd="@dimen/phone_shared_margin_medium"
+      android:layout_marginBottom="@dimen/phone_shared_margin_x_small"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/profile_type_title">
+      app:layout_constraintStart_toEndOf="@id/profile_type_learner_navigation_card"
+      app:layout_constraintTop_toTopOf="parent">
 
-      <com.google.android.material.card.MaterialCardView
-        android:id="@+id/profile_type_learner_navigation_card"
-        style="@style/OnboardingProfileTypeNavigationCardStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/phone_shared_margin_medium"
-        android:layout_marginEnd="@dimen/phone_shared_margin_medium"
-        app:layout_constraintBottom_toBottomOf="@id/profile_type_supervisor_navigation_card"
-        app:layout_constraintEnd_toStartOf="@id/profile_type_supervisor_navigation_card"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+        <ImageView
+          android:id="@+id/profile_type_parent_image"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:contentDescription="@string/onboarding_parent_otter_content_description"
+          android:scaleType="centerCrop"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/parent_teacher_otter" />
 
-          <ImageView
-            android:id="@+id/profile_type_learner_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/onboarding_learner_otter_content_description"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@id/profile_type_learner_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/learner_otter" />
-
-          <TextView
-            android:id="@+id/profile_type_learner_text"
-            style="@style/OnboardingProfileTypeTextStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/onboarding_profile_type_activity_student_text"
-            app:layout_constraintEnd_toEndOf="@id/profile_type_learner_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_type_learner_image" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-      </com.google.android.material.card.MaterialCardView>
-
-      <com.google.android.material.card.MaterialCardView
-        android:id="@+id/profile_type_supervisor_navigation_card"
-        style="@style/OnboardingProfileTypeNavigationCardStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/phone_shared_margin_medium"
-        android:layout_marginEnd="@dimen/phone_shared_margin_medium"
-        android:layout_marginBottom="@dimen/phone_shared_margin_x_small"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/profile_type_learner_navigation_card"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-
-          <ImageView
-            android:id="@+id/profile_type_parent_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/onboarding_parent_otter_content_description"
-            android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/parent_teacher_otter" />
-
-          <TextView
-            android:id="@+id/profile_type_parent_text"
-            style="@style/OnboardingProfileTypeTextStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/onboarding_profile_type_activity_parent_text"
-            app:layout_constraintEnd_toEndOf="@id/profile_type_parent_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_type_parent_image" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-      </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+          android:id="@+id/profile_type_parent_text"
+          style="@style/OnboardingProfileTypeTextStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/onboarding_profile_type_activity_parent_text"
+          app:layout_constraintEnd_toEndOf="@id/profile_type_parent_image"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_type_parent_image" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <Button
       android:id="@+id/onboarding_navigation_back"
