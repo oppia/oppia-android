@@ -3,7 +3,6 @@ package org.oppia.android.app.onboarding
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -15,7 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -69,9 +68,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -108,17 +105,10 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class IntroFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
 
   private val testProfileNickname = "John"
 
@@ -165,17 +155,17 @@ class IntroFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
   fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario?.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
@@ -183,7 +173,9 @@ class IntroFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario?.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 

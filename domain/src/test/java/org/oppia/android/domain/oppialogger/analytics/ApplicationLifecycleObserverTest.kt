@@ -426,7 +426,7 @@ class ApplicationLifecycleObserverTest {
       mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
     )
 
-    // TODO(#5240): Replace appSessionId generation to the modified Twitter snowflake algorithm.
+    // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
     val sessionIdProvider = loggingIdentifierController.getAppSessionId()
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 

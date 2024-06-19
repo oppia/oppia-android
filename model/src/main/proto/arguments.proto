@@ -316,6 +316,7 @@ message AppLanguageActivityStateBundle {
   OppiaLanguage oppia_language = 1;
 }
 
+// Params required when creating a new SurveyActivity.
 message SurveyActivityParams {
   // The ID of the profile for which the survey is to be shown.
   ProfileId profile_id = 1;
@@ -327,6 +328,7 @@ message SurveyActivityParams {
   string exploration_id = 3;
 }
 
+// Params required when creating a new IntroActivity.
 message IntroActivityParams {
   // The nickname associated with a newly created profile.
   string profile_nickname = 1;

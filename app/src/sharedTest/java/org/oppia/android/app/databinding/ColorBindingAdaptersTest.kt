@@ -2,12 +2,9 @@ package org.oppia.android.app.databinding
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -33,7 +30,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.ColorBindingAdapters.setCustomBackgroundColor
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ColorBindingAdaptersTestActivity
@@ -73,7 +69,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -104,17 +99,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ColorBindingAdaptersTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @Inject lateinit var context: Context
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  private val whiteColor = Color.WHITE
+  private val blackColor = Color.BLACK
 
   @Before
   fun setUp() {
@@ -129,7 +119,6 @@ class ColorBindingAdaptersTest {
 
   @Test
   fun testColorBindingAdapters_setWhiteBackground_setsColorCorrectly() {
-    val whiteColor = context.getColor(R.color.component_color_shared_white_background_color)
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
         val testView: View = activity.findViewById(R.id.test_view)
@@ -142,7 +131,6 @@ class ColorBindingAdaptersTest {
 
   @Test
   fun testColorBindingAdapters_setBlackBackground_setsColorCorrectly() {
-    val blackColor = context.getColor(R.color.component_color_shared_black_background_color)
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
         val testView: View = activity.findViewById(R.id.test_view)
@@ -231,15 +219,5 @@ class ColorBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-}
-
-class TestFragment : InjectableDialogFragment() {
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return TextView(activity)
   }
 }
