@@ -27,7 +27,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -85,6 +85,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -107,8 +108,8 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -124,20 +125,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class CreateProfileFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @Before
   fun setUp() {
@@ -404,7 +397,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
   }
 
@@ -416,7 +409,7 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Truth.assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
   }
 
@@ -454,7 +447,25 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      intended(expectedIntent)
+      val loadedImageUri = activityResult.resultData.data.toString()
+      assertThat(loadedImageUri).contains("launcher_icon")
+    }
+  }
+
+  @Test
+  fun testFragment_uploadProfilePicture_displaysImageInTarget() {
+    val expectedIntent: Matcher<Intent> = hasAction(Intent.ACTION_PICK)
+
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+
+    launchNewLearnerProfileActivity().use {
+      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      val expectedImage = activityResult.resultData.data.toString()
+      val loadedImages = testGlideImageLoader.getLoadedBitmaps()
+      assertThat(loadedImages.first()).isEqualTo(expectedImage)
     }
   }
 
@@ -494,7 +505,7 @@ class CreateProfileFragmentTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverModule::class,
@@ -513,7 +524,7 @@ class CreateProfileFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class, TestImageLoaderModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
