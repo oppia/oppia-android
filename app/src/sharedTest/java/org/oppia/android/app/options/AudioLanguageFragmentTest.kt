@@ -292,7 +292,9 @@ class AudioLanguageFragmentTest {
   @Test
   fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -304,7 +306,9 @@ class AudioLanguageFragmentTest {
   @Test
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
@@ -317,7 +321,9 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -339,7 +345,9 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
