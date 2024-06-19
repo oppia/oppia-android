@@ -3,7 +3,6 @@ package org.oppia.android.app.options
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -76,9 +75,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -292,33 +289,42 @@ class AudioLanguageFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
   fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use { scenario ->
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
   @Test
   fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -340,7 +346,10 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())

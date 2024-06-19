@@ -45,7 +45,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@id/create_profile_background"
       app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
-      app:srcCompat="@{@drawable/ic_default_avatar}"
+      app:srcCompat="@{@drawable/ic_profile_icon}"
       app:strokeColor="@color/component_color_onboarding_shared_white_color"
       app:strokeWidth="@dimen/onboarding_profile_picture_stroke_width" />
 
@@ -68,11 +68,11 @@
       android:layout_margin="@dimen/tablet_shared_margin_large"
       android:background="@color/component_color_onboarding_shared_green_color"
       android:fontFamily="sans-serif"
-      android:padding="@dimen/onboarding_shared_padding_small"
+      android:padding="@dimen/onboarding_profile_picture_padding"
       android:text="@string/create_profile_activity_profile_picture_prompt"
       android:textAlignment="center"
       android:textColor="@color/component_color_onboarding_shared_white_color"
-      android:textSize="@dimen/onboarding_shared_text_size_medium"
+      android:textSize="@dimen/onboarding_shared_text_size_small"
       app:layout_constraintBottom_toBottomOf="@id/create_profile_user_image_view"
       app:layout_constraintEnd_toEndOf="@id/create_profile_user_image_view"
       app:layout_constraintStart_toStartOf="@id/create_profile_user_image_view"

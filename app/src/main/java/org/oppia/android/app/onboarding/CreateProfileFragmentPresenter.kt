@@ -73,7 +73,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       )
 
       imageLoader.loadDrawable(
-        R.drawable.ic_default_avatar,
+        R.drawable.ic_profile_icon,
         ImageViewTarget(this)
       )
     }

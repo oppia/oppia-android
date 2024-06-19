@@ -25,8 +25,14 @@ class IntroFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val profileNickname = arguments!!.getStringFromBundle(PROFILE_NICKNAME_ARGUMENT_KEY)!!
-    val internalProfileId = arguments!!.getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+    val profileNickname =
+      checkNotNull(arguments?.getStringFromBundle(PROFILE_NICKNAME_ARGUMENT_KEY)) {
+        "Expected profileNickname to be included in the arguments for IntroFragment"
+      }
+    val internalProfileId =
+    checkNotNull(arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)) {
+      "Expected profileIde to be included in the arguments for IntroFragment"
+    }
     return introFragmentPresenter.handleCreateView(
       inflater,
       container,
