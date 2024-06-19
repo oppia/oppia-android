@@ -83,22 +83,3 @@ message OnboardingState {
   // the general availability version of the app after having previously used a pre-release version.
   bool permanently_dismissed_ga_upgrade_notice = 4;
 }
-
-// Indicates the state of the app with regards to the number and type of existing profiles.
-enum ProfileOnboardingState {
-  // Indicates that the number or type of profiles is unknown.
-  PROFILE_ONBOARDING_STATE_UNSPECIFIED = 0;
-
-  // Indicates that this is a new app install given that there are no existing profiles.
-  NEW_INSTALL = 1;
-
-  // Indicates that there is only one profile and it is a sole learner profile.
-  SOLE_LEARNER_PROFILE = 2;
-
-  // Indicates that there is only one profile and it is an admin profile.
-  ADMIN_PROFILE_ONLY = 3;
-
-  // Indicates that there are multiple profiles on the device.
-  MULTIPLE_PROFILES = 4;
-}
-
