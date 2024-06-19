@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -84,10 +83,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -391,17 +388,17 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
   fun testFragment_backButtonPressed_currentScreenIsDestroyed() {
     launchNewLearnerProfileActivity().use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario?.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO) // Testing lifecycle fails on Robolectric.
   @Test
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     launchNewLearnerProfileActivity().use { scenario ->
@@ -409,7 +406,9 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      assertThat(scenario?.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario?.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
