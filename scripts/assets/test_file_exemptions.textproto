@@ -287,15 +287,15 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SurveyOnboardingBackgroundView.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -996,6 +996,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenterV1.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1892,6 +1896,14 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/CircularProgressIndicatorAdaptersTestViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ColorBindingAdaptersTestActivity.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ColorBindingAdaptersTestFragment.kt"
   test_file_not_required: true
 }
 test_file_exemption {
