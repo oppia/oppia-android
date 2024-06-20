@@ -6,7 +6,6 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.EphemeralChapterSummary
@@ -555,7 +554,6 @@ class TopicController @Inject constructor(
       contentId = "title"
       html = topicData.getStringFromObject("topic_name")
     }.build()
-    val classroomId = topicData.getStringFromObject("classroom_id")
     val topicDescription = SubtitledHtml.newBuilder().apply {
       contentId = "description"
       html = topicData.getStringFromObject("topic_description")
