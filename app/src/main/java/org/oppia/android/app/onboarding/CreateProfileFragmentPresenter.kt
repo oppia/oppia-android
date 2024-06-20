@@ -3,6 +3,7 @@ package org.oppia.android.app.onboarding
 import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -45,7 +46,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
-  private lateinit var selectedImage: String
+  private var selectedImageUri: Uri? = null
   private var allowDownloadAccess = enableDownloadsSupport.value
 
   /** Initialize layout bindings. */
@@ -111,11 +112,12 @@ class CreateProfileFragmentPresenter @Inject constructor(
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
     if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
       binding.createProfilePicturePrompt.visibility = View.GONE
+
       intent?.let {
-        selectedImage =
-          checkNotNull(intent.data.toString()) { "Could not find the selected image." }
+        selectedImageUri = checkNotNull(intent.data) { "Could not find the selected image uri." }
+
         imageLoader.loadBitmap(
-          selectedImage,
+          selectedImageUri.toString(),
           ImageViewTarget(uploadImageView)
         )
       }
@@ -131,7 +133,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     profileManagementController.addProfile(
       name = nickname,
       pin = "",
-      avatarImagePath = null,
+      avatarImagePath = selectedImageUri,
       allowDownloadAccess = allowDownloadAccess,
       colorRgb = activity.intent.getIntExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, -10710042),
       isAdmin = true

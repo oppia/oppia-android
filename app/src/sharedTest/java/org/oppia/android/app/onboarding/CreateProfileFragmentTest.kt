@@ -455,6 +455,24 @@ class CreateProfileFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_inputNameWithNumbers_create_nameOnlyLettersError() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_name_only_letters))
+        .check(matches(isDisplayed()))
+    }
+  }
+
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
