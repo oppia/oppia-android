@@ -80,15 +80,11 @@ class RunCoverage(
     val isExempted = testFileExemptionList.contains(filePath)
     if (isExempted) {
       println("This file is exempted from having a test file. Hence No coverage!")
-//      return null
       return emptyList()
     }
 
-//    val bazelClient = BazelClient(rootDirectory, commandExecutor)
     val testFilePaths = findTestFile(repoRoot, filePath)
-//    return findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-//    val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
     for (testTarget in testTargets) {
       val coverageData = RunCoverageForTestTarget(
@@ -100,17 +96,6 @@ class RunCoverage(
       coverageDataList.add(coverageData)
     }
     return coverageDataList
-
-    //this works
-    /*val covdat = RunCoverageForTestTarget(
-      rootDirectory,
-      "//coverage/test/java/com/example:test",
-      commandExecutor,
-      scriptBgDispatcher
-    ).runCoverage()
-    coverageDataList.add(covdat!!)
-    return coverageDataList*/
-//    return covdat
   }
 
   fun findTestFile(repoRoot: String, filePath: String): List<String> {

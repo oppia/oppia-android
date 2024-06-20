@@ -222,28 +222,6 @@ class RunCoverageTest {
       longCommandExecutor,
       scriptBgDispatcher).execute()
 
-    /*val expectedResult =
-      "["+"SF:coverage/main/java/com/example/TwoSum.kt\n" +
-        "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
-        "FN:3,com/example/TwoSum::<init> ()V\n" +
-        "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
-        "FNDA:0,com/example/TwoSum::<init> ()V\n" +
-        "FNF:2\n" +
-        "FNH:1\n" +
-        "BRDA:7,0,0,1\n" +
-        "BRDA:7,0,1,1\n" +
-        "BRDA:7,0,2,1\n" +
-        "BRDA:7,0,3,1\n" +
-        "BRF:4\n" +
-        "BRH:4\n" +
-        "DA:3,0\n" +
-        "DA:7,1\n" +
-        "DA:8,1\n" +
-        "DA:10,1\n" +
-        "LH:3\n" +
-        "LF:4\n" +
-        "end_of_record\n"+"]"*/
-
       val expectedResultList = listOf(
         "SF:coverage/main/java/com/example/TwoSum.kt\n"+
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n"+
@@ -274,14 +252,5 @@ class RunCoverageTest {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
-  }
-
-  /** Runs the run_coverage. */
-  private fun runScript(filePath: String) {
-    RunCoverage(
-      "${tempFolder.root}",
-      filePath,
-      commandExecutor,
-      scriptBgDispatcher).execute()
   }
 }
