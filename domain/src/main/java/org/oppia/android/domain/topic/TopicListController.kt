@@ -221,9 +221,9 @@ class TopicListController @Inject constructor(
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
         title = topicRecord.translatableTitle
+        classroomId = getClassroomIdByTopicId(topicId)
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
-        classroomId = getClassroomIdByTopicId(topicId)
         topicPlayAvailability = if (topicRecord.isPublished) {
           TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
         } else {
@@ -300,7 +300,7 @@ class TopicListController @Inject constructor(
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
 
-    val classroomId = jsonObject.getStringFromObject("classroom_id")
+    val classroomId = getClassroomIdByTopicId(topicId)
 
     val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
     val classroomTitle = classroomJsonObject.getJSONObject("classroom_title").let {
@@ -787,7 +787,7 @@ class TopicListController @Inject constructor(
         }.build()
       } ?: SubtitledHtml.getDefaultInstance()
 
-      val classroomId = topicJson.optString("classroom_id")
+      val classroomId = getClassroomIdByTopicId(topicId)
 
       val classroomJson = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
       if (classroomJson!!.optString("classroom_title").isNullOrEmpty()) return null
