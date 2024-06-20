@@ -338,7 +338,7 @@ class TestBazelWorkspaceTest {
       """
         load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
         kt_jvm_test(
-            name = "test",
+            name = "MainTest",
             srcs = ["MainTest.kt"],
             deps = [
                 "//coverage/main/java/com/example:main",
@@ -406,7 +406,7 @@ class TestBazelWorkspaceTest {
       """
         load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
         kt_jvm_test(
-            name = "test",
+            name = "MainTest",
             srcs = ["MainTest.kt"],
             deps = [
                 "//coverage/main/java/com/example:main",

@@ -5,9 +5,9 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.TestFileExemptions
-import java.util.concurrent.TimeUnit
 import java.io.File
 import java.io.FileInputStream
+import java.util.concurrent.TimeUnit
 
 /**
  * Entry point function for running coverage analysis for a source file.
@@ -40,7 +40,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    RunCoverage(repoRoot, filePath, commandExecutor,  scriptBgDispatcher).execute()
+    RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute()
   }
 }
 
@@ -63,7 +63,6 @@ class RunCoverage(
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   var coverageDataList = mutableListOf<String>()
-//  var covdat: String = ""
 
   /**
    * Executes coverage analysis for the specified file.
@@ -98,6 +97,13 @@ class RunCoverage(
     return coverageDataList
   }
 
+  /**
+   * Finds potential test file paths corresponding to a given source file path within a repository.
+   *
+   * @param repoRoot the root directory of the repository
+   * @param filePath The file path of the source file for which the test files are to be found.
+   * @return A list of potential test file paths that exist in the repository.
+   */
   fun findTestFile(repoRoot: String, filePath: String): List<String> {
     val file = File(filePath)
     val parts = file.parent.split(File.separator)

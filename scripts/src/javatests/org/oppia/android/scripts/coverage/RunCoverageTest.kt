@@ -10,11 +10,10 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
-import org.oppia.android.testing.assertThrows
-import java.util.concurrent.TimeUnit
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
@@ -51,9 +50,11 @@ class RunCoverageTest {
       "${tempFolder.root}",
       exemptedFilePath,
       commandExecutor,
-      scriptBgDispatcher).execute()
+      scriptBgDispatcher
+    ).execute()
 
-    assertThat(outContent.toString()).isEqualTo("This file is exempted from having a test file. Hence No coverage!\n")
+    assertThat(outContent.toString())
+      .isEqualTo("This file is exempted from having a test file. Hence No coverage!\n")
   }
 
   @Test
@@ -220,30 +221,31 @@ class RunCoverageTest {
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       longCommandExecutor,
-      scriptBgDispatcher).execute()
+      scriptBgDispatcher
+    ).execute()
 
-      val expectedResultList = listOf(
-        "SF:coverage/main/java/com/example/TwoSum.kt\n"+
-        "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n"+
-        "FN:3,com/example/TwoSum::<init> ()V\n"+
-        "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n"+
-        "FNDA:0,com/example/TwoSum::<init> ()V\n"+
-        "FNF:2\n"+
-        "FNH:1\n"+
-        "BRDA:7,0,0,1\n"+
-        "BRDA:7,0,1,1\n"+
-        "BRDA:7,0,2,1\n"+
-        "BRDA:7,0,3,1\n"+
-        "BRF:4\n"+
-        "BRH:4\n"+
-        "DA:3,0\n"+
-        "DA:7,1\n"+
-        "DA:8,1\n"+
-        "DA:10,1\n"+
-        "LH:3\n"+
-        "LF:4\n"+
-        "end_of_record\n"
-      )
+    val expectedResultList = listOf(
+      "SF:coverage/main/java/com/example/TwoSum.kt\n" +
+      "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
+      "FN:3,com/example/TwoSum::<init> ()V\n" +
+      "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
+      "FNDA:0,com/example/TwoSum::<init> ()V\n" +
+      "FNF:2\n" +
+      "FNH:1\n" +
+      "BRDA:7,0,0,1\n" +
+      "BRDA:7,0,1,1\n" +
+      "BRDA:7,0,2,1\n" +
+      "BRDA:7,0,3,1\n" +
+      "BRF:4\n" +
+      "BRH:4\n" +
+      "DA:3,0\n" +
+      "DA:7,1\n" +
+      "DA:8,1\n" +
+      "DA:10,1\n" +
+      "LH:3\n" +
+      "LF:4\n" +
+      "end_of_record\n"
+    )
 
     assertThat(result).isEqualTo(expectedResultList)
   }
