@@ -126,6 +126,14 @@ class ProfileTestHelperTest {
     assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(2)
   }
 
+  @Test
+  fun testLogIntoAdmin_addOnlyAdminProfileWithoutPin_logIntoAdminWithoutPin_checkIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val loginProvider = profileTestHelper.logIntoAdmin()
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {

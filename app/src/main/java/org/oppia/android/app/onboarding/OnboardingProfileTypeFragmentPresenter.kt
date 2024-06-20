@@ -34,6 +34,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
       profileTypeSupervisorNavigationCard.setOnClickListener {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
         fragment.startActivity(intent)
+        activity.finishAffinity()
       }
 
       onboardingNavigationBack.setOnClickListener {

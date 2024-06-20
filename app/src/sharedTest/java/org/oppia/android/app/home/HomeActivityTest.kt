@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -1967,9 +1966,8 @@ class HomeActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testHomeActivity_soleLearnerProfile_backPress_exitsApp() {
+  fun testHomeActivity_onBackPressed_soleLearnerProfile_exitsApp() {
     setUpTestWithOnboardingV2Enabled()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     markSpotlightSeen(profileId)
@@ -1977,9 +1975,9 @@ class HomeActivityTest {
       pressBackUnconditionally()
       // Pressing back should close the activity (and thus, the app) since the Sole learner has
       // no profile chooser.
-      // Using Lifecycle.State.DESTROYED instead of activity.isFinishing because the app is already
-      // closed, therefore we cannot run `onActivity`
-      assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
@@ -2013,8 +2011,23 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onboardingV2_onBackPressed_clickExit_opensProfileActivity() {
+  fun testHomeActivity_onBackPressed_clickExitOnDialog_opensProfileActivity() {
     setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.initializeProfiles()
+    markSpotlightSeen(profileId)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_exit))
+        .inRoot(isDialog())
+        .perform(click())
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testHomeActivityV1_onBackPressed_clickExitOnDialog_opensProfileActivity() {
+    setUpTestWithOnboardingV2Disabled()
     profileTestHelper.initializeProfiles()
     markSpotlightSeen(profileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
