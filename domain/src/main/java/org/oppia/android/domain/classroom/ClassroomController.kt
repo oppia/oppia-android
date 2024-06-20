@@ -146,7 +146,7 @@ class ClassroomController @Inject constructor(
         )
         addAllTopicSummary(
           classroomRecord.topicPrerequisitesMap.keys.toList().map { topicId ->
-            createTopicSummary(topicId)
+            createTopicSummary(topicId, classroomId)
           }
         )
       }.build()
@@ -169,7 +169,7 @@ class ClassroomController @Inject constructor(
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       val topicSummaryList = mutableListOf<TopicSummary>()
       topicIdArray.forEach { topicId ->
-        topicSummaryList.add(createTopicSummary(topicId))
+        topicSummaryList.add(createTopicSummary(topicId, classroomId))
       }
       addAllTopicSummary(topicSummaryList)
     }.build()
@@ -182,7 +182,7 @@ class ClassroomController @Inject constructor(
     return TopicList.newBuilder().apply {
       addAllTopicSummary(
         getTopicIdListFromClassroomRecord(classroomId).topicIdsList.map { topicId ->
-          createEphemeralTopicSummary(topicId, contentLocale)
+          createEphemeralTopicSummary(topicId, classroomId, contentLocale)
         }.filter {
           it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
         }
@@ -207,7 +207,7 @@ class ClassroomController @Inject constructor(
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       val topicSummaryList = mutableListOf<TopicSummary>()
       topicIdArray.forEach { topicId ->
-        topicSummaryList.add(createTopicSummary(topicId))
+        topicSummaryList.add(createTopicSummary(topicId, classroomId))
       }
       ClassroomRecord.TopicIdList.newBuilder().apply {
         topicIdArray.forEach { topicId ->
@@ -219,19 +219,26 @@ class ClassroomController @Inject constructor(
 
   private fun createEphemeralTopicSummary(
     topicId: String,
+    classroomId: String,
     contentLocale: OppiaLocale.ContentLocale
   ): EphemeralTopicSummary {
-    val topicSummary = createTopicSummary(topicId)
+    val topicSummary = createTopicSummary(topicId, classroomId)
+    val classroomSummary = createClassroomSummary(classroomId)
     return EphemeralTopicSummary.newBuilder().apply {
       this.topicSummary = topicSummary
       writtenTranslationContext =
         translationController.computeWrittenTranslationContext(
           topicSummary.writtenTranslationsMap, contentLocale
         )
+      classroomWrittenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          classroomSummary.writtenTranslationsMap, contentLocale
+        )
+      classroomTitle = classroomSummary.classroomTitle
     }.build()
   }
 
-  private fun createTopicSummary(topicId: String): TopicSummary {
+  private fun createTopicSummary(topicId: String, classroomId: String): TopicSummary {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(
@@ -248,8 +255,7 @@ class ClassroomController @Inject constructor(
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
         title = topicRecord.translatableTitle
-        classroomId = topicRecord.classroomId
-        classroomTitle = topicRecord.translatableClassroomTitle
+        this.classroomId = classroomId
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
         topicPlayAvailability = if (topicRecord.isPublished) {
@@ -263,11 +269,15 @@ class ClassroomController @Inject constructor(
       val topicJsonObject = jsonAssetRetriever
         .loadJsonFromAsset("$topicId.json")
         ?: return TopicSummary.getDefaultInstance()
-      createTopicSummaryFromJson(topicId, topicJsonObject)
+      createTopicSummaryFromJson(topicId, classroomId, topicJsonObject)
     }
   }
 
-  private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
+  private fun createTopicSummaryFromJson(
+    topicId: String,
+    classroomId: String,
+    jsonObject: JSONObject
+  ): TopicSummary {
     var totalChapterCount = 0
     val storyData = jsonObject.getJSONArray("canonical_story_dicts")
     for (i in 0 until storyData.length()) {
@@ -288,17 +298,11 @@ class ClassroomController @Inject constructor(
       contentId = "title"
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
-    val classroomId = jsonObject.getStringFromObject("classroom_id")
-    val classroomTitle = SubtitledHtml.newBuilder().apply {
-      contentId = "classroom_title"
-      html = jsonObject.getStringFromObject("classroom_name")
-    }.build()
     // No written translations are included since none are retrieved from JSON.
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
       .setClassroomId(classroomId)
-      .setClassroomTitle(classroomTitle)
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
