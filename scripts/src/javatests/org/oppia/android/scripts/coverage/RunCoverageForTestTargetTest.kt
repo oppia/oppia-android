@@ -114,7 +114,7 @@ class RunCoverageForTestTargetTest {
 
     val result = RunCoverageForTestTarget(
       tempFolder.root,
-      "//coverage/test/java/com/example:test",
+      "//coverage/test/java/com/example:TwoSumTest",
       longCommandExecutor,
       scriptBgDispatcher
     ).runCoverage()

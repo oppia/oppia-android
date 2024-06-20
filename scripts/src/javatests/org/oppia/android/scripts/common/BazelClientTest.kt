@@ -512,7 +512,7 @@ class BazelClientTest {
       subpackage = "coverage"
     )
 
-    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:TwoSumTest")
 
     // Check if ByteArray is returned from executing coverage command
     assertThat(result).isInstanceOf(ByteArray::class.java)

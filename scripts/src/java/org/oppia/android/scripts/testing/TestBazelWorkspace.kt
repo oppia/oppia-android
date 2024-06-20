@@ -172,7 +172,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testBuildFile.appendText(
       """
       kt_jvm_test(
-          name = "test",
+          name = "$testName",
           srcs = ["$testName.kt"],
           deps = [
               "//$sourceSubpackage:${filename.lowercase()}",

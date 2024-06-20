@@ -58,8 +58,12 @@ class RunCoverage(
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
+  private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
+
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  var coverageDataList = mutableListOf<String>()
+//  var covdat: String = ""
 
   /**
    * Executes coverage analysis for the specified file.
@@ -69,28 +73,44 @@ class RunCoverage(
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
    */
-  fun execute() {
+  fun execute(): List<String?> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
     val isExempted = testFileExemptionList.contains(filePath)
     if (isExempted) {
       println("This file is exempted from having a test file. Hence No coverage!")
-      return
+//      return null
+      return emptyList()
     }
 
-    val bazelClient = BazelClient(rootDirectory, commandExecutor)
+//    val bazelClient = BazelClient(rootDirectory, commandExecutor)
     val testFilePaths = findTestFile(repoRoot, filePath)
+//    return findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+//    val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
     for (testTarget in testTargets) {
-      RunCoverageForTestTarget(
+      val coverageData = RunCoverageForTestTarget(
         rootDirectory,
         testTarget.substringBeforeLast(".kt"),
         commandExecutor,
         scriptBgDispatcher
-      ).runCoverage()
+      ).runCoverage()!!
+      coverageDataList.add(coverageData)
     }
+    return coverageDataList
+
+    //this works
+    /*val covdat = RunCoverageForTestTarget(
+      rootDirectory,
+      "//coverage/test/java/com/example:test",
+      commandExecutor,
+      scriptBgDispatcher
+    ).runCoverage()
+    coverageDataList.add(covdat!!)
+    return coverageDataList*/
+//    return covdat
   }
 
   fun findTestFile(repoRoot: String, filePath: String): List<String> {

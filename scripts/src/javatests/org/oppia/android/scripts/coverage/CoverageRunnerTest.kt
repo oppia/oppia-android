@@ -36,7 +36,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_emptyDirectory_throwsException() {
+  fun testCoverageRunner_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       coverageRunner.getCoverage(bazelTestTarget)
     }
@@ -45,7 +45,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_invalidTestTarget_throwsException() {
+  fun testCoverageRunner_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
@@ -57,7 +57,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_validSampleTestTarget_returnsCoverageData() {
+  fun testCoverageRunner_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -103,7 +103,7 @@ class CoverageRunnerTest {
       subpackage = "coverage"
     )
 
-    val result = coverageRunner.getCoverage("//coverage/test/java/com/example:test")
+    val result = coverageRunner.getCoverage("//coverage/test/java/com/example:TwoSumTest")
     val expectedResult =
       "SF:coverage/main/java/com/example/TwoSum.kt\n" +
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
