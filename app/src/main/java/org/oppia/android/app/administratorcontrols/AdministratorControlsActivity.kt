@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -88,26 +89,13 @@ class AdministratorControlsActivity :
       isProfileDeletionDialogVisible
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      onBackInvokedDispatcher.registerOnBackInvokedCallback(1000) {
-        val fragment =
-          supportFragmentManager.findFragmentById(
-            R.id.administrator_controls_fragment_multipane_placeholder
-          )
-        /*
-         * If the current fragment is ProfileListFragment then the activity should end on back press.
-         * If it's instead ProfileEditFragment then profileListFragment should be inflated via
-         * handleOnBackPressed.
-         */
-        if (fragment is ProfileEditFragment) {
-          administratorControlsActivityPresenter.handleOnBackPressed()
-        } else {
-          onBackPressedDispatcher.onBackPressed()
-        }
-      }
-    } else {
-      onBackPressedDispatcher.addCallback(
-        this@AdministratorControlsActivity, object: OnBackPressedCallback(true) {
+    handleBackPress()
+  }
+
+  private fun handleBackPress() {
+    onBackPressedDispatcher.addCallback(
+      this@AdministratorControlsActivity,
+      object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
           val fragment =
             supportFragmentManager.findFragmentById(
@@ -126,8 +114,8 @@ class AdministratorControlsActivity :
             isEnabled = true
           }
         }
-      })
-    }
+      }
+    )
   }
 
   override fun routeToAppVersion() {

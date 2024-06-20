@@ -35,9 +35,6 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
   }
 
-  private fun getProfileEditActivity(): ProfileEditActivity? {
-    return activity as ProfileEditActivity?
-  }
   private fun setUpToolbar() {
     toolbar = activity.findViewById<View>(R.id.profile_edit_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
