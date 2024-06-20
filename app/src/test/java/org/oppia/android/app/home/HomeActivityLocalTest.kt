@@ -28,6 +28,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -61,7 +62,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -70,6 +70,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -171,6 +172,40 @@ class HomeActivityLocalTest {
     }
   }
 
+  @Test
+  fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+      assertThat(event.context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onboardingV2_onSubsequentLaunch_doesNotLogEndProfileOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestWithOnboardingV2Enabled()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  private fun setUpTestWithOnboardingV2Enabled() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+  }
+
   /**
    * Creates a separate test application component and executes the specified block. This should be
    * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
@@ -205,7 +240,7 @@ class HomeActivityLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
