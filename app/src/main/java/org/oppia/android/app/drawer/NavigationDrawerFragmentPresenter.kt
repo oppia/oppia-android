@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.common.base.Optional
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsStarter
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
@@ -37,6 +38,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -54,7 +57,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val headerViewModel: NavigationDrawerHeaderViewModel,
   private val footerViewModel: NavigationDrawerFooterViewModel,
-  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>
+  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -233,7 +237,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
+          val intent = if (enableMultipleClassrooms.value)
+            ClassroomListActivity.createClassroomListActivity(activity, internalProfileId)
+          else
+            HomeActivity.createHomeActivity(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
           drawerLayout.closeDrawers()
         }
