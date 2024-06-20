@@ -132,7 +132,13 @@ class OptionsActivity :
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
     startActivityForResult(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage),
+      profileId?.let { internalProfileId ->
+        AudioLanguageActivity.createAudioLanguageActivityIntent(
+          this,
+          audioLanguage,
+          internalProfileId
+        )
+      },
       REQUEST_CODE_AUDIO_LANGUAGE
     )
   }

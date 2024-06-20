@@ -4,12 +4,18 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
@@ -19,8 +25,12 @@ private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provid
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
+  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
+  private val machineLocale: OppiaLocale.MachineLocale,
   private val currentBuildFlavor: BuildFlavor,
-  private val deprecationController: DeprecationController
+  private val deprecationController: DeprecationController,
+  @EnableAppAndOsDeprecation
+  private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -94,7 +104,7 @@ class AppStartupStateController @Inject constructor(
       APP_STARTUP_STATE_PROVIDER_ID
     ) { onboardingState, deprecationResponseDatabase ->
       AppStartupState.newBuilder().apply {
-        startupMode = deprecationController.processStartUpMode(
+        startupMode = computeAppStartupMode(
           onboardingState,
           deprecationResponseDatabase
         )
@@ -118,6 +128,22 @@ class AppStartupStateController @Inject constructor(
         oppiaLogger.e("StartupController", "Failed to update onboarding state.", failure)
       }
     }
+  }
+
+  private fun computeAppStartupMode(
+    onboardingState: OnboardingState,
+    deprecationResponseDatabase: DeprecationResponseDatabase
+  ): StartupMode {
+    // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
+    // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
+    if (!enableAppAndOsDeprecation.get().value) {
+      return when {
+        hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
+        onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
+        else -> StartupMode.USER_NOT_YET_ONBOARDED
+      }
+    }
+    return deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
   }
 
   private fun computeBuildNoticeMode(
@@ -151,5 +177,19 @@ class AppStartupStateController @Inject constructor(
         BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY -> BuildFlavorNoticeMode.NO_NOTICE
       }
     }
+  }
+
+  private fun hasAppExpired(): Boolean {
+    val applicationMetadata = expirationMetaDataRetriever.getMetaData()
+    val isAppExpirationEnabled =
+      applicationMetadata?.getBoolean(
+        "automatic_app_expiration_enabled", /* defaultValue= */ true
+      ) ?: true
+    return if (isAppExpirationEnabled) {
+      val expirationDateString = applicationMetadata?.getStringFromBundle("expiration_date")
+      val expirationDate = expirationDateString?.let { machineLocale.parseOppiaDate(it) }
+      // Assume the app is in an expired state if something fails when comparing the date.
+      expirationDate?.isBeforeToday() ?: true
+    } else false
   }
 }

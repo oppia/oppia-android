@@ -531,6 +531,7 @@ class OptionsFragmentTest {
 
       val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        profileId = -1
       }.build()
       intended(
         allOf(
@@ -560,6 +561,7 @@ class OptionsFragmentTest {
 
       val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        profileId = -1
       }.build()
       intended(
         allOf(
