@@ -93,14 +93,14 @@ class RunCoverage(
     }
   }
 
-  private fun findTestFile(repoRoot: String, filePath: String): List<String> {
+  fun findTestFile(repoRoot: String, filePath: String): List<String> {
     val file = File(filePath)
     val parts = file.parent.split(File.separator)
     val testFiles = mutableListOf<String>()
 
     if (parts.isNotEmpty() && parts[0] == "scripts") {
       val testFilePath = filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt")
-      if (File(testFilePath).exists()) {
+      if (File(repoRoot, testFilePath).exists()) {
         testFiles.add(testFilePath)
       }
     } else if (parts.isNotEmpty() && parts[0] == "app") {
