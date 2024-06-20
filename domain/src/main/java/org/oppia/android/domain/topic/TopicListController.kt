@@ -223,6 +223,7 @@ class TopicListController @Inject constructor(
         title = topicRecord.translatableTitle
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
+        classroomId = getClassroomIdByTopicId(topicId)
         topicPlayAvailability = if (topicRecord.isPublished) {
           TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
         } else {
@@ -262,7 +263,7 @@ class TopicListController @Inject constructor(
       contentId = "title"
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
-    val classroomId = jsonObject.getStringFromObject("classroom_id")
+    val classroomId = getClassroomIdByTopicId(topicId)
     // No written translations are included since none are retrieved from JSON.
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
