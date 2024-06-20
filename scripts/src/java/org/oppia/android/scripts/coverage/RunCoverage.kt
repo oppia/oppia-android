@@ -62,7 +62,6 @@ class RunCoverage(
 
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
-  var coverageDataList = mutableListOf<String>()
 
   /**
    * Executes coverage analysis for the specified file.
@@ -73,6 +72,7 @@ class RunCoverage(
    * coverage analysis for each test target found.
    */
   fun execute(): List<String?> {
+    var coverageDataList = mutableListOf<String>()
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
