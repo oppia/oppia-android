@@ -221,7 +221,6 @@ class TopicListController @Inject constructor(
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
         title = topicRecord.translatableTitle
-        classroomId = topicRecord.classroomId
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
         topicPlayAvailability = if (topicRecord.isPublished) {
@@ -372,8 +371,10 @@ class TopicListController @Inject constructor(
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
-      val classroom = topic?.classroomId?.let { loadClassroomById(it) }
-        ?: ClassroomRecord.getDefaultInstance()
+      val classroom = topic?.topicId?.let { topicId ->
+        val classroomId = getClassroomIdByTopicId(topicId)
+        loadClassroomById(classroomId)
+      } ?: ClassroomRecord.getDefaultInstance()
       // Ignore topics that are no longer on the device, or that have been unpublished.
       if (topic?.topicPlayAvailability?.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
         val isTopicConsideredCompleted = topic.hasAtLeastOneStoryCompleted(topicProgress)
@@ -715,7 +716,7 @@ class TopicListController @Inject constructor(
         )
       val classroomRecord =
         assetRepository.loadProtoFromLocalAssets(
-          assetName = topicRecord.classroomId,
+          assetName = getClassroomIdByTopicId(topicId),
           baseMessage = ClassroomRecord.getDefaultInstance()
         )
       return PromotedStory.newBuilder().apply {
@@ -735,7 +736,7 @@ class TopicListController @Inject constructor(
         storyTitle = storyRecord.translatableStoryName
         this.topicId = topicId
         topicTitle = topicRecord.translatableTitle
-        classroomId = topicRecord.classroomId
+        classroomId = classroomRecord.id
         classroomTitle = classroomRecord.translatableTitle
         completedChapterCount = 0
         totalChapterCount = storyRecord.chaptersCount
@@ -858,7 +859,7 @@ class TopicListController @Inject constructor(
       .setLessonThumbnail(storySummary.storyThumbnail)
       .setTopicId(topic.topicId)
       .setTopicTitle(topic.title)
-      .setClassroomId(topic.classroomId)
+      .setClassroomId(classroom.id)
       .setClassroomTitle(classroom.translatableTitle)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
@@ -867,6 +868,16 @@ class TopicListController @Inject constructor(
       .setExplorationId(nextChapterSummary.explorationId)
       .setChapterPlayState(nextChapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED)
       .build()
+  }
+
+  private fun getClassroomIdByTopicId(topicId: String): String {
+    var classroomId = TEST_CLASSROOM_ID_0
+    loadClassrooms().forEach {
+      if (it.topicPrerequisitesMap.keys.contains(topicId)) {
+        classroomId = it.id
+      }
+    }
+    return classroomId
   }
 
   // TODO(#5344): Remove this in favor of per-classroom data handling.
@@ -937,7 +948,7 @@ class TopicListController @Inject constructor(
       }
     }
     return ClassroomRecord.newBuilder().apply {
-      id = checkNotNull(classroomObj.optString("id")) {
+      id = checkNotNull(classroomObj.optString("classroom_id")) {
         "Expected classroom to have ID."
       }
       translatableTitle = SubtitledHtml.newBuilder().apply {

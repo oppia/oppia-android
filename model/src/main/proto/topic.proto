@@ -25,9 +25,6 @@ message Topic {
   // A brief description of the topic.
   SubtitledHtml description = 11;
 
-  // The ID of the classroom this topic is part of.
-  string classroom_id = 12;
-
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
 
@@ -58,17 +55,11 @@ message EphemeralTopic {
   // The translation context that should be used for this topic.
   WrittenTranslationContext written_translation_context = 2;
 
-  // The written translation context for the topic's classroom strings.
-  WrittenTranslationContext classroom_written_translation_context = 5;
-
   // The EphemeralStorySummarys corresponding to the stories contained within this topic.
   repeated EphemeralStorySummary stories = 3;
 
   // The EphemeralSubtopics corresponding to the subtopics contained within this topic.
   repeated EphemeralSubtopic subtopics = 4;
-
-  // The title of the classroom this topic is part of.
-  SubtitledHtml classroom_title = 6;
 }
 
 // Corresponds to details around whether a particular topic is playable.
@@ -672,9 +663,6 @@ message TopicRecord {
 
   // The topic's description.
   SubtitledHtml translatable_description = 10;
-
-  // The ID of the classroom this topic is part of.
-  string classroom_id = 11;
 
   // The list of canonical story IDs that can be used to load stories from the local filesystem.
   repeated string canonical_story_ids = 4;
