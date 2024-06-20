@@ -184,12 +184,18 @@ class TopicListController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): EphemeralTopicSummary {
     val topicSummary = createTopicSummary(topicId)
+    val classroomRecord = loadClassroomById(topicSummary.classroomId)
     return EphemeralTopicSummary.newBuilder().apply {
       this.topicSummary = topicSummary
       writtenTranslationContext =
         translationController.computeWrittenTranslationContext(
           topicSummary.writtenTranslationsMap, contentLocale
         )
+      classroomWrittenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          classroomRecord.writtenTranslationsMap, contentLocale
+        )
+      classroomTitle = classroomRecord.translatableTitle
     }.build()
   }
 
@@ -210,8 +216,7 @@ class TopicListController @Inject constructor(
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
         title = topicRecord.translatableTitle
-        classroomId = topicRecord.classroomId
-        classroomTitle = topicRecord.translatableClassroomTitle
+        classroomId = getClassroomIdByTopicId(topicId)
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
         topicPlayAvailability = if (topicRecord.isPublished) {
@@ -253,17 +258,12 @@ class TopicListController @Inject constructor(
       contentId = "title"
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
-    val classroomId = jsonObject.getStringFromObject("classroom_id")
-    val classroomTitle = SubtitledHtml.newBuilder().apply {
-      contentId = "classroom_title"
-      html = jsonObject.getStringFromObject("classroom_name")
-    }.build()
+    val classroomId = getClassroomIdByTopicId(topicId)
     // No written translations are included since none are retrieved from JSON.
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
       .setClassroomId(classroomId)
-      .setClassroomTitle(classroomTitle)
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
@@ -295,11 +295,15 @@ class TopicListController @Inject constructor(
       html = jsonObject.getStringFromObject("topic_name")
     }.build()
 
-    val classroomId = jsonObject.getStringFromObject("classroom_id")
-    val classroomTitle = SubtitledHtml.newBuilder().apply {
-      contentId = "classroom_title"
-      html = jsonObject.getStringFromObject("classroom_name")
-    }.build()
+    val classroomId = getClassroomIdByTopicId(topicId)
+
+    val classroomJsonObject = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")!!
+    val classroomTitle = classroomJsonObject.getJSONObject("classroom_title").let {
+      SubtitledHtml.newBuilder().apply {
+        contentId = it.getStringFromObject("content_id")
+        html = it.getStringFromObject("html")
+      }.build()
+    }
 
     // No written translations are included since none are retrieved from JSON.
     return UpcomingTopic.newBuilder().setTopicId(topicId)
@@ -363,6 +367,10 @@ class TopicListController @Inject constructor(
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
+      val classroom = topic?.topicId?.let { topicId ->
+        val classroomId = getClassroomIdByTopicId(topicId)
+        loadClassroomById(classroomId)
+      } ?: ClassroomRecord.getDefaultInstance()
       // Ignore topics that are no longer on the device, or that have been unpublished.
       if (topic?.topicPlayAvailability?.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
         val isTopicConsideredCompleted = topic.hasAtLeastOneStoryCompleted(topicProgress)
@@ -391,7 +399,8 @@ class TopicListController @Inject constructor(
                   topic,
                   isTopicConsideredCompleted,
                   storyProgress.chapterProgressMap,
-                  contentLocale
+                  contentLocale,
+                  classroom
                 )?.let { promotedStory ->
                   playedPromotedStoryList.add(promotedStory)
                 }
@@ -411,7 +420,8 @@ class TopicListController @Inject constructor(
                   topic,
                   isTopicConsideredCompleted,
                   storyProgress.chapterProgressMap,
-                  contentLocale
+                  contentLocale,
+                  classroom
                 )?.let { promotedStory ->
                   playedPromotedStoryList.add(promotedStory)
                 }
@@ -478,7 +488,8 @@ class TopicListController @Inject constructor(
     topic: Topic,
     isTopicConsideredCompleted: Boolean,
     chapterProgressMap: Map<String, ChapterProgress>,
-    contentLocale: OppiaLocale.ContentLocale
+    contentLocale: OppiaLocale.ContentLocale,
+    classroom: ClassroomRecord,
   ): PromotedStory? {
     val recentlyPlayerChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
@@ -493,7 +504,8 @@ class TopicListController @Inject constructor(
         recentlyPlayerChapterSummary,
         isTopicConsideredCompleted,
         chapterProgressMap[recentlyPlayerChapterSummary.explorationId],
-        contentLocale
+        contentLocale,
+        classroom
       )
     }
     return null
@@ -507,7 +519,8 @@ class TopicListController @Inject constructor(
     topic: Topic,
     isTopicConsideredCompleted: Boolean,
     chapterProgressMap: Map<String, ChapterProgress>,
-    contentLocale: OppiaLocale.ContentLocale
+    contentLocale: OppiaLocale.ContentLocale,
+    classroom: ClassroomRecord,
   ): PromotedStory? {
     val lastChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
@@ -525,7 +538,8 @@ class TopicListController @Inject constructor(
           nextChapterSummary,
           isTopicConsideredCompleted,
           chapterProgressMap[nextChapterSummary.explorationId],
-          contentLocale
+          contentLocale,
+          classroom
         )
       }
     }
@@ -696,6 +710,11 @@ class TopicListController @Inject constructor(
           assetName = firstStoryId,
           baseMessage = StoryRecord.getDefaultInstance()
         )
+      val classroomRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = getClassroomIdByTopicId(topicId),
+          baseMessage = ClassroomRecord.getDefaultInstance()
+        )
       return PromotedStory.newBuilder().apply {
         storyId = firstStoryId
         storyWrittenTranslationContext =
@@ -706,11 +725,15 @@ class TopicListController @Inject constructor(
           translationController.computeWrittenTranslationContext(
             topicRecord.writtenTranslationsMap, contentLocale
           )
+        classroomWrittenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            classroomRecord.writtenTranslationsMap, contentLocale
+          )
         storyTitle = storyRecord.translatableStoryName
         this.topicId = topicId
         topicTitle = topicRecord.translatableTitle
-        classroomId = topicRecord.classroomId
-        classroomTitle = topicRecord.translatableClassroomTitle
+        classroomId = classroomRecord.id
+        classroomTitle = classroomRecord.translatableTitle
         completedChapterCount = 0
         totalChapterCount = storyRecord.chaptersCount
         lessonThumbnail = storyRecord.storyThumbnail
@@ -759,13 +782,17 @@ class TopicListController @Inject constructor(
         }.build()
       } ?: SubtitledHtml.getDefaultInstance()
 
-      val classroomId = topicJson.optString("classroom_id")
-      val classroomTitle = topicJson.optString("classroom_name").takeIf { it.isNotEmpty() }?.let {
+      val classroomId = getClassroomIdByTopicId(topicId)
+
+      val classroomJson = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
+      if (classroomJson!!.optString("classroom_title").isNullOrEmpty()) return null
+
+      val classroomTitle = classroomJson.getJSONObject("classroom_title").let {
         SubtitledHtml.newBuilder().apply {
-          contentId = "classroom_title"
-          html = it
+          contentId = it.getStringFromObject("content_id")
+          html = it.getStringFromObject("html")
         }.build()
-      } ?: SubtitledHtml.getDefaultInstance()
+      }
 
       // No written translations are included for the topic since its name is directly fetched from
       // the JSON (and the JSON doesn't include translations for these properties, anyway).
@@ -796,7 +823,8 @@ class TopicListController @Inject constructor(
     nextChapterSummary: ChapterSummary,
     isTopicConsideredCompleted: Boolean,
     nextChapterProgress: ChapterProgress?,
-    contentLocale: OppiaLocale.ContentLocale
+    contentLocale: OppiaLocale.ContentLocale,
+    classroom: ClassroomRecord,
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
     // If the chapterProgress equals null that means the chapter has no progress associated with
@@ -818,12 +846,17 @@ class TopicListController @Inject constructor(
           nextChapterSummary.writtenTranslationsMap, contentLocale
         )
       )
+      .setClassroomWrittenTranslationContext(
+        translationController.computeWrittenTranslationContext(
+          classroom.writtenTranslationsMap, contentLocale
+        )
+      )
       .setStoryTitle(storySummary.storyTitle)
       .setLessonThumbnail(storySummary.storyThumbnail)
       .setTopicId(topic.topicId)
       .setTopicTitle(topic.title)
-      .setClassroomId(topic.classroomId)
-      .setClassroomTitle(topic.classroomTitle)
+      .setClassroomId(classroom.id)
+      .setClassroomTitle(classroom.translatableTitle)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
       .setIsTopicLearned(isTopicConsideredCompleted)
@@ -833,17 +866,24 @@ class TopicListController @Inject constructor(
       .build()
   }
 
+  private fun getClassroomIdByTopicId(topicId: String): String {
+    var classroomId = TEST_CLASSROOM_ID_0
+    loadClassrooms().forEach {
+      if (it.topicPrerequisitesMap.keys.contains(topicId)) {
+        classroomId = it.id
+      }
+    }
+    return classroomId
+  }
+
   // TODO(#5344): Remove this in favor of per-classroom data handling.
   private fun loadClassrooms(): List<ClassroomRecord> {
     return if (loadLessonProtosFromAssets) {
       assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
         baseMessage = ClassroomIdList.getDefaultInstance()
-      ).classroomIdsList.map {
-        assetRepository.loadProtoFromLocalAssets(
-          assetName = it,
-          baseMessage = ClassroomRecord.getDefaultInstance()
-        )
+      ).classroomIdsList.map { classroomId ->
+        loadClassroomById(classroomId)
       }
     } else loadClassroomsFromJson()
   }
@@ -864,42 +904,61 @@ class TopicListController @Inject constructor(
       val classroomId = checkNotNull(classroomIds.optString(i)) {
         "Expected non-null classroom ID at index $i."
       }
-
-      // Load the classroom obj of the current classroom.
-      val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
-      checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
-
-      // Load the topic prerequisite map of the current classroom.
-      val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
-        "Expected classroom to have non-null topic_prerequisites."
-      }
-      val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
-        val topicIdArray = checkNotNull(topicPrereqsObj.optJSONArray(topicId)) {
-          "Expected topic $topicId to have a non-null string list."
-        }
-        return@associateWith List(topicIdArray.length()) { index ->
-          checkNotNull(topicIdArray.optString(index)) {
-            "Expected topic $topicId to have non-null string at index $index."
-          }
-        }
-      }
-      val classroomRecord = ClassroomRecord.newBuilder().apply {
-        this.id = checkNotNull(classroomObj.optString("id")) {
-          "Expected classroom to have ID."
-        }
-        this.putAllTopicPrerequisites(
-          topicPrereqs.mapValues { (_, topicIds) ->
-            TopicIdList.newBuilder().apply {
-              addAllTopicIds(topicIds)
-            }.build()
-          }
-        )
-      }.build()
-
+      val classroomRecord = loadClassroomById(classroomId)
       classroomRecords.add(classroomRecord)
     }
 
     return classroomRecords
+  }
+
+  // TODO(#5344): Move this to classroom controller.
+  private fun loadClassroomById(classroomId: String): ClassroomRecord {
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.tryLoadProtoFromLocalAssets(
+        assetName = classroomId,
+        defaultMessage = ClassroomRecord.getDefaultInstance()
+      ) ?: ClassroomRecord.getDefaultInstance()
+    } else loadClassroomByIdFromJson(classroomId)
+  }
+
+  // TODO(#5344): Remove this in favor of per-classroom data handling.
+  private fun loadClassroomByIdFromJson(classroomId: String): ClassroomRecord {
+    // Load the classroom obj.
+    val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
+    checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
+
+    val classroomTitle = classroomObj.getJSONObject("classroom_title")
+
+    // Load the topic prerequisite map.
+    val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
+      "Expected classroom to have non-null topic_prerequisites."
+    }
+    val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
+      val topicIdArray = checkNotNull(topicPrereqsObj.optJSONArray(topicId)) {
+        "Expected topic $topicId to have a non-null string list."
+      }
+      return@associateWith List(topicIdArray.length()) { index ->
+        checkNotNull(topicIdArray.optString(index)) {
+          "Expected topic $topicId to have non-null string at index $index."
+        }
+      }
+    }
+    return ClassroomRecord.newBuilder().apply {
+      id = checkNotNull(classroomObj.optString("classroom_id")) {
+        "Expected classroom to have ID."
+      }
+      translatableTitle = SubtitledHtml.newBuilder().apply {
+        contentId = classroomTitle.getStringFromObject("content_id")
+        html = classroomTitle.getStringFromObject("html")
+      }.build()
+      putAllTopicPrerequisites(
+        topicPrereqs.mapValues { (_, topicIds) ->
+          TopicIdList.newBuilder().apply {
+            addAllTopicIds(topicIds)
+          }.build()
+        }
+      )
+    }.build()
   }
 
   // TODO(#5344): Remove this in favor of per-classroom data handling.

@@ -115,8 +115,8 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_firstTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList()
 
-    val firstTopic = topicList.getTopicSummary(0).topicSummary
-    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    val firstTopic = topicList.getTopicSummary(0)
+    assertThat(firstTopic.topicSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
     assertThat(firstTopic.classroomTitle.html).isEqualTo("Science")
   }
 
@@ -141,8 +141,8 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_secondTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList()
 
-    val firstTopic = topicList.getTopicSummary(1).topicSummary
-    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+    val firstTopic = topicList.getTopicSummary(1)
+    assertThat(firstTopic.topicSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
     assertThat(firstTopic.classroomTitle.html).isEqualTo("Science")
   }
 
@@ -167,8 +167,8 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_fractionsTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList()
 
-    val firstTopic = topicList.getTopicSummary(2).topicSummary
-    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    val firstTopic = topicList.getTopicSummary(2)
+    assertThat(firstTopic.topicSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
     assertThat(firstTopic.classroomTitle.html).isEqualTo("Maths")
   }
 
@@ -193,8 +193,8 @@ class TopicListControllerTest {
   fun testRetrieveTopicList_ratiosTopic_hasCorrectClassroomInfo() {
     val topicList = retrieveTopicList()
 
-    val firstTopic = topicList.getTopicSummary(3).topicSummary
-    assertThat(firstTopic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    val firstTopic = topicList.getTopicSummary(3)
+    assertThat(firstTopic.topicSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
     assertThat(firstTopic.classroomTitle.html).isEqualTo("Maths")
   }
 

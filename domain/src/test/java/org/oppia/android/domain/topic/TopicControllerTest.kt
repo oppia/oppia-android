@@ -132,15 +132,6 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testRetrieveTopic_fractionsTopic_hasCorrectClassroomInfo() {
-    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
-
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
-    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-    assertThat(topic.classroomTitle.html).contains("Maths")
-  }
-
-  @Test
   fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
     val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
@@ -158,15 +149,6 @@ class TopicControllerTest {
     assertThat(topic.description.html).contains(
       "Many everyday problems involve thinking about proportions"
     )
-  }
-
-  @Test
-  fun testRetrieveTopic_ratiosTopic_hasCorrectClassroomInfo() {
-    val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
-
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
-    assertThat(topic.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-    assertThat(topic.classroomTitle.html).contains("Maths")
   }
 
   @Test
