@@ -117,19 +117,19 @@ def _wrap_maven_dependencies(
         dependency_versions,
         artifact_visibility,
         test_only):
-    # Create android library wrappers for select dependencies. Note that artifact is used so that
-    # the correct Maven repository is selected. Also, dependencies are restricted to specific
-    # visibility scopes (e.g. prod vs. test), or to specific build contexts (e.g. scripts which is
-    # in an entirely different target path) to help prevent accidental cross-dependencies.
+    # Create aliases for select dependencies. Note that artifact is used so that the correct Maven
+    # repository is selected. Also, dependencies are restricted to specific visibility scopes (e.g.
+    # prod vs. test), or to specific build contexts (e.g. scripts which is in an entirely different
+    # target path) to help prevent accidental cross-dependencies.
     for name, version in dependency_versions.items():
-        native.android_library(
+        native.alias(
             name = name.replace(":", "_").replace(".", "_"),
             testonly = test_only,
             visibility = artifact_visibility,
-            exports = [artifact(
+            actual = artifact(
                 "%s:%s" % (name, version),
                 repository_name = maven_repository_name,
-            )],
+            ),
         )
 
 def _wrap_dependency(
@@ -141,6 +141,8 @@ def _wrap_dependency(
     name = import_details.get("import_bind_name") or import_details["name"]
     is_test_only = import_details["test_only"]
     base_visibility = test_artifact_visibility if is_test_only else prod_artifact_visibility
+    should_be_visible_to_maven_targets = export_details["should_be_visible_to_maven_targets"]
+    maven_visibility = maven_artifact_visibility if should_be_visible_to_maven_targets else []
 
     if export_details["export_type"] == EXPORT_TYPE.LIBRARY:
         if export_details["export_toolchain"] == EXPORT_TOOLCHAIN.ANDROID:
@@ -162,10 +164,19 @@ def _wrap_dependency(
                 testonly = is_test_only,
             )
             explicit_exports = ["_%s_do_not_depend" % export_details["exposed_artifact_name"]]
+        elif export_details["export_toolchain"] == EXPORT_TOOLCHAIN.ALIAS:
+            if len(export_details["additional_exports"]) != 0:
+                fail("Cannot have additional exports when aliasing a target. Use a toolchain type, instead.")
+            native.alias(
+                name = export_details["exposed_artifact_name"],
+                visibility = base_visibility + maven_visibility,
+                actual = export_details["exposed_artifact_name"],
+                testonly = is_test_only,
+            )
+            return
         else:
             fail("Unsupported export type: %s." % export_details["export_toolchain"])
-        should_be_visible_to_maven_targets = export_details["should_be_visible_to_maven_targets"]
-        maven_visibility = maven_artifact_visibility if should_be_visible_to_maven_targets else []
+
         create_lib(
             name = export_details["exposed_artifact_name"],
             visibility = base_visibility + maven_visibility,

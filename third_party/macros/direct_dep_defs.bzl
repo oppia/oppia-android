@@ -23,6 +23,9 @@ EXPORT_TOOLCHAIN = struct(
 
     # Indicates a dependency requires the Kotlin toolchain.
     KOTLIN = struct(export_toolchain_enum_value = 2),
+
+    # Indicates that the toolchain is ignored and the target is instead just directly aliased.
+    ALIAS = struct(export_toolchain_enum_value = 3),
 )
 
 # Represents the type of import approach required for a dependency.

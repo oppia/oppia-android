@@ -44,4 +44,22 @@ DIRECT_REMOTE_DEPENDENCIES = [
             export_toolchain = EXPORT_TOOLCHAIN.ANDROID,
         ),
     ),
+    create_git_repository_reference(
+        name = "oppia_proto_api",
+        commit = "9cf993ea0b798a67b3faa21c690c30b9027fb371",
+        remote = "https://github.com/oppia/oppia-proto-api",
+        test_only = False,
+        exports_details = [
+            create_export_library_details(
+                exposed_artifact_name = "oppia_proto_api_protos",
+                exportable_target = ":android_protos",
+                export_toolchain = EXPORT_TOOLCHAIN.ALIAS,
+            ),
+            create_export_library_details(
+                exposed_artifact_name = "oppia_proto_api_java_protos",
+                exportable_target = ":android_java_protos",
+                export_toolchain = EXPORT_TOOLCHAIN.ALIAS,
+            ),
+        ],
+    ),
 ]
