@@ -1,6 +1,9 @@
 package org.oppia.android.scripts.testfile
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertEquals
+import org.oppia.android.scripts.proto.TestFileExemptions
+import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -9,6 +12,9 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 /** Tests for [TestFileCheck]. */
 class TestFileCheckTest {
@@ -124,6 +130,33 @@ class TestFileCheckTest {
 
     assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
+
+  @Test
+  fun testTestFileCheck_minCoverageExemptedFile_notExemptedFromTestFileCheck() {
+    val testFileExemptions = TestFileExemptions.newBuilder()
+      .addTestFileExemption(
+        TestFileExemption.newBuilder()
+          .setExemptedFilePath("test/TestExemptedFile.kt")
+          .setTestFileNotRequired(true)
+      )
+      .addTestFileExemption(
+        TestFileExemption.newBuilder()
+          .setExemptedFilePath("coverage/CoverageTestFile.kt")
+          .setOverrideMinCoveragePercentRequired(5)
+      )
+      .build()
+
+    val coverageTestExemptiontextProto = tempFolder.newFile("test_exemption.pb")
+    coverageTestExemptiontextProto.outputStream().use { (testFileExemptions.writeTo(it)) }
+
+    val result = TestFileCheck(
+      "${tempFolder.root}",
+      "${tempFolder.root}/test_exemption"
+    ).getTestFileExemptionList("${tempFolder.root}/test_exemption")
+
+    assertEquals(listOf("test/TestExemptedFile.kt"), result)
+  }
+
 
   /** Retrieves the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {

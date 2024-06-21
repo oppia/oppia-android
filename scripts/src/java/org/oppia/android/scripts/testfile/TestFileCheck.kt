@@ -23,46 +23,73 @@ fun main(vararg args: String) {
 
   val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
 
-  // A list of all the files to be exempted for this check.
-  // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-  val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-    .testFileExemptionList
-    .filter { it.testFileNotRequired }
-    .map { it.exemptedFilePath }
+  val testFileCheck = TestFileCheck(repoPath, testFileExemptiontextProto)
+  testFileCheck.execute()
+}
 
-  // A list of all kotlin files in the repo to be analyzed.
-  val searchFiles = RepositoryFile.collectSearchFiles(
-    repoPath = repoPath,
-    expectedExtension = ".kt",
-    exemptionsList = testFileExemptionList
-  )
+class TestFileCheck (
+  private val repoPath: String,
+  private val testFileExemptiontextProto: String
+  ) {
 
-  // A list of all the prod files present in the repo.
-  val prodFilesList = searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
+  /**
+   * Retrieves a list of files exempted from requiring a test file based on the specified protocol buffer.
+   *
+   * This function loads the test file exemptions from the provided protocol buffer file path,
+   * filters and returns list of paths for files that are not required for having a test file.
+   *
+   * The files specifically marked as exempt from needing a test file are included,
+   * rather than those exempt from meeting a minimum coverage percentage.
+   *
+   * @param testFileExemptiontextProto The path to the protocol buffer file containing test file exemptions.
+   * @return A list of file paths that are exempted from requiring a test file.
+   */
+  fun getTestFileExemptionList(testFileExemptiontextProto: String): List<String> {
 
-  // A list of all the test files present in the repo.
-  val testFilesList = searchFiles.filter { file -> file.name.endsWith("Test.kt") }
-
-  // A list of all the prod files that do not have a corresponding test file.
-  val matchedFiles = prodFilesList.filter { prodFile ->
-    !testFilesList.any { testFile ->
-      testFile.name == computeExpectedTestFileName(prodFile)
-    }
+    return loadTestFileExemptionsProto(testFileExemptiontextProto)
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
   }
 
-  logFailures(matchedFiles)
+  /** Executes the test file presence check mechanism for the repository. */
+  fun execute() {
+    // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
+    val testFileExemptionList = getTestFileExemptionList(testFileExemptiontextProto)
 
-  if (matchedFiles.isNotEmpty()) {
-    println(
-      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#test-file-presence-check for more details on how to fix this.\n"
+    val searchFiles = RepositoryFile.collectSearchFiles(
+      repoPath = repoPath,
+      expectedExtension = ".kt",
+      exemptionsList = testFileExemptionList
     )
-  }
 
-  if (matchedFiles.isNotEmpty()) {
-    throw Exception("TEST FILE CHECK FAILED")
-  } else {
-    println("TEST FILE CHECK PASSED")
+    // A list of all the prod files present in the repo.
+    val prodFilesList = searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
+
+    // A list of all the test files present in the repo.
+    val testFilesList = searchFiles.filter { file -> file.name.endsWith("Test.kt") }
+
+    // A list of all the prod files that do not have a corresponding test file.
+    val matchedFiles = prodFilesList.filter { prodFile ->
+      !testFilesList.any { testFile ->
+        testFile.name == computeExpectedTestFileName(prodFile)
+      }
+    }
+
+    logFailures(matchedFiles)
+
+    if (matchedFiles.isNotEmpty()) {
+      println(
+        "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+          "#test-file-presence-check for more details on how to fix this.\n"
+      )
+    }
+
+    if (matchedFiles.isNotEmpty()) {
+      throw Exception("TEST FILE CHECK FAILED")
+    } else {
+      println("TEST FILE CHECK PASSED")
+    }
   }
 }
 
