@@ -13,8 +13,8 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
-        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_for_test_target_lib",
+        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
     ],
 )
 
@@ -40,6 +40,5 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
-        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
     ],
 )

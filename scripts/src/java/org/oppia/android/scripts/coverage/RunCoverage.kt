@@ -71,15 +71,15 @@ class RunCoverage(
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
    */
-  fun execute(): List<String?> {
-    var coverageDataList = mutableListOf<String>()
+  fun execute(): MutableList<List<String>> {
+    var coverageDataList = mutableListOf<List<String>>()
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
     val isExempted = testFileExemptionList.contains(filePath)
     if (isExempted) {
       println("This file is exempted from having a test file. Hence No coverage!")
-      return emptyList()
+      return mutableListOf()
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
@@ -94,6 +94,7 @@ class RunCoverage(
       ).runCoverage()!!
       coverageDataList.add(coverageData)
     }
+    println("Coverage Data List: $coverageDataList")
     return coverageDataList
   }
 
