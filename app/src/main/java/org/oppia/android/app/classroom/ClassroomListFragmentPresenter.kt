@@ -43,7 +43,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
 
-    val classroomListViewModel = ClassroomListViewModel(
+    ClassroomListViewModel(
       activity,
       fragment,
       oppiaLogger,
