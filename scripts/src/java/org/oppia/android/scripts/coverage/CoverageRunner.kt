@@ -12,6 +12,9 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.security.MessageDigest
 
 /**
  * Class responsible for running coverage analysis asynchronously
@@ -48,12 +51,6 @@ class CoverageRunner(
     }
   }
 
-  /**
-   * Runs coverage command for the Bazel test target
-   *
-   * @param bazelTestTarget Bazel test target to analyze coverage
-   * @return the generated coverage data as a string
-   */
   private fun retrieveCoverageResult(
     bazelTestTarget: String
   ): List<String>? {
@@ -105,6 +102,7 @@ class CoverageRunner(
               .setLineNumber(lineNumber)
               .setBlockNumber(blockNumber)
               .setBranchNumber(branchNumber)
+              .setHitCount(hitCount)
               .setCoverage(coverage)
               .build()
           )
@@ -164,8 +162,12 @@ class CoverageRunner(
       }
     }
 
+    val file = File(repoRoot, filePath)
+    val fileSha1Hash = calculateSha1(file.absolutePath)
+
     val coveredFile = CoveredFile.newBuilder()
       .setFilePath(filePath)
+      .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(coveredLines)
       .addAllBranchCoverage(branchCoverage)
       .addAllFunctionCoverage(functionCoverage)
@@ -182,5 +184,11 @@ class CoverageRunner(
       .addCoveredFile(coveredFile)
       .build()
   }
+}
 
+private fun calculateSha1(filePath: String): String {
+  val fileBytes = Files.readAllBytes(Paths.get(filePath))
+  val digest = MessageDigest.getInstance("SHA-1")
+  val hashBytes = digest.digest(fileBytes)
+  return hashBytes.joinToString("") { "%02x".format(it) }
 }

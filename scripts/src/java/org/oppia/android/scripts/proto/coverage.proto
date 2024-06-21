@@ -39,7 +39,8 @@ message BranchCoverage {
   int32 line_number = 1;
   optional int32 block_number = 2;
   optional int32 branch_number = 3;
-  BranchCoverage.Coverage coverage = 4;
+  optional int32 hit_count = 4;
+  BranchCoverage.Coverage coverage = 5;
 
   enum Coverage {
     UNSPECIFIED = 0;
