@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+message CoverageReport {
+  string bazel_test_target = 1;
+  repeated CoveredFile covered_file = 2;
+}
+
+message CoveredFile {
+  string file_path = 1;
+  string file_sha1_hash = 2;
+  repeated CoveredLine covered_line = 3;
+  optional int32 lines_found = 4;
+  optional int32 lines_hit = 5;
+  repeated FunctionCoverage function_coverage = 6;
+  optional int32 functions_found = 7;
+  optional int32 functions_hit = 8;
+  repeated BranchCoverage branch_coverage = 9;
+  optional int32 branches_found = 10;
+  optional int32 branches_hit = 11;
+}
+
+message CoveredLine {
+  int32 line_number = 1;
+  CoveredLine.Coverage coverage = 2;
+
+  enum Coverage {
+    UNSPECIFIED = 0;
+    FULL = 1;
+    NONE = 2;
+  }
+}
+
+message BranchCoverage {
+  int32 line_number = 1;
+  optional int32 block_number = 2;
+  optional int32 branch_number = 3;
+  BranchCoverage.Coverage coverage = 4;
+
+  enum Coverage {
+    UNSPECIFIED = 0;
+    FULL = 1;
+    NONE = 2;
+  }
+}
+
+message FunctionCoverage {
+  int32 line_number = 1;
+  string function_name = 2;
+  optional int32 execution_count = 3;
+  FunctionCoverage.Coverage coverage = 4;
+
+  enum Coverage {
+    UNSPECIFIED = 0;
+    FULL = 1;
+    NONE = 2;
+  }
+}
