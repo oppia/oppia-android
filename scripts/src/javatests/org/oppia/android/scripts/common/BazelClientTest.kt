@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit
  * Tests for [BazelClient].
  *
  * Note that this test executes real commands on the local filesystem & requires Bazel in the local
- * environment.
+ * environment
  */
-// Same parameter value: helpers reduce test context, even if they are used by 1 test.
-// Function name: test names are conventionally named with underscores.
+// Same parameter value: helpers reduce test context, even if they are used by 1 test
+// Function name: test names are conventionally named with underscores
 @Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()

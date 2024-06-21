@@ -9,7 +9,7 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
 /**
- * Class responsible for running coverage analysis asynchronously.
+ * Class responsible for running coverage analysis asynchronously
  *
  * @param repoRoot the root directory of the repository
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
@@ -23,10 +23,10 @@ class CoverageRunner(
   private val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
 
   /**
-   * Runs coverage analysis asynchronously for the Bazel test target.
+   * Runs coverage analysis asynchronously for the Bazel test target
    *
-   * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return a deferred value that contains the coverage data.
+   * @param bazelTestTarget Bazel test target to analyze coverage
+   * @return a deferred value that contains the coverage data
    */
   fun runWithCoverageAsync(
     bazelTestTarget: String
@@ -38,10 +38,10 @@ class CoverageRunner(
   }
 
   /**
-   * Runs coverage command for the Bazel test target.
+   * Runs coverage command for the Bazel test target
    *
-   * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return the generated coverage data as a string.
+   * @param bazelTestTarget Bazel test target to analyze coverage
+   * @return the generated coverage data as a string
    */
   private fun retrieveCoverageResult(
     bazelTestTarget: String

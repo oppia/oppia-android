@@ -8,13 +8,13 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
- * Entry point function for running coverage analysis for a single test target.
+ * Entry point function for running coverage analysis for a single test target
  *
  * Usage:
  *   bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <//:test_targetname>
  *
  * Arguments:
- * - path_to_root: directory path to the root of the Oppia Android repository.
+ * - path_to_root: directory path to the root of the Oppia Android repository
  * - test_targetname: bazel target name of the test
  *
  * Example:
@@ -70,9 +70,9 @@ class RunCoverageForTestTarget(
   }
 
   /**
-   * Runs coverage analysis on the specified target file asynchronously.
+   * Runs coverage analysis on the specified target file asynchronously
    *
-   * @return the generated coverage data.
+   * @return the generated coverage data
    */
   fun runWithCoverageAnalysis(): List<String>? {
     return runBlocking {
