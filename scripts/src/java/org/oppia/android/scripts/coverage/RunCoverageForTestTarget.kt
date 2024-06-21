@@ -8,13 +8,13 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
- * Entry point function for running coverage analysis for a single test target.
+ * Entry point function for running coverage analysis for a single test target
  *
  * Usage:
  *   bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <//:test_targetname>
  *
  * Arguments:
- * - path_to_root: directory path to the root of the Oppia Android repository.
+ * - path_to_root: directory path to the root of the Oppia Android repository
  * - test_targetname: bazel target name of the test
  *
  * Example:
@@ -53,6 +53,7 @@ fun main(vararg args: String) {
  * @param repoRoot the root directory of the repository
  * @param targetPath Bazel test target to analyze coverage
  * @param commandExecutor Executes the specified command in the specified working directory
+ * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
  */
 class RunCoverageForTestTarget(
   private val repoRoot: File,
@@ -64,16 +65,16 @@ class RunCoverageForTestTarget(
   /**
    * Analyzes target file for coverage, generates chosen reports accordingly.
    */
-  fun runCoverage(): String? {
+  fun runCoverage(): List<String>? {
     return runWithCoverageAnalysis()
   }
 
   /**
-   * Runs coverage analysis on the specified target file asynchronously.
+   * Runs coverage analysis on the specified target file asynchronously
    *
-   * @return the generated coverage data.
+   * @return the generated coverage data
    */
-  fun runWithCoverageAnalysis(): String? {
+  fun runWithCoverageAnalysis(): List<String>? {
     return runBlocking {
       val result =
         CoverageRunner(repoRoot, scriptBgDispatcher, commandExecutor)

@@ -9,7 +9,7 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
 /**
- * Class responsible for running coverage analysis asynchronously.
+ * Class responsible for running coverage analysis asynchronously
  *
  * @param repoRoot the root directory of the repository
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
@@ -23,42 +23,29 @@ class CoverageRunner(
   private val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
 
   /**
-   * Runs coverage analysis asynchronously for the Bazel test target.
+   * Runs coverage analysis asynchronously for the Bazel test target
    *
-   * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return a deferred value that contains the coverage data [will contain the proto for the coverage data].
+   * @param bazelTestTarget Bazel test target to analyze coverage
+   * @return a deferred value that contains the coverage data
    */
   fun runWithCoverageAsync(
     bazelTestTarget: String
-  ): Deferred<String?> {
+  ): Deferred<List<String>?> {
     return CoroutineScope(scriptBgDispatcher).async {
-      val coverageDataFilePath = getCoverage(bazelTestTarget)
+      val coverageDataFilePath = retrieveCoverageResult(bazelTestTarget)
       coverageDataFilePath
     }
   }
 
   /**
-   * Runs coverage command for the Bazel test target.
+   * Runs coverage command for the Bazel test target
    *
-   * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return the generated coverage data as a string.
+   * @param bazelTestTarget Bazel test target to analyze coverage
+   * @return the generated coverage data as a string
    */
-  fun getCoverage(
+  private fun retrieveCoverageResult(
     bazelTestTarget: String
-  ): String? {
-    val coverageDataBinary = bazelClient.runCoverageForTestTarget(bazelTestTarget)
-    val coverageDataString = convertByteArrayToString(coverageDataBinary!!)
-
-    return coverageDataString
-  }
-
-  /**
-   * Converts a ByteArray to a String using UTF-8 encoding.
-   *
-   * @param coverageBinaryData byte array to convert
-   * @return string representation of the byte array
-   */
-  fun convertByteArrayToString(coverageBinaryData: ByteArray?): String? {
-    return String(coverageBinaryData!!, Charsets.UTF_8)
+  ): List<String>? {
+    return bazelClient.runCoverageForTestTarget(bazelTestTarget)
   }
 }
