@@ -26,13 +26,13 @@ class CoverageRunner(
    * Runs coverage analysis asynchronously for the Bazel test target.
    *
    * @param bazelTestTarget Bazel test target to analyze coverage.
-   * @return a deferred value that contains the coverage data [will contain the proto for the coverage data].
+   * @return a deferred value that contains the coverage data.
    */
   fun runWithCoverageAsync(
     bazelTestTarget: String
-  ): Deferred<String?> {
+  ): Deferred<List<String>?> {
     return CoroutineScope(scriptBgDispatcher).async {
-      val coverageDataFilePath = getCoverage(bazelTestTarget)
+      val coverageDataFilePath = retrieveCoverageResult(bazelTestTarget)
       coverageDataFilePath
     }
   }
@@ -43,22 +43,9 @@ class CoverageRunner(
    * @param bazelTestTarget Bazel test target to analyze coverage.
    * @return the generated coverage data as a string.
    */
-  fun getCoverage(
+  private fun retrieveCoverageResult(
     bazelTestTarget: String
-  ): String? {
-    val coverageDataBinary = bazelClient.runCoverageForTestTarget(bazelTestTarget)
-    val coverageDataString = convertByteArrayToString(coverageDataBinary!!)
-
-    return coverageDataString
-  }
-
-  /**
-   * Converts a ByteArray to a String using UTF-8 encoding.
-   *
-   * @param coverageBinaryData byte array to convert
-   * @return string representation of the byte array
-   */
-  fun convertByteArrayToString(coverageBinaryData: ByteArray?): String? {
-    return String(coverageBinaryData!!, Charsets.UTF_8)
+  ): List<String>? {
+    return bazelClient.runCoverageForTestTarget(bazelTestTarget)
   }
 }

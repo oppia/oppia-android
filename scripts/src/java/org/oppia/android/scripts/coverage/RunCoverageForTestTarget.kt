@@ -53,6 +53,7 @@ fun main(vararg args: String) {
  * @param repoRoot the root directory of the repository
  * @param targetPath Bazel test target to analyze coverage
  * @param commandExecutor Executes the specified command in the specified working directory
+ * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
  */
 class RunCoverageForTestTarget(
   private val repoRoot: File,
@@ -64,7 +65,7 @@ class RunCoverageForTestTarget(
   /**
    * Analyzes target file for coverage, generates chosen reports accordingly.
    */
-  fun runCoverage(): String? {
+  fun runCoverage(): List<String>? {
     return runWithCoverageAnalysis()
   }
 
@@ -73,7 +74,7 @@ class RunCoverageForTestTarget(
    *
    * @return the generated coverage data.
    */
-  fun runWithCoverageAnalysis(): String? {
+  fun runWithCoverageAnalysis(): List<String>? {
     return runBlocking {
       val result =
         CoverageRunner(repoRoot, scriptBgDispatcher, commandExecutor)

@@ -136,16 +136,21 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    * Runs code coverage for the specified Bazel test target.
    *
    * @param bazelTestTarget Bazel test target for which code coverage will be run
-   * @return the coverage data file path generated from bazel coverage
+   * @return the generated coverage data as a list of strings
+   * or null if the coverage data file could not be parsed.
+   *
+   * Null return typically occurs when the coverage command fails to generate the 'coverage.dat' file.
+   * This can happen due to: Test failures or misconfigurations that prevent the coverage data
+   * from being generated properly.
    */
-  fun runCoverageForTestTarget(bazelTestTarget: String): ByteArray? {
+  fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
     val coverageData = executeBazelCommand(
       "coverage",
       bazelTestTarget
     )
-    val coverageDataFilePath = parseCoverageDataFile(coverageData)
-    val coverageDataFileContent = readDatFileAsBinary(coverageDataFilePath!!)
-    return coverageDataFileContent
+    return parseCoverageDataFile(coverageData)?.let { path ->
+      readDatFile(path)
+    }
   }
 
   /**
@@ -154,7 +159,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    * @param data the result from the execution of the coverage command
    * @return the extracted path of the coverage data file.
    */
-  fun parseCoverageDataFile(data: List<String>): String? {
+  private fun parseCoverageDataFile(data: List<String>): String? {
     val regex = ".*coverage\\.dat$".toRegex()
     for (line in data) {
       val match = regex.find(line)
@@ -168,14 +173,16 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
-   * Reads the content of the .dat file as a binary blob.
+   * Reads the content of the .dat file as a list of lines.
    *
    * @param filePath path to the .dat file
-   * @return content of the .dat file as binary data
+   * @return content of the .dat file as a list of strings
    */
-  fun readDatFileAsBinary(filePath: String?): ByteArray? {
-    val path = Paths.get(filePath!!)
-    return Files.readAllBytes(path!!)
+  private fun readDatFile(filePath: String?): List<String>? {
+    return filePath?.let { path ->
+      val pathObj = Paths.get(path)
+      File(pathObj.toUri()).readLines()
+    }
   }
 
   /**

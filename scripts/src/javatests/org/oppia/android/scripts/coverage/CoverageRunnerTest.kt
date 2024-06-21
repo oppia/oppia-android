@@ -1,11 +1,14 @@
 package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import kotlinx.coroutines.async
+import kotlinx.coroutines.CoroutineScope
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
@@ -38,7 +41,9 @@ class CoverageRunnerTest {
   @Test
   fun testRunCoverage_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.getCoverage(bazelTestTarget)
+      runBlocking {
+        coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
+      }
     }
 
     assertThat(exception).hasMessageThat().contains("not invoked from within a workspace")
@@ -49,7 +54,9 @@ class CoverageRunnerTest {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.getCoverage(bazelTestTarget)
+      runBlocking {
+        coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
+      }
     }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -103,28 +110,33 @@ class CoverageRunnerTest {
       subpackage = "coverage"
     )
 
-    val result = coverageRunner.getCoverage("//coverage/test/java/com/example:test")
-    val expectedResult =
-      "SF:coverage/main/java/com/example/TwoSum.kt\n" +
-        "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
-        "FN:3,com/example/TwoSum::<init> ()V\n" +
-        "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;\n" +
-        "FNDA:0,com/example/TwoSum::<init> ()V\n" +
-        "FNF:2\n" +
-        "FNH:1\n" +
-        "BRDA:7,0,0,1\n" +
-        "BRDA:7,0,1,1\n" +
-        "BRDA:7,0,2,1\n" +
-        "BRDA:7,0,3,1\n" +
-        "BRF:4\n" +
-        "BRH:4\n" +
-        "DA:3,0\n" +
-        "DA:7,1\n" +
-        "DA:8,1\n" +
-        "DA:10,1\n" +
-        "LH:3\n" +
-        "LF:4\n" +
-        "end_of_record\n"
+    val result = runBlocking {
+      coverageRunner.runWithCoverageAsync(
+        "//coverage/test/java/com/example:test"
+      ).await()
+    }
+    val expectedResult = listOf(
+      "SF:coverage/main/java/com/example/TwoSum.kt",
+      "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/TwoSum::<init> ()V",
+      "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/TwoSum::<init> ()V",
+      "FNF:2",
+      "FNH:1",
+      "BRDA:7,0,0,1",
+      "BRDA:7,0,1,1",
+      "BRDA:7,0,2,1",
+      "BRDA:7,0,3,1",
+      "BRF:4",
+      "BRH:4",
+      "DA:3,0",
+      "DA:7,1",
+      "DA:8,1",
+      "DA:10,1",
+      "LH:3",
+      "LF:4",
+      "end_of_record"
+    )
 
     assertThat(result).isEqualTo(expectedResult)
   }
