@@ -21,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Description
@@ -159,13 +158,6 @@ class OptionsFragmentTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-
-  @get:Rule
-  var optionActivityTestRule: ActivityTestRule<OptionsActivity> = ActivityTestRule(
-    OptionsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
 
   private fun createOptionActivityIntent(
     internalProfileId: Int,
@@ -531,7 +523,7 @@ class OptionsFragmentTest {
 
       val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-        profileId = -1
+        profileId = 0
       }.build()
       intended(
         allOf(
@@ -561,7 +553,7 @@ class OptionsFragmentTest {
 
       val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-        profileId = -1
+        profileId = 0
       }.build()
       intended(
         allOf(

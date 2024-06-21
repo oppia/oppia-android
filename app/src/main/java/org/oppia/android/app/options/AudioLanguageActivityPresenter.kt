@@ -20,7 +20,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   /** Handles when the activity is first created. */
   fun handleOnCreate(audioLanguage: AudioLanguage, internalProfileId: Int) {
     this.audioLanguage = audioLanguage
-    this.internalProfileId = internalProfileId // TODO Pass to fragment the fragment presenter
+    this.internalProfileId = internalProfileId
 
     val binding: AudioLanguageActivityBinding =
       DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)

@@ -10,6 +10,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -19,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +39,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
@@ -327,19 +332,11 @@ class AudioLanguageFragmentTest {
     ).use {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
-
-      // Do nothing for now, but will fail once navigation is implemented
-      onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
-      )
-      onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
-      )
-      onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-      onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      intended(
+        allOf(
+          hasComponent(HomeActivity::class.java.name),
+          hasExtraWithKey("NavigationDrawerFragmentPresenter.navigation_profile_id")
+        )
       )
     }
   }
@@ -354,19 +351,11 @@ class AudioLanguageFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
-
-      // Do nothing for now, but will fail once navigation is implemented
-      onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
-      )
-      onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
-      )
-      onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-      onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      intended(
+        allOf(
+          hasComponent(HomeActivity::class.java.name),
+          hasExtraWithKey("NavigationDrawerFragmentPresenter.navigation_profile_id")
+        )
       )
     }
   }
@@ -480,9 +469,7 @@ class AudioLanguageFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }

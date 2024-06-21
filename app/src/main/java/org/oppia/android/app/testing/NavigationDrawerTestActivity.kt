@@ -8,12 +8,14 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.HomeActivityPresenter
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.topic.TopicActivity
@@ -24,7 +26,8 @@ class NavigationDrawerTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
-  RouteToRecentlyPlayedListener {
+  RouteToRecentlyPlayedListener,
+  ExitProfileListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
 
@@ -87,4 +90,6 @@ class NavigationDrawerTestActivity :
         .build()
     )
   }
+
+  override fun exitProfile(profileType: ProfileType) {}
 }
