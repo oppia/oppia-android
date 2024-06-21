@@ -21,10 +21,17 @@ https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 # This list should contain only production (non-test) dependencies.
 MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.annotation:annotation": "1.1.0",
-    "androidx.appcompat:appcompat": "1.2.0",
+    "androidx.appcompat:appcompat": "1.3.1",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
+    "androidx.activity:activity-compose": "1.4.0",
     "androidx.core:core": "1.0.1",
     "androidx.core:core-ktx": "1.0.1",
+    "androidx.compose.compiler:compiler": "1.1.1",
+    "androidx.compose.foundation:foundation": "1.1.1",
+    "androidx.compose.foundation:foundation-layout": "1.1.1",
+    "androidx.compose.material:material": "1.1.1",
+    "androidx.compose.runtime:runtime": "1.1.1",
+    "androidx.compose.ui:ui": "1.1.1",
     "androidx.databinding:databinding-adapters": "3.4.2",
     "androidx.databinding:databinding-common": "3.4.2",
     "androidx.databinding:databinding-compiler": "3.4.2",
