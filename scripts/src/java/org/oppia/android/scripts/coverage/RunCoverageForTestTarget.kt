@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.CoverageReport
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -65,7 +66,7 @@ class RunCoverageForTestTarget(
   /**
    * Analyzes target file for coverage, generates chosen reports accordingly.
    */
-  fun runCoverage(): List<String>? {
+  fun runCoverage(): CoverageReport? {
     return runWithCoverageAnalysis()
   }
 
@@ -74,7 +75,7 @@ class RunCoverageForTestTarget(
    *
    * @return the generated coverage data
    */
-  fun runWithCoverageAnalysis(): List<String>? {
+  fun runWithCoverageAnalysis(): CoverageReport? {
     return runBlocking {
       val result =
         CoverageRunner(repoRoot, scriptBgDispatcher, commandExecutor)

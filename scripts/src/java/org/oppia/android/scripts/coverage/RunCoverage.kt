@@ -4,6 +4,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.io.FileInputStream
@@ -71,8 +72,8 @@ class RunCoverage(
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
    */
-  fun execute(): MutableList<List<String>> {
-    var coverageDataList = mutableListOf<List<String>>()
+  fun execute(): MutableList<CoverageReport> {
+    var coverageDataList = mutableListOf<CoverageReport>()
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
@@ -85,6 +86,11 @@ class RunCoverage(
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
+    /*val testResults = listOf(
+      "//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest",
+      "//utility/src/test/java/org/oppia/android/util/math:FloatExtensionsTest")*/
+
+//    for (testTarget in testResults) {
     for (testTarget in testTargets) {
       val coverageData = RunCoverageForTestTarget(
         rootDirectory,
