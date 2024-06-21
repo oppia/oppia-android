@@ -20,6 +20,7 @@ import org.oppia.android.scripts.gae.compat.TopicPackRepository
 import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
 import org.oppia.android.scripts.gae.json.GaeSkill
+import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
@@ -66,7 +67,6 @@ class GaeAndroidEndpointJsonImpl(
   cacheDir: File?,
   forceCacheLoad: Boolean,
   private val coroutineDispatcher: CoroutineDispatcher,
-  private val topicDependencies: Map<String, Set<String>>,
   private val imageDownloader: ImageDownloader
 ) : GaeAndroidEndpoint {
   private val activityService by lazy {
@@ -74,11 +74,7 @@ class GaeAndroidEndpointJsonImpl(
       apiSecret, gaeBaseUrl, cacheDir, forceCacheLoad, coroutineDispatcher
     )
   }
-  private val converterInitializer by lazy {
-    ConverterInitializer(
-      activityService, coroutineDispatcher, topicDependencies, imageDownloader
-    )
-  }
+  private lateinit var converterInitializer: ConverterInitializer
   private val contentCache by lazy { ContentCache() }
 
   // TODO: Document that reportProgress's total can change over time (since it starts as an
@@ -106,6 +102,14 @@ class GaeAndroidEndpointJsonImpl(
           coroutineDispatcher,
           reportProgress
         )
+
+      val classrooms = fetchAllClassroomsAsync(tracker).await()
+      val topicDependencies = classrooms.flatMap {
+        it.topicIdToPrereqTopicIds.entries
+      }.groupBy { (topicId, _) -> topicId }.mapValues { (id, prereqsList) ->
+        check(prereqsList.size == 1) { "Expected one prerequisite topic list for topic: $id." }
+        prereqsList.single().value.toSet()
+      }
       val constraints =
         CompatibilityConstraints(
           supportedInteractionIds = SUPPORTED_INTERACTION_IDS,
@@ -117,11 +121,15 @@ class GaeAndroidEndpointJsonImpl(
           supportedStateSchemaVersion = SUPPORTED_STATE_SCHEMA_VERSION,
           topicDependencies = topicDependencies
         )
+      converterInitializer = ConverterInitializer(
+        activityService, coroutineDispatcher, topicDependencies, imageDownloader
+      )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
       val topicRepository = converterInitializer.getTopicPackRepository(constraints)
 
-      val topicIds = fetchAllClassroomTopicIdsAsync(tracker).await()
+      val topicIds = classrooms.flatMap { it.topicIdToPrereqTopicIds.keys }.distinct()
+      tracker.countEstimator.setTopicCount(topicIds.size)
       val topicCountsTracker = TopicCountsTracker.createFrom(tracker, topicIds)
 
       val availableTopicPacks = topicIds.mapIndexed { index, topicId ->
@@ -136,6 +144,7 @@ class GaeAndroidEndpointJsonImpl(
       }.awaitAll().associate { it.id to it.payload }
 
       contentCache.addPacks(availableTopicPacks)
+      jsonConverter.trackClassroomTranslations(classrooms)
       jsonConverter.trackTopicTranslations(contentCache.topics)
       jsonConverter.trackStoryTranslations(contentCache.stories)
       jsonConverter.trackExplorationTranslations(contentCache.explorations)
@@ -175,6 +184,11 @@ class GaeAndroidEndpointJsonImpl(
             }.build()
           }
         )
+        addAllClassrooms(
+          classrooms.map { classroom ->
+            jsonConverter.convertToClassroom(classroom, defaultLanguage)
+          }
+        )
       }.build()
     }
   }
@@ -210,28 +224,28 @@ class GaeAndroidEndpointJsonImpl(
     }
   }
 
-  private fun fetchAllClassroomTopicIdsAsync(
+  private fun fetchAllClassroomsAsync(
     tracker: DownloadProgressTracker
-  ): Deferred<List<String>> {
-    // TODO: Revert the temp change once all classrooms are supported in the new format.
+  ): Deferred<List<GaeClassroom>> {
     // TODO: Double check the language verification (since sWBXKH4PZcK6 Swahili isn't 100%).
     return CoroutineScope(coroutineDispatcher).async {
-      listOf(
-        "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm", "5g0nxGUmx5J5"
-      ).also {
-        tracker.countEstimator.setTopicCount(it.size)
-        tracker.reportDownloaded("math")
-      }
-//       SUPPORTED_CLASSROOMS.map { classroomName ->
-//         CoroutineScope(coroutineDispatcher).async {
-//           activityService.fetchLatestClassroomAsync(classroomName).await().also {
-//             tracker.reportDownloaded(classroomName)
-//           }
-//         }
-//       }.awaitAll().flatMap(GaeClassroom::topicIds).distinct().also {
-//         tracker.countEstimator.setTopicCount(it.size)
-//       }
+      SUPPORTED_CLASSROOMS.map { classroomName ->
+        CoroutineScope(coroutineDispatcher).async {
+          activityService.fetchLatestClassroomAsync(classroomName).await().also {
+            tracker.reportDownloaded(classroomName)
+          }.payload
+        }
+      }.awaitAll().map { it.filterTopics() }
     }
+  }
+
+  // TODO: Remover this filter once downloading & checking all the other topics works correctly.
+  private fun GaeClassroom.filterTopics(): GaeClassroom {
+    return copy(
+      topicIdToPrereqTopicIds = topicIdToPrereqTopicIds.filterKeys {
+        it in listOf("iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm", "5g0nxGUmx5J5")
+      }
+    )
   }
 
   private suspend fun fetchStructure(
@@ -296,7 +310,7 @@ class GaeAndroidEndpointJsonImpl(
     private val downloadedChapterCount = AtomicInteger()
     private val downloadedRevisionCardCount = AtomicInteger()
     private val downloadedConceptCardCount = AtomicInteger()
-    
+
     private fun resetAllItemCounts() {
       DataGroupType.values().forEach(::resetGroupItemCount)
     }
@@ -703,7 +717,7 @@ class GaeAndroidEndpointJsonImpl(
   ) {
     private var localizationTracker: LocalizationTracker? = null
     private var jsonToProtoConverter: JsonToProtoConverter? = null
-    private var topicPackRepositories =
+    private val topicPackRepositories =
       mutableMapOf<CompatibilityConstraints, TopicPackRepository>()
 
     suspend fun getLocalizationTracker(): LocalizationTracker =

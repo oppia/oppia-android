@@ -18,7 +18,7 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Topic
-import org.oppia.android.app.model.TopicIdList
+import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
@@ -133,16 +133,16 @@ class TopicListController @Inject constructor(
 
   private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
     return if (loadLessonProtosFromAssets) {
-      val topicIdList =
+      val classroomList =
         assetRepository.loadProtoFromLocalAssets(
-          assetName = "topics",
-          baseMessage = TopicIdList.getDefaultInstance()
+          assetName = "classrooms",
+          baseMessage = ClassroomList.getDefaultInstance()
         )
       return TopicList.newBuilder().apply {
         // Only include topics currently playable in the topic list.
         addAllTopicSummary(
-          topicIdList.topicIdsList.map {
-            createEphemeralTopicSummary(it, contentLocale)
+          classroomList.classroomsList.flatMap { classroom ->
+            classroom.topicIdsList.map { createEphemeralTopicSummary(it, contentLocale) }
           }.filter {
             it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
           }
@@ -575,14 +575,12 @@ class TopicListController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
     return if (loadLessonProtosFromAssets) {
-      val topicIdList =
+      val topicIdsList =
         assetRepository.loadProtoFromLocalAssets(
-          assetName = "topics",
-          baseMessage = TopicIdList.getDefaultInstance()
-        )
-      return computeSuggestedStoriesForTopicIds(
-        topicProgressList, topicIdList.topicIdsList, contentLocale
-      )
+          assetName = "classrooms",
+          baseMessage = ClassroomList.getDefaultInstance()
+        ).flatMap { it.topicIdsList }
+      return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdsList, contentLocale)
     } else computeSuggestedStoriesFromJson(topicProgressList, contentLocale)
   }
 

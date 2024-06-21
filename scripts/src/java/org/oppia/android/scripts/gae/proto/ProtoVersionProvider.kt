@@ -7,6 +7,7 @@ import org.oppia.proto.v1.versions.ApiVersions
 import org.oppia.proto.v1.versions.ConceptCardProtoVersion
 import org.oppia.proto.v1.versions.ExplorationProtoVersion
 import org.oppia.proto.v1.versions.ImageProtoVersion
+import org.oppia.proto.v1.versions.ClassroomProtoVersion
 import org.oppia.proto.v1.versions.LanguageProtosVersion
 import org.oppia.proto.v1.versions.QuestionProtoVersion
 import org.oppia.proto.v1.versions.RevisionCardProtoVersion
@@ -25,6 +26,7 @@ object ProtoVersionProvider {
   private val DEF_STATE_VER = StateProtoVersion.getDefaultInstance()
   private val DEF_LANGUAGE_VER = LanguageProtosVersion.getDefaultInstance()
   private val DEF_IMAGE_VER = ImageProtoVersion.getDefaultInstance()
+  private val DEF_CLASSROOM_VER = ClassroomProtoVersion.getDefaultInstance()
   private val DEF_TOPIC_LIST_REQ_RESP_VER =
     TopicListRequestResponseProtoVersion.getDefaultInstance()
   private val DEF_TOPIC_CONTENT_REQ_RESP_VER =
@@ -54,6 +56,9 @@ object ProtoVersionProvider {
   fun createLatestImageProtoVersion(): ImageProtoVersion =
     createStructureVersionProto(DEF_IMAGE_VER, ImageProtoVersion.Builder::setVersion)
 
+  fun createLatestClassroomProtoVersion(): ClassroomProtoVersion =
+    createStructureVersionProto(DEF_CLASSROOM_VER, ClassroomProtoVersion.Builder::setVersion)
+
   fun createLatestTopicListProtoVersion(): TopicListRequestResponseProtoVersion {
     return createApiVersionProto(
       DEF_TOPIC_LIST_REQ_RESP_VER, TopicListRequestResponseProtoVersion.Builder::setVersion
@@ -78,6 +83,7 @@ object ProtoVersionProvider {
       stateProtoVersion = createLatestStateProtoVersion()
       languageProtosVersion = createLatestLanguageProtosVersion()
       imageProtoVersion = createLatestImageProtoVersion()
+      classroomProtoVersion = createLatestClassroomProtoVersion()
     }.build()
   }
 

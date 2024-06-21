@@ -270,7 +270,11 @@ class AndroidActivityHandlerService(
         val expectedPrefix = computeFileNamePrefix(type, id, version = "")
         val mostRecentVersion = cacheDir.listFiles()?.filter {
           it.extension == "json" && it.nameWithoutExtension.startsWith(expectedPrefix)
-        }?.maxOfOrNull { it.nameWithoutExtension.substringAfter(expectedPrefix).toInt() }
+        }?.mapNotNull { file ->
+          // Files with "latest" 'versions' should always be refetched unless there's an explicitly
+          // cached version on disk.
+          file.nameWithoutExtension.substringAfter(expectedPrefix).takeIf { it != "latest" }
+        }?.maxOfOrNull { it.toInt() }
         if (mostRecentVersion != null) {
           return@async checkNotNull(tryLoadFromCache(type, NonLocalized(id, mostRecentVersion))) {
             "Something went wrong when trying to fetch latest $type from disk: $id."
@@ -280,12 +284,12 @@ class AndroidActivityHandlerService(
 
       val request = AndroidActivityRequests.Latest(LatestVersion(id))
       val remoteStructure = fetch(request).resolveAsync(id).await()
-      // Ensure that the returned structure has the correct version.
-      val updatedStructure = if (retrieveStructureVersion != null) {
-        remoteStructure.copy(version = retrieveStructureVersion(remoteStructure.payload))
-      } else remoteStructure
-      maybeSaveToCache(type, NonLocalized(id, updatedStructure.expectedVersion), updatedStructure)
-      return@async updatedStructure
+      // Ensure that the returned structure has the correct version (if it's known).
+      return@async if (retrieveStructureVersion != null) {
+        remoteStructure.copy(version = retrieveStructureVersion(remoteStructure.payload)).also {
+          maybeSaveToCache(type, NonLocalized(id, it.expectedVersion), it)
+        }
+      } else remoteStructure.also { maybeSaveToCache(type, LatestVersion(id), it) }
     }
   }
 
@@ -352,6 +356,7 @@ class AndroidActivityHandlerService(
     }
   }
 
+  // TODO: Update caching to ensure all versions are cached along with their analysis results (as part of the repository creation?). This can provide substantially more debugging insight when something goes wrong.
   private suspend inline fun <reified T> maybeSaveToCache(
     type: String, request: ActivityRequest, structure: VersionedStructure<T>
   ) {
@@ -433,7 +438,7 @@ class AndroidActivityHandlerService(
   private companion object {
     private fun ActivityRequest.convertToFileName(type: String): String {
       return when (this) {
-        is LatestVersion -> error("Cannot load/save latest versions of structures.")
+        is LatestVersion -> "${computeFileNamePrefix(type, id, "latest")}.json"
         is NonLocalized -> "${computeFileNamePrefix(type, id, version.toString())}.json"
         is Localized ->
           "${computeFileNamePrefix(type, id, version.toString())}_lang-$languageCode.json"

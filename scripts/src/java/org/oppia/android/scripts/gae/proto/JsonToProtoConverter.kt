@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.gae.proto
 
 import org.oppia.android.scripts.gae.compat.CompleteExploration
+import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeAnswerGroup
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions
@@ -46,6 +47,7 @@ import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.REAL
 import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.BaseAnswerGroupDto
 import org.oppia.proto.v1.structure.BaseSolutionDto
+import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.ChapterSummaryDto
 import org.oppia.proto.v1.structure.ConceptCardDto
 import org.oppia.proto.v1.structure.ConceptCardDto.WorkedExampleDto
@@ -167,6 +169,17 @@ class JsonToProtoConverter(
   private val localizationTracker: LocalizationTracker,
   private val topicDependencies: Map<String, Set<String>>
 ) {
+  fun trackClassroomTranslations(classrooms: List<GaeClassroom>) {
+    for (classroom in classrooms) {
+      val containerId = LocalizationTracker.ContainerId.createFrom(classroom)
+      // TODO: Classrooms don't have a language code exposed.
+      val defaultLanguage = LanguageType.ENGLISH
+      // TODO: Add missing thumbnail once it's available.
+      localizationTracker.initializeContainer(containerId, defaultLanguage)
+      localizationTracker.trackContainerText(containerId, TITLE, classroom.name)
+    }
+  }
+
   fun trackTopicTranslations(topics: Map<String, GaeTopic>) {
     for (topic in topics.values) {
       val containerId = LocalizationTracker.ContainerId.createFrom(topic)
@@ -315,6 +328,18 @@ class JsonToProtoConverter(
       // Track translations after all default strings have been established.
       localizationTracker.trackTranslations(containerId, pageContents.writtenTranslations)
     }
+  }
+
+  suspend fun convertToClassroom(gaeClassroom: GaeClassroom, defaultLanguage: LanguageType): ClassroomDto {
+    val containerId = LocalizationTracker.ContainerId.createFrom(gaeClassroom)
+    return ClassroomDto.newBuilder().apply {
+      this.protoVersion = ProtoVersionProvider.createLatestClassroomProtoVersion()
+      this.id = gaeClassroom.id
+      this.name = localizationTracker.convertContainerText(containerId, TITLE)
+      addAllTopicIds(gaeClassroom.topicIdToPrereqTopicIds.keys)
+      this.localizations =
+        localizationTracker.computeCompleteLocalizationPack(containerId, defaultLanguage)
+    }.build()
   }
 
   suspend fun convertToDownloadableTopicSummary(

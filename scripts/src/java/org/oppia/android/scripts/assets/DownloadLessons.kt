@@ -43,7 +43,7 @@ import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertTo
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToSubtopicRecord
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicIdList
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicRecord
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageContainerType
@@ -98,6 +98,38 @@ import org.oppia.proto.v1.structure.TranslatableHtmlContentIdDto
 import org.oppia.proto.v1.structure.TranslatableSetOfNormalizedStringDto
 import org.oppia.proto.v1.structure.UpcomingTopicSummaryDto
 
+/*
+  TODO: Thoughts for improving the script:
+  - Introduce args to allow enabling/disabling specific checks.
+  - Change output structure such that just the top-level asset dir is provided and then the following are always generated:
+    - prod_assets/{images,*.pb}
+    - pipeline/
+      - images_{conversions,renames}/
+      - protov{1,2}/{textproto,binary}/
+      - proto_conversion_info.log
+    - classrooms_cache/ (full picture isn't presented, but the idea is to show all versions downloaded & analyses from them, plus data hierarchy)
+      - {separate_classroom_name}_topics/
+        - classroom_{name}_download_info.log
+        - {topic_id}_v{version_name}/
+          - topic_{id}_summary_download_info.log
+          - topic_summary.json
+          ...
+  - Change cache_mode to just be lazy/force (with lazy being default). 'none' isn't necessary.
+  - Generate download_info.log files for the cache that include:
+    - The specific URL used to download each file.
+    - Any specific irrecoverable failures encountered during import (prior to conversion to proto).
+    - All optional & non-optional failures from json to protov2.
+  - Generate a proto_conversion_info.log that includes:
+    - Any issues or warnings from protov2 to protov1.
+  - Broadly, reduce all output such that the script is leaning much more heavily on files (where it also should output much more diagnostic information than done today). This keeps the script output lean to pass/fail & progress indicators, and the generated output logs to enough context to investigate both recoverable and irrecoverable failures.
+  - NOTE: Enabling addAllRequiredAdditionalLanguages below forces large batches of version requests (which leads to significant performance issues on Oppia web). Things to do here:
+    - 1. Introduce a batch fetcher for merging different structure versions & IDs (and maybe types) since the endpoint can handle this. It's fewer items to pass back and forth.
+    - 2. Make web more fault tolerant; it's fine if it can't fetch everything. Provide enough context to the client to retry failing requests (though we need to pass *why* it fails). Consider also avoiding using memcache in some cases since it doesn't need to cache old versions of structures.
+    - 3. Ensure the fetcher utilizes the retry functionality from (2).
+    - 4. Once the fetch succeeds again, look into fixing the compatibility problems that lead to the version explosion. Make sure on-disk caching works correctly.
+  - Consider looking into Firebase auth now vs. later since we need to make backend changes, anyway.
+ */
+
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 fun main(vararg args: String) {
@@ -127,14 +159,14 @@ fun main(vararg args: String) {
     check(it.exists() && it.isDirectory) { "Expected output directory to exist: $outputDirPath." }
   }
 
-  val baseArgCount = if (cacheDirPath == null) 6 else 7
-  val testTopicIds = args.getOrNull(baseArgCount)?.split(',')?.toSet() ?: setOf()
+  // val baseArgCount = if (cacheDirPath == null) 6 else 7
+  // TODO: Incorporate this within GaeAndroidEndpointJsonImpl for topic deps.
+  // val testTopicIds = args.getOrNull(baseArgCount)?.split(',')?.toSet() ?: setOf()
   val apiSecretFile = File(apiSecretPath).absoluteFile.normalize().also {
     check(it.exists() && it.isFile) { "Expected API secret file to exist: $apiSecretPath." }
   }
   val apiSecret = apiSecretFile.readText().trim()
-  val downloader =
-    DownloadLessons(baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, force, testTopicIds)
+  val downloader = DownloadLessons(baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, force)
   downloader.downloadLessons(outputDir)
 }
 
@@ -144,8 +176,7 @@ class DownloadLessons(
   gcsBucket: String,
   apiSecret: String,
   private val cacheDir: File?,
-  private val forceCacheLoad: Boolean,
-  testTopicIds: Set<String>
+  private val forceCacheLoad: Boolean
 ) {
   private val threadPool by lazy {
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
@@ -163,7 +194,6 @@ class DownloadLessons(
       cacheDir,
       forceCacheLoad,
       coroutineDispatcher,
-      topicDependencies = topicDependenciesTable + testTopicIds.associateWith { setOf() },
       imageDownloader
     )
   }
@@ -205,7 +235,7 @@ class DownloadLessons(
       compatibilityContext = ProtoVersionProvider.createCompatibilityContext()
       // No structures are considered already downloaded. TODO: Integrate with local files cache?
       requestedDefaultLanguage = defaultLanguage
-//      addAllRequiredAdditionalLanguages(requestedLanguages)
+      // addAllRequiredAdditionalLanguages(requestedLanguages)
       addAllSupportedAdditionalLanguages(requestedLanguages)
     }.build()
 
@@ -236,6 +266,14 @@ class DownloadLessons(
         " ${downloadableTopics.size} are downloadable, IDs: $downloadableTopicIds." +
         " ${futureTopicIds.size} topics will later be available, IDs: $futureTopicIds."
     )
+    println("${listResponse.classroomsCount} classrooms are available:")
+    listResponse.classroomsList.forEach { classroom ->
+      val defaultLocalization = classroom.localizations.defaultMapping
+      val nameContentId = classroom.name.contentId
+      val textMapping = defaultLocalization.localizableTextContentMappingMap[nameContentId]
+      val classroomName = textMapping?.singleLocalizableText?.text?.takeIf { it.isNotEmpty() } ?: "<unknown>"
+      println("- ${classroom.id}: $classroomName (has ${classroom.topicIdsCount} topics)")
+    }
 
     println()
     val contentRequest =
@@ -524,6 +562,9 @@ class DownloadLessons(
     val conceptCardImageReplacements = conceptCards.associate { dto ->
       dto.skillId to images.computeReplacements(ImageContainerType.SKILL, dto.skillId)
     }
+    val classroomImageReplacements = listResponse.classroomsList.associate { classroom ->
+      classroom.id to images.computeReplacements(ImageContainerType.CLASSROOM, classroom.id)
+    }
     val writeProtoV1AsyncResults = topicSummaries.map { (topicId, topicSummary) ->
       val imageReplacements = images.computeReplacements(ImageContainerType.TOPIC, topicId)
       writeProtosAsync(protoV1Dir, topicId, topicSummary.convertToTopicRecord(imageReplacements))
@@ -561,10 +602,15 @@ class DownloadLessons(
       )
     ) + explorations.map { exp ->
       val imageReplacements = images.computeReplacements(ImageContainerType.EXPLORATION, exp.id)
-      val packs = explorationPacks.getValue(exp.id)
+      // TODO: The listOf() default here allows some explorations to have no translations.
+      val packs = explorationPacks[exp.id] ?: listOf()
       writeProtosAsync(protoV1Dir, exp.id, exp.convertToExploration(imageReplacements, packs))
     } + writeProtosAsync(
-      protoV1Dir, baseName = "topics", topicSummaries.values.convertToTopicIdList()
+      protoV1Dir,
+      baseName = "classrooms",
+      listResponse.classroomsList.convertToClassroomList(
+        topicSummaries.values, classroomImageReplacements
+      )
     )
 
     // Wait for all proto writes to finish.
@@ -575,6 +621,7 @@ class DownloadLessons(
     println("- Proto v1 text protos can be found in: ${textProtoV1Dir.path}")
     println("- Proto v1 binary protos can be found in: ${binaryProtoV1Dir.path}")
 
+    // TODO: Reenable analysis for all structures when non-explorations are expected to be fully translated (or a version can be downloaded by the script).
     val analyzer = CompatibilityAnalyzer(requestedLanguages + setOf(defaultLanguage))
     topicSummaries.values.forEach(analyzer::track)
     upcomingTopics.forEach(analyzer::track)
@@ -1911,41 +1958,6 @@ class DownloadLessons(
         shutdownNow()
         Thread.currentThread().interrupt()
       }
-    }
-
-    private const val PLACE_VALUES_ID = "iX9kYCjnouWN"
-    private const val ADDITION_AND_SUBTRACTION_ID = "sWBXKH4PZcK6"
-    private const val MULTIPLICATION_ID = "C4fqwrvqWpRm"
-    private const val DIVISION_ID = "qW12maD4hiA8"
-    private const val EXPRESSIONS_AND_EQUATIONS_ID = "dLmjjMDbCcrf"
-    private const val FRACTIONS_ID = "0abdeaJhmfPm"
-    private const val RATIOS_ID = "5g0nxGUmx5J5"
-
-    private val fractionsDependencies by lazy {
-      setOf(ADDITION_AND_SUBTRACTION_ID, MULTIPLICATION_ID, DIVISION_ID)
-    }
-    private val ratiosDependencies by lazy {
-      setOf(ADDITION_AND_SUBTRACTION_ID, MULTIPLICATION_ID, DIVISION_ID)
-    }
-    private val additionAndSubtractionDependencies by lazy { setOf(PLACE_VALUES_ID) }
-    private val multiplicationDependencies by lazy { setOf(ADDITION_AND_SUBTRACTION_ID) }
-    private val divisionDependencies by lazy { setOf(MULTIPLICATION_ID) }
-    private val placeValuesDependencies by lazy { setOf<String>() }
-    private val expressionsAndEquationsDependencies by lazy {
-      setOf(ADDITION_AND_SUBTRACTION_ID, MULTIPLICATION_ID, DIVISION_ID)
-    }
-
-    // TODO: Document that this exists since Oppia web doesn't yet provide signals on order.
-    private val topicDependenciesTable by lazy {
-      mapOf(
-        FRACTIONS_ID to fractionsDependencies,
-        RATIOS_ID to ratiosDependencies,
-        ADDITION_AND_SUBTRACTION_ID to additionAndSubtractionDependencies,
-        MULTIPLICATION_ID to multiplicationDependencies,
-        DIVISION_ID to divisionDependencies,
-        PLACE_VALUES_ID to placeValuesDependencies,
-        EXPRESSIONS_AND_EQUATIONS_ID to expressionsAndEquationsDependencies,
-      )
     }
 
     private fun createSubtopicId(topicId: String, subtopicIndex: Int): SubtopicPageIdDto {
