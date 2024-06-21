@@ -14,7 +14,6 @@ import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
-import java.nio.file.NoSuchFileException
 import java.util.concurrent.TimeUnit
 
 /**
