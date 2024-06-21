@@ -57,6 +57,7 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.ABANDON_SURVEY -> "abandon_survey"
       ActivityContextCase.MANDATORY_RESPONSE -> "mandatory_response"
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
+      ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT -> "feature_flag_list"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG -> "failed_analytics_log"
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "unknown_activity_context"
       ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"
