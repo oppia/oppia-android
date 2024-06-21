@@ -109,6 +109,13 @@ class ProfileTestHelper @Inject constructor(
     )
   }
 
+  /** Marks a profile as having seen the onboarding flow. */
+  fun markProfileOnboarded(internalProfileId: Int): DataProvider<Any?> {
+    return profileManagementController.updateProfileOnboardingState(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
+  }
+
   /** Returns the continue button animation seen for profile. */
   fun getContinueButtonAnimationSeenStatus(profileId: ProfileId): Boolean {
     return monitorFactory.waitForNextSuccessfulResult(

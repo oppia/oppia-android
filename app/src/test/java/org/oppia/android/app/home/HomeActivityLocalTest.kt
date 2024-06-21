@@ -6,8 +6,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -93,6 +95,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.profile.ProfileTestHelper
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -115,6 +118,9 @@ class HomeActivityLocalTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   private val internalProfileId: Int = 1
 
@@ -192,19 +198,15 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onboardingV2_onSubsequentLaunch_doesNotLogEndProfileOnboardingEvent() {
-    executeInPreviousAppInstance { testComponent ->
-      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
+  fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.markProfileOnboarded(internalProfileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+      val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+      assertThat(events[0].context.activityContextCase).isEqualTo(OPEN_HOME)
+      assertThat(events[1].context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
     }
   }
 
@@ -222,6 +224,7 @@ class HomeActivityLocalTest {
   private fun setUpTestWithOnboardingV2Enabled() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
   }
 
   /**
@@ -296,6 +299,8 @@ class HomeActivityLocalTest {
     fun getAppStartupStateController(): AppStartupStateController
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
+    fun getProfileTestHelper(): ProfileTestHelper
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
