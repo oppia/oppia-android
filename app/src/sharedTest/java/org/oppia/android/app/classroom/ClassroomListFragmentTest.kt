@@ -10,6 +10,7 @@ import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -117,6 +118,9 @@ class ClassroomListFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
+
+  @Test
+  fun dummyTest() {}
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
