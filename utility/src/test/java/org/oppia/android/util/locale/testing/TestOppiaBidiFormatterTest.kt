@@ -92,7 +92,7 @@ class TestOppiaBidiFormatterTest {
     val wrappedStr = formatter.wrapText("test str")
 
     // Try to wrap the string again.
-    val exception = assertThrows(IllegalStateException::class) { formatter.wrapText(wrappedStr) }
+    val exception = assertThrows<IllegalStateException>() { formatter.wrapText(wrappedStr) }
 
     assertThat(exception).hasMessageThat()
       .contains("Error: encountered string that's already been wrapped: test str")

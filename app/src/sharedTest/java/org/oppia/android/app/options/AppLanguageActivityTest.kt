@@ -25,6 +25,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -45,6 +46,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -58,10 +60,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -107,8 +109,7 @@ class AppLanguageActivityTest {
 
   @Inject
   lateinit var context: Context
-
-  private val summaryValue = "English"
+  private val internalProfileId: Int = -1
 
   @Before
   fun setUp() {
@@ -121,17 +122,15 @@ class AppLanguageActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAppLanguageActivityIntent(summaryValue).extractCurrentAppScreenName()
-
+    val screenName =
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH).extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.APP_LANGUAGE_ACTIVITY)
   }
 
   @Test
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      createAppLanguageActivityIntent(
-        summaryValue
-      )
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)
     )
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -139,8 +138,13 @@ class AppLanguageActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_language_activity_title))
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent =
-    AppLanguageActivity.createAppLanguageActivityIntent(context, summaryValue)
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
+    return AppLanguageActivity.createAppLanguageActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      oppiaLanguage,
+      internalProfileId
+    )
+  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -156,7 +160,7 @@ class AppLanguageActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -170,7 +174,8 @@ class AppLanguageActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

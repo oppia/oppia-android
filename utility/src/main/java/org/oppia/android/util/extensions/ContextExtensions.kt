@@ -1,4 +1,4 @@
-package org.oppia.android.app.utility
+package org.oppia.android.util.extensions
 
 import android.content.Context
 
@@ -6,6 +6,8 @@ import android.content.Context
 
 /** Returns the current app version name. */
 fun Context.getVersionName(): String {
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+  @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
   return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).versionName
 }
 
@@ -18,5 +20,7 @@ fun Context.getVersionCode(): Int {
 
 /** Returns the time at which the app was last updated. */
 fun Context.getLastUpdateTime(): Long {
+  // TODO(#3616): Migrate to the proper SDK 28+ APIs.
+  @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
   return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).lastUpdateTime
 }

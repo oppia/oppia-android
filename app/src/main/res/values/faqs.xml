@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string-array name="faq_questions">
-    <item>@string/faq_question_1</item>
-    <item>@string/faq_question_2</item>
-    <item>@string/faq_question_3</item>
-    <item>@string/faq_question_4</item>
-    <item>@string/faq_question_5</item>
-    <item>@string/faq_question_6</item>
-    <item>@string/faq_question_7</item>
-    <item>@string/faq_question_9</item>
+    <item>@string/faq_question_whats_oppia</item>
+    <item>@string/faq_question_whos_an_admin</item>
+    <item>@string/faq_question_create_profile</item>
+    <item>@string/faq_question_app_language</item>
+    <item>@string/faq_question_bug_reporting</item>
+    <item>@string/faq_question_math_lessons</item>
+    <item>@string/faq_question_more_lessons</item>
+    <item>@string/faq_question_exploration_player</item>
+    <item>@string/faq_question_audio_not_playing</item>
+    <item>@string/faq_question_delete_profile</item>
+    <item>@string/faq_question_update_app</item>
+    <item>@string/faq_question_update_os</item>
+    <item>@string/faq_question_cant_find_question</item>
   </string-array>
 
   <string-array name="faq_answers">
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_2</item>
-    <item>@string/faq_answer_3</item>
-    <item>@string/faq_answer_4</item>
-    <item>@string/faq_answer_5</item>
-    <item>@string/faq_answer_6</item>
-    <item>@string/faq_answer_7</item>
-    <item>@string/faq_answer_9</item>
+    <item>@string/faq_answer_whats_oppia</item>
+    <item>@string/faq_answer_whos_an_admin</item>
+    <item>@string/faq_answer_create_profile</item>
+    <item>@string/faq_answer_app_language</item>
+    <item>@string/faq_answer_bug_reporting</item>
+    <item>@string/faq_answer_math_lessons</item>
+    <item>@string/faq_answer_more_lessons</item>
+    <item>@string/faq_answer_exploration_player</item>
+    <item>@string/faq_answer_audio_not_playing</item>
+    <item>@string/faq_answer_delete_profile</item>
+    <item>@string/faq_answer_update_app</item>
+    <item>@string/faq_answer_update_os</item>
+    <item>@string/faq_answer_cant_find_question</item>
   </string-array>
 </resources>

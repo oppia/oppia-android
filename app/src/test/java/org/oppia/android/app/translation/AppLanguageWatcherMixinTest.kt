@@ -3,8 +3,8 @@ package org.oppia.android.app.translation
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -54,6 +54,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -67,13 +68,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -125,29 +127,15 @@ class AppLanguageWatcherMixinTest {
   //  cases when the locale isn't initialized (such as process death) prints an error & default
   //  initializes the locale handler.
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
-  lateinit var testActivityRecreator: TestActivityRecreator
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var testActivityRecreator: TestActivityRecreator
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -156,65 +144,105 @@ class AppLanguageWatcherMixinTest {
 
   @Test
   fun testMixin_initialized_noAppLanguageChange_doesNothing() {
-    val mixin = retrieveAppLanguageWatcherMixin()
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      testCoroutineDispatchers.runCurrent()
 
-    mixin.initialize()
-    testCoroutineDispatchers.runCurrent()
-
-    // Initializing without anything changing should result in no changes to the locale or activity.
-    val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
-    assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
-    assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+      // Initializing without anything changing should result in no changes to the locale or activity.
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+    }
   }
 
   @Test
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_localeIsUnchanged() {
-    val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize()
-    testCoroutineDispatchers.runCurrent()
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      testCoroutineDispatchers.runCurrent()
 
-    updateAppLanguageTo(ENGLISH)
+      updateAppLanguageTo(ENGLISH)
 
-    // Changing the app language to the current language shouldn't change the locale.
-    val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
-    assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+      // Changing the app language to the current language shouldn't change the locale.
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+    }
   }
 
   @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_updatesLocale() {
-    val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize()
-    testCoroutineDispatchers.runCurrent()
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      testCoroutineDispatchers.runCurrent()
 
-    updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
+      updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
 
-    // Changing to a new app language should trigger the locale to change by the mixin.
-    val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
-    assertThat(localeContext.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+      // Changing to a new app language should trigger the locale to change by the mixin.
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    }
   }
 
   @Test
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_doesNotRecreateActivity() {
-    val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize()
-    testCoroutineDispatchers.runCurrent()
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      testCoroutineDispatchers.runCurrent()
 
-    updateAppLanguageTo(ENGLISH)
+      updateAppLanguageTo(ENGLISH)
 
-    // Changing the app language to the current language shouldn't recreate the activity.
-    assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+      // Changing the app language to the current language shouldn't recreate the activity.
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+    }
   }
 
   @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_recreatesActivity() {
-    val mixin = retrieveAppLanguageWatcherMixin()
-    mixin.initialize()
-    testCoroutineDispatchers.runCurrent()
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      testCoroutineDispatchers.runCurrent()
 
-    updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
+      updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
 
-    // Changing to a new app language should trigger the mixin to recreate the activity.
-    assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(1)
+      // Changing to a new app language should trigger the mixin to recreate the activity.
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(1)
+    }
+  }
+
+  @Test
+  fun testMixin_initialized_withShouldUseSystemLanguage_initializesSystemLanguage() {
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = true)
+      testCoroutineDispatchers.runCurrent()
+
+      updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
+
+      // The system language (English by default) should be used even though the app language was
+      // requested to be changed since that's what the mixin was initialized to do.
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+    }
+  }
+
+  @Test
+  fun testMixin_initialized_noProfileLoggedIn_initializesSystemLanguage() {
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(shouldOnlyUseSystemLanguage = true)
+      testCoroutineDispatchers.runCurrent()
+
+      updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
+
+      // If there's no profile logged in, the language should stay as the system language even
+      // though it was requested to be changed.
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+    }
   }
 
   private fun updateAppLanguageTo(language: OppiaLanguage) {
@@ -228,12 +256,19 @@ class AppLanguageWatcherMixinTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
-  private fun retrieveAppLanguageWatcherMixin(): AppLanguageWatcherMixin {
-    lateinit var mixin: AppLanguageWatcherMixin
-    activityRule.scenario.onActivity { activity ->
-      mixin = activity.appLanguageWatcherMixin
+  private fun launchTestActivity(): ActivityScenario<TestActivity> {
+    // All tests in this suite self-manage the mixin, so disable the one TestActivity uses to avoid
+    // clashes in behavior.
+    TestActivity.forceDisableLanguageWatcherMixinInitialization = true
+    return ActivityScenario.launch(TestActivity.createIntent(context))
+  }
+
+  private fun runAlongsideTestActivity(block: (AppLanguageWatcherMixin) -> Unit) {
+    launchTestActivity().use { scenario ->
+      lateinit var mixin: AppLanguageWatcherMixin
+      scenario.onActivity { activity -> mixin = activity.appLanguageWatcherMixin }
+      block(mixin)
     }
-    return mixin
   }
 
   private fun setUpTestApplicationComponent() {
@@ -262,7 +297,7 @@ class AppLanguageWatcherMixinTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
@@ -277,7 +312,8 @@ class AppLanguageWatcherMixinTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

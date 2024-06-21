@@ -53,6 +53,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -68,10 +69,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -116,22 +117,33 @@ class ProfileAndDeviceIdActivityTest {
     private const val FIXED_APPLICATION_ID = 123456789L
   }
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   var activityRule =
     ActivityScenarioRule<ProfileAndDeviceIdActivity>(
       ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var oppiaClock: OppiaClock
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var syncStatusManager: SyncStatusManager
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject
+  lateinit var syncStatusManager: SyncStatusManager
 
   @Before
   fun setUp() {
@@ -203,7 +215,7 @@ class ProfileAndDeviceIdActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -217,7 +229,8 @@ class ProfileAndDeviceIdActivityTest {
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

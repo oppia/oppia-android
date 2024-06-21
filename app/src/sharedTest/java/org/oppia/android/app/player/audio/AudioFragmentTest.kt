@@ -68,6 +68,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -82,12 +83,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -111,7 +112,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -155,7 +155,7 @@ class AudioFragmentTest {
       "2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
   private val TEST_URL2 =
     "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
-      "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+      "2mzzFVDLuAj8/assets/audio/content-hi-2hn6btuei5.mp3"
 
   private var internalProfileId = 0
   private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -328,14 +328,13 @@ class AudioFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_icon)).perform(click())
 
-      // TODO(#3791): Remove this dependency.
-      val locale = Locale("es")
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.hinglish_localized_language_name))
+        .inRoot(isDialog())
+        .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-      onView(withText("OK")).inRoot(isDialog()).perform(click())
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon))
@@ -473,7 +472,7 @@ class AudioFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -487,7 +486,8 @@ class AudioFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

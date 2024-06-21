@@ -2,7 +2,6 @@ package org.oppia.android.util.logging.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsOptionalOf
-import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
@@ -29,6 +28,18 @@ interface LogReportingModule {
     fun providePerformanceMetricsEventLogger(
       factory: FirebaseAnalyticsEventLogger.FactoryImpl
     ): PerformanceMetricsEventLogger = factory.createPerformanceMetricEventLogger()
+
+    @Provides
+    @Singleton
+    fun provideFirestoreLogger(
+      factory: FirestoreEventLoggerProdImpl
+    ): FirestoreEventLogger = factory
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestoreInstanceWrapper(
+      impl: FirestoreInstanceWrapperImpl
+    ): FirestoreInstanceWrapper = impl
   }
 
   @BindsOptionalOf fun bindOptionalDebugAnalyticsEventLogger(): DebugAnalyticsEventLogger

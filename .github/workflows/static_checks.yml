@@ -103,7 +103,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.2.0
+          version: 6.5.0
 
       - uses: actions/cache@v2
         id: scripts_cache
@@ -176,8 +176,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh issue list --limit 2000 --repo oppia/oppia-android --json number > $(pwd)/open_issues.json
-          bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb open_issues.json
+          bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
 
       - name: String Resource Validation Check
         if: always()
@@ -196,7 +195,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.2.0
+          version: 6.5.0
 
       - name: Dependency validation (app dependencies)
         if: always()

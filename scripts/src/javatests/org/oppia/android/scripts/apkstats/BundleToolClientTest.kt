@@ -36,7 +36,7 @@ class BundleToolClientTest {
     val bundleToolClient =
       BundleToolClient(tempFolder.root.absolutePath, scriptBgDispatcher, commandExecutor)
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       bundleToolClient.buildUniversalApk("fake.aab", "fake.apk")
     }
 

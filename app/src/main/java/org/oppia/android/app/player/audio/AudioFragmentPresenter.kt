@@ -66,7 +66,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
 
-  /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
+  /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -171,6 +171,8 @@ class AudioFragmentPresenter @Inject constructor(
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
       AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
+      AudioLanguage.ARABIC_LANGUAGE -> "ar"
+      AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
       AudioLanguage.NO_AUDIO, AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
     }
@@ -188,14 +190,14 @@ class AudioFragmentPresenter @Inject constructor(
     return getAudioLanguage(profile.audioLanguage)
   }
 
-  /** Sets selected language code in presenter and ViewModel */
+  /** Sets selected language code in presenter and ViewModel. */
   fun languageSelected(language: String) {
     if (audioViewModel.selectedLanguageCode != language) {
       audioViewModel.setAudioLanguageCode(language)
     }
   }
 
-  /** Shows language dialog fragment with language list from exploration */
+  /** Shows language dialog fragment with language list from exploration. */
   fun showLanguageDialogFragment() {
     val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
@@ -208,14 +210,14 @@ class AudioFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
-  /** Pauses audio if in prepared state */
+  /** Pauses audio if in prepared state. */
   fun handleOnStop() {
     if (!activity.isChangingConfigurations && prepared) {
       audioViewModel.pauseAudio()
     }
   }
 
-  /** Releases audio player resources */
+  /** Releases audio player resources. */
   fun handleOnDestroy() {
     if (!activity.isChangingConfigurations) {
       audioViewModel.handleRelease()

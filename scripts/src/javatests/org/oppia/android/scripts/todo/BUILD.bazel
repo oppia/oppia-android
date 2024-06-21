@@ -19,8 +19,10 @@ kt_jvm_test(
     name = "TodoOpenCheckTest",
     srcs = ["TodoOpenCheckTest.kt"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
         "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:com_squareup_okhttp3_mockwebserver",
         "//scripts/third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//testing:assertion_helpers",
     ],

@@ -14,7 +14,7 @@
 
 ## Overview & Disclaimer
 
-This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) ior contact us at [gitter](https://gitter.im/oppia/oppia-android).
+This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) or contact us at [github-discussions](https://github.com/oppia/oppia-android/discussions).
 
 Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem. Windows currently only supports a terminal experience in this subsystem (though there is a prerelease version of the software with GUI support) which means Android Studio will not be supported. You will need to continue using the Windows version of Android Studio and only use the Linux subsystem for building & running Robolectric or JUnit-based tests.
 
@@ -51,20 +51,28 @@ sudo apt update && sudo apt upgrade
 
 After that, follow each of the subsections below as needed to install prerequisite dependencies:
 
-**Java**
+**Installing JDK 17+**
 
-JDK 8 is required for the Android build tools, and we suggest installing OpenJDK:
+Setting up Bazel for Oppia Android requires JDK>=17 for [Android Package Manager](#3-installing-the-android-sdk).
+
+For Ubuntu systems, this can be set up using:
 
 ```sh
-sudo apt install openjdk-8-jdk-headless
+sudo apt install openjdk-17-jdk
 ```
 
-**Python 2**
+For Fedora 25+, this can be set up using:
 
-Unfortunately, some of the Bazel build actions in the Android pipeline require Python 2 to be installed:
+```
+sudo dnf install java-17-openjdk
+```
+
+**GCC**
+
+Install gcc using the following command:
 
 ```sh
-sudo apt install python
+sudo apt install gcc
 ```
 
 ### 3. Installing the Android SDK
@@ -77,10 +85,10 @@ First, prepare the environment for the SDK by creating the default directory to 
 mkdir -p $HOME/Android/Sdk
 ```
 
-Second, navigate to https://developer.android.com/studio#command-tools in a web browser (in Windows) and select to download the latest **Linux** command tools (even though you're using Windows, the Linux commandline tools are needed--the Windows version will not work with these instructions). Once downloaded, copy the zip file to the new SDK location (note that the ``/c/mnt/...`` path is based on ``C:\Users\<Name>\Downloads`` being the default download location--this may not be the case on your system) with your Windows username filled in for ``<Name>``:
+Second, navigate to https://developer.android.com/studio#command-tools in a web browser (in Windows) and select to download the latest **Linux** command tools (even though you're using Windows, the Linux commandline tools are needed--the Windows version will not work with these instructions). Once downloaded, copy the zip file to the new SDK location (note that the ``/mnt/c/...`` path is based on ``C:\Users\<Name>\Downloads`` being the default download location--this may not be the case on your system) with your Windows username filled in for ``<Name>``:
 
 ```sh
-cp /c/mnt/Users/<Name>/Downloads/commandlinetools*.zip $HOME/Android/Sdk
+cp /mnt/c/Users/<Name>/Downloads/commandlinetools*.zip $HOME/Android/Sdk
 ```
 
 After that, change to the directory, unzip the archive, and remove it:
@@ -117,18 +125,27 @@ The ``sdkmanager`` command can now be used to install the necessary packages. Ru
 ```sh
 sdkmanager
 sdkmanager --install "platform-tools"
-sdkmanager --install "platforms;android-28"
-sdkmanager --install "build-tools;29.0.2"
+sdkmanager --install "platforms;android-33"
+sdkmanager --install "build-tools;32.0.0"
 ```
 
 When the commands above are finished running, the Android SDK should now be installed in your subsystem & be accessible to Bazel.
 
 ### 4. Installing Bazel
 
-Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 4.0.0, so you'll likely need to run the following command:
+Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 6.5.0, so you'll likely need to run the following command:
 
 ```sh
-sudo apt install bazel-4.0.0
+sudo apt install bazel-6.5.0
+```
+
+#### For Fedora 25+
+
+- Install Bazelisk instead of Bazel using the command below in Fedora:
+```
+wget https://github.com/bazelbuild/bazelisk/releases/download/v1.8.1/bazelisk-linux-amd64
+chmod +x bazelisk-linux-amd64
+sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
 ```
 
 ### 5. Preparing build environment for Oppia Android
@@ -137,9 +154,20 @@ The Oppia Android repository generally expects to live under an 'opensource' dir
 
 ```sh
 mkdir $HOME/opensource
+cd $HOME/opensource
 ```
 
-From there, follow [these instructions](https://github.com/oppia/oppia-bazel-tools#readme) in order to prepare your environment to support Oppia Android builds.
+Clone the [oppia-android](https://github.com/oppia/oppia-android) repository into the opensource directory.
+
+```sh
+git clone https://github.com/oppia/oppia-android.git
+```
+
+To configure your development environment and set up essential tools, execute the following setup script from the oppia-android directory.
+
+```sh
+scripts/setup.sh
+```
 
 ### 6. Verifying the build
 

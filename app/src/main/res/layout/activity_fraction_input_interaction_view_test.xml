@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="fractionInteractionViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel" />
+
+    <variable
+      name="getPendingAnswerErrorOnSubmitClick"
+      type="java.lang.Runnable" />
+  </data>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:descendantFocusability="beforeDescendants"
+      android:focusableInTouchMode="true"
+      android:gravity="center"
+      android:orientation="vertical"
+      tools:context=".testing.FractionInputInteractionViewTestActivity">
+
+      <org.oppia.android.app.customview.interaction.FractionInputInteractionView
+        android:id="@+id/test_fraction_input_interaction_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/edit_text_background"
+        android:fontFamily="sans-serif"
+        android:hint="@{fractionInteractionViewModel.hintText}"
+        android:imeOptions="actionDone"
+        android:longClickable="false"
+        android:maxLength="200"
+        android:minHeight="48dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:singleLine="true"
+        android:text="@={fractionInteractionViewModel.answerText}"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorHint="@color/component_color_shared_edit_text_hint_color"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:textChangedListener="@{fractionInteractionViewModel.answerTextWatcher}" />
+
+      <TextView
+        android:id="@+id/fraction_input_error"
+        style="@style/TextViewStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif"
+        android:minHeight="32dp"
+        android:text="@{fractionInteractionViewModel.errorMessage}"
+        android:textColor="@color/component_color_shared_input_error_color"
+        android:textSize="12sp"
+        android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+
+      <Button
+        android:id="@+id/submit_button"
+        style="@style/StateButtonActive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="@{(v) -> getPendingAnswerErrorOnSubmitClick.run()}"
+        android:text="@string/submit_button_text"
+        android:textColor="@color/component_color_shared_secondary_4_text_color" />
+    </LinearLayout>
+  </ScrollView>
+</layout>

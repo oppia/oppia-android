@@ -27,7 +27,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -96,10 +95,6 @@ class ExplorationStorageModuleTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @CacheAssetsLocally
-    @Provides
-    fun provideCacheAssetsLocally(): Boolean = false
 
     @Provides
     @LoadLessonProtosFromAssets

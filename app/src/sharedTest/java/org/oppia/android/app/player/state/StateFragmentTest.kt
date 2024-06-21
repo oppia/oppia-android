@@ -28,6 +28,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
+import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -123,6 +124,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -137,7 +139,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -156,6 +157,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -166,13 +168,12 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -214,6 +215,7 @@ class StateFragmentTest {
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -250,7 +252,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -261,7 +263,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -274,7 +276,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationHasContinueButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -286,7 +288,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -299,13 +301,13 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       clickContinueInteractionButton()
 
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
@@ -314,7 +316,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -330,7 +332,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -344,7 +346,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitAnswer_clickSubmit_continueButtonIsVisible() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -361,7 +363,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -376,7 +378,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -394,7 +396,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -411,7 +413,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -429,7 +431,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -442,8 +444,26 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // Robolectric tests don't rotate like this to recreate activity
+  fun testStateFragment_loadExp_invalidAnswer_changeConfiguration_submitButtonIsDisplayed() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/")
+
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -461,7 +481,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -476,7 +496,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -495,7 +515,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -517,7 +537,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -538,8 +558,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
-    setUpTestWithStudyOff()
+  fun testStateFragment_loadExp_thirdState_hasEnabledSubmitButton() {
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -549,13 +569,13 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
-    setUpTestWithStudyOff()
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasEnabledSubmitButton() {
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -567,13 +587,33 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_submitWithoutAnswer_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      clickSubmitAnswerButton()
+      onView(withId(R.id.selection_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.selection_error_empty_input
+            )
+          )
+        )
     }
   }
 
   @Test
   fun testStateFragment_loadExp_thirdState_selectAnswer_submitButtonIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -588,7 +628,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_thirdState_selectAnswer_clickSubmit_continueButtonIsVisible() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -606,7 +646,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_landscape_thirdState_selectAnswer_submitButtonIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -622,7 +662,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_thirdState_selectAnswer_clickSubmit_continueIsVisible() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -640,8 +680,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
-    setUpTestWithStudyOff()
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -651,15 +691,16 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
-    setUpTestWithStudyOff()
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -669,15 +710,16 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
 
-      // The submission button should now be disabled and there should be an error.
+      // The submission button should now still be enabled as empty input error will be displayed
+      // if submit button is clicked without choosing an answer.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
   fun testStateFragment_loadExp_thirdState_invalidAnswer_updated_submitAnswerIsEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -696,7 +738,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -706,8 +748,98 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadDragDropExp_submitWithoutArranging_showsErrorMessage() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickSubmitAnswerButton()
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            withText(
+              R.string.drag_and_drop_interaction_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Drag and drop interaction with grouping.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+      // Submit answer without any changes.
+      clickSubmitAnswerButton()
+      // Empty input error is displayed.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+      // Submit button is disabled due to the error.
+      verifySubmitAnswerButtonIsDisabled()
+      // Drag and rearrange an item.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      // Empty input error is reset.
+      onView(withId(R.id.drag_drop_interaction_error))
+        .check(
+          matches(
+            not(isDisplayed())
+          )
+        )
+      // Submit button is enabled back.
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -726,7 +858,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -747,7 +879,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -768,7 +900,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -801,7 +933,7 @@ class StateFragmentTest {
     // Note to self: current setup allows the user to drag the view without issues (now that
     // event interception isn't a problem), however the view is going partly offscreen which
     // is triggering an infinite animation loop in ItemTouchHelper).
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -821,7 +953,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -843,7 +975,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -859,7 +991,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -880,7 +1012,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -895,7 +1027,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -910,7 +1042,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -926,7 +1058,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -947,7 +1079,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -968,7 +1100,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -985,7 +1117,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -1005,7 +1137,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_firstState_prevAndNextButtonIsNotDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1018,7 +1150,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1030,7 +1162,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -1043,7 +1175,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -1059,7 +1191,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -1076,7 +1208,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevThenNext_prevAndSubmitShown() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -1095,7 +1227,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_submit_clickContinueThenPrevThenNext_prevAndSubmitShown() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -1116,7 +1248,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1133,7 +1265,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -1151,7 +1283,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
@@ -1166,7 +1298,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -1181,7 +1313,7 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forPrototypeExploration_withCustomOppiaTags_displaysParsedHtml() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1193,7 +1325,7 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forPrototypeExploration_changeConfig_withCustomTags_displaysParsedHtml() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1205,7 +1337,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1225,7 +1357,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_forHintsAndSolution_incorrectInputTwice_hintBulbContainerIsVisible() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
@@ -1248,7 +1380,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
@@ -1273,7 +1405,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_landscape_forMisconception_showsLinkTextForConceptCard() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
@@ -1299,7 +1431,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_forMisconception_clickLinkText_opensConceptCard() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
@@ -1323,7 +1455,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_landscape_forMisconception_clickLinkText_opensConceptCard() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
@@ -1348,7 +1480,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_initialStateIsContinueInteraction() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1360,7 +1492,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_continueInteraction_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -1375,7 +1507,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_fractionInteraction_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1391,7 +1523,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_multipleChoiceInteraction_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1408,7 +1540,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1425,7 +1557,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1443,7 +1575,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1459,7 +1591,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1478,7 +1610,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_numericInputInteraction_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1498,7 +1630,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1516,7 +1648,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1537,7 +1669,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_textInputInteraction_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1560,7 +1692,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_interactions_dragAndDropNoGrouping_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1584,7 +1716,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_interactions_dragAndDropWithGrouping_canSuccessfullySubmitAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1607,7 +1739,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_fractionInput_textViewHasTextInputType() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
 
@@ -1625,7 +1757,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_ratioInput_textViewHasTextInputType() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1649,7 +1781,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_saveProg_continueToEndExp_clickReturnToTopic_partialProgDeleted() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
@@ -1668,7 +1800,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_englishContentLang_content_isInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1681,7 +1813,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_content_isInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1694,7 +1826,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_thenEnglish_content_isInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1708,7 +1840,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_continueInteraction_buttonIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1721,7 +1853,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1734,7 +1866,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_fractionInput_placeholderIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1749,7 +1881,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_fractionInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1767,7 +1899,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_fractionInput_placeholderIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1782,7 +1914,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_fractionInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1801,7 +1933,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_englishContentLang_feedback_isInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1819,7 +1951,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_feedback_isInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1838,7 +1970,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_thenEnglish_feedback_isInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1857,7 +1989,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_multipleChoice_optionsAreInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1879,7 +2011,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_multipleChoice_submittedAnswer_answerIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1897,7 +2029,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_multipleChoice_optionsAreInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1920,7 +2052,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_answerIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1939,7 +2071,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1959,7 +2091,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_itemSelection_optionsAreInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1983,7 +2115,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_itemSelection_submittedAnswer_answerIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2006,7 +2138,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_itemSelection_optionsAreInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2031,7 +2163,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_itemSelection_submittedAnswer_answerIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2054,7 +2186,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2078,7 +2210,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_numericInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2100,7 +2232,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_numericInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2122,7 +2254,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_ratioInput_placeholderIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2141,7 +2273,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_ratioInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2164,7 +2296,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_ratioInput_placeholderIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2184,7 +2316,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_ratioInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2207,7 +2339,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_textInput_placeholderIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2227,7 +2359,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_textInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2251,7 +2383,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_textInput_placeholderIsInArabic() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2272,7 +2404,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_textInput_submitAnswer_answerMatchesSubmission() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2296,7 +2428,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_textInput_submitAnswer_switchToEnglish_answerDoesNotChange() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2321,7 +2453,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_dragAndDrop_optionsAreInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2350,7 +2482,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_english_dragAndDrop_submittedAnswer_answerIsInEnglish() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2381,7 +2513,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_portuguese_dragAndDrop_optionsAreInPortuguese() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2410,7 +2542,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_answerIsInPortuguese() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2441,7 +2573,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_switchToEnglish_answerIsInPt() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -2474,7 +2606,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_playWholeLesson_inArabic_hasReturnToTopicButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2491,7 +2623,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOff_inEnglish_doesNotHaveSwitchToSwahiliButton() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2504,7 +2636,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_inEnglish_lessonWithoutSwahili_doesNotHaveSwitchToSwahiliButton() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2518,7 +2650,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_inEnglish_notEnabledForProfile_doesNotHaveSwitchToSwahiliButton() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2532,7 +2664,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_enabledForProfile_inEnglish_hasSwitchToSwahiliButton() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2549,7 +2681,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_enabledForProfile_inSwahili_hasSwitchToEnglishButton() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -2567,7 +2699,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inEnglish_clickSwitchToSwahili_contentIsInSwahili() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2586,7 +2718,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inSwahili_clickSwitchToEnglish_contentIsInEnglish() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -2606,7 +2738,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inEnglish_clickSwitchToSwahili_thenBackToEnglish_contentIsInEnglish() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2627,7 +2759,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inEnglish_clickSwitchToSwahili_logsSwitchLanguageEvent() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -2649,7 +2781,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inSwahili_clickSwitchToEnglish_logsSwitchLanguageEvent() {
-    setUpTestWithStudyOn()
+    setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -2670,7 +2802,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2686,7 +2818,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffOrder_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2696,13 +2828,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffElems_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2712,13 +2844,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2728,13 +2860,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("no reordering allowed")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughMathInteractionExplorationState1()
@@ -2751,7 +2883,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffOrder_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughMathInteractionExplorationState1()
@@ -2769,7 +2901,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffElems_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughMathInteractionExplorationState1()
@@ -2780,13 +2912,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughMathInteractionExplorationState1()
@@ -2797,13 +2929,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_equivalence_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState2()
@@ -2820,7 +2952,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_equivalence_diffOrder_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState2()
@@ -2838,7 +2970,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_equivalence_diffElems_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState2()
@@ -2856,7 +2988,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_equivalence_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState2()
@@ -2867,13 +2999,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_answerWithDivideByZero_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2886,7 +3018,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_answerWithVariable_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2903,7 +3035,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_validAns_submissionDisplaysLatex() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playThroughMathInteractionExplorationState1()
@@ -2927,7 +3059,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionDisplaysLatex() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
 
@@ -2952,7 +3084,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_numericExp_validAns_english_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughMathInteractionExplorationState1()
@@ -2970,7 +3102,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -2987,7 +3119,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_numericExp_validAns_arabic_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3006,7 +3138,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesExactly_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3023,7 +3155,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesExactly_diffOrder_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3034,13 +3166,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesExactly_diffElems_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3051,13 +3183,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesExactly_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3068,13 +3200,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("represents the product of")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState4()
@@ -3091,7 +3223,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffOrder_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState4()
@@ -3109,7 +3241,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffElems_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState4()
@@ -3120,13 +3252,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState4()
@@ -3137,13 +3269,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_equivalence_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState5()
@@ -3160,7 +3292,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_equivalence_diffOrder_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState5()
@@ -3178,7 +3310,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_equivalence_diffElems_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState5()
@@ -3196,7 +3328,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_equivalence_diffElems_andVals_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState5()
@@ -3208,13 +3340,13 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_equivalence_diffOperations_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState5()
@@ -3233,7 +3365,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_equivalence_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState5()
@@ -3244,13 +3376,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_algExp_answerWithVariablePower_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3267,7 +3399,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_answerWithUnknownVars_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3282,7 +3414,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_validAns_submissionDisplaysLatex() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState4()
@@ -3306,7 +3438,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionDisplaysLatex() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3332,7 +3464,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_algExp_validAns_english_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState4()
@@ -3354,7 +3486,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
@@ -3377,7 +3509,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_algExp_validAns_arabic_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3396,7 +3528,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3413,7 +3545,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_flipped_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3425,13 +3557,13 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffOrder_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3442,13 +3574,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffElems_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3459,13 +3591,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3476,13 +3608,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("algebraic equation represents the quantity")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3499,7 +3631,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_flipped_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3511,13 +3643,13 @@ class StateFragmentTest {
       // matters for this interaction).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffOrder_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3535,7 +3667,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffElems_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3546,13 +3678,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3563,13 +3695,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("commutative and associative")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_canSubmitCorrectAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3588,7 +3720,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_flipped_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3608,7 +3740,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffOrder_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3628,7 +3760,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffElems_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3648,7 +3780,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffElems_andVals_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3660,13 +3792,13 @@ class StateFragmentTest {
       // values being different.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffOperations_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3687,7 +3819,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_rearranged_answerIsCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3707,7 +3839,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_multiple_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3719,13 +3851,13 @@ class StateFragmentTest {
       // verify that the two sides are multiples of each other).
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffValue_answerIsWrong() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState8()
@@ -3736,13 +3868,13 @@ class StateFragmentTest {
       // Verify that the state hasn't changed since the answer is incorrect.
       verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
       verifyContentContains("any equivalent expression")
-      verifySubmitAnswerButtonIsDisabled()
+      verifySubmitAnswerButtonIsEnabled() // Wrong answers shouldn't disable submit.
     }
   }
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_answerWithDoubleMult_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3756,7 +3888,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_missingEquals_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3771,7 +3903,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_answerWithUnknownVars_displaysError() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3788,7 +3920,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_validAns_submissionDisplaysLatex() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3812,7 +3944,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionDisplaysLatex() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3838,7 +3970,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_mathEq_validAns_english_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState7()
@@ -3861,7 +3993,7 @@ class StateFragmentTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
@@ -3886,7 +4018,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_mathEq_validAns_arabic_submissionHasA11yAnswer() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3908,7 +4040,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_clickContinue_returnToState_doesNotHaveFeedbackBox() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3923,7 +4055,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_clickContinue_finishNextState_returnToContinue_doesNotHaveFeedbackBox() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3941,7 +4073,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_noRadioItemSelected_defaultSelectionTextIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3957,7 +4089,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_oneRadioItemSelected_selectionTextIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3975,7 +4107,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_twoRadioItemSelected_selectionTextIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -3994,7 +4126,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_maxRadioItemSelected_selectionTextIsDisplayed() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4014,7 +4146,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_maxRadioItemSelected_nonSelectedCheckboxesAreDisabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4055,7 +4187,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_maxItemSelected_deselectingReturnsYouMaySelectMoreChoices() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4076,7 +4208,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_someItemSelected_deselectingReturnsPleaseSelectAllCorrect() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4097,7 +4229,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_notSelectingMaxRadioItem_return_allOtherCheckBoxesEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4145,7 +4277,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_SelectingMaxItemAndOneBelow_returnNoOtherCheckBoxesEnabled() {
-    setUpTestWithStudyOff()
+    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -4182,6 +4314,258 @@ class StateFragmentTest {
           targetViewId = R.id.item_selection_checkbox
         )
       ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_lateNight_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_earlyMorning_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_midMorning_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_afternoon_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_evening_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.survey_onboarding_title_text))
+        .check(
+          matches(
+            allOf(
+              withText(R.string.survey_onboarding_title_text),
+              isDisplayed()
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_allGatingConditionsMet_surveyDismissed_popupDoesNotShowAgain() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withId(R.id.maybe_later_button))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Check that the fragment is removed.
+      // When the survey popup is shown, the lastShownDateProvider is updated with current time,
+      // consequently updating the combined gating data provider. Recomputation of the gating result
+      // should not re-trigger the survey.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_surveyFeatureOff_allGatingConditionsMet_noSurveyPopup() {
+    // Survey Gating conditions are: isPastGracePeriod, has achieved minimum aggregate exploration
+    // time of 5min in a topic, and is within the hours of 9am and 10pm in the user's local time.
+
+    // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
+    // more than the grace period days in the past, so no need to explicitly define
+    // surveyLastShownTimestamp for computing the grace period.
+
+    setUpTestWithSurveyFeatureOff()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      // Check that the fragment is removed.
+      // In production, the activity is finished and TopicActivity is navigated to, but since this
+      // test runs in a test activity, once the test completes, the fragment is removed and the
+      // placeholders are displayed instead.
+      onView(withId(R.id.play_test_exploration_button)).check(
+        matches(
+          withEffectiveVisibility(
+            VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testFinishChapter_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
+    setUpTestWithSurveyFeatureOn()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
+
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_LONG)
+
+      clickReturnToTopicButton()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
+      // subscribers of an update.
+      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.survey_onboarding_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -4683,6 +5067,11 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
   }
 
+  private fun verifySubmitAnswerButtonIsEnabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
@@ -4719,18 +5108,27 @@ class StateFragmentTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
-  private fun setUpTestWithStudyOn() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+  private fun setUpTestWithLanguageSwitchingFeatureOn() {
+    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
   }
 
-  private fun setUpTestWithStudyOff() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+  private fun setUpTestWithLanguageSwitchingFeatureOff() {
+    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithSurveyFeatureOn() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithSurveyFeatureOff() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(false)
     setUpTest()
   }
 
   private fun setUpTest() {
-    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -4828,7 +5226,7 @@ class StateFragmentTest {
     }
   }
 
-  /*** Returns a matcher that matches view based on non-zero width and height.*/
+  /** Returns a matcher that matches view based on non-zero width and height. */
   private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
 
     override fun matchesSafely(target: View): Boolean {
@@ -4897,14 +5295,6 @@ class StateFragmentTest {
   @Module
   class TestModule {
     @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
-
-    @Provides
-    @TopicListToCache
-    fun provideTopicListToCache(): List<String> = listOf()
-
-    @Provides
     @LoadLessonProtosFromAssets
     fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
       testEnvironmentConfig.isUsingBazel()
@@ -4925,7 +5315,7 @@ class StateFragmentTest {
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
+      LogStorageModule::class,
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
@@ -4941,7 +5331,8 @@ class StateFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -4975,5 +5366,28 @@ class StateFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    // Date & time: Wed Apr 24 2019 08:22:03 GMT.
+    private const val EARLY_MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+
+    // Date & time: Wed Apr 24 2019 10:30:12 GMT.
+    private const val MID_MORNING_UTC_TIMESTAMP_MILLIS = 1556101812000
+
+    // Date & time: Tue Apr 23 2019 14:22:00 GMT.
+    private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
+
+    // Date & time: Tue Apr 23 2019 21:26:12 GMT.
+    private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556054772000
+
+    // Date & time: Tue Apr 23 2019 23:22:00 GMT.
+    private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
+
+    // Exploration play through time less than the required 5 min
+    private const val SESSION_LENGTH_SHORT = 120000L
+
+    // Exploration play through time greater than the required 5 min
+    private const val SESSION_LENGTH_LONG = 360000L
   }
 }

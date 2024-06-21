@@ -11,7 +11,8 @@ kt_jvm_library(
     srcs = [
         "AndroidBuildSdkProperties.kt",
     ],
-    resources = [":sdk_info_properties"],
+    resource_strip_prefix = "scripts/src/java",
+    resources = [":_sdk_info_properties"],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
@@ -34,6 +35,24 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "github_client",
+    testonly = True,
+    srcs = [
+        "GitHubClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common/model:github_issue",
+        "//scripts/src/java/org/oppia/android/scripts/common/remote:github_service",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -79,7 +98,7 @@ kt_jvm_library(
 )
 
 genrule(
-    name = "sdk_info_properties",
+    name = "_sdk_info_properties",
     srcs = [],
     outs = ["sdk_info.properties"],
     cmd = """

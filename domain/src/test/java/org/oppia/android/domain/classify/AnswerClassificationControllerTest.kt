@@ -152,7 +152,7 @@ class AnswerClassificationControllerTest {
   fun testClassify_forUnknownInteraction_throwsException() {
     val interaction = Interaction.getDefaultInstance()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       answerClassificationController.classify(
         interaction,
         TEST_STRING_0,
@@ -170,7 +170,7 @@ class AnswerClassificationControllerTest {
       .addAnswerGroups(AnswerGroup.newBuilder().addRuleSpecs(RuleSpec.getDefaultInstance()))
       .build()
 
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       answerClassificationController.classify(
         interaction,
         TEST_STRING_0,

@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity for Mark Chapters Completed. */
-class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
+class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   @Inject
   lateinit var markChaptersCompletedActivityPresenter: MarkChaptersCompletedActivityPresenter
@@ -33,6 +33,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       onBackPressed()
     }
     return super.onOptionsItemSelected(item)
@@ -43,6 +44,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
     private const val SHOW_CONFIRMATION_NOTICE_EXTRA_KEY =
       "MarkChaptersCompletedActivity.show_confirmation_notice"
 
+    /** Returns an [Intent] to start this activity. */
     fun createMarkChaptersCompletedIntent(
       context: Context,
       internalProfileId: Int,

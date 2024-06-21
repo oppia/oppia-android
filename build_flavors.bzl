@@ -54,7 +54,7 @@ _FLAVOR_METADATA = {
         "multidex": "native",
         "production_release": True,
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_ALPHA_VERSION_CODE,
     },
     "alpha_kenya": {
@@ -68,7 +68,7 @@ _FLAVOR_METADATA = {
         "multidex": "native",
         "production_release": True,
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
     },
     "alpha_kitkat": {
@@ -83,7 +83,7 @@ _FLAVOR_METADATA = {
         "multidex": "manual_main_dex",
         "production_release": True,
         "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
     },
     "beta": {
@@ -97,7 +97,7 @@ _FLAVOR_METADATA = {
         "multidex": "native",
         "production_release": True,
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_BETA_VERSION_CODE,
     },
     "dev": {
@@ -111,7 +111,7 @@ _FLAVOR_METADATA = {
         "multidex": "native",
         "production_release": False,
         "proguard_specs": [],  # Developer builds are not optimized.
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_DEV_VERSION_CODE,
     },
     "dev_kitkat": {
@@ -126,7 +126,7 @@ _FLAVOR_METADATA = {
         "multidex": "manual_main_dex",
         "production_release": False,
         "proguard_specs": [],  # Developer builds are not optimized.
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
     },
     "ga": {
@@ -140,7 +140,7 @@ _FLAVOR_METADATA = {
         "multidex": "native",
         "production_release": True,
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 31,
+        "target_sdk_version": 33,
         "version_code": OPPIA_GA_VERSION_CODE,
     },
 }

@@ -50,6 +50,7 @@ app_test(
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
@@ -31,9 +33,9 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.CustomSchemaValue
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams
-import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams
+import org.oppia.android.app.model.MathExpressionInteractionsViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.model.SchemaObjectList
@@ -44,7 +46,7 @@ import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.REA
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.SUBMIT_TIME
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.InputInteractionViewTestActivity
+import org.oppia.android.app.testing.MathExpressionInteractionsViewTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -62,6 +64,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -75,10 +78,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -245,6 +248,63 @@ class MathExpressionInteractionsViewTest {
 
       // There should be no hint since the text view has been focused.
       onView(withId(R.id.test_math_expression_input_interaction_view)).check(matches(withHint("")))
+    }
+  }
+
+  @Test
+  fun testNumericExpression_submitWithBlankInput_emptyInputErrorIsDisplayed() {
+    val interaction = createInteractionWithPlaceholder("test placeholder")
+    launchForNumericExpressions(interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.math_expression_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.numeric_expression_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testAlgebraicExpression_submitWithBlankInput_emptyInputErrorIsDisplayed() {
+    val interaction = createInteractionWithPlaceholder("test placeholder")
+    launchForAlgebraicExpressions(interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.math_expression_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.algebraic_expression_error_empty_input
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testMathEquation_submitWithBlankInput_emptyInputErrorIsDisplayed() {
+    val interaction = createInteractionWithPlaceholder("test placeholder")
+    launchForMathEquations(interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.math_expression_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.math_equation_error_empty_input
+            )
+          )
+        )
     }
   }
 
@@ -1537,7 +1597,6 @@ class MathExpressionInteractionsViewTest {
 
       typeExpressionInput(text)
 
-      // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
         assertThat(answerError).isNull()
@@ -1560,7 +1619,6 @@ class MathExpressionInteractionsViewTest {
 
       typeExpressionInput(text)
 
-      // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(REAL_TIME)
         assertThat(answerError).isNull()
@@ -1568,29 +1626,56 @@ class MathExpressionInteractionsViewTest {
     }
   }
 
+  @Test
+  @Iteration("numeric_expression", "type=NUMERIC_EXPRESSION", "text=")
+  @Iteration("algebraic_expression", "type=ALGEBRAIC_EXPRESSION", "text=")
+  @Iteration("math_equation", "type=MATH_EQUATION", "text=")
+  fun testView_allInteractions_blankInput_produceSubmitTimeError() {
+    val interactionType = MathInteractionType.valueOf(type)
+    val interaction = createInteraction()
+    launch(interactionType, interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      typeExpressionInput(text)
+
+      // Using not-allowed-listed variables should result in a failure.
+      scenario.onActivity { activity ->
+        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
+        assertThat(answerError).isNotEmpty()
+      }
+    }
+  }
+
   private fun launchForNumericExpressions(
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionsViewTestActivity> {
     return launch(MathInteractionType.NUMERIC_EXPRESSION, interaction, translationContext)
   }
 
   private fun launchForMathEquations(
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionsViewTestActivity> {
     return launch(MathInteractionType.MATH_EQUATION, interaction, translationContext)
+  }
+
+  private fun launchForAlgebraicExpressions(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+    translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+  ): ActivityScenario<MathExpressionInteractionsViewTestActivity> {
+    return launch(MathInteractionType.ALGEBRAIC_EXPRESSION, interaction, translationContext)
   }
 
   private fun launch(
     interactionType: MathInteractionType,
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
-  ): ActivityScenario<InputInteractionViewTestActivity> {
+  ): ActivityScenario<MathExpressionInteractionsViewTestActivity> {
     return ActivityScenario.launch(
-      InputInteractionViewTestActivity.createIntent(
+      MathExpressionInteractionsViewTestActivity.createIntent(
         ApplicationProvider.getApplicationContext(),
-        InputInteractionViewTestActivityParams.newBuilder().apply {
+        MathExpressionInteractionsViewTestActivityParams.newBuilder().apply {
           this.interaction = interaction
           writtenTranslationContext = translationContext
           mathInteractionType = interactionType
@@ -1687,7 +1772,7 @@ class MathExpressionInteractionsViewTest {
     }.build()
   }
 
-  private fun InputInteractionViewTestActivity.getInteractionView(): TextView =
+  private fun MathExpressionInteractionsViewTestActivity.getInteractionView(): TextView =
     findViewById(R.id.test_math_expression_input_interaction_view)
 
   private fun setUpTestApplicationComponent() {
@@ -1708,7 +1793,7 @@ class MathExpressionInteractionsViewTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -1722,7 +1807,8 @@ class MathExpressionInteractionsViewTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

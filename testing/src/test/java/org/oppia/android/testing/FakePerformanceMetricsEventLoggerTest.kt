@@ -78,7 +78,7 @@ class FakePerformanceMetricsEventLoggerTest {
 
   @Test
   fun testFakeMetricsEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows(NoSuchElementException::class) {
+    assertThrows<NoSuchElementException>() {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     }
   }
@@ -88,7 +88,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-    assertThrows(NoSuchElementException::class) {
+    assertThrows<NoSuchElementException>() {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     }
   }
@@ -148,7 +148,7 @@ class FakePerformanceMetricsEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows(NoSuchElementException::class) {
+    assertThrows<NoSuchElementException>() {
       fakePerformanceMetricsEventLogger.getOldestPerformanceMetricsEvent()
     }
   }
@@ -178,7 +178,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-    assertThrows(NoSuchElementException::class) {
+    assertThrows<NoSuchElementException>() {
       fakePerformanceMetricsEventLogger.getOldestPerformanceMetricsEvent()
     }
   }
@@ -255,7 +255,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
 
-    assertThrows(IllegalArgumentException::class) {
+    assertThrows<IllegalArgumentException>() {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(count = -1)
     }
   }

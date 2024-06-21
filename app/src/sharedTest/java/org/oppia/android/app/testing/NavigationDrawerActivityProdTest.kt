@@ -89,6 +89,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -102,12 +103,12 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -255,7 +256,7 @@ class NavigationDrawerActivityProdTest {
   }
 
   @Test
-  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileProgressIsDisplayedCorrectly() {
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileStoryProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
@@ -269,10 +270,32 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(
         allOf(
-          withId(R.id.profile_progress_text_view),
-          isDescendantOfA(withId(R.id.header_linear_layout))
+          withId(R.id.profile_story_progress_text_view),
+          isDescendantOfA(withId(R.id.progress_linear_layout))
         )
-      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
+      ).check(matches(withText("1 Story Completed")))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileTopicProgressIsDisplayedCorrectly() {
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build(),
+      timestampOlderThanOneWeek = false
+    )
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(
+        allOf(
+          withId(R.id.profile_topic_progress_text_view),
+          isDescendantOfA(withId(R.id.progress_linear_layout))
+        )
+      ).check(matches(withText("1 Topic in Progress")))
     }
   }
 
@@ -979,7 +1002,7 @@ class NavigationDrawerActivityProdTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -993,7 +1016,8 @@ class NavigationDrawerActivityProdTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

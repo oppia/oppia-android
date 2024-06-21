@@ -43,11 +43,12 @@ class FilterPerLanguageResourcesTest {
 
   private val STR_RESOURCE_0_EN = StringResource(mapOf("" to "en str0"))
   private val STR_RESOURCE_1_EN_PT = StringResource(mapOf("" to "en str1", "pt-BR" to "pt str1"))
-  private val STR_RESOURCE_2_EN_SW = StringResource(mapOf("" to "en str2", "sw" to "sw str2"))
+  private val STR_RESOURCE_2_EN_SW_PCM =
+    StringResource(mapOf("" to "en str2", "sw" to "sw str2", "pcm" to "pcm str 3"))
   private val COLOR_RESOURCE_0_EN_PT = ColorResource(mapOf("" to "0xDEF", "pt-BR" to "0xABC"))
-  private val RESOURCE_TABLE_EN_PT_SW =
+  private val RESOURCE_TABLE_EN_PT_SW_PCM =
     createResourceTable(
-      STR_RESOURCE_0_EN, STR_RESOURCE_1_EN_PT, STR_RESOURCE_2_EN_SW, COLOR_RESOURCE_0_EN_PT
+      STR_RESOURCE_0_EN, STR_RESOURCE_1_EN_PT, STR_RESOURCE_2_EN_SW_PCM, COLOR_RESOURCE_0_EN_PT
     )
 
   private val ENGLISH =
@@ -60,10 +61,12 @@ class FilterPerLanguageResourcesTest {
     createLanguageSupportDefinition(language = OppiaLanguage.SWAHILI, languageCode = "sw")
   private val ARABIC =
     createLanguageSupportDefinition(language = OppiaLanguage.ARABIC, languageCode = "ar")
+  private val NIGERIAN_PIDGIN =
+    createLanguageSupportDefinition(language = OppiaLanguage.NIGERIAN_PIDGIN, languageCode = "pcm")
   private val SUPPORTED_LANGUAGES_EN = createSupportedLanguages(ENGLISH)
   private val SUPPORTED_LANGUAGES_EN_PT = createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE)
-  private val SUPPORTED_LANGUAGES_EN_PT_SW =
-    createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE, SWAHILI)
+  private val SUPPORTED_LANGUAGES_EN_PT_SW_PCM =
+    createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN)
   private val SUPPORTED_LANGUAGES_EN_AR = createSupportedLanguages(ENGLISH, ARABIC)
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -83,21 +86,21 @@ class FilterPerLanguageResourcesTest {
 
   @Test
   fun testUtility_noArgs_failsWithUsageString() {
-    val error = assertThrows(IllegalArgumentException::class) { runScript() }
+    val error = assertThrows<IllegalArgumentException>() { runScript() }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
 
   @Test
   fun testUtility_oneArg_failsWithUsageString() {
-    val error = assertThrows(IllegalArgumentException::class) { runScript("first_file.zip") }
+    val error = assertThrows<IllegalArgumentException>() { runScript("first_file.zip") }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
 
   @Test
   fun testUtility_threeArgs_failsWithUsageString() {
-    val error = assertThrows(IllegalArgumentException::class) {
+    val error = assertThrows<IllegalArgumentException>() {
       runScript(
         tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"), "extra_param"
       )
@@ -111,7 +114,7 @@ class FilterPerLanguageResourcesTest {
     // Create an empty zip file.
     ZipOutputStream(File(tempFolder.root, "input.zip").outputStream()).close()
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
     }
 
@@ -126,7 +129,7 @@ class FilterPerLanguageResourcesTest {
       ResourceTable.getDefaultInstance().writeTo(outputStream)
     }
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
     }
 
@@ -144,7 +147,7 @@ class FilterPerLanguageResourcesTest {
       supportedLanguages = SUPPORTED_LANGUAGES_EN
     )
 
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException>() {
       runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
     }
 
@@ -156,7 +159,7 @@ class FilterPerLanguageResourcesTest {
     // "No supported languages" always implies English (since English must be supported).
     createZipWith(
       fileName = "input.zip",
-      resourceTable = RESOURCE_TABLE_EN_PT_SW,
+      resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
       supportedLanguages = SUPPORTED_LANGUAGES_EN
     )
 
@@ -172,7 +175,7 @@ class FilterPerLanguageResourcesTest {
     // "No supported languages" always implies English (since English must be supported).
     createZipWith(
       fileName = "input.zip",
-      resourceTable = RESOURCE_TABLE_EN_PT_SW,
+      resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
       supportedLanguages = SUPPORTED_LANGUAGES_EN_PT
     )
 
@@ -188,15 +191,15 @@ class FilterPerLanguageResourcesTest {
     // "No supported languages" always implies English (since English must be supported).
     createZipWith(
       fileName = "input.zip",
-      resourceTable = RESOURCE_TABLE_EN_PT_SW,
-      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT_SW
+      resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
+      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT_SW_PCM
     )
 
     runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
 
     // All resources should be kept.
     val presentLanguages = readSupportedResourceLanguagesFromZip(fileName = "output.zip")
-    assertThat(presentLanguages).containsExactly("", "pt-BR", "sw")
+    assertThat(presentLanguages).containsExactly("", "pt-BR", "sw", "pcm")
   }
 
   @Test
@@ -204,7 +207,7 @@ class FilterPerLanguageResourcesTest {
     // "No supported languages" always implies English (since English must be supported).
     createZipWith(
       fileName = "input.zip",
-      resourceTable = RESOURCE_TABLE_EN_PT_SW,
+      resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
       supportedLanguages = SUPPORTED_LANGUAGES_EN_AR
     )
 
@@ -220,7 +223,7 @@ class FilterPerLanguageResourcesTest {
     // "No supported languages" always implies English (since English must be supported).
     createZipWith(
       fileName = "input.zip",
-      resourceTable = RESOURCE_TABLE_EN_PT_SW,
+      resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
       supportedLanguages = SUPPORTED_LANGUAGES_EN
     )
 
@@ -229,8 +232,8 @@ class FilterPerLanguageResourcesTest {
     val outputLine = readStandardOutputLines().single()
     assertThat(outputLine)
       .isEqualTo(
-        "2 resources are being removed that are tied to unsupported languages: [pt-BR, sw] (size" +
-          " reduction: 73 bytes)."
+        "4 resources are being removed that are tied to unsupported languages: [pcm, pt-BR, sw]" +
+          " (size reduction: 99 bytes)."
       )
   }
 

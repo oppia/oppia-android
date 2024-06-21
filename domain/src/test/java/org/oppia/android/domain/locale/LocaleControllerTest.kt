@@ -114,12 +114,16 @@ class LocaleControllerTest {
   }
 
   @Test
-  fun testReconstituteDisplayLocale_defaultContext_returnsDisplayLocaleForContext() {
+  fun testReconstituteDisplayLocale_defaultContext_throwsException() {
     val context = OppiaLocaleContext.getDefaultInstance()
 
-    val locale = localeController.reconstituteDisplayLocale(context)
+    val exception = assertThrows<IllegalStateException>() {
+      localeController.reconstituteDisplayLocale(context)
+    }
 
-    assertThat(locale.localeContext).isEqualToDefaultInstance()
+    // A default locale context isn't valid by itself (though it can represent the root locale when
+    // at least the app strings context is present & default).
+    assertThat(exception).hasMessageThat().contains("Invalid language case")
   }
 
   @Test
@@ -241,6 +245,25 @@ class LocaleControllerTest {
     assertThat(context.hasFallbackLanguageDefinition()).isFalse()
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("MC")
+  }
+
+  @Test
+  fun testAppStringLocale_rootLocale_defaultLang_returnsRootLocale() {
+    forceDefaultLocale(Locale.ROOT)
+
+    val localeProvider = localeController.retrieveAppStringDisplayLocale(LANGUAGE_UNSPECIFIED)
+
+    // The locale will be forced to the root locale. The root locale also should never provide an
+    // IETF BCP-47 ID.
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.fallbackMacroLanguage).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.appStringId.hasIetfBcp47Id()).isFalse()
+    assertThat(context.hasFallbackLanguageDefinition()).isFalse()
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
+    assertThat(context.regionDefinition.regionId.ietfRegionTag).isEmpty()
   }
 
   @Test
@@ -775,7 +798,7 @@ class LocaleControllerTest {
 
   @Test
   fun testSetAsDefault_customLocaleImpl_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) {
+    val exception = assertThrows<IllegalStateException>() {
       localeController.setAsDefault(mockDisplayLocale, Configuration())
     }
 

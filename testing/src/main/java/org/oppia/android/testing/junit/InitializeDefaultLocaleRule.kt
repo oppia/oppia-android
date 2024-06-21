@@ -126,7 +126,7 @@ class InitializeDefaultLocaleRule : TestRule {
             contentStringId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
             audioTranslationId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
           }.build()
-          regionDefinition = defineContext.getRegionDefinition()
+          defineContext.getRegionDefinition()?.let { regionDefinition = it }
           usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
         }.build()
       }
@@ -152,15 +152,20 @@ class InitializeDefaultLocaleRule : TestRule {
     }
 
     private fun DefineAppLanguageLocaleContext.getRegionDefinition(): RegionSupportDefinition? {
-      return RegionSupportDefinition.newBuilder().apply {
-        getOppiaRegion()?.let { region = it }
-        addAllLanguages(getOppiaRegionLanguages())
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          regionIetfTag.tryExtractAnnotationStringConstant()?.let {
-            ietfRegionTag = it
+      val oppiaRegion = getOppiaRegion()
+      val regionLanguages = getOppiaRegionLanguages()
+      val ietfRegionTag = regionIetfTag.tryExtractAnnotationStringConstant()
+      return if (oppiaRegion != null || regionLanguages.isNotEmpty() || ietfRegionTag != null) {
+        RegionSupportDefinition.newBuilder().apply {
+          oppiaRegion?.let { region = it }
+          addAllLanguages(regionLanguages)
+          ietfRegionTag?.let {
+            regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+              this.ietfRegionTag = it
+            }.build()
           }
         }.build()
-      }.build()
+      } else null
     }
 
     private fun DefineAppLanguageLocaleContext.getOppiaRegion() =

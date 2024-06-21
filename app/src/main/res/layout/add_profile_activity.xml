@@ -52,11 +52,9 @@
             android:contentDescription="@string/current_profile_picture_content_description"
             android:elevation="4dp"
             android:focusable="true"
-            app:add_shadow="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shadow_radius="8"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:srcCompat="@{@drawable/ic_default_avatar}" />
 
@@ -67,6 +65,7 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:elevation="4dp"
             android:paddingStart="12dp"
+            android:paddingEnd="0dp"
             android:paddingTop="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
@@ -233,11 +232,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
+            android:focusable="true"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
             android:enabled="@{viewModel.isButtonActive()}"
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
-            android:textAllCaps="true"
             android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_constraint_layout" />

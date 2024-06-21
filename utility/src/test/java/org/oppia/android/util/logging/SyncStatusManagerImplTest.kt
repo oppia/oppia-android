@@ -23,8 +23,6 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
@@ -106,14 +104,6 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
     fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
       return PlatformParameterValue.createDefaultParameter(
         SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
       )
     }
 

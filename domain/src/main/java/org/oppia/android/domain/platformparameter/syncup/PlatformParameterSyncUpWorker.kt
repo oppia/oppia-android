@@ -10,13 +10,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
 import java.lang.IllegalArgumentException
@@ -70,6 +71,7 @@ class PlatformParameterSyncUpWorker private constructor(
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     return response.map {
       val platformParameter = PlatformParameter.newBuilder().setName(it.key)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
       when (val value = it.value) {
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
@@ -80,7 +82,9 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  /** Synchronously executes the network request to get platform parameters from the Oppia backend */
+  /**
+   * Synchronously executes the network request to get platform parameters from the Oppia backend.
+   */
   private fun makeNetworkCallForPlatformParameters(): Optional<Response<Map<String, Any>>?> {
     return platformParameterService.transform { service ->
       service?.getPlatformParametersByVersion(
@@ -89,7 +93,7 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  /** Extracts platform parameters from the remote service and stores them in the cache store */
+  /** Extracts platform parameters from the remote service and stores them in the cache store. */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
       val optionalResponse = makeNetworkCallForPlatformParameters()
@@ -97,6 +101,7 @@ class PlatformParameterSyncUpWorker private constructor(
       if (response != null) {
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)
+
         if (platformParameterList.isEmpty()) {
           throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
         }

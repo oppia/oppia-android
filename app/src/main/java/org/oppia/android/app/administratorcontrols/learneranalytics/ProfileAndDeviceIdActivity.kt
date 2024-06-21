@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -17,7 +17,7 @@ import javax.inject.Inject
  * These IDs are meant to help facilitators of app user studies correspond specific logged events to
  * a particular user or group.
  */
-class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
+class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +28,7 @@ class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       onBackPressed()
     }
     return super.onOptionsItemSelected(item)

@@ -1,6 +1,7 @@
 package org.oppia.android.app.home
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
@@ -26,6 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -47,9 +49,11 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -60,10 +64,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -95,17 +100,26 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class HomeActivityLocalTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var appStartupStateController: AppStartupStateController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
     Intents.init()
-    setUpTestApplicationComponent()
   }
 
   @After
@@ -115,13 +129,67 @@ class HomeActivityLocalTest {
 
   @Test
   fun testHomeActivity_onLaunch_logsEvent() {
+    setUpTestApplicationComponent()
+
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getOldestEvent()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
+  }
+
+  @Test
+  fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
+    setUpTestApplicationComponent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+      assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+      assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestApplicationComponent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      val eventCount = fakeAnalyticsEventLogger.getEventListCount()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+      assertThat(eventCount).isEqualTo(1)
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
+  private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
+    val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
+    testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
+    block(
+      DaggerHomeActivityLocalTest_TestApplicationComponent.builder()
+        .setApplication(testApplication)
+        .build() as TestApplicationComponent
+    )
   }
 
   private fun createHomeActivityIntent(profileId: Int): Intent {
@@ -146,7 +214,7 @@ class HomeActivityLocalTest {
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
@@ -160,7 +228,8 @@ class HomeActivityLocalTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -170,6 +239,10 @@ class HomeActivityLocalTest {
     }
 
     fun inject(homeActivityLocalTest: HomeActivityLocalTest)
+
+    fun getAppStartupStateController(): AppStartupStateController
+
+    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -181,6 +254,10 @@ class HomeActivityLocalTest {
 
     fun inject(homeActivityLocalTest: HomeActivityLocalTest) {
       component.inject(homeActivityLocalTest)
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

@@ -1,23 +1,31 @@
 package org.oppia.android.util.logging
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -29,10 +37,18 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPTIONAL_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_FAILURE_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
@@ -51,19 +67,28 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.app.utility.getVersionCode
-import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.extensions.getVersionName
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.AbandonSurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CompleteAppOnboardingContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConsoleLoggerContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ForegroundAppTimeContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.MandatorySurveyResponseContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.OptionalSurveyResponseContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.QuestionContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RetrofitCallContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RetrofitCallFailedContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RevisionCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SwitchInLessonLanguageContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.VoiceoverActionContext
@@ -73,19 +98,29 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.AbandonSurveyContext as AbandonSurveyEventContext
+import org.oppia.android.app.model.EventLog.AppInForegroundTimeContext as AppInForegroundTimeEventContext
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
+import org.oppia.android.app.model.EventLog.CompleteAppOnboardingContext as CompleteAppOnboardingEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
+import org.oppia.android.app.model.EventLog.ConsoleLoggerContext as ConsoleLoggerEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
+import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
+import org.oppia.android.app.model.EventLog.OptionalSurveyResponseContext as OptionalSurveyResponseEventContext
 import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
+import org.oppia.android.app.model.EventLog.RetrofitCallContext as RetrofitCallEventContext
+import org.oppia.android.app.model.EventLog.RetrofitCallFailedContext as RetrofitCallFailedEventContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
+import org.oppia.android.app.model.EventLog.SurveyContext as SurveyEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
 import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
@@ -108,12 +143,16 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
 class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
-  @EnableLearnerStudyAnalytics
-  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableLoggingLearnerStudyIds
+  private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
   private val appVersionName by lazy { context.getVersionName() }
+  private val eventCount by lazy { AtomicInteger() }
+  private val screenDensity by lazy {
+    Configuration().densityDpi
+  }
 
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
@@ -127,6 +166,7 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("android_sdk", androidSdkVersion)
     bundle.putString("app_version_name", appVersionName)
     bundle.putInt("app_version_code", appVersionCode)
+    bundle.putInt("dbg_event_count_since_app_open", eventCount.incrementAndGet())
     bundle.putString("oppia_app_lang", eventLog.appLanguageSelection.toAnalyticsText())
     bundle.putString(
       "oppia_content_lang", eventLog.writtenTranslationLanguageSelection.toAnalyticsText()
@@ -134,12 +174,15 @@ class EventBundleCreator @Inject constructor(
     bundle.putString(
       "oppia_audio_lang", eventLog.audioTranslationLanguageSelection.toAnalyticsText()
     )
+    bundle.putInt(
+      "screen_density", screenDensity
+    )
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
       eventContext.storeValue(
         PropertyStore(
           bundle,
-          allowUserIds = enableLearnerStudyAnalytics.value
+          allowUserIds = enableLoggingLearnerStudyIds.value
         )
       )
     }.activityName
@@ -193,6 +236,16 @@ class EventBundleCreator @Inject constructor(
       APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
       EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
       FINISH_EXPLORATION_CONTEXT -> ExplorationContext(activityName, finishExplorationContext)
+      PROGRESS_SAVING_SUCCESS_CONTEXT ->
+        ExplorationContext(activityName, progressSavingSuccessContext)
+      PROGRESS_SAVING_FAILURE_CONTEXT ->
+        ExplorationContext(activityName, progressSavingFailureContext)
+      LESSON_SAVED_ADVERTENTLY_CONTEXT ->
+        ExplorationContext(activityName, lessonSavedAdvertentlyContext)
+      RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT ->
+        ExplorationContext(activityName, resumeLessonSubmitCorrectAnswerContext)
+      RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT ->
+        ExplorationContext(activityName, resumeLessonSubmitIncorrectAnswerContext)
       RESUME_EXPLORATION_CONTEXT -> LearnerDetailsContext(activityName, resumeExplorationContext)
       START_OVER_EXPLORATION_CONTEXT ->
         LearnerDetailsContext(activityName, startOverExplorationContext)
@@ -202,6 +255,17 @@ class EventBundleCreator @Inject constructor(
       REACH_INVESTED_ENGAGEMENT -> ExplorationContext(activityName, reachInvestedEngagement)
       SWITCH_IN_LESSON_LANGUAGE ->
         SwitchInLessonLanguageContext(activityName, switchInLessonLanguage)
+      SHOW_SURVEY_POPUP -> SurveyContext(activityName, showSurveyPopup)
+      BEGIN_SURVEY -> SurveyContext(activityName, beginSurvey)
+      ABANDON_SURVEY -> AbandonSurveyContext(activityName, abandonSurvey)
+      MANDATORY_RESPONSE -> MandatorySurveyResponseContext(activityName, mandatoryResponse)
+      OPTIONAL_RESPONSE -> OptionalSurveyResponseContext(activityName, optionalResponse)
+      COMPLETE_APP_ONBOARDING -> CompleteAppOnboardingContext(activityName, completeAppOnboarding)
+      CONSOLE_LOG -> ConsoleLoggerContext(activityName, consoleLog)
+      RETROFIT_CALL_CONTEXT -> RetrofitCallContext(activityName, retrofitCallContext)
+      RETROFIT_CALL_FAILED_CONTEXT ->
+        RetrofitCallFailedContext(activityName, retrofitCallFailedContext)
+      APP_IN_FOREGROUND_TIME -> ForegroundAppTimeContext(activityName, appInForegroundTime)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -487,9 +551,119 @@ class EventBundleCreator @Inject constructor(
     class EmptyContext(activityName: String) : EventActivityContext<Unit>(activityName, Unit) {
       override fun Unit.storeValue(store: PropertyStore) {}
     }
+
+    /** The [EventActivityContext] corresponding to [SurveyEventContext]s. */
+    class SurveyContext(
+      activityName: String,
+      value: SurveyEventContext
+    ) : EventActivityContext<SurveyEventContext>(activityName, value) {
+      override fun SurveyEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("topic_id", topicId)
+        store.putNonSensitiveValue("exploration_id", explorationId)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [MandatorySurveyResponseEventContext]s. */
+    class MandatorySurveyResponseContext(
+      activityName: String,
+      value: MandatorySurveyResponseEventContext
+    ) : EventActivityContext<MandatorySurveyResponseEventContext>(activityName, value) {
+      override fun MandatorySurveyResponseEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
+        store.putSensitiveValue("profile_id", surveyDetails.profileId)
+        store.putNonSensitiveValue("user_type_answer", userTypeAnswer)
+        store.putNonSensitiveValue("market_fit_answer", marketFitAnswer)
+        store.putNonSensitiveValue("nps_score_answer", npsScoreAnswer)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [OptionalSurveyResponseEventContext]s. */
+    class OptionalSurveyResponseContext(
+      activityName: String,
+      value: OptionalSurveyResponseEventContext
+    ) : EventActivityContext<OptionalSurveyResponseEventContext>(activityName, value) {
+      override fun OptionalSurveyResponseEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
+        store.putSensitiveValue("profile_id", surveyDetails.profileId)
+        store.putSensitiveValue("feedback_answer", feedbackAnswer)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [AbandonSurveyEventContext]s. */
+    class AbandonSurveyContext(
+      activityName: String,
+      value: AbandonSurveyEventContext
+    ) : EventActivityContext<AbandonSurveyEventContext>(activityName, value) {
+      override fun AbandonSurveyEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("survey_id", surveyDetails.surveyId)
+        store.putSensitiveValue("profile_id", surveyDetails.profileId)
+        store.putNonSensitiveValue("question_name", questionName)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [CompleteAppOnboardingEventContext]s. */
+    class CompleteAppOnboardingContext(
+      activityName: String,
+      value: CompleteAppOnboardingEventContext
+    ) : EventActivityContext<CompleteAppOnboardingEventContext>(activityName, value) {
+      override fun CompleteAppOnboardingEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("complete_app_onboarding", completeAppOnboarding)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [ConsoleLoggerEventContext]s. */
+    class ConsoleLoggerContext(
+      activityName: String,
+      value: ConsoleLoggerEventContext
+    ) : EventActivityContext<ConsoleLoggerEventContext>(activityName, value) {
+      override fun ConsoleLoggerEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("log_level", logLevel)
+        store.putNonSensitiveValue("log_tag", logTag)
+        store.putNonSensitiveValue("message", fullErrorLog)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [RetrofitCallEventContext]s. */
+    class RetrofitCallContext(
+      activityName: String,
+      value: RetrofitCallEventContext
+    ) : EventActivityContext<RetrofitCallEventContext>(activityName, value) {
+      override fun RetrofitCallEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("url", requestUrl)
+        store.putNonSensitiveValue("headers", headers)
+        store.putNonSensitiveValue("body", body)
+        store.putNonSensitiveValue("response_status_code", responseStatusCode)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [RetrofitCallFailedEventContext]s. */
+    class RetrofitCallFailedContext(
+      activityName: String,
+      value: RetrofitCallFailedEventContext
+    ) : EventActivityContext<RetrofitCallFailedEventContext>(activityName, value) {
+      override fun RetrofitCallFailedEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("url", requestUrl)
+        store.putNonSensitiveValue("headers", headers)
+        store.putNonSensitiveValue("body", body)
+        store.putNonSensitiveValue("response_status_code", responseStatusCode)
+        store.putNonSensitiveValue("error_message", errorMessage)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [AppInForegroundTimeEventContext]s. */
+    class ForegroundAppTimeContext(
+      activityName: String,
+      value: AppInForegroundTimeEventContext
+    ) : EventActivityContext<AppInForegroundTimeEventContext>(activityName, value) {
+      override fun AppInForegroundTimeEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("installation_id", installationId)
+        store.putNonSensitiveValue("app_session_id", appSessionId)
+        store.putNonSensitiveValue("foreground_time", foregroundTime)
+      }
+    }
   }
 
-  /*** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]).*/
+  /** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]). */
   private sealed class PerformanceMetricsLoggableMetricType<T>(
     val metricName: String,
     private val value: T
@@ -657,6 +831,7 @@ class EventBundleCreator @Inject constructor(
       ScreenName.POLICIES_ACTIVITY -> "policies_activity"
       ScreenName.UNRECOGNIZED -> "unrecognized"
       ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
+      ScreenName.SURVEY_ACTIVITY -> "survey_activity"
     }
 
     private fun AppLanguageSelection.toAnalyticsText(): String {
@@ -702,6 +877,7 @@ class EventBundleCreator @Inject constructor(
       OppiaLanguage.PORTUGUESE -> "Portuguese"
       OppiaLanguage.BRAZILIAN_PORTUGUESE -> "Brazilian Portuguese"
       OppiaLanguage.SWAHILI -> "Swahili"
+      OppiaLanguage.NIGERIAN_PIDGIN -> "Nigerian Pidgin"
       OppiaLanguage.UNRECOGNIZED -> "unrecognized_language"
     }
   }

@@ -137,7 +137,7 @@ class CoroutineExecutorServiceTest {
   fun testExecute_nullParameter_throwsException() {
     val executorService = createExecutorService()
 
-    assertThrows(NullPointerException::class) { executorService.execute(/* command= */ null) }
+    assertThrows<NullPointerException>() { executorService.execute(/* command= */ null) }
   }
 
   @Test
@@ -145,7 +145,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows(RejectedExecutionException::class) { executorService.execute(mockRunnable) }
+    assertThrows<RejectedExecutionException>() { executorService.execute(mockRunnable) }
   }
 
   @Test
@@ -153,7 +153,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows(RejectedExecutionException::class) { executorService.execute(mockRunnable) }
+    assertThrows<RejectedExecutionException>() { executorService.execute(mockRunnable) }
   }
 
   @Test
@@ -180,7 +180,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
 
     val nullRunnable: Runnable? = null
-    assertThrows(NullPointerException::class) { executorService.submit(nullRunnable) }
+    assertThrows<NullPointerException>() { executorService.submit(nullRunnable) }
   }
 
   @Test
@@ -188,7 +188,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows(RejectedExecutionException::class) { executorService.submit(mockRunnable) }
+    assertThrows<RejectedExecutionException>() { executorService.submit(mockRunnable) }
   }
 
   @Test
@@ -196,7 +196,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows(RejectedExecutionException::class) { executorService.submit(mockRunnable) }
+    assertThrows<RejectedExecutionException>() { executorService.submit(mockRunnable) }
   }
 
   @Test
@@ -223,7 +223,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
 
     val nullCallable: Callable<String>? = null
-    assertThrows(NullPointerException::class) { executorService.submit(nullCallable) }
+    assertThrows<NullPointerException>() { executorService.submit(nullCallable) }
   }
 
   @Test
@@ -231,7 +231,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows(RejectedExecutionException::class) { executorService.submit(mockCallable) }
+    assertThrows<RejectedExecutionException>() { executorService.submit(mockCallable) }
   }
 
   @Test
@@ -239,7 +239,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows(RejectedExecutionException::class) { executorService.submit(mockCallable) }
+    assertThrows<RejectedExecutionException>() { executorService.submit(mockCallable) }
   }
 
   @Test
@@ -272,7 +272,7 @@ class CoroutineExecutorServiceTest {
     testCoroutineDispatchers.runCurrent()
 
     assertThat(callableFuture.isDone).isTrue()
-    val exception = assertThrows(ExecutionException::class) { callableFuture.get() }
+    val exception = assertThrows<ExecutionException>() { callableFuture.get() }
     assertThat(exception).hasCauseThat().isInstanceOf(Exception::class.java)
     assertThat(exception).hasCauseThat().hasMessageThat().contains("Task failed")
   }
@@ -417,7 +417,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
 
     val nullRunnable: Runnable? = null
-    assertThrows(NullPointerException::class) {
+    assertThrows<NullPointerException>() {
       executorService.submit(nullRunnable, /* result= */ "Task")
     }
   }
@@ -427,7 +427,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows(RejectedExecutionException::class) {
+    assertThrows<RejectedExecutionException>() {
       executorService.submit(mockRunnable, /* result= */ "Task")
     }
   }
@@ -437,7 +437,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows(RejectedExecutionException::class) {
+    assertThrows<RejectedExecutionException>() {
       executorService.submit(mockRunnable, /* result= */ "Task")
     }
   }
@@ -642,7 +642,7 @@ class CoroutineExecutorServiceTest {
     // Note that this is not documented in the ExecutorService documentation, it seems necessary
     // since it doesn't make sense to return false (per the documentation) or block unless a
     // shutdown request was actually initiated.
-    assertThrows(IllegalStateException::class) {
+    assertThrows<IllegalStateException>() {
       executorService.awaitTermination(/* timeout= */ 1, TimeUnit.SECONDS)
     }
   }
@@ -740,7 +740,7 @@ class CoroutineExecutorServiceTest {
   fun testInvokeAll_nullTasks_throwsException() {
     val executorService = createExecutorService()
 
-    assertThrows(NullPointerException::class) { executorService.invokeAll<Int>(/* tasks= */ null) }
+    assertThrows<NullPointerException>() { executorService.invokeAll<Int>(/* tasks= */ null) }
   }
 
   @Test
@@ -798,7 +798,7 @@ class CoroutineExecutorServiceTest {
     val (future1, future2) = deferred.getCompleted()
     assertThat(future1.isDone).isTrue()
     assertThat(future2.isDone).isTrue()
-    assertThrows(ExecutionException::class) { future1.get() }
+    assertThrows<ExecutionException>() { future1.get() }
     assertThat(future2.get()).isEqualTo("Task 2")
   }
 
@@ -894,7 +894,7 @@ class CoroutineExecutorServiceTest {
   fun testInvokeAny_nullTasks_throwsException() {
     val executorService = createExecutorService()
 
-    assertThrows(NullPointerException::class) { executorService.invokeAny<Int>(/* tasks= */ null) }
+    assertThrows<NullPointerException>() { executorService.invokeAny<Int>(/* tasks= */ null) }
   }
 
   @Test

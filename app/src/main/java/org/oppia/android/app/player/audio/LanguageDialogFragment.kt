@@ -8,7 +8,10 @@ import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import java.util.Locale
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
@@ -18,6 +21,9 @@ private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected
  * DialogFragment that controls language selection in audio and written translations.
  */
 class LanguageDialogFragment : InjectableDialogFragment() {
+  @Inject lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -55,13 +61,21 @@ class LanguageDialogFragment : InjectableDialogFragment() {
     val languageNameArrayList = ArrayList<String>()
 
     for (languageCode in languageCodeArrayList) {
+      val audioLanguage = when (machineLocale.run { languageCode.toMachineLowerCase() }) {
+        "hi" -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+        "fr" -> AudioLanguage.FRENCH_AUDIO_LANGUAGE
+        "zh" -> AudioLanguage.CHINESE_AUDIO_LANGUAGE
+        "pt", "pt-br" -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+        "ar" -> AudioLanguage.ARABIC_LANGUAGE
+        "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+        else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      }
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
-        // TODO(#3791): Remove this dependency.
-        val locale = Locale(languageCode)
-        val name = locale.getDisplayLanguage(locale)
-        languageNameArrayList.add(name)
+        languageNameArrayList.add(
+          appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
+        )
       }
     }
 

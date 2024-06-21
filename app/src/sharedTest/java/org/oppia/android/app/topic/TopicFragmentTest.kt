@@ -72,6 +72,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -87,13 +88,13 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -104,6 +105,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -141,19 +143,36 @@ private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
   qualifiers = "port-xxhdpi"
 )
 class TopicFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
   )
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var spotlightStateController: SpotlightStateController
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
@@ -314,8 +333,10 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testTopicFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -329,12 +350,37 @@ class TopicFragmentTest {
 
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(true)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
-  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testTopicFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    val topicToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(false)
+    assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testTopicFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -347,6 +393,28 @@ class TopicFragmentTest {
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(true)
+    assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testTopicFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    initializeApplicationComponent(false)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    val topicToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.isSelected).isEqualTo(false)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -811,7 +879,9 @@ class TopicFragmentTest {
    */
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId
     )
   }
 
@@ -826,7 +896,10 @@ class TopicFragmentTest {
     storyId: String
   ): Intent {
     return TopicActivity.createTopicPlayStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
     )
   }
 
@@ -936,7 +1009,7 @@ class TopicFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -951,7 +1024,8 @@ class TopicFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -418,7 +418,7 @@ message PromotedActivityList {
 // recommended stories.
 message PromotedStoryList {
   // Ongoing stories from within the last 7 days.
-  repeated PromotedStory recently_played_story   = 1;
+  repeated PromotedStory recently_played_story = 1;
 
   // Other ongoing stories from longer than 7 days ago.
   repeated PromotedStory older_played_story = 2;
@@ -547,10 +547,38 @@ message EphemeralRevisionCard {
   WrittenTranslationContext written_translation_context = 2;
 }
 
-// Corresponds to a local file cataloging all topics available to load.
-message TopicIdList {
-  // The list of IDs corresponding to topics available on the local filesystem.
-  repeated string topic_ids = 1;
+// Corresponds to a local file cataloging all available classrooms in the app.
+message ClassroomList {
+  // The list of classrooms available to the app.
+  repeated ClassroomRecord classrooms = 1;
+}
+
+// Corresponds to a loadable classroom.
+message ClassroomRecord {
+  // The classroom's ID.
+  string id = 1;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this classroom that
+  // has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 2;
+
+  // The title of the classroom.
+  SubtitledHtml translatable_title = 3;
+
+  // The thumbnail corresponding to this classroom.
+  LessonThumbnail classroom_thumbnail = 4;
+
+  // A map from topic ID to a TopicIdList indicating the prerequisite topics to suggest to the user
+  // before they play the topic given by the key. Note that the keys of this map indicate the
+  // complete list of topics contained within this classroom. The prerequisite list of topics may
+  // include topics outside of this classroom.
+  map<string, TopicIdList> topic_prerequisites = 5;
+
+  // Represents a list of topic IDs (to be used in the context of topic deps in a classroom).
+  message TopicIdList {
+    // A list of topics IDs.
+    repeated string topic_ids = 1;
+  }
 }
 
 // Corresponds to a local file cataloging all concept cards available to load.
@@ -670,4 +698,24 @@ message SubtopicRecord {
 
   // The old title corresponding to the subtopic (as a string).
   reserved 1;
+}
+
+// Top-level proto used to store the aggregate learning duration timestamps in a topic,
+// on per-profile basis.
+message TopicLearningTimeDatabase {
+  // Map from topic ID to TopicLearningTime.
+  map<string, TopicLearningTime> aggregate_topic_learning_time = 1;
+}
+
+// Represents the active learning time spent in a topic.
+message TopicLearningTime {
+  // The ID of the topic for which this learning time has been recorded.
+  string topic_id = 1;
+
+  // The total time spent by a learner in this topic, in milliseconds.
+  int64 topic_learning_time_ms = 2;
+
+  // Represents the last Unix epoch timestamp when the topic_aggregate_learning_time_ms was updated,
+  // in milliseconds, coinciding with the last time the learner played an exploration in this topic.
+  int64 last_updated_time_ms = 3;
 }
