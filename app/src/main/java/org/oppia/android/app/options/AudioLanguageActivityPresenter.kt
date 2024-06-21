@@ -53,7 +53,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
       putProtoExtra(MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, result)
     }
 
-    activity.setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
+    activity.setResult(RESULT_OK, intent)
     activity.finish()
   }
 

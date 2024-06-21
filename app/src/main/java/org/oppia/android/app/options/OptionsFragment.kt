@@ -19,10 +19,6 @@ const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_readi
 const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
 /** OnActivity result key to access [AudioLanguage] result. */
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
-/** Request code for [ReadingTextSize]. */
-const val REQUEST_CODE_TEXT_SIZE = 1
-/** Request code for [AudioLanguage]. */
-const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
 private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
 private const val IS_FIRST_OPEN_EXTRA = "IS_FIRST_OPEN_EXTRA"
