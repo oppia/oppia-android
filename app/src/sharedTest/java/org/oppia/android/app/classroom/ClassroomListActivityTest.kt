@@ -140,17 +140,16 @@ class ClassroomListActivityTest {
 
   private fun launchClassroomListActivity():
     ActivityScenario<ClassroomListActivity>? {
-    val scenario = ActivityScenario.launch<ClassroomListActivity>(
-      ClassroomListActivity.createClassroomListActivity(context, profileId = 0)
-    )
-    testCoroutineDispatchers.runCurrent()
-    return scenario
-  }
+      val scenario = ActivityScenario.launch<ClassroomListActivity>(
+        ClassroomListActivity.createClassroomListActivity(context, profileId = 0)
+      )
+      testCoroutineDispatchers.runCurrent()
+      return scenario
+    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
