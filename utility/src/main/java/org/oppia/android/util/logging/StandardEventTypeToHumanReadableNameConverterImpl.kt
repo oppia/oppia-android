@@ -67,6 +67,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.ABANDON_SURVEY -> "abandon_survey"
       ActivityContextCase.MANDATORY_RESPONSE -> "mandatory_response"
       ActivityContextCase.OPTIONAL_RESPONSE -> "optional_response"
+      ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT -> "feature_flag_list"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
       ActivityContextCase.COMPLETE_APP_ONBOARDING -> "complete_app_onboarding"

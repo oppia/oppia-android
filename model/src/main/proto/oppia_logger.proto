@@ -5,6 +5,7 @@ package model;
 import "languages.proto";
 import "profile.proto";
 import "survey.proto";
+import "platform_parameter.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -191,7 +192,10 @@ message EventLog {
       // The event being logged is related to the amount spent by the user with the app in
       // foreground.
       AppInForegroundTimeContext app_in_foreground_time = 48;
-      
+
+      // The event being logged contains feature flags and their current enabled and sync state.
+      FeatureFlagListContext feature_flag_list_context = 43;
+
       // The event being logged is related to lesson progress(checkpoint) saving success.
       ExplorationContext progress_saving_success_context = 49;
 
@@ -465,6 +469,30 @@ message EventLog {
     float foreground_time = 3;
   }
 
+  // Structure of a feature flag list context.
+  message FeatureFlagListContext {
+    // The client-local UUID of the user.
+    string unique_user_uuid = 1;
+
+    // The id of the current session.
+    string app_session_id = 2;
+
+    // List of Feature Flag items.
+    repeated FeatureFlagItemContext feature_flags = 3;
+  }
+
+  // Structure for an individual feature flag log context.
+  message FeatureFlagItemContext {
+    // The name of the feature flag or sync status flag.
+    string flag_name = 1;
+
+    // The enabled state of the feature flag.
+    bool flag_enabled_state = 2;
+
+    // The sync status of the feature flag or sync status flag.
+    PlatformParameter.SyncStatus flag_sync_status = 3;
+  }
+
   // Supported priority of events for event logging
   enum Priority {
     // The undefined priority of an event
@@ -473,7 +501,7 @@ message EventLog {
     // but can be removed if they're the only ones there and size limit exceeds.
     ESSENTIAL = 1;
     // The priority of events whose logs can be removed from the storage if the size exceeds a
-    // certain limit
+    // certain limit.
     OPTIONAL = 2;
   }
 }
