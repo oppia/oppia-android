@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -29,12 +30,25 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
     internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
+    handleBackPress()
+  }
+
+  private fun handleBackPress() {
+    onBackPressedDispatcher.addCallback(
+      this@MarkStoriesCompletedActivity,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+         isEnabled = false
+         onBackPressedDispatcher.onBackPressed()
+         isEnabled = true
+        }
+      }
+    )
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      onBackPressed()
+      onBackPressedDispatcher.onBackPressed()
     }
     return super.onOptionsItemSelected(item)
   }

@@ -35,17 +35,17 @@ class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
-  private fun handleBackPress(){
+  private fun handleBackPress() {
     onBackPressedDispatcher.addCallback(
       this@ProfileAndDeviceIdActivity,
-        object: OnBackPressedCallback(true){
-          override fun handleOnBackPressed() {
-            isEnabled = false
-            onBackPressedDispatcher.onBackPressed()
-            isEnabled = true
-          }
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          isEnabled = false
+          onBackPressedDispatcher.onBackPressed()
+          isEnabled = true
         }
-      )
+      }
+    )
   }
   companion object {
     /** Returns an [Intent] to launch [ProfileAndDeviceIdActivity]. */

@@ -33,14 +33,14 @@ class AppVersionActivity : InjectableAutoLocalizedAppCompatActivity() {
   private fun handleBackPress() {
     onBackPressedDispatcher.addCallback(
       this@AppVersionActivity,
-        object: OnBackPressedCallback(true){
-          override fun handleOnBackPressed() {
-            isEnabled = false
-            onBackPressedDispatcher.onBackPressed()
-            isEnabled = true
-          }
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          isEnabled = false
+          onBackPressedDispatcher.onBackPressed()
+          isEnabled = true
         }
-      )
+      }
+    )
   }
 
   companion object {
