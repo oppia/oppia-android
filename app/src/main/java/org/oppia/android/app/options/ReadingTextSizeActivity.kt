@@ -3,6 +3,7 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
@@ -34,6 +35,18 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
       savedInstanceState?.retrieveStateBundle()?.selectedReadingTextSize
         ?: retrieveActivityParams().readingTextSize
     readingTextSizeActivityPresenter.handleOnCreate(readingTextSize)
+    handleBackPress()
+  }
+
+  private fun handleBackPress() {
+    onBackPressedDispatcher.addCallback(
+      this@ReadingTextSizeActivity,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          onBackPressedDispatcher.onBackPressed()
+        }
+      }
+    )
   }
 
   companion object {

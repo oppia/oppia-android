@@ -1,7 +1,9 @@
 package org.oppia.android.app.options
 
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ReadingTextSize
@@ -28,8 +30,7 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
   private fun setToolbar() {
     val readingTextSizeToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar)
     readingTextSizeToolbar.setNavigationOnClickListener {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      activity.onBackPressed()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
   }
 

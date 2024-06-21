@@ -3,6 +3,7 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -61,6 +62,20 @@ class ExplorationActivity :
       params.explorationId,
       params.parentScreen,
       params.isCheckpointingEnabled
+    )
+    handleBackPress()
+  }
+
+  private fun handleBackPress() {
+    onBackPressedDispatcher.addCallback(
+      this@ExplorationActivity,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          isEnabled = true
+          onBackPressedDispatcher.onBackPressed()
+          isEnabled = false
+        }
+      }
     )
   }
 
