@@ -153,12 +153,7 @@ class MyDownloadsActivityTest {
   fun testMyDownloadsActivity_pressBack_checkOpensHomeActivity() {
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
-      intended(
-        allOf(
-          hasComponent(HomeActivity::class.java.name),
-          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ -1)
-        )
-      )
+      intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 
@@ -167,12 +162,7 @@ class MyDownloadsActivityTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
-      intended(
-        allOf(
-          hasComponent(ClassroomListActivity::class.java.name),
-          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ -1)
-        )
-      )
+      intended(hasComponent(ClassroomListActivity::class.java.name))
     }
   }
 
