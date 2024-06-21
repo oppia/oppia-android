@@ -121,6 +121,7 @@ kt_android_library(
     deps = [
         ":application_lifecycle_listener",
         ":cpu_performance_snapshotter",
+        ":feature_flags_logger",
         ":learner_analytics_inactivity_limit_millis",
         ":performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
@@ -189,6 +190,20 @@ kt_android_library(
         "ApplicationLifecycleListener.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "feature_flags_logger",
+    srcs = [
+        "FeatureFlagsLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//third_party:javax_inject_javax_inject",
+    ],
 )
 
 kt_android_library(
