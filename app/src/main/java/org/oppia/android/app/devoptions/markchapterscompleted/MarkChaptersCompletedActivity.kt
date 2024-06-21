@@ -42,7 +42,6 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
           onBackPressedDispatcher.onBackPressed()
           isEnabled = true
         }
-
       }
     )
   }

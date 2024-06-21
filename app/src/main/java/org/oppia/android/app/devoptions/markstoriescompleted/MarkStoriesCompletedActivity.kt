@@ -38,9 +38,9 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
       this@MarkStoriesCompletedActivity,
       object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-         isEnabled = false
-         onBackPressedDispatcher.onBackPressed()
-         isEnabled = true
+          isEnabled = false
+          onBackPressedDispatcher.onBackPressed()
+          isEnabled = true
         }
       }
     )
