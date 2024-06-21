@@ -69,7 +69,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -150,6 +152,7 @@ class MyDownloadsActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO)
   fun testMyDownloadsActivity_pressBack_checkOpensHomeActivity() {
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
@@ -163,6 +166,7 @@ class MyDownloadsActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO)
   fun testMyDownloadsActivity_enableClassrooms_pressBack_checkOpensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {

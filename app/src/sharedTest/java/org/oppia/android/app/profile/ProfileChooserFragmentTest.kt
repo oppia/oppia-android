@@ -85,7 +85,9 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -478,6 +480,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO)
   fun testProfileChooserFragment_clickProfile_checkOpensHomeActivity() {
     profileManagementController.addProfile(
       name = "Admin",
@@ -506,6 +509,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO)
   fun testProfileChooserFragment_enableClassrooms_clickProfile_checkOpensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     profileManagementController.addProfile(
