@@ -21,6 +21,7 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE

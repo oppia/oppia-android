@@ -31,6 +31,8 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.SubtopicRecord
+import org.oppia.android.app.model.ClassroomList
+import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
@@ -46,6 +48,7 @@ import org.oppia.proto.v1.structure.ContentLocalizationDto
 import org.oppia.proto.v1.structure.ContentLocalizationsDto
 import org.oppia.proto.v1.structure.ContinueInstanceDto
 import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
+import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.HasElementXBeforeElementYSpecDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.IsEqualToOrderingWithOneItemAtIncorrectPositionSpecDto
@@ -125,13 +128,21 @@ private typealias XlatableContentIdsSet = SetOfTranslatableHtmlContentIds
 private typealias XlatableContentIdsSetList = ListOfSetsOfTranslatableHtmlContentIds
 
 object DtoProtoToLegacyProtoConverter {
-  fun Iterable<DownloadableTopicSummaryDto>.convertToClassroomList(): ClassroomList {
-    // TODO: Finish this.
-//    val dtos = this
-//    return TopicIdList.newBuilder().apply {
-//      addAllTopicIds(dtos.map { it.id })
-//    }.build()
-    return ClassroomList.getDefaultInstance()
+  fun Iterable<ClassroomDto>.convertToClassroomList(
+    topicSummaries: Iterable<DownloadableTopicSummaryDto>,
+    allImageReferenceReplacements: Map<String, Map<String, String>>
+  ): ClassroomList {
+    val dtos = this
+    val topicSummaryMap = topicSummaries.associateBy { it.id }
+    return ClassroomList.newBuilder().apply {
+      addAllClassrooms(
+        dtos.map {
+          it.convertToClassroomRecord(
+            topicSummaryMap, allImageReferenceReplacements.getValue(it.id)
+          )
+        }
+      )
+    }.build()
   }
 
   fun DownloadableTopicSummaryDto.convertToTopicRecord(
@@ -234,6 +245,25 @@ object DtoProtoToLegacyProtoConverter {
         localizations.toTranslationMappings(imageReferenceReplacements, contentIdTracker.contentIds)
       )
       // Correctness feedback, description, param changes, and param specs aren't used.
+    }.build()
+  }
+
+  private fun ClassroomDto.convertToClassroomRecord(
+    topicSummaryMap: Map<String, DownloadableTopicSummaryDto>,
+    imageReferenceReplacements: Map<String, String>
+  ): ClassroomRecord {
+    val dto = this
+    return ClassroomRecord.newBuilder().apply {
+      this.id = dto.id
+      this.classroomThumbnail =
+        dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
+      putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
+      this.translatableTitle = dto.localizations.extractDefaultSubtitledHtml(dto.name)
+      putAllTopicPrerequisites(dto.topicIdsList.associateWith { topicId ->
+        ClassroomRecord.TopicIdList.newBuilder().apply {
+          addAllTopicIds(topicSummaryMap.getValue(topicId).prerequisiteTopicIdsList)
+        }.build()
+      })
     }.build()
   }
 

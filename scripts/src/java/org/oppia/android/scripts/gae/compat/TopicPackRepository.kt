@@ -130,7 +130,7 @@ class TopicPackRepository(
     gaeTopic: GaeTopic,
     metricCallbacks: MetricCallbacks
   ): List<LoadResult<TopicPackFragment>> {
-    // TODO: Batch different results?
+    // TODO: Batch results from different types of requests? Should be *much* more efficient.
     val subtopicsResult =
       tryLoadSubtopics(gaeTopic.id, gaeTopic.computeContainedSubtopicMap(), metricCallbacks)
     val storiesResult = tryLoadStories(gaeTopic.computeReferencedStoryIds(), metricCallbacks)
@@ -350,12 +350,14 @@ class TopicPackRepository(
   ): GenericLoadResult {
     return when (val result = versionStructureMapManager.lookUp(structureId, reference)) {
       is LoadResult.Pending -> {
-        versionStructureMapManager.update(
-          structureId, reference.loadVersioned(androidService, compatibilityChecker)
-        )
+        val nextVersions = reference.computeNextBatchOfVersionsToCheck(versionStructureMap)
+        check(nextVersions.isNotEmpty()) { "At least one reference should be pending for: $reference." }
+        reference.loadVersioned(
+          androidService, compatibilityChecker, nextVersions
+        ).forEach(versionStructureMap::put)
         // This should be present now.
-        versionStructureMapManager.lookUp(structureId, reference).also {
-          check(it !is LoadResult.Pending) { "Expected reference to be loaded: $it." }
+        versionStructureMap.getValue(reference).also {
+          check(it !is LoadResult.Pending) { "Expected reference to be loaded: $reference (found: $it)." }
         }
       }
       is LoadResult.Success, is LoadResult.Failure -> result
@@ -552,7 +554,7 @@ private interface VersionedStructureFetcher<I : StructureId, S> {
 
 private sealed class VersionedStructureReference<I : StructureId, S> {
   // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
-  val defaultVersionFetchCount: Int = 1
+  private val defaultVersionFetchCount: Int = 1
   abstract val structureId: I
   abstract val version: Int
   abstract val fetcher: VersionedStructureFetcher<I, S>
@@ -575,18 +577,24 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
     return result.await().payload to result.toLoadResult(checker)
   }
 
+  fun computeNextBatchOfVersionsToCheck(structureMap: VersionStructureMap): List<Int> {
+    val pendingVersions = structureMap.filter { (_, result) ->
+      result is LoadResult.Pending
+    }.map { (reference, _) -> reference.version }
+    return pendingVersions.toList().sortedDescending().take(defaultVersionFetchCount)
+  }
+
   suspend fun loadVersioned(
     service: AndroidActivityHandlerService,
-    checker: StructureCompatibilityChecker
+    checker: StructureCompatibilityChecker,
+    versionsToRequest: List<Int>
   ): Map<VersionedStructureReference<I, S>, LoadResult<S>> {
-    val oldestVersionToRequest = (version - defaultVersionFetchCount).coerceAtLeast(1)
-    val versionsToRequest = (oldestVersionToRequest until version).toList()
     val structures = fetcher.fetchMultiFromRemoteAsync(
       structureId, versionsToRequest, service
     ).toLoadResult(checker)
-    return versionsToRequest.zip(structures).toMap().mapKeys { (version, _) ->
-      toNewVersion(version)
-    }
+    return versionsToRequest.zip(structures).mapNotNull { (version, result) ->
+      if (result != null) toNewVersion(version) to result else null
+    }.toMap()
   }
 
   private suspend fun Deferred<VersionedStructure<S>>.toLoadResult(
@@ -594,19 +602,19 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
   ): LoadResult<S> = await().toLoadResult(checker)
 
   @JvmName("listToLoadResult")
-  private suspend fun Deferred<List<VersionedStructure<S>>>.toLoadResult(
+  private suspend fun Deferred<List<VersionedStructure<S>?>>.toLoadResult(
     checker: StructureCompatibilityChecker
-  ): List<LoadResult<S>> = await().map { it.toLoadResult(checker) }
+  ): List<LoadResult<S>?> = await().map { it?.toLoadResult(checker) }
 
   private fun VersionedStructure<S>.toLoadResult(
     checker: StructureCompatibilityChecker
   ): LoadResult<S> {
     return when (val compatibilityResult = checkCompatibility(checker, payload)) {
       Compatible -> LoadResult.Success(payload)
-      is Incompatible -> LoadResult.Failure<S>(compatibilityResult.failures).also {
-        // TODO: Remove.
-        error("Failed to load: $it.")
-      }
+      is Incompatible -> LoadResult.Failure<S>(compatibilityResult.failures)//.also {
+      //   // TODO: Remove.
+      //   error("Failed to load: $it.")
+      // }
     }
   }
 

@@ -30,6 +30,11 @@ class OppiaWebTranslationExtractor private constructor(
     internal fun computeWebKeyForContent(contentId: String): String =
       "I18N_${upperCasedActivityType}_${activityId}_${contentId.uppercase()}"
 
+    // TODO: Figure out if this should be ID or URL fragment (or if there's even web translations for these).
+    data class Classroom(val classroomId: String)  : TranslatableActivityId(activityType = "classroom") {
+      override val activityId: String = classroomId
+    }
+
     data class Topic(val topicId: String) : TranslatableActivityId(activityType = "topic") {
       override val activityId: String = topicId
     }

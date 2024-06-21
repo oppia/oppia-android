@@ -6,7 +6,11 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.awaitAll
 import org.oppia.android.scripts.gae.gcs.GcsService
+<<<<<<< HEAD
 import org.oppia.android.scripts.gae.json.GaeEntityTranslations
+=======
+import org.oppia.android.scripts.gae.json.GaeClassroom
+>>>>>>> integrate-multiple-classrooms-support
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -183,7 +187,7 @@ class LocalizationTracker private constructor(
   suspend fun computeSpecificContentLocalization(
     id: ContainerId,
     language: LanguageType
-  ): ContentLocalizationDto = getExpectedContainer(id).computeSpecificContentLocalization(language)
+  ): ContentLocalizationDto = getExpectedContainer(id).also { checkForNoErrors() }.computeSpecificContentLocalization(language)
 
   // TODO: Document that 'defaultLanguage' can redefine the default language of the container based
   //  on available languages.
@@ -191,6 +195,7 @@ class LocalizationTracker private constructor(
     id: ContainerId,
     defaultLanguage: LanguageType
   ): ContentLocalizationsDto {
+    checkForNoErrors()
     return getExpectedContainer(id).computeCompleteLocalizationPack(defaultLanguage)
   }
 
@@ -209,6 +214,17 @@ class LocalizationTracker private constructor(
   private fun getExpectedContainer(id: ContainerId): Container {
     require(id in containers) { "Expected container to be initialized with ID: $id." }
     return containers.getValue(id)
+  }
+
+  private fun checkForNoErrors() {
+    val allErrors = containers.values.flatMapTo(mutableSetOf()) { it.allErrors }
+    if (allErrors.isNotEmpty()) {
+      println("${allErrors.size} errors found:")
+      allErrors.forEach {
+        println("- $it")
+      }
+      error("Errors found.")
+    }
   }
 
   sealed class ContainerId {
@@ -245,6 +261,12 @@ class LocalizationTracker private constructor(
       override val gcsEntityId: String = subtopicPageIdDto.topicId
     }
 
+    data class Classroom(val id: String): ContainerId() {
+      override val webTranslatableActivityId by lazy { TranslatableActivityId.Classroom(id) }
+      override val gcsImageContainerType = GcsService.ImageContainerType.CLASSROOM
+      override val gcsEntityId = id
+    }
+
     data class Topic(val id: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Topic(id) }
       override val gcsImageContainerType = GcsService.ImageContainerType.TOPIC
@@ -276,6 +298,8 @@ class LocalizationTracker private constructor(
     }
 
     companion object {
+      fun createFrom(gaeClassroom: GaeClassroom): ContainerId = Classroom(gaeClassroom.id)
+
       fun createFrom(gaeTopic: GaeTopic): ContainerId = Topic(gaeTopic.id)
 
       fun createFrom(topicId: String, gaeSubtopic: GaeSubtopic): ContainerId {
@@ -341,6 +365,8 @@ class LocalizationTracker private constructor(
     private val defaultAssets: TrackedAssets get() = languages.getValue(defaultLanguage)
     private val defaultContentIds: Set<String> get() = defaultAssets.allContentIds
     private val contextsToDownloadFromOppiaWeb = mutableSetOf<ContentContext>()
+    private val errors = mutableSetOf<String>()
+    val allErrors: Set<String> get() = errors + languages.values.flatMap { it.errors }
 
     fun recordDefaultThumbnail(thumbnail: ThumbnailDto) =
       defaultAssets.recordThumbnail(id, thumbnail)
@@ -430,10 +456,40 @@ class LocalizationTracker private constructor(
       languages.getOrPut(language) { TrackedAssets(language) }
 
     private fun ensureDefaultLanguageHasContent(contentId: String) {
-      check(contentId in defaultContentIds) {
+      // TODO: Remove these specific exemptions once they're fixed on upstream web.
+      val expectedExemptionCase = when {
+        id !is ContainerId.Exploration -> 0
+        id.id == "bWHHbghtVQKU" && contentId == "hint_46" -> 10
+        id.id == "W50hotX4h_Up" -> when (contentId) {
+          "hint_22" -> 20
+          "hint_23" -> 21
+          else -> 0
+        }
+        id.id == "C8QUgzIETvRv" -> when (contentId) {
+          "content_220" -> 30
+          "feedback_161" -> 31
+          "feedback_222" -> 32
+          "default_outcome_160" -> 33
+          "default_outcome_221" -> 34
+          "ca_choices_223" -> 35
+          "ca_choices_224" -> 36
+          "ca_choices_225" -> 37
+          "ca_choices_226" -> 38
+          else -> 0
+        }
+        else -> 0
+      }
+      if (contentId !in defaultContentIds && expectedExemptionCase > 0) return
+      check(expectedExemptionCase == 0) { "Exemption $expectedExemptionCase should be removed." }
+      if (contentId !in defaultContentIds) {
+        errors +=
         "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
           " $id, content ID: $contentId."
       }
+      // check(contentId in defaultContentIds) {
+      //   "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
+      //     " $id, content ID: $contentId."
+      // }
     }
   }
 
@@ -442,6 +498,8 @@ class LocalizationTracker private constructor(
     val textTranslations: MutableMap<String, LocalizableTextDto> = mutableMapOf(),
     val voiceovers: MutableMap<String, VoiceoverFileDto> = mutableMapOf()
   ) {
+    val errors = mutableSetOf<String>()
+
     var thumbnail: ThumbnailDto? = null
 
     val allContentIds: Set<String> get() = textTranslations.keys + voiceovers.keys
@@ -529,6 +587,26 @@ class LocalizationTracker private constructor(
       contentId: String,
       localization: LocalizableTextDto
     ) {
+      // TODO: Remove these exemptions once they're fixed in web.
+      val expectedExemption = when {
+        id !is ContainerId.Exploration -> false
+        id.id == "xtbP46LKl1uj" && contentId == "solution_137" -> true
+        id.id == "ua7FTOXRaRjb" && contentId == "solution_139" -> true
+        id.id == "sRqParMOyWWB" && contentId == "solution_121" -> true
+        id.id == "Sl4TGJQhSjmk" && contentId == "solution_85" -> true
+        id.id == "2EOuIfQHljkN" -> when (contentId) {
+          "solution_127" -> true
+          "solution_130" -> true
+          else -> false
+        }
+        else -> false
+      }
+      if (contentId in textTranslations && expectedExemption) return
+      if (contentId in textTranslations) {
+        errors+="Translation already recorded for content ID: $contentId, for language: $language, in" +
+          " container: $id."
+        return
+      }
       require(contentId !in textTranslations) {
         "Translation already recorded for content ID: $contentId, for language: $language, in" +
           " container: $id."
