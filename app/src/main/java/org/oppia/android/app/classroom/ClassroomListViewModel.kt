@@ -27,5 +27,4 @@ class ClassroomListViewModel(
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController
-) : ObservableViewModel() {
-}
+) : ObservableViewModel()

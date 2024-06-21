@@ -17,6 +17,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
+/** The activity for displaying [ClassroomListFragment]. */
 class ClassroomListActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var classroomListActivityPresenter: ClassroomListActivityPresenter
@@ -28,6 +29,7 @@ class ClassroomListActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var activityRouter: ActivityRouter
 
   companion object {
+    /** Returns a new [Intent] to route to [ClassroomListActivity] for a specified [profileId]. */
     fun createClassroomListActivity(context: Context, profileId: Int?): Intent {
       return Intent(context, ClassroomListActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)

@@ -9,6 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** Fragment that displays the classroom list screen. */
 class ClassroomListFragment : InjectableFragment() {
   @Inject
   lateinit var classroomListFragmentPresenter: ClassroomListFragmentPresenter

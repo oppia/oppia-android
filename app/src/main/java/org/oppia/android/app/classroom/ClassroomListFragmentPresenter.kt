@@ -18,6 +18,7 @@ import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
 
+/** The presenter for [ClassroomListFragment]. */
 class ClassroomListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
@@ -34,6 +35,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private lateinit var binding: ClassroomListFragmentBinding
   private var internalProfileId: Int = -1
 
+  /** Creates and returns the view for the [ClassroomListFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ClassroomListFragmentBinding.inflate(
       inflater,

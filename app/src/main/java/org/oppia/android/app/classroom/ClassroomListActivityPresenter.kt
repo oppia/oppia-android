@@ -8,11 +8,17 @@ import org.oppia.android.R
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
+/** Tag for identifying the [ClassroomListFragment] in transactions. */
 const val TAG_CLASSROOM_LIST_FRAGMENT = "CLASSROOM_LIST_FRAGMENT"
 
+/** The presenter for [ClassroomListActivity]. */
 class ClassroomListActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
+  /**
+   * Handles the creation of the activity. Sets the content view, sets up the navigation drawer,
+   * and adds the [ClassroomListFragment] if it's not already added.
+   */
   fun handleOnCreate() {
     activity.setContentView(R.layout.classroom_list_activity)
     setUpNavigationDrawer()
@@ -25,6 +31,7 @@ class ClassroomListActivityPresenter @Inject constructor(private val activity: A
     }
   }
 
+  /** Handles the activity restart. Re-initializes the navigation drawer. */
   fun handleOnRestart() {
     setUpNavigationDrawer()
   }
