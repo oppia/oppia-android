@@ -304,4 +304,7 @@
   <color name="component_color_begin_survey_button_text_color">@color/color_palette_button_text_color</color>
   <color name="component_color_survey_edit_text_unselected_color">@color/color_palette_edit_text_unselected_color</color>
   <color name="component_color_button_shadow_color">@color/color_palette_button_shadow_color</color>
+  <color name="component_color_onboarding_shared_white_color">@color/color_palette_white_text_color</color>
+  <color name="component_color_onboarding_shared_green_color">@color/color_palette_onboarding_primary_color</color>
+  <color name="component_color_onboarding_shared_text_color">@color/color_palette_onboarding_primary_text_color</color>
 </resources>
