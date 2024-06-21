@@ -113,7 +113,6 @@ class MyDownloadsActivityTest {
   @Before
   fun setUp() {
     Intents.init()
-    setUpTestApplicationComponent()
   }
 
   @After
@@ -130,6 +129,7 @@ class MyDownloadsActivityTest {
 
   @Test
   fun testMyDownloadsActivity_hasCorrectActivityLabel() {
+    setUpTestWithMultipleClassroomsDisabled()
     ActivityScenario.launch(MyDownloadsActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(activity.title).isEqualTo(
@@ -141,6 +141,7 @@ class MyDownloadsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
+    setUpTestWithMultipleClassroomsDisabled()
     val screenName = MyDownloadsActivity.createMyDownloadsActivityIntent(
       ApplicationProvider.getApplicationContext(),
       1
@@ -151,6 +152,7 @@ class MyDownloadsActivityTest {
 
   @Test
   fun testMyDownloadsActivity_pressBack_checkOpensHomeActivity() {
+    setUpTestWithMultipleClassroomsDisabled()
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
       intended(
@@ -164,7 +166,7 @@ class MyDownloadsActivityTest {
 
   @Test
   fun testMyDownloadsActivity_enableClassrooms_pressBack_checkOpensClassroomListActivity() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestWithMultipleClassroomsEnabled()
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
       intended(
@@ -174,6 +176,16 @@ class MyDownloadsActivityTest {
         )
       )
     }
+  }
+
+  private fun setUpTestWithMultipleClassroomsEnabled() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
+  }
+
+  private fun setUpTestWithMultipleClassroomsDisabled() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
   }
 
   @Singleton
