@@ -40,7 +40,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "github_client",
-    testonly = True,
     srcs = [
         "GitHubClient.kt",
     ],
@@ -49,10 +48,10 @@ kt_jvm_library(
         ":command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common/model:github_issue",
         "//scripts/src/java/org/oppia/android/scripts/common/remote:github_service",
-        "//third_party:com_squareup_okhttp3_okhttp",
-        "//third_party:com_squareup_retrofit2_converter-moshi",
-        "//third_party:com_squareup_retrofit2_retrofit",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:com_squareup_okhttp3_okhttp",
+        "//scripts/third_party:com_squareup_retrofit2_converter-moshi",
+        "//scripts/third_party:com_squareup_retrofit2_retrofit",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 

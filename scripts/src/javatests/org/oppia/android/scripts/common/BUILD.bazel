@@ -55,9 +55,9 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:github_client",
         "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:com_squareup_okhttp3_mockwebserver",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:com_squareup_okhttp3_mockwebserver",
     ],
 )
 

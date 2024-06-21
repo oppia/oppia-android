@@ -15,7 +15,6 @@ load(
     "create_maven_dependency_wrappers",
 )
 load("//third_party/tools/glide:plugin_setup.bzl", set_up_glide_plugin = "set_up")
-load("//third_party/tools/moshi:plugin_setup.bzl", set_up_moshi_plugin = "set_up")
 load("//third_party/versions:direct_http_versions.bzl", "DIRECT_REMOTE_DEPENDENCIES")
 load("//third_party/versions:maven_config.bzl", "MAVEN_ARTIFACT_CONFIGURATION")
 
@@ -45,13 +44,6 @@ create_direct_import_dependency_wrappers(
     maven_artifact_visibility = ["@maven_app//:__pkg__"],
     prod_artifact_visibility = [":app_prod_artifact_visibility"],
     test_artifact_visibility = [":app_test_artifact_visibility"],
-)
-
-set_up_moshi_plugin(
-    name = "moshi",
-    moshi_compiler_dep = "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
-    moshi_exported_library = "//third_party:com_squareup_moshi_moshi-kotlin",
-    visibility = [":app_prod_artifact_visibility"],
 )
 
 set_up_glide_plugin(

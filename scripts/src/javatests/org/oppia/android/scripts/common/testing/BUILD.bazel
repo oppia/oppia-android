@@ -9,7 +9,7 @@ kt_jvm_test(
     srcs = ["FakeCommandExecutorTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//scripts/third_party:com_google_truth_truth",
         "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
     ],
 )

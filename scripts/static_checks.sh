@@ -107,6 +107,20 @@ echo "********************************"
 bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
 echo ""
 
+# Validation checks (top-level dependencies).
+echo "********************************"
+echo "Running app third-party dependency validation checks"
+echo "********************************"
+bazel run //scripts:validate_maven_dependencies -- $(pwd) third_party/versions/direct_maven_versions.bzl third_party/versions/transitive_maven_versions.bzl third_party/versions/maven_install.json //third_party //...
+echo ""
+
+# Validation checks (script dependencies).
+echo "********************************"
+echo "Running scripts third-party dependency validation checks"
+echo "********************************"
+bazel run //scripts:validate_maven_dependencies -- $(pwd) scripts/third_party/versions/direct_maven_versions.bzl scripts/third_party/versions/transitive_maven_versions.bzl scripts/third_party/versions/maven_install.json //scripts/third_party //scripts/...
+echo ""
+
 # TODO checks.
 echo "********************************"
 echo "Running TODO correctness checks"

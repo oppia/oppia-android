@@ -6,6 +6,7 @@ Android project.
 load("//third_party/tools/android:toolchain_setup.bzl", set_up_android = "set_up")
 load("//third_party/tools/java:toolchain_setup.bzl", set_up_java = "set_up")
 load("//third_party/tools/kotlin:toolchain_setup.bzl", set_up_kotlin = "set_up")
+load("//third_party/tools/oppia_proto_api:toolchain_setup.bzl", set_up_oppia_proto_api = "set_up")
 load("//third_party/tools/proto:toolchain_setup.bzl", set_up_proto = "set_up")
 load("//third_party/tools/robolectric:toolchain_setup.bzl", set_up_robolectric = "set_up")
 load("//third_party/tools/skylib:toolchain_setup.bzl", set_up_skylib = "set_up")
@@ -27,6 +28,7 @@ def initialize_toolchains_for_workspace():
     # Note that the order matters here since toolchains & libraries may have cross-dependencies.
     set_up_skylib()
     set_up_android("androidsdk")
+    set_up_oppia_proto_api()
     set_up_kotlin()
     set_up_java()
     set_up_proto()

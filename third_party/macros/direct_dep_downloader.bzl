@@ -65,25 +65,27 @@ def _set_up_http_import(
     if len(local_patches) != 0 or len(remote_patches) != 0:
         if import_dep_with_patches == None:
             fail("This method of importing an HTTP dependency does not support patching.")
+        import_dep_with_patches_conditional_kwargs = {}
+        if strip_prefix_template != None:
+            import_dep_with_patches_conditional_kwargs["strip_prefix"] = strip_prefix_template.format(version)
         import_dep_with_patches(
             name = import_details.get("import_bind_name") or import_details["name"],
             urls = unique_urls,
             sha256 = dependency_details["sha"],
-            strip_prefix = (
-                strip_prefix_template.format(version) if strip_prefix_template != None else None
-            ),
             patches = local_patches,
             remote_patches = remote_patches,
             remote_patch_strip = import_details.get("patch_path_start_removal_count"),
+            **import_dep_with_patches_conditional_kwargs
         )
     else:
+        import_dep_with_patches_conditional_kwargs = {}
+        if strip_prefix_template != None:
+            import_dep_with_patches_conditional_kwargs["strip_prefix"] = strip_prefix_template.format(version)
         import_dep_without_patches(
             name = import_details.get("import_bind_name") or import_details["name"],
             urls = unique_urls,
             sha256 = dependency_details["sha"],
-            strip_prefix = (
-                strip_prefix_template.format(version) if strip_prefix_template != None else None
-            ),
+            **import_dep_with_patches_conditional_kwargs
         )
 
 def _set_up_git_repository_dependency(import_details):

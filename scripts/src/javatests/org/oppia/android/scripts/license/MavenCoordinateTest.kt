@@ -10,7 +10,7 @@ import org.oppia.android.testing.assertThrows
 class MavenCoordinateTest {
   @Test
   fun testParseFrom_emptyString_throwsError() {
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException> {
       MavenCoordinate.parseFrom(coordinateString = "")
     }
 
@@ -19,7 +19,7 @@ class MavenCoordinateTest {
 
   @Test
   fun testParseFrom_oneComponentString_throwsError() {
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException> {
       MavenCoordinate.parseFrom("org.oppia.fake-group")
     }
 
@@ -28,7 +28,7 @@ class MavenCoordinateTest {
 
   @Test
   fun testParseFrom_twoComponentString_throwsError() {
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException> {
       MavenCoordinate.parseFrom("org.oppia.fake-group:and.fake-art")
     }
 
@@ -37,7 +37,7 @@ class MavenCoordinateTest {
 
   @Test
   fun testParseFrom_sixComponentString_throwsError() {
-    val error = assertThrows(IllegalStateException::class) {
+    val error = assertThrows<IllegalStateException> {
       MavenCoordinate.parseFrom("one:two:three:four:five:six")
     }
 

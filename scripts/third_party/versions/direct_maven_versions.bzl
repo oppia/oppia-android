@@ -27,15 +27,10 @@ PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "io.xlate:yaml-json": "0.1.0",
     "jakarta.json:jakarta.json-api": "2.1.2",
-    "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "org.eclipse.parsson:parsson": "1.1.2",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
-    "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
-    "org.jetbrains:annotations:jar": "13.0",
     "org.snakeyaml:snakeyaml-engine": "2.6",
 }
 
@@ -45,6 +40,7 @@ PRODUCTION_DEPENDENCY_VERSIONS = {
 TEST_DEPENDENCY_VERSIONS = {
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "1.1.3",
+    "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "junit:junit": "4.13.2",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",

@@ -141,10 +141,11 @@ def _wrap_dependency(
     name = import_details.get("import_bind_name") or import_details["name"]
     is_test_only = import_details["test_only"]
     base_visibility = test_artifact_visibility if is_test_only else prod_artifact_visibility
-    should_be_visible_to_maven_targets = export_details["should_be_visible_to_maven_targets"]
-    maven_visibility = maven_artifact_visibility if should_be_visible_to_maven_targets else []
 
     if export_details["export_type"] == EXPORT_TYPE.LIBRARY:
+        should_be_visible_to_maven_targets = export_details["should_be_visible_to_maven_targets"]
+        maven_visibility = maven_artifact_visibility if should_be_visible_to_maven_targets else []
+
         if export_details["export_toolchain"] == EXPORT_TOOLCHAIN.ANDROID:
             create_lib = native.android_library
             explicit_exports = ["@%s//%s" % (name, export_details["exportable_target"])]
@@ -170,7 +171,7 @@ def _wrap_dependency(
             native.alias(
                 name = export_details["exposed_artifact_name"],
                 visibility = base_visibility + maven_visibility,
-                actual = export_details["exposed_artifact_name"],
+                actual = "@%s//%s" % (name, export_details["exportable_target"]),
                 testonly = is_test_only,
             )
             return
