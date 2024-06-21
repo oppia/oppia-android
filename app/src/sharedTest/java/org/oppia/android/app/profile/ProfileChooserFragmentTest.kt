@@ -496,7 +496,12 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_chooser_item
         )
       ).perform(click())
-      intended(hasComponent(HomeActivity::class.java.name))
+      intended(
+        allOf(
+          hasComponent(HomeActivity::class.java.name),
+          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ 0)
+        )
+      )
     }
   }
 
@@ -520,7 +525,12 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_chooser_item
         )
       ).perform(click())
-      intended(hasComponent(ClassroomListActivity::class.java.name))
+      intended(
+        allOf(
+          hasComponent(ClassroomListActivity::class.java.name),
+          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ 0)
+        )
+      )
     }
   }
 

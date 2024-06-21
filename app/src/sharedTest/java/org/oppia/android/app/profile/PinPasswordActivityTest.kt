@@ -246,7 +246,12 @@ class PinPasswordActivityTest {
       onView(withId(R.id.pin_password_input_pin_edit_text))
         .perform(editTextInputAction.appendText("12345"))
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ClassroomListActivity::class.java.name))
+      intended(
+        allOf(
+          hasComponent(ClassroomListActivity::class.java.name),
+          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, adminId)
+        )
+      )
     }
   }
 
@@ -281,7 +286,12 @@ class PinPasswordActivityTest {
       onView(withId(R.id.pin_password_input_pin_edit_text))
         .perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ClassroomListActivity::class.java.name))
+      intended(
+        allOf(
+          hasComponent(ClassroomListActivity::class.java.name),
+          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, userId)
+        )
+      )
     }
   }
 
