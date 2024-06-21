@@ -1,11 +1,7 @@
 package org.oppia.android.scripts.gae.proto
 
-<<<<<<< HEAD
-=======
-import org.oppia.android.scripts.gae.compat.CompleteExploration
-import org.oppia.android.scripts.gae.json.GaeClassroom
->>>>>>> integrate-multiple-classrooms-support
 import org.oppia.android.scripts.gae.json.GaeAnswerGroup
+import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions
 import org.oppia.android.scripts.gae.json.GaeCustomizationArgValue.GaeImageWithRegions.GaeLabeledRegion
@@ -52,8 +48,8 @@ import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.REAL
 import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.BaseAnswerGroupDto
 import org.oppia.proto.v1.structure.BaseSolutionDto
-import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.ChapterSummaryDto
+import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.ConceptCardDto
 import org.oppia.proto.v1.structure.ConceptCardDto.WorkedExampleDto
 import org.oppia.proto.v1.structure.ConceptCardLanguagePackDto
@@ -335,7 +331,10 @@ class JsonToProtoConverter(
     }
   }
 
-  suspend fun convertToClassroom(gaeClassroom: GaeClassroom, defaultLanguage: LanguageType): ClassroomDto {
+  suspend fun convertToClassroom(
+    gaeClassroom: GaeClassroom,
+    defaultLanguage: LanguageType
+  ): ClassroomDto {
     val containerId = LocalizationTracker.ContainerId.createFrom(gaeClassroom)
     return ClassroomDto.newBuilder().apply {
       this.protoVersion = ProtoVersionProvider.createLatestClassroomProtoVersion()

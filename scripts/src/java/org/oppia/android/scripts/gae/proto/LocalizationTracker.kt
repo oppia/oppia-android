@@ -6,11 +6,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.awaitAll
 import org.oppia.android.scripts.gae.gcs.GcsService
-<<<<<<< HEAD
-import org.oppia.android.scripts.gae.json.GaeEntityTranslations
-=======
 import org.oppia.android.scripts.gae.json.GaeClassroom
->>>>>>> integrate-multiple-classrooms-support
+import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -187,7 +184,11 @@ class LocalizationTracker private constructor(
   suspend fun computeSpecificContentLocalization(
     id: ContainerId,
     language: LanguageType
-  ): ContentLocalizationDto = getExpectedContainer(id).also { checkForNoErrors() }.computeSpecificContentLocalization(language)
+  ): ContentLocalizationDto {
+    return getExpectedContainer(id).also {
+      checkForNoErrors()
+    }.computeSpecificContentLocalization(language)
+  }
 
   // TODO: Document that 'defaultLanguage' can redefine the default language of the container based
   //  on available languages.
@@ -261,7 +262,7 @@ class LocalizationTracker private constructor(
       override val gcsEntityId: String = subtopicPageIdDto.topicId
     }
 
-    data class Classroom(val id: String): ContainerId() {
+    data class Classroom(val id: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Classroom(id) }
       override val gcsImageContainerType = GcsService.ImageContainerType.CLASSROOM
       override val gcsEntityId = id
@@ -483,7 +484,7 @@ class LocalizationTracker private constructor(
       check(expectedExemptionCase == 0) { "Exemption $expectedExemptionCase should be removed." }
       if (contentId !in defaultContentIds) {
         errors +=
-        "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
+          "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
           " $id, content ID: $contentId."
       }
       // check(contentId in defaultContentIds) {
@@ -603,7 +604,8 @@ class LocalizationTracker private constructor(
       }
       if (contentId in textTranslations && expectedExemption) return
       if (contentId in textTranslations) {
-        errors+="Translation already recorded for content ID: $contentId, for language: $language, in" +
+        errors +=
+          "Translation already recorded for content ID: $contentId, for language: $language, in" +
           " container: $id."
         return
       }

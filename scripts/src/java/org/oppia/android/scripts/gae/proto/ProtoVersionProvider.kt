@@ -4,10 +4,10 @@ import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.Message
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.versions.ApiVersions
+import org.oppia.proto.v1.versions.ClassroomProtoVersion
 import org.oppia.proto.v1.versions.ConceptCardProtoVersion
 import org.oppia.proto.v1.versions.ExplorationProtoVersion
 import org.oppia.proto.v1.versions.ImageProtoVersion
-import org.oppia.proto.v1.versions.ClassroomProtoVersion
 import org.oppia.proto.v1.versions.LanguageProtosVersion
 import org.oppia.proto.v1.versions.QuestionProtoVersion
 import org.oppia.proto.v1.versions.RevisionCardProtoVersion

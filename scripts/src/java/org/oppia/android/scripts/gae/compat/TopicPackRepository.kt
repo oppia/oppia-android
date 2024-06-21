@@ -350,14 +350,18 @@ class TopicPackRepository(
   ): GenericLoadResult {
     return when (val result = versionStructureMapManager.lookUp(structureId, reference)) {
       is LoadResult.Pending -> {
-        val nextVersions = reference.computeNextBatchOfVersionsToCheck(versionStructureMap)
-        check(nextVersions.isNotEmpty()) { "At least one reference should be pending for: $reference." }
-        reference.loadVersioned(
-          androidService, compatibilityChecker, nextVersions
-        ).forEach(versionStructureMap::put)
+        val nextVersions = versionStructureMapManager.computeNextBatchOfVersionsToCheck(structureId)
+        check(nextVersions.isNotEmpty()) {
+          "At least one reference should be pending for: $reference."
+        }
+        versionStructureMapManager.update(
+          structureId, reference.loadVersioned(androidService, compatibilityChecker, nextVersions)
+        )
         // This should be present now.
-        versionStructureMap.getValue(reference).also {
-          check(it !is LoadResult.Pending) { "Expected reference to be loaded: $reference (found: $it)." }
+        versionStructureMapManager.lookUp(structureId, reference).also {
+          check(it !is LoadResult.Pending) {
+            "Expected reference to be loaded: $reference (found: $it)."
+          }
         }
       }
       is LoadResult.Success, is LoadResult.Failure -> result
@@ -553,8 +557,6 @@ private interface VersionedStructureFetcher<I : StructureId, S> {
 }
 
 private sealed class VersionedStructureReference<I : StructureId, S> {
-  // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
-  private val defaultVersionFetchCount: Int = 1
   abstract val structureId: I
   abstract val version: Int
   abstract val fetcher: VersionedStructureFetcher<I, S>
@@ -575,13 +577,6 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
   ): Pair<S, LoadResult<S>> {
     val result = fetcher.fetchLatestFromRemoteAsync(structureId, service)
     return result.await().payload to result.toLoadResult(checker)
-  }
-
-  fun computeNextBatchOfVersionsToCheck(structureMap: VersionStructureMap): List<Int> {
-    val pendingVersions = structureMap.filter { (_, result) ->
-      result is LoadResult.Pending
-    }.map { (reference, _) -> reference.version }
-    return pendingVersions.toList().sortedDescending().take(defaultVersionFetchCount)
   }
 
   suspend fun loadVersioned(
@@ -611,7 +606,7 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
   ): LoadResult<S> {
     return when (val compatibilityResult = checkCompatibility(checker, payload)) {
       Compatible -> LoadResult.Success(payload)
-      is Incompatible -> LoadResult.Failure<S>(compatibilityResult.failures)//.also {
+      is Incompatible -> LoadResult.Failure<S>(compatibilityResult.failures) // .also {
       //   // TODO: Remove.
       //   error("Failed to load: $it.")
       // }
@@ -687,6 +682,9 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
 
   companion object {
     const val INVALID_VERSION = 0
+
+    // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
+    val defaultVersionFetchCount: Int = 1
   }
 }
 
@@ -830,6 +828,8 @@ private interface VersionStructureMapManager {
 
   fun findMostRecent(structureId: StructureId): GenericStructureReference
 
+  fun computeNextBatchOfVersionsToCheck(structureId: StructureId): List<Int>
+
   fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference)
 
   fun update(
@@ -884,6 +884,14 @@ private class VersionStructureMapManagerTakeLatestImpl(
     return checkNotNull(references.maxByOrNull { it.version }) {
       "Failed to find most recent structure reference in map: $this for ID: $structureId."
     }
+  }
+
+  override fun computeNextBatchOfVersionsToCheck(structureId: StructureId): List<Int> {
+    return lock.withLock {
+      cachedStructures.getValue(structureId).filter { (_, result) ->
+        result is LoadResult.Pending
+      }.map { (reference, _) -> reference.version }
+    }.sortedDescending().take(VersionedStructureReference.defaultVersionFetchCount)
   }
 
   override fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference) {
@@ -954,6 +962,14 @@ private class VersionStructureMapManagerFixVersionsImpl(
 
   // There's only at most one version per ID, so that's always the 'latest'.
   override fun findMostRecent(structureId: StructureId) = lookUp(structureId).first
+
+  override fun computeNextBatchOfVersionsToCheck(structureId: StructureId): List<Int> {
+    return lock.withLock {
+      // There's only at most one version per ID, and it's either loaded or isn't.
+      val (reference, result) = lookUp(structureId)
+      return@withLock if (result is LoadResult.Pending) listOf(reference.version) else listOf()
+    }
+  }
 
   override fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference) {
     error("Cannot invalidate versions when versions are fixed, for reference:\n$reference")

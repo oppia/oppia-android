@@ -22,7 +22,6 @@ import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertTo
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToSubtopicRecord
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicRecord
 import org.oppia.android.scripts.gae.GaeAndroidEndpoint
 import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl
@@ -198,7 +197,7 @@ class LessonDownloader(
   apiSecret: String,
   private val cacheDir: File?,
   private val forceCacheLoad: Boolean,
-  downloadListVersions: DownloadListVersions
+  downloadListVersions: DownloadListVersions?
 ) {
   private val threadPool by lazy {
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
@@ -294,7 +293,8 @@ class LessonDownloader(
       val defaultLocalization = classroom.localizations.defaultMapping
       val nameContentId = classroom.name.contentId
       val textMapping = defaultLocalization.localizableTextContentMappingMap[nameContentId]
-      val classroomName = textMapping?.singleLocalizableText?.text?.takeIf { it.isNotEmpty() } ?: "<unknown>"
+      val classroomName =
+        textMapping?.singleLocalizableText?.text?.takeIf { it.isNotEmpty() } ?: "<unknown>"
       println("- ${classroom.id}: $classroomName (has ${classroom.topicIdsCount} topics)")
     }
 

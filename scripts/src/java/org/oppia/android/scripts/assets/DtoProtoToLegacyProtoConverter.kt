@@ -3,6 +3,7 @@ package org.oppia.android.scripts.assets
 import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ClassroomList
+import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ConceptCard
 import org.oppia.android.app.model.ConceptCardList
 import org.oppia.android.app.model.CustomSchemaValue
@@ -31,8 +32,6 @@ import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.SubtopicRecord
-import org.oppia.android.app.model.ClassroomList
-import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
@@ -42,13 +41,13 @@ import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.ChapterSummaryDto
+import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.ConceptCardDto
 import org.oppia.proto.v1.structure.ConceptCardLanguagePackDto
 import org.oppia.proto.v1.structure.ContentLocalizationDto
 import org.oppia.proto.v1.structure.ContentLocalizationsDto
 import org.oppia.proto.v1.structure.ContinueInstanceDto
 import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
-import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.HasElementXBeforeElementYSpecDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.IsEqualToOrderingWithOneItemAtIncorrectPositionSpecDto
@@ -259,11 +258,13 @@ object DtoProtoToLegacyProtoConverter {
         dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
       putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
       this.translatableTitle = dto.localizations.extractDefaultSubtitledHtml(dto.name)
-      putAllTopicPrerequisites(dto.topicIdsList.associateWith { topicId ->
-        ClassroomRecord.TopicIdList.newBuilder().apply {
-          addAllTopicIds(topicSummaryMap.getValue(topicId).prerequisiteTopicIdsList)
-        }.build()
-      })
+      putAllTopicPrerequisites(
+        dto.topicIdsList.associateWith { topicId ->
+          ClassroomRecord.TopicIdList.newBuilder().apply {
+            addAllTopicIds(topicSummaryMap.getValue(topicId).prerequisiteTopicIdsList)
+          }.build()
+        }
+      )
     }.build()
   }
 

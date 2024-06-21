@@ -17,8 +17,8 @@ import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.Compat
 import org.oppia.android.scripts.gae.compat.TopicPackRepository
 import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
-import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeClassroom
+import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
@@ -241,13 +241,6 @@ class GaeAndroidEndpointJsonImpl(
           }.payload
         }
       }.awaitAll().map { it.filterTopics() }
-      // listOf(
-      //   "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm",
-      //   "5g0nxGUmx5J5"
-      // ).also {
-      //   tracker.countEstimator.setTopicCount(it.size)
-      //   tracker.reportDownloaded("math")
-      // }
     }
   }
 
@@ -255,7 +248,10 @@ class GaeAndroidEndpointJsonImpl(
   private fun GaeClassroom.filterTopics(): GaeClassroom {
     return copy(
       topicIdToPrereqTopicIds = topicIdToPrereqTopicIds.filterKeys {
-        it in listOf("iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm", "5g0nxGUmx5J5")
+        it in listOf(
+          "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm",
+          "5g0nxGUmx5J5"
+        )
       }
     )
   }

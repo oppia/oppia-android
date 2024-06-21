@@ -83,7 +83,6 @@ class LessonListDownloader(
       apiDebugDir,
       forceCacheLoad = false,
       scriptBgDispatcher,
-      topicDependencies = topicDependenciesTable,
       imageDownloader,
       forcedVersions = null // Always load latest when creating the pin versions list.
     )
