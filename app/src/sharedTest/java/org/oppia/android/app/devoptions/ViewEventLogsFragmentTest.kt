@@ -15,10 +15,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Binds
 import dagger.BindsOptionalOf
-import com.google.firebase.FirebaseApp
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -84,8 +83,8 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
