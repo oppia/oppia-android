@@ -1,20 +1,17 @@
 package org.oppia.android.scripts.testfile
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.Assert.assertEquals
-import org.oppia.android.scripts.proto.TestFileExemptions
-import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.proto.TestFileExemptions
+import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 
 /** Tests for [TestFileCheck]. */
 class TestFileCheckTest {
@@ -156,7 +153,6 @@ class TestFileCheckTest {
 
     assertEquals(listOf("test/TestExemptedFile.kt"), result)
   }
-
 
   /** Retrieves the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {

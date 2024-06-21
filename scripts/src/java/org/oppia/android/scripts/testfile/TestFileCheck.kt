@@ -27,10 +27,16 @@ fun main(vararg args: String) {
   testFileCheck.execute()
 }
 
-class TestFileCheck (
+/**
+ * Class for checking the presence of test files in a repository.
+ *
+ * @param repoPath The path of the repo
+ * @param testFileExemptiontextProto the location of the test file exemption textproto file.
+ */
+class TestFileCheck(
   private val repoPath: String,
   private val testFileExemptiontextProto: String
-  ) {
+) {
 
   /**
    * Retrieves a list of files exempted from requiring a test file based on the specified protocol buffer.
@@ -41,7 +47,7 @@ class TestFileCheck (
    * The files specifically marked as exempt from needing a test file are included,
    * rather than those exempt from meeting a minimum coverage percentage.
    *
-   * @param testFileExemptiontextProto The path to the protocol buffer file containing test file exemptions.
+   * @param testFileExemptiontextProto the location of the test file exemption textproto file.
    * @return A list of file paths that are exempted from requiring a test file.
    */
   fun getTestFileExemptionList(testFileExemptiontextProto: String): List<String> {
