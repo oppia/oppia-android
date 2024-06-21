@@ -200,8 +200,8 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
-        if (enableOnboardingFlowV2.value
-          && profile.profileType.equals(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+        if (enableOnboardingFlowV2.value &&
+          profile.profileType.equals(ProfileType.PROFILE_TYPE_UNSPECIFIED)
         ) {
           updateProfileType(profileId, computeProfileType(profile.isAdmin, profile.pin))
         }
