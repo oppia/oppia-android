@@ -50,18 +50,11 @@ class ProfileProgressActivityPresenter @Inject constructor(
     ) as ProfileProgressFragment?
   }
 
-  fun openGalleryIntent() {
-    val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
-    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
-  }
-
-  fun handleOnActivityResult(intent: Intent?) {
-    intent?.let {
-      profileManagementController.updateProfileAvatar(
-        profileId,
-        intent.data,
-        /* colorRgb= */ 10710042
-      )
-    }
+  fun updateProfileAvatar(intent: Intent?) {
+    profileManagementController.updateProfileAvatar(
+      profileId,
+      intent?.data,
+      /* colorRgb= */ 10710042
+    )
   }
 }
