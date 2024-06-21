@@ -4,16 +4,19 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
@@ -25,6 +28,7 @@ import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLes
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
@@ -66,9 +70,36 @@ import javax.inject.Singleton
 @Module
 class TestPlatformParameterModule {
   @Provides
+  @EnableTestFeatureFlag
+  fun provideEnableTestFeatureFlag(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(TEST_FEATURE_FLAG)
+      ?: PlatformParameterValue.createDefaultParameter(TEST_FEATURE_FLAG_DEFAULT_VALUE)
+  }
+
+  @Provides
+  @EnableTestFeatureFlagWithEnabledDefault
+  fun provideEnableTestFeatureFlagWithEnabledDefault(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(
+      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
+    )
+      ?: PlatformParameterValue.createDefaultParameter(
+        defaultValue = TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULT_VALUE,
+        defaultSyncStatus = PlatformParameter.SyncStatus.SYNCED_FROM_SERVER
+      )
+  }
+
+  @Provides
   @EnableDownloadsSupport
-  fun provideEnableDownloadsSupport(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
+  fun provideEnableDownloadsSupport(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
+      ?: PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
+  }
 
   @TestStringParam
   @Provides
@@ -283,6 +314,12 @@ class TestPlatformParameterModule {
     return PlatformParameterValue.createDefaultParameter(enableOnboardingFlowV2)
   }
 
+  @Provides
+  @EnableMultipleClassrooms
+  fun provideEnableMultipleClassrooms(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableMultipleClassrooms)
+  }
+
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
@@ -302,6 +339,7 @@ class TestPlatformParameterModule {
     private var gracePeriodInDays = NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
     private var enableNpsSurvey = ENABLE_NPS_SURVEY_DEFAULT_VALUE
     private var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
+    private var enableMultipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableDownloadsSupport(value: Boolean) {
@@ -368,6 +406,12 @@ class TestPlatformParameterModule {
       enableOnboardingFlowV2 = value
     }
 
+    /** Enables forcing [EnableMultipleClassrooms] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableMultipleClassrooms(value: Boolean) {
+      enableMultipleClassrooms = value
+    }
+
     /** Enables forcing [EnableAppAndOsDeprecation] feature flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableAppAndOsDeprecation(value: Boolean) {
@@ -387,6 +431,7 @@ class TestPlatformParameterModule {
       enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
       enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
       enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
+      enableMultipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
     }
   }
 }
