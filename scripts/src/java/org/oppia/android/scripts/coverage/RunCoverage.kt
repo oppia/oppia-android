@@ -70,15 +70,18 @@ class RunCoverage(
    * prints a message indicating no coverage analysis is performed. Otherwise, initializes
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
+   *
+   * @return a list of lists containing coverage data for each requested test target, if
+   *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): MutableList<List<String>> {
+  fun execute(): List<List<String>> {
     var coverageDataList = mutableListOf<List<String>>()
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
     if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file. Hence No coverage!")
-      return mutableListOf()
+      return emptyList()
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
@@ -92,11 +95,16 @@ class RunCoverage(
         testTarget.removeSuffix(".kt"),
         commandExecutor,
         scriptBgDispatcher
-      ).runCoverage()!!
-      coverageDataList.add(coverageData)
+      ).runCoverage()
+
+      if (coverageData != null) {
+        coverageDataList.add(coverageData)
+      } else {
+        println("Coverage data for $testTarget is null")
+      }
     }
     println("Coverage Data List: $coverageDataList")
-    return coverageDataList
+    return coverageDataList.toList()
   }
 
   private fun findTestFile(repoRoot: String, filePath: String): List<String> {
