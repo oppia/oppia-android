@@ -57,7 +57,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    * @param filename the name of the source file (without the .kt extension)
    * @param sourceContent the content of the source file
    * @param testContent the content of the test file
-   * @param subpackage the subpackage under which the source and test files should be added
+   * @param sourceSubpackage the subpackage under which the source files should be added
+   * @param testSubpackage the subpackage under which the test files should be added
    */
   fun addSourceAndTestFileWithContent(
     filename: String,
@@ -82,7 +83,17 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     )
   }
 
-  fun addAppLevelSourceAndTestFileWithContent(
+  /**
+   * Adds a source file and 2 test files with the specified name and content,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param testContentShared the content of the test file for SharedTest Package
+   * @param testContentLocal the content of the test file for Test Package
+   * @param subpackage the subpackage under which the source and test files should be added
+   */
+  fun addMultiLevelSourceAndTestFileWithContent(
     filename: String,
     sourceContent: String,
     testContentShared: String,

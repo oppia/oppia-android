@@ -381,7 +381,7 @@ class RunCoverageTest {
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/sharedTest/java/com/example"
+      testSubpackage = "app/test/java/com/example"
     )
 
     val result = RunCoverage(
