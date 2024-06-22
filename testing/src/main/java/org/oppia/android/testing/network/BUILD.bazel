@@ -10,15 +10,8 @@ oppia_android_library(
     testonly = True,
     srcs = [
         "ApiMockLoader.kt",
-        "MockClassroomService.kt",
-        "MockConceptCardService.kt",
-        "MockExplorationService.kt",
         "MockFeedbackReportingService.kt",
         "MockPlatformParameterService.kt",
-        "MockQuestionPlayerService.kt",
-        "MockStoryService.kt",
-        "MockSubtopicService.kt",
-        "MockTopicService.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [

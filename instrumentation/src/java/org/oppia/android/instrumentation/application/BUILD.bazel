@@ -48,6 +48,7 @@ oppia_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
+        "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",

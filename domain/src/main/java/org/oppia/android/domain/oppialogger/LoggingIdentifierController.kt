@@ -17,6 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val SESSION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.session_id"
+private const val APP_SESSION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.app_session_id"
 private const val INSTALLATION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.installation_id"
 
 /** Controller that handles logging identifiers related operations. */
@@ -28,11 +29,27 @@ class LoggingIdentifierController @Inject constructor(
   private val persistentCacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger
 ) {
-  private val learnerIdRandom by lazy { Random(applicationIdSeed) }
+  // Use a base random to compute the per-ID random IDs in order so that test behaviors are
+  // consistent and deterministic when fixing the application ID seed.
+  private val baseRandom = Random(applicationIdSeed)
+  private val installationRandomSeed = baseRandom.nextLong()
+  private val sessionRandomSeed = baseRandom.nextLong()
+  private val learnerRandomSeed = baseRandom.nextLong()
+  private val appSessionRandomSeed = baseRandom.nextLong()
+  private val installationIdRandom by lazy { Random(installationRandomSeed) }
+  private val sessionIdRandom by lazy { Random(sessionRandomSeed) }
+  private val learnerIdRandom by lazy { Random(learnerRandomSeed) }
+  private val appSessionIdRandom by lazy { Random(appSessionRandomSeed) }
 
   private val sessionId by lazy { MutableStateFlow(computeSessionId()) }
+  private val appSessionId by lazy { MutableStateFlow(computeAppSessionId()) }
   private val sessionIdDataProvider by lazy {
     dataProviders.run { sessionId.convertToAutomaticDataProvider(SESSION_ID_DATA_PROVIDER_ID) }
+  }
+  private val appSessionIdDataProvider by lazy {
+    dataProviders.run {
+      appSessionId.convertToAutomaticDataProvider(APP_SESSION_ID_DATA_PROVIDER_ID)
+    }
   }
   private val installationIdStore by lazy {
     persistentCacheStoreFactory.create(
@@ -94,6 +111,14 @@ class LoggingIdentifierController @Inject constructor(
   fun getSessionId(): DataProvider<String> = sessionIdDataProvider
 
   /**
+   * Returns an in-memory data provider pointing to a class variable of [appSessionId].
+   *
+   * This ID is unique to each app session. A session starts when the app is opened and ends when
+   * the app is destroyed by the Android system.
+   */
+  fun getAppSessionId(): DataProvider<String> = appSessionIdDataProvider
+
+  /**
    * Returns the [StateFlow] backing the current session ID indicated by [getSessionId].
    *
    * Where the [DataProvider] returned by [getSessionId] can be composed by domain controllers or
@@ -101,6 +126,15 @@ class LoggingIdentifierController @Inject constructor(
    * contexts.
    */
   fun getSessionIdFlow(): StateFlow<String> = sessionId
+
+  /**
+   * Returns the [StateFlow] backing the current app session ID indicated by [getAppSessionId].
+   *
+   * Where the [DataProvider] returned by [getAppSessionId] can be composed by domain controllers or
+   * observed by the UI layer, the [StateFlow] returned by this method can be observed in background
+   * contexts.
+   */
+  fun getAppSessionIdFlow(): StateFlow<String> = appSessionId
 
   /**
    * Regenerates [sessionId] and notifies the data provider.
@@ -113,12 +147,14 @@ class LoggingIdentifierController @Inject constructor(
     sessionId.value = computeSessionId()
   }
 
-  private fun computeSessionId(): String = learnerIdRandom.randomUuid().toString()
+  private fun computeSessionId(): String = sessionIdRandom.randomUuid().toString()
+
+  private fun computeAppSessionId(): String = appSessionIdRandom.randomUuid().toString()
 
   private fun computeInstallationId(): String {
     return machineLocale.run {
       MessageDigest.getInstance("SHA-1")
-        .digest(learnerIdRandom.randomUuid().toString().toByteArray())
+        .digest(installationIdRandom.randomUuid().toString().toByteArray())
         .joinToString("") { "%02x".formatForMachines(it) }
         .substring(startIndex = 0, endIndex = 12)
     }

@@ -9,12 +9,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,6 +32,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -53,6 +54,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -66,10 +68,13 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -78,7 +83,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -96,14 +100,19 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val ENGLISH = 0
-private const val FRENCH = 1
-
 /** Tests for [AppLanguageFragment]. */
 @RunWith(AndroidJUnit4::class)
+@RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
 class AppLanguageFragmentTest {
+
+  private companion object {
+    private const val ENGLISH_BUTTON_INDEX = 1
+    private const val KISWAHILI_BUTTON_INDEX = 4
+    private const val PORTUGUESE_BUTTON_INDEX = 3
+  }
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -119,6 +128,8 @@ class AppLanguageFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private val internalProfileId: Int = -1
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -133,59 +144,100 @@ class AppLanguageFragmentTest {
 
   @Test
   fun testAppLanguage_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
   fun testAppLanguage_configChange_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
       rotateToLandscape()
-      checkSelectedLanguage(ENGLISH)
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAppLanguage_tabletConfig_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       testCoroutineDispatchers.runCurrent()
-      checkSelectedLanguage(ENGLISH)
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
-  fun testAppLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
-      checkSelectedLanguage(FRENCH)
+  fun testAppLanguage_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyEnglishIsSelected()
+      selectPortuguese()
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
-  fun testAppLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
+  fun testAppLanguage_changeLanguageToPortuguese_configChange_selectedLanguageIsPortuguese() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyEnglishIsSelected()
+      selectPortuguese()
       rotateToLandscape()
-      checkSelectedLanguage(FRENCH)
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAppLanguage_tabletConfig_changeLanguageToFrench_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+  fun testAppLanguage_tabletConfig_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       testCoroutineDispatchers.runCurrent()
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
-      checkSelectedLanguage(FRENCH)
+      verifyEnglishIsSelected()
+      selectPortuguese()
+      verifyPortugueseIsSelected()
     }
   }
 
-  private fun checkSelectedLanguage(index: Int) {
+  @Test
+  fun testAppLanguage_changeLanguageToSwahili_selectedLanguageObservedIsSwahili() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyEnglishIsSelected()
+      selectKiswahili()
+      var appLanguageActivity: AppLanguageActivity? = null
+      it.onActivity { it1 -> appLanguageActivity = it1 }
+      testCoroutineDispatchers.runCurrent()
+      appLanguageActivity?.recreate()
+      testCoroutineDispatchers.runCurrent()
+      verifyKiswahiliIsSelected(appLanguageActivity)
+    }
+  }
+
+  private fun verifyKiswahiliIsSelected(appLanguageActivity: AppLanguageActivity?) {
+    checkSelectedLanguage(index = KISWAHILI_BUTTON_INDEX, expectedLanguageName = "Kiswahili")
+    assertThat(appLanguageActivity?.appLanguageActivityPresenter?.getLanguageSelected()?.name)
+      .isEqualTo(OppiaLanguage.SWAHILI.name)
+  }
+
+  private fun selectPortuguese() {
+    selectLanguage(PORTUGUESE_BUTTON_INDEX)
+  }
+
+  private fun selectKiswahili() {
+    selectLanguage(KISWAHILI_BUTTON_INDEX)
+  }
+
+  private fun verifyEnglishIsSelected() {
+    checkSelectedLanguage(index = ENGLISH_BUTTON_INDEX, expectedLanguageName = "English")
+  }
+
+  private fun verifyPortugueseIsSelected() {
+    checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
+  }
+
+  private fun checkSelectedLanguage(index: Int, expectedLanguageName: String) {
     onView(
       atPositionOnView(
         R.id.language_recycler_view,
@@ -193,7 +245,13 @@ class AppLanguageFragmentTest {
         R.id.language_radio_button
       )
     ).check(matches(isChecked()))
-    testCoroutineDispatchers.runCurrent()
+    onView(
+      atPositionOnView(
+        R.id.language_recycler_view,
+        index,
+        R.id.language_text_view
+      )
+    ).check(matches(ViewMatchers.withText(expectedLanguageName)))
   }
 
   private fun rotateToLandscape() {
@@ -214,19 +272,16 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent =
-    AppLanguageActivity.createAppLanguageActivityIntent(context, summaryValue)
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
+    return AppLanguageActivity.createAppLanguageActivityIntent(
+      context,
+      oppiaLanguage,
+      internalProfileId
+    )
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -241,7 +296,7 @@ class AppLanguageFragmentTest {
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
@@ -256,7 +311,8 @@ class AppLanguageFragmentTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

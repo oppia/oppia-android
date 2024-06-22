@@ -9,9 +9,11 @@ oppia_android_library(
     srcs = ["AppStartupStateController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":deprecation_controller",
         ":exploration_meta_data_retriever",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model/src/main/proto:deprecation_java_proto_lite",
         "//model/src/main/proto:onboarding_java_proto_lite",
         "//model/src/main/proto:version_java_proto_lite",
         "//third_party:com_google_protobuf_protobuf-javalite",
@@ -20,6 +22,7 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
@@ -53,5 +56,26 @@ oppia_android_library(
     deps = [
         ":exploration_meta_data_retriever",
         "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "deprecation_controller",
+    srcs = [
+        "DeprecationController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":exploration_meta_data_retriever",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model/src/main/proto:deprecation_java_proto_lite",
+        "//model/src/main/proto:onboarding_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
     ],
 )

@@ -974,6 +974,40 @@ class DataProvidersTest {
   }
 
   @Test
+  fun testTransformAsync_toLiveData_throwsException_deliversFailure() {
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
+      throw IllegalStateException("Transform failure")
+    }
+
+    dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Note that the exception type here is not chained since the failure occurred in the transform
+    // function.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(IllegalStateException::class.java)
+      hasMessageThat().contains("Transform failure")
+    }
+  }
+
+  @Test
+  fun testTransformAsync_toLiveData_throwsException_deliversFailure_logsException() {
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
+      throw IllegalStateException("Transform failure")
+    }
+
+    dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Transform failure")
+  }
+
+  @Test
   fun testTransformAsync_toLiveData_basePending_deliversPending() {
     val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {

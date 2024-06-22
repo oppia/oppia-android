@@ -55,7 +55,7 @@ class PeekableIteratorTest {
     val sequence = sequenceOf<String>()
     val iterator = sequence.toPeekableIterator()
 
-    assertThrows(NoSuchElementException::class) { iterator.next() }
+    assertThrows<NoSuchElementException>() { iterator.next() }
   }
 
   @Test

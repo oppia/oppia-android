@@ -29,7 +29,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.2.0
+          version: 6.5.0
 
       - uses: actions/cache@v2
         id: scripts_cache
@@ -76,8 +76,8 @@ jobs:
         id: compute-test-matrix
         env:
           compute_all_targets: ${{ contains(github.event.pull_request.title, '[RunAllTests]') }}
-          # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request.
-          base_commit_hash: ${{ github.event.pull_request.base.sha }}
+          # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request. Defer to origin/develop outside a PR (such as develop's main CI runs).
+          base_commit_hash: ${{ github.event.pull_request.base.sha || 'origin/develop' }}
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
@@ -115,7 +115,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.2.0
+          version: 6.5.0
 
       - uses: actions/cache@v2
         id: scripts_cache

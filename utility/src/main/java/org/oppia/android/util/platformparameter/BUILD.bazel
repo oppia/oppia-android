@@ -7,9 +7,10 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "platformparameter",
     srcs = [
+        "FeatureFlagConstants.kt",
         "PlatformParameterConstants.kt",
         "PlatformParameterSingleton.kt",
-        ":PlatformParameterValue.kt",
+        "PlatformParameterValue.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [

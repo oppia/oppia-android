@@ -20,10 +20,19 @@ PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.guava:guava": "31.0.1-jre",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.squareup.moshi:moshi": "1.13.0",
+    "com.google.protobuf:protobuf-java-util": "3.17.3",
+    "com.squareup.moshi:moshi-kotlin": "1.13.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
+    "com.squareup.okhttp3:okhttp": "4.7.2",
+    "com.squareup.retrofit2:converter-moshi": "2.5.0",
+    "com.squareup.retrofit2:retrofit": "2.9.0",
+    "io.xlate:yaml-json": "0.1.0",
+    "jakarta.json:jakarta.json-api": "2.1.2",
+    "org.eclipse.parsson:parsson": "1.1.2",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
+    "org.snakeyaml:snakeyaml-engine": "2.6",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
@@ -32,6 +41,7 @@ PRODUCTION_DEPENDENCY_VERSIONS = {
 TEST_DEPENDENCY_VERSIONS = {
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "1.1.3",
+    "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "junit:junit": "4.13.2",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "3.9.0",

@@ -37,6 +37,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
@@ -61,6 +62,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -74,9 +76,9 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -173,6 +175,7 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("PORTUGUESE", "language=PORTUGUESE")
   @Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE")
   @Iteration("SWAHILI", "language=SWAHILI")
+  @Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN")
   @Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   fun testConvertToString_constExp_unsupportedLanguage_returnsNull() {
     val exp = parseAlgebraicExpression("2")
@@ -189,6 +192,7 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("PORTUGUESE", "language=PORTUGUESE")
   @Iteration("BRAZILIAN_PORTUGUESE", "language=BRAZILIAN_PORTUGUESE")
   @Iteration("SWAHILI", "language=SWAHILI")
+  @Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN")
   @Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   fun testConvertToString_constEq_unsupportedLanguage_returnsNull() {
     val eq = parseAlgebraicEquation("x=2")
@@ -206,7 +210,7 @@ class MathExpressionAccessibilityUtilTest {
       .asList()
       .containsExactly(
         LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
-        SWAHILI, UNRECOGNIZED
+        SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
       )
   }
 
@@ -1254,7 +1258,7 @@ class MathExpressionAccessibilityUtilTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
@@ -1269,7 +1273,8 @@ class MathExpressionAccessibilityUtilTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -1,246 +1,316 @@
-# Per-directory ownership and automatic assignment for pull requests.
-
-# IMPORTANT NOTES FOR CODEOWNERS:
-#
-# - If you will be unavailable for more than 24 hours, please replace your
-#   ownership with a delegate, file an issue, and add a todo above the owner
-#   line like so:
-#
-#     TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD.
-#
-#   (See oppia/#10250 for an example.) Please make sure to restore ownership after
-#   the above date passes.
-
-# Blanket codeowners
-# This is for the case when new files are created in any directories that aren't
-# covered as a whole, since in these cases, codeowners are not recognized for
-# those files when reviewing, even if the PR does add it. Unless new
-# files/folders are created in the following directories, these codeowners would
-# be superseded by the relevant codeowners mentioned elsewhere in this file.
-# (Reference: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
-
-#####################################################################################
-#                                 Blanket ownership                                 #
-#####################################################################################
-
-# Codeowners ownership (for adding/changing/removing code owners).
-.github/CODEOWNERS @oppia/owners
-
-# Gradle build files.
-*.gradle @BenHenning
-gradle.properties @BenHenning
-gradlew @BenHenning
-gradlew.bat @BenHenning
-/gradle/ @BenHenning
-
-# GitHub configuration files.
-.gitignore @BenHenning
-/.github/*.md @BenHenning
-/.github/ISSUE_TEMPLATE @BenHenning
-/.github/DISCUSSION_TEMPLATE/q-a-installation.yml @BenHenning
-
-# Git secret files & related configurations.
-/.gitsecret/ @BenHenning
-*.secret @BenHenning
-
-# CI configuration.
-/.github/actions/ @BenHenning
-/.github/workflows/ @BenHenning
-/.github/stale.yml @BenHenning
-
-# Wiki
-/wiki/ @BenHenning @seanlip
-
-# Devbots configurations.
-/.devbots/ @BenHenning
-
-# All resource files.
-/app/src/main/res/**/*.xml @BenHenning
-/utility/src/main/res/**/*.xml @BenHenning
-
-# App UI strings.
-/app/src/main/res/values*/strings.xml @BenHenning
-/app/src/main/res/values*/untranslated_strings.xml @BenHenning
-
-# Proguard configurations.
-*.pro @BenHenning
-
-# Lesson assets.
-/domain/src/main/assets/ @BenHenning
-
-# Android manifests and top-level app configuration.
-*Manifest.xml @BenHenning
-
-# Linter configuration.
-buf.yaml @BenHenning
-
-# Third-party dependencies.
-/third_party/ @BenHenning
-
-# IDEA IDE configuration.
-.editorconfig @BenHenning
-/.idea/ @BenHenning
-
-# Robolectric configuration.
-*.properties @BenHenning
-
-# Firebase configuration.
-/app/google-services.json @BenHenning
-
-# Binary files.
-*.png @BenHenning
-
-# Configurations for Bazel-built Android App Bundles.
-config/bundle_config.pb.json @BenHenning
-
-# Important codebase files.
-LICENSE @BenHenning
-NOTICE @BenHenning
-
-# Language configuration files.
-config/**/alllanguages/*.textproto @BenHenning
-config/**/productionlanguages/*.textproto @BenHenning
-
-# Configuration for KitKat-specific curated builds.
-config/kitkat_main_dex_class_list.txt @BenHenning
-
-#####################################################################################
-#                                    app module                                     #
-#####################################################################################
-
-# Global app module code ownership.
-/app/**/*.kt @BenHenning
-/app/**/*.java @BenHenning
-
-# State players.
-/app/src/*/java/org/oppia/android/app/player/ @BenHenning
-
-# Bindable adapter utilities.
-/app/src/main/java/org/oppia/android/app/databinding/RecyclerViewBindingAdapter.java @BenHenning
-/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
-/app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
-
-# Dagger configuration.
-/app/src/main/java/org/oppia/android/app/activity/ @BenHenning
-/app/src/main/java/org/oppia/android/app/application/ @BenHenning
-/app/src/main/java/org/oppia/android/app/fragment/ @BenHenning
-/app/src/main/java/org/oppia/android/app/view/ @BenHenning
-
-# Databinding adapters.
-/app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
-
-# App notices functionality (such as for deprecations).
-/app/src/*/java/org/oppia/android/app/notice/ @BenHenning
-
-# Parsing functionality needed for interactions.
-/app/src/*/java/org/oppia/android/app/parser/ @BenHenning
-
-# Bazel/data-binding shims.
-/app/src/*/java/org/oppia/android/app/shim/ @BenHenning
-
-# Splash screen.
-/app/src/*/java/org/oppia/android/app/splash/ @BenHenning
-
-# View model infrastructure.
-/app/src/*/java/org/oppia/android/app/viewmodel/ @BenHenning
-
-# App testing infrastructure.
-/app/src/*/java/org/oppia/android/app/testing/ @BenHenning
-
-#####################################################################################
-#                                  domain module                                    #
-#####################################################################################
-
-# Global domain module code ownership.
-/domain/**/*.kt @BenHenning
-
-# Questions support.
-/domain/src/*/java/org/oppia/android/domain/question/ @BenHenning
-
-# Oppia logging support.
-/domain/src/main/java/org/oppia/android/domain/oppialogger/ @BenHenning
-
-#####################################################################################
-#                                  testing module                                   #
-#####################################################################################
-
-# Global testing module code ownership.
-/testing/**/*.kt @BenHenning
-
-#####################################################################################
-#                                    data module                                    #
-#####################################################################################
-
-# Global data module code ownership.
-/data/**/*.kt @BenHenning
-/data/src/test/**/*.json @BenHenning
-
-#####################################################################################
-#                                  utility module                                   #
-#####################################################################################
-
-# Global utility module code ownership.
-/utility/**/*.kt @BenHenning
-
-# Utility test resources.
-/utility/src/test/res/values/strings.xml @BenHenning
-
-# Accessibility utilities.
-/utility/src/*/java/org/oppia/android/util/accessibility/ @BenHenning
-
-# Core logging infrastructure.
-/utility/src/*/java/org/oppia/android/util/logging/ @BenHenning
-
-# Miscellaneous statusbar UI utilities.
-/utility/src/*/java/org/oppia/android/util/statusbar/ @BenHenning
-
-#####################################################################################
-#                                     scripts                                       #
-#####################################################################################
-
-# Global scripts code ownership.
-/scripts/ @BenHenning
-
-# Script proto ownership.
-/scripts/**/*.proto @BenHenning
-
-# Static analysis check configuration files ownership.
-/scripts/assets/ @BenHenning
-
-#####################################################################################
-#                                      model                                        #
-#####################################################################################
-
-# Global proto file ownership for model/.
-/model/**/*.proto @BenHenning
-
-# Global model ownership.
-/model/ @BenHenning
-
-
-#####################################################################################
-#                                  instrumentation                                  #
-#####################################################################################
-
-# End-to-end test utilities and modules.
-/instrumentation/**/*.kt @BenHenning
-
-#####################################################################################
-#                                global overrides                                   #
-#####################################################################################
-
-# Bazel build files. This is added after everything else to ensure Bazel files are always reviewed by the same people.
-WORKSPACE @BenHenning
-*.bzl @BenHenning
-*.bazel @BenHenning
-.bazelrc @BenHenning
-.bazelversion @BenHenning
-
-# License texts.
-/app/src/main/res/values/third_party_dependencies.xml @BenHenning
+################################################################################
+#                        IMPORTANT NOTES FOR CODEOWNERS:                       #
+#                                                                              #
+# - If you will be unavailable for more than 24 hours, please do all of the    #
+#   following:                                                                 #
+#   (a) Make sure there are other folks on your codeowner team.                #
+#   (b) Send a note to them and make sure they can cover your reviews while    #
+#     absent, and tell them when you'll be back. Please include @BenHenning,   #
+#     @seanlip, and @adhiamboperes on that note.                               #
+#   (c) Update your GitHub status to "busy" to make sure you don't get         #
+#     reviews.                                                                 #
+#   (d) When you're back, change your status back so that you get new reviews. #
+#                                                                              #
+# - The order of ownership below matters. The later line always takes          #
+#   precedence, so broad ownership (e.g. directory-based) should be listed     #
+#   first and more narrow ownership (e.g. name-based) should be lasted later.  #
+#                                                                              #
+################################################################################
+
+
+
+# ---=============================== MODULES ==============================--- #
+
+################################################################################
+#                                  app module                                  #
+################################################################################
+
+# All app code files.
+/app/**/*.kt @oppia/android-frontend-reviewers
+/app/**/*.java @oppia/android-frontend-reviewers
+
+# All app resource files.
+/app/src/main/res/**/*.xml @oppia/android-frontend-reviewers
 
 # Exemptions to resource shrinking.
-app/src/main/res/raw/shrink_exemptions.xml @BenHenning
+/app/src/main/res/raw/shrink_exemptions.xml @oppia/android-dev-workflow-reviewers
 
-# Version tracking.
-/defs/version.bzl @BenHenning
+################################################################################
+#                                  data module                                 #
+################################################################################
+
+# All data module code.
+/data/**/*.kt @oppia/android-app-infrastructure-reviewers
+
+# Test networking assets.
+/data/src/test/assets/ @oppia/android-app-infrastructure-reviewers
+
+################################################################################
+#                                 domain module                                #
+################################################################################
+
+# All domain module code.
+/domain/**/*.kt @oppia/android-app-infrastructure-reviewers
+
+# Lesson assets.
+/domain/src/main/assets/ @oppia/android-app-infrastructure-reviewers
+
+################################################################################
+#                                Instrumentation                               #
+################################################################################
+
+# End-to-end test utilities and modules (experimental currently).
+/instrumentation/**/*.kt @oppia/android-dev-workflow-reviewers
+/instrumentation/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#                                 model module                                 #
+################################################################################
+
+# All protos shared between the domain and app layers.
+/model/ @oppia/android-app-infrastructure-reviewers
+
+################################################################################
+#                                testing module                                #
+################################################################################
+
+# All general-purpose shared test infrastructure.
+/testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt @oppia/android-dev-workflow-reviewers
+/testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt @oppia/android-dev-workflow-reviewers
+/testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt @oppia/android-dev-workflow-reviewers
+/testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/data/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/environment/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/junit/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/mockito/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/platformparameter/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/robolectric/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/threading/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/time/ @oppia/android-dev-workflow-reviewers
+
+# All domain and utility-specific shared test infrastructure.
+/testing/src/main/java/org/oppia/android/testing/FakeAnalyticsEventLogger.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakeExceptionLogger.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakeFirebaseAuthInstanceWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakeFirestoreEventLogger.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakeFirestoreInstanceWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricAssessor.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricsEventLogger.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/FakeAnalyticsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/FakeFirestoreEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricAssessorTest.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/test/java/org/oppia/android/testing/FakePerformanceMetricsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
+
+/testing/src/*/java/org/oppia/android/testing/firebase/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/lightweightcheckpointing/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/logging/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/math/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/network/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/networking/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/profile/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/story/ @oppia/android-app-infrastructure-reviewers
+
+# All app-specific shared test infrastructure.
+/testing/src/main/AndroidManifest.xml @oppia/android-frontend-reviewers
+/testing/src/main/java/org/oppia/android/testing/DisableAccessibilityChecks.kt @oppia/android-frontend-reviewers
+/testing/src/main/java/org/oppia/android/testing/RichTextViewMatcher.kt @oppia/android-frontend-reviewers
+/testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt @oppia/android-frontend-reviewers
+/testing/src/*/java/org/oppia/android/testing/espresso/ @oppia/android-frontend-reviewers
+
+################################################################################
+#                                    Scripts                                   #
+################################################################################
+
+# Covers all scripts in the codebase which are used for developer infrastructure,
+# build infrastructure, CI checks, and more.
+/scripts/ @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#                              third_party module                              #
+################################################################################
+
+# Third-party configurations and infrastructure (not covered elsewhere).
+/third_party/ @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#                                utility module                                #
+################################################################################
+
+# Utilities that support central developer workflow infrastructure.
+/utility/src/*/java/org/oppia/android/util/platformparameter/ @oppia/android-dev-workflow-reviewers
+/utility/src/*/java/org/oppia/android/util/system/ @oppia/android-dev-workflow-reviewers
+/utility/src/*/java/org/oppia/android/util/threading/ @oppia/android-dev-workflow-reviewers
+
+# Utilities needed by the domain layer of the app.
+/utility/src/*/java/org/oppia/android/util/caching/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/data/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/gcsresource/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/locale/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/logging/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/math/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/networking/ @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/parser/image @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/parser/math @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/parser/svg @oppia/android-app-infrastructure-reviewers
+/utility/src/*/java/org/oppia/android/util/profile/ @oppia/android-app-infrastructure-reviewers
+/utility/src/test/res/values/strings.xml @oppia/android-app-infrastructure-reviewers
+
+# Utilities that are primarily used for frontend/UI purposes.
+/utility/src/*/java/org/oppia/android/util/accessibility/ @oppia/android-frontend-reviewers
+/utility/src/*/java/org/oppia/android/util/statusbar/ @oppia/android-frontend-reviewers
+/utility/src/*/java/org/oppia/android/util/extensions/ @oppia/android-frontend-reviewers
+/utility/src/*/java/org/oppia/android/util/parser/html @oppia/android-frontend-reviewers
+/utility/src/*/res/**/*.xml @oppia/android-frontend-reviewers
+
+################################################################################
+#                                     Wiki                                     #
+################################################################################
+
+# Wiki pages are shared among all owners.
+/wiki/ @oppia/owners @oppia/android-app-infrastructure-reviewers @oppia/android-dev-workflow-reviewers @oppia/android-frontend-reviewers
+
+
+
+# ---====================== REPOSITORY CONFIGURATIONS =====================--- #
+
+
+
+################################################################################
+#                           Git/GitHub configurations                          #
+################################################################################
+
+# Top-level Git configuration files that should only be changed after careful
+# consideration.
+/.gitignore @oppia/owners
+
+# Repository-wide configurations and documentation that should only be changed
+# after careful consideration.
+/.github/CODE_OF_CONDUCT.md @oppia/owners
+/.github/CONTRIBUTING.md @oppia/owners
+/.github/README.md @oppia/owners
+
+# Top-level GitHub configuration files.
+/.github/PULL_REQUEST_TEMPLATE.md @oppia/android-dev-workflow-reviewers
+/.github/DISCUSSION_TEMPLATE/ @oppia/android-dev-workflow-reviewers
+/.github/ISSUE_TEMPLATE/ @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#                     Continuous integration configurations                    #
+################################################################################
+
+/.github/actions/ @oppia/android-dev-workflow-reviewers
+/.github/workflows/ @oppia/android-dev-workflow-reviewers
+/.github/stale.yml @oppia/android-dev-workflow-reviewers
+/.devbots/ @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#              Third-party dependencies & licenses configurations              #
+################################################################################
+
+# The list of third-party dependencies needed by Bazel.
+/third_party/versions.bzl @oppia/owners
+
+# The list of recorded licenses for all distributed third-party dependencies.
+/scripts/assets/maven_dependencies.textproto @oppia/owners
+
+# Extracted license texts. This file should never change since it's only
+# generated during build time.
+/app/src/main/res/values/third_party_dependencies.xml @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#                         Linter & IDE configurations                          #
+################################################################################
+
+# Configurations for Buf (Protobuf linter).
+/buf.yaml @oppia/android-dev-workflow-reviewers
+
+# IDEA IDE configuration.
+/.editorconfig @oppia/android-dev-workflow-reviewers
+/.idea/ @oppia/android-dev-workflow-reviewers
+
+
+
+# ---========================== GLOBAL OVERRIDES ==========================--- #
+
+
+
+################################################################################
+#                             Bazel infrastructure                             #
+################################################################################
+
+# Broad Bazel files used throughout the codebase.
+WORKSPACE @oppia/android-app-infrastructure-reviewers
+*.bzl @oppia/android-app-infrastructure-reviewers
+*.bazel @oppia/android-app-infrastructure-reviewers
+.bazelrc @oppia/android-app-infrastructure-reviewers
+.bazelversion @oppia/android-app-infrastructure-reviewers
+/tools/android/ @oppia/android-app-infrastructure-reviewers
+/tools/kotlin/ @oppia/android-app-infrastructure-reviewers
+
+# Configurations for Bazel-built Android App Bundles.
+/config/bundle_config.pb.json @oppia/android-dev-workflow-reviewers
+
+# Proguard configurations for Bazel builds.
+/config/proguard/ @oppia/android-dev-workflow-reviewers
+
+# Configuration for KitKat-specific curated builds.
+/config/kitkat_main_dex_class_list.txt @oppia/android-dev-workflow-reviewers
+
+# Specific manifest files specifically required for Bazel builds.
+/domain/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/utility/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+
+################################################################################
+#                             Gradle infrastructure                            #
+################################################################################
+
+# Gradle build files.
+*.gradle @oppia/android-app-infrastructure-reviewers
+gradle.properties @oppia/android-app-infrastructure-reviewers
+/gradlew @oppia/android-app-infrastructure-reviewers
+/gradlew.bat @oppia/android-app-infrastructure-reviewers
+/gradle/ @oppia/android-app-infrastructure-reviewers
+
+# Configuration files only used by Gradle builds.
+/app/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+/data/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+/domain/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+/utility/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
+*.properties @oppia/android-app-infrastructure-reviewers
+/data/src/main/AndroidManifest.xml @oppia/android-app-infrastructure-reviewers
+
+################################################################################
+#                           Sensitive file ownership                           #
+################################################################################
+
+# Codeowners ownership (for adding/changing/removing code owners).
+/.github/CODEOWNERS @oppia/owners
+
+# Git secret files & related configurations.
+/.gitsecret/ @oppia/owners
+*.secret @oppia/owners
+
+# Code license & notice.
+/LICENSE @oppia/owners
+/NOTICE @oppia/owners
+
+# Binary files (which should rarely be introduced to help minimize repo size).
+*.png @oppia/owners
+
+# Firebase project integration details (that should generally never change).
+/app/google-services.json @oppia/owners
+
+# Configurations for the languages supported by the app.
+/config/**/alllanguages/*.textproto @oppia/owners
+/config/**/productionlanguages/*.textproto @oppia/owners
+
+# Primary app manifest. Eventually, this will be split up so that only the
+# sensitive portions require owners approval.
+/app/src/main/AndroidManifest.xml @oppia/owners
+
+# Top-level user-facing major/minor versions, and the version codes used to
+# ensure users receive the correct build when installing it from Play Store.
+/defs/version.bzl @oppia/owners

@@ -13,6 +13,7 @@ oppia_android_library(
     deps = [
         ":oppia_locale",
         "//model/src/main/proto:languages_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -81,8 +82,11 @@ oppia_android_library(
         "oppia_locale",
         ":android_locale_profile",
         ":oppia_locale_context_extensions",
+        "//:dagger",
         "//model/src/main/proto:languages_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 

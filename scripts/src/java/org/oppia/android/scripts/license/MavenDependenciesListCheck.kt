@@ -72,14 +72,16 @@ class MavenDependenciesListCheck(
 
     val bazelQueryDepsList =
       mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = mavenDependenciesRetriever.generateDependenciesListFromMavenInstall(
-      pathToMavenInstallJson,
-      bazelQueryDepsList
-    )
+    val mavenInstallDepsList =
+      mavenDependenciesRetriever.generateDependenciesListFromMavenInstallAsync(
+        pathToMavenInstallJson,
+        bazelQueryDepsList
+      ).await()
 
     val dependenciesListFromPom =
       mavenDependenciesRetriever
-        .retrieveDependencyListFromPom(mavenInstallDepsList)
+        .retrieveDependencyListFromPomAsync(mavenInstallDepsList)
+        .await()
         .mavenDependencyList
 
     val dependenciesListFromTextProto =

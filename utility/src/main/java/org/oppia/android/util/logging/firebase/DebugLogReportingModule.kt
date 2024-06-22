@@ -33,6 +33,18 @@ interface DebugLogReportingModule {
     fun providePerformanceMetricsEventLogger(
       factory: FirebaseAnalyticsEventLogger.FactoryImpl
     ): PerformanceMetricsEventLogger = factory.createPerformanceMetricEventLogger()
+
+    @Provides
+    @Singleton
+    fun provideDebugFirestoreLogger(
+      debugLogger: DebugFirestoreEventLoggerImpl
+    ): FirestoreEventLogger = debugLogger
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestoreInstanceWrapper(
+      impl: FirestoreInstanceWrapperImpl
+    ): FirestoreInstanceWrapper = impl
   }
 
   @Binds

@@ -1,7 +1,10 @@
 package org.oppia.android.domain.platformparameter
 
 import android.app.Application
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.content.pm.ApplicationInfoBuilder
+import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -24,8 +27,14 @@ import org.oppia.android.testing.platformparameter.TestBooleanParam
 import org.oppia.android.testing.platformparameter.TestIntegerParam
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.platformparameter.TestStringParam
+import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -44,6 +53,9 @@ class PlatformParameterModuleTest {
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
+  @Inject
+  lateinit var context: Context
+
   @field:[Inject TestStringParam]
   lateinit var stringPlatformParameterProvider: Provider<PlatformParameterValue<String>>
 
@@ -52,6 +64,18 @@ class PlatformParameterModuleTest {
 
   @field:[Inject TestBooleanParam]
   lateinit var booleanPlatformParameterProvider: Provider<PlatformParameterValue<Boolean>>
+
+  @field:[Inject EnableAppAndOsDeprecation]
+  lateinit var enableAppAndOsDeprecationProvider: Provider<PlatformParameterValue<Boolean>>
+
+  @field:[Inject OptionalAppUpdateVersionCode]
+  lateinit var optionalAppUpdateVersionCodeProvider: Provider<PlatformParameterValue<Int>>
+
+  @field:[Inject ForcedAppUpdateVersionCode]
+  lateinit var forcedAppUpdateVersionCodeProvider: Provider<PlatformParameterValue<Int>>
+
+  @field:[Inject LowestSupportedApiLevel]
+  lateinit var lowestSupportedApiLevelProvider: Provider<PlatformParameterValue<Int>>
 
   private val platformParameterMapWithValues by lazy {
     val mockStringPlatformParameter = PlatformParameter.newBuilder()
@@ -137,18 +161,71 @@ class PlatformParameterModuleTest {
       .isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
+  @Test
+  fun testModule_injectEnableAppAndOsDeprecation_hasCorrectDefaultValue() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(enableAppAndOsDeprecationProvider.get().value)
+      .isEqualTo(TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
+  }
+
+  @Test
+  fun testModule_injectOptionalAppUpdateVersionCode_hasCorrectAppVersionCode() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(optionalAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(context.getVersionCode())
+    assertThat(optionalAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(TEST_APP_VERSION_CODE)
+  }
+
+  @Test
+  fun testModule_injectForcedAppUpdateVersionCode_hasCorrectAppVersionCode() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(forcedAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(context.getVersionCode())
+    assertThat(forcedAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(TEST_APP_VERSION_CODE)
+  }
+
+  @Test
+  fun testModule_injectLowestSupportedApiLevel_hasCorrectMinimumApiLevel() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(lowestSupportedApiLevelProvider.get().value)
+      .isEqualTo(TEST_LOWEST_SUPPORTED_API_LEVEL)
+  }
+
+  private fun registerTestApplication() {
+    val packageManager = Shadows.shadowOf(context.packageManager)
+    val applicationInfo =
+      ApplicationInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .build()
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .setApplicationInfo(applicationInfo)
+        .build()
+    packageInfo.versionName = TEST_APP_VERSION_NAME
+    packageInfo.longVersionCode = TEST_APP_VERSION_CODE
+    packageManager.installPackage(packageInfo)
+  }
+
   private fun setUpTestApplicationComponent(platformParameterMap: Map<String, PlatformParameter>) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+    registerTestApplication()
   }
 
   @Module
   class TestModule {
     @Provides
-    @Singleton
     fun providePlatformParameterSingleton(
       platformParameterSingletonImpl: PlatformParameterSingletonImpl
     ): PlatformParameterSingleton = platformParameterSingletonImpl
+
+    @Provides
+    fun provideContext(application: Application): Context {
+      return application
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -179,5 +256,12 @@ class PlatformParameterModuleTest {
     fun inject(platformParameterModuleTest: PlatformParameterModuleTest) {
       component.inject(platformParameterModuleTest)
     }
+  }
+
+  private companion object {
+    private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
+    private const val TEST_APP_VERSION_CODE = 125L
+    private const val TEST_LOWEST_SUPPORTED_API_LEVEL = 19
+    private const val TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
   }
 }

@@ -4,6 +4,9 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
+/** The version of Bazel to use in tests that set up Bazel workspaces. */
+const val BAZEL_VERSION = "6.5.0"
+
 /**
  * Test utility for generating various test & library targets in the specified [TemporaryFolder].
  * This is meant to be used to arrange the local test filesystem for use with a real Bazel
@@ -23,6 +26,13 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    */
   val rootBuildFile: File by lazy { temporaryRootFolder.newFile("BUILD.bazel") }
 
+  private val bazelVersionFile by lazy {
+    temporaryRootFolder.newFile(".bazelversion").also { it.writeText(BAZEL_VERSION) }
+  }
+  private val bazelRcFile by lazy {
+    temporaryRootFolder.newFile(".bazelrc").also { it.writeText("--noenable_bzlmod") }
+  }
+
   private val testFileMap = mutableMapOf<String, File>()
   private val libraryFileMap = mutableMapOf<String, File>()
   private val testDependencyNameMap = mutableMapOf<String, String>()
@@ -33,9 +43,11 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
   /** Initializes the local Bazel workspace by introducing a new, empty WORKSPACE file. */
   fun initEmptyWorkspace() {
-    // Sanity check, but in reality this is just initializing workspaceFile to ensure that it
+    // Sanity checks, but in reality this is just initializing workspaceFile to ensure that it
     // exists.
     assertThat(workspaceFile.exists()).isTrue()
+    assertThat(bazelVersionFile.exists()).isTrue()
+    assertThat(bazelRcFile.exists()).isTrue()
   }
 
   /**
@@ -61,6 +73,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     withExtraDependency: String? = null,
     subpackage: String? = null
   ): Iterable<File> {
+    initEmptyWorkspace() // Ensure the workspace is at least initialized.
+
     check(testName !in testFileMap) { "Test '$testName' already set up" }
     val prereqFiles = ensureWorkspaceIsConfiguredForKotlin()
     val (dependencyTargetName, libPrereqFiles) = if (withGeneratedDependency) {
@@ -109,6 +123,9 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     withExtraDependency: String? = null,
     subpackage: String? = null
   ): Iterable<File> {
+    // Note that the workspace doesn't need to be explicitly initialized here since the call below
+    // to addTestToBuildFile() will initialize it.
+
     check(testName !in testFileMap) { "Test '$testName' already exists" }
     val testFile = if (subpackage != null) {
       if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
@@ -137,6 +154,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    *     iterable of files that were changed as part of generating this library
    */
   fun createLibrary(dependencyName: String): Pair<String, Iterable<File>> {
+    initEmptyWorkspace() // Ensure the workspace is at least initialized.
+
     val libTargetName = "${dependencyName}_lib"
     check("//:$libTargetName" !in libraryFileMap) { "Library '$dependencyName' already exists" }
     val prereqFiles = ensureWorkspaceIsConfiguredForKotlin()
@@ -187,6 +206,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   /** Appends rules_jvm_external configuration to the WORKSPACE file if not done already. */
   fun setUpWorkspaceForRulesJvmExternal(depsList: List<String>) {
     if (!isConfiguredForRulesJvmExternal) {
+      initEmptyWorkspace()
       workspaceFile.appendText("artifactsList = [")
       for (dep in depsList) {
         workspaceFile.appendText("\"$dep\",\n")
@@ -198,16 +218,16 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
         RULES_JVM_EXTERNAL_TAG = "4.0"
         RULES_JVM_EXTERNAL_SHA = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169"
-        
+
         http_archive(
             name = "rules_jvm_external",
             strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
             sha256 = RULES_JVM_EXTERNAL_SHA,
             url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
         )
-        
+
         load("@rules_jvm_external//:defs.bzl", "maven_install")
-        
+
         maven_install(
             name = "maven_app",
             artifacts = artifactsList,
@@ -215,7 +235,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
                 "https://maven.google.com",
                 "https://repo1.maven.org/maven2",
             ],
-        ) 
+        )
         """.trimIndent() + "\n"
       )
 

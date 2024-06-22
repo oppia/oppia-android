@@ -17,7 +17,7 @@ import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
-/** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
+/** Presenter for [ConceptCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class ConceptCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
@@ -55,7 +55,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setNavigationContentDescription(
-      R.string.concept_card_close_icon_description
+      R.string.navigate_up
     )
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()

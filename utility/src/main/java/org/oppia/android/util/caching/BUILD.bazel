@@ -18,7 +18,6 @@ oppia_android_library(
 oppia_android_library(
     name = "annotations",
     srcs = [
-        "CacheAssetsLocally.kt",
         "LoadImagesFromAssets.kt",
         "LoadLessonProtosFromAssets.kt",
     ],
@@ -53,7 +52,7 @@ oppia_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":annotations",
-        ":topic_list_to_cache",
+        ":asset_repository",
         "//:dagger",
     ],
 )
@@ -68,16 +67,5 @@ oppia_android_library(
         ":asset_repository",
         ":impl",
         "//:dagger",
-    ],
-)
-
-oppia_android_library(
-    name = "topic_list_to_cache",
-    srcs = [
-        "TopicListToCache.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
     ],
 )

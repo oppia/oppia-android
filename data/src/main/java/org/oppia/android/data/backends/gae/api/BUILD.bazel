@@ -8,15 +8,8 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 oppia_android_library(
     name = "api",
     srcs = [
-        "ClassroomService.kt",
-        "ConceptCardService.kt",
-        "ExplorationService.kt",
         "FeedbackReportingService.kt",
         "PlatformParameterService.kt",
-        "QuestionPlayerService.kt",
-        "StoryService.kt",
-        "SubtopicService.kt",
-        "TopicService.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [

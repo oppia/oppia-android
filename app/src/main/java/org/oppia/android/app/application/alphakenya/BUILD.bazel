@@ -20,7 +20,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
-        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",

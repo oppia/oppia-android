@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.LanguageSupportDefinition.AndroidLanguageId
 import org.oppia.android.app.model.LanguageSupportDefinition.IetfBcp47LanguageId
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.LanguageSupportDefinition.MacaronicLanguageId
@@ -19,6 +20,11 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.model.RegionSupportDefinition.IetfBcp47RegionId
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageAndRegionProfile
+import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageAndWildcardRegionProfile
+import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageOnlyProfile
+import org.oppia.android.util.locale.AndroidLocaleProfile.RegionOnlyProfile
+import org.oppia.android.util.locale.AndroidLocaleProfile.RootProfile
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -32,11 +38,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AndroidLocaleProfileTest {
-  @Inject
-  lateinit var machineLocale: OppiaLocale.MachineLocale
+  @Inject lateinit var androidLocaleProfileFactory: AndroidLocaleProfile.Factory
 
-  private val portugueseLocale by lazy { Locale("pt") }
   private val brazilianPortugueseLocale by lazy { Locale("pt", "BR") }
+  private val kenyaOnlyLocale by lazy { Locale(/* language = */ "", "KE") }
 
   @Before
   fun setUp() {
@@ -46,27 +51,38 @@ class AndroidLocaleProfileTest {
   /* Tests for createFrom */
 
   @Test
-  fun testCreateProfile_fromRootLocale_returnsProfileWithoutLanguageAndRegionCode() {
-    val profile = AndroidLocaleProfile.createFrom(Locale.ROOT)
+  fun testCreateProfile_fromRootLocale_returnsRootProfile() {
+    val profile = androidLocaleProfileFactory.createFrom(Locale.ROOT)
 
-    assertThat(profile.languageCode).isEmpty()
-    assertThat(profile.regionCode).isEmpty()
+    assertThat(profile).isEqualTo(RootProfile)
   }
 
   @Test
-  fun testCreateProfile_fromEnglishLocale_returnsProfileWithLanguageAndWithoutRegion() {
-    val profile = AndroidLocaleProfile.createFrom(Locale.ENGLISH)
+  fun testCreateProfile_fromEnglishLocale_returnsLanguageOnlyProfile() {
+    val profile = androidLocaleProfileFactory.createFrom(Locale.ENGLISH)
 
-    assertThat(profile.languageCode).isEqualTo("en")
-    assertThat(profile.regionCode).isEmpty()
+    val languageOnlyProfile = profile as? LanguageOnlyProfile
+    assertThat(profile).isInstanceOf(LanguageOnlyProfile::class.java)
+    assertThat(languageOnlyProfile?.languageCode).isEqualTo("en")
   }
 
   @Test
   fun testCreateProfile_fromBrazilianPortuguese_returnsProfileWithLanguageAndRegion() {
-    val profile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
+    val profile = androidLocaleProfileFactory.createFrom(brazilianPortugueseLocale)
 
-    assertThat(profile.languageCode).isEqualTo("pt")
-    assertThat(profile.regionCode).isEqualTo("BR")
+    val languageAndRegionProfile = profile as? LanguageAndRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndRegionProfile::class.java)
+    assertThat(languageAndRegionProfile?.languageCode).isEqualTo("pt")
+    assertThat(languageAndRegionProfile?.regionCode).isEqualTo("br")
+  }
+
+  @Test
+  fun testCreateProfile_fromKenyaLocale_returnsRegionOnlyProfile() {
+    val profile = androidLocaleProfileFactory.createFrom(kenyaOnlyLocale)
+
+    val regionOnlyProfile = profile as? RegionOnlyProfile
+    assertThat(profile).isInstanceOf(RegionOnlyProfile::class.java)
+    assertThat(regionOnlyProfile?.regionCode).isEqualTo("ke")
   }
 
   /* Tests for createFromIetfDefinitions */
@@ -74,7 +90,7 @@ class AndroidLocaleProfileTest {
   @Test
   fun testCreateProfileFromIetf_defaultLanguageId_nullRegion_returnsNull() {
     val profile =
-      AndroidLocaleProfile.createFromIetfDefinitions(
+      androidLocaleProfileFactory.createFromIetfDefinitions(
         languageId = LanguageId.getDefaultInstance(), regionDefinition = null
       )
 
@@ -89,7 +105,8 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithoutIetf, REGION_INDIA)
+    val profile =
+      androidLocaleProfileFactory.createFromIetfDefinitions(languageWithoutIetf, REGION_INDIA)
 
     // The language ID needs to have an IETF BCP 47 ID defined.
     assertThat(profile).isNull()
@@ -103,7 +120,8 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+    val profile =
+      androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
 
     // The language ID needs to have an IETF BCP 47 ID defined.
     assertThat(profile).isNull()
@@ -117,7 +135,8 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+    val profile =
+      androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
 
     // The language ID needs to have a well-formed IETF BCP 47 ID defined.
     assertThat(profile).isNull()
@@ -131,12 +150,15 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+    val profile =
+      androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
 
     // The constituent language code should come from the language ID, and the region code from the
     // provided region definition.
-    assertThat(profile?.languageCode).isEqualTo("pt")
-    assertThat(profile?.regionCode).isEqualTo("IN")
+    val languageAndRegionProfile = profile as? LanguageAndRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndRegionProfile::class.java)
+    assertThat(languageAndRegionProfile?.languageCode).isEqualTo("pt")
+    assertThat(languageAndRegionProfile?.regionCode).isEqualTo("in")
   }
 
   @Test
@@ -147,11 +169,14 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+    val profile =
+      androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
 
     // In this case, the region comes from the IETF language tag since it's included.
-    assertThat(profile?.languageCode).isEqualTo("pt")
-    assertThat(profile?.regionCode).isEqualTo("BR")
+    val languageAndRegionProfile = profile as? LanguageAndRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndRegionProfile::class.java)
+    assertThat(languageAndRegionProfile?.languageCode).isEqualTo("pt")
+    assertThat(languageAndRegionProfile?.regionCode).isEqualTo("br")
   }
 
   @Test
@@ -163,7 +188,7 @@ class AndroidLocaleProfileTest {
     }.build()
 
     val profile =
-      AndroidLocaleProfile.createFromIetfDefinitions(
+      androidLocaleProfileFactory.createFromIetfDefinitions(
         languageWithIetf, regionDefinition = RegionSupportDefinition.getDefaultInstance()
       )
 
@@ -180,7 +205,7 @@ class AndroidLocaleProfileTest {
     }.build()
 
     val profile =
-      AndroidLocaleProfile.createFromIetfDefinitions(
+      androidLocaleProfileFactory.createFromIetfDefinitions(
         languageWithIetf, regionDefinition = RegionSupportDefinition.getDefaultInstance()
       )
 
@@ -197,11 +222,14 @@ class AndroidLocaleProfileTest {
     }.build()
 
     val profile =
-      AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, regionDefinition = null)
+      androidLocaleProfileFactory.createFromIetfDefinitions(
+        languageWithIetf, regionDefinition = null
+      )
 
     // A null region specifically means to use a wildcard match for regions.
-    assertThat(profile?.languageCode).isEqualTo("pt")
-    assertThat(profile?.regionCode).isEqualTo(AndroidLocaleProfile.REGION_WILDCARD)
+    val languageAndWildcardRegionProfile = profile as? LanguageAndWildcardRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndWildcardRegionProfile::class.java)
+    assertThat(languageAndWildcardRegionProfile?.languageCode).isEqualTo("pt")
   }
 
   /* Tests for createFromMacaronicLanguage */
@@ -209,7 +237,9 @@ class AndroidLocaleProfileTest {
   @Test
   fun testCreateProfileFromMacaronic_defaultLanguageId_returnsNull() {
     val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageId = LanguageId.getDefaultInstance())
+      androidLocaleProfileFactory.createFromMacaronicLanguage(
+        languageId = LanguageId.getDefaultInstance()
+      )
 
     assertThat(profile).isNull()
   }
@@ -222,8 +252,7 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithoutMacaronic)
+    val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithoutMacaronic)
 
     // The provided language ID must have a macaronic ID defined.
     assertThat(profile).isNull()
@@ -237,8 +266,7 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+    val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
     // The provided language ID must have a macaronic ID defined.
     assertThat(profile).isNull()
@@ -252,8 +280,7 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+    val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
     // The provided language ID must have a well-formed macaronic ID defined.
     assertThat(profile).isNull()
@@ -267,8 +294,7 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+    val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
     // The provided language ID must have a well-formed macaronic ID defined, that is, it must have
     // two language parts defined.
@@ -283,8 +309,7 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+    val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
     // The macaronic ID has two parts as expected, but the second language ID must be filled in.
     assertThat(profile).isNull()
@@ -298,262 +323,593 @@ class AndroidLocaleProfileTest {
       }.build()
     }.build()
 
-    val profile =
-      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+    val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
     // The macaronic ID was valid. Verify that both language IDs correctly populate the profile.
-    assertThat(profile?.languageCode).isEqualTo("hi")
-    assertThat(profile?.regionCode).isEqualTo("en")
+    val languageAndRegionProfile = profile as? LanguageAndRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndRegionProfile::class.java)
+    assertThat(languageAndRegionProfile?.languageCode).isEqualTo("hi")
+    assertThat(languageAndRegionProfile?.regionCode).isEqualTo("en")
+  }
+
+  /* Tests for createFromAndroidResourcesLanguageId(). */
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_defaultLanguageId_returnsNull() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.getDefaultInstance()
+      )
+
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_ietfBcp47LanguageId_returnsNull() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.newBuilder().apply {
+          ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "pt-BR"
+          }.build()
+        }.build()
+      )
+
+    // This method only creates a profile when provided with a valid Android resources language ID.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_macaronicLanguageId_returnsNull() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.newBuilder().apply {
+          macaronicId = MacaronicLanguageId.newBuilder().apply {
+            combinedLanguageCode = "hi-en"
+          }.build()
+        }.build()
+      )
+
+    // This method only creates a profile when provided with a valid Android resources language ID.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_defaultAndroidLanguageId_returnsNull() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.newBuilder().apply {
+          androidResourcesLanguageId = AndroidLanguageId.getDefaultInstance()
+        }.build()
+      )
+
+    // This method only creates a profile when provided with a valid Android resources language ID.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_androidLanguageId_regionOnly_returnsNull() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.newBuilder().apply {
+          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
+            regionCode = "BR"
+          }.build()
+        }.build()
+      )
+
+    // A valid Android language ID must include at least a language code.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_androidLanguageId_langOnly_returnsLangWildcard() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.newBuilder().apply {
+          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
+            languageCode = "pt"
+          }.build()
+        }.build()
+      )
+
+    // If no region is provided, match against all regions.
+    val languageAndWildcardRegionProfile = profile as? LanguageAndWildcardRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndWildcardRegionProfile::class.java)
+    assertThat(languageAndWildcardRegionProfile?.languageCode).isEqualTo("pt")
+  }
+
+  @Test
+  fun testCreateFromAndroidResourcesLanguageId_androidLanguageId_returnsLangAndRegionProfile() {
+    val profile =
+      androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
+        languageId = LanguageId.newBuilder().apply {
+          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
+            languageCode = "pt"
+            regionCode = "BR"
+          }.build()
+        }.build()
+      )
+
+    // Both the language & region codes should be represented in the profile.
+    val languageAndRegionProfile = profile as? LanguageAndRegionProfile
+    assertThat(profile).isInstanceOf(LanguageAndRegionProfile::class.java)
+    assertThat(languageAndRegionProfile?.languageCode).isEqualTo("pt")
+    assertThat(languageAndRegionProfile?.regionCode).isEqualTo("br")
   }
 
   /* Tests for matches() */
 
   @Test
-  fun testMatchProfile_rootProfile_withItself_match() {
-    val profile = AndroidLocaleProfile.createFrom(Locale.ROOT)
+  fun testMatchProfile_rootProfile_andRootProfile_matches() {
+    val profile1 = RootProfile
+    val profile2 = RootProfile
 
-    val matches = profile.matches(machineLocale, profile)
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testMatchProfile_englishProfile_withItself_match() {
-    val profile = AndroidLocaleProfile.createFrom(Locale.ENGLISH)
-
-    val matches = profile.matches(machineLocale, profile)
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testMatchProfile_brazilianPortuguese_withItself_match() {
-    val profile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
+  fun testMatchProfile_rootProfile_andPtLanguageOnly_doNotMatch() {
+    val profile1 = RootProfile
+    val profile2 = LanguageOnlyProfile(languageCode = "pt")
 
-    val matches = profile.matches(machineLocale, profile)
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testMatchProfile_englishProfile_withItselfInDifferentCase_match() {
-    val englishProfileLowercase = AndroidLocaleProfile(languageCode = "en", regionCode = "")
-    val englishProfileUppercase = AndroidLocaleProfile(languageCode = "EN", regionCode = "")
-
-    val matches = englishProfileLowercase.matches(machineLocale, englishProfileUppercase)
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testMatchProfile_englishProfile_withItselfInDifferentCase_reversed_match() {
-    val englishProfileLowercase = AndroidLocaleProfile(languageCode = "en", regionCode = "")
-    val englishProfileUppercase = AndroidLocaleProfile(languageCode = "EN", regionCode = "")
-
-    val matches = englishProfileUppercase.matches(machineLocale, englishProfileLowercase)
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testMatchProfile_brazilianPortuguese_withItselfInDifferentCase_match() {
-    val brazilianPortugueseProfileLowercase =
-      AndroidLocaleProfile(languageCode = "pt", regionCode = "br")
-    val brazilianPortugueseProfileUppercase =
-      AndroidLocaleProfile(languageCode = "PT", regionCode = "BR")
-
-    val matches =
-      brazilianPortugueseProfileLowercase.matches(
-        machineLocale, brazilianPortugueseProfileUppercase
-      )
-
-    assertThat(matches).isTrue()
-  }
-
-  fun testMatchProfile_brazilianPortuguese_withItselfInDifferentCase_reversed_match() {
-    val brazilianPortugueseProfileLowercase =
-      AndroidLocaleProfile(languageCode = "pt", regionCode = "br")
-    val brazilianPortugueseProfileUppercase =
-      AndroidLocaleProfile(languageCode = "PT", regionCode = "BR")
-
-    val matches =
-      brazilianPortugueseProfileUppercase.matches(
-        machineLocale, brazilianPortugueseProfileLowercase
-      )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testMatchProfile_rootProfile_english_doNotMatch() {
-    val rootProfile = AndroidLocaleProfile.createFrom(Locale.ROOT)
-    val englishProfile = AndroidLocaleProfile.createFrom(Locale.ENGLISH)
-
-    val matches = rootProfile.matches(machineLocale, englishProfile)
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testMatchProfile_rootProfile_brazilianPortuguese_doNotMatch() {
-    val rootProfile = AndroidLocaleProfile.createFrom(Locale.ROOT)
-    val brazilianPortugueseProfile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
+  fun testMatchProfile_rootProfile_andBrRegionOnly_doNotMatch() {
+    val profile1 = RootProfile
+    val profile2 = RegionOnlyProfile(regionCode = "br")
 
-    val matches = rootProfile.matches(machineLocale, brazilianPortugueseProfile)
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testMatchProfile_english_brazilianPortuguese_doNotMatch() {
-    val englishProfile = AndroidLocaleProfile.createFrom(Locale.ENGLISH)
-    val brazilianPortugueseProfile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
-
-    val matches = englishProfile.matches(machineLocale, brazilianPortugueseProfile)
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testMatchProfile_rootProfile_englishWithWildcard_doNotMatch() {
-    val rootProfile = AndroidLocaleProfile.createFrom(Locale.ROOT)
-    val englishWithWildcardProfile = createProfileWithWildcard(languageCode = "en")
+  fun testMatchProfile_rootProfile_andPtBrProfile_doNotMatch() {
+    val profile1 = RootProfile
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
 
-    val matches = rootProfile.matches(machineLocale, englishWithWildcardProfile)
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testMatchProfile_rootProfile_rootProfileWithWildcard_match() {
-    val rootProfile = AndroidLocaleProfile.createFrom(Locale.ROOT)
-    val rootProfileWithWildcardProfile = createProfileWithWildcard(languageCode = "")
+  fun testMatchProfile_rootProfile_andPtWildcardProfile_doNotMatch() {
+    val profile1 = RootProfile
+    val profile2 = LanguageAndWildcardRegionProfile(languageCode = "pt")
 
-    val matches = rootProfile.matches(machineLocale, rootProfileWithWildcardProfile)
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptLanguageOnly_andRootProfile_doNotMatch() {
+    val profile1 = LanguageOnlyProfile(languageCode = "pt")
+    val profile2 = RootProfile
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptLanguageOnly_andPtLanguageOnly_matches() {
+    val profile1 = LanguageOnlyProfile(languageCode = "pt")
+    val profile2 = LanguageOnlyProfile(languageCode = "pt")
+
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testMatchProfile_rootProfileWithWildcard_rootProfile_match() {
-    val rootProfile = AndroidLocaleProfile.createFrom(Locale.ROOT)
-    val rootProfileWithWildcardProfile = createProfileWithWildcard(languageCode = "")
+  fun testMatchProfile_ptLanguageOnly_andSwLanguageOnly_doNotMatch() {
+    val profile1 = LanguageOnlyProfile(languageCode = "pt")
+    val profile2 = LanguageOnlyProfile(languageCode = "sw")
 
-    val matches = rootProfileWithWildcardProfile.matches(machineLocale, rootProfile)
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testMatchProfile_englishProfile_rootProfileWithWildcard_doNotMatch() {
-    val englishProfile = AndroidLocaleProfile.createFrom(Locale.ENGLISH)
-    val rootProfileWithWildcardProfile = createProfileWithWildcard(languageCode = "")
-
-    val matches = englishProfile.matches(machineLocale, rootProfileWithWildcardProfile)
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testMatchProfile_englishWithWildcard_brazilianPortuguese_doNotMatch() {
-    val englishWithWildcardProfile = createProfileWithWildcard(languageCode = "en")
-    val brazilianPortugueseProfile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
+  fun testMatchProfile_ptLanguageOnly_andBrRegionOnly_doNotMatch() {
+    val profile1 = LanguageOnlyProfile(languageCode = "pt")
+    val profile2 = RegionOnlyProfile(regionCode = "br")
 
-    val matches = englishWithWildcardProfile.matches(machineLocale, brazilianPortugueseProfile)
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testMatchProfile_brazilianPortuguese_portuguese_doNotMatch() {
-    val portugueseProfile = AndroidLocaleProfile.createFrom(portugueseLocale)
-    val brazilianPortugueseProfile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
-
-    val matches = portugueseProfile.matches(machineLocale, brazilianPortugueseProfile)
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testMatchProfile_brazilianPortuguese_portugueseWithWildcard_match() {
-    val portugueseWithWildcardProfile = createProfileWithWildcard(languageCode = "pt")
-    val brazilianPortugueseProfile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
+  fun testMatchProfile_ptLanguageOnly_andPtBrProfile_doNotMatch() {
+    val profile1 = LanguageOnlyProfile(languageCode = "pt")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
 
-    val matches = brazilianPortugueseProfile.matches(machineLocale, portugueseWithWildcardProfile)
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptLanguageOnly_andSwWildcardProfile_doNotMatch() {
+    val profile1 = LanguageOnlyProfile(languageCode = "pt")
+    val profile2 = LanguageAndWildcardRegionProfile(languageCode = "sw")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_brRegionOnly_andRootProfile_doNotMatch() {
+    val profile1 = RegionOnlyProfile(regionCode = "br")
+    val profile2 = RootProfile
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_brRegionOnly_andPtLanguageOnly_doNotMatch() {
+    val profile1 = RegionOnlyProfile(regionCode = "br")
+    val profile2 = LanguageOnlyProfile(languageCode = "pt")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_brRegionOnly_andBrRegionOnly_matches() {
+    val profile1 = RegionOnlyProfile(regionCode = "br")
+    val profile2 = RegionOnlyProfile(regionCode = "br")
+
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testMatchProfile_portugueseWithWildcard_brazilianPortuguese_match() {
-    val portugueseWithWildcardProfile = createProfileWithWildcard(languageCode = "pt")
-    val brazilianPortugueseProfile = AndroidLocaleProfile.createFrom(brazilianPortugueseLocale)
+  fun testMatchProfile_brRegionOnly_andKeRegionOnly_doNotMatch() {
+    val profile1 = RegionOnlyProfile(regionCode = "br")
+    val profile2 = RegionOnlyProfile(regionCode = "ke")
 
-    val matches = portugueseWithWildcardProfile.matches(machineLocale, brazilianPortugueseProfile)
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_brRegionOnly_andPtBrProfile_doNotMatch() {
+    val profile1 = RegionOnlyProfile(regionCode = "br")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_brRegionOnly_andPtWildcardProfile_doNotMatch() {
+    val profile1 = RegionOnlyProfile(regionCode = "br")
+    val profile2 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andRootProfile_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 = RootProfile
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andPtLanguageOnly_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 = LanguageOnlyProfile(languageCode = "pt")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andBrRegionOnly_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 = RegionOnlyProfile(regionCode = "br")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andPtBrProfile_matches() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val matches = profile1.matches(profile2)
 
     assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andSwBrProfile_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "sw", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andPtKeProfile_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "ke", regionCodeUpperCase = "KE")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andSwKeProfile_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "sw", regionCode = "ke", regionCodeUpperCase = "KE")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptBrProfile_andSwWildcardProfile_doNotMatch() {
+    val profile1 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+    val profile2 = LanguageAndWildcardRegionProfile(languageCode = "sw")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andRootProfile_doNotMatch() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 = RootProfile
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andPtLanguageOnly_matches() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 = LanguageOnlyProfile(languageCode = "pt")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andSwLanguageOnly_doNotMatch() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 = LanguageOnlyProfile(languageCode = "sw")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andBrRegionOnly_doNotMatch() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 = RegionOnlyProfile(regionCode = "br")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andPtBrProfile_matches() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andSwBrProfile_doNotMatch() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "sw", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andPtKeProfile_matches() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "ke", regionCodeUpperCase = "KE")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andSwKeProfile_doNotMatch() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 =
+      LanguageAndRegionProfile(languageCode = "sw", regionCode = "ke", regionCodeUpperCase = "KE")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andPtWildcardProfile_matches() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatchProfile_ptWildcardProfile_andSwWildcardProfile_doNotMatch() {
+    val profile1 = LanguageAndWildcardRegionProfile(languageCode = "pt")
+    val profile2 = LanguageAndWildcardRegionProfile(languageCode = "sw")
+
+    val matches = profile1.matches(profile2)
+
+    assertThat(matches).isFalse()
   }
 
   /* Tests for computeIetfLanguageTag */
 
   @Test
-  fun testComputeIetfLanguageTag_noLanguageCode_noRegionCode_returnsEmptyString() {
-    val emptyProfile = AndroidLocaleProfile(languageCode = "", regionCode = "")
+  fun testIetfLanguageTag_rootProfile_isEmptyString() {
+    val profile = RootProfile
 
-    val ietfLanguageTag = emptyProfile.computeIetfLanguageTag()
+    val ietfLanguageTag = profile.ietfLanguageTag
 
     assertThat(ietfLanguageTag).isEmpty()
   }
 
   @Test
-  fun testComputeIetfLanguageTag_languageCode_noRegionCode_returnsLanguageCode() {
-    val portugueseProfile = AndroidLocaleProfile(languageCode = "pt", regionCode = "")
+  fun testIetfLanguageTag_languageOnlyProfile_isLanguageCode() {
+    val profile = LanguageOnlyProfile(languageCode = "pt")
 
-    val ietfLanguageTag = portugueseProfile.computeIetfLanguageTag()
+    val ietfLanguageTag = profile.ietfLanguageTag
 
     assertThat(ietfLanguageTag).isEqualTo("pt")
   }
 
   @Test
-  fun testComputeIetfLanguageTag_languageCode_wildcardRegionCode_returnsLanguageCode() {
-    val portugueseAndRegionProfile = createProfileWithWildcard(languageCode = "pt")
+  fun testIetfLanguageTag_regionOnlyProfile_isRegionCode() {
+    val profile = RegionOnlyProfile(regionCode = "br")
 
-    val ietfLanguageTag = portugueseAndRegionProfile.computeIetfLanguageTag()
+    val ietfLanguageTag = profile.ietfLanguageTag
+
+    assertThat(ietfLanguageTag).isEqualTo("br")
+  }
+
+  @Test
+  fun testIetfLanguageTag_languageWithRegionProfile_isIetfBcp47CombinedLanguageTag() {
+    val profile =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val ietfLanguageTag = profile.ietfLanguageTag
+
+    assertThat(ietfLanguageTag).isEqualTo("pt-BR")
+  }
+
+  @Test
+  fun testIetfLanguageTag_languageWithWildcardProfile_isLanguageCode() {
+    val profile = LanguageAndWildcardRegionProfile(languageCode = "pt")
+
+    val ietfLanguageTag = profile.ietfLanguageTag
 
     // The wildcard shouldn't be part of the IETF BCP 47 tag since that standard doesn't define such
     // a concept.
     assertThat(ietfLanguageTag).isEqualTo("pt")
   }
 
+  /* Tests for computeAndroidLocale() */
+
   @Test
-  fun testComputeIetfLanguageTag_noLanguageCode_regionCode_returnsRegionCode() {
-    val brazilianProfile = AndroidLocaleProfile(languageCode = "", regionCode = "BR")
+  fun testComputeAndroidLocale_rootProfile_returnsRootLocale() {
+    val profile = RootProfile
 
-    val ietfLanguageTag = brazilianProfile.computeIetfLanguageTag()
+    val locale = profile.computeAndroidLocale()
 
-    assertThat(ietfLanguageTag).isEqualTo("BR")
+    assertThat(locale).isEqualTo(Locale.ROOT)
   }
 
   @Test
-  fun testComputeIetfLanguageTag_noLanguageCode_wildcardRegionCode_returnsEmptyString() {
-    val matchNothingProfile = createProfileWithWildcard(languageCode = "")
+  fun testComputeAndroidLocale_languageOnlyProfile_returnsLocaleWithLanguageAndEmptyCountry() {
+    val profile = LanguageOnlyProfile(languageCode = "pt")
 
-    val ietfLanguageTag = matchNothingProfile.computeIetfLanguageTag()
+    val locale = profile.computeAndroidLocale()
 
-    assertThat(ietfLanguageTag).isEmpty()
+    assertThat(locale.language).ignoringCase().isEqualTo("pt")
+    assertThat(locale.country).isEmpty()
   }
 
   @Test
-  fun testComputeIetfLanguageTag_languageCode_regionCode_returnsIetfBcp47CombinedLanguageTag() {
-    val brazilianPortugueseProfile = AndroidLocaleProfile(languageCode = "pt", regionCode = "BR")
+  fun testComputeAndroidLocale_regionOnlyProfile_returnsLocaleWithCountryAndEmptyLanguage() {
+    val profile = RegionOnlyProfile(regionCode = "br")
 
-    val ietfLanguageTag = brazilianPortugueseProfile.computeIetfLanguageTag()
+    val locale = profile.computeAndroidLocale()
 
-    assertThat(ietfLanguageTag).isEqualTo("pt-BR")
+    assertThat(locale.country).ignoringCase().isEqualTo("br")
+    assertThat(locale.language).isEmpty()
   }
 
-  private fun createProfileWithWildcard(languageCode: String): AndroidLocaleProfile =
-    AndroidLocaleProfile(languageCode, regionCode = AndroidLocaleProfile.REGION_WILDCARD)
+  @Test
+  fun testComputeAndroidLocale_languageWithWildcardProfile_returnsLocaleWithLangAndEmptyCountry() {
+    val profile = LanguageAndWildcardRegionProfile(languageCode = "pt")
+
+    val locale = profile.computeAndroidLocale()
+
+    assertThat(locale.language).ignoringCase().isEqualTo("pt")
+    assertThat(locale.country).isEmpty()
+  }
+
+  @Test
+  fun testComputeAndroidLocale_languageAndRegionProfile_returnsLocaleWithLanguageAndCountry() {
+    val profile =
+      LanguageAndRegionProfile(languageCode = "pt", regionCode = "br", regionCodeUpperCase = "BR")
+
+    val locale = profile.computeAndroidLocale()
+
+    assertThat(locale.language).ignoringCase().isEqualTo("pt")
+    assertThat(locale.country).ignoringCase().isEqualTo("br")
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerAndroidLocaleProfileTest_TestApplicationComponent.builder()

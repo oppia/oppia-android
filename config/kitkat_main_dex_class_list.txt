@@ -10,7 +10,6 @@ androidx/multidex/ZipUtil.class
 androidx/work/Configuration$Provider.class
 androidx/work/Configuration.class
 androidx/work/WorkManager.class
-com/google/firebase/FirebaseApp.class
 javax/inject/Provider.class
 kotlin/Function.class
 kotlin/jvm/functions/Function0.class

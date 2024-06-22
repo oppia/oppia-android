@@ -16,9 +16,13 @@ import java.io.File
  * data = ["@androidsdk//:aapt2_binary"]
  * ```
  *
+ * @property workingDirectoryPath the path to the working directory in which instances of AAPT2
+ *     should be executed
  * @property buildToolsVersion the version of Android build tools installed & that should be used.
  *     This value should be coordinated with the build system used by the APKs accessed by this
  *     utility.
+ * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the
+ *     AAPT2 command
  * @property commandExecutor the [CommandExecutor] to use when accessing AAPT2
  */
 class Aapt2Client(
@@ -56,7 +60,7 @@ class Aapt2Client(
   private fun executeApkAnalyzerCommand(vararg arguments: String): List<String> {
     val result = commandExecutor.executeCommand(workingDirectory, aapt2Path, *arguments)
     check(result.exitCode == 0) {
-      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
+      "Expected zero exit code (not ${result.exitCode}) for command: ${result.command}." +
         "\nStandard output:\n${result.output.joinToString("\n")}" +
         "\nError output:\n${result.errorOutput.joinToString("\n")}"
     }

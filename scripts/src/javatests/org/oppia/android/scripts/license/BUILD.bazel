@@ -30,6 +30,7 @@ kt_jvm_test(
     name = "MavenDependenciesListCheckTest",
     size = "large",
     srcs = ["MavenDependenciesListCheckTest.kt"],
+    shard_count = 4,
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",

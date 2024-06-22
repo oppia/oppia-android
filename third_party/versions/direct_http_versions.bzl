@@ -186,7 +186,7 @@ DIRECT_REMOTE_DEPENDENCIES = [
     ),
     create_git_repository_reference(
         name = "androidsvg",
-        commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
+        commit = "5bc9c7553e94c3476e8ea32baea3c77567228fcd",
         remote = "https://github.com/oppia/androidsvg",
         test_only = False,
         export_details = create_export_library_details(

@@ -29,6 +29,7 @@ oppia_proto_library(
     deps = [
         ":exploration_checkpoint_proto",
         ":exploration_proto",
+        ":languages_proto",
         ":profile_proto",
         ":translation_proto",
     ],
@@ -46,13 +47,21 @@ oppia_proto_library(
     deps = [
         ":exploration_proto",
         ":languages_proto",
+        ":platform_parameter_proto",
         ":profile_proto",
+        ":survey_proto",
     ],
 )
 
 java_lite_proto_library(
     name = "event_logger_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
+    deps = [":event_logger_proto"],
+)
+
+java_proto_library(
+    name = "event_logger_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":event_logger_proto"],
 )
 
@@ -93,21 +102,27 @@ java_lite_proto_library(
     deps = [":interaction_object_proto"],
 )
 
+java_proto_library(
+    name = "interaction_object_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":interaction_object_proto"],
+)
+
 oppia_proto_library(
     name = "languages_proto",
     srcs = ["languages.proto"],
     visibility = ["//:oppia_api_visibility"],
 )
 
-java_proto_library(
-    name = "languages_java_proto",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":languages_proto"],
-)
-
 java_lite_proto_library(
     name = "languages_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
+    deps = [":languages_proto"],
+)
+
+java_proto_library(
+    name = "languages_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":languages_proto"],
 )
 
@@ -134,6 +149,12 @@ java_lite_proto_library(
     deps = [":math_proto"],
 )
 
+java_proto_library(
+    name = "math_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":math_proto"],
+)
+
 oppia_proto_library(
     name = "onboarding_proto",
     srcs = ["onboarding.proto"],
@@ -144,6 +165,18 @@ java_lite_proto_library(
     name = "onboarding_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":onboarding_proto"],
+)
+
+oppia_proto_library(
+    name = "deprecation_proto",
+    srcs = ["deprecation.proto"],
+    deps = [":version_proto"],
+)
+
+java_lite_proto_library(
+    name = "deprecation_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":deprecation_proto"],
 )
 
 oppia_proto_library(
@@ -160,6 +193,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "profile_proto",
     srcs = ["profile.proto"],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(
@@ -180,6 +214,12 @@ java_lite_proto_library(
     deps = [":subtitled_html_proto"],
 )
 
+java_proto_library(
+    name = "subtitled_html_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":subtitled_html_proto"],
+)
+
 oppia_proto_library(
     name = "subtitled_unicode_proto",
     srcs = ["subtitled_unicode.proto"],
@@ -189,6 +229,12 @@ oppia_proto_library(
 java_lite_proto_library(
     name = "subtitled_unicode_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
+    deps = [":subtitled_unicode_proto"],
+)
+
+java_proto_library(
+    name = "subtitled_unicode_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":subtitled_unicode_proto"],
 )
 
@@ -215,6 +261,12 @@ java_lite_proto_library(
     deps = [":thumbnail_proto"],
 )
 
+java_proto_library(
+    name = "thumbnail_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":thumbnail_proto"],
+)
+
 oppia_proto_library(
     name = "translation_proto",
     srcs = ["translation.proto"],
@@ -225,6 +277,12 @@ oppia_proto_library(
 java_lite_proto_library(
     name = "translation_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
+    deps = [":translation_proto"],
+)
+
+java_proto_library(
+    name = "translation_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":translation_proto"],
 )
 
@@ -252,10 +310,19 @@ java_lite_proto_library(
     deps = [":voiceover_proto"],
 )
 
+java_proto_library(
+    name = "voiceover_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":voiceover_proto"],
+)
+
 oppia_proto_library(
     name = "feedback_reporting_proto",
     srcs = ["feedback_reporting.proto"],
-    deps = [":profile_proto"],
+    deps = [
+        ":languages_proto",
+        ":profile_proto",
+    ],
 )
 
 java_lite_proto_library(
@@ -298,6 +365,12 @@ java_lite_proto_library(
     deps = [":topic_proto"],
 )
 
+java_proto_library(
+    name = "topic_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":topic_proto"],
+)
+
 oppia_proto_library(
     name = "exploration_proto",
     srcs = ["exploration.proto"],
@@ -314,6 +387,12 @@ oppia_proto_library(
 java_lite_proto_library(
     name = "exploration_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
+    deps = [":exploration_proto"],
+)
+
+java_proto_library(
+    name = "exploration_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":exploration_proto"],
 )
 

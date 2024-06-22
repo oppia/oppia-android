@@ -345,8 +345,8 @@ class TodoCollectorTest {
     val testContent3 =
       """
       // TODO (#178): test todo.
-      
-      
+
+
       # TODO(    210)
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
@@ -426,8 +426,8 @@ class TodoCollectorTest {
     val testContent3 =
       """
       // ToDo(#17878788): test content 6
-      
-      
+
+
       # some todo(#21084884): test content 7
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
@@ -507,8 +507,8 @@ class TodoCollectorTest {
     val testContent3 =
       """
       // Another Todo comment
-      
-      
+
+
       # some test comment including todo
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
@@ -540,8 +540,8 @@ class TodoCollectorTest {
     val testContent3 =
       """
       // TODO(#1788888): some description 5.
-      
-      
+
+
       # TODO(#210000): some description 6.
       // TODO (#457742): test description 2
       // TODO(#457743) : test description 3
@@ -625,7 +625,7 @@ class TodoCollectorTest {
       "// TODO(#1548774): some test description."
     )
 
-    assertThat(parsedIssueNumber).isEqualTo("1548774")
+    assertThat(parsedIssueNumber).isEqualTo(1548774)
   }
 
   @Test

@@ -34,6 +34,7 @@ oppia_android_library(
         "//model/src/main/proto:profile_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_appcompat_appcompat",
@@ -57,6 +58,7 @@ oppia_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:firestore_wrapper",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
@@ -159,8 +161,5 @@ kt_jvm_library(
     testonly = True,
     srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
     visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        "//third_party:junit_junit",
-        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-    ],
+    deps = ["//third_party:junit_junit"],
 )

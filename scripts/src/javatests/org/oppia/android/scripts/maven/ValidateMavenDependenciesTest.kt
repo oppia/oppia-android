@@ -12,9 +12,7 @@ class ValidateMavenDependenciesTest {
 
   @Test
   fun testMain_noArguments_failsWithError() {
-    val error = assertThrows(IllegalStateException::class) {
-      runScript(/* No arguments. */)
-    }
+    val error = assertThrows<IllegalStateException> { runScript(/* No arguments. */) }
 
     assertThat(error).hasMessageThat().contains("Usage: bazel run")
   }

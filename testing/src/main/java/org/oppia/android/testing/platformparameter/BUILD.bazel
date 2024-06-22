@@ -9,9 +9,7 @@ oppia_android_library(
     name = "test_constants",
     testonly = True,
     srcs = [
-        "TestBooleanPlatformParameter.kt",
-        "TestIntegerPlatformParameter.kt",
-        "TestStringPlatformParameter.kt",
+        "TestPlatformParameterConstants.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",
@@ -35,6 +33,7 @@ oppia_android_library(
         "//:dagger",
         "//third_party:androidx_annotation_annotation",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/platformparameter",
     ],
 )

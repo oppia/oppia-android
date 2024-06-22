@@ -1,6 +1,7 @@
 ## Table of Contents
 
 - [What is RTL?](#what-is-rtl)
+- [How to enable RTL](#how-to-enable-rtl)  
 - [What changes in RTL?](#what-changes-in-rtl)
 - [Testing app for RTL Layouts](#testing-app-for-rtl-layouts)
 - [Reference Documentation](#reference-documentation)
@@ -18,6 +19,23 @@ In general, the passage of time is depicted as left to right for LTR languages, 
 ![](https://user-images.githubusercontent.com/53938155/145036934-691c6bda-a58b-4977-9247-cb6e3830dee7.png)
 
 When a UI is changed from LTR to RTL (or vice-versa), it’s often called mirroring. An RTL layout is the mirror image of an LTR layout, and it affects layout, text, and graphics.
+
+# How to enable RTL?
+
+#### Option 1:
+
+- **Unlock Developer Options:** Go to your phone's Settings, scroll down to "About Phone," and tap on it. Find the "Build Number" and tap on it 7 times. You'll see a message saying "You are now a developer!"
+- **Access Developer Options:** Go back to the main Settings menu, scroll down, and you should now see "Developer Options" above "About Phone."
+- **Enable Developer Options:** Tap on "Developer Options" and scroll down until you find "Force RTL layout direction."
+- **Enable RTL Mode:** Toggle the switch next to "Force RTL layout direction" to turn it on. Your phone's interface will switch to Right-to-Left mode.
+
+<img width="350" height="700" alt="Enable RTL" src="https://github.com/oppia/oppia-android/assets/76530270/805d8d77-49f6-48e7-8bab-e433085285a3">
+
+#### Option 2:
+
+- Enable the "**Arabic**" language on your Android device or emulator.
+
+<img width="350" height="700" alt="Enable RTL" src="https://github.com/oppia/oppia-android/assets/76530270/47c2c2aa-6f92-49ac-a921-9be37b4a4ca8">
 
 # What changes in RTL?
 
@@ -51,5 +69,4 @@ The screen will look something like this:
 
 # Reference Documentation
 * [Oppia-Android RTL Issues](https://docs.google.com/document/d/1Fl1ar5vcdLvay7ZIJLUFQro1wEf1yUEicwF-CKcvwJ0/edit#)
-* [RTL Support Milestone](https://github.com/oppia/oppia-android/milestone/40) 
 * [Guidelines for RTL](https://material.io/design/usability/bidirectionality.html)

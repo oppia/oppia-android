@@ -8,6 +8,7 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 kt_jvm_test(
     name = "BazelClientTest",
     srcs = ["BazelClientTest.kt"],
+    shard_count = 4,
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
@@ -53,6 +54,18 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
+        "//testing:assertion_helpers",
+    ],
+)
+
+kt_jvm_test(
+    name = "GitHubClientTest",
+    srcs = ["GitHubClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:github_client",
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//scripts/third_party:com_google_truth_truth",
+        "//scripts/third_party:com_squareup_okhttp3_mockwebserver",
         "//testing:assertion_helpers",
     ],
 )

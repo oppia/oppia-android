@@ -125,12 +125,12 @@ class ExceptionsController @Inject constructor(
             .addExceptionLog(exceptionLog)
             .build()
         } else {
-          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             NullPointerException(
               "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0"
             )
           consoleLogger.e(EXCEPTIONS_CONTROLLER, exception.toString())
+          exceptionLogger.logException(exception)
         }
       }
       return@storeDataAsync oppiaExceptionLogs.toBuilder().addExceptionLog(exceptionLog).build()

@@ -49,6 +49,20 @@ oppia_android_library(
 )
 
 oppia_android_library(
+    name = "injectable_auto_localized_app_compat_activity",
+    srcs = ["InjectableAutoLocalizedAppCompatActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [":injectable_app_compat_activity"],
+)
+
+oppia_android_library(
+    name = "injectable_system_localized_app_compat_activity",
+    srcs = ["InjectableSystemLocalizedAppCompatActivity.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [":injectable_app_compat_activity"],
+)
+
+oppia_android_library(
     name = "activity_component",
     srcs = [
         "ActivityComponent.kt",

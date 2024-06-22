@@ -11,7 +11,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -61,6 +60,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -75,7 +75,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -85,6 +84,7 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -92,6 +92,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -123,14 +124,29 @@ private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardActivityTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -148,7 +164,11 @@ class RevisionCardActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
+      context,
+      1,
+      FRACTIONS_TOPIC_ID,
+      1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
@@ -171,7 +191,8 @@ class RevisionCardActivityTest {
   }
 
   @Test
-  fun testRevisionCardActivity_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testRevisionCardActivity_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
@@ -183,15 +204,39 @@ class RevisionCardActivityTest {
           activity.findViewById(R.id.revision_card_toolbar_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
 
   @Test
-  fun testRevisionCardActivity_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testRevisionCardActivity_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val revisionCardToolbarTitle: TextView =
+          activity.findViewById(R.id.revision_card_toolbar_title)
+        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
@@ -205,6 +250,29 @@ class RevisionCardActivityTest {
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val revisionCardToolbarTitle: TextView =
+          activity.findViewById(R.id.revision_card_toolbar_title)
+        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.isSelected).isEqualTo(false)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -366,9 +434,13 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subtopicId: Int,
+    subtopicId: Int
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
+    context,
+    internalProfileId,
+    topicId,
+    subtopicId,
+    FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
@@ -394,7 +466,7 @@ class RevisionCardActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -409,7 +481,8 @@ class RevisionCardActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

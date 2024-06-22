@@ -1,9 +1,11 @@
 package org.oppia.android.domain.oppialogger
 
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.MessageLite
 import dagger.BindsInstance
@@ -40,8 +42,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
@@ -54,7 +54,6 @@ import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.IllegalStateException
-import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -76,18 +75,8 @@ class LoggingIdentifierControllerTest {
 
   @Before
   fun setUp() {
+    TestLoggingIdentifierModule.applicationIdSeed = INITIAL_APPLICATION_ID
     setUpTestApplicationComponent()
-  }
-
-  @Test
-  fun testCreateLearnerId_verifyCreatesCorrectRandomValue() {
-    val randomLearnerId = loggingIdentifierController.createLearnerId()
-
-    val testLearnerId = machineLocale.run {
-      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
-    }
-    assertThat(randomLearnerId).isEqualTo(testLearnerId)
-    assertThat(randomLearnerId.length).isEqualTo(8)
   }
 
   @Test
@@ -106,60 +95,102 @@ class LoggingIdentifierControllerTest {
     val installationId =
       monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
 
-    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+    assertThat(installationId).isEqualTo("1d079efe67ee")
     assertThat(installationId.length).isEqualTo(12)
   }
 
   @Test
   fun testGetInstallationId_secondAppOpen_providerReturnsSameInstallationIdValue() {
     monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
-    setUpTestApplicationComponent() // Simulate an app re-open.
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
 
     val installationId =
       monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
 
     // The same value should return for the second instance of the controller.
-    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+    assertThat(installationId).isEqualTo("1d079efe67ee")
   }
 
   @Test
   fun testGetInstallationId_secondAppOpen_emptiedDatabase_providerReturnsEmptyString() {
+    // Simulate initing the installation ID, then emptying/corrupting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
     writeFileCache("device_context_database", DeviceContextDatabase.getDefaultInstance())
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
 
     val installationId =
       monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
 
-    // The installation ID is empty since the database was overwritten.
+    // If the file was emptied, no installation ID can be loaded (this is a critical failure case).
     assertThat(installationId).isEmpty()
+  }
+
+  @Test
+  fun testGetInstallationId_secondAppOpen_deletedDatabase_providerReturnsNewInstallationIdValue() {
+    // Simulate initing the installation ID, then deleting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
+    deleteCacheFile("device_context_database")
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+
+    val installationId =
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
+
+    // It should seem like a reinstallation since the app's data has been cleared after restarting.
+    assertThat(installationId).isEqualTo("a52e69fcfedc")
+    assertThat(installationId.length).isEqualTo(12)
   }
 
   @Test
   fun testFetchInstallationId_initialAppState_returnsNewInstallationIdValue() {
     val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
 
-    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+    assertThat(installationId).isEqualTo("1d079efe67ee")
     assertThat(installationId?.length).isEqualTo(12)
   }
 
   @Test
   fun testFetchInstallationId_secondAppOpen_returnsSameInstallationIdValue() {
     monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
-    setUpTestApplicationComponent() // Simulate an app re-open.
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
 
     val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
 
     // The same value should return for the second instance of the controller.
-    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+    assertThat(installationId).isEqualTo("1d079efe67ee")
   }
 
   @Test
   fun testFetchInstallationId_secondAppOpen_emptiedDatabase_returnsNull() {
+    // Simulate initing the installation ID, then emptying/corrupting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
     writeFileCache("device_context_database", DeviceContextDatabase.getDefaultInstance())
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+
+    val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
+
+    // If the file was emptied, no installation ID can be loaded (this is a critical failure case).
+    assertThat(installationId).isNull()
+  }
+
+  @Test
+  fun testFetchInstallationId_secondAppOpen_deletedDatabase_returnsNewInstallationIdValue() {
+    // Simulate initing the installation ID, then deleting it, then reopening the app.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
+    deleteCacheFile("device_context_database")
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
 
     val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
 
     // The installation ID is null since the database was overwritten.
-    assertThat(installationId).isNull()
+    assertThat(installationId).isEqualTo("a52e69fcfedc")
+    assertThat(installationId?.length).isEqualTo(12)
   }
 
   @Test
@@ -167,7 +198,7 @@ class LoggingIdentifierControllerTest {
     val sessionIdProvider = loggingIdentifierController.getSessionId()
 
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+    assertThat(sessionId).isEqualTo("4d0a66f3-82b6-3aa9-8f61-140bdd5f49d3")
   }
 
   @Test
@@ -178,7 +209,20 @@ class LoggingIdentifierControllerTest {
 
     // The second call should return the same ID (since the ID doesn't automatically change).
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+    assertThat(sessionId).isEqualTo("4d0a66f3-82b6-3aa9-8f61-140bdd5f49d3")
+  }
+
+  @Test
+  fun testGetSessionId_secondAppOpen_returnsNewRandomId() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getSessionId())
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent() // Simulate an app re-open with a new app ID.
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+
+    // The second call should return the same ID (since the ID doesn't automatically change).
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(sessionId).isEqualTo("18c2816d-f7ad-312f-b696-d3fdd51f2e92")
   }
 
   @Test
@@ -186,7 +230,7 @@ class LoggingIdentifierControllerTest {
     val sessionIdFlow = loggingIdentifierController.getSessionIdFlow()
 
     val sessionId = sessionIdFlow.waitForLatestValue()
-    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+    assertThat(sessionId).isEqualTo("4d0a66f3-82b6-3aa9-8f61-140bdd5f49d3")
   }
 
   @Test
@@ -197,7 +241,7 @@ class LoggingIdentifierControllerTest {
 
     // The second call should return the same ID (since the ID doesn't automatically change).
     val sessionId = sessionIdFlow.waitForLatestValue()
-    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+    assertThat(sessionId).isEqualTo("4d0a66f3-82b6-3aa9-8f61-140bdd5f49d3")
   }
 
   @Test
@@ -209,7 +253,7 @@ class LoggingIdentifierControllerTest {
 
     // The session ID should be changed since updateSessionId() was called.
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(sessionId).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+    assertThat(sessionId).isEqualTo("59aea8d4-af4b-3249-b889-dfeba06d0495")
   }
 
   @Test
@@ -223,7 +267,7 @@ class LoggingIdentifierControllerTest {
 
     // The existing provider should've been notified of the changed session ID.
     val sessionId = monitor.ensureNextResultIsSuccess()
-    assertThat(sessionId).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+    assertThat(sessionId).isEqualTo("59aea8d4-af4b-3249-b889-dfeba06d0495")
   }
 
   @Test
@@ -238,7 +282,7 @@ class LoggingIdentifierControllerTest {
 
     // The session ID should be changed yet again due to updateSessionId() being called twice.
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(sessionId).isEqualTo("8aeabb00-af70-39e4-89b3-c47c9900ec4f")
+    assertThat(sessionId).isEqualTo("8cbd31f7-bb52-3129-9fac-78dcb5cb857a")
   }
 
   @Test
@@ -250,7 +294,7 @@ class LoggingIdentifierControllerTest {
 
     // The session ID should be changed since updateSessionId() was called.
     val sessionId = sessionIdFlow.waitForLatestValue()
-    assertThat(sessionId).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+    assertThat(sessionId).isEqualTo("59aea8d4-af4b-3249-b889-dfeba06d0495")
   }
 
   @Test
@@ -262,11 +306,67 @@ class LoggingIdentifierControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     // The current value of the exist flow should be changed now since the session ID was updated.
-    assertThat(sessionIdFlow.value).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+    assertThat(sessionIdFlow.value).isEqualTo("59aea8d4-af4b-3249-b889-dfeba06d0495")
+  }
+
+  @Test
+  fun testGetAppSessionId_initialState_returnsRandomId() {
+    val appSessionIdProvider = loggingIdentifierController.getAppSessionId()
+
+    val appSessionId = monitorFactory.waitForNextSuccessfulResult(appSessionIdProvider)
+    assertThat(appSessionId).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
+  }
+
+  @Test
+  fun testGetAppSessionId_secondCall_returnsSameRandomId() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getAppSessionId())
+
+    val sessionIdProvider = loggingIdentifierController.getAppSessionId()
+
+    // The second call should return the same ID (since the ID doesn't automatically change).
+    val appSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(appSessionId).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
+  }
+
+  @Test
+  fun testGetAppSessionIdFlow_initialState_returnsFlowWithRandomId() {
+    val appSessionIdFlow = loggingIdentifierController.getAppSessionIdFlow()
+
+    val appSessionId = appSessionIdFlow.waitForLatestValue()
+    assertThat(appSessionId).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
+  }
+
+  @Test
+  fun testGetAppSessionIdFlow_secondCall_returnsFlowWithSameRandomId() {
+    loggingIdentifierController.getSessionIdFlow().waitForLatestValue()
+
+    val appSessionIdFlow = loggingIdentifierController.getAppSessionIdFlow()
+
+    // The second call should return the same ID (since the ID doesn't automatically change).
+    val appSessionId = appSessionIdFlow.waitForLatestValue()
+    assertThat(appSessionId).isEqualTo("2a11efe0-70f8-3a40-8d94-4fc3a2bd4f14")
+  }
+
+  @Test
+  fun testGetAppSessionId_onSecondAppOpen_returnsDifferentRandomId() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getAppSessionId())
+
+    // Simulate a second app open.
+    TestLoggingIdentifierModule.applicationIdSeed = SECOND_APP_OPEN_APPLICATION_ID
+    setUpNewTestApplicationComponent()
+
+    // The app session ID should be different on the second app open.
+    val appSessionIdProvider = loggingIdentifierController.getAppSessionId()
+    val appSessionId = monitorFactory.waitForNextSuccessfulResult(appSessionIdProvider)
+    assertThat(appSessionId).isEqualTo("c9d50545-33dc-3231-a1db-6a2672498c74")
   }
 
   private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
+  }
+
+  private fun deleteCacheFile(cacheName: String) {
+    check(getCacheFile(cacheName).delete()) { "Failed to delete: $cacheName." }
   }
 
   private fun getCacheFile(cacheName: String) = File(context.filesDir, "$cacheName.cache")
@@ -306,6 +406,17 @@ class LoggingIdentifierControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun setUpNewTestApplicationComponent() {
+    createNewTestApplication().inject(this)
+  }
+
+  private fun createNewTestApplication(): TestApplication {
+    return Instrumentation.newApplication(
+      TestApplication::class.java,
+      InstrumentationRegistry.getInstrumentation().targetContext
+    ) as TestApplication
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -341,12 +452,12 @@ class LoggingIdentifierControllerTest {
   @Module
   class TestLoggingIdentifierModule {
     companion object {
-      internal const val applicationIdSeed = 1L
+      internal var applicationIdSeed: Long? = null
     }
 
     @Provides
     @ApplicationIdSeed
-    fun provideApplicationIdSeed(): Long = applicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed!! // Fail if not initialized.
   }
 
   @Module
@@ -367,14 +478,6 @@ class LoggingIdentifierControllerTest {
     fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
       return PlatformParameterValue.createDefaultParameter(
         SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
       )
     }
 
@@ -419,5 +522,10 @@ class LoggingIdentifierControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  companion object {
+    private const val INITIAL_APPLICATION_ID = 1L
+    private const val SECOND_APP_OPEN_APPLICATION_ID = 2L
   }
 }

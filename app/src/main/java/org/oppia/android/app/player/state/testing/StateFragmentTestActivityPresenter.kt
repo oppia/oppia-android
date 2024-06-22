@@ -3,7 +3,6 @@ package org.oppia.android.app.player.state.testing
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
@@ -22,7 +21,7 @@ import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
 
-/** The presenter for [StateFragmentTestActivity] */
+/** The presenter for [StateFragmentTestActivity]. */
 @ActivityScope
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -97,7 +96,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     }
     startPlayingProvider.toLiveData().observe(
       activity,
-      Observer<AsyncResult<Any?>> { result ->
+      { result ->
         when (result) {
           is AsyncResult.Pending -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
           is AsyncResult.Failure ->

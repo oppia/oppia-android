@@ -1,15 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 31
+  compileSdkVersion 33
   buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 31
+    targetSdkVersion 33
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -92,7 +91,9 @@ dependencies {
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.google.dagger:dagger:2.41',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
+      'com.google.firebase:firebase-auth-ktx:19.3.1',
       'com.google.firebase:firebase-crashlytics:17.1.1',
+      'com.google.firebase:firebase-firestore-ktx:24.2.1',
       'com.google.guava:guava:31.0.1-android',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",

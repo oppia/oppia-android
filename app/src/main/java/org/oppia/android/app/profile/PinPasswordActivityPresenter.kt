@@ -14,6 +14,7 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -28,7 +29,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val pinViewModel: PinPasswordViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val accessibilityService: AccessibilityService
 ) {
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
@@ -65,7 +67,13 @@ class PinPasswordActivityPresenter @Inject constructor(
         )
       }
     }
-    binding.pinPasswordInputPinEditText.requestFocus()
+
+    // If the screen reader is off, the EditText will receive focus.
+    // If the screen reader is on, the EditText won't receive focus.
+    // This is needed because requesting focus on the EditText when the screen reader is on gives TalkBack priority over other views in the screen, ignoring view hierachy.
+    if (!accessibilityService.isScreenReaderEnabled())
+      binding.pinPasswordInputPinEditText.requestFocus()
+
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
       pin?.let { inputtedPin ->

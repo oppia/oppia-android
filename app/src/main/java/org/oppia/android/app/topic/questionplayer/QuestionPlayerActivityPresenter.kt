@@ -47,6 +47,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     activity.setSupportActionBar(binding.questionPlayerToolbar)
 
     binding.questionPlayerToolbar.setNavigationOnClickListener {
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
 
@@ -177,8 +178,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
           questionId,
           state,
           helpIndex,
-          writtenTranslationContext,
-          profileId
+          writtenTranslationContext
         )
       hintsAndSolutionDialogFragment.showNow(
         activity.supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG

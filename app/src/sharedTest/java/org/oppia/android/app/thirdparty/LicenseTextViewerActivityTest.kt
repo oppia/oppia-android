@@ -3,8 +3,15 @@ package org.oppia.android.app.thirdparty
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -47,6 +54,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -60,15 +68,16 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -110,6 +119,9 @@ class LicenseTextViewerActivityTest {
   )
 
   @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  @Inject
   lateinit var context: Context
 
   @Before
@@ -144,6 +156,90 @@ class LicenseTextViewerActivityTest {
     )
   }
 
+  @Test
+  fun testExploration_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
+    activityTestRule.launchActivity(
+      createLicenseTextViewerActivityIntent(
+        dependencyIndex = 0,
+        licenseIndex = 0
+      )
+    )
+
+    val activityToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+      .perform(ViewActions.click())
+    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
+    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testExploration_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    activityTestRule.launchActivity(
+      createLicenseTextViewerActivityIntent(
+        dependencyIndex = 0,
+        licenseIndex = 0
+      )
+    )
+
+    val activityToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+      .perform(ViewActions.click())
+    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
+    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
+    activityTestRule.launchActivity(
+      createLicenseTextViewerActivityIntent(
+        dependencyIndex = 0,
+        licenseIndex = 0
+      )
+    )
+
+    val activityToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+      .perform(ViewActions.click())
+    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
+    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
+  @Test
+  fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    activityTestRule.launchActivity(
+      createLicenseTextViewerActivityIntent(
+        dependencyIndex = 0,
+        licenseIndex = 0
+      )
+    )
+
+    val activityToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+      .perform(ViewActions.click())
+    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
+    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -173,7 +269,7 @@ class LicenseTextViewerActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
@@ -187,10 +283,10 @@ class LicenseTextViewerActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
 
     @Component.Builder

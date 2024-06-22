@@ -22,6 +22,8 @@ import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
@@ -58,13 +60,6 @@ class DisplayLocaleImplTest {
   }
 
   @Test
-  fun testCreateDisplayLocaleImpl_defaultInstance_hasDefaultInstanceContext() {
-    val impl = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
-
-    assertThat(impl.localeContext).isEqualToDefaultInstance()
-  }
-
-  @Test
   fun testCreateDisplayLocaleImpl_forProvidedContext_hasCorrectInstanceContext() {
     val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
@@ -73,7 +68,7 @@ class DisplayLocaleImplTest {
 
   @Test
   fun testToString_returnsNonDefaultString() {
-    val impl = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
     val str = impl.toString()
 
@@ -84,14 +79,14 @@ class DisplayLocaleImplTest {
 
   @Test
   fun testEquals_withNullValue_returnsFalse() {
-    val impl = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
     assertThat(impl).isNotEqualTo(null)
   }
 
   @Test
   fun testEquals_withSameObject_returnsTrue() {
-    val impl = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
     assertThat(impl).isEqualTo(impl)
   }
@@ -355,7 +350,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringInLocale(-1) }
     }
   }
@@ -398,7 +393,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringInLocaleWithWrapping(-1) }
     }
   }
@@ -441,7 +436,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringInLocaleWithoutWrapping(-1) }
     }
   }
@@ -461,7 +456,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getStringArrayInLocale(-1) }
     }
   }
@@ -497,7 +492,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityStringInLocale(-1, 0) }
     }
   }
@@ -536,7 +531,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityStringInLocaleWithWrapping(-1, 0) }
     }
   }
@@ -575,7 +570,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityStringInLocaleWithoutWrapping(-1, 0) }
     }
   }
@@ -611,13 +606,15 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows(Resources.NotFoundException::class) {
+    assertThrows<Resources.NotFoundException>() {
       impl.run { resources.getQuantityTextInLocale(-1, 0) }
     }
   }
 
-  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
-    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
+    val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
+    return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerDisplayLocaleImplTest_TestApplicationComponent.builder()
@@ -640,7 +637,8 @@ class DisplayLocaleImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
+      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
+      TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

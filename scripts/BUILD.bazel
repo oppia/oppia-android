@@ -287,3 +287,10 @@ java_binary(
         "//scripts/src/java/org/oppia/android/scripts/build:suggest_build_fixes_lib",
     ],
 )
+
+java_binary(
+    name = "decode_user_study_event_string",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.telemetry.DecodeUserStudyEventStringKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/telemetry:decode_user_study_event_string_lib"],
+)

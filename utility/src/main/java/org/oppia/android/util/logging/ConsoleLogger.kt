@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import org.oppia.android.app.model.EventLog.ConsoleLoggerContext
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
@@ -24,52 +27,58 @@ class ConsoleLogger @Inject constructor(
   private val blockingScope = CoroutineScope(blockingDispatcher)
   private val logDirectory = File(context.filesDir, "oppia_app.log")
 
-  /** Logs a verbose message with the specified tag.*/
+  private val _logErrorMessagesFlow = MutableSharedFlow<ConsoleLoggerContext>()
+  /**
+   * A flow that emits a [ConsoleLoggerContext] when a error message is logged.
+   */
+  val logErrorMessagesFlow: SharedFlow<ConsoleLoggerContext> = _logErrorMessagesFlow
+
+  /** Logs a verbose message with the specified tag. */
   fun v(tag: String, msg: String) {
     writeLog(LogLevel.VERBOSE, tag, msg)
   }
 
-  /** Logs a verbose message with the specified tag, message and exception.*/
+  /** Logs a verbose message with the specified tag, message and exception. */
   fun v(tag: String, msg: String, tr: Throwable) {
     writeError(LogLevel.VERBOSE, tag, msg, tr)
   }
 
-  /** Logs a debug message with the specified tag*/
+  /** Logs a debug message with the specified tag. */
   fun d(tag: String, msg: String) {
     writeLog(LogLevel.DEBUG, tag, msg)
   }
 
-  /** Logs a debug message with the specified tag, message and exception.*/
+  /** Logs a debug message with the specified tag, message and exception. */
   fun d(tag: String, msg: String, tr: Throwable) {
     writeError(LogLevel.DEBUG, tag, msg, tr)
   }
 
-  /** Logs a info message with the specified tag.*/
+  /** Logs a info message with the specified tag. */
   fun i(tag: String, msg: String) {
     writeLog(LogLevel.INFO, tag, msg)
   }
 
-  /** Logs a info message with the specified tag, message and exception.*/
+  /** Logs a info message with the specified tag, message and exception. */
   fun i(tag: String, msg: String, tr: Throwable) {
     writeError(LogLevel.INFO, tag, msg, tr)
   }
 
-  /** Logs a warn message with the specified tag.*/
+  /** Logs a warn message with the specified tag. */
   fun w(tag: String, msg: String) {
     writeLog(LogLevel.WARNING, tag, msg)
   }
 
-  /** Logs a warn message with the specified tag, message and exception.*/
+  /** Logs a warn message with the specified tag, message and exception. */
   fun w(tag: String, msg: String, tr: Throwable) {
     writeError(LogLevel.WARNING, tag, msg, tr)
   }
 
-  /** Logs a error message with the specified tag.*/
+  /** Logs a error message with the specified tag. */
   fun e(tag: String, msg: String) {
     writeLog(LogLevel.ERROR, tag, msg)
   }
 
-  /** Logs a error message with the specified tag, message and exception.*/
+  /** Logs a error message with the specified tag, message and exception. */
   fun e(tag: String, msg: String, tr: Throwable?) {
     writeError(LogLevel.ERROR, tag, msg, tr)
   }
@@ -97,6 +106,20 @@ class ConsoleLogger @Inject constructor(
       logToFileInBackground(
         "${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog"
       )
+    }
+
+    // Add the log to the error message flow so it can be logged to firebase.
+    CoroutineScope(blockingDispatcher).launch {
+      // Only log error messages to firebase.
+      if (logLevel == LogLevel.ERROR) {
+        _logErrorMessagesFlow.emit(
+          ConsoleLoggerContext.newBuilder()
+            .setLogLevel(logLevel.toString())
+            .setLogTag(tag)
+            .setFullErrorLog(fullLog)
+            .build()
+        )
+      }
     }
   }
 
