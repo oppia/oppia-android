@@ -997,24 +997,3 @@ crashlytics_android_library(
     build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
     resource_files = GOOGLE_SERVICES_RESOURCES,
 )
-
-android_library(
-    name = "crashlytics_deps",
-    exports = [
-        "//third_party:com_crashlytics_sdk_android_crashlytics",
-        "//third_party:com_google_firebase_firebase-analytics",
-        "//third_party:com_google_firebase_firebase-crashlytics",
-        "//third_party:io_fabric_sdk_android_fabric",
-    ],
-)
-
-android_library(
-    name = "firestore_deps",
-    exports = [
-        "//third_party:com_google_auto_value_auto-value-annotations",
-        "//third_party:com_google_firebase_firebase-appcheck",
-        "//third_party:com_google_firebase_firebase-appcheck-debug",
-        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
-        "//third_party:org_checkerframework_checker-qual",
-    ],
-)

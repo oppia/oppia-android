@@ -2,6 +2,7 @@ package org.oppia.android.util.logging.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsOptionalOf
+import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger

@@ -43,6 +43,7 @@ def download_maven_dependencies(name, maven_artifact_config, maven_repositories)
         strict_visibility = True,
     )
 
+# buildifier: disable=unnamed-macro
 def create_direct_import_dependency_wrappers(
         dependency_imports_details,
         prod_artifact_visibility,

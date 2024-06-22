@@ -7,9 +7,10 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 kt_android_library(
     name = "platformparameter",
     srcs = [
+        "FeatureFlagConstants.kt",
         "PlatformParameterConstants.kt",
         "PlatformParameterSingleton.kt",
-        ":PlatformParameterValue.kt",
+        "PlatformParameterValue.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [

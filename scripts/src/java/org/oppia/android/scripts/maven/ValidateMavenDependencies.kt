@@ -83,9 +83,9 @@ fun main(vararg args: String) {
  * binary via [main].
  *
  * @property repoRoot the root [File] of the repository
- * @property [bazelClient] an interactive [BazelClient] initialized for the provided repository
- * @property [universeScope] the Bazel target universe in which queries will be run
- * @property [baseTarget] the base target where generated third-party dependency wrappers will be
+ * @property bazelClient an interactive [BazelClient] initialized for the provided repository
+ * @property universeScope the Bazel target universe in which queries will be run
+ * @property baseTarget the base target where generated third-party dependency wrappers will be
  */
 class ValidateMavenDependencies(
   private val repoRoot: File,
@@ -125,7 +125,9 @@ class ValidateMavenDependencies(
 
     // First, ensure there are no version conflicts being resolved (since it means the versions file
     // is out-of-date with what's actually being used in the Maven installation manifest).
-    checkForConflictResolutions(mavenInstallJson, directVersions, mavenInstallFile)
+    checkForConflictResolutions(
+      mavenInstallJson, directVersions, transitiveVersions, mavenInstallFile
+    )
 
     // Second, verify that there are no duplications across any of the lists (they are all expected
     // to be mutually exclusive). Note that this includes cases when tests try to expose a reference
@@ -213,13 +215,15 @@ class ValidateMavenDependencies(
   private fun checkForConflictResolutions(
     mavenInstallJson: InterpretedMavenInstallJson,
     directVersionsFile: File,
+    transitiveVersions: File,
     mavenInstallFile: File
   ) {
     val resolutions = mavenInstallJson.conflictResolutions
     check(resolutions.isEmpty()) {
       "There are conflict resolutions in ${mavenInstallFile.toRelativeString(repoRoot)}. Please" +
         " resolve these by updating the versions in" +
-        " ${directVersionsFile.toRelativeString(repoRoot)}. The following coordinates require" +
+        " ${directVersionsFile.toRelativeString(repoRoot)} or" +
+        " ${transitiveVersions.toRelativeString(repoRoot)}. The following coordinates require" +
         " updating:\n" +
         resolutions.entries.joinToString(separator = "\n") { (key, value) ->
           "- ${key.reducedCoordinateStringWithoutVersion}: ${key.version} (old) =>" +

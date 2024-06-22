@@ -336,7 +336,22 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "scripts/static_checks.sh"
-  line_number: 110
+  line_number: 92
+}
+todo_open_exemption {
+  exempted_file_path: "third_party/versions/mods/kotlitex-combined.patch"
+  line_number: 310
+  line_number: 397
+  line_number: 499
+  line_number: 522
+  line_number: 536
+  line_number: 549
+  line_number: 568
+  line_number: 642
+  line_number: 897
+  line_number: 902
+  line_number: 972
+  line_number: 1061
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Coding-style-guide.md"
@@ -356,19 +371,4 @@ todo_open_exemption {
   line_number: 248
   line_number: 251
   line_number: 254
-}
-todo_open_exemption {
-  exempted_file_path: "third_party/versions/mods/kotlitex-combined.patch"
-  line_number: 310
-  line_number: 397
-  line_number: 499
-  line_number: 522
-  line_number: 536
-  line_number: 549
-  line_number: 568
-  line_number: 642
-  line_number: 897
-  line_number: 902
-  line_number: 972
-  line_number: 1061
 }

@@ -82,24 +82,6 @@ echo "********************************"
 bazel run //scripts:string_resource_validation_check -- $(pwd)
 echo ""
 
-
-# THIRD PARTY DEPENDENCY CHECKS
-# These are checks for third party dependencies
-
-# Maven Repin Check
-echo "********************************"
-echo "Running Maven repin checks"
-echo "********************************"
-REPIN=1 bazel run @unpinned_maven//:pin
-echo ""
-
-# Maven Dependencies Update Check
-echo "********************************"
-echo "Running maven dependencies update checks"
-echo "********************************"
-bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
-echo ""
-
 # License Texts Check
 echo "********************************"
 echo "Running license texts checks"
@@ -107,23 +89,50 @@ echo "********************************"
 bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
 echo ""
 
-# Validation checks (top-level dependencies).
+# TODO checks.
+echo "********************************"
+echo "Running TODO correctness checks"
+echo "********************************"
+bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
+echo ""
+
+
+# THIRD PARTY APP DEPENDENCY CHECKS
+
+# Maven Repin Check
+echo "********************************"
+echo "Running Maven repin checks"
+echo "********************************"
+REPIN=1 bazel run @unpinned_maven_app//:pin
+echo ""
+
+# Maven Dependencies Update Check
+echo "********************************"
+echo "Running maven dependencies update checks"
+echo "********************************"
+bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/versions/maven_install.json scripts/assets/maven_dependencies.pb
+echo ""
+
+# Validation checks.
 echo "********************************"
 echo "Running app third-party dependency validation checks"
 echo "********************************"
 bazel run //scripts:validate_maven_dependencies -- $(pwd) third_party/versions/direct_maven_versions.bzl third_party/versions/transitive_maven_versions.bzl third_party/versions/maven_install.json //third_party //...
 echo ""
 
-# Validation checks (script dependencies).
+
+# THIRD PARTY SCRIPTS DEPENDENCY CHECKS
+
+# Maven Repin Check
+echo "********************************"
+echo "Running Maven repin checks"
+echo "********************************"
+REPIN=1 bazel run @unpinned_maven_scripts//:pin
+echo ""
+
+# Validation checks.
 echo "********************************"
 echo "Running scripts third-party dependency validation checks"
 echo "********************************"
 bazel run //scripts:validate_maven_dependencies -- $(pwd) scripts/third_party/versions/direct_maven_versions.bzl scripts/third_party/versions/transitive_maven_versions.bzl scripts/third_party/versions/maven_install.json //scripts/third_party //scripts/...
-echo ""
-
-# TODO checks.
-echo "********************************"
-echo "Running TODO correctness checks"
-echo "********************************"
-bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
 echo ""

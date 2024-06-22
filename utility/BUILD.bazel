@@ -45,8 +45,6 @@ TEST_DEPS = [
     ":test_resources",
     "//:dagger",
     "//app:crashlytics",
-    "//app:crashlytics_deps",
-    "//app:firestore_deps",
     "//model/src/main/proto:test_models",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",

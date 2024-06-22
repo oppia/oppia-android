@@ -22,6 +22,9 @@ kt_android_library(
         ":application_injector_provider",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_google_firebase_firebase-appcheck",
+        "//third_party:com_google_firebase_firebase-appcheck-debug",
+        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
         "//third_party:com_google_firebase_firebase-common",
     ],
 )
