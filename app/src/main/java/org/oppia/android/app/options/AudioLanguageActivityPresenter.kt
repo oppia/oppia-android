@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
