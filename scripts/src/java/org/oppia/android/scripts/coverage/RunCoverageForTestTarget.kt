@@ -8,7 +8,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
- * Entry point function for running coverage analysis for a single test target
+ * Entry point function for running coverage analysis for a single test target.
  *
  * Usage:
  *   bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <//:test_targetname>
@@ -52,7 +52,7 @@ fun main(vararg args: String) {
  *
  * @param repoRoot the root directory of the repository
  * @param targetPath Bazel test target to analyze coverage
- * @param commandExecutor Executes the specified command in the specified working directory
+ * @param commandExecutor executes the specified command in the specified working directory
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
  */
 class RunCoverageForTestTarget(
@@ -70,7 +70,7 @@ class RunCoverageForTestTarget(
   }
 
   /**
-   * Runs coverage analysis on the specified target file asynchronously
+   * Runs coverage analysis on the specified target file asynchronously.
    *
    * @return the generated coverage data
    */
