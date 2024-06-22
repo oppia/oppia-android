@@ -33,6 +33,9 @@ message AppStartupState {
     // they are using an OS version that is no longer supported. The user should be shown a prompt
     // to update their OS.
     OS_IS_DEPRECATED = 5;
+
+    // Indicates that the onboarding flow shown to the user should be the new flow.
+    ONBOARDING_FLOW_V2 = 6;
   }
 
   // Describes different notices that may be shown to the user on startup depending on whether

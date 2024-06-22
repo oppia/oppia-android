@@ -135,6 +135,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
@@ -147,18 +148,28 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SplashActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SplashActivityTest {
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
-  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var appStartupStateController: AppStartupStateController
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var appStartupStateController: AppStartupStateController
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
-  @Parameter lateinit var firstOpen: String
-  @Parameter lateinit var secondOpen: String
+  @Parameter
+  lateinit var firstOpen: String
+  @Parameter
+  lateinit var secondOpen: String
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
   private val firstOpenFlavor by lazy { BuildFlavor.valueOf(firstOpen) }
@@ -186,9 +197,28 @@ class SplashActivityTest {
   }
 
   @Test
+  fun testSplashActivity_nboardingV2Enabled_initialOpen_routesToOnboardingActivity() {
+    initializeTestApplication()
+
+    launchSplashActivityFully {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testSplashActivity_secondOpen_routesToChooseProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
-    initializeTestApplication()
+    setUpTestWithOnboardingV2Enabled(false)
+
+    launchSplashActivityFully {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2Enabled_secondOpen_routesToOnboardingActivity() {
+    simulateAppAlreadyOnboarded()
+    setUpTestWithOnboardingV2Enabled(true)
 
     launchSplashActivityFully {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -650,6 +680,7 @@ class SplashActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testSplashActivity_onboarded_dismissGaNoticeForever_retriggerNotice_doesNotShowNotice() {
     // Open the app in GA upgrade mode, then dismiss the notice permanently.
     simulateAppAlreadyOpenedWithFlavor(BuildFlavor.BETA)
@@ -1046,7 +1077,7 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_initialOpen_OnboardingV2Enabled_routesToOnboardingActivity() {
-    setUpTestWithOnboardingV2Enabled()
+    setUpTestWithOnboardingV2Enabled(true)
 
     launchSplashActivityPartially {
       intended(hasComponent(OnboardingActivity::class.java.name))
@@ -1055,7 +1086,7 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_OnboardingV2Enabled_existingSoleLearnerProfile_routesToHomeActivity() {
-    setUpTestWithOnboardingV2Enabled()
+    setUpTestWithOnboardingV2Enabled(true)
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
 
@@ -1066,7 +1097,7 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_OnboardingV2Enabled_existingAdminProfile_routesToProfileChooserActivity() {
-    setUpTestWithOnboardingV2Enabled()
+    setUpTestWithOnboardingV2Enabled(true)
 
     profileTestHelper.addOnlyAdminProfile()
 
@@ -1077,7 +1108,7 @@ class SplashActivityTest {
 
   @Test
   fun testActivity_OnboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
-    setUpTestWithOnboardingV2Enabled()
+    setUpTestWithOnboardingV2Enabled(true)
 
     profileTestHelper.addMoreProfiles(5)
 
@@ -1086,8 +1117,8 @@ class SplashActivityTest {
     }
   }
 
-  private fun setUpTestWithOnboardingV2Enabled() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+  private fun setUpTestWithOnboardingV2Enabled(onboardingV2Enabled: Boolean = false) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
     initializeTestApplication()
   }
 

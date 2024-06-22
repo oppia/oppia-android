@@ -17,6 +17,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -30,7 +31,9 @@ class AppStartupStateController @Inject constructor(
   private val currentBuildFlavor: BuildFlavor,
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
-  private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>
+  private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: Provider<PlatformParameterValue<Boolean>>
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -139,6 +142,8 @@ class AppStartupStateController @Inject constructor(
     if (!enableAppAndOsDeprecation.get().value) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
+        enableOnboardingFlowV2.get().value && !onboardingState.alreadyOnboardedApp
+        -> StartupMode.ONBOARDING_FLOW_V2
         onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
         else -> StartupMode.USER_NOT_YET_ONBOARDED
       }

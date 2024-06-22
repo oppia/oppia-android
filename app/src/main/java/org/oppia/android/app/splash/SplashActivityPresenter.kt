@@ -1,5 +1,6 @@
 package org.oppia.android.app.splash
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -38,13 +39,13 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -242,67 +243,48 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun processStartupMode() {
-    when {
-      enableAppAndOsDeprecation.value -> {
-        processAppAndOsDeprecationEnabledStartUpMode()
-      }
-      enableOnboardingFlowV2.value -> {
-        getProfileOnboardingState()
-      }
-      else -> processLegacyStartupMode()
+    if (enableAppAndOsDeprecation.value) {
+      processAppAndOsDeprecationEnabledStartUpMode()
+    } else {
+      processLegacyStartupMode()
     }
   }
 
   private fun processAppAndOsDeprecationEnabledStartUpMode() {
     when (startupMode) {
-      StartupMode.USER_IS_ONBOARDED -> {
-        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-        activity.finish()
-      }
-      StartupMode.APP_IS_DEPRECATED -> {
-        showDialog(
-          FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-          ForcedAppDeprecationNoticeDialogFragment::newInstance
-        )
-      }
-      StartupMode.OPTIONAL_UPDATE_AVAILABLE -> {
-        showDialog(
-          OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-          OptionalAppDeprecationNoticeDialogFragment::newInstance
-        )
-      }
-      StartupMode.OS_IS_DEPRECATED -> {
-        showDialog(
-          OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-          OsDeprecationNoticeDialogFragment::newInstance
-        )
-      }
+      StartupMode.USER_IS_ONBOARDED -> startActivity(ProfileChooserActivity::createProfileChooserActivity)
+      StartupMode.APP_IS_DEPRECATED -> showDialog(
+        FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
+        ForcedAppDeprecationNoticeDialogFragment::newInstance
+      )
+      StartupMode.OPTIONAL_UPDATE_AVAILABLE -> showDialog(
+        OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+        OptionalAppDeprecationNoticeDialogFragment::newInstance
+      )
+      StartupMode.OS_IS_DEPRECATED -> showDialog(
+        OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+        OsDeprecationNoticeDialogFragment::newInstance
+      )
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-        activity.finish()
+        startActivity(OnboardingActivity::createOnboardingActivity)
       }
     }
   }
 
   private fun processLegacyStartupMode() {
     when (startupMode) {
-      StartupMode.USER_IS_ONBOARDED -> {
-        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-        activity.finish()
-      }
-      StartupMode.APP_IS_DEPRECATED -> {
-        showDialog(
-          AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-          AutomaticAppDeprecationNoticeDialogFragment::newInstance
-        )
-      }
+      StartupMode.ONBOARDING_FLOW_V2 -> getProfileOnboardingState()
+      StartupMode.USER_IS_ONBOARDED -> startActivity(ProfileChooserActivity::createProfileChooserActivity)
+      StartupMode.APP_IS_DEPRECATED -> showDialog(
+        AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
+        AutomaticAppDeprecationNoticeDialogFragment::newInstance
+      )
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-        activity.finish()
+        startActivity(OnboardingActivity::createOnboardingActivity)
       }
     }
   }
@@ -312,16 +294,12 @@ class SplashActivityPresenter @Inject constructor(
       activity,
       { result ->
         when (result) {
-          is AsyncResult.Success -> {
-            computeLoginRoute(result.value)
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "SplashActivity",
-              "Encountered unexpected non-successful result when fetching onboarding state",
-              result.error
-            )
-          }
+          is AsyncResult.Success -> computeLoginRoute(result.value)
+          is AsyncResult.Failure -> oppiaLogger.e(
+            "SplashActivity",
+            "Encountered unexpected non-successful result when fetching onboarding state",
+            result.error
+          )
           is AsyncResult.Pending -> {}
         }
       }
@@ -330,17 +308,9 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun computeLoginRoute(onboardingState: ProfileOnboardingState) {
     when (onboardingState) {
-      ProfileOnboardingState.NEW_INSTALL -> {
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-        activity.finish()
-      }
-      ProfileOnboardingState.SOLE_LEARNER_PROFILE -> {
-        processFetchSoleLearnerProfile()
-      }
-      else -> {
-        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-        activity.finish()
-      }
+      ProfileOnboardingState.NEW_INSTALL -> startActivity(OnboardingActivity::createOnboardingActivity)
+      ProfileOnboardingState.SOLE_LEARNER_PROFILE -> processFetchSoleLearnerProfile()
+      else -> startActivity(ProfileChooserActivity::createProfileChooserActivity)
     }
   }
 
@@ -359,18 +329,22 @@ class SplashActivityPresenter @Inject constructor(
             }
           }
           is AsyncResult.Pending -> {} // no-op
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "SplashActivity", "Failed to retrieve the list of profiles", result.error
-            )
-          }
+          is AsyncResult.Failure -> oppiaLogger.e(
+            "SplashActivity", "Failed to retrieve the list of profiles",
+            result.error
+          )
         }
       }
     )
   }
 
   private fun getSoleLearnerProfile(profiles: List<Profile>): Profile? {
-    return profiles.find { it.isAdmin }
+    return profiles.find { it.isAdmin && it.pin.isNullOrBlank() }
+  }
+
+  private fun startActivity(activityCreator: (Activity) -> Intent) {
+    activity.startActivity(activityCreator(activity))
+    activity.finish()
   }
 
   private fun computeInitStateDataProvider(): DataProvider<SplashInitState> {
