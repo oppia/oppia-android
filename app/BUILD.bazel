@@ -967,7 +967,7 @@ MIGRATED_TESTS = [
     filtered_tests = MIGRATED_TESTS,
     manifest_values = {
         "applicationId": "org.oppia.android",
-        "minSdkVersion": "21",
+        "minSdkVersion": "19",
         "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-alpha",
@@ -983,7 +983,7 @@ MIGRATED_TESTS = [
     filtered_tests = MIGRATED_TESTS,
     manifest_values = {
         "applicationId": "org.oppia.android",
-        "minSdkVersion": "21",
+        "minSdkVersion": "19",
         "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-alpha",
