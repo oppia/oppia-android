@@ -83,6 +83,30 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     )
   }
 
+  fun addScriptSourceAndTestFileWithContent(
+    filename: String,
+    sourceContent: String,
+    testContent: String,
+    subpackage: String
+  ) {
+    val sourceSubpackage = "$subpackage/java/com/example"
+    addSourceContentAndBuildFile(
+      filename,
+      sourceContent,
+      sourceSubpackage
+    )
+
+    val testSubpackage = "$subpackage/javatests/com/example"
+    val testFileName = "${filename}Test"
+    addTestContentAndBuildFile(
+      filename,
+      testFileName,
+      testContent,
+      sourceSubpackage,
+      testSubpackage
+    )
+  }
+
   fun addAppLevelSourceAndTestFileWithContent(
     filename: String,
     sourceContent: String,
@@ -90,50 +114,6 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testContentLocal: String,
     subpackage: String
   ) {
-    initEmptyWorkspace()
-    ensureWorkspaceIsConfiguredForKotlin()
-    setUpWorkspaceForRulesJvmExternal(
-      listOf("junit:junit:4.12")
-    )
-
-    // Create the source subpackage directory if it doesn't exist
-    if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
-      temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
-    }
-
-    // Create or update the BUILD file for the source file
-    val buildFilePath = "${subpackage.replace(".", "/")}/BUILD.bazel"
-    val buildFile = File(temporaryRootFolder.root, buildFilePath)
-    if (!buildFile.exists()) {
-      temporaryRootFolder.newFile(buildFilePath)
-    }
-    prepareBuildFileForLibraries(buildFile)
-
-    buildFile.appendText(
-      """
-      package_group(
-          name = "app_visibility",
-          packages = [
-              "//app/...",
-          ],
-      )
-      
-      package_group(
-          name = "app_testing_visibility",
-          packages = [
-              "//app/sharedTest/...",
-              "//app/test/...",
-          ],
-      )
-      
-      kt_jvm_library(
-          name = "${filename.lowercase()}",
-          srcs = ["$filename.kt"],
-          visibility = ["//visibility:public"]
-      )
-      """.trimIndent() + "\n"
-    )
-
     val sourceSubpackage = "$subpackage/main/java/com/example"
     addSourceContentAndBuildFile(
       filename,

@@ -253,6 +253,88 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_validScriptPathSampleTestFile_returnsCoverageData() {
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a ==0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addScriptSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      subpackage = "scripts"
+    )
+
+    val result = RunCoverage(
+      "${tempFolder.root}",
+      "scripts/java/com/example/TwoSum.kt",
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResultList = mutableListOf(
+      listOf(
+        "SF:scripts/java/com/example/TwoSum.kt",
+        "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/TwoSum::<init> ()V",
+        "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/TwoSum::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:4",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,1",
+        "LH:3",
+        "LF:4",
+        "end_of_record"
+      )
+    )
+
+    assertThat(result).isEqualTo(expectedResultList)
+  }
+
+  @Test
   fun testRunCoverage_validMultiSampleTestFile_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
