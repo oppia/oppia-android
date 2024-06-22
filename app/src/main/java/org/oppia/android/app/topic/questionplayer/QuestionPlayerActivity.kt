@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.questionplayer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
@@ -55,10 +56,21 @@ class QuestionPlayerActivity :
         QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance()
       )
     questionPlayerActivityPresenter.handleOnCreate(profileId)
+    handleBackPress()
   }
 
-  override fun onBackPressed() {
-    showStopExplorationDialogFragment()
+  private fun handleBackPress() {
+     onBackPressedDispatcher.addCallback(
+       this@QuestionPlayerActivity,
+       object : OnBackPressedCallback(true) {
+         override fun handleOnBackPressed() {
+           isEnabled = false
+           showStopExplorationDialogFragment()
+           onBackPressedDispatcher.onBackPressed()
+           isEnabled = true
+         }
+       }
+     )
   }
 
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
