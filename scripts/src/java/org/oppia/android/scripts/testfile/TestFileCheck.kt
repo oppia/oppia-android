@@ -23,8 +23,7 @@ fun main(vararg args: String) {
 
   val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
 
-  val testFileCheck = TestFileCheck(repoPath, testFileExemptiontextProto)
-  testFileCheck.execute()
+  TestFileCheck(repoPath, testFileExemptiontextProto).execute()
 }
 
 /**
@@ -37,31 +36,13 @@ class TestFileCheck(
   private val repoPath: String,
   private val testFileExemptiontextProto: String
 ) {
-
-  /**
-   * Retrieves a list of files exempted from requiring a test file based on the specified protocol buffer.
-   *
-   * This function loads the test file exemptions from the provided protocol buffer file path,
-   * filters and returns list of paths for files that are not required for having a test file.
-   *
-   * The files specifically marked as exempt from needing a test file are included,
-   * rather than those exempt from meeting a minimum coverage percentage.
-   *
-   * @param testFileExemptiontextProto the location of the test file exemption textproto file.
-   * @return A list of file paths that are exempted from requiring a test file.
-   */
-  fun getTestFileExemptionList(testFileExemptiontextProto: String): List<String> {
-
-    return loadTestFileExemptionsProto(testFileExemptiontextProto)
-      .testFileExemptionList
-      .filter { it.testFileNotRequired }
-      .map { it.exemptedFilePath }
-  }
-
   /** Executes the test file presence check mechanism for the repository. */
   fun execute() {
     // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-    val testFileExemptionList = getTestFileExemptionList(testFileExemptiontextProto)
+    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
 
     val searchFiles = RepositoryFile.collectSearchFiles(
       repoPath = repoPath,
