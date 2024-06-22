@@ -477,17 +477,17 @@ class RunCoverageTest {
       }
       """.trimIndent()
 
-    testBazelWorkspace.addAppLevelSourceAndTestFileWithContent(
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "TwoSum",
       sourceContent = sourceContent,
       testContentShared = testContentShared,
       testContentLocal = testContentLocal,
-      subpackage = "app"
+      subpackage = "app/test"
     )
 
     val result = RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      "app/test/main/java/com/example/TwoSum.kt",
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
