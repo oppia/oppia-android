@@ -58,119 +58,6 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_ScriptsPath_returnTestFilePath() {
-    val rootFolderPath = tempFolder.root.absolutePath
-    val expectedTestFilePath = "scripts/javatests/sample/ExampleTest.kt"
-    val file = File(rootFolderPath, expectedTestFilePath)
-
-    file.parentFile?.mkdirs()
-    file.createNewFile()
-
-    val expectedTestFilePaths = listOf(expectedTestFilePath)
-
-    val result = RunCoverage(
-      rootFolderPath,
-      sampleFilePath,
-      commandExecutor,
-      scriptBgDispatcher
-    ).findTestFile(rootFolderPath, "scripts/java/sample/Example.kt")
-
-    assertEquals(expectedTestFilePaths, result)
-  }
-
-  @Test
-  fun testRunCoverage_AppPath_returnSharedTestFilePath() {
-    val rootFolderPath = tempFolder.root.absolutePath
-    val expectedSharedTestFilePath = "app/sharedTest/sample/ExampleTest.kt"
-    val file = File(rootFolderPath, expectedSharedTestFilePath)
-
-    file.parentFile?.mkdirs()
-    file.createNewFile()
-
-    val expectedSharedTestFilePaths = listOf(expectedSharedTestFilePath)
-
-    val result = RunCoverage(
-      rootFolderPath,
-      sampleFilePath,
-      commandExecutor,
-      scriptBgDispatcher
-    ).findTestFile(rootFolderPath, "app/main/sample/Example.kt")
-
-    assertEquals(expectedSharedTestFilePaths, result)
-  }
-
-  @Test
-  fun testRunCoverage_AppPath_returnLocalTestFilePath() {
-    val rootFolderPath = tempFolder.root.absolutePath
-    val expectedLocalTestFilePath = "app/test/sample/ExampleTest.kt"
-    val file = File(rootFolderPath, expectedLocalTestFilePath)
-
-    file.parentFile?.mkdirs()
-    file.createNewFile()
-
-    val expectedLocalTestFilePaths = listOf(expectedLocalTestFilePath)
-
-    val result = RunCoverage(
-      rootFolderPath,
-      sampleFilePath,
-      commandExecutor,
-      scriptBgDispatcher
-    ).findTestFile(rootFolderPath, "app/main/sample/Example.kt")
-
-    assertEquals(expectedLocalTestFilePaths, result)
-  }
-
-  @Test
-  fun testRunCoverage_AppPath_returnSharedAndLocalTestFilePath() {
-    val rootFolderPath = tempFolder.root.absolutePath
-    val expectedLocalTestFilePath = "app/test/sample/ExampleTest.kt"
-    val expectedSharedTestFilePath = "app/sharedTest/sample/ExampleTest.kt"
-
-    val sharedFile = File(rootFolderPath, expectedSharedTestFilePath)
-    sharedFile.parentFile?.mkdirs()
-    sharedFile.createNewFile()
-
-    val localFile = File(rootFolderPath, expectedLocalTestFilePath)
-    localFile.parentFile?.mkdirs()
-    localFile.createNewFile()
-
-    val expectedLocalAndSharedTestFilePaths = listOf(
-      expectedSharedTestFilePath,
-      expectedLocalTestFilePath
-    )
-
-    val result = RunCoverage(
-      rootFolderPath,
-      sampleFilePath,
-      commandExecutor,
-      scriptBgDispatcher
-    ).findTestFile(rootFolderPath, "app/main/sample/Example.kt")
-
-    assertEquals(expectedLocalAndSharedTestFilePaths, result)
-  }
-
-  @Test
-  fun testRunCoverage_AppPath_returnDefaultTestFilePath() {
-    val rootFolderPath = tempFolder.root.absolutePath
-    val expectedLocalTestFilePath = "util/test/sample/ExampleTest.kt"
-    val file = File(rootFolderPath, expectedLocalTestFilePath)
-
-    file.parentFile?.mkdirs()
-    file.createNewFile()
-
-    val expectedLocalTestFilePaths = listOf(expectedLocalTestFilePath)
-
-    val result = RunCoverage(
-      rootFolderPath,
-      sampleFilePath,
-      commandExecutor,
-      scriptBgDispatcher
-    ).findTestFile(rootFolderPath, "util/main/sample/Example.kt")
-
-    assertEquals(expectedLocalTestFilePaths, result)
-  }
-
-  @Test
   fun testRunCoverage_validSampleTestFile_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -482,12 +369,12 @@ class RunCoverageTest {
       sourceContent = sourceContent,
       testContentShared = testContentShared,
       testContentLocal = testContentLocal,
-      subpackage = "app/test"
+      subpackage = "app"
     )
 
     val result = RunCoverage(
       "${tempFolder.root}",
-      "app/test/main/java/com/example/TwoSum.kt",
+      "app/main/java/com/example/TwoSum.kt",
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()

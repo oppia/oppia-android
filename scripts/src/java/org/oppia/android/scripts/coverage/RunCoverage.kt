@@ -98,14 +98,7 @@ class RunCoverage(
     return coverageDataList
   }
 
-  /**
-   * Finds potential test file paths corresponding to a given source file path within a repository.
-   *
-   * @param repoRoot the root directory of the repository
-   * @param filePath The file path of the source file for which the test files are to be found.
-   * @return A list of potential test file paths that exist in the repository.
-   */
-  fun findTestFile(repoRoot: String, filePath: String): List<String> {
+  private fun findTestFile(repoRoot: String, filePath: String): List<String> {
     val file = File(filePath)
     val parts = file.parent.split(File.separator)
     val testFiles = mutableListOf<String>()
