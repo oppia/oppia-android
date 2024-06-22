@@ -49,7 +49,7 @@ fun main(vararg args: String) {
  *
  * @param repoRoot the root directory of the repository
  * @param filePath the relative path to the file to analyse coverage
- * @param commandExecutor Executes the specified command in the specified working directory
+ * @param commandExecutor executes the specified command in the specified working directory
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
  */
 class RunCoverage(
@@ -76,19 +76,20 @@ class RunCoverage(
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
-    val isExempted = testFileExemptionList.contains(filePath)
-    if (isExempted) {
+    if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file. Hence No coverage!")
       return mutableListOf()
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+    println("Test file paths: $testFilePaths")
+    println("Test targets: $testTargets")
 
     for (testTarget in testTargets) {
       val coverageData = RunCoverageForTestTarget(
         rootDirectory,
-        testTarget.substringBeforeLast(".kt"),
+        testTarget.removeSuffix(".kt"),
         commandExecutor,
         scriptBgDispatcher
       ).runCoverage()!!
@@ -99,49 +100,36 @@ class RunCoverage(
   }
 
   private fun findTestFile(repoRoot: String, filePath: String): List<String> {
-    val file = File(filePath)
-    val parts = file.parent.split(File.separator)
-    val testFiles = mutableListOf<String>()
-
-    if (parts.isNotEmpty() && parts[0] == "scripts") {
-      val testFilePath = filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt")
-      if (File(repoRoot, testFilePath).exists()) {
-        testFiles.add(testFilePath)
+    val possibleTestFilePaths = when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
       }
-    } else if (parts.isNotEmpty() && parts[0] == "app") {
-      val sharedTestFilePath = filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt")
-      val testFilePath = filePath.replace("/main/", "/test/").replace(".kt", "Test.kt")
-      val localTestFilePath = filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
-
-      if (File(repoRoot, sharedTestFilePath).exists()) {
-        testFiles.add(sharedTestFilePath)
+      filePath.startsWith("app/") -> {
+        listOf(
+          filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
+        )
       }
-      if (File(repoRoot, testFilePath).exists()) {
-        testFiles.add(testFilePath)
-      }
-      if (File(repoRoot, localTestFilePath).exists()) {
-        testFiles.add(localTestFilePath)
-      }
-    } else {
-      val defaultTestFilePath = filePath.replace("/main/", "/test/").replace(".kt", "Test.kt")
-      if (File(repoRoot, defaultTestFilePath).exists()) {
-        testFiles.add(defaultTestFilePath)
+      else -> {
+        listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
       }
     }
-    return testFiles
+
+    val repoRootFile = File(repoRoot).absoluteFile
+
+    return possibleTestFilePaths
+      .map { File(repoRootFile, it) }
+      .filter(File::exists)
+      .map { it.relativeTo(repoRootFile).path }
   }
 
-  private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-    val protoBinaryFile = File("$testFileExemptiontextProto.pb")
-    val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()
 
-    // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-    // and this method is bounded by the generic type T.
-    @Suppress("UNCHECKED_CAST")
-    val protoObj: TestFileExemptions =
-      FileInputStream(protoBinaryFile).use {
-        builder.mergeFrom(it)
-      }.build() as TestFileExemptions
-    return protoObj
+  private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+    return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+      TestFileExemptions.newBuilder().also { builder ->
+        builder.mergeFrom(stream)
+      }.build()
+    }
   }
 }

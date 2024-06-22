@@ -37,7 +37,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testCoverageRunner_emptyDirectory_throwsException() {
+  fun testRunWithCoverageAsync_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
@@ -48,7 +48,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testCoverageRunner_invalidTestTarget_throwsException() {
+  fun testRunWithCoverageAsync_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
@@ -62,7 +62,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testCoverageRunner_validSampleTestTarget_returnsCoverageData() {
+  fun testRunWithCoverageAsync_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
