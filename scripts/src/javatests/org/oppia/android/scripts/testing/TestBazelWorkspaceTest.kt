@@ -282,7 +282,8 @@ class TestBazelWorkspaceTest {
       "Main",
       sourceContent,
       testContent,
-      "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
@@ -316,7 +317,8 @@ class TestBazelWorkspaceTest {
       "Main",
       sourceContent,
       testContent,
-      "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val sourceBuildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")

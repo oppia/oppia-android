@@ -214,7 +214,8 @@ class RunCoverageTest {
       filename = "TwoSum",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val result = RunCoverage(
@@ -292,11 +293,12 @@ class RunCoverageTest {
       }
       """.trimIndent()
 
-    testBazelWorkspace.addScriptSourceAndTestFileWithContent(
+    testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "scripts"
+      sourceSubpackage = "scripts/java/com/example",
+      testSubpackage = "scripts/javatests/com/example"
     )
 
     val result = RunCoverage(

@@ -424,7 +424,8 @@ class BazelClientTest {
       filename = "TwoSum",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:TwoSumTest")
