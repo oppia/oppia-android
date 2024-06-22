@@ -128,7 +128,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun testTestFileCheck_minCoverageExemptedFile_notExemptedFromTestFileCheck() {
+  fun testTestFileCheck_minCoverageExemptedFile_testFileIsRequired()
     tempFolder.newFile("testfiles/ProdFile1.kt")
     tempFolder.newFile("testfiles/ProdFile2.kt")
     tempFolder.newFile("testfiles/ProdFile2Test.kt")
@@ -160,7 +160,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun testTestFileCheck_minCoverageExemptedFileFails_notExemptedFromTestFileCheck() {
+  fun testTestFileCheck_missTestFilesForCoverageExemptedFile_testFileIsNotPresent()
 
     tempFolder.newFile("testfiles/ProdFile1.kt")
     tempFolder.newFile("testfiles/ProdFile2.kt")
