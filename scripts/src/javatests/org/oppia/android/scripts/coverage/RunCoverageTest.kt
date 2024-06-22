@@ -252,6 +252,128 @@ class RunCoverageTest {
     assertThat(result).isEqualTo(expectedResultList)
   }
 
+  @Test
+  fun testRunCoverage_validMultiSampleTestFile_returnsCoverageData() {
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a ==0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
+
+    val testContentShared =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    val testContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addAppLevelSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      sourceContent = sourceContent,
+      testContentShared = testContentShared,
+      testContentLocal = testContentLocal,
+      subpackage = "app"
+    )
+
+    val result = RunCoverage(
+      "${tempFolder.root}",
+      "app/main/java/com/example/TwoSum.kt",
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResultList = mutableListOf(
+      listOf(
+        "SF:app/main/java/com/example/TwoSum.kt",
+        "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/TwoSum::<init> ()V",
+        "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/TwoSum::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:4",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,1",
+        "LH:3",
+        "LF:4",
+        "end_of_record"
+      ),listOf(
+        "SF:app/main/java/com/example/TwoSum.kt",
+        "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/TwoSum::<init> ()V",
+        "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/TwoSum::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:4",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,1",
+        "LH:3",
+        "LF:4",
+        "end_of_record"
+      )
+    )
+
+    assertThat(result).isEqualTo(expectedResultList)
+  }
+
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES

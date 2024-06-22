@@ -83,6 +83,41 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     )
   }
 
+  fun addAppLevelSourceAndTestFileWithContent(
+    filename: String,
+    sourceContent: String,
+    testContentShared: String,
+    testContentLocal: String,
+    subpackage: String
+  ) {
+    val sourceSubpackage = "$subpackage/main/java/com/example"
+    addSourceContentAndBuildFile(
+      filename,
+      sourceContent,
+      sourceSubpackage
+    )
+
+    val testSubpackageShared = "$subpackage/test/java/com/example"
+    val testFileNameShared = "${filename}Test"
+    addTestContentAndBuildFile(
+      filename,
+      testFileNameShared,
+      testContentShared,
+      sourceSubpackage,
+      testSubpackageShared
+    )
+
+    val testSubpackageLocal = "$subpackage/test/java/com/example"
+    val testFileNameLocal = "${filename}LocalTest"
+    addTestContentAndBuildFile(
+      filename,
+      testFileNameLocal,
+      testContentLocal,
+      sourceSubpackage,
+      testSubpackageLocal
+    )
+  }
+
   /**
    * Adds a source file with the specified name and content to the specified subpackage,
    * and updates the corresponding build configuration.
