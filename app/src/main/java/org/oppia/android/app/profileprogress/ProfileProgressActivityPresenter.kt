@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.GALLERY_INTENT_RESULT_CODE
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 

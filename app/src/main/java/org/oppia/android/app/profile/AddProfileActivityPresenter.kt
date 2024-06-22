@@ -1,6 +1,5 @@
 package org.oppia.android.app.profile
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -35,8 +34,6 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-const val GALLERY_INTENT_RESULT_CODE = 1
-
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
 class AddProfileActivityPresenter @Inject constructor(
@@ -54,7 +51,6 @@ class AddProfileActivityPresenter @Inject constructor(
   private var inputtedConfirmPin = false
   private lateinit var alertDialog: AlertDialog
   lateinit var resultLauncher: ActivityResultLauncher<Intent>
-
 
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
