@@ -38,6 +38,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
+  private val featureFlagsLogger: FeatureFlagsLogger,
   private val performanceMetricsController: PerformanceMetricsController,
   private val cpuPerformanceSnapshotter: CpuPerformanceSnapshotter,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
@@ -84,6 +85,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     application.registerActivityLifecycleCallbacks(this)
     logApplicationStartupMetrics()
+    logAllFeatureFlags()
     cpuPerformanceSnapshotter.initialiseSnapshotter()
   }
 
@@ -166,6 +168,22 @@ class ApplicationLifecycleObserver @Inject constructor(
         oppiaLogger.e(
           "ActivityLifecycleObserver",
           "Encountered error while trying to log app's performance metrics.",
+          failure
+        )
+      }
+    }
+  }
+
+  private fun logAllFeatureFlags() {
+    CoroutineScope(backgroundDispatcher).launch {
+      // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
+      val appSessionId = loggingIdentifierController.getAppSessionIdFlow().value
+      featureFlagsLogger.logAllFeatureFlags(appSessionId)
+    }.invokeOnCompletion { failure ->
+      if (failure != null) {
+        oppiaLogger.e(
+          "ActivityLifecycleObserver",
+          "Encountered error while logging feature flags.",
           failure
         )
       }

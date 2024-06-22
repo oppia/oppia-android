@@ -93,6 +93,7 @@ class NetworkLoggingInterceptorTest {
     val firstRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
       networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
     }
+    testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     client.newCall(request).execute()
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -116,6 +117,7 @@ class NetworkLoggingInterceptorTest {
       networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
     }
     mockWebServer.enqueue(mockResponse)
+    testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     client.newCall(request).execute()
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -141,6 +143,7 @@ class NetworkLoggingInterceptorTest {
     val firstFailingRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
       networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
     }
+    testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     try {
       client.newCall(request).execute()
     } catch (e: ConnectException) {
