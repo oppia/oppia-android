@@ -60,17 +60,17 @@ class QuestionPlayerActivity :
   }
 
   private fun handleBackPress() {
-     onBackPressedDispatcher.addCallback(
-       this@QuestionPlayerActivity,
-       object : OnBackPressedCallback(true) {
-         override fun handleOnBackPressed() {
-           isEnabled = false
-           showStopExplorationDialogFragment()
-           onBackPressedDispatcher.onBackPressed()
-           isEnabled = true
-         }
-       }
-     )
+    onBackPressedDispatcher.addCallback(
+      this@QuestionPlayerActivity,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          isEnabled = false
+          showStopExplorationDialogFragment()
+          onBackPressedDispatcher.onBackPressed()
+          isEnabled = true
+        }
+      }
+    )
   }
 
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
