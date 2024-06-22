@@ -408,9 +408,9 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt",
     "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/android/app/customview/SurveyOnboardingBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/survey/SurveyMultipleChoiceOptionView.kt",
     "src/main/java/org/oppia/android/app/survey/SurveyNpsItemOptionView.kt",
@@ -485,6 +485,7 @@ BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
 BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/AppCompatCheckBoxBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/CircularProgressIndicatorAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/ColorBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ConstraintLayoutAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
