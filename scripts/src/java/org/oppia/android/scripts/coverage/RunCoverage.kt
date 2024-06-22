@@ -116,7 +116,7 @@ class RunCoverage(
         testFiles.add(testFilePath)
       }
     } else if (parts.isNotEmpty() && parts[0] == "app") {
-      val sharedTestFilePath = filePath.replace("/main/", "/test/").replace(".kt", "Test.kt")
+      val sharedTestFilePath = filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt")
       val testFilePath = filePath.replace("/main/", "/test/").replace(".kt", "Test.kt")
       val localTestFilePath = filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
 
