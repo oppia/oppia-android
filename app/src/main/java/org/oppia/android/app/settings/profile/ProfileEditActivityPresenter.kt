@@ -23,11 +23,9 @@ class ProfileEditActivityPresenter @Inject constructor(
 
     val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
     val isMultipane = activity.intent.getBooleanExtra(IS_MULTIPANE_EXTRA_KEY, false)
-
     toolbar.setNavigationOnClickListener {
       if (isMultipane) {
-        @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-        activity.onBackPressed()
+        activity.onBackPressedDispatcher.onBackPressed()
       } else {
         val intent = Intent(activity, ProfileListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
