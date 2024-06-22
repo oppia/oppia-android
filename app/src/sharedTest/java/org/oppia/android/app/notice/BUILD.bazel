@@ -142,10 +142,9 @@ oppia_android_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "ForcedAppDeprecationNoticeDialogFragmentTest",
-    processed_src = test_with_resources("ForcedAppDeprecationNoticeDialogFragmentTest.kt"),
-    test_class = "org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragmentTest",
+    srcs = ["ForcedAppDeprecationNoticeDialogFragmentTest.kt"],
     deps = [
         "//:dagger",
         "//app",
@@ -162,7 +161,6 @@ app_test(
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_espresso_espresso-core",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
@@ -171,10 +169,9 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "OptionalAppDeprecationNoticeDialogFragmentTest",
-    processed_src = test_with_resources("OptionalAppDeprecationNoticeDialogFragmentTest.kt"),
-    test_class = "org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragmentTest",
+    srcs = ["OptionalAppDeprecationNoticeDialogFragmentTest.kt"],
     deps = [
         "//:dagger",
         "//app",
@@ -191,7 +188,6 @@ app_test(
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_espresso_espresso-core",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
@@ -200,10 +196,9 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "OsDeprecationNoticeDialogFragmentTest",
-    processed_src = test_with_resources("OsDeprecationNoticeDialogFragmentTest.kt"),
-    test_class = "org.oppia.android.app.notice.OsDeprecationNoticeDialogFragmentTest",
+    srcs = ["OsDeprecationNoticeDialogFragmentTest.kt"],
     deps = [
         "//:dagger",
         "//app",
@@ -220,7 +215,6 @@ app_test(
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_espresso_espresso-core",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",

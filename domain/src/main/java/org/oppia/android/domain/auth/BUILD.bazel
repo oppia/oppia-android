@@ -2,9 +2,9 @@
 Library for providing authentication with Firebase functionality.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
-kt_android_library(
+oppia_android_library(
     name = "authentication_controller",
     srcs = [
         "AuthenticationController.kt",
@@ -18,7 +18,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firebase_auth_wrapper",
     srcs = [
         "FirebaseAuthInstance.kt",
@@ -34,7 +34,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "auth_module",
     srcs = [
         "AuthenticationModule.kt",
@@ -47,7 +47,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firebase_auth_wrapper_impl",
     srcs = [
         "FirebaseAuthWrapperImpl.kt",
@@ -59,7 +59,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firebase_auth_instance_wrapper_impl",
     srcs = [
         "FirebaseAuthInstanceWrapperImpl.kt",

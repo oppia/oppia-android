@@ -96,7 +96,6 @@ oppia_android_library(
     deps = [
         ":parameterized_runner_delegate_impl",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
     ],
 )
 

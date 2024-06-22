@@ -167,8 +167,6 @@ def _wrap_dependency(
             )
             explicit_exports = ["_%s_do_not_depend" % export_details["exposed_artifact_name"]]
         elif export_details["export_toolchain"] == EXPORT_TOOLCHAIN.ALIAS:
-            if len(export_details["additional_exports"]) != 0:
-                fail("Cannot have additional exports when aliasing a target. Use a toolchain type, instead.")
             native.alias(
                 name = export_details["exposed_artifact_name"],
                 visibility = base_visibility + maven_visibility,

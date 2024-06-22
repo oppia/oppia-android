@@ -67,7 +67,6 @@ oppia_android_library(
         "//third_party:kotlinx-coroutines-core-jvm",
         "//third_party:org_robolectric_annotations",
         "//third_party:org_robolectric_shadows-framework",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",

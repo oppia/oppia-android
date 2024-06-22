@@ -333,9 +333,6 @@ oppia_android_test(
 oppia_android_test(
     name = "SurveyEventsLoggerTest",
     srcs = ["SurveyEventsLoggerTest.kt"],
-    custom_package = "org.oppia.android.domain.oppialogger.analytics",
-    test_class = "org.oppia.android.domain.oppialogger.analytics.SurveyEventsLoggerTest",
-    test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
@@ -352,8 +349,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
@@ -363,9 +358,6 @@ oppia_android_test(
 oppia_android_test(
     name = "FeatureFlagsLoggerTest",
     srcs = ["FeatureFlagsLoggerTest.kt"],
-    custom_package = "org.oppia.android.domain.oppialogger.analytics",
-    test_class = "org.oppia.android.domain.oppialogger.analytics.FeatureFlagsLoggerTest",
-    test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:feature_flags_logger",
@@ -384,8 +376,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",

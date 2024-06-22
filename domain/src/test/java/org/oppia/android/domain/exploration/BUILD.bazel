@@ -45,7 +45,6 @@ oppia_android_test(
         "//third_party:org_robolectric_annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
@@ -111,7 +110,6 @@ oppia_android_test(
         "//third_party:org_robolectric_annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
@@ -156,9 +154,6 @@ oppia_android_test(
 oppia_android_test(
     name = "ExplorationActiveTimeControllerTest",
     srcs = ["ExplorationActiveTimeControllerTest.kt"],
-    custom_package = "org.oppia.android.domain.exploration",
-    test_class = "org.oppia.android.domain.exploration.ExplorationActiveTimeControllerTest",
-    test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
         "//domain",
@@ -190,8 +185,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
@@ -202,9 +195,6 @@ oppia_android_test(
 oppia_android_test(
     name = "ExplorationProgressModuleTest",
     srcs = ["ExplorationProgressModuleTest.kt"],
-    custom_package = "org.oppia.android.domain.exploration",
-    test_class = "org.oppia.android.domain.exploration.ExplorationProgressModuleTest",
-    test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
         "//domain",
@@ -236,8 +226,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",

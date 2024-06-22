@@ -34,9 +34,6 @@ oppia_android_test(
 oppia_android_test(
     name = "DebugFirestoreEventLoggerImplTest",
     srcs = ["DebugFirestoreEventLoggerImplTest.kt"],
-    custom_package = "org.oppia.android.util.logging.firebase",
-    test_class = "org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImplTest",
-    test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
         "//testing",
@@ -46,8 +43,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_ext_truth",
         "//third_party:com_google_truth_truth",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",

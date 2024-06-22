@@ -169,9 +169,11 @@ oppia_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":application_lifecycle_listener",
         ":application_lifecycle_observer",
         ":learner_analytics_inactivity_limit_millis",
         "//:dagger",
+        "//domain",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )
@@ -212,7 +214,7 @@ oppia_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "application_lifecycle_listener",
     srcs = [
         "ApplicationLifecycleListener.kt",
@@ -220,7 +222,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "feature_flags_logger",
     srcs = [
         "FeatureFlagsLogger.kt",
@@ -234,7 +236,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "data_controller",
     srcs = [
         "FirestoreDataController.kt",

@@ -44,9 +44,6 @@ oppia_android_test(
 oppia_android_test(
     name = "ActivityLanguageLocaleHandlerTest",
     srcs = ["ActivityLanguageLocaleHandlerTest.kt"],
-    custom_package = "org.oppia.android.app.translation",
-    test_class = "org.oppia.android.app.translation.ActivityLanguageLocaleHandlerTest",
-    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -73,8 +70,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",

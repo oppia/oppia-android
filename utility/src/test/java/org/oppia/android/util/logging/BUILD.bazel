@@ -155,9 +155,6 @@ oppia_android_test(
 oppia_android_test(
     name = "ConsoleLoggerTest",
     srcs = ["ConsoleLoggerTest.kt"],
-    custom_package = "org.oppia.android.util.logging",
-    test_class = "org.oppia.android.util.logging.ConsoleLoggerTest",
-    test_manifest = "//utility:test_manifest",
     deps = [
         ":sync_status_manager_test_base",
         "//:dagger",
@@ -172,8 +169,6 @@ oppia_android_test(
         "//third_party:androidx_test_ext_truth",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",

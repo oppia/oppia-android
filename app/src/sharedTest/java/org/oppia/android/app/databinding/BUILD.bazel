@@ -637,10 +637,9 @@ oppia_android_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "ColorBindingAdaptersTest",
-    processed_src = test_with_resources("ColorBindingAdaptersTest.kt"),
-    test_class = "org.oppia.android.app.databinding.ColorBindingAdaptersTest",
+    srcs = ["ColorBindingAdaptersTest.kt"],
     deps = [
         "//:dagger",
         "//app",
@@ -661,8 +660,6 @@ app_test(
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_ext_truth",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",

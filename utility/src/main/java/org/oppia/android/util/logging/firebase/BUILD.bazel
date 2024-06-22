@@ -102,7 +102,7 @@ oppia_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firestore_logger_impl",
     srcs = [
         "FirestoreEventLoggerProdImpl.kt",
@@ -122,7 +122,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firestore_logger",
     srcs = [
         "FirestoreEventLogger.kt",
@@ -133,7 +133,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "debug_firestore_logger_impl",
     srcs = [
         "DebugFirestoreEventLoggerImpl.kt",
@@ -148,7 +148,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firestore_wrapper",
     srcs = [
         "FirestoreInstance.kt",
@@ -162,7 +162,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "firestore_wrapper_impl",
     srcs = [
         "FirestoreInstanceWrapperImpl.kt",

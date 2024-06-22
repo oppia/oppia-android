@@ -59,7 +59,7 @@ oppia_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "deprecation_controller",
     srcs = [
         "DeprecationController.kt",

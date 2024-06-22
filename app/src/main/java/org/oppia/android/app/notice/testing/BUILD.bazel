@@ -43,7 +43,7 @@ oppia_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "optional_app_deprecation_notice_dialog_fragment_test_activity",
     testonly = True,
     srcs = [
@@ -56,7 +56,7 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
+oppia_android_library(
     name = "os_deprecation_notice_dialog_fragment_test_activity",
     testonly = True,
     srcs = [
