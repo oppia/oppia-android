@@ -30,7 +30,7 @@ fun main(vararg args: String) {
  * Class for checking the presence of test files in a repository.
  *
  * @param repoPath The path of the repo
- * @param testFileExemptiontextProto the location of the test file exemption textproto file.
+ * @param testFileExemptiontextProto the location of the test file exemption textproto file
  */
 class TestFileCheck(
   private val repoPath: String,

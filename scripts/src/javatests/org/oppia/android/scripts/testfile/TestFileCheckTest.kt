@@ -2,7 +2,6 @@ package org.oppia.android.scripts.testfile
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
