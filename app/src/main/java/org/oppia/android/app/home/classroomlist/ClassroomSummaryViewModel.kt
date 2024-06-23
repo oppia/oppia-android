@@ -15,10 +15,10 @@ class ClassroomSummaryViewModel(
 ) : HomeItemViewModel() {
 
   /** Click listener for [ClassroomSummary] items. */
-  val classroomClickListener = classroomListViewModel as ClassroomSummaryClickListener
+  private val classroomClickListener = classroomListViewModel as ClassroomSummaryClickListener
 
   /** The [ClassroomSummary] retrieved from the [EphemeralClassroomSummary]. */
-  val classroomSummary = ephemeralClassroomSummary.classroomSummary
+  val classroomSummary: ClassroomSummary = ephemeralClassroomSummary.classroomSummary
 
   /** Lazy-loaded title extracted using the [TranslationController]. */
   val title: String by lazy {
