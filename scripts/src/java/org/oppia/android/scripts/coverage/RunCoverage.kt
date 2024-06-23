@@ -40,7 +40,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute()
+    println(RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute())
   }
 }
 
@@ -75,7 +75,6 @@ class RunCoverage(
    *     the file is exempted from having a test file, an empty list is returned
    */
   fun execute(): List<List<String>> {
-    var coverageDataList = mutableListOf<List<String>>()
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
@@ -87,15 +86,13 @@ class RunCoverage(
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    testTargets.forEach { testTarget ->
+    return testTargets.mapNotNull { testTarget ->
       val coverageData = runCoverageForTarget(testTarget)
-      if (coverageData != null) {
-        coverageDataList.add(coverageData)
-      } else {
+      if (coverageData == null) {
         println("Coverage data for $testTarget is null")
       }
+      coverageData
     }
-    return coverageDataList.toList()
   }
 
   private fun runCoverageForTarget(testTarget: String): List<String>? {
