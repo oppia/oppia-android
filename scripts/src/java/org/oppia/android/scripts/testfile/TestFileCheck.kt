@@ -80,21 +80,10 @@ class TestFileCheck(
   }
 }
 
-/**
- * Computes the expected test file name for a prod file.
- *
- * @param prodFile the prod file for which expected test file name has to be computed
- * @return expected name of the test file
- */
 private fun computeExpectedTestFileName(prodFile: File): String {
   return "${prodFile.nameWithoutExtension}Test.kt"
 }
 
-/**
- * Logs the file names of all the prod files that do not have a test file.
- *
- * @param matchedFiles list of all the files missing a test file
- */
 private fun logFailures(matchedFiles: List<File>) {
   if (matchedFiles.isNotEmpty()) {
     matchedFiles.sorted().forEach { file ->
@@ -104,12 +93,6 @@ private fun logFailures(matchedFiles: List<File>) {
   }
 }
 
-/**
- * Loads the test file exemptions list to proto.
- *
- * @param testFileExemptiontextProto the location of the test file exemption textproto file
- * @return proto class from the parsed textproto file
- */
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
   val protoBinaryFile = File("$testFileExemptiontextProto.pb")
   val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()
