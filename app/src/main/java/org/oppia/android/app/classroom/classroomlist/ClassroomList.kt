@@ -59,9 +59,9 @@ fun ClassroomList(classroomSummaryList: List<ClassroomSummaryViewModel>) {
     )
     LazyRow(
       contentPadding = PaddingValues(
-          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-        )
+        start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+        end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+      ),
     ) {
       items(classroomSummaryList) {
         ClassroomCard(classroomSummaryViewModel = it)

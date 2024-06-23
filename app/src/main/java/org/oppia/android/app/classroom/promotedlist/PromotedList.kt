@@ -81,9 +81,9 @@ fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
   LazyRow(
     modifier = Modifier.padding(top = 12.dp),
     contentPadding = PaddingValues(
-        start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-        end = promotedStoryListViewModel.endPadding.dp,
-      ),
+      start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+      end = promotedStoryListViewModel.endPadding.dp,
+    ),
   ) {
     items(promotedStoryListViewModel.promotedStoryList) {
       PromotedStoryCard(promotedStoryViewModel = it)
@@ -108,7 +108,9 @@ fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
         bottom = 8.dp,
       )
       .clickable { promotedStoryViewModel.clickOnStoryTile() },
-    backgroundColor = colorResource(id = R.color.component_color_shared_screen_primary_background_color),
+    backgroundColor = colorResource(
+      id = R.color.component_color_shared_screen_primary_background_color
+    ),
     elevation = 4.dp,
   ) {
     Column(
@@ -123,8 +125,10 @@ fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
           .aspectRatio(16f / 9f)
           .background(
             Color(
-              (0xff000000L or promotedStoryViewModel.promotedStory.lessonThumbnail
-                .backgroundColorRgb.toLong()).toInt()
+              (
+                0xff000000L or
+                  promotedStoryViewModel.promotedStory.lessonThumbnail.backgroundColorRgb.toLong()
+                ).toInt()
             )
           )
       )

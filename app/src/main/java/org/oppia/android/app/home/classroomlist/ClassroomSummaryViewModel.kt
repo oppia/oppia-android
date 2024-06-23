@@ -1,17 +1,17 @@
 package org.oppia.android.app.home.classroomlist
 
-import java.util.Objects
 import org.oppia.android.app.classroom.ClassroomListViewModel
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.EphemeralClassroomSummary
 import org.oppia.android.domain.translation.TranslationController
+import java.util.Objects
 
 /** The view model corresponding to individual classroom summaries in the classroom summary RecyclerView. */
 class ClassroomSummaryViewModel(
   classroomListViewModel: ClassroomListViewModel,
   ephemeralClassroomSummary: EphemeralClassroomSummary,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : HomeItemViewModel() {
 
   /** Click listener for [ClassroomSummary] items. */

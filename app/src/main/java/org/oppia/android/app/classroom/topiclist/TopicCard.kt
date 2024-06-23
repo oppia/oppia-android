@@ -51,15 +51,21 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
           .aspectRatio(4f / 3f)
           .background(
             Color(
-              (0xff000000L or topicSummaryViewModel.topicSummary.topicThumbnail
-                .backgroundColorRgb.toLong()).toInt()
+              (
+                0xff000000L or
+                  topicSummaryViewModel.topicSummary.topicThumbnail.backgroundColorRgb.toLong()
+                ).toInt()
             )
           )
       )
       Column(
         modifier = Modifier
           .fillMaxWidth()
-          .background(color = colorResource(id = R.color.component_color_shared_topic_card_item_background_color)),
+          .background(
+            color = colorResource(
+              id = R.color.component_color_shared_topic_card_item_background_color
+            )
+          ),
         verticalArrangement = Arrangement.SpaceBetween,
       ) {
         Text(

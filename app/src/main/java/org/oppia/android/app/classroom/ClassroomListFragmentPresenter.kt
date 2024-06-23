@@ -34,6 +34,7 @@ import org.oppia.android.app.classroom.topiclist.TopicCard
 import org.oppia.android.app.classroom.welcome.WelcomeText
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeItemViewModel
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
@@ -41,7 +42,6 @@ import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -103,32 +103,38 @@ class ClassroomListFragmentPresenter @Inject constructor(
       refreshComposeView()
     }
 
-    classroomListViewModel.topicList.addOnListChangedCallback(object : ObservableList.OnListChangedCallback<ObservableList<HomeItemViewModel>>() {
-      override fun onChanged(sender: ObservableList<HomeItemViewModel>) {}
+    classroomListViewModel.topicList.addOnListChangedCallback(
+      object : ObservableList.OnListChangedCallback<ObservableList<HomeItemViewModel>>() {
+        override fun onChanged(sender: ObservableList<HomeItemViewModel>) {}
 
-      override fun onItemRangeChanged(
-        sender: ObservableList<HomeItemViewModel>,
-        positionStart: Int,
-        itemCount: Int) {}
+        override fun onItemRangeChanged(
+          sender: ObservableList<HomeItemViewModel>,
+          positionStart: Int,
+          itemCount: Int
+        ) {}
 
-      override fun onItemRangeInserted(
-        sender: ObservableList<HomeItemViewModel>,
-        positionStart: Int,
-        itemCount: Int) {
-        refreshComposeView()
+        override fun onItemRangeInserted(
+          sender: ObservableList<HomeItemViewModel>,
+          positionStart: Int,
+          itemCount: Int
+        ) {
+          refreshComposeView()
+        }
+
+        override fun onItemRangeMoved(
+          sender: ObservableList<HomeItemViewModel>,
+          fromPosition: Int,
+          toPosition: Int,
+          itemCount: Int
+        ) {}
+
+        override fun onItemRangeRemoved(
+          sender: ObservableList<HomeItemViewModel>,
+          positionStart: Int,
+          itemCount: Int
+        ) {}
       }
-
-      override fun onItemRangeMoved(
-        sender: ObservableList<HomeItemViewModel>,
-        fromPosition: Int,
-        toPosition: Int,
-        itemCount: Int) {}
-
-      override fun onItemRangeRemoved(
-        sender: ObservableList<HomeItemViewModel>,
-        positionStart: Int,
-        itemCount: Int) {}
-    })
+    )
 
     return binding.root
   }
@@ -157,11 +163,9 @@ class ClassroomListFragmentPresenter @Inject constructor(
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   fun ClassroomListScreen() {
-    val groupedItems = (
-      classroomListViewModel.homeItemViewModelListLiveData.value?.plus(
-        classroomListViewModel.topicList
-      )
-    )?.groupBy { it::class }
+    val groupedItems = classroomListViewModel.homeItemViewModelListLiveData.value
+      ?.plus(classroomListViewModel.topicList)
+      ?.groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     LazyColumn {
       groupedItems?.forEach { (type, items) ->
@@ -184,13 +188,15 @@ class ClassroomListFragmentPresenter @Inject constructor(
               AllTopicsHeaderText()
             }
           }
-          TopicSummaryViewModel::class -> gridItems(
-            data = items.map { it as TopicSummaryViewModel },
-            columnCount = topicListSpanCount,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-          ) { itemData ->
-            TopicCard(topicSummaryViewModel = itemData)
+          TopicSummaryViewModel::class -> {
+            gridItems(
+              data = items.map { it as TopicSummaryViewModel },
+              columnCount = topicListSpanCount,
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+              modifier = Modifier
+            ) { itemData ->
+              TopicCard(topicSummaryViewModel = itemData)
+            }
           }
         }
       }
