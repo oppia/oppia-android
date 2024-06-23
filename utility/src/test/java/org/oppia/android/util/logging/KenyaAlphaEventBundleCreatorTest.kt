@@ -719,7 +719,7 @@ class KenyaAlphaEventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessSolutionEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_revealSolutionEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
@@ -743,7 +743,7 @@ class KenyaAlphaEventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
+  fun testFillEventBundle_revealSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
