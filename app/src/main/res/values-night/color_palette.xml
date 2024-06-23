@@ -231,4 +231,8 @@
   <!-- ON-BOARDING -->
   <color name="color_palette_onboarding_primary_color">@color/color_def_dark_green</color>
   <color name="color_palette_onboarding_primary_text_color">@color/color_def_accessible_grey</color>
+  <!--  CLASSROOM LIST-->
+  <color name="color_palette_classroom_card_color">@color/color_def_greenish_black</color>
+  <color name="color_palette_classroom_shared_text_color">@color/color_def_white</color>
+  <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_black</color>
 </resources>

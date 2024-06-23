@@ -18,13 +18,13 @@ import org.oppia.android.R
 fun AllTopicsHeaderText() {
   Text(
     text = stringResource(id = R.string.select_a_topic_to_start),
-    color = colorResource(id = R.color.color_def_oppia_green),
+    color = colorResource(id = R.color.component_color_classroom_all_topics_header_text_color),
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Medium,
     fontSize = 18.sp,
     modifier = Modifier
       .fillMaxWidth()
-      .background(colorResource(id = R.color.color_def_greenish_white))
+      .background(colorResource(id = R.color.color_palette_classroom_topic_list_background_color))
       .padding(
         start = dimensionResource(id = R.dimen.all_topics_text_margin_start),
         top = dimensionResource(id = R.dimen.all_topics_text_margin_top),

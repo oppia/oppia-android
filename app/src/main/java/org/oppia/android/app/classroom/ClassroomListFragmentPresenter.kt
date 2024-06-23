@@ -212,7 +212,9 @@ fun <T> LazyListScope.gridItems(
     Row(
       horizontalArrangement = horizontalArrangement,
       modifier = modifier
-        .background(colorResource(id = R.color.color_def_greenish_white))
+        .background(
+          colorResource(id = R.color.component_color_classroom_topic_list_background_color)
+        )
         .padding(
           horizontal = dimensionResource(id = R.dimen.classrooms_text_margin_start),
           vertical = 10.dp
@@ -240,7 +242,9 @@ fun <T> LazyListScope.gridItems(
         modifier = Modifier
           .fillMaxWidth()
           .height(dimensionResource(id = R.dimen.home_fragment_padding_bottom))
-          .background(colorResource(id = R.color.color_def_greenish_white))
+          .background(
+            colorResource(id = R.color.component_color_classroom_topic_list_background_color)
+          )
       )
     }
   }

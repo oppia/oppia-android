@@ -112,7 +112,7 @@ fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
       }
       Text(
         text = classroomSummaryViewModel.title,
-        color = colorResource(id = R.color.color_def_oppia_green),
+        color = colorResource(id = R.color.component_color_classroom_card_text_color),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
