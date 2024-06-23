@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.coverage
 
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -85,16 +86,15 @@ class RunCoverage(
 
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-    println("Test file paths: $testFilePaths")
-    println("Test targets: $testTargets")
 
     for (testTarget in testTargets) {
-      val coverageData = RunCoverageForTestTarget(
-        rootDirectory,
-        testTarget.removeSuffix(".kt"),
-        commandExecutor,
-        scriptBgDispatcher
-      ).runCoverage()
+      val coverageData = runBlocking {
+        val result =
+          CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+            .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
+            .await()
+        result
+      }
 
       if (coverageData != null) {
         coverageDataList.add(coverageData)
@@ -102,7 +102,6 @@ class RunCoverage(
         println("Coverage data for $testTarget is null")
       }
     }
-    println("Coverage Data List: $coverageDataList")
     return coverageDataList.toList()
   }
 
