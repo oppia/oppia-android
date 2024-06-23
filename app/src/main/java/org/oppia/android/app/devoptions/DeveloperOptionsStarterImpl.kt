@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 /** Binds implementation of DeveloperOptionsStarter. */
 class DeveloperOptionsStarterImpl @Inject constructor() : DeveloperOptionsStarter {
-  override fun createIntent(context: Context, internalProfileId: ProfileId): Intent =
-    DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
+  override fun createIntent(context: Context, profileId: ProfileId): Intent =
+    DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, profileId)
 }

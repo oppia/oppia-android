@@ -18,8 +18,6 @@ class OngoingTopicListFragment : InjectableFragment() {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val ONGOING_TOPIC_LIST_FRAGMENT_TAG = "TAG_ONGOING_TOPIC_LIST_FRAGMENT"
-    internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY =
-      "OngoingTopicListFragment.profile_id"
 
     /** Returns a new [OngoingTopicListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): OngoingTopicListFragment {
@@ -47,7 +45,7 @@ class OngoingTopicListFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to OngoingTopicListFragment" }
-    val internalProfileId = args.extractCurrentUserProfileId().internalId ?: -1
+    val internalProfileId = args.extractCurrentUserProfileId().internalId
     return ongoingTopicListFragmentPresenter.handleCreateView(
       inflater,
       container,

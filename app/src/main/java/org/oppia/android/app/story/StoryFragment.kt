@@ -59,7 +59,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     val args =
       arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
 
-    val internalProfileId = arguments.extractCurrentUserProfileId().internalId ?: -1
+    val internalProfileId = arguments.extractCurrentUserProfileId().internalId
     val topicId =
       checkNotNull(args.topicId) {
         "Expected topicId to be passed to StoryFragment"

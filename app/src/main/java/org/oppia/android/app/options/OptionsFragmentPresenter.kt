@@ -70,7 +70,7 @@ class OptionsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId ?: -1
+    internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     optionControlsViewModel.setProfileId(profileId)
 

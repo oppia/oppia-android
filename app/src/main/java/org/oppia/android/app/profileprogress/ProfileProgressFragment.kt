@@ -17,8 +17,6 @@ class ProfileProgressFragment :
   InjectableFragment(),
   ProfilePictureClickListener {
   companion object {
-    internal const val PROFILE_ID_ARGUMENT_KEY = "ProfileProgressFragment.profile_id"
-
     /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
     fun newInstance(internalProfileId: Int): ProfileProgressFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -45,7 +43,7 @@ class ProfileProgressFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
-    val internalProfileId = args.extractCurrentUserProfileId()?.internalId ?: -1
+    val internalProfileId = args.extractCurrentUserProfileId().internalId
     return profileProgressFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

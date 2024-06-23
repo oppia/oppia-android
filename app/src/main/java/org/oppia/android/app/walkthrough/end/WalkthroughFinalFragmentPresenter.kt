@@ -37,7 +37,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var topicName: String
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String): View {
     binding =
       WalkthroughFinalFragmentBinding.inflate(
         inflater,
