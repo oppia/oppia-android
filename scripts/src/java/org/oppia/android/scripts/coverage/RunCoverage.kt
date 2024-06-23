@@ -6,7 +6,6 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
-import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
 
 /**
@@ -131,7 +130,6 @@ class RunCoverage(
       .filter(File::exists)
       .map { it.relativeTo(repoRootFile).path }
   }
-
 
   private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
     return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->

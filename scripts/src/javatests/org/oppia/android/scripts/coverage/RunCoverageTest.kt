@@ -2,7 +2,6 @@ package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -11,7 +10,6 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
@@ -401,7 +399,8 @@ class RunCoverageTest {
         "LH:3",
         "LF:4",
         "end_of_record"
-      ),listOf(
+      ),
+      listOf(
         "SF:app/main/java/com/example/TwoSum.kt",
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
         "FN:3,com/example/TwoSum::<init> ()V",
