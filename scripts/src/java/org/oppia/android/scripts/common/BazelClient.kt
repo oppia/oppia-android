@@ -144,7 +144,8 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
     val coverageCommandOutputLines = executeBazelCommand(
       "coverage",
-      bazelTestTarget
+      bazelTestTarget,
+      "--instrumentation_filter=//"
     )
     return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
       File(path).readLines()
