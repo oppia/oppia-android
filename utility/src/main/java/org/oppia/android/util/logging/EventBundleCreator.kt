@@ -19,6 +19,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
@@ -78,6 +79,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Co
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConsoleLoggerContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ForegroundAppTimeContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
@@ -112,6 +114,7 @@ import org.oppia.android.app.model.EventLog.CompleteAppOnboardingContext as Comp
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ConsoleLoggerContext as ConsoleLoggerEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
+import org.oppia.android.app.model.EventLog.FeatureFlagListContext as FeatureFlagListEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
@@ -271,6 +274,7 @@ class EventBundleCreator @Inject constructor(
       RETROFIT_CALL_FAILED_CONTEXT ->
         RetrofitCallFailedContext(activityName, retrofitCallFailedContext)
       APP_IN_FOREGROUND_TIME -> ForegroundAppTimeContext(activityName, appInForegroundTime)
+      FEATURE_FLAG_LIST_CONTEXT -> FeatureFlagContext(activityName, featureFlagListContext)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -664,6 +668,24 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("installation_id", installationId)
         store.putNonSensitiveValue("app_session_id", appSessionId)
         store.putNonSensitiveValue("foreground_time", foregroundTime)
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [FeatureFlagListEventContext]s. */
+    class FeatureFlagContext(
+      activityName: String,
+      value: FeatureFlagListEventContext
+    ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
+      override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
+        val featureFlagNames = featureFlagsList.map { it.flagName }
+        val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus }
+        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
+
+        store.putNonSensitiveValue("uuid", uniqueUserUuid)
+        store.putNonSensitiveValue("app_session_id", appSessionId)
+        store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
+        store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
+        store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)
       }
     }
   }

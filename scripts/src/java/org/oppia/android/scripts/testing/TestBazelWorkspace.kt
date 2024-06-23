@@ -5,7 +5,7 @@ import org.junit.rules.TemporaryFolder
 import java.io.File
 
 /** The version of Bazel to use in tests that set up Bazel workspaces. */
-const val BAZEL_VERSION = "4.0.0"
+const val BAZEL_VERSION = "6.5.0"
 
 /**
  * Test utility for generating various test & library targets in the specified [TemporaryFolder].

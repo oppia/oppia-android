@@ -59,6 +59,7 @@ import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.testing.CircularProgressIndicatorAdaptersTestActivity
+import org.oppia.android.app.testing.ColorBindingAdaptersTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
@@ -216,4 +217,5 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
   fun inject(surveyActivity: SurveyActivity)
+  fun inject(colorBindingAdaptersTestActivity: ColorBindingAdaptersTestActivity)
 }

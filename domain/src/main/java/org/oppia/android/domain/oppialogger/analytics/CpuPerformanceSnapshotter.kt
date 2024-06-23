@@ -126,7 +126,7 @@ class CpuPerformanceSnapshotter(
   }
 
   private fun sendSwitchIconificationCommand(newIconification: AppIconification) {
-    commandQueue.offer(CommandMessage.SwitchIconification(newIconification)).apply {
+    commandQueue.trySend(CommandMessage.SwitchIconification(newIconification)).isSuccess.apply {
       if (!this) {
         val exception = IllegalStateException("Iconification switching failed")
         consoleLogger.e(
