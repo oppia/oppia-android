@@ -96,6 +96,10 @@ class ClassroomController @Inject constructor(
         addAllClassroomSummary(
           classroomIdList.classroomIdsList.map { classroomId ->
             createEphemeralClassroomSummary(classroomId, contentLocale)
+          }.filter { ephemeralClassroomSummary ->
+            ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
+              topicSummary.topicPlayAvailability.availabilityCase != AVAILABLE_TO_PLAY_NOW
+            }
           }
         )
       }.build()
@@ -110,9 +114,12 @@ class ClassroomController @Inject constructor(
     val classroomListBuilder = ClassroomList.newBuilder()
     for (i in 0 until classroomIdJsonArray.length()) {
       val classroomId = classroomIdJsonArray.optString(i)
-      classroomListBuilder.addClassroomSummary(
-        createEphemeralClassroomSummary(classroomId, contentLocale)
-      )
+      val ephemeralClassroomSummary = createEphemeralClassroomSummary(classroomId, contentLocale)
+      val hasPublishedTopics =
+        ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
+          topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
+        }
+      if (hasPublishedTopics) classroomListBuilder.addClassroomSummary(ephemeralClassroomSummary)
     }
     return classroomListBuilder.build()
   }

@@ -125,20 +125,10 @@ class ClassroomControllerTest {
   }
 
   @Test
-  fun testGetClassroomList_thirdClassroom_hasCorrectClassroomInfo() {
+  fun testGetClassroomList_noPublishedTopicsInThirdClassroom_checkListExcludesThirdClassroom() {
     val classroomList = getClassroomList(profileId0)
 
-    val thirdClassroom = classroomList.classroomSummaryList[2]
-    assertThat(thirdClassroom.classroomSummary.classroomId).isEqualTo(TEST_CLASSROOM_ID_2)
-    assertThat(thirdClassroom.classroomSummary.classroomTitle.html).isEqualTo("English")
-  }
-
-  @Test
-  fun testGetClassroomList_thirdClassroom_hasCorrectTopicCount() {
-    val classroomList = getClassroomList(profileId0)
-
-    val thirdClassroom = classroomList.classroomSummaryList[2]
-    assertThat(thirdClassroom.classroomSummary.topicSummaryCount).isEqualTo(1)
+    assertThat(classroomList.classroomSummaryList.size).isEqualTo(2)
   }
 
   @Test
