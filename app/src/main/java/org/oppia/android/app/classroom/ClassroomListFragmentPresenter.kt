@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.databinding.ClassroomListFragmentBinding
@@ -32,6 +34,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
 ) {
+  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: ClassroomListFragmentBinding
   private var internalProfileId: Int = -1
 
@@ -61,5 +64,13 @@ class ClassroomListFragmentPresenter @Inject constructor(
     )
 
     return binding.root
+  }
+
+  fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+    routeToTopicPlayStoryListener.routeToTopicPlayStory(
+      internalProfileId,
+      topicSummary.topicId,
+      topicSummary.firstStoryId
+    )
   }
 }
