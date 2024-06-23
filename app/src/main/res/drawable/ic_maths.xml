@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <path
+      android:pathData="M300,440q-58,0 -99,-41t-41,-99q0,-58 41,-99t99,-41q58,0 99,41t41,99q0,58 -41,99t-99,41ZM300,360q25,0 42.5,-17.5T360,300q0,-25 -17.5,-42.5T300,240q-25,0 -42.5,17.5T240,300q0,25 17.5,42.5T300,360ZM660,800q-58,0 -99,-41t-41,-99q0,-58 41,-99t99,-41q58,0 99,41t41,99q0,58 -41,99t-99,41ZM660,720q25,0 42.5,-17.5T720,660q0,-25 -17.5,-42.5T660,600q-25,0 -42.5,17.5T600,660q0,25 17.5,42.5T660,720ZM216,800 L160,744 744,160 800,216 216,800Z"
+      android:fillColor="@color/component_color_classroom_card_icon_color"/>
+</vector>
