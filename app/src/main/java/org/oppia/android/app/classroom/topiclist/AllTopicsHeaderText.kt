@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 
+/** Displays the header text for the topic list section. */
 @Composable
 fun AllTopicsHeaderText() {
   Text(

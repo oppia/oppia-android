@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 import org.oppia.android.app.home.WelcomeViewModel
 
+/** Displays a welcome text with an underline. */
 @Composable
 fun WelcomeText(welcomeViewModel: WelcomeViewModel) {
   val outerPadding = dimensionResource(id = R.dimen.home_welcome_outer_padding)

@@ -39,6 +39,7 @@ import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 
+/** Displays a list of promoted stories. */
 @Composable
 fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
   Row(
@@ -90,6 +91,7 @@ fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
   }
 }
 
+/** Displays a single promoted story card with an image, title, and handling click events. */
 @Composable
 fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
   val cardLayoutWidth = promotedStoryViewModel.computeLayoutWidth()

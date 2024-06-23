@@ -33,6 +33,7 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 
+/** Displays a list of classroom summaries with a header. */
 @Composable
 fun ClassroomList(classroomSummaryList: List<ClassroomSummaryViewModel>) {
   Column(
@@ -69,6 +70,7 @@ fun ClassroomList(classroomSummaryList: List<ClassroomSummaryViewModel>) {
   }
 }
 
+/** Displays a single classroom card with an image and text, handling click events. */
 @Composable
 fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
   val screenWidth = LocalConfiguration.current.screenWidthDp

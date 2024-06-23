@@ -133,6 +133,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /** Routes to the play story view for the first story in the given topic summary. */
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
       internalProfileId,
@@ -152,6 +153,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
     }
   }
 
+  /** Display a list of classroom-related items grouped by their types. */
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   fun ClassroomListScreen() {
@@ -196,6 +198,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   }
 }
 
+/** Adds a grid of items to a LazyListScope with specified arrangement and item content. */
 fun <T> LazyListScope.gridItems(
   data: List<T>,
   columnCount: Int,
@@ -250,6 +253,7 @@ fun <T> LazyListScope.gridItems(
   }
 }
 
+/** Retrieves the drawable resource ID for the lesson thumbnail based on its graphic type. */
 fun LessonThumbnail.getDrawableResource(): Int {
   return when (thumbnailGraphic) {
     LessonThumbnailGraphic.BAKER ->

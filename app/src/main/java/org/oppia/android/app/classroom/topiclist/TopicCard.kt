@@ -27,6 +27,7 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 
+/** Displays a card with the topic summary information. */
 @Composable
 fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
   Card(
