@@ -213,7 +213,8 @@ fun <T> LazyListScope.gridItems(
   itemContent: @Composable BoxScope.(T) -> Unit,
 ) {
   val size = data.count()
-  val rows = if (size == 0) 0 else (size + columnCount - 1) / columnCount // Calculate the number of rows needed
+  // Calculate the number of rows needed.
+  val rows = if (size == 0) 0 else (size + columnCount - 1) / columnCount
 
   // Generate items in the LazyList.
   items(rows, key = { it }) { rowIndex ->
