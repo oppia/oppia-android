@@ -115,9 +115,9 @@ class HomeFragmentPresenter @Inject constructor(
 
     if (enableOnboardingFlowV2.value) {
       subscribeToProfileResult(profileId)
+    } else {
+      logAppOnboardedEvent(profileId)
     }
-
-    logAppOnboardedEvent(profileId)
 
     return binding.root
   }
@@ -155,6 +155,13 @@ class HomeFragmentPresenter @Inject constructor(
         profileId
       )
     }
+
+    // App onboarding is completed by the fist profile on the app, while profile onboarding is
+    // completed by each profile.
+    if (profile.profileType == ProfileType.SOLE_LEARNER) {
+      appStartupStateController.markOnboardingFlowCompleted()
+      logAppOnboardedEvent(profileId)
+    }
   }
 
   private fun logAppOnboardedEvent(profileId: ProfileId) {
@@ -172,6 +179,8 @@ class HomeFragmentPresenter @Inject constructor(
               liveData.removeObserver(this)
 
               if (startUpStateResult.value.startupMode ==
+                AppStartupState.StartupMode.ONBOARDING_FLOW_V1 ||
+                startUpStateResult.value.startupMode ==
                 AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
               ) {
                 analyticsController.logAppOnboardedEvent(profileId)

@@ -6,10 +6,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -73,6 +71,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -95,7 +94,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.profile.ProfileTestHelper
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -122,7 +120,7 @@ class HomeActivityLocalTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
-  private val internalProfileId: Int = 1
+  private val internalProfileId: Int = 0
 
   @Before
   fun setUp() {
@@ -131,6 +129,7 @@ class HomeActivityLocalTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
@@ -181,6 +180,7 @@ class HomeActivityLocalTest {
   @Test
   fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -200,13 +200,13 @@ class HomeActivityLocalTest {
   @Test
   fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.markProfileOnboarded(internalProfileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-      assertThat(events[0].context.activityContextCase).isEqualTo(OPEN_HOME)
-      assertThat(events[1].context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
   }
 
@@ -224,7 +224,6 @@ class HomeActivityLocalTest {
   private fun setUpTestWithOnboardingV2Enabled() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
   }
 
   /**
