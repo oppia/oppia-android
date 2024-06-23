@@ -328,6 +328,7 @@
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <!--  ClassroomListActivity-->
   <string name="classroom_list_activity_title">Home</string>
+  <string name="classrooms">Classrooms</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->

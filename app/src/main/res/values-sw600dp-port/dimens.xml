@@ -524,4 +524,12 @@
   <dimen name="resume_lesson_chapter_flexbox_margin_end">72dp</dimen>
   <dimen name="resume_lesson_chapter_flexbox_margin_top">32dp</dimen>
   <dimen name="resume_lesson_start_over_button_margin">8dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">60dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">60dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_card_width">150dp</dimen>
+  <dimen name="classrooms_card_height">182dp</dimen>
 </resources>

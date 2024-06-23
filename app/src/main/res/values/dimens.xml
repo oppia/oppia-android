@@ -802,4 +802,12 @@
   <dimen name="tablet_shared_margin_medium">16dp</dimen>
   <dimen name="tablet_shared_margin_large">28dp</dimen>
   <dimen name="tablet_shared_margin_xl">36dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">28dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">28dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_card_width">150dp</dimen>
+  <dimen name="classrooms_card_height">182dp</dimen>
 </resources>
