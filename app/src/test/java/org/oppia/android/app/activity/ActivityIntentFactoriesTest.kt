@@ -117,7 +117,7 @@ class ActivityIntentFactoriesTest {
       getTopicActivityIntentFactory().createIntent(
         ProfileId.getDefaultInstance(), topicId = "test_topic_id"
       )
-    val args = intent?.getProtoExtra(
+    val args = intent.getProtoExtra(
       TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
     )
@@ -134,7 +134,7 @@ class ActivityIntentFactoriesTest {
       getTopicActivityIntentFactory().createIntent(
         ProfileId.getDefaultInstance(), topicId = "test_topic_id", storyId = "test_story_id"
       )
-    val args = intent?.getProtoExtra(
+    val args = intent.getProtoExtra(
       TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
     )

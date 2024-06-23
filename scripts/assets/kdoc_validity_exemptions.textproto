@@ -166,7 +166,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/Pro
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfilePictureDialogInterface.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressActivityPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressHeaderViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt"
