@@ -87,15 +87,8 @@ class RunCoverage(
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    for (testTarget in testTargets) {
-      val coverageData = runBlocking {
-        val result =
-          CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-            .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
-            .await()
-        result
-      }
-
+    testTargets.forEach { testTarget ->
+      val coverageData = runCoverageForTarget(testTarget)
       if (coverageData != null) {
         coverageDataList.add(coverageData)
       } else {
@@ -105,36 +98,44 @@ class RunCoverage(
     return coverageDataList.toList()
   }
 
-  private fun findTestFile(repoRoot: String, filePath: String): List<String> {
-    val possibleTestFilePaths = when {
-      filePath.startsWith("scripts/") -> {
-        listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
-      }
-      filePath.startsWith("app/") -> {
-        listOf(
-          filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
-          filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
-          filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
-        )
-      }
-      else -> {
-        listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
-      }
+  private fun runCoverageForTarget(testTarget: String): List<String>? {
+    return runBlocking {
+      CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+        .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
+        .await()
     }
+  }
+}
 
-    val repoRootFile = File(repoRoot).absoluteFile
-
-    return possibleTestFilePaths
-      .map { File(repoRootFile, it) }
-      .filter(File::exists)
-      .map { it.relativeTo(repoRootFile).path }
+private fun findTestFile(repoRoot: String, filePath: String): List<String> {
+  val possibleTestFilePaths = when {
+    filePath.startsWith("scripts/") -> {
+      listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+    }
+    filePath.startsWith("app/") -> {
+      listOf(
+        filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+        filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+        filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
+      )
+    }
+    else -> {
+      listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
+    }
   }
 
-  private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-    return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
-      TestFileExemptions.newBuilder().also { builder ->
-        builder.mergeFrom(stream)
-      }.build()
-    }
+  val repoRootFile = File(repoRoot).absoluteFile
+
+  return possibleTestFilePaths
+    .map { File(repoRootFile, it) }
+    .filter(File::exists)
+    .map { it.relativeTo(repoRootFile).path }
+}
+
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions.newBuilder().also { builder ->
+      builder.mergeFrom(stream)
+    }.build()
   }
 }
