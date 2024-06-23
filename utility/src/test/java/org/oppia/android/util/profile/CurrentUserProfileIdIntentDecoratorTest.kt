@@ -24,12 +24,12 @@ class CurrentUserProfileIdIntentDecoratorTest {
     val intent = Intent().apply {
       decorateWithUserProfileId(
         ProfileId.newBuilder().apply {
-          internalId = 0
+          internalId = 1
         }.build()
       )
     }
     val currentProfileId = intent.extractCurrentUserProfileId()
-    assertThat(currentProfileId.internalId).isEqualTo(0)
+    assertThat(currentProfileId.internalId).isEqualTo(1)
   }
 
   @Test

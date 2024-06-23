@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
@@ -122,9 +123,9 @@ class ActivityIntentFactoriesTest {
     )
 
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assert(intent.extractCurrentUserProfileId().internalId == 0)
-    assert(args.topicId.equals("test_topic_id"))
-    assert(args.storyId.isEmpty())
+    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+    assertThat(args.topicId).isEqualTo("test_topic_id")
+    assertThat(args.storyId).isEmpty()
   }
 
   @Test
@@ -138,9 +139,9 @@ class ActivityIntentFactoriesTest {
       TopicActivityParams.getDefaultInstance()
     )
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assert(intent.extractCurrentUserProfileId().internalId == 0)
-    assert(args.topicId.equals("test_topic_id"))
-    assert(args.storyId.equals("test_story_id"))
+    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+    assertThat(args.topicId).isEqualTo("test_topic_id")
+    assertThat(args.storyId).isEqualTo("test_story_id")
   }
 
   @Test

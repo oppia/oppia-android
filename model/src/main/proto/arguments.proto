@@ -779,7 +779,6 @@ message TopicRevisionFragmentArguments {
   string topic_id = 1;
 }
 
-
 // Represents the parameters needed to create RevisionCardActivity.
 message RevisionCardActivityParams {
   // The ID of the topic to which the opening exploration belongs.
@@ -828,7 +827,7 @@ message SurveyWelcomeDialogFragmentArguments {
   string exploration_id = 2;
 
   // List of survey questions.
-  repeated int32 questions= 3;
+  repeated int32 questions = 3;
 }
 
 // Arguments required when creating a WalkthroughFinalFragment.

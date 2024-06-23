@@ -42,7 +42,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
         this.topicId = topicId
         this.explorationId = explorationId
         this.addAllQuestions(
-          SurveyWelcomeDialogFragment().extractQuestions(mandatoryQuestionNames).asList()
+          extractQuestions(mandatoryQuestionNames).asList()
         )
       }.build()
       return SurveyWelcomeDialogFragment().apply {
@@ -52,10 +52,9 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
         }
       }
     }
-  }
-
-  private fun extractQuestions(questionNames: List<SurveyQuestionName>): IntArray {
-    return questionNames.map { questionName -> questionName.number }.toIntArray()
+    private fun extractQuestions(questionNames: List<SurveyQuestionName>): IntArray {
+      return questionNames.map { questionName -> questionName.number }.toIntArray()
+    }
   }
 
   override fun onAttach(context: Context) {
