@@ -2466,7 +2466,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_offeredThenViewed_logsRevealHint_logsPgrssSavSuccEvent_logsViewedEvent() {
+  fun testHint_offeredThenViewed_logsRevealedHint_logsPgrssSavSuccEvent_logsExtingHintViwdEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2498,7 +2498,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_hintViewed_logsHintViewedEvent() {
+  fun testHint_existingHintViewed_logsExistingHintViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2511,9 +2511,9 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitHintIsViewed(hintIndex = 0)
     )
 
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
 
-    assertThat(eventLogList[0]).hasViewExistingHintContextThat {
+    assertThat(eventLog).hasViewExistingHintContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
@@ -2555,7 +2555,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_lastHintWithNoSol_offeredThenViewed_logsViewHintEvt_logsProgressSavingSuccessEvt() {
+  fun testHint_lastHintWithNoSol_offeredThenViewed_logsRevealedHintEvt_logsPgrssSavingSucssEvt() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
     waitForGetCurrentStateSuccessfulLoad()
@@ -2644,7 +2644,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSolution_viewSolution_logsSolutionViewedEvent() {
+  fun testSolution_viewExistingSolution_logsExistingSolutionViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
