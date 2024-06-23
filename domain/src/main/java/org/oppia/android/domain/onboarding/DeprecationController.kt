@@ -160,20 +160,18 @@ class DeprecationController @Inject constructor(
     val forcedAppDeprecationDialogHasNotBeenShown =
       previousDeprecatedAppVersion < forcedAppUpdateVersionCode.get().value
 
-    if (onboardingState.alreadyOnboardedApp) {
-      if (osIsDeprecated && osDeprecationDialogHasNotBeenShown) {
-        return StartupMode.OS_IS_DEPRECATED
+    return if (onboardingState.alreadyOnboardedApp) {
+      when {
+        osIsDeprecated && osDeprecationDialogHasNotBeenShown -> StartupMode.OS_IS_DEPRECATED
+        forcedAppUpdateIsAvailable && forcedAppDeprecationDialogHasNotBeenShown ->
+          StartupMode.APP_IS_DEPRECATED
+        optionalAppUpdateIsAvailable && optionalAppDeprecationDialogHasNotBeenShown -> {
+          StartupMode.OPTIONAL_UPDATE_AVAILABLE
+        }
+        else -> StartupMode.USER_IS_ONBOARDED
       }
-
-      if (forcedAppUpdateIsAvailable && forcedAppDeprecationDialogHasNotBeenShown) {
-        return StartupMode.APP_IS_DEPRECATED
-      }
-
-      if (optionalAppUpdateIsAvailable && optionalAppDeprecationDialogHasNotBeenShown) {
-        return StartupMode.OPTIONAL_UPDATE_AVAILABLE
-      }
-
-      return StartupMode.USER_IS_ONBOARDED
-    } else return StartupMode.USER_NOT_YET_ONBOARDED
+    } else {
+      StartupMode.USER_NOT_YET_ONBOARDED
+    }
   }
 }

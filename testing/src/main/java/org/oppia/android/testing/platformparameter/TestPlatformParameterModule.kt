@@ -1,12 +1,9 @@
 package org.oppia.android.testing.platformparameter
 
-import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.util.extensions.getVersionCode
-import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -34,18 +31,15 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
-import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
@@ -243,50 +237,27 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnableAppAndOsDeprecation
-  fun provideEnableAppAndOsDeprecation(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
-      ?: PlatformParameterValue.createDefaultParameter(ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
+  fun provideEnableAppAndOsDeprecation(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableAppAndOsDeprecation)
   }
 
   @Provides
   @Singleton
   @OptionalAppUpdateVersionCode
-  fun provideOptionalAppUpdateVersionCode(
-    platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      OPTIONAL_APP_UPDATE_VERSION_CODE
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
-    )
+  fun provideOptionalAppUpdateVersionCode(): PlatformParameterValue<Int> {
+    return PlatformParameterValue.createDefaultParameter(optionalAppUpdateVersionCode)
   }
 
   @Provides
   @ForcedAppUpdateVersionCode
-  fun provideForcedAppUpdateVersionCode(
-    platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      FORCED_APP_UPDATE_VERSION_CODE
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
-    )
+  fun provideForcedAppUpdateVersionCode(): PlatformParameterValue<Int> {
+    return PlatformParameterValue.createDefaultParameter(forcedAppUpdateVersionCode)
   }
 
   @Provides
   @LowestSupportedApiLevel
-  fun provideLowestSupportedApiLevel(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      LOWEST_SUPPORTED_API_LEVEL
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
-    )
+  fun provideLowestSupportedApiLevel(): PlatformParameterValue<Int> {
+    return PlatformParameterValue.createDefaultParameter(minimumSupportedApiLevel)
   }
 
   @Provides
@@ -340,6 +311,9 @@ class TestPlatformParameterModule {
     private var enableNpsSurvey = ENABLE_NPS_SURVEY_DEFAULT_VALUE
     private var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
     private var enableMultipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
+    private var minimumSupportedApiLevel = LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+    private var optionalAppUpdateVersionCode = Int.MIN_VALUE
+    private var forcedAppUpdateVersionCode = Int.MIN_VALUE
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableDownloadsSupport(value: Boolean) {
@@ -418,6 +392,24 @@ class TestPlatformParameterModule {
       enableAppAndOsDeprecation = value
     }
 
+    /** Enables forcing [LowestSupportedApiLevel] platform parameter from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceMinimumApiLevel(value: Int) {
+      minimumSupportedApiLevel = value
+    }
+
+    /** Enables forcing [OptionalAppUpdateVersionCode] platform parameter from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceOptionalUpdateVersion(value: Int) {
+      optionalAppUpdateVersionCode = value
+    }
+
+    /** Enables forcing [ForcedAppUpdateVersionCode] platform parameter from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceForcedUpdateVersion(value: Int) {
+      forcedAppUpdateVersionCode = value
+    }
+
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun reset() {
       enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
@@ -432,6 +424,9 @@ class TestPlatformParameterModule {
       enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
       enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
       enableMultipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
+      minimumSupportedApiLevel = LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+      optionalAppUpdateVersionCode = Int.MIN_VALUE
+      forcedAppUpdateVersionCode = Int.MIN_VALUE
     }
   }
 }

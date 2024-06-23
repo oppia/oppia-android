@@ -39,13 +39,12 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -69,9 +68,7 @@ class SplashActivityPresenter @Inject constructor(
   private val currentBuildFlavor: BuildFlavor,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
-  private val profileManagementController: ProfileManagementController,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val profileManagementController: ProfileManagementController
 ) {
   lateinit var startupMode: StartupMode
 
@@ -252,7 +249,8 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun processAppAndOsDeprecationEnabledStartUpMode() {
     when (startupMode) {
-      StartupMode.USER_IS_ONBOARDED -> startActivity(ProfileChooserActivity::createProfileChooserActivity)
+      StartupMode.USER_IS_ONBOARDED ->
+        startActivity(ProfileChooserActivity::createProfileChooserActivity)
       StartupMode.APP_IS_DEPRECATED -> showDialog(
         FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
         ForcedAppDeprecationNoticeDialogFragment::newInstance
@@ -276,14 +274,16 @@ class SplashActivityPresenter @Inject constructor(
   private fun processLegacyStartupMode() {
     when (startupMode) {
       StartupMode.ONBOARDING_FLOW_V2 -> getProfileOnboardingState()
-      StartupMode.USER_IS_ONBOARDED -> startActivity(ProfileChooserActivity::createProfileChooserActivity)
+      StartupMode.USER_IS_ONBOARDED ->
+        startActivity(ProfileChooserActivity::createProfileChooserActivity)
       StartupMode.APP_IS_DEPRECATED -> showDialog(
         AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
         AutomaticAppDeprecationNoticeDialogFragment::newInstance
       )
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
-        // defaulted), assume the user needs to be onboarded.
+        // defaulted), assume the user needs to be onboarded. V1 or V2 onboarding flow will be
+        // decided by the OnboardingActivity.
         startActivity(OnboardingActivity::createOnboardingActivity)
       }
     }
@@ -308,7 +308,8 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun computeLoginRoute(onboardingState: ProfileOnboardingState) {
     when (onboardingState) {
-      ProfileOnboardingState.NEW_INSTALL -> startActivity(OnboardingActivity::createOnboardingActivity)
+      ProfileOnboardingState.NEW_INSTALL ->
+        startActivity(OnboardingActivity::createOnboardingActivity)
       ProfileOnboardingState.SOLE_LEARNER_PROFILE -> processFetchSoleLearnerProfile()
       else -> startActivity(ProfileChooserActivity::createProfileChooserActivity)
     }
