@@ -459,9 +459,15 @@ class TestBazelWorkspaceTest {
       subpackage = "coverage"
     )
 
-    val sourceBuildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")
-    val testBuildFileShared = File(tempFolder.root, "coverage/sharedTest/java/com/example/BUILD.bazel")
-    val testBuildFileLocal = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    val sourceBuildFile = File(
+      tempFolder.root, "coverage/main/java/com/example/BUILD.bazel"
+    )
+    val testBuildFileShared = File(
+      tempFolder.root, "coverage/sharedTest/java/com/example/BUILD.bazel"
+    )
+    val testBuildFileLocal = File(
+      tempFolder.root, "coverage/test/java/com/example/BUILD.bazel"
+    )
 
     assertThat(sourceBuildFile.exists()).isTrue()
     assertThat(sourceBuildFile.readText()).contains(
