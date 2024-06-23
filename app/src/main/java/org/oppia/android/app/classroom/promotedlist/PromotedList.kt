@@ -38,10 +38,14 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.util.locale.OppiaLocale
 
 /** Displays a list of promoted stories. */
 @Composable
-fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
+fun PromotedStoryList(
+  promotedStoryListViewModel: PromotedStoryListViewModel,
+  machineLocale: OppiaLocale.MachineLocale,
+) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -62,7 +66,7 @@ fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
     )
     if (promotedStoryListViewModel.getViewAllButtonVisibility() == View.VISIBLE) {
       Text(
-        text = stringResource(id = R.string.view_all).uppercase(),
+        text = machineLocale.run { stringResource(id = R.string.view_all).toMachineUpperCase() },
         color = colorResource(id = R.color.component_color_home_activity_view_all_text_color),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
@@ -86,14 +90,20 @@ fun PromotedStoryList(promotedStoryListViewModel: PromotedStoryListViewModel) {
     ),
   ) {
     items(promotedStoryListViewModel.promotedStoryList) {
-      PromotedStoryCard(promotedStoryViewModel = it)
+      PromotedStoryCard(
+        promotedStoryViewModel = it,
+        machineLocale = machineLocale
+      )
     }
   }
 }
 
 /** Displays a single promoted story card with an image, title, and handling click events. */
 @Composable
-fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
+fun PromotedStoryCard(
+  promotedStoryViewModel: PromotedStoryViewModel,
+  machineLocale: OppiaLocale.MachineLocale,
+) {
   val cardLayoutWidth = promotedStoryViewModel.computeLayoutWidth()
   val cardColumnModifier =
     if (cardLayoutWidth == ViewGroup.LayoutParams.MATCH_PARENT) Modifier.fillMaxWidth()
@@ -144,9 +154,11 @@ fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
         overflow = TextOverflow.Ellipsis
       )
       Text(
-        text = promotedStoryViewModel.topicTitle.uppercase(),
+        text = machineLocale.run { promotedStoryViewModel.topicTitle.toMachineUpperCase() },
         modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
-        color = colorResource(id = R.color.component_color_shared_story_card_topic_name_text_color),
+        color = colorResource(
+          id = R.color.component_color_shared_story_card_topic_name_text_color
+        ),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
@@ -155,7 +167,7 @@ fun PromotedStoryCard(promotedStoryViewModel: PromotedStoryViewModel) {
         overflow = TextOverflow.Ellipsis,
       )
       Text(
-        text = promotedStoryViewModel.classroomTitle.uppercase(),
+        text =  machineLocale.run { promotedStoryViewModel.classroomTitle.toMachineUpperCase() },
         modifier = Modifier
           .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
           .border(

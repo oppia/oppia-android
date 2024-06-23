@@ -51,6 +51,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -68,6 +69,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
+  private val machineLocale: OppiaLocale.MachineLocale,
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: ClassroomListFragmentBinding
@@ -177,7 +179,10 @@ class ClassroomListFragmentPresenter @Inject constructor(
           }
           PromotedStoryListViewModel::class -> items.forEach { item ->
             item {
-              PromotedStoryList(promotedStoryListViewModel = item as PromotedStoryListViewModel)
+              PromotedStoryList(
+                promotedStoryListViewModel = item as PromotedStoryListViewModel,
+                machineLocale = machineLocale
+              )
             }
           }
           ClassroomSummaryViewModel::class -> stickyHeader {
