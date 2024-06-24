@@ -1,0 +1,13 @@
+{
+  "classroom_id": "test_classroom_id_1",
+  "classroom_title": {
+    "content_id": "classroom_title",
+    "html": "Maths"
+  },
+  "thumbnail_bg_color": "#00FFFFFF",
+  "thumbnail_filename": "",
+  "topic_prerequisites": {
+    "GJ2rLXRKD5hw": [],
+    "omzF4oqgeTXd": []
+  }
+}

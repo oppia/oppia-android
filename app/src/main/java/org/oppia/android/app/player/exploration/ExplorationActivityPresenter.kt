@@ -211,7 +211,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */ false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -221,7 +221,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
