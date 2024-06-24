@@ -13,7 +13,6 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Provider
@@ -32,18 +31,12 @@ class AppStartupStateController @Inject constructor(
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2Flag: Provider<PlatformParameterValue<Boolean>>
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
   }
 
   private val appStartupStateDataProvider by lazy { computeAppStartupStateProvider() }
-
-  private val enableAppAndOsDeprecationFlow = enableAppAndOsDeprecation.get().value
-
-  private val enableOnboardingFlowV2 = enableOnboardingFlowV2Flag.get().value
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to
@@ -111,10 +104,7 @@ class AppStartupStateController @Inject constructor(
       APP_STARTUP_STATE_PROVIDER_ID
     ) { onboardingState, deprecationResponseDatabase ->
       AppStartupState.newBuilder().apply {
-        startupMode = computeAppStartupMode(
-          onboardingState,
-          deprecationResponseDatabase
-        )
+        startupMode = computeAppStartupMode(onboardingState, deprecationResponseDatabase)
         buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
       }.build()
     }
@@ -141,26 +131,17 @@ class AppStartupStateController @Inject constructor(
     onboardingState: OnboardingState,
     deprecationResponseDatabase: DeprecationResponseDatabase
   ): StartupMode {
-    // Process and return either a StartupMode.APP_IS_DEPRECATED, or a legacy StartupMode if the app
-    // and OS deprecation feature flag is not enabled.
-    // When app onboarding is not yet completed, a user can be directed to either V1 or V2
-    // onboarding flow.
-    // When onboarding has been completed by at least one profile, app onboarding is considered
-    // complete, and StartupMode.USER_IS_ONBOARDED is returned to skip the onboarding flow.
-    val startupMode = if (!enableAppAndOsDeprecationFlow) {
+    // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
+    // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
+    return if (!enableAppAndOsDeprecation.get().value) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
-        enableOnboardingFlowV2 && !onboardingState.alreadyOnboardedApp
-        -> StartupMode.ONBOARDING_FLOW_V2
-        !enableOnboardingFlowV2 && !onboardingState.alreadyOnboardedApp
-        -> StartupMode.ONBOARDING_FLOW_V1
         onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
         else -> StartupMode.USER_NOT_YET_ONBOARDED
       }
     } else {
       deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
     }
-    return startupMode
   }
 
   private fun computeBuildNoticeMode(

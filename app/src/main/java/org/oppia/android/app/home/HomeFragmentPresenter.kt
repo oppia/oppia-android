@@ -3,7 +3,6 @@ package org.oppia.android.app.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,9 +15,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -39,8 +36,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -58,15 +53,11 @@ class HomeFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val appStartupStateController: AppStartupStateController,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val appStartupStateController: AppStartupStateController
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
-  private val exitProfileListener = activity as ExitProfileListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -74,8 +65,6 @@ class HomeFragmentPresenter @Inject constructor(
     // data-bound view models.
 
     internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
     logHomeActivityEvent()
 
     val homeViewModel = HomeViewModel(
@@ -113,58 +102,12 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
-    if (enableOnboardingFlowV2.value) {
-      subscribeToProfileResult(profileId)
-    } else {
-      logAppOnboardedEvent(profileId)
-    }
+    logAppOnboardedEvent()
 
     return binding.root
   }
 
-  private fun subscribeToProfileResult(profileId: ProfileId) {
-    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
-      processProfileResult(it)
-    }
-  }
-
-  private fun processProfileResult(result: AsyncResult<Profile>) {
-    when (result) {
-      is AsyncResult.Success -> {
-        val profile = result.value
-        handleProfileOnboardingState(profile)
-        handleBackPress(profile.profileType)
-      }
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> {
-        Profile.getDefaultInstance()
-      }
-    }
-  }
-
-  private fun handleProfileOnboardingState(profile: Profile) {
-    if (!profile.alreadyOnboardedProfile) {
-      profileManagementController.updateProfileOnboardingState(profileId)
-      analyticsController.logLowPriorityEvent(
-        oppiaLogger.createProfileOnboardingEndedContext(
-          profileId
-        ),
-        profileId
-      )
-    }
-
-    // App onboarding is completed by the fist profile on the app, while profile onboarding is
-    // completed by each profile.
-    if (profile.profileType == ProfileType.SOLE_LEARNER) {
-      appStartupStateController.markOnboardingFlowCompleted()
-      logAppOnboardedEvent(profileId)
-    }
-  }
-
-  private fun logAppOnboardedEvent(profileId: ProfileId) {
+  private fun logAppOnboardedEvent() {
     val startupStateProvider = appStartupStateController.getAppStartupState()
     val liveData = startupStateProvider.toLiveData()
     liveData.observe(
@@ -179,11 +122,11 @@ class HomeFragmentPresenter @Inject constructor(
               liveData.removeObserver(this)
 
               if (startUpStateResult.value.startupMode ==
-                AppStartupState.StartupMode.ONBOARDING_FLOW_V1 ||
-                startUpStateResult.value.startupMode ==
                 AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
               ) {
-                analyticsController.logAppOnboardedEvent(profileId)
+                analyticsController.logAppOnboardedEvent(
+                  ProfileId.newBuilder().setInternalId(internalProfileId).build()
+                )
               }
             }
             is AsyncResult.Failure -> {
@@ -262,17 +205,6 @@ class HomeFragmentPresenter @Inject constructor(
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
-    )
-  }
-
-  private fun handleBackPress(profileType: ProfileType) {
-    activity.onBackPressedDispatcher.addCallback(
-      fragment,
-      object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          exitProfileListener.exitProfile(profileType)
-        }
-      }
     )
   }
 }
