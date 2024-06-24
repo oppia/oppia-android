@@ -255,6 +255,171 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testAddSourceAndTestFileWithContent_createsSourceAndTestFiles() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    val sourceContent =
+      """
+      fun main() {
+              println("Hello, World!")
+          }
+      """
+
+    val testContent =
+      """
+      import org.junit.Test
+      import kotlin.test.assertEquals
+      
+      class MainTest {
+          
+          @Test
+          fun testMain() {
+              assertEquals(1, 1)
+          }
+      }
+      """
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      "Main",
+      sourceContent,
+      testContent,
+      "coverage"
+    )
+
+    val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
+    val testFile = File(tempFolder.root, "coverage/test/java/com/example/MainTest.kt")
+
+    assertThat(sourceFile.exists()).isTrue()
+    assertThat(sourceFile.readText()).isEqualTo(sourceContent)
+
+    assertThat(testFile.exists()).isTrue()
+    assertThat(testFile.readText()).isEqualTo(testContent)
+  }
+
+  @Test
+  fun testAddSourceAndTestFileWithContent_updatesBuildFiles() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    val sourceContent = "fun main() { println(\"Hello, World!\") }"
+    val testContent =
+      """
+        import org.junit.Test
+        import kotlin.test.assertEquals
+
+        class MainTest {
+            @Test
+            fun testMain() {
+                assertEquals(1, 1)
+            }
+        }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      "Main",
+      sourceContent,
+      testContent,
+      "coverage"
+    )
+
+    val sourceBuildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+
+    assertThat(sourceBuildFile.exists()).isTrue()
+    assertThat(sourceBuildFile.readText()).contains(
+      """
+        kt_jvm_library(
+            name = "main",
+            srcs = ["Main.kt"],
+            visibility = ["//visibility:public"]
+        )
+      """.trimIndent()
+    )
+
+    assertThat(testBuildFile.exists()).isTrue()
+    assertThat(testBuildFile.readText()).contains(
+      """
+        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+        kt_jvm_test(
+            name = "test",
+            srcs = ["MainTest.kt"],
+            deps = [
+                "//coverage/main/java/com/example:main",
+                "@maven//:junit_junit",
+            ],
+            visibility = ["//visibility:public"],
+            test_class = "com.example.MainTest",
+        )
+      """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testAddSourceContentAndBuildFile_createsSourceFileAndBuildFile() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    val sourceContent = "fun main() { println(\"Hello, World!\") }"
+
+    testBazelWorkspace.addSourceContentAndBuildFile(
+      "Main",
+      sourceContent,
+      "coverage/main/java/com/example"
+    )
+
+    val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
+    val buildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")
+
+    assertThat(sourceFile.exists()).isTrue()
+    assertThat(sourceFile.readText()).isEqualTo(sourceContent.trimIndent())
+
+    assertThat(buildFile.exists()).isTrue()
+    assertThat(buildFile.readText()).contains(
+      """
+        kt_jvm_library(
+            name = "main",
+            srcs = ["Main.kt"],
+            visibility = ["//visibility:public"]
+        )
+      """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testAddTestContentAndBuildFile_createsTestFileAndBuildFile() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    val testContent = "import org.junit.Test" +
+      "\nimport kotlin.test.assertEquals\n\nclass MainTest {" +
+      "\n@Test\nfun testMain() {\nassertEquals(1, 1)\n}\n}"
+
+    testBazelWorkspace.addTestContentAndBuildFile(
+      "Main",
+      "MainTest",
+      testContent,
+      "coverage/main/java/com/example",
+      "coverage/test/java/com/example"
+    )
+
+    val testFile = File(tempFolder.root, "coverage/test/java/com/example/MainTest.kt")
+    val buildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+
+    assertThat(testFile.exists()).isTrue()
+    assertThat(testFile.readText()).isEqualTo(testContent.trimIndent())
+
+    assertThat(buildFile.exists()).isTrue()
+    assertThat(buildFile.readText()).contains(
+      """
+        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+        kt_jvm_test(
+            name = "test",
+            srcs = ["MainTest.kt"],
+            deps = [
+                "//coverage/main/java/com/example:main",
+                "@maven//:junit_junit",
+            ],
+            visibility = ["//visibility:public"],
+            test_class = "com.example.MainTest",
+        )
+      """.trimIndent()
+    )
+  }
+
+  @Test
   fun testAddTestToBuildFile_reusedTestName_throwsException() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createTest(testName = "FirstTest")
