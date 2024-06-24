@@ -31,6 +31,11 @@ import java.util.concurrent.TimeUnit
 fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
+  val reportFormat = when (args.getOrNull(2)) {
+    "HTML" -> ReportFormat.HTML
+    "MARKDOWN", null -> ReportFormat.MARKDOWN // Default to MARKDOWN if not specified
+    else -> throw IllegalArgumentException("Unsupported report format: ${args[2]}")
+  }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
@@ -41,7 +46,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    println(RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute())
+    RunCoverage(repoRoot, filePath, reportFormat, commandExecutor, scriptBgDispatcher).execute()
   }
 }
 
@@ -56,6 +61,7 @@ fun main(vararg args: String) {
 class RunCoverage(
   private val repoRoot: String,
   private val filePath: String,
+  private val reportFormat: ReportFormat,
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
@@ -63,6 +69,12 @@ class RunCoverage(
 
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+
+  companion object {
+    // The minimum coverage percentage threshold for coverage analysis,
+    // The script will fail if the file has less than the minimum specified coverage.
+    const val MIN_COVERAGE_PERCENTAGE = 20
+  }
 
   /**
    * Executes coverage analysis for the specified file.
@@ -75,7 +87,6 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-
   fun execute(): List<CoverageReport> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
@@ -88,13 +99,24 @@ class RunCoverage(
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    return testTargets.mapNotNull { testTarget ->
+    val coverageReports = testTargets.mapNotNull { testTarget ->
       val coverageData = runCoverageForTarget(testTarget)
       if (coverageData == null) {
         println("Coverage data for $testTarget is null")
       }
       coverageData
     }
+
+    if (coverageReports.isNotEmpty()) {
+      val reporter = CoverageReporter(coverageReports)
+      val coverageRatio = reporter.computeCoverageRatio()
+      val generatedReport = reporter.generateRichTextReport(reportFormat, coverageRatio)
+      println("Generated report: $generatedReport")
+    } else {
+      println("No coverage reports generated.")
+    }
+
+    return coverageReports
   }
 
   private fun runCoverageForTarget(testTarget: String): CoverageReport? {
