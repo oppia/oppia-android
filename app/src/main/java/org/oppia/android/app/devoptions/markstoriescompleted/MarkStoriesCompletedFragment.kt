@@ -7,6 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.MarkStoriesCompletedFragmentStateBundle
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment to display all stories and provide functionality to mark them completed. */
@@ -15,17 +21,19 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
 
   companion object {
-    internal const val PROFILE_ID_ARGUMENT_KEY = "MarkStoriesCompletedFragment.profile_id"
 
-    private const val STORY_ID_LIST_ARGUMENT_KEY = "MarkStoriesCompletedFragment.story_id_list"
+    const val MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.state"
+
+    internal const val PROFILE_ID_ARGUMENT_KEY = "MarkStoriesCompletedFragment.profile_id"
 
     /** Returns a new [MarkStoriesCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {
-      val markStoriesCompletedFragment = MarkStoriesCompletedFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      markStoriesCompletedFragment.arguments = args
-      return markStoriesCompletedFragment
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      return MarkStoriesCompletedFragment().apply {
+        arguments = Bundle().apply {
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -39,13 +47,20 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
-    val internalProfileId = args
-      .getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+
+    val profileId = arguments.extractCurrentUserProfileId()
+    val internalProfileId = profileId.internalId
+
     var selectedStoryIdList = ArrayList<String>()
     if (savedInstanceState != null) {
-      selectedStoryIdList = savedInstanceState.getStringArrayList(STORY_ID_LIST_ARGUMENT_KEY)!!
+
+      val stateArgs = savedInstanceState.getProto(
+        MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY,
+        MarkStoriesCompletedFragmentStateBundle.getDefaultInstance()
+      )
+      selectedStoryIdList = stateArgs?.storyIdsList?.let { ArrayList(it) } ?: ArrayList()
     }
     return markStoriesCompletedFragmentPresenter.handleCreateView(
       inflater,
@@ -57,9 +72,12 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(
-      STORY_ID_LIST_ARGUMENT_KEY,
-      markStoriesCompletedFragmentPresenter.selectedStoryIdList
-    )
+    val args = MarkStoriesCompletedFragmentStateBundle.newBuilder().apply {
+      addAllStoryIds(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
+    }
+      .build()
+    outState.apply {
+      putProto(MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY, args)
+    }
   }
 }

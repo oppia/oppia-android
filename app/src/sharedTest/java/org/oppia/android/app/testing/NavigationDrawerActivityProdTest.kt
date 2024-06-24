@@ -26,7 +26,6 @@ import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -40,8 +39,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.navigation.NavigationView
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
@@ -120,6 +121,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -131,6 +133,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -324,11 +327,12 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.nav_header_profile_name)).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
-        hasExtra(
-          ProfileProgressActivity.PROFILE_ID_EXTRA_KEY,
-          internalProfileId
+        hasProtoExtra(
+          PROFILE_ID_INTENT_DECORATOR,
+          profileId
         )
       )
     }
@@ -779,8 +783,9 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
+      val profileId = ProfileId.newBuilder().setInternalId(0).build()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }
   }
 
@@ -987,6 +992,20 @@ class NavigationDrawerActivityProdTest {
         return (view as NavigationView).menu.getItem(item.ordinal).isChecked
       }
     }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
+  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

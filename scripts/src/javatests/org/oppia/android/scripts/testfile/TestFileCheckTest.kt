@@ -6,6 +6,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.proto.TestFileExemptions
+import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -123,6 +125,79 @@ class TestFileCheckTest {
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testTestFileCheck_minCoverageExemptedFile_testFileIsRequired() {
+    tempFolder.newFile("testfiles/ProdFile1.kt")
+    tempFolder.newFile("testfiles/ProdFile2.kt")
+    tempFolder.newFile("testfiles/ProdFile2Test.kt")
+
+    val testFileExemptions = TestFileExemptions.newBuilder()
+      .addTestFileExemption(
+        TestFileExemption.newBuilder()
+          .setExemptedFilePath("testfiles/ProdFile1.kt")
+          .setTestFileNotRequired(true)
+      )
+      .addTestFileExemption(
+        TestFileExemption.newBuilder()
+          .setExemptedFilePath("testfiles/ProdFile2.kt")
+          .setOverrideMinCoveragePercentRequired(5)
+      )
+      .build()
+
+    val coverageTestExemptiontextProto = tempFolder.newFile("test_exemption.pb")
+    coverageTestExemptiontextProto.outputStream().use {
+      (testFileExemptions.writeTo(it))
+    }
+
+    TestFileCheck(
+      "${tempFolder.root}",
+      "${tempFolder.root}/test_exemption"
+    ).execute()
+
+    assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testTestFileCheck_missTestFilesForCoverageExemptedFile_testFileIsNotPresent() {
+
+    tempFolder.newFile("testfiles/ProdFile1.kt")
+    tempFolder.newFile("testfiles/ProdFile2.kt")
+
+    val testFileExemptions = TestFileExemptions.newBuilder()
+      .addTestFileExemption(
+        TestFileExemption.newBuilder()
+          .setExemptedFilePath("testfiles/ProdFile1.kt")
+          .setTestFileNotRequired(true)
+      )
+      .addTestFileExemption(
+        TestFileExemption.newBuilder()
+          .setExemptedFilePath("testfiles/ProdFile2.kt")
+          .setOverrideMinCoveragePercentRequired(5)
+      )
+      .build()
+
+    val coverageTestExemptiontextProto = tempFolder.newFile("test_exemption.pb")
+    coverageTestExemptiontextProto.outputStream().use {
+      (testFileExemptions.writeTo(it))
+    }
+
+    val exception = assertThrows<Exception>() {
+      TestFileCheck(
+        "${tempFolder.root}",
+        "${tempFolder.root}/test_exemption"
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureMessage =
+      """
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
+
+      $wikiReferenceNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   /** Retrieves the absolute path of testfiles directory. */

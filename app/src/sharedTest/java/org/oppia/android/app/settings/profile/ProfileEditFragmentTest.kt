@@ -2,6 +2,7 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -24,8 +25,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,6 +49,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS
+import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -98,6 +105,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -121,14 +129,26 @@ import javax.inject.Singleton
 @Config(application = ProfileEditFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ProfileEditFragmentTest {
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -348,9 +368,13 @@ class ProfileEditFragmentTest {
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
+      val args = MarkChaptersCompletedActivityParams.newBuilder().apply {
+        this.internalProfileId = 0
+        this.showConfirmationNotice = true
+      }
+        .build()
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-      intended(hasExtra("MarkChaptersCompletedActivity.profile_id", 0))
-      intended(hasExtra("MarkChaptersCompletedActivity.show_confirmation_notice", true))
+      intended(hasProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS, args))
     }
   }
 
@@ -453,6 +477,20 @@ class ProfileEditFragmentTest {
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   private fun launchFragmentTestActivity(internalProfileId: Int) =

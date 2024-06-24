@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.practice
 
 import android.app.Application
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -21,9 +22,13 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -42,6 +47,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
@@ -50,8 +56,8 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
-import org.oppia.android.app.topic.questionplayer.QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -98,6 +104,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -281,8 +288,9 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       scrollToPosition(position = 5)
       clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
+      val args = QuestionPlayerActivityParams.newBuilder().addAllSkillIds(skillIdList).build()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      intended(hasExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList))
+      intended(hasProtoExtra(QUESTION_PLAYER_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -432,6 +440,20 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
