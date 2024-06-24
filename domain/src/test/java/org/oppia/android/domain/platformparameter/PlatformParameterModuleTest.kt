@@ -27,6 +27,7 @@ import org.oppia.android.testing.platformparameter.TestBooleanParam
 import org.oppia.android.testing.platformparameter.TestIntegerParam
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.platformparameter.TestStringParam
+import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
@@ -48,6 +49,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterModuleTest.TestApplication::class)
 class PlatformParameterModuleTest {
+
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
@@ -170,12 +172,16 @@ class PlatformParameterModuleTest {
   fun testModule_injectOptionalAppUpdateVersionCode_hasCorrectAppVersionCode() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
     assertThat(optionalAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(context.getVersionCode())
+    assertThat(optionalAppUpdateVersionCodeProvider.get().value)
       .isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
   fun testModule_injectForcedAppUpdateVersionCode_hasCorrectAppVersionCode() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(forcedAppUpdateVersionCodeProvider.get().value)
+      .isEqualTo(context.getVersionCode())
     assertThat(forcedAppUpdateVersionCodeProvider.get().value)
       .isEqualTo(TEST_APP_VERSION_CODE)
   }
@@ -199,7 +205,7 @@ class PlatformParameterModuleTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = TEST_APP_VERSION_NAME
-    packageInfo.longVersionCode = TEST_APP_VERSION_CODE.toLong()
+    packageInfo.longVersionCode = TEST_APP_VERSION_CODE
     packageManager.installPackage(packageInfo)
   }
 
@@ -254,7 +260,7 @@ class PlatformParameterModuleTest {
 
   private companion object {
     private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
-    private const val TEST_APP_VERSION_CODE = Int.MIN_VALUE
+    private const val TEST_APP_VERSION_CODE = 125L
     private const val TEST_LOWEST_SUPPORTED_API_LEVEL = 19
     private const val TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
   }

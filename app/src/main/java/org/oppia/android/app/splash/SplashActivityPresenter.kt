@@ -17,6 +17,7 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
@@ -42,10 +43,9 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -341,20 +341,22 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun fetchProfiles() {
     profileManagementController.getProfiles().toLiveData()
-      .observe(activity, { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            val profileId =
-              getSoleLearnerProfile(result.value)?.id ?: ProfileId.getDefaultInstance()
-            logInToSoleLearnerProfile(profileId)
+      .observe(
+        activity,
+        { result ->
+          when (result) {
+            is AsyncResult.Success -> {
+              val profileId =
+                getSoleLearnerProfile(result.value)?.id ?: ProfileId.getDefaultInstance()
+              logInToSoleLearnerProfile(profileId)
+            }
+            is AsyncResult.Pending -> {} // no-op
+            is AsyncResult.Failure -> oppiaLogger.e(
+              "SplashActivity", "Failed to retrieve the list of profiles",
+              result.error
+            )
           }
-          is AsyncResult.Pending -> {} // no-op
-          is AsyncResult.Failure -> oppiaLogger.e(
-            "SplashActivity", "Failed to retrieve the list of profiles",
-            result.error
-          )
         }
-      }
       )
   }
 
@@ -363,16 +365,19 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun logInToSoleLearnerProfile(profileId: ProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(activity, {
-      if (it is AsyncResult.Success) {
-        // Prevent launching if the current activity is finishing, which would cause duplicate
-        // intents.
-        if (!activity.isFinishing) {
-          activity.startActivity(HomeActivity.createHomeActivity(activity, profileId.internalId))
-          activity.finish()
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(
+      activity,
+      {
+        if (it is AsyncResult.Success) {
+          // Prevent launching if the current activity is finishing, which would cause duplicate
+          // intents.
+          if (!activity.isFinishing) {
+            activity.startActivity(HomeActivity.createHomeActivity(activity, profileId.internalId))
+            activity.finish()
+          }
         }
       }
-    })
+    )
   }
 
   private fun computeInitStateDataProvider(): DataProvider<SplashInitState> {
