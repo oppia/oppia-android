@@ -9,7 +9,9 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
@@ -18,6 +20,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -41,8 +44,14 @@ class PinPasswordActivityPresenter @Inject constructor(
   private var confirmedDeletion = false
 
   fun handleOnCreate() {
-    val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
-    profileId = activity.intent.getIntExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, -1)
+    val args = activity.intent.getProtoExtra(
+      PIN_PASSWORD_ACTIVITY_PARAMS_KEY,
+      PinPasswordActivityParams.getDefaultInstance()
+    )
+
+    val adminPin = args?.adminPin
+    profileId = args?.internalProfileId ?: -1
+
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
       R.layout.pin_password_activity
@@ -97,6 +106,7 @@ class PinPasswordActivityPresenter @Inject constructor(
                 activity,
                 {
                   if (it is AsyncResult.Success) {
+                    val profileid = ProfileId.newBuilder().setInternalId(profileId).build()
                     activity.startActivity(
                       if (enableMultipleClassrooms.value)
                         ClassroomListActivity.createClassroomListActivity(activity, profileId)

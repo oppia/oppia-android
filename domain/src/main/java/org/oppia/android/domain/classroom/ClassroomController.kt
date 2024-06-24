@@ -98,7 +98,7 @@ class ClassroomController @Inject constructor(
             createEphemeralClassroomSummary(classroomId, contentLocale)
           }.filter { ephemeralClassroomSummary ->
             ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
-              topicSummary.topicPlayAvailability.availabilityCase != AVAILABLE_TO_PLAY_NOW
+              topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
             }
           }
         )
