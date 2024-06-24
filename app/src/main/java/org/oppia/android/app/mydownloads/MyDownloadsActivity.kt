@@ -47,11 +47,11 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val profileid = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     val intent = if (enableMultipleClassrooms.value)
-      ClassroomListActivity.createClassroomListActivity(this, profileid)
+      ClassroomListActivity.createClassroomListActivity(this, profileId)
     else
-      HomeActivity.createHomeActivity(this, profileid)
+      HomeActivity.createHomeActivity(this, profileId)
     startActivity(intent)
     finish()
   }

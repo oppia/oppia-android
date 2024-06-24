@@ -237,9 +237,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           val intent = if (enableMultipleClassrooms.value)
-            ClassroomListActivity.createClassroomListActivity(activity, internalProfileId)
+            ClassroomListActivity.createClassroomListActivity(activity, profileId)
           else
-            HomeActivity.createHomeActivity(activity, internalProfileId)
+            HomeActivity.createHomeActivity(activity, profileId)
           fragment.activity!!.startActivity(intent)
           drawerLayout.closeDrawers()
         }
