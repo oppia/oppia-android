@@ -167,7 +167,7 @@ fun PromotedStoryCard(
         overflow = TextOverflow.Ellipsis,
       )
       Text(
-        text =  machineLocale.run { promotedStoryViewModel.classroomTitle.toMachineUpperCase() },
+        text = machineLocale.run { promotedStoryViewModel.classroomTitle.toMachineUpperCase() },
         modifier = Modifier
           .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
           .border(
