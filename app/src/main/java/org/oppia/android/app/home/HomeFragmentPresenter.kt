@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -62,6 +63,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+  private val exitProfileListener = activity as ExitProfileListener
+
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
@@ -163,7 +166,7 @@ class HomeFragmentPresenter @Inject constructor(
       is AsyncResult.Success -> {
         val profile = result.value
         handleProfileOnboardingState(profile)
-        //handleBackPress(profile.profileType)
+        handleBackPress(profile.profileType)
       }
       is AsyncResult.Failure -> {
         oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)
@@ -260,6 +263,17 @@ class HomeFragmentPresenter @Inject constructor(
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    )
+  }
+
+  private fun handleBackPress(profileType: ProfileType) {
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          exitProfileListener.exitProfile(profileType)
+        }
+      }
     )
   }
 }
