@@ -8,9 +8,12 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */
@@ -27,7 +30,8 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+    val profileId = intent?.extractCurrentUserProfileId()
+    internalProfileId = profileId?.internalId ?: -1
     markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
@@ -41,13 +45,11 @@ class MarkTopicsCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
-    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
-
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, MarkTopicsCompletedActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_TOPICS_COMPLETED_ACTIVITY)
       }
     }

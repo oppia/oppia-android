@@ -65,6 +65,8 @@ class ConsoleLoggerTest {
     val firstErrorContextsDeferred = CoroutineScope(backgroundTestDispatcher).async {
       consoleLogger.logErrorMessagesFlow.take(1).toList()
     }
+
+    testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     consoleLogger.e(testTag, testMessage)
     testCoroutineDispatchers.advanceUntilIdle()
 
