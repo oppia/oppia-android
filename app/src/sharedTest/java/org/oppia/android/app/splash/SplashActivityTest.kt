@@ -133,7 +133,6 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -197,28 +196,9 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_nboardingV2Enabled_initialOpen_routesToOnboardingActivity() {
-    initializeTestApplication()
-
-    launchSplashActivityFully {
-      intended(hasComponent(OnboardingActivity::class.java.name))
-    }
-  }
-
-  @Test
   fun testSplashActivity_secondOpen_routesToChooseProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     setUpTestWithOnboardingV2Enabled(false)
-
-    launchSplashActivityFully {
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testSplashActivity_onboardingV2Enabled_secondOpen_routesToOnboardingActivity() {
-    simulateAppAlreadyOnboarded()
-    setUpTestWithOnboardingV2Enabled(true)
 
     launchSplashActivityFully {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -640,7 +620,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
         .perform(click())
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
     }
 
     // Note this is a different "recreation" than other tests since the same instrumentation
@@ -1001,13 +981,13 @@ class SplashActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testSplashActivity_onboarded_alphaFlavor_waitTwoSeconds_intentsToProfileChooser() {
+  fun testSplashActivity_onboarded_alphaFlavor_intentsToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.ALPHA)
     initializeTestApplicationWithFlavor(BuildFlavor.ALPHA)
 
-    // The profile chooser should appear after the 2 seconds wait for the alpha splash screen.
+    // The profile chooser should appear once the app state has finished loading.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(2))
+      testCoroutineDispatchers.advanceUntilIdle()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -1029,27 +1009,26 @@ class SplashActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testSplashActivity_onboarded_betaFlavor_waitTwoSeconds_intentsToProfileChooser() {
+  fun testSplashActivity_onboarded_betaFlavor_intentsToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
 
-    // The profile chooser should appear after the 2 seconds wait for the beta splash screen.
+    // The profile chooser should appear after the app state loads completely.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(2))
+      testCoroutineDispatchers.advanceUntilIdle()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_onboarded_gaFlavor_doesNotWaitToStart() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
     initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
 
     // The profile chooser opens immediately for the GA flavor since it has no delay.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -1076,7 +1055,7 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_initialOpen_OnboardingV2Enabled_routesToOnboardingActivity() {
+  fun testSplashActivity_initialOpen_onboardingV2Enabled_routesToOnboardingActivity() {
     setUpTestWithOnboardingV2Enabled(true)
 
     launchSplashActivityPartially {
@@ -1085,9 +1064,9 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_OnboardingV2Enabled_existingSoleLearnerProfile_routesToHomeActivity() {
+  fun testSplashActivity_onboardingV2Enabled_existingSoleLearnerProfile_routesToHomeActivity() {
+    simulateAppAlreadyOnboarded()
     setUpTestWithOnboardingV2Enabled(true)
-
     profileTestHelper.addOnlyAdminProfileWithoutPin()
 
     launchSplashActivityPartially {
@@ -1096,9 +1075,9 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_OnboardingV2Enabled_existingAdminProfile_routesToProfileChooserActivity() {
+  fun testSplashActivity_onboardingV2Enabled_existingAdminProfile_routesToProfileChooserActivity() {
+    simulateAppAlreadyOnboarded()
     setUpTestWithOnboardingV2Enabled(true)
-
     profileTestHelper.addOnlyAdminProfile()
 
     launchSplashActivityPartially {
@@ -1107,9 +1086,9 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testActivity_OnboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
+  fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
+    simulateAppAlreadyOnboarded()
     setUpTestWithOnboardingV2Enabled(true)
-
     profileTestHelper.addMoreProfiles(5)
 
     launchSplashActivityPartially {
