@@ -9,21 +9,14 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HintsAndSolutionDialogFragmentArguments
+import org.oppia.android.app.model.HintsAndSolutionDialogFragmentStateBundle
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-
-private const val CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY =
-  "HintsAndSolutionDialogFragment.current_expanded_list_index"
-private const val HINT_INDEX_SAVED_KEY = "HintsAndSolutionDialogFragment.hint_index"
-private const val IS_HINT_REVEALED_SAVED_KEY = "HintsAndSolutionDialogFragment.is_hint_revealed"
-private const val SOLUTION_INDEX_SAVED_KEY = "HintsAndSolutionDialogFragment.solution_index"
-private const val IS_SOLUTION_REVEALED_SAVED_KEY =
-  "HintsAndSolutionDialogFragment.is_solution_revealed"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
 class HintsAndSolutionDialogFragment :
@@ -43,13 +36,16 @@ class HintsAndSolutionDialogFragment :
 
   companion object {
 
-    internal const val ID_ARGUMENT_KEY = "HintsAndSolutionDialogFragment.id"
-    internal const val STATE_KEY = "HintsAndSolutionDialogFragment.state"
-    internal const val HELP_INDEX_KEY = "HintsAndSolutionDialogFragment.help_index"
-    internal const val WRITTEN_TRANSLATION_CONTEXT_KEY =
-      "HintsAndSolutionDialogFragment.written_translation_context"
     internal const val PROFILE_ID_KEY =
       "HintsAndSolutionDialogFragment.profile_id"
+
+    /** Arguments key for HintsAndSolutionDialogFragment. */
+    const val HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY =
+      "HintsAndSolutionDialogFragment.arguments"
+
+    /** State key for HintsAndSolutionDialogFragment. */
+    const val HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY =
+      "HintsAndSolutionDialogFragment.state"
 
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
@@ -69,12 +65,15 @@ class HintsAndSolutionDialogFragment :
       helpIndex: HelpIndex,
       writtenTranslationContext: WrittenTranslationContext
     ): HintsAndSolutionDialogFragment {
+      val args = HintsAndSolutionDialogFragmentArguments.newBuilder().apply {
+        this.idArgument = id
+        this.state = state
+        this.helpIndex = helpIndex
+        this.writtenTranslationContext = writtenTranslationContext
+      }.build()
       return HintsAndSolutionDialogFragment().apply {
         arguments = Bundle().apply {
-          putString(ID_ARGUMENT_KEY, id)
-          putProto(STATE_KEY, state)
-          putProto(HELP_INDEX_KEY, helpIndex)
-          putProto(WRITTEN_TRANSLATION_CONTEXT_KEY, writtenTranslationContext)
+          putProto(HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
     }
@@ -95,30 +94,42 @@ class HintsAndSolutionDialogFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
+
     if (savedInstanceState != null) {
-      expandedItemsList =
-        savedInstanceState.getIntegerArrayList(CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY) ?: ArrayList()
-      index = savedInstanceState.getInt(HINT_INDEX_SAVED_KEY, -1)
+
+      val stateArgs = savedInstanceState.getProto(
+        HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY,
+        HintsAndSolutionDialogFragmentStateBundle.getDefaultInstance()
+      )
+      expandedItemsList = stateArgs?.currentExpandedItemsList?.let { ArrayList(it) } ?: ArrayList()
+
+      index = stateArgs?.hintIndex ?: -1
       if (index == -1) index = null
-      isHintRevealed = savedInstanceState.getBoolean(IS_HINT_REVEALED_SAVED_KEY, false)
-      solutionIndex = savedInstanceState.getInt(SOLUTION_INDEX_SAVED_KEY, -1)
+      isHintRevealed = stateArgs?.isHintRevealed ?: false
+      solutionIndex = stateArgs?.solutionIndex ?: -1
       if (solutionIndex == -1) solutionIndex = null
-      isSolutionRevealed = savedInstanceState.getBoolean(IS_SOLUTION_REVEALED_SAVED_KEY, false)
+      isSolutionRevealed = stateArgs?.isSolutionRevealed ?: false
     }
-    val args =
+
+    val arguments =
       checkNotNull(
         arguments
       ) { "Expected arguments to be passed to HintsAndSolutionDialogFragment" }
+    val args = arguments.getProto(
+      HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+      HintsAndSolutionDialogFragmentArguments.getDefaultInstance()
+    )
+
     val id =
       checkNotNull(
-        args.getStringFromBundle(ID_ARGUMENT_KEY)
+        args.idArgument
       ) { "Expected id to be passed to HintsAndSolutionDialogFragment" }
 
-    val state = args.getProto(STATE_KEY, State.getDefaultInstance())
-    val helpIndex = args.getProto(HELP_INDEX_KEY, HelpIndex.getDefaultInstance())
+    val state = args.state ?: State.getDefaultInstance()
+    val helpIndex = args.helpIndex ?: HelpIndex.getDefaultInstance()
     val writtenTranslationContext =
-      args.getProto(WRITTEN_TRANSLATION_CONTEXT_KEY, WrittenTranslationContext.getDefaultInstance())
-    val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
+      args.writtenTranslationContext ?: WrittenTranslationContext.getDefaultInstance()
+    val profileId = arguments.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
 
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
@@ -144,19 +155,19 @@ class HintsAndSolutionDialogFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putIntegerArrayList(CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY, expandedItemsList)
-    if (index != null) {
-      outState.putInt(HINT_INDEX_SAVED_KEY, index!!)
-    }
-    if (isHintRevealed != null) {
-      outState.putBoolean(IS_HINT_REVEALED_SAVED_KEY, isHintRevealed!!)
-    }
-    if (solutionIndex != null) {
-      outState.putInt(SOLUTION_INDEX_SAVED_KEY, solutionIndex!!)
-    }
-    if (isSolutionRevealed != null) {
-      outState.putBoolean(IS_SOLUTION_REVEALED_SAVED_KEY, isSolutionRevealed!!)
-    }
+
+    val args = HintsAndSolutionDialogFragmentStateBundle.newBuilder().apply {
+      this.addAllCurrentExpandedItems(expandedItemsList)
+      if (index != null)
+        this.hintIndex = index!!
+      if (this@HintsAndSolutionDialogFragment.isHintRevealed != null)
+        this.isHintRevealed = this@HintsAndSolutionDialogFragment.isHintRevealed!!
+      if (this@HintsAndSolutionDialogFragment.solutionIndex != null)
+        this.solutionIndex = this@HintsAndSolutionDialogFragment.solutionIndex!!
+      if (this@HintsAndSolutionDialogFragment.isSolutionRevealed != null)
+        this.isSolutionRevealed = this@HintsAndSolutionDialogFragment.isSolutionRevealed!!
+    }.build()
+    outState.putProto(HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY, args)
   }
 
   override fun onExpandListIconClicked(expandedItemsList: ArrayList<Int>) {

@@ -2,6 +2,7 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -27,6 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -53,8 +55,11 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -117,6 +122,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -297,11 +303,14 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args = HelpActivityParams.newBuilder().apply {
+        this.isFromNavigationDrawer = false
+      }.build()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
-        hasExtra(
-          HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          HelpActivity.HELP_ACTIVITY_PARAMS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -324,12 +333,14 @@ class RevisionCardFragmentTest {
 
       onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
-
+      val args =
+        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(false)
+          .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
-        hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          OptionsActivity.OPTIONS_ACTIVITY_PARAMS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -471,8 +482,13 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args = RevisionCardActivityParams.newBuilder().apply {
+        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+      }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_TOPIC_ID_0))
+      intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -493,8 +509,14 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val args = RevisionCardActivityParams.newBuilder().apply {
+        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+      }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_TOPIC_ID_2))
+      intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -710,6 +732,20 @@ class RevisionCardFragmentTest {
       override fun perform(uiController: UiController?, view: View?) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
       }
     }
   }

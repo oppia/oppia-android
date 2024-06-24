@@ -52,6 +52,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -229,7 +230,8 @@ class DeveloperOptionsActivityTest {
   }
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, profileId)
   }
 
   private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {

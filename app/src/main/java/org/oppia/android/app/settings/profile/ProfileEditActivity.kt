@@ -6,19 +6,12 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileEditActivityParams
 import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-
-/** Argument key for the Profile Id in [ProfileEditActivity]. */
-const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
-
-/** Argument key for the Multipane in tablet mode for [ProfileEditActivity]. */
-const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
-
-/** Argument key for the Profile deletion confirmation in [ProfileEditActivity]. */
-const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
-  "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
 /** Activity that allows admins to edit a profile. */
 class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -26,15 +19,22 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
   companion object {
+
+    /** Params key for ProfileEditActivity. */
+    const val PROFILE_EDIT_ACTIVITY_PARAMS_KEY = "ProfileEditActivity.params"
+
     /** Returns an [Intent] for opening the [ProfileEditActivity]. */
     fun createProfileEditActivity(
       context: Context,
       profileId: Int,
       isMultipane: Boolean = false
     ): Intent {
+      val args = ProfileEditActivityParams.newBuilder().apply {
+        this.internalProfileId = profileId
+        this.isMultipane = isMultipane
+      }.build()
       return Intent(context, ProfileEditActivity::class.java).apply {
-        putExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)
-        putExtra(IS_MULTIPANE_EXTRA_KEY, isMultipane)
+        putProtoExtra(PROFILE_EDIT_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(PROFILE_EDIT_ACTIVITY)
       }
     }

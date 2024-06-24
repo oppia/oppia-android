@@ -8,9 +8,12 @@ import androidx.activity.OnBackPressedCallback
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MARK_STORIES_COMPLETED_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for Mark Stories Completed. */
@@ -27,7 +30,9 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
+
+    val profileId = intent?.extractCurrentUserProfileId()
+    internalProfileId = profileId?.internalId ?: -1
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
     handleBackPress()
@@ -54,13 +59,12 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   }
 
   companion object {
-    /** [String] key value for mapping to InternalProfileId in [Bundle]. */
-    const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
-        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)
       }
     }

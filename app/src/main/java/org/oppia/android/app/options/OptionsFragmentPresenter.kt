@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
@@ -23,6 +22,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -70,7 +70,7 @@ class OptionsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     optionControlsViewModel.setProfileId(profileId)
 
@@ -184,8 +184,10 @@ class OptionsFragmentPresenter @Inject constructor(
   private enum class ViewType {
     /** Represents view type for displaying [ReadingTextSize]. */
     VIEW_TYPE_READING_TEXT_SIZE,
+
     /** Represents view type for displaying [OppiaLanguage]. */
     VIEW_TYPE_APP_LANGUAGE,
+
     /** Represents view type for displaying [AudioLanguage]. */
     VIEW_TYPE_AUDIO_LANGUAGE
   }

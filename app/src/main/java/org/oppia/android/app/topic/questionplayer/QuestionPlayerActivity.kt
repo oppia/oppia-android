@@ -11,6 +11,7 @@ import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -20,13 +21,12 @@ import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
-  "QuestionPlayerActivity.profile_id"
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
@@ -52,9 +52,7 @@ class QuestionPlayerActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     checkNotNull(intent.extras) { "Expected extras to be defined for QuestionPlayerActivity" }
     val profileId =
-      intent.getProtoExtra(
-        QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance()
-      )
+      intent.extractCurrentUserProfileId()
     questionPlayerActivityPresenter.handleOnCreate(profileId)
     handleBackPress()
   }
@@ -90,6 +88,9 @@ class QuestionPlayerActivity :
   }
 
   companion object {
+    /** Params key for QuestionPlayerActivity. */
+    const val QUESTION_PLAYER_ACTIVITY_PARAMS_KEY = "QuestionPlayerActivity.params"
+
     /**
      * Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list and
      * profile.
@@ -99,9 +100,14 @@ class QuestionPlayerActivity :
       skillIdList: ArrayList<String>,
       profileId: ProfileId
     ): Intent {
+
+      val args = QuestionPlayerActivityParams.newBuilder().apply {
+        addAllSkillIds(skillIdList)
+      }
+        .build()
       return Intent(context, QuestionPlayerActivity::class.java).apply {
-        putProtoExtra(QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
-        putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
+        putProtoExtra(QUESTION_PLAYER_ACTIVITY_PARAMS_KEY, args)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(QUESTION_PLAYER_ACTIVITY)
       }
     }
