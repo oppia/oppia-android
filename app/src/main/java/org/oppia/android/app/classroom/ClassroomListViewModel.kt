@@ -88,7 +88,7 @@ class ClassroomListViewModel(
    * when a new classroom is selected by the user.
    */
   val topicList: ObservableList<HomeItemViewModel> by lazy {
-    updateTopicList(TEST_CLASSROOM_ID_0) // Fetch the topic list of the default classroom.
+    fetchAndUpdateTopicList() // Fetch the topic list of the last selected classroom.
     ObservableArrayList() // Initialize the topic list.
   }
 
@@ -296,6 +296,39 @@ class ClassroomListViewModel(
     } else emptyList()
   }
 
+  private fun fetchAndUpdateTopicList(classroomId: String = "") {
+    if (classroomId.isBlank()) {
+      // Retrieve the last selected classroom ID if no specific classroom ID is provided.
+      profileManagementController.retrieveLastSelectedClassroomId(profileId)
+        .toLiveData().observe(fragment) { lastSelectedClassroomIdResult ->
+          when (lastSelectedClassroomIdResult) {
+            is AsyncResult.Success -> {
+              val lastSelectedClassroomId = lastSelectedClassroomIdResult.value
+              updateTopicList(
+                if (lastSelectedClassroomId.isNullOrBlank())
+                  TEST_CLASSROOM_ID_0
+                else
+                  lastSelectedClassroomId
+              )
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "ClassroomListFragment",
+                "Failed to retrieve last selected classroom ID",
+                lastSelectedClassroomIdResult.error
+              )
+              // Use a default classroom ID in case of failure.
+              updateTopicList(TEST_CLASSROOM_ID_0)
+            }
+            is AsyncResult.Pending -> {}
+          }
+      }
+    } else {
+      // Fetch the topic list using the provided classroom ID.
+      updateTopicList(classroomId)
+    }
+  }
+
   private fun updateTopicList(classroomId: String) {
     classroomController.getTopicList(
       profileId,
@@ -309,7 +342,11 @@ class ClassroomListViewModel(
           }
         }
         is AsyncResult.Failure -> {
-          oppiaLogger.d("ClassroomListFragment", topicList.toString())
+          oppiaLogger.e(
+            "ClassroomListFragment",
+            "Failed to retrieve topic list.",
+            topicListResult.error
+          )
         }
         is AsyncResult.Pending -> {}
       }
@@ -317,6 +354,8 @@ class ClassroomListViewModel(
   }
 
   override fun onClassroomSummaryClicked(classroomSummary: ClassroomSummary) {
-    updateTopicList(classroomSummary.classroomId)
+    val classroomId = classroomSummary.classroomId
+    profileManagementController.updateLastSelectedClassroomId(profileId, classroomId)
+    fetchAndUpdateTopicList(classroomId)
   }
 }
