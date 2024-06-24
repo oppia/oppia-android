@@ -9,12 +9,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileOnboardingState
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.DeprecationNoticeActionResponse
@@ -31,6 +34,7 @@ import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.DeprecationController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -40,6 +44,8 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -63,6 +69,9 @@ class SplashActivityPresenter @Inject constructor(
   private val currentBuildFlavor: BuildFlavor,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
+  private val profileManagementController: ProfileManagementController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   lateinit var startupMode: StartupMode
 
@@ -243,10 +252,7 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun processAppAndOsDeprecationEnabledStartUpMode() {
     when (startupMode) {
-      StartupMode.USER_IS_ONBOARDED -> {
-        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-        activity.finish()
-      }
+      StartupMode.USER_IS_ONBOARDED -> handleUserOnboarded()
       StartupMode.APP_IS_DEPRECATED -> {
         showDialog(
           FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
@@ -268,7 +274,7 @@ class SplashActivityPresenter @Inject constructor(
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+        OnboardingActivity.createOnboardingActivity(activity)
         activity.finish()
       }
     }
@@ -276,10 +282,7 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun processLegacyStartupMode() {
     when (startupMode) {
-      StartupMode.USER_IS_ONBOARDED -> {
-        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-        activity.finish()
-      }
+      StartupMode.USER_IS_ONBOARDED -> handleUserOnboarded()
       StartupMode.APP_IS_DEPRECATED -> {
         showDialog(
           AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
@@ -293,6 +296,83 @@ class SplashActivityPresenter @Inject constructor(
         activity.finish()
       }
     }
+  }
+
+  private fun handleUserOnboarded() {
+    if (enableOnboardingFlowV2.value) {
+      getProfileOnboardingState()
+    } else {
+      activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+      activity.finish()
+    }
+  }
+
+  private fun getProfileOnboardingState() {
+    profileManagementController.getProfileOnboardingState().toLiveData().observe(
+      activity,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> computeLoginRoute(result.value)
+          is AsyncResult.Failure -> oppiaLogger.e(
+            "SplashActivity",
+            "Encountered unexpected non-successful result when fetching onboarding state",
+            result.error
+          )
+          is AsyncResult.Pending -> {}
+        }
+      }
+    )
+  }
+
+  private fun computeLoginRoute(onboardingState: ProfileOnboardingState) {
+    when (onboardingState) {
+      ProfileOnboardingState.NEW_INSTALL -> {
+        OnboardingActivity.createOnboardingActivity(activity)
+        activity.finish()
+      }
+
+      ProfileOnboardingState.SOLE_LEARNER_PROFILE -> fetchProfiles()
+      else -> {
+        activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+        activity.finish()
+      }
+    }
+  }
+
+  private fun fetchProfiles() {
+    profileManagementController.getProfiles().toLiveData()
+      .observe(activity, { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            val profileId =
+              getSoleLearnerProfile(result.value)?.id ?: ProfileId.getDefaultInstance()
+            logInToSoleLearnerProfile(profileId)
+          }
+          is AsyncResult.Pending -> {} // no-op
+          is AsyncResult.Failure -> oppiaLogger.e(
+            "SplashActivity", "Failed to retrieve the list of profiles",
+            result.error
+          )
+        }
+      }
+      )
+  }
+
+  private fun getSoleLearnerProfile(profiles: List<Profile>): Profile? {
+    return profiles.find { it.isAdmin && it.pin.isNullOrBlank() }
+  }
+
+  private fun logInToSoleLearnerProfile(profileId: ProfileId) {
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(activity, {
+      if (it is AsyncResult.Success) {
+        // Prevent launching if the current activity is finishing, which would cause duplicate
+        // intents.
+        if (!activity.isFinishing) {
+          activity.startActivity(HomeActivity.createHomeActivity(activity, profileId.internalId))
+          activity.finish()
+        }
+      }
+    })
   }
 
   private fun computeInitStateDataProvider(): DataProvider<SplashInitState> {
