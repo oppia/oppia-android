@@ -24,6 +24,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -66,6 +67,7 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity.Companio
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -135,6 +137,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -658,10 +661,13 @@ class ProfileProgressFragmentTest {
       )
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
+
+      val args = TopicActivityParams.newBuilder().apply {
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.storyId = FRACTIONS_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -793,12 +799,7 @@ class ProfileProgressFragmentTest {
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.ongoing_topics_container)
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
-      intended(
-        hasExtra(
-          OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY,
-          internalProfileId
-        )
-      )
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }
 
@@ -816,11 +817,12 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
-        hasExtra(
-          CompletedStoryListActivity.PROFILE_ID_EXTRA_KEY,
-          internalProfileId
+        hasProtoExtra(
+          PROFILE_ID_INTENT_DECORATOR,
+          profileId
         )
       )
     }

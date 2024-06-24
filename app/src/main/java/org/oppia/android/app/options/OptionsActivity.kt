@@ -7,25 +7,31 @@ import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OptionsActivityParams
+import org.oppia.android.app.model.OptionsActivityStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
-private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
 /** [String] key for mapping to [ReadingTextSizeFragment]. */
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
+
 /** [String] key for mapping to [AppLanguageFragment]. */
 const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
+
 /** [String] key for mapping to [AudioLanguageFragment]. */
 const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
 
@@ -51,20 +57,27 @@ class OptionsActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    /** [Boolean] indicating whether user is navigating from Drawer. */
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "OptionsActivity.bool_is_from_navigation_drawer_extra_key"
+    /** Params key for OptionsActivity. */
+    const val OPTIONS_ACTIVITY_PARAMS_KEY = "OptionsActivity.params"
+
+    /** Saved state key for OptionsActivity. */
+    const val OPTIONS_ACTIVITY_STATE_KEY = "OptionsActivity.state"
 
     /** Returns an [Intent] to start this activity. */
     fun createOptionsActivity(
       context: Context,
-      profileId: Int?,
+      profileId: ProfileId?,
       isFromNavigationDrawer: Boolean
     ): Intent {
+      val args =
+        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(isFromNavigationDrawer)
+          .build()
       return Intent(context, OptionsActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-        putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+        putProtoExtra(OPTIONS_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(OPTIONS_ACTIVITY)
+        if (profileId != null) {
+          decorateWithUserProfileId(profileId)
+        }
       }
     }
   }
@@ -72,22 +85,28 @@ class OptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val isFromNavigationDrawer = intent.getBooleanExtra(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-      /* defaultValue= */ false
+    val args = intent.getProtoExtra(
+      OPTIONS_ACTIVITY_PARAMS_KEY,
+      OptionsActivityParams.getDefaultInstance()
     )
-    profileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
+    profileId = intent.extractCurrentUserProfileId().internalId
     if (savedInstanceState != null) {
       isFirstOpen = false
     }
+    val stateArgs =
+      savedInstanceState?.getProto(
+        OPTIONS_ACTIVITY_STATE_KEY,
+        OptionsActivityStateBundle.getDefaultInstance()
+      )
+
     selectedFragment = if (savedInstanceState == null) {
       READING_TEXT_SIZE_FRAGMENT
     } else {
-      @Suppress("DEPRECATION") // TODO(#5405): Ensure the correct type is being retrieved.
-      savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
+      stateArgs?.selectedFragment as String
     }
     val extraOptionsTitle =
-      savedInstanceState?.getStringFromBundle(SELECTED_OPTIONS_TITLE_SAVED_KEY)
+      stateArgs?.selectedOptionsTitle
     optionActivityPresenter.handleOnCreate(
       isFromNavigationDrawer,
       extraOptionsTitle,
@@ -171,9 +190,12 @@ class OptionsActivity :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
-    if (titleTextView != null) {
-      outState.putString(SELECTED_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
-    }
-    outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
+    val args = OptionsActivityStateBundle.newBuilder().apply {
+      if (titleTextView != null) {
+        selectedOptionsTitle = titleTextView.text.toString()
+      }
+      selectedFragment = this@OptionsActivity.selectedFragment
+    }.build()
+    outState.putProto(OPTIONS_ACTIVITY_STATE_KEY, args)
   }
 }

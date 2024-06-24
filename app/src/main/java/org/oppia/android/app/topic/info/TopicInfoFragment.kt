@@ -7,22 +7,32 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicInfoFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that contains info of Topic. */
 class TopicInfoFragment : InjectableFragment() {
   companion object {
+
+    /** Arguments key for TopicInfoFragment. */
+    const val TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY = "TopicInfoFragment.arguments"
+
     /** Returns a new [TopicInfoFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
-      val topicInfoFragment = TopicInfoFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      topicInfoFragment.arguments = args
-      return topicInfoFragment
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = TopicInfoFragmentArguments.newBuilder().setTopicId(topicId).build()
+
+      return TopicInfoFragment().apply {
+        arguments = Bundle().apply {
+          putProto(TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -39,8 +49,13 @@ class TopicInfoFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
+    val args = arguments?.getProto(
+      TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY,
+      TopicInfoFragmentArguments.getDefaultInstance()
+    )
+
+    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
     return topicInfoFragmentPresenter.handleCreateView(

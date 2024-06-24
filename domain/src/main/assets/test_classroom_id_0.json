@@ -1,0 +1,13 @@
+{
+  "classroom_id": "test_classroom_id_0",
+  "classroom_title": {
+    "content_id": "classroom_title",
+    "html": "Science"
+  },
+  "thumbnail_bg_color": "#00FFFFFF",
+  "thumbnail_filename": "",
+  "topic_prerequisites": {
+    "test_topic_id_0": ["GJ2rLXRKD5hw"],
+    "test_topic_id_1": ["test_topic_id_0", "omzF4oqgeTXd"]
+  }
+}
