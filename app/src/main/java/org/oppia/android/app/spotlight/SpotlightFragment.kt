@@ -22,7 +22,6 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
@@ -34,6 +33,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /**
@@ -72,7 +73,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
     calculateScreenSize()
   }
 
@@ -370,10 +371,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private sealed class AnchorPosition {
     /** The position corresponding to the anchor when it is on the top left of the screen. */
     object TopLeft : AnchorPosition()
+
     /** The position corresponding to the anchor when it is on the top right of the screen. */
     object TopRight : AnchorPosition()
+
     /** The position corresponding to the anchor when it is on the bottom left of the screen. */
     object BottomLeft : AnchorPosition()
+
     /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
   }
@@ -381,11 +385,12 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   companion object {
     /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
-      val spotlightFragment = SpotlightFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      spotlightFragment.arguments = args
-      return spotlightFragment
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      return SpotlightFragment().apply {
+        arguments = Bundle().apply {
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 }

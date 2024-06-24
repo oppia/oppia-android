@@ -13,7 +13,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPageChanger
 import org.oppia.android.app.walkthrough.WalkthroughPages
@@ -22,6 +21,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
@@ -48,10 +48,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
 
-    internalProfileId = activity.intent.getIntExtra(
-      WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-      -1
-    )
+    internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
 
