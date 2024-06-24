@@ -7,22 +7,23 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
-private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :
@@ -43,11 +44,17 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    val args = intent?.getProtoExtra(
+      TOPIC_ACTIVITY_PARAMS_KEY,
+      TopicActivityParams.getDefaultInstance()
+    )
+    topicId = checkNotNull(
+      args?.topicId
+    ) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    storyId = args?.storyId
     topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
@@ -146,18 +153,8 @@ class TopicActivity :
   }
 
   companion object {
-
-    fun getProfileIdKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-    }
-
-    fun getTopicIdKey(): String {
-      return TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
-    }
-
-    fun getStoryIdKey(): String {
-      return TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY
-    }
+    /** Params key for TopicActivity. */
+    const val TOPIC_ACTIVITY_PARAMS_KEY = "TopicActivity.params"
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
@@ -165,9 +162,11 @@ class TopicActivity :
       internalProfileId: Int,
       topicId: String
     ): Intent {
+      val args = TopicActivityParams.newBuilder().setTopicId(topicId).build()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-        putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(TOPIC_ACTIVITY)
       }
     }
@@ -180,7 +179,10 @@ class TopicActivity :
       storyId: String
     ): Intent {
       return createTopicActivityIntent(context, internalProfileId, topicId).apply {
-        putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+        val args =
+          getProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, TopicActivityParams.getDefaultInstance())
+        val updateArg = args.toBuilder().setStoryId(storyId).build()
+        putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, updateArg)
       }
     }
   }
