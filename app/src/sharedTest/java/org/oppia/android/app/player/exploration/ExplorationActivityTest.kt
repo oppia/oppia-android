@@ -42,6 +42,7 @@ import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -49,6 +50,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -70,7 +72,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
@@ -152,6 +156,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -2366,11 +2371,14 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args = HelpActivityParams.newBuilder().apply {
+        this.isFromNavigationDrawer = false
+      }.build()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
-        hasExtra(
-          HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          HelpActivity.HELP_ACTIVITY_PARAMS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -2400,11 +2408,14 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args =
+        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(false)
+          .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
-        hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          OptionsActivity.OPTIONS_ACTIVITY_PARAMS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -2437,6 +2448,20 @@ class ExplorationActivityTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
+    }
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
     }
   }
 

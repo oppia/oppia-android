@@ -7,6 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.MarkTopicsCompletedFragmentStateBundle
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment to display all topics and provide functionality to mark them completed. */
@@ -15,17 +21,19 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   lateinit var markTopicsCompletedFragmentPresenter: MarkTopicsCompletedFragmentPresenter
 
   companion object {
-    internal const val PROFILE_ID_ARGUMENT_KEY = "MarkTopicsCompletedFragment.profile_id"
 
-    private const val TOPIC_ID_LIST_ARGUMENT_KEY = "MarkTopicsCompletedFragment.topic_id_list"
+    /** State key for MarkTopicsCompletedFragment.. */
+    const val MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY =
+      "MarkTopicsCompletedFragment.state"
 
     /** Returns a new [MarkTopicsCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkTopicsCompletedFragment {
-      val markTopicsCompletedFragment = MarkTopicsCompletedFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      markTopicsCompletedFragment.arguments = args
-      return markTopicsCompletedFragment
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      return MarkTopicsCompletedFragment().apply {
+        arguments = Bundle().apply {
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -39,13 +47,19 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
-    val internalProfileId = args
-      .getInt(PROFILE_ID_ARGUMENT_KEY, -1)
+
+    val internalProfileId = arguments.extractCurrentUserProfileId().internalId
+
     var selectedTopicIdList = ArrayList<String>()
     if (savedInstanceState != null) {
-      selectedTopicIdList = savedInstanceState.getStringArrayList(TOPIC_ID_LIST_ARGUMENT_KEY)!!
+
+      val stateArgs = savedInstanceState.getProto(
+        MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY,
+        MarkTopicsCompletedFragmentStateBundle.getDefaultInstance()
+      )
+      selectedTopicIdList = stateArgs?.topicIdsList?.let { ArrayList(it) } ?: ArrayList()
     }
     return markTopicsCompletedFragmentPresenter.handleCreateView(
       inflater,
@@ -57,9 +71,11 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(
-      TOPIC_ID_LIST_ARGUMENT_KEY,
-      markTopicsCompletedFragmentPresenter.selectedTopicIdList
-    )
+    val args = MarkTopicsCompletedFragmentStateBundle.newBuilder().apply {
+      addAllTopicIds(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
+    }.build()
+    outState.apply {
+      putProto(MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY, args)
+    }
   }
 }

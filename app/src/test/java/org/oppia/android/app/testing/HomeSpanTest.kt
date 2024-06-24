@@ -27,6 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -165,7 +166,8 @@ class HomeSpanTest {
     }
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(internalProfileId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 

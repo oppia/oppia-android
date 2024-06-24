@@ -5,19 +5,52 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
-// Exemptions for the test-file check. Exemptions indicate files for which we should not check for
-// having test files.
+// Exemptions for the test-file check.
+// Exemptions indicate files either for which we should not check for having test files,
+// or to override the minimum coverage threshold for the code coverage analysis.
 message TestFileExemptions {
-  // List of all the files which should be exempted for the test-file check. For exempting any
-  // file, provide its relative path to root in 'script/assets/test_file_exemptions.textproto'.
+  // List of all test file exemptions.
+  //
   // Also, note that the file paths in the textproto file are maintained in lexicographical order.
   // While adding any new file, please add it only at the correct lexicographical position, so that
   // the list remains sorted.
   //
-  // For example if we want to add the 'ActivityComponent.kt' file to the exemption list, add:
-  // 'exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"'
-  // at the correct lexicographical position in the textproto file.
-  repeated string exempted_file_path = 1;
+  // For example, to exempt 'ActivityComponent.kt' from the test-file check, add:
+  // ```
+  // test_file_exemption {
+  //   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+  //   test_file_not_required: true
+  // }
+  // ```
+  //
+  // Example for overriding minimum coverage threshold:
+  // ```
+  // test_file_exemption {
+  //   exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/ComparatorExtensions.kt"
+  //   override_min_coverage_percent_required: 0
+  // }
+  // ```
+  repeated TestFileExemption test_file_exemption = 1;
+
+  // Represents an individual test file exemption.
+  message TestFileExemption {
+    // Provide the relative path to the file in 'script/assets/test_file_exemptions.textproto'
+    // along with any one of the states of exemption:
+    // 1.'test_file_not_required' to exempt the test itself.
+    // 2.'override_min_coverage_percent_required' to have the test file but override min coverage threshold
+    //
+    // The relative path to the file from the root directory.
+    string exempted_file_path = 1;
+
+    // Specifies the type of exemption.
+    oneof exemption_type {
+      // Indicates that a test file is not required for the given file.
+      bool test_file_not_required = 2;
+
+      // Overrides the minimum coverage percent required for the given file.
+      int32 override_min_coverage_percent_required = 3;
+    }
+  }
 }
 
 // Exemptions for the accessibility label check. Exemptions indicate Activities for which we should
