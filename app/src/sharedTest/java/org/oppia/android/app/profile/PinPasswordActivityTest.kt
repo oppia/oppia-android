@@ -13,7 +13,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -49,7 +48,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -118,6 +116,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -249,12 +248,12 @@ class PinPasswordActivityTest {
       onView(withId(R.id.pin_password_input_pin_edit_text))
         .perform(editTextInputAction.appendText("12345"))
       testCoroutineDispatchers.runCurrent()
-      intended(
-        allOf(
-          hasComponent(ClassroomListActivity::class.java.name),
-          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, adminId)
-        )
-      )
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId().internalId
+        ).isEqualTo(adminId)
+      }
     }
   }
 
@@ -290,12 +289,12 @@ class PinPasswordActivityTest {
       onView(withId(R.id.pin_password_input_pin_edit_text))
         .perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
-      intended(
-        allOf(
-          hasComponent(ClassroomListActivity::class.java.name),
-          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, userId)
-        )
-      )
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId().internalId
+        ).isEqualTo(userId)
+      }
     }
   }
 

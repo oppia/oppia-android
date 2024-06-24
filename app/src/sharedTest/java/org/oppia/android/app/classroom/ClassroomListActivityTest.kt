@@ -26,6 +26,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -123,7 +124,10 @@ class ClassroomListActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = ClassroomListActivity
-      .createClassroomListActivity(context, profileId = 0)
+      .createClassroomListActivity(
+        context,
+        ProfileId.newBuilder().setInternalId(0).build()
+      )
       .extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.CLASSROOM_LIST_ACTIVITY)
   }
@@ -141,7 +145,10 @@ class ClassroomListActivityTest {
   private fun launchClassroomListActivity():
     ActivityScenario<ClassroomListActivity>? {
       val scenario = ActivityScenario.launch<ClassroomListActivity>(
-        ClassroomListActivity.createClassroomListActivity(context, profileId = 0)
+        ClassroomListActivity.createClassroomListActivity(
+          context,
+          ProfileId.newBuilder().setInternalId(0).build()
+        )
       )
       testCoroutineDispatchers.runCurrent()
       return scenario

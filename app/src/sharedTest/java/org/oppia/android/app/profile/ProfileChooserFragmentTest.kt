@@ -15,7 +15,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -28,7 +27,6 @@ import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
@@ -50,7 +48,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
@@ -512,12 +509,12 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_chooser_item
         )
       ).perform(click())
-      intended(
-        allOf(
-          hasComponent(HomeActivity::class.java.name),
-          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ 0)
-        )
-      )
+      intended(hasComponent(HomeActivity::class.java.name))
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId().internalId
+        ).isEqualTo(0)
+      }
     }
   }
 
@@ -542,12 +539,12 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_chooser_item
         )
       ).perform(click())
-      intended(
-        allOf(
-          hasComponent(ClassroomListActivity::class.java.name),
-          hasExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, /* internalProfileId= */ 0)
-        )
-      )
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+      it.onActivity { activity ->
+        assertThat(
+          activity.intent.extractCurrentUserProfileId().internalId
+        ).isEqualTo(0)
+      }
     }
   }
 
