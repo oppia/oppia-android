@@ -9,13 +9,13 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.scripts.proto.BranchCoverage
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredFile
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.FunctionCoverage
+import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.util.concurrent.TimeUnit
 
@@ -130,42 +130,54 @@ class CoverageRunnerTest {
       .addCoveredLine(CoveredLine.newBuilder().setLineNumber(10).setCoverage(Coverage.FULL).build())
       .setLinesFound(4)
       .setLinesHit(3)
-      .addFunctionCoverage(FunctionCoverage.newBuilder()
-        .setLineNumber(7)
-        .setFunctionName("com/example/TwoSum\$Companion::sumNumbers (II)Ljava/lang/Object;")
-        .setExecutionCount(1)
-        .setCoverage(Coverage.FULL).build())
-      .addFunctionCoverage(FunctionCoverage.newBuilder()
-        .setLineNumber(3)
-        .setFunctionName("com/example/TwoSum::<init> ()V")
-        .setExecutionCount(0)
-        .setCoverage(Coverage.NONE).build())
+      .addFunctionCoverage(
+        FunctionCoverage.newBuilder()
+          .setLineNumber(7)
+          .setFunctionName("com/example/TwoSum\$Companion::sumNumbers (II)Ljava/lang/Object;")
+          .setExecutionCount(1)
+          .setCoverage(Coverage.FULL).build()
+      )
+      .addFunctionCoverage(
+        FunctionCoverage.newBuilder()
+          .setLineNumber(3)
+          .setFunctionName("com/example/TwoSum::<init> ()V")
+          .setExecutionCount(0)
+          .setCoverage(Coverage.NONE).build()
+      )
       .setFunctionsFound(2)
       .setFunctionsHit(1)
-      .addBranchCoverage(BranchCoverage.newBuilder()
-        .setLineNumber(7)
-        .setBlockNumber(0)
-        .setBranchNumber(0)
-        .setHitCount(1)
-        .setCoverage(Coverage.FULL).build())
-      .addBranchCoverage(BranchCoverage.newBuilder()
-        .setLineNumber(7)
-        .setBlockNumber(0)
-        .setBranchNumber(1)
-        .setHitCount(1)
-        .setCoverage(Coverage.FULL).build())
-      .addBranchCoverage(BranchCoverage.newBuilder()
-        .setLineNumber(7)
-        .setBlockNumber(0)
-        .setBranchNumber(2)
-        .setHitCount(1)
-        .setCoverage(Coverage.FULL).build())
-      .addBranchCoverage(BranchCoverage.newBuilder()
-        .setLineNumber(7)
-        .setBlockNumber(0)
-        .setBranchNumber(3)
-        .setHitCount(1)
-        .setCoverage(Coverage.FULL).build())
+      .addBranchCoverage(
+        BranchCoverage.newBuilder()
+          .setLineNumber(7)
+          .setBlockNumber(0)
+          .setBranchNumber(0)
+          .setHitCount(1)
+          .setCoverage(Coverage.FULL).build()
+      )
+      .addBranchCoverage(
+        BranchCoverage.newBuilder()
+          .setLineNumber(7)
+          .setBlockNumber(0)
+          .setBranchNumber(1)
+          .setHitCount(1)
+          .setCoverage(Coverage.FULL).build()
+      )
+      .addBranchCoverage(
+        BranchCoverage.newBuilder()
+          .setLineNumber(7)
+          .setBlockNumber(0)
+          .setBranchNumber(2)
+          .setHitCount(1)
+          .setCoverage(Coverage.FULL).build()
+      )
+      .addBranchCoverage(
+        BranchCoverage.newBuilder()
+          .setLineNumber(7)
+          .setBlockNumber(0)
+          .setBranchNumber(3)
+          .setHitCount(1)
+          .setCoverage(Coverage.FULL).build()
+      )
       .setBranchesFound(4)
       .setBranchesHit(4)
       .build()
