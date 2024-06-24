@@ -20,7 +20,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
 
   /**
-   * Returns a newly inflated view to render the fragment with an evaluated [audioLanguage] as the
+   * Returns a newly inflated view to render the fragment with an evaluated audio language as the
    * initial selected language, based on current locale.
    */
   fun handleCreateView(
@@ -28,6 +28,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     container: ViewGroup?
   ): View {
 
+    // Hide toolbar as it's not needed in this layout. The toolbar is created by a shared activity
+    // and is required in OptionsFragment.
     activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
 
     binding = AudioLanguageSelectionFragmentBinding.inflate(

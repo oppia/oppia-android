@@ -51,14 +51,18 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
-      audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
-    }.build()
-    outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    if (!enableOnboardingFlowV2.value) {
+      val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
+        audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
+      }.build()
+      outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    }
   }
 
   override fun onLanguageSelected(audioLanguage: AudioLanguage) {
-    audioLanguageFragmentPresenterV1.onLanguageSelected(audioLanguage)
+    if (!enableOnboardingFlowV2.value) {
+      audioLanguageFragmentPresenterV1.onLanguageSelected(audioLanguage)
+    }
   }
 
   companion object {
