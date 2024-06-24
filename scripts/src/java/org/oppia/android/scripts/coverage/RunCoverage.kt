@@ -19,10 +19,12 @@ import java.util.concurrent.TimeUnit
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
  * - relative_path_to_file: the relative path to the file to analyse coverage
+ * - reportFormat: the format of the coverage report. Defaults to MARKDOWN if not specified.
+ *   Available options: MARKDOWN, HTML.
  *
  * Example:
  *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
+ *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt HTML
  * Example with custom process timeout:
  *     bazel run //scripts:run_coverage -- $(pwd)
  *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=10
@@ -33,9 +35,11 @@ fun main(vararg args: String) {
   val filePath = args[1]
   val reportFormat = when (args.getOrNull(2)) {
     "HTML" -> ReportFormat.HTML
-    "MARKDOWN", null -> ReportFormat.MARKDOWN // Default to MARKDOWN if not specified
+    "MARKDOWN", null -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: ${args[2]}")
   }
+
+  val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
@@ -46,7 +50,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    RunCoverage(repoRoot, filePath, reportFormat, commandExecutor, scriptBgDispatcher).execute()
+    RunCoverage(repoRoot, filePath, reportFormat, reportOutputPath, commandExecutor, scriptBgDispatcher).execute()
   }
 }
 
@@ -62,6 +66,7 @@ class RunCoverage(
   private val repoRoot: String,
   private val filePath: String,
   private val reportFormat: ReportFormat,
+  private val reportOutputPath: String,
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
@@ -108,9 +113,9 @@ class RunCoverage(
     }
 
     if (coverageReports.isNotEmpty()) {
-      val reporter = CoverageReporter(coverageReports)
+      val reporter = CoverageReporter(coverageReports, reportFormat, reportOutputPath)
       val coverageRatio = reporter.computeCoverageRatio()
-      val generatedReport = reporter.generateRichTextReport(reportFormat, coverageRatio)
+      val generatedReport = reporter.generateRichTextReport(coverageRatio)
       println("Generated report: $generatedReport")
     } else {
       println("No coverage reports generated.")
@@ -151,6 +156,16 @@ private fun findTestFile(repoRoot: String, filePath: String): List<String> {
     .map { File(repoRootFile, it) }
     .filter(File::exists)
     .map { it.relativeTo(repoRootFile).path }
+}
+
+private fun getReportOutputPath(repoRoot: String, filePath: String, reportFormat: ReportFormat): String {
+  println("Repo root: $repoRoot")
+  val fileWithoutExtension = filePath.substringBeforeLast(".")
+  val defaultFilename = when (reportFormat) {
+    ReportFormat.HTML -> "coverage.html"
+    ReportFormat.MARKDOWN -> "coverage.md"
+  }
+  return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {

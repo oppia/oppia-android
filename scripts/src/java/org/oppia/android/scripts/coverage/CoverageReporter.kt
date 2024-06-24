@@ -1,11 +1,17 @@
 package org.oppia.android.scripts.coverage
 
 import org.oppia.android.scripts.proto.CoverageReport
+import java.io.File
 
-class CoverageReporter(private val coverageReportList: List<CoverageReport>) {
+class CoverageReporter(
+  private val coverageReportList: List<CoverageReport>,
+  private val reportFormat: ReportFormat,
+  private val reportOutputPath: String
+) {
 
-  fun generateRichTextReport(format: ReportFormat, computedCoverageRatio: Float): String {
-    return when (format) {
+  fun generateRichTextReport(computedCoverageRatio: Float): String {
+    println("output: $reportOutputPath")
+    return when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport(computedCoverageRatio)
       ReportFormat.HTML -> generateHtmlReport()
     }
@@ -20,7 +26,7 @@ class CoverageReporter(private val coverageReportList: List<CoverageReport>) {
     val (totalFunctionsFound, totalFunctionsHit) = computeTotalsFor("functions")
     val (totalBranchesFound, totalBranchesHit) = computeTotalsFor("branches")
 
-    return """
+    val markdownReport = """
             # Coverage Report
 
             **Total coverage:**
@@ -32,6 +38,12 @@ class CoverageReporter(private val coverageReportList: List<CoverageReport>) {
             - **Branch coverage:** $totalBranchesFound covered / $totalBranchesHit found
 
         """.trimIndent()
+
+    val outputFile = File(reportOutputPath)
+    outputFile.parentFile?.mkdirs()
+    outputFile.writeText(markdownReport)
+
+    return reportOutputPath
   }
 
   private fun computeTotalsFor(type: String): Pair<Int, Int> {
