@@ -322,7 +322,7 @@ class ClassroomListViewModel(
             }
             is AsyncResult.Pending -> {}
           }
-      }
+        }
     } else {
       // Fetch the topic list using the provided classroom ID.
       updateTopicList(classroomId)
