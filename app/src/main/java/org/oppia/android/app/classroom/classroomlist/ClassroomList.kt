@@ -35,7 +35,10 @@ import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 
 /** Displays a list of classroom summaries with a header. */
 @Composable
-fun ClassroomList(classroomSummaryList: List<ClassroomSummaryViewModel>) {
+fun ClassroomList(
+  classroomSummaryList: List<ClassroomSummaryViewModel>,
+  selectedClassroomId: String
+) {
   Column(
     modifier = Modifier
       .background(
@@ -64,7 +67,7 @@ fun ClassroomList(classroomSummaryList: List<ClassroomSummaryViewModel>) {
       ),
     ) {
       items(classroomSummaryList) {
-        ClassroomCard(classroomSummaryViewModel = it)
+        ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId)
       }
     }
   }
@@ -72,10 +75,14 @@ fun ClassroomList(classroomSummaryList: List<ClassroomSummaryViewModel>) {
 
 /** Displays a single classroom card with an image and text, handling click events. */
 @Composable
-fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
+fun ClassroomCard(
+  classroomSummaryViewModel: ClassroomSummaryViewModel,
+  selectedClassroomId: String
+) {
   val screenWidth = LocalConfiguration.current.screenWidthDp
   val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
   val isTablet = if (isPortrait) screenWidth > 600 else screenWidth > 840
+  val isCardSelected = classroomSummaryViewModel.classroomSummary.classroomId == selectedClassroomId
   Card(
     modifier = Modifier
       .height(dimensionResource(id = R.dimen.classrooms_card_height))
@@ -87,9 +94,11 @@ fun ClassroomCard(classroomSummaryViewModel: ClassroomSummaryViewModel) {
       .clickable {
         classroomSummaryViewModel.handleClassroomClick(classroomSummaryViewModel.classroomSummary)
       },
-    backgroundColor = colorResource(
-      id = R.color.component_color_shared_screen_primary_background_color
-    ),
+    backgroundColor = if (isCardSelected) {
+      colorResource(id = R.color.component_color_classroom_card_color)
+    } else {
+      colorResource(id = R.color.component_color_shared_screen_primary_background_color)
+    },
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = 4.dp,
   ) {

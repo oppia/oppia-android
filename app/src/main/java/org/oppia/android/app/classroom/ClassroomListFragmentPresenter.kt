@@ -24,6 +24,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
+import androidx.databinding.Observable
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
@@ -138,6 +139,13 @@ class ClassroomListFragmentPresenter @Inject constructor(
       }
     )
 
+    classroomListViewModel.selectedClassroomId
+      .addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          refreshComposeView()
+        }
+      })
+
     return binding.root
   }
 
@@ -186,7 +194,10 @@ class ClassroomListFragmentPresenter @Inject constructor(
             }
           }
           ClassroomSummaryViewModel::class -> stickyHeader {
-            ClassroomList(classroomSummaryList = items.map { it as ClassroomSummaryViewModel })
+            ClassroomList(
+              classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
+              classroomListViewModel.selectedClassroomId.get() ?: ""
+            )
           }
           AllTopicsViewModel::class -> items.forEach { _ ->
             item {

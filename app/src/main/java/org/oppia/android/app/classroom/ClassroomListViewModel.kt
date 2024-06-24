@@ -71,6 +71,9 @@ class ClassroomListViewModel(
   /** An observable boolean property indicating the visibility state of the progress bar. */
   val isProgressBarVisible = ObservableField(true)
 
+  /** An observable field to store the currently selected classroom ID. */
+  val selectedClassroomId = ObservableField("")
+
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
   }
@@ -330,6 +333,7 @@ class ClassroomListViewModel(
   }
 
   private fun updateTopicList(classroomId: String) {
+    selectedClassroomId.set(classroomId)
     classroomController.getTopicList(
       profileId,
       classroomId
