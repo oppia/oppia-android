@@ -161,7 +161,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -182,7 +182,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -204,7 +204,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -225,7 +225,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -255,7 +255,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -283,7 +283,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -309,7 +309,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -337,7 +337,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -365,7 +365,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -398,7 +398,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(
@@ -431,7 +431,7 @@ class ProfileRenameFragmentTest {
     ActivityScenario.launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
-        profileId = 1
+        internalProfileId = 1
       )
     ).use {
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))

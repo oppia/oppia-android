@@ -18,6 +18,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
@@ -178,7 +179,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
                 (
                   HomeActivity.createHomeActivity(
                     activity,
-                    model.profile.id.internalId
+                    model.profile.id
                   )
                   )
               )
@@ -227,10 +228,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
+      val profileId =
+        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId
+          profileId
         )
       )
     } else {

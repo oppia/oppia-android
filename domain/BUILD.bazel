@@ -37,6 +37,11 @@ MIGRATED_PROD_FILES = glob([
 
 DOMAIN_ASSETS = generate_assets_list_from_text_protos(
     name = "domain_assets",
+    classroom_file_names = [
+        "test_classroom_id_0",
+        "test_classroom_id_1",
+        "test_classroom_id_2",
+    ],
     classroom_list_file_names = [
         "classrooms",
     ],
