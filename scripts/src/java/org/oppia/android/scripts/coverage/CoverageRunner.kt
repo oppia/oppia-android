@@ -7,6 +7,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.BranchCoverage
+import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredFile
 import org.oppia.android.scripts.proto.CoveredLine
@@ -17,11 +18,11 @@ import java.nio.file.Paths
 import java.security.MessageDigest
 
 /**
- * Class responsible for running coverage analysis asynchronously
+ * Class responsible for running coverage analysis asynchronously.
  *
  * @param repoRoot the root directory of the repository
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
- * @param commandExecutor Executes the specified command in the specified working directory
+ * @param commandExecutor executes the specified command in the specified working directory
  */
 class CoverageRunner(
   private val repoRoot: File,
@@ -31,7 +32,7 @@ class CoverageRunner(
   private val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
 
   /**
-   * Runs coverage analysis asynchronously for the Bazel test target
+   * Runs coverage analysis asynchronously for the Bazel test target.
    *
    * @param bazelTestTarget Bazel test target to analyze coverage
    * @return a deferred value that contains the coverage data
@@ -95,9 +96,9 @@ class CoverageRunner(
               val hitCount = parts[1].toInt()
               val coverage =
                 if (hitCount > 0)
-                  CoveredLine.Coverage.FULL
+                  Coverage.FULL
                 else
-                  CoveredLine.Coverage.NONE
+                  Coverage.NONE
               coveredLines.add(
                 CoveredLine.newBuilder()
                   .setLineNumber(lineNumber)
@@ -114,9 +115,9 @@ class CoverageRunner(
               val hitCount = parts[3].toInt()
               val coverage =
                 if (hitCount > 0)
-                  BranchCoverage.Coverage.FULL
+                  Coverage.FULL
                 else
-                  BranchCoverage.Coverage.NONE
+                  Coverage.NONE
               branchCoverage.add(
                 BranchCoverage.newBuilder()
                   .setLineNumber(lineNumber)
@@ -137,7 +138,7 @@ class CoverageRunner(
                   .setLineNumber(currentFunctionLineNumber)
                   .setFunctionName(functionName)
                   .setExecutionCount(0)
-                  .setCoverage(FunctionCoverage.Coverage.NONE)
+                  .setCoverage(Coverage.NONE)
                   .build()
               )
             }
@@ -152,9 +153,9 @@ class CoverageRunner(
                   .setExecutionCount(executionCount)
                   .setCoverage(
                     if (executionCount > 0)
-                      FunctionCoverage.Coverage.FULL
+                      Coverage.FULL
                     else
-                      FunctionCoverage.Coverage.NONE
+                      Coverage.NONE
                   )
                   .build()
                 functionCoverage[index] = updatedFunctionCoverage

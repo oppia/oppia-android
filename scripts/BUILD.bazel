@@ -238,15 +238,6 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
-    name = "run_coverage_for_test_target",
-    testonly = True,
-    main_class = "org.oppia.android.scripts.coverage.RunCoverageForTestTargetKt",
-    runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_for_test_target_lib",
-    ],
-)
-
-kt_jvm_binary(
     name = "run_coverage",
     testonly = True,
     data = TEST_FILE_EXEMPTION_ASSETS,

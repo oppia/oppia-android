@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.coverage
 
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -7,7 +8,6 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
-import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
 
 /**
@@ -41,7 +41,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute()
+    println(RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute())
   }
 }
 
@@ -50,7 +50,7 @@ fun main(vararg args: String) {
  *
  * @param repoRoot the root directory of the repository
  * @param filePath the relative path to the file to analyse coverage
- * @param commandExecutor Executes the specified command in the specified working directory
+ * @param commandExecutor executes the specified command in the specified working directory
  * @param scriptBgDispatcher the [ScriptBackgroundCoroutineDispatcher] to be used for running the coverage command
  */
 class RunCoverage(
@@ -71,90 +71,70 @@ class RunCoverage(
    * prints a message indicating no coverage analysis is performed. Otherwise, initializes
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
+   *
+   * @return a list of lists containing coverage data for each requested test target, if
+   *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): MutableList<CoverageReport> {
-    var coverageDataList = mutableListOf<CoverageReport>()
+
+  fun execute(): List<CoverageReport> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .getExemptedFilePathList()
 
-    val isExempted = testFileExemptionList.contains(filePath)
-    if (isExempted) {
+    if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file. Hence No coverage!")
-      return mutableListOf()
+      return emptyList()
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    /*val testResults = listOf(
-      "//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest",
-      "//utility/src/test/java/org/oppia/android/util/math:FloatExtensionsTest")*/
-
-//    for (testTarget in testResults) {
-    for (testTarget in testTargets) {
-      val coverageData = RunCoverageForTestTarget(
-        rootDirectory,
-        testTarget.substringBeforeLast(".kt"),
-        commandExecutor,
-        scriptBgDispatcher
-      ).runCoverage()!!
-      coverageDataList.add(coverageData)
+    return testTargets.mapNotNull { testTarget ->
+      val coverageData = runCoverageForTarget(testTarget)
+      if (coverageData == null) {
+        println("Coverage data for $testTarget is null")
+      }
+      coverageData
     }
-    println("Coverage Data List: $coverageDataList")
-    return coverageDataList
   }
 
-  /**
-   * Finds potential test file paths corresponding to a given source file path within a repository.
-   *
-   * @param repoRoot the root directory of the repository
-   * @param filePath The file path of the source file for which the test files are to be found.
-   * @return A list of potential test file paths that exist in the repository.
-   */
-  fun findTestFile(repoRoot: String, filePath: String): List<String> {
-    val file = File(filePath)
-    val parts = file.parent.split(File.separator)
-    val testFiles = mutableListOf<String>()
-
-    if (parts.isNotEmpty() && parts[0] == "scripts") {
-      val testFilePath = filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt")
-      if (File(repoRoot, testFilePath).exists()) {
-        testFiles.add(testFilePath)
-      }
-    } else if (parts.isNotEmpty() && parts[0] == "app") {
-      val sharedTestFilePath = filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt")
-      val testFilePath = filePath.replace("/main/", "/test/").replace(".kt", "Test.kt")
-      val localTestFilePath = filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
-
-      if (File(repoRoot, sharedTestFilePath).exists()) {
-        testFiles.add(sharedTestFilePath)
-      }
-      if (File(repoRoot, testFilePath).exists()) {
-        testFiles.add(testFilePath)
-      }
-      if (File(repoRoot, localTestFilePath).exists()) {
-        testFiles.add(localTestFilePath)
-      }
-    } else {
-      val defaultTestFilePath = filePath.replace("/main/", "/test/").replace(".kt", "Test.kt")
-      if (File(repoRoot, defaultTestFilePath).exists()) {
-        testFiles.add(defaultTestFilePath)
-      }
+  private fun runCoverageForTarget(testTarget: String): CoverageReport? {
+    return runBlocking {
+      CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+        .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
+        .await()
     }
-    return testFiles
+  }
+}
+
+private fun findTestFile(repoRoot: String, filePath: String): List<String> {
+  val possibleTestFilePaths = when {
+    filePath.startsWith("scripts/") -> {
+      listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+    }
+    filePath.startsWith("app/") -> {
+      listOf(
+        filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+        filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+        filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
+      )
+    }
+    else -> {
+      listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
+    }
   }
 
-  private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-    val protoBinaryFile = File("$testFileExemptiontextProto.pb")
-    val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()
+  val repoRootFile = File(repoRoot).absoluteFile
 
-    // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-    // and this method is bounded by the generic type T.
-    @Suppress("UNCHECKED_CAST")
-    val protoObj: TestFileExemptions =
-      FileInputStream(protoBinaryFile).use {
-        builder.mergeFrom(it)
-      }.build() as TestFileExemptions
-    return protoObj
+  return possibleTestFilePaths
+    .map { File(repoRootFile, it) }
+    .filter(File::exists)
+    .map { it.relativeTo(repoRootFile).path }
+}
+
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions.newBuilder().also { builder ->
+      builder.mergeFrom(stream)
+    }.build()
   }
 }

@@ -11,6 +11,7 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.scripts.proto.BranchCoverage
+import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredFile
 import org.oppia.android.scripts.proto.CoveredLine
@@ -42,7 +43,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testCoverageRunner_emptyDirectory_throwsException() {
+  fun testRunWithCoverageAsync_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
@@ -53,7 +54,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testCoverageRunner_invalidTestTarget_throwsException() {
+  fun testRunWithCoverageAsync_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
@@ -67,7 +68,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testCoverageRunner_validSampleTestTarget_returnsCoverageData() {
+  fun testRunWithCoverageAsync_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -110,7 +111,8 @@ class CoverageRunnerTest {
       filename = "TwoSum",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val result = runBlocking {
@@ -122,22 +124,22 @@ class CoverageRunnerTest {
     val expectedCoveredFile = CoveredFile.newBuilder()
       .setFilePath("coverage/main/java/com/example/TwoSum.kt")
       .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
-      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(3).setCoverage(CoveredLine.Coverage.NONE).build())
-      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(7).setCoverage(CoveredLine.Coverage.FULL).build())
-      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(8).setCoverage(CoveredLine.Coverage.FULL).build())
-      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(10).setCoverage(CoveredLine.Coverage.FULL).build())
+      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(3).setCoverage(Coverage.NONE).build())
+      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(7).setCoverage(Coverage.FULL).build())
+      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(8).setCoverage(Coverage.FULL).build())
+      .addCoveredLine(CoveredLine.newBuilder().setLineNumber(10).setCoverage(Coverage.FULL).build())
       .setLinesFound(4)
       .setLinesHit(3)
       .addFunctionCoverage(FunctionCoverage.newBuilder()
         .setLineNumber(7)
         .setFunctionName("com/example/TwoSum\$Companion::sumNumbers (II)Ljava/lang/Object;")
         .setExecutionCount(1)
-        .setCoverage(FunctionCoverage.Coverage.FULL).build())
+        .setCoverage(Coverage.FULL).build())
       .addFunctionCoverage(FunctionCoverage.newBuilder()
         .setLineNumber(3)
         .setFunctionName("com/example/TwoSum::<init> ()V")
         .setExecutionCount(0)
-        .setCoverage(FunctionCoverage.Coverage.NONE).build())
+        .setCoverage(Coverage.NONE).build())
       .setFunctionsFound(2)
       .setFunctionsHit(1)
       .addBranchCoverage(BranchCoverage.newBuilder()
@@ -145,25 +147,25 @@ class CoverageRunnerTest {
         .setBlockNumber(0)
         .setBranchNumber(0)
         .setHitCount(1)
-        .setCoverage(BranchCoverage.Coverage.FULL).build())
+        .setCoverage(Coverage.FULL).build())
       .addBranchCoverage(BranchCoverage.newBuilder()
         .setLineNumber(7)
         .setBlockNumber(0)
         .setBranchNumber(1)
         .setHitCount(1)
-        .setCoverage(BranchCoverage.Coverage.FULL).build())
+        .setCoverage(Coverage.FULL).build())
       .addBranchCoverage(BranchCoverage.newBuilder()
         .setLineNumber(7)
         .setBlockNumber(0)
         .setBranchNumber(2)
         .setHitCount(1)
-        .setCoverage(BranchCoverage.Coverage.FULL).build())
+        .setCoverage(Coverage.FULL).build())
       .addBranchCoverage(BranchCoverage.newBuilder()
         .setLineNumber(7)
         .setBlockNumber(0)
         .setBranchNumber(3)
         .setHitCount(1)
-        .setCoverage(BranchCoverage.Coverage.FULL).build())
+        .setCoverage(Coverage.FULL).build())
       .setBranchesFound(4)
       .setBranchesHit(4)
       .build()
