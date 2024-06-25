@@ -26,6 +26,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
   companion object {
 
     const val CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY = "ConceptCardFragment.arguments"
+    private var conceptCardFragment: ConceptCardFragment? = null
 
     /** The fragment tag corresponding to the concept card dialog fragment. */
     private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
@@ -82,11 +83,15 @@ class ConceptCardFragment : InjectableDialogFragment() {
     fun dismissAll(fragmentManager: FragmentManager) {
       val toDismiss = fragmentManager.fragments.filterIsInstance<ConceptCardFragment>()
       if (toDismiss.isNotEmpty()) {
-        val transaction = fragmentManager.beginTransaction()
-        for (fragment in toDismiss) {
-          transaction.remove(fragment)
+        fragmentManager.beginTransaction().apply {
+          for (fragment in toDismiss) {
+            remove(fragment)
+          }
+          commitNow()
         }
-        transaction.commitNow()
+      } else {
+        conceptCardFragment?.dismiss()
+        conceptCardFragment = null
       }
     }
 
@@ -97,6 +102,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
     ): ConceptCardFragment {
       val conceptCardFragment = newInstance(skillId, profileId)
       conceptCardFragment.showNow(fragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+      this.conceptCardFragment = conceptCardFragment
       return conceptCardFragment
     }
   }
