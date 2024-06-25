@@ -206,6 +206,7 @@ dependencies {
       'org.glassfish.jaxb:jaxb-runtime:2.3.2',
   )
   testImplementation(
+      "androidx.compose.ui:ui-test-junit4:$compose_version",
       'androidx.test:core:1.2.0',
       'androidx.test.espresso:espresso-contrib:3.1.0',
       'androidx.test.espresso:espresso-core:3.2.0',
@@ -224,6 +225,7 @@ dependencies {
       project(":testing"),
   )
   androidTestImplementation(
+      "androidx.compose.ui:ui-test-junit4:$compose_version",
       'androidx.test:core:1.2.0',
       'androidx.test.espresso:espresso-contrib:3.1.0',
       'androidx.test.espresso:espresso-core:3.2.0',
