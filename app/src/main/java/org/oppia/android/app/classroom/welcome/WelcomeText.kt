@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontFamily
@@ -13,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 import org.oppia.android.app.home.WelcomeViewModel
+
+const val WELCOME_TEST_TAG = "TEST_TAG.welcome"
 
 /** Displays a welcome text with an underline. */
 @Composable
@@ -26,6 +29,7 @@ fun WelcomeText(welcomeViewModel: WelcomeViewModel) {
   Text(
     text = welcomeViewModel.computeWelcomeText(),
     modifier = Modifier
+      .testTag(WELCOME_TEST_TAG)
       .padding(
         start = outerPadding,
         top = outerPadding,

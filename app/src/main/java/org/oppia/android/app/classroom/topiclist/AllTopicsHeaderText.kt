@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -13,6 +14,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
+
+const val ALL_TOPICS_HEADER_TEST_TAG = "TEST_TAG.all_topics_header"
 
 /** Displays the header text for the topic list section. */
 @Composable
@@ -24,6 +27,7 @@ fun AllTopicsHeaderText() {
     fontWeight = FontWeight.Medium,
     fontSize = 18.sp,
     modifier = Modifier
+      .testTag(ALL_TOPICS_HEADER_TEST_TAG)
       .fillMaxWidth()
       .background(colorResource(id = R.color.color_palette_classroom_topic_list_background_color))
       .padding(

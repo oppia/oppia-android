@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -32,6 +33,9 @@ import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
+
+const val CLASSROOM_HEADER_TEST_TAG = "TEST_TAG.classroom_header"
+const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"
 
 /** Displays a list of classroom summaries with a header. */
 @Composable
@@ -53,6 +57,7 @@ fun ClassroomList(
       fontWeight = FontWeight.Medium,
       fontSize = 18.sp,
       modifier = Modifier
+        .testTag(CLASSROOM_HEADER_TEST_TAG)
         .padding(
           start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
           top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
@@ -61,6 +66,7 @@ fun ClassroomList(
         ),
     )
     LazyRow(
+      modifier = Modifier.testTag(CLASSROOM_LIST_TEST_TAG),
       contentPadding = PaddingValues(
         start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
         end = dimensionResource(id = R.dimen.classrooms_text_margin_end),

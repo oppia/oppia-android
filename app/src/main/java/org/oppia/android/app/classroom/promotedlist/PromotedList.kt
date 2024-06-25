@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +41,9 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
+const val PROMOTED_STORY_LIST_HEADER_TEST_TAG = "TEST_TAG.promoted_story_list_header"
+const val PROMOTED_STORY_LIST_TEST_TAG = "TEST_TAG.promoted_story_list"
+
 /** Displays a list of promoted stories. */
 @Composable
 fun PromotedStoryList(
@@ -48,6 +52,7 @@ fun PromotedStoryList(
 ) {
   Row(
     modifier = Modifier
+      .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
       .fillMaxWidth()
       .padding(top = 24.dp),
     horizontalArrangement = Arrangement.SpaceBetween,
@@ -83,7 +88,9 @@ fun PromotedStoryList(
     }
   }
   LazyRow(
-    modifier = Modifier.padding(top = 12.dp),
+    modifier = Modifier
+      .testTag(PROMOTED_STORY_LIST_TEST_TAG)
+      .padding(top = 12.dp),
     contentPadding = PaddingValues(
       start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
       end = promotedStoryListViewModel.endPadding.dp,
