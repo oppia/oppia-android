@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -44,9 +45,10 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
 
     val internalProfileId = arguments?.retrieveProfileIdFromArguments() ?: -1
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+      audioLanguageFragmentPresenter.handleCreateView(inflater, container, profileId)
     } else {
       audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
     }
@@ -54,14 +56,18 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
-      audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
-    }.build()
-    outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    if (!enableOnboardingFlowV2.value) {
+      val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
+        audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
+      }.build()
+      outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    }
   }
 
   override fun onLanguageSelected(audioLanguage: AudioLanguage) {
-    audioLanguageFragmentPresenterV1.onLanguageSelected(audioLanguage)
+    if (!enableOnboardingFlowV2.value) {
+      audioLanguageFragmentPresenterV1.onLanguageSelected(audioLanguage)
+    }
   }
 
   companion object {

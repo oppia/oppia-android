@@ -16,14 +16,15 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.ADD_PROFILE_COLOR_RGB_EXTRA_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.CreateProfileFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
@@ -130,12 +131,17 @@ class CreateProfileFragmentPresenter @Inject constructor(
   }
 
   private fun createProfile(nickname: String) {
+    val profileColor = activity.intent.getProtoExtra(
+      CreateProfileActivity.CREATE_PROFILE_ACTIVITY_PARAMS_KEY,
+      CreateProfileActivityParams.getDefaultInstance()
+    ).colorRgb
+
     profileManagementController.addProfile(
       name = nickname,
       pin = "",
       avatarImagePath = selectedImageUri,
       allowDownloadAccess = allowDownloadAccess,
-      colorRgb = activity.intent.getIntExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, -10710042),
+      colorRgb = profileColor,
       isAdmin = true
     ).toLiveData()
       .observe(

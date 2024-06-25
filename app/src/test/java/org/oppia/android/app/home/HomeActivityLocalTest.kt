@@ -30,6 +30,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -122,6 +123,8 @@ class HomeActivityLocalTest {
 
   private val internalProfileId: Int = 0
 
+  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
   @Before
   fun setUp() {
     Intents.init()
@@ -137,7 +140,7 @@ class HomeActivityLocalTest {
   fun testHomeActivity_onLaunch_logsEvent() {
     setUpTestApplicationComponent()
 
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getOldestEvent()
 
@@ -149,7 +152,7 @@ class HomeActivityLocalTest {
   @Test
   fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
     setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
@@ -166,7 +169,7 @@ class HomeActivityLocalTest {
     }
 
     setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -181,7 +184,7 @@ class HomeActivityLocalTest {
   fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // OPEN_HOME, END_PROFILE_ONBOARDING_EVENT and COMPLETE_APP_ONBOARDING are all logged
@@ -202,7 +205,7 @@ class HomeActivityLocalTest {
     setUpTestWithOnboardingV2Enabled()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.markProfileOnboarded(internalProfileId)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -247,7 +250,7 @@ class HomeActivityLocalTest {
     )
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 

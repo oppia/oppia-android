@@ -37,11 +37,10 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
-  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
 /** The presenter for [NavigationDrawerFragment]. */
@@ -69,8 +68,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
 
     val headerBinding =
       NavHeaderNavigationDrawerBinding.inflate(
@@ -105,7 +104,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
         drawerLayout.closeDrawers()
         footerViewModel.isDeveloperOptionsSelected.set(true)
-        val intent = starter.createIntent(activity, internalProfileId)
+        val intent = starter.createIntent(activity, profileId)
         fragment.activity!!.startActivity(intent)
         if (previousMenuItemId == 0) fragment.activity!!.finish()
         else if (previousMenuItemId != null &&
@@ -143,7 +142,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         val intent =
           AdministratorControlsActivity.createAdministratorControlsActivityIntent(
             activity,
-            internalProfileId
+            profileId
           )
         fragment.activity!!.startActivity(intent)
         if (previousMenuItemId == -1) fragment.activity!!.finish()
@@ -233,13 +232,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
+          val intent = HomeActivity.createHomeActivity(activity, profileId)
           fragment.activity!!.startActivity(intent)
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
-            activity, internalProfileId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)
@@ -250,7 +249,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
-            activity, internalProfileId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)

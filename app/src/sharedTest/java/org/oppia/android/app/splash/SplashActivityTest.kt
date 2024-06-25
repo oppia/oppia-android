@@ -945,7 +945,7 @@ class SplashActivityTest {
 
     // The profile chooser opens immediately for the testing flavor since it has no delay.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -959,7 +959,7 @@ class SplashActivityTest {
 
     // The profile chooser opens immediately for the developer flavor since it has no delay.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }

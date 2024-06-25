@@ -372,7 +372,7 @@ class SplashActivityPresenter @Inject constructor(
           // Prevent launching if the current activity is finishing, which would cause duplicate
           // intents.
           if (!activity.isFinishing) {
-            activity.startActivity(HomeActivity.createHomeActivity(activity, profileId.internalId))
+            activity.startActivity(HomeActivity.createHomeActivity(activity, profileId))
             activity.finish()
           }
         }

@@ -13,7 +13,6 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -24,6 +23,7 @@ import org.oppia.android.databinding.AdministratorControlsFragmentBinding
 import org.oppia.android.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -56,7 +56,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
           /* attachToRoot= */ false
         )
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     administratorControlsViewModel.setProfileId(profileId)
 
@@ -193,14 +193,19 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private enum class ViewType {
     /** Represents [View] for the general section. */
     VIEW_TYPE_GENERAL,
+
     /** Represents [View] for the profile section. */
     VIEW_TYPE_PROFILE,
+
     /** Represents [View] for the download permissions section. */
     VIEW_TYPE_DOWNLOAD_PERMISSIONS,
+
     /** Represents [View] for the app information section. */
     VIEW_TYPE_APP_INFORMATION,
+
     /** Represents [View] for the account actions section. */
     VIEW_TYPE_ACCOUNT_ACTIONS,
+
     /** Represents [View] for the learner analytics section. */
     VIEW_TYPE_LEARNER_ANALYTICS
   }

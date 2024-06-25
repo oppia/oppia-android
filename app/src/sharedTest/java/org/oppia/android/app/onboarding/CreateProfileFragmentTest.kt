@@ -489,7 +489,7 @@ class CreateProfileFragmentTest {
   private fun launchNewLearnerProfileActivity():
     ActivityScenario<CreateProfileActivity>? {
       val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context)
+        CreateProfileActivity.createProfileActivityIntent(context, colorRgb = -10710042)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
