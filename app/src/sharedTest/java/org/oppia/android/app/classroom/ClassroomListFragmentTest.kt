@@ -2,7 +2,12 @@ package org.oppia.android.app.classroom
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -24,7 +29,9 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.ClassroomListFragmentTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -62,6 +69,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -101,10 +109,20 @@ class ClassroomListFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  private val internalProfileId = 0
+
+  @get:Rule
+  val composeRule = createAndroidComposeRule<ClassroomListActivity>()
+
+  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val testFragment by lazy { ClassroomListFragment() }
 
   @Before
   fun setUp() {
@@ -120,7 +138,53 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun dummyTest() {}
+  fun dummyTest() {
+    profileTestHelper.initializeProfiles()
+    launch<ClassroomListActivity>(
+      createClassroomListFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      composeRule.onNodeWithText("Select a Topic to Start").assertIsDisplayed()
+      composeRule.onNodeWithText("Classrooms").assertIsDisplayed()
+    }
+  }
+
+  /*@Test
+  fun dummyTest1() {
+    // profileTestHelper.initializeProfiles()
+    launch(ClassroomListActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      composeRule.onNodeWithText("Select a Topic to Start").assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun dummyTest2() {
+    launch<ClassroomListFragmentTestActivity>(
+      ClassroomListFragmentTestActivity.createClassroomListFragmentTestActivity(context)
+    ).use { activityScenario ->
+      activityScenario.onActivity { classroomListFragmentTestActivity ->
+        setUpTestFragment(classroomListFragmentTestActivity)
+        testCoroutineDispatchers.runCurrent()
+        composeRule.onNodeWithText("Select a Topic to Start").assertIsDisplayed()
+      }
+    }
+  }*/
+
+  private fun setUpTestFragment(activity: ClassroomListFragmentTestActivity) {
+    activity.supportFragmentManager.beginTransaction().add(testFragment, "TEST_FRAGMENT_TAG")
+      .commitNow()
+  }
+
+  private fun createClassroomListFragmentTestActivityIntent(profileId: Int): Intent {
+    return ClassroomListActivity
+      .createClassroomListActivity(
+        context = context,
+        profileId = ProfileId.newBuilder().setInternalId(profileId).build()
+      )
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
