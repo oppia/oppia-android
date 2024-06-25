@@ -112,6 +112,8 @@ class RunCoverage(
       coverageData
     }
 
+    println("Generated Coverage Reports proto: $coverageReports")
+
     if (coverageReports.isNotEmpty()) {
       val reporter = CoverageReporter(repoRoot, coverageReports, reportFormat, reportOutputPath)
       val coverageRatio = reporter.computeCoverageRatio()
