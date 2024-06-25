@@ -3,6 +3,9 @@ package org.oppia.android.app.classroom
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,6 +24,12 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.classroom.classroomlist.CLASSROOM_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.classroomlist.CLASSROOM_LIST_TEST_TAG
+import org.oppia.android.app.classroom.promotedlist.PROMOTED_STORY_LIST_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.promotedlist.PROMOTED_STORY_LIST_TEST_TAG
+import org.oppia.android.app.classroom.topiclist.ALL_TOPICS_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.welcome.WELCOME_TEST_TAG
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -59,9 +68,11 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -101,15 +112,25 @@ class ClassroomListFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @get:Rule
+  val composeRule = createAndroidComposeRule<ClassroomListActivity>()
+
+  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var dataProviderTestMonitor: DataProviderTestMonitor.Factory
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -120,7 +141,28 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun dummyTest() {}
+  fun testFragment_checkAllComponentsAreDisplayed() {
+    composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_loginTwice_checkAllComponentsAreDisplayed() {
+    logIntoAdminTwice()
+    composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
+    // composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
+  }
+
+  private fun logIntoAdminTwice() {
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
