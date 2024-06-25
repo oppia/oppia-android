@@ -26,6 +26,7 @@ oppia_android_library(
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
+        "//domain",
         "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//model/src/main/proto:version_java_proto_lite",

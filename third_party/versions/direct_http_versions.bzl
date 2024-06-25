@@ -52,9 +52,9 @@ DIRECT_REMOTE_DEPENDENCIES = [
         ],
     ),
     create_http_archive_reference(
-        name = "protobuf_tools",
-        sha = "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
-        version = "3.11.0",
+        name = "com_google_protobuf",
+        sha = "ff0fa865b5973dfa3206856342ac16184a9d7f3280ab870a07da2026863fa7cb",
+        version = "3.13.0",
         test_only = False,
         url = "https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip",
         strip_prefix_template = "protobuf-{0}",
@@ -121,10 +121,10 @@ DIRECT_REMOTE_DEPENDENCIES = [
     ),
     create_http_archive_reference(
         name = "rules_proto",
-        sha = "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
-        version = "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
+        sha = "6fb6767d1bef535310547e03247f7518b03487740c11b6c6adb7952033fe1295",
+        version = "6.0.2",
         test_only = False,
-        url = "https://github.com/bazelbuild/rules_proto/archive/{0}.tar.gz",
+        url = "https://github.com/bazelbuild/rules_proto/releases/download/{0}/rules_proto-{0}.tar.gz",
         strip_prefix_template = "rules_proto-{0}",
     ),
     create_http_jar_reference(

@@ -2,7 +2,11 @@
 Provides a macro for setting up support building proto library targets.
 """
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+load("@rules_proto//proto:setup.bzl", "rules_proto_setup")
+load("@rules_proto//proto:toolchains.bzl", "rules_proto_toolchains")
+
+#load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 
 # buildifier: disable=unnamed-macro
 def set_up():
@@ -13,14 +17,15 @@ def set_up():
     # protos while helping us avoid the unnecessary compilation of protoc. References:
     # - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
     # - https://github.com/bazelbuild/bazel/issues/7095
-    native.bind(
-        name = "proto_compiler",
-        actual = "//third_party/tools:protoc",
-    )
-    native.bind(
-        name = "proto_java_toolchain",
-        actual = "//third_party/tools:java_toolchain",
-    )
+    #    native.bind(
+    #        name = "proto_compiler",
+    #        actual = "//third_party/tools:protoc",
+    #    )
+    #    native.bind(
+    #        name = "proto_java_toolchain",
+    #        actual = "//third_party/tools:java_toolchain",
+    #    )
 
     rules_proto_dependencies()
+    rules_proto_setup()
     rules_proto_toolchains()

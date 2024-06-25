@@ -15,12 +15,10 @@ oppia_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//data/src/main/java/org/oppia/android/data/backends/gae:network_interceptors",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
         "//third_party:androidx_test_core",
-        "//third_party:com_squareup_moshi_moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
         "//utility/src/main/java/org/oppia/android/util/platformparameter",

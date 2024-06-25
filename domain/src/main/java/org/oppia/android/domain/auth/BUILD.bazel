@@ -6,14 +6,13 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "authentication_controller",
-    srcs = [
-        "AuthenticationController.kt",
-    ],
+    srcs = ["AuthenticationController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":firebase_auth_wrapper",
         "//third_party:javax_inject_javax_inject",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
@@ -27,46 +26,42 @@ oppia_android_library(
         "FirebaseUserWrapper.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:com_google_firebase_firebase-auth-ktx",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//utility/src/main/java/org/oppia/android/util/data:async_result",
-    ],
+    deps = ["//third_party:com_google_firebase_firebase-auth"],
 )
 
 oppia_android_library(
     name = "auth_module",
-    srcs = [
-        "AuthenticationModule.kt",
-    ],
+    srcs = ["AuthenticationModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":authentication_controller",
+        ":firebase_auth_instance_wrapper_impl",
+        ":firebase_auth_wrapper",
         ":firebase_auth_wrapper_impl",
         "//:dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
 oppia_android_library(
     name = "firebase_auth_wrapper_impl",
-    srcs = [
-        "FirebaseAuthWrapperImpl.kt",
-    ],
+    srcs = ["FirebaseAuthWrapperImpl.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":firebase_auth_instance_wrapper_impl",
-        "//:dagger",
+        ":firebase_auth_wrapper",
+        "//third_party:com_google_android_gms_play-services-tasks",
+        "//third_party:com_google_firebase_firebase-auth",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
 oppia_android_library(
     name = "firebase_auth_instance_wrapper_impl",
-    srcs = [
-        "FirebaseAuthInstanceWrapperImpl.kt",
-    ],
+    srcs = ["FirebaseAuthInstanceWrapperImpl.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":firebase_auth_wrapper",
-        "//:dagger",
+        "//third_party:com_google_firebase_firebase-auth-ktx",
+        "//third_party:com_google_firebase_firebase-common-ktx",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

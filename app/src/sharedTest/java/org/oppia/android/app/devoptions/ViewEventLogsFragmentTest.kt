@@ -15,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Binds
 import dagger.BindsOptionalOf
 import dagger.Component
@@ -105,8 +104,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
-import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
-import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
@@ -702,6 +699,14 @@ class ViewEventLogsFragmentTest {
       impl: FakePerformanceMetricsEventLogger
     ): PerformanceMetricsEventLogger
 
+    @Binds
+    fun provideDebugFirestoreEventLogger(impl: DebugFirestoreEventLoggerImpl): FirestoreEventLogger
+
+    @Binds
+    fun provideFirebaseFirestoreInstanceWrapper(
+      impl: FakeFirestoreInstanceWrapperImpl
+    ): FirestoreInstanceWrapper
+
     @Binds fun bindFakeExceptionLogger(impl: FakeExceptionLogger): ExceptionLogger
     @BindsOptionalOf fun bindOptionalDebugAnalyticsEventLogger(): DebugAnalyticsEventLogger
   }
@@ -725,37 +730,6 @@ class ViewEventLogsFragmentTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
-  @Module
-  class TestLogReportingModule {
-    @Provides
-    @Singleton
-    fun provideExceptionLogger(): ExceptionLogger =
-      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
-
-    @Provides
-    @Singleton
-    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
-      AnalyticsEventLogger = debugAnalyticsEventLogger
-
-    @Provides
-    @Singleton
-    fun providePerformanceMetricsEventLogger(
-      factory: FirebaseAnalyticsEventLogger.Factory
-    ): PerformanceMetricsEventLogger =
-      factory.createPerformanceMetricEventLogger()
-
-    @Provides
-    @Singleton
-    fun provideDebugFirestoreEventLogger(
-      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
-    ): FirestoreEventLogger = debugFirestoreEventLogger
-
-    @Provides
-    @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
-      FirestoreInstanceWrapper = wrapperImpl
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -767,7 +741,7 @@ class ViewEventLogsFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class,
       AccessibilityTestModule::class, TestLogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverModule::class, TestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,

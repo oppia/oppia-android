@@ -66,7 +66,6 @@ PRODUCTION_TRANSITIVE_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-stdlib": "1.6.21",
     "org.jetbrains.kotlin:kotlin-stdlib-common": "1.6.21",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk7": "1.6.21",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
     "org.jetbrains:annotations": "13.0",
     "org.jvnet.staxex:stax-ex": "1.8.1",
     "org.ow2.asm:asm": "9.2",

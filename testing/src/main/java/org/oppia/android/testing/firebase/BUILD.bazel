@@ -15,5 +15,6 @@ oppia_android_library(
     deps = [
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/auth:firebase_auth_wrapper",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

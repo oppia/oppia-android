@@ -212,9 +212,7 @@ oppia_android_library(
 
 oppia_android_library(
     name = "url_image_parser",
-    srcs = [
-        "UrlImageParser.kt",
-    ],
+    srcs = ["UrlImageParser.kt"],
     visibility = [
         "//:oppia_testing_visibility",
         "//utility/src/main/java/org/oppia/android/util/parser/html:__pkg__",
@@ -224,6 +222,7 @@ oppia_android_library(
         ":image_parsing_annonations",
         ":image_targets",
         ":text_picture_drawable",
+        "//third_party:androidx_core_core",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
         "//utility:resources",

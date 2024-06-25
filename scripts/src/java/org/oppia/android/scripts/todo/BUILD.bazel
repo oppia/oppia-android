@@ -21,12 +21,14 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":todo_collector",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:github_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/common/model:github_issue",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
         "//scripts/third_party:com_google_protobuf_protobuf-java",
-        "//scripts/third_party:moshi",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
     ],
 )
 

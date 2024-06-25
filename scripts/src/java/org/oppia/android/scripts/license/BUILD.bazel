@@ -35,7 +35,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/third_party:com_google_protobuf_protobuf-java",
         "//scripts/third_party:moshi",
-        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
     ],
 )
 
@@ -50,7 +50,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/third_party:com_google_protobuf_protobuf-java",
-        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
     ],
 )
 

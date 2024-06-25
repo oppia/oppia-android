@@ -1,28 +1,23 @@
 """
-Defines Starlark macros that are used to set up dependency toolchains needed to build the Oppia
-Android project.
+See toolchains_step1.bzl for documentation.
 """
 
 load("//third_party/tools/android:toolchain_setup.bzl", set_up_android = "set_up")
+load("//third_party/tools/android_test_support:toolchain_setup.bzl", set_up_android_test_support = "set_up")
 load("//third_party/tools/java:toolchain_setup.bzl", set_up_java = "set_up")
-load("//third_party/tools/kotlin:toolchain_setup.bzl", set_up_kotlin = "set_up")
+load("//third_party/tools/kotlin:toolchain_setup_step2.bzl", set_up_kotlin = "set_up")
 load("//third_party/tools/oppia_proto_api:toolchain_setup.bzl", set_up_oppia_proto_api = "set_up")
-load("//third_party/tools/proto:toolchain_setup.bzl", set_up_proto = "set_up")
 load("//third_party/tools/robolectric:toolchain_setup.bzl", set_up_robolectric = "set_up")
+load("//third_party/tools/rules_proto:toolchain_setup_step2.bzl", set_up_rules_proto = "set_up")
 load("//third_party/tools/skylib:toolchain_setup.bzl", set_up_skylib = "set_up")
 load("//third_party/tools/tools_android:toolchain_setup.bzl", set_up_tools_android = "set_up")
 
 # buildifier: disable=unnamed-macro
-def initialize_toolchains_for_workspace():
+def initialize_toolchains_for_workspace_step2():
     """
-    Initializes the toolchains needed to be able to build the Oppia Android app & tests.
+    See initialize_toolchains_for_workspace_step1 in toolchains_step1.bzl.
 
-    Note that this must be called after loading in this toolchains file, for example:
-        load("//third_party/tools:toolchains.bzl", "initialize_toolchains_for_workspace")
-        initialize_toolchains_for_workspace()
-
-    Note also that this can't be called until the dependencies themselves are loaded (see
-    //third_party/macros/direct_dep_downloader.bzl).
+    This performs step 2 initialization.
     """
 
     # Note that the order matters here since toolchains & libraries may have cross-dependencies.
@@ -31,6 +26,7 @@ def initialize_toolchains_for_workspace():
     set_up_oppia_proto_api()
     set_up_kotlin()
     set_up_java()
-    set_up_proto()
+    set_up_rules_proto()
     set_up_robolectric()
     set_up_tools_android()
+    set_up_android_test_support()

@@ -55,7 +55,9 @@ class ScriptBackgroundCoroutineDispatcher(
   private val closeTimeout: Long = 5,
   private val closeTimeoutUnit: TimeUnit = TimeUnit.SECONDS
 ) : CoroutineDispatcher(), Closeable {
-  private val threadPool by lazy { Executors.newCachedThreadPool() }
+  private val threadPool by lazy {
+    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+  }
   private val coroutineDispatcher by lazy { threadPool.asCoroutineDispatcher() }
 
   override fun dispatch(context: CoroutineContext, block: Runnable) {

@@ -63,9 +63,14 @@ kt_jvm_test(
     srcs = ["GitHubClientTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:github_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/src/java/org/oppia/android/scripts/common/model:github_issue",
         "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:com_squareup_okhttp3_mockwebserver",
+        "//scripts/third_party:com_squareup_okhttp3_okhttp",
+        "//scripts/third_party:junit_junit",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
         "//testing:assertion_helpers",
     ],
 )
@@ -99,7 +104,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/third_party:junit_junit",
-        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
         "//scripts/third_party:org_mockito_mockito-core",
         "//testing:assertion_helpers",
     ],

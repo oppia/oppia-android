@@ -17,14 +17,11 @@ oppia_android_library(
 
 oppia_android_library(
     name = "console_logger",
-    srcs = [
-        "ConsoleLogger.kt",
-    ],
+    srcs = ["ConsoleLogger.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":annotations",
         ":log_level",
-        "//:dagger",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//third_party:kotlinx-coroutines-core-jvm",
@@ -68,15 +65,14 @@ oppia_android_library(
 
 oppia_android_library(
     name = "event_bundle_creator",
-    srcs = [
-        "EventBundleCreator.kt",
-    ],
+    srcs = ["EventBundleCreator.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":event_type_to_human_readable_name_converter",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
         "//model/src/main/proto:screens_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",

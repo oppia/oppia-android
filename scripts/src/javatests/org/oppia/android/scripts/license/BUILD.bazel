@@ -61,7 +61,7 @@ kt_jvm_test(
         "//scripts/third_party:com_google_protobuf_protobuf-java",
         "//scripts/third_party:com_google_truth_truth",
         "//scripts/third_party:junit_junit",
-        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
         "//scripts/third_party:org_mockito_kotlin_mockito-kotlin",
         "//scripts/third_party:org_mockito_mockito-core",
         "//testing:assertion_helpers",

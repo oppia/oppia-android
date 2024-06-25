@@ -30,7 +30,7 @@ PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.eclipse.parsson:parsson": "1.1.2",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
     "org.snakeyaml:snakeyaml-engine": "2.6",
 }
 

@@ -11,15 +11,14 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 # Also, re-add testonly attribute when this TODO can be addressed.
 oppia_android_library(
     name = "test_activity",
-    srcs = [
-        "TestActivity.kt",
-    ],
+    srcs = ["TestActivity.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_auto_localized_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/databinding:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/translation:activity_language_locale_handler",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_watcher_mixin",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",

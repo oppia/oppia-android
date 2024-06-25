@@ -29,14 +29,18 @@ download_direct_workspace_dependencies(app_remote_deps, _MAVEN_REPOSITORIES)
 
 download_direct_workspace_dependencies(scripts_remote_deps, _MAVEN_REPOSITORIES)
 
-# Kotlin must be bootstrapped before any Kotlin-specific loads can occur, even toolchains.
-load("//third_party/tools/kotlin:bootstrap_setup.bzl", bootstrap_kotlin = "set_up")
+# Initialize workspace toolchains in 3 steps in case there are multiple loads necessary.
+load("//third_party/tools:toolchains_step1.bzl", "initialize_toolchains_for_workspace_step1")
 
-bootstrap_kotlin()
+initialize_toolchains_for_workspace_step1()
 
-load("//third_party/tools:toolchains.bzl", "initialize_toolchains_for_workspace")
+load("//third_party/tools:toolchains_step2.bzl", "initialize_toolchains_for_workspace_step2")
 
-initialize_toolchains_for_workspace()
+initialize_toolchains_for_workspace_step2()
+
+load("//third_party/tools:toolchains_step3.bzl", "initialize_toolchains_for_workspace_step3")
+
+initialize_toolchains_for_workspace_step3()
 
 load(
     "//scripts/third_party/versions:maven_config.bzl",

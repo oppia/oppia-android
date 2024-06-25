@@ -12,7 +12,7 @@ class SuggestBuildFixesTest {
 
   @Test
   fun testMain_noArguments_failsWithError() {
-    val error = assertThrows(IllegalArgumentException::class) { runScript(/* No arguments. */) }
+    val error = assertThrows<IllegalArgumentException> { runScript(/* No arguments. */) }
 
     assertThat(error)
       .hasMessageThat()

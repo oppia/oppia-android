@@ -74,7 +74,7 @@ _gen_binary_proto_from_text = rule(
             # This was partly inspired by https://stackoverflow.com/a/39138074.
             executable = True,
             cfg = "host",
-            default = "@protobuf_tools//:protoc",
+            default = "@com_google_protobuf//:protoc",
         ),
     },
     implementation = _gen_binary_proto_from_text_impl,

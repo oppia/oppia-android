@@ -1,5 +1,11 @@
 package org.oppia.android.scripts.build
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
+import org.oppia.android.scripts.build.SuggestBuildFixes.DependencyNode.Companion.computeMaxDepth
+import org.oppia.android.scripts.build.SuggestBuildFixes.DependencyNode.Companion.computeUnresolvedLeaves
 import org.oppia.android.scripts.build.SuggestBuildFixes.PeekableSequence.Companion.toPeekable
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -64,7 +70,8 @@ fun main(vararg args: String) {
         scriptBgDispatcher, processTimeout = 30, processTimeoutUnit = TimeUnit.MINUTES
       )
     val bazelClient = BazelClient(repoRoot, commandExecutor)
-    SuggestBuildFixes(repoRoot, bazelClient).suggestBuildFixes(args.drop(2).toList(), mode)
+    SuggestBuildFixes(repoRoot, bazelClient, scriptBgDispatcher)
+      .suggestBuildFixes(args.drop(2).toList(), mode)
   }
 }
 
@@ -76,7 +83,11 @@ fun main(vararg args: String) {
  *     timeout execution time since this script may spend dozens of minutes running individual Bazel
  *     commands
  */
-class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: BazelClient) {
+class SuggestBuildFixes(
+  private val repoRoot: File,
+  private val bazelClient: BazelClient,
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+) {
   /**
    * Analyzes the specified [targetPatterns] in the given [outputMode] and outputs progress to
    * standard output.
@@ -89,17 +100,116 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     suggestBuildFixesAux(targetPatterns, outputMode)
   }
 
+  private data class DependencyNode(val target: Target, val dependencies: List<DependencyNode>) {
+    val maxDepth: Int by lazy { dependencies.maxOfOrNull { it.maxDepth }?.plus(1) ?: 1 }
+
+    private fun computeUnresolvedLeaves(presentDeps: Set<Target>): Set<Target> =
+      HashSet<Target>().also { computeUnresolvedLeavesAux(presentDeps, it) }
+
+    private fun computeUnresolvedLeavesAux(
+      presentDeps: Set<Target>,
+      unresolvedTargets: MutableSet<Target>
+    ): ResolutionResult {
+      // NOTE TO DEVELOPER: This is a slightly less idiomatic way to approach this, but this method
+      // has been tuned for performance since it's a heavily hit section for large graph analysis.
+      if (target in presentDeps) return ResolutionResult.NODE_IS_RESOLVED
+      val hasUnresolvedDep = dependencies.fold(initial = false) { prevIsUnresolved, dep ->
+        when (dep.computeUnresolvedLeavesAux(presentDeps, unresolvedTargets)) {
+          ResolutionResult.NODE_IS_RESOLVED -> false
+          ResolutionResult.NODE_NEEDS_RESOLUTION -> true
+          ResolutionResult.NODE_DEP_NEEDS_RESOLUTION -> true
+        } or prevIsUnresolved
+      }
+      return if (!hasUnresolvedDep) {
+        // The node itself needs to be resolved.
+        unresolvedTargets += target
+        ResolutionResult.NODE_NEEDS_RESOLUTION
+      } else ResolutionResult.NODE_DEP_NEEDS_RESOLUTION
+    }
+
+    private enum class ResolutionResult {
+      NODE_IS_RESOLVED,
+      NODE_NEEDS_RESOLUTION,
+      NODE_DEP_NEEDS_RESOLUTION
+    }
+
+    companion object {
+      fun parseDotGraph(dotContents: String): List<DependencyNode> {
+        require(dotContents.startsWith("digraph")) { "Only digraphs are supported." }
+        val graphContents = dotContents.substringAfter('{').substringBefore('}')
+        val graphNodeLines =
+          graphContents.split('\n').map(String::trim).filterNot { it.startsWith("node") }
+        val nodeTargets =
+          graphNodeLines.asSequence().filter {
+            "->" !in it
+          }.map {
+            it.trim().removeSurrounding("\"")
+          }.filter(String::isNotBlank).map(Target::parse).toList()
+        val nodeDepTargets =
+          graphNodeLines.filter { "->" in it }.map {
+            val (parent, dep) = it.split("->", limit = 2)
+            return@map parent.trim().removeSurrounding("\"") to dep.trim().removeSurrounding("\"")
+          }.groupBy { (parent, _) -> Target.parse(parent) }.mapValues { (_, pairsList) ->
+            pairsList.map { (_, dep) -> Target.parse(dep) }
+          }
+        val nodeDeps: MutableMap<Target, DependencyNode?> =
+          nodeTargets.associateWith { null }.toMutableMap()
+        val nodeParents = nodeTargets.associateWith { mutableSetOf<Target>() }
+        val remainingNodesToPlace = nodeTargets.toMutableSet()
+        while (remainingNodesToPlace.isNotEmpty()) {
+          val nodesRemovedThisIteration = mutableSetOf<Target>()
+          for (remainingNodeToPlace in remainingNodesToPlace) {
+            // This node can only be initialized if all of its deps are resolved.
+            val prereqDeps = nodeDepTargets[remainingNodeToPlace] ?: listOf()
+            val prereqNodes = prereqDeps.mapNotNull(nodeDeps::get)
+            if (prereqNodes.size != prereqDeps.size) continue
+            nodeDeps[remainingNodeToPlace] = DependencyNode(remainingNodeToPlace, prereqNodes)
+            prereqDeps.forEach { child -> nodeParents.getValue(child) += remainingNodeToPlace }
+            nodesRemovedThisIteration += remainingNodeToPlace
+          }
+          check(nodesRemovedThisIteration.isNotEmpty()) {
+            "Encountered cycle in graph; couldn't resolve any nodes this iteration."
+          }
+          remainingNodesToPlace -= nodesRemovedThisIteration
+        }
+
+        // Sanity check to ensure graph was fully parsed.
+        check(nodeDeps.values.all { it != null }) {
+          "Failed to parse nodes: ${nodeDeps.filter { (_, node) -> node == null }.keys}."
+        }
+
+        // Return root nodes (those are, the nodes with no parents).
+        return nodeDeps.values.filterNotNull().filter { nodeParents.getValue(it.target).isEmpty() }
+      }
+
+      fun List<DependencyNode>.computeUnresolvedLeaves(
+        scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+        presentDeps: Set<Target> = setOf()
+      ): Set<Target> {
+        // Parallelize root node processing to help speed up analyzing larger graphs.
+        val asyncNodes = map { rootNode ->
+          CoroutineScope(scriptBgDispatcher).async { rootNode.computeUnresolvedLeaves(presentDeps) }
+        }
+        return runBlocking { asyncNodes.awaitAll().flatten().toSet() }
+      }
+
+      fun List<DependencyNode>.computeMaxDepth(): Int = maxOfOrNull { it.maxDepth } ?: 0
+    }
+  }
+
   private fun suggestBuildFixesAux(
     targetPatterns: List<String>,
     outputMode: OutputMode,
     previousFailures: Set<DetectedFailure> = emptySet()
   ) {
+    println("Analyzing ${targetPatterns.size} pattern(s)...")
     require(targetPatterns.all { it.endsWith("...") }) {
       "Only wildcard '...' patterns are supported."
     }
     val removePatterns =
       targetPatterns.filter { it.startsWith("-") }.mapToSet { it.removePrefix("-") }
     val addPatterns = targetPatterns.filterNot { it.startsWith("-") }.toSet()
+    require(addPatterns.size == 1) { "Must have exactly 1 non-negation pattern for analysis." }
     // Ignore 'manual' tagged builds as they aren't meant to be included in broad patterns.
     val allTargetsToAdd = addPatterns.flatMapTo(mutableSetOf()) {
       bazelClient.query("set($it) - attr(tags, 'manual', $it)", withSkyQuery = true)
@@ -112,72 +222,126 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
     targetPatterns.forEach { println("- $it") }
     println()
 
-    // Expand patterns to their most specific forms (so that they can be more aggressively filtered
-    // out). Note that subtraction patterns are filtered out.
-    val expandedPatternsToAdd = addPatterns.mapToSet {
-      File(repoRoot, it.removePrefix("//").removeSuffix("..."))
-    }.flatMap { it.findTopLevelBazelPackages() }.mapToSet {
-      "//${it.toRelativeString(repoRoot)}/...".replace("///", "//")
-    }
-    println(
-      "Expanding provided ${targetPatterns.size} pattern(s) into ${expandedPatternsToAdd.size}" +
-        " pattern(s) for more granularity:"
-    )
-    expandedPatternsToAdd.forEach { println("- $it") }
-    println()
-    print("Querying 0/${expandedPatternsToAdd.size} patterns for targets...")
-    val expandedPatternCount = expandedPatternsToAdd.withIndex().sumOf { (index, ptrn) ->
-      bazelClient.query("set($ptrn) - attr(tags, 'manual', $ptrn)", withSkyQuery = true).also {
-        print("\rQuerying ${index + 1}/${expandedPatternsToAdd.size} patterns for targets...")
-      }.size
-    } - allTargetsToRemove.size
+    println("Parsing dependency graph for pattern(s)...")
+    val rawDepGraph = bazelClient.generateQueryGraph(targetPatterns).joinToString(separator = "\n")
+    val depGraphRootNodes = DependencyNode.parseDotGraph(rawDepGraph)
+    println("Parsed dependency graph with a max depth of ${depGraphRootNodes.computeMaxDepth()}.")
     println()
 
-    // Sanity check to make sure no targets were missed.
-    check(expandedPatternCount == allTargets.size) {
-      "Internal failure in script: expanded patterns computation lost targets."
-    }
+    println("Walking up graph to find closure of edge-most failing dependencies...")
+    var leafNodes = depGraphRootNodes.computeUnresolvedLeaves(scriptBgDispatcher)
+    val targetsThatBuild = mutableSetOf<Target>()
+    val targetsThatFail = mutableSetOf<Target>()
+    var roundCount = 0
+    while (leafNodes.isNotEmpty()) {
+      val nodesToCheck = leafNodes - (targetsThatBuild + targetsThatFail)
+      val totalTargetsChecked = targetsThatBuild.size + targetsThatFail.size + nodesToCheck.size
+      val preBuildPrefix =
+        "- Step ${++roundCount}: building ${nodesToCheck.size} targets" +
+          " ($totalTargetsChecked/${allTargets.size} total)"
+      val allBuildSuffix = "all build!"
+      val allBuildEmptySuffix = " ".repeat(allBuildSuffix.length)
+      printFullLine(preBuildPrefix, allBuildEmptySuffix, newLine = false)
 
-    // First, build the targets to ensure unrelated out-of-date actions are addressed.
-    val preBuildPrefix = "Pre-building to improve analyzing performance..."
-    print("\r$preBuildPrefix...0/${expandedPatternsToAdd.size}")
-    val patternOmissions = removePatterns.map { "-$it" }.toTypedArray()
-    val failingPatterns = expandedPatternsToAdd.filterIndexed { index, pattern ->
-      bazelClient.build(pattern, *patternOmissions, keepGoing = true, allowFailures = true).also {
-        print("\r$preBuildPrefix...${index + 1}/${expandedPatternsToAdd.size}")
-      }.exitCode != 0
+      // Chunk builds into groups of 50 targets for better performance.
+      val chunkedNodesToCheck = nodesToCheck.chunked(size = 50)
+
+      // Try short-circuiting the build by trying to build all of the targets together. This is
+      // usually much faster than trying to build the edge targets one-by-one, though it comes at
+      // the cost of spending more time for smaller numbers of targets nodes. Thus, only do this if
+      // there's more than 1 node to check.
+      val needToCheckOneByOne = when {
+        chunkedNodesToCheck.size > 1 -> {
+          !chunkedNodesToCheck.withIndex().all { (index, nodesChunk) ->
+            val nodePatterns = nodesChunk.map(Target::simpleQualifiedTargetPath)
+            val adjustedPrefix = "$preBuildPrefix [chunk ${index + 1}/${chunkedNodesToCheck.size}]"
+            printFullLine(adjustedPrefix, allBuildEmptySuffix, reset = true, newLine = false)
+            bazelClient.build(
+              *nodePatterns.toTypedArray(), keepGoing = true, allowFailures = true
+            ).exitCode == 0
+          }.also { allTargetsBuild ->
+            if (allTargetsBuild) {
+              val adjustedPrefix =
+                "$preBuildPrefix [chunk ${chunkedNodesToCheck.size}/${chunkedNodesToCheck.size}]"
+              printFullLine(adjustedPrefix, allBuildSuffix, reset = true)
+              targetsThatBuild += nodesToCheck
+            }
+          }
+        }
+        nodesToCheck.size > 1 -> {
+          val nodePatterns = nodesToCheck.map(Target::simpleQualifiedTargetPath)
+          val combinedBuildResult =
+            bazelClient.build(*nodePatterns.toTypedArray(), keepGoing = true, allowFailures = true)
+          if (combinedBuildResult.exitCode == 0) {
+            printFullLine(preBuildPrefix, allBuildSuffix, reset = true)
+            targetsThatBuild += nodesToCheck
+            false
+          } else true
+        }
+        else -> true
+      }
+
+      if (needToCheckOneByOne) {
+        val nodeResults = nodesToCheck.withIndex().associate { (index, target) ->
+          printFullLine(
+            preBuildPrefix,
+            suffix = "${index + 1}/${nodesToCheck.size}",
+            reset = true,
+            newLine = false
+          )
+          val buildResult =
+            bazelClient.build(
+              target.simpleQualifiedTargetPath, keepGoing = true, allowFailures = true
+            ).exitCode == 0
+          return@associate target to buildResult
+        }
+        println()
+        targetsThatBuild += nodeResults.filter { (_, builds) -> builds }.keys
+        targetsThatFail += nodeResults.filter { (_, builds) -> !builds }.keys
+      }
+
+      val nextLeafNodes =
+        depGraphRootNodes.computeUnresolvedLeaves(scriptBgDispatcher, targetsThatBuild)
+      if (nextLeafNodes == leafNodes) break // Cannot go up graph any further with current failures.
+      leafNodes = nextLeafNodes
     }
     println()
-    if (failingPatterns.isEmpty()) {
-      println("All targets are already building, so no additional analysis is needed.")
-      return
+
+    val allTargetsChecked = targetsThatBuild + targetsThatFail
+    if (allTargetsChecked.size < allTargets.size) {
+      println("Encountered failures before roots of graph:")
+      println("- ${allTargetsChecked.size}/${allTargets.size} checked for build failures.")
+      println("- ${targetsThatBuild.size}/${allTargetsChecked.size} had no failures.")
+      println("- ${targetsThatFail.size}/${allTargetsChecked.size} had failures.")
+      println()
     }
-    println("${failingPatterns.size}/${expandedPatternsToAdd.size} pattern(s) have failures.")
 
-    val possiblyFailingTargets = failingPatterns.flatMapTo(mutableSetOf()) {
-      bazelClient.query("set($it) - attr(tags, 'manual', $it)", withSkyQuery = true)
-    } - allTargetsToRemove
-
-    // Second, determine which targets are failing and require reworking.
-    val targetsRequiringAnalysis = possiblyFailingTargets.mapToSet(Target::parse)
-
-    val targetCount = targetsRequiringAnalysis.size
+    val targetCount = targetsThatFail.size
     println("$targetCount/${allTargets.size} target(s) require analysis.")
     println()
 
-    val allFailures = targetsRequiringAnalysis.mapIndexed { index, target ->
+    val allFailures = targetsThatFail.mapIndexed { index, target ->
       printTargetLine(prefix = "Inspecting (${index + 1}/$targetCount) ", target, suffix = "")
       findIssuesWithTarget(target)
     }
-    if (targetsRequiringAnalysis.isNotEmpty()) println()
+    if (targetsThatFail.isNotEmpty()) println()
 
     val unknownFailures = allFailures.filterIsInstance<DetectedFailure.Unknown>()
     val noteworthyFailures = allFailures.filterNot {
       it is DetectedFailure.NoFailure || it is DetectedFailure.Unknown
     }.distinct().sortedBy { it.target }
-    check(unknownFailures.isEmpty()) {
-      "Encountered unknown failures for targets: ${unknownFailures.mapToSet { it.target }}." +
-        " Please resolve them directly and try again."
+
+    if (unknownFailures.isNotEmpty()) {
+      val failingTargets = unknownFailures.map { it.target.simpleQualifiedTargetPath }
+      println("Encountered unknown failures for targets:")
+      failingTargets.forEach { failingTargetLabel -> println("- $failingTargetLabel") }
+
+      println("Please resolve them directly and try again. The following command can be used:")
+      println()
+      println("bazel build --keep_going -- ${failingTargets.joinToString(separator = " ")}")
+      println()
+
+      error("Encountered unknown failures for targets--please fix them directly and try again.")
     }
 
     for (failure in noteworthyFailures) {
@@ -247,6 +411,20 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
       }
       else -> println("Please fix the issues described above and try again.")
     }
+  }
+
+  private fun printFullLine(
+    prefix: String,
+    suffix: String,
+    reset: Boolean = false,
+    newLine: Boolean = true,
+    columnLimit: Int = 80
+  ) {
+    val infix = ".".repeat(columnLimit - (prefix.length + suffix.length))
+    val baseLineContents = "$prefix$infix$suffix"
+    if (reset) print('\r')
+    print(baseLineContents)
+    if (newLine) print('\n')
   }
 
   private fun findIssuesWithTarget(target: Target): DetectedFailure =
@@ -355,7 +533,7 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
           index.takeIf { "unresolved reference" in line }?.let { it + 1 }
         }.mapNotNull(failureLines::getOrNull).filter {
           it.startsWith("import")
-        }.mapTo(mutableSetOf()) { it.substringAfter("import ", missingDelimiterValue = "") }
+        }.mapToSet { it.substringAfter("import ", missingDelimiterValue = "") }
         val hasFailure = failureLines.any { "ERROR:" in it }
 
         return when {
@@ -409,10 +587,12 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
               bazelClient.interpretProtoTarget(rawTarget)
             rawTarget.startsWith("//") || rawTarget.startsWith("@//") ->
               Resolved(Target.parse(rawTarget))
+            // '//:dagger' pulls in com_google_dagger_dagger, so that's the actual target to remove.
+            parsedTarget?.fullyQualifiedTargetPath == "@maven_app//:com_google_dagger_dagger" ->
+              Resolved(Target.parse("//:dagger"))
             workspace in mavenThirdPartyPrefixMapping ->
               bazelClient.interpretMavenTarget(rawTarget, parsedTarget)
-            "/_aar/" in rawTarget ->
-              bazelClient.interpretAarTarget(rawTarget, parsedTarget)
+            "/_aar/" in rawTarget -> bazelClient.interpretAarTarget(rawTarget)
             // Special case re-interpretations since deps use a different target for these repos.
             workspace in externalRepoReferenceFixesMapping ->
               Resolved(externalRepoReferenceFixesMapping.getValue(workspace))
@@ -437,15 +617,13 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
         }
       }
 
-      private fun BazelClient.interpretAarTarget(
-        rawTarget: String,
-        parsedTarget: Target?
-      ): InterpretedTarget {
+      private fun BazelClient.interpretAarTarget(rawTarget: String): InterpretedTarget {
         val mavenType =
           rawTarget.substringBefore("/_aar/").substringAfterLast('/', missingDelimiterValue = "")
         val targetName =
           rawTarget.substringAfter("/_aar/", missingDelimiterValue = "").substringBefore('/')
-        return interpretMavenTarget(rawTarget = "@$mavenType//:$targetName", parsedTarget)
+        val newRawTarget = "@$mavenType//:$targetName"
+        return interpretMavenTarget(newRawTarget, Target.parseNonStrict(newRawTarget))
       }
 
       private fun BazelClient.interpretMavenTarget(
@@ -744,7 +922,13 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
   ) {
     val name: String by lazy { getExpectedProperty<PropertyValue.StringValue>("name").value }
     val deps: Set<Target> by lazy {
-      extractDeps()?.mapToSet { Target.parseInterpretedReference(it, workspace, pkg) } ?: emptySet()
+      extractDeps()?.mapToSet {
+        try {
+          Target.parseInterpretedReference(it, workspace, pkg)
+        } catch (e: Exception) {
+          throw Exception("Failed to parse dep for target: $this.", e)
+        }
+      } ?: emptySet()
     }
     val canBeRegenerated: Boolean by lazy { properties.values.all { it.canBeRegenerated } }
 
@@ -947,16 +1131,6 @@ class SuggestBuildFixes(private val repoRoot: File, private val bazelClient: Baz
 
     private fun Int.generateIndentation(): String =
       " ".repeat(this * 4) // 4 spaces per indent in Starlark.
-
-    private fun File.findTopLevelBazelPackages(): List<File> {
-      require(isDirectory) { "Expected directory, not: $this." }
-      val files = listFiles()?.toList() ?: emptyList()
-      val hasBuildFile = files.any { it.name == "BUILD" || it.name == "BUILD.bazel" }
-      return if (!hasBuildFile) {
-        // This is just a directory, not a Bazel package. Expand children.
-        files.filter(File::isDirectory).flatMap { it.findTopLevelBazelPackages() }
-      } else listOf(this) // Otherwise, the top-level package of this tree is the current directory.
-    }
   }
 
   // Subset of the actual language available tokens (just need enough to parse BUILD files).

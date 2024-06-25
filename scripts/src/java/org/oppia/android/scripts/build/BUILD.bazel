@@ -22,6 +22,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
         "//utility/src/main/java/org/oppia/android/util/math:peekable_iterator",
     ],
 )

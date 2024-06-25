@@ -2777,7 +2777,7 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFile("testfiles/$buildFile").writeText(prohibitedBuildContent)
     tempFolder.newFile("testfiles/$bazelFile").writeText(prohibitedBazelContent)
 
-    val exception = assertThrows(Exception::class) { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
 
@@ -2812,7 +2812,7 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFile("testfiles/$buildFile").writeText(prohibitedBuildContent)
     tempFolder.newFile("testfiles/$bazelFile").writeText(prohibitedBazelContent)
 
-    val exception = assertThrows(Exception::class) { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
 

@@ -51,6 +51,7 @@ oppia_android_test(
         "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:math_java_proto_lite",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",

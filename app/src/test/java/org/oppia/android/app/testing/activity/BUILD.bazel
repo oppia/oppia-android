@@ -52,6 +52,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

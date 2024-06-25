@@ -64,6 +64,16 @@ class BazelClient(
     return correctPotentiallyBrokenTargetNames(executeBazelCommand(*args.toTypedArray()))
   }
 
+  // TODO: Return parsed graph here, instead?
+  fun generateQueryGraph(patterns: List<String>): List<String> {
+    // See https://bazel.build/query/language#display-result-graph for disabling graph factoring.
+    val args =
+      listOfNotNull(
+        "query", "--noshow_progress", "--output", "graph", "--nograph:factored", "--"
+      ) + patterns
+    return executeBazelCommand(*args.toTypedArray()).outputLines
+  }
+
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> = query("kind(test, //...)")
 

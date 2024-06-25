@@ -6,43 +6,56 @@ load("//defs:oppia_android_library.bzl", "oppia_android_library")
 
 oppia_android_library(
     name = "gating_controller",
-    srcs = [
-        "SurveyGatingController.kt",
-    ],
+    srcs = ["SurveyGatingController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
 
 oppia_android_library(
     name = "survey_controller",
-    srcs = [
-        "SurveyController.kt",
-    ],
+    srcs = ["SurveyController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":survey_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:survey_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
 
 oppia_android_library(
     name = "survey_progress_controller",
-    srcs = [
-        "SurveyProgressController.kt",
-    ],
+    srcs = ["SurveyProgressController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":survey_progress",
-        "//domain",
-        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/survey:survey_events_logger",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//model/src/main/proto:survey_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-javalite",
         "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//third_party:kotlinx-coroutines-core-jvm",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
@@ -54,8 +67,5 @@ oppia_android_library(
         "SurveyQuestionGraph.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/survey:survey_events_logger",
-        "//model/src/main/proto:survey_java_proto_lite",
-    ],
+    deps = ["//model/src/main/proto:survey_java_proto_lite"],
 )

@@ -9,8 +9,10 @@ oppia_android_library(
     srcs = ["SurveyEventsLogger.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//domain",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:data_controller",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:survey_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],

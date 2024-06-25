@@ -28,6 +28,7 @@ oppia_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
+        "//third_party:androidx_annotation_annotation",
         "//third_party:org_hamcrest_hamcrest-core",
     ],
 )

@@ -15,27 +15,19 @@ oppia_android_library(
     ],
 )
 
-# Note that required Crashlytics dependencies are included as part of the production implementation.
 oppia_android_library(
     name = "prod_impl",
     srcs = [
         "FirebaseAnalyticsEventLogger.kt",
         "FirebaseLogUploader.kt",
     ],
-    android_merge_deps = [
-        "//app:crashlytics_deps",  # All prod_impl deps require this to be linked in for runtime.
-    ],
+    android_merge_deps = ["//app:crashlytics_deps"],
     visibility = ["//utility:utility_testing_visibility"],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_crashlytics_sdk_android_crashlytics",
         "//third_party:com_google_android_gms_play-services-measurement-api",
-        "//third_party:com_google_firebase_firebase-analytics",
-        "//third_party:com_google_firebase_firebase-crashlytics",
-        "//third_party:io_fabric_sdk_android_fabric",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
@@ -54,9 +46,11 @@ oppia_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":debug_event_logger",
-        ":debug_module",
         ":firebase_exception_logger",
+        ":firestore_logger",
         ":firestore_logger_impl",
+        ":firestore_wrapper",
+        ":firestore_wrapper_impl",
         ":prod_impl",
         "//:dagger",
         "//third_party:com_google_firebase_firebase-crashlytics",
@@ -84,14 +78,15 @@ oppia_android_library(
 
 oppia_android_library(
     name = "debug_module",
-    srcs = [
-        "DebugLogReportingModule.kt",
-    ],
+    srcs = ["DebugLogReportingModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":debug_event_logger",
         ":debug_firestore_logger_impl",
         ":firebase_exception_logger",
+        ":firestore_logger",
+        ":firestore_wrapper",
+        ":firestore_wrapper_impl",
         ":prod_impl",
         "//:dagger",
         "//third_party:com_google_firebase_firebase-crashlytics",
@@ -104,20 +99,14 @@ oppia_android_library(
 
 oppia_android_library(
     name = "firestore_logger_impl",
-    srcs = [
-        "FirestoreEventLoggerProdImpl.kt",
-    ],
+    srcs = ["FirestoreEventLoggerProdImpl.kt"],
     deps = [
         ":firestore_logger",
-        ":firestore_wrapper_impl",
-        "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_google_auto_value_auto-value-annotations",
-        "//third_party:com_google_firebase_firebase-appcheck",
-        "//third_party:com_google_firebase_firebase-appcheck-debug",
-        "//third_party:com_google_firebase_firebase-appcheck-playintegrity",
-        "//third_party:com_google_firebase_firebase-firestore-ktx",
-        "//third_party:org_checkerframework_checker-qual",
+        ":firestore_wrapper",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:com_google_android_gms_play-services-tasks",
+        "//third_party:com_google_firebase_firebase-firestore",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
@@ -135,15 +124,15 @@ oppia_android_library(
 
 oppia_android_library(
     name = "debug_firestore_logger_impl",
-    srcs = [
-        "DebugFirestoreEventLoggerImpl.kt",
-    ],
+    srcs = ["DebugFirestoreEventLoggerImpl.kt"],
     visibility = [
         "//app:__pkg__",
+        "//utility:utility_testing_visibility",
     ],
     deps = [
+        ":firestore_logger",
         ":firestore_logger_impl",
-        ":firestore_wrapper_impl",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -155,21 +144,17 @@ oppia_android_library(
         "FirestoreInstanceWrapper.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:com_google_firebase_firebase-firestore-ktx",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//utility/src/main/java/org/oppia/android/util/data:async_result",
-    ],
+    deps = ["//third_party:com_google_firebase_firebase-firestore"],
 )
 
 oppia_android_library(
     name = "firestore_wrapper_impl",
-    srcs = [
-        "FirestoreInstanceWrapperImpl.kt",
-    ],
+    srcs = ["FirestoreInstanceWrapperImpl.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":firestore_wrapper",
-        "//:dagger",
+        "//third_party:com_google_firebase_firebase-common-ktx",
+        "//third_party:com_google_firebase_firebase-firestore-ktx",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

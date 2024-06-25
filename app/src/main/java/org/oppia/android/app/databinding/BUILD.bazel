@@ -64,6 +64,7 @@ android_library(
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:profile_java_proto_lite",
         "//model/src/main/proto:thumbnail_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",

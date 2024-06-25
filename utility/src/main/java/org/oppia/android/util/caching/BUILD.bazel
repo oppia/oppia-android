@@ -46,13 +46,10 @@ oppia_android_library(
 
 oppia_android_library(
     name = "caching_prod_module",
-    srcs = [
-        "CachingModule.kt",
-    ],
+    srcs = ["CachingModule.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":annotations",
-        ":asset_repository",
         "//:dagger",
     ],
 )
