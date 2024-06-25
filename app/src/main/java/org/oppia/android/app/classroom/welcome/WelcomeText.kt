@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 import org.oppia.android.app.home.WelcomeViewModel
 
+/** Test tag for the welcome section. */
 const val WELCOME_TEST_TAG = "TEST_TAG.welcome"
 
 /** Displays a welcome text with an underline. */

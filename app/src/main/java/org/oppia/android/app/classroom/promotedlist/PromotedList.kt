@@ -41,7 +41,10 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
+/** Test tag for the header of the promoted story list. */
 const val PROMOTED_STORY_LIST_HEADER_TEST_TAG = "TEST_TAG.promoted_story_list_header"
+
+/** Test tag for the promoted story list. */
 const val PROMOTED_STORY_LIST_TEST_TAG = "TEST_TAG.promoted_story_list"
 
 /** Displays a list of promoted stories. */

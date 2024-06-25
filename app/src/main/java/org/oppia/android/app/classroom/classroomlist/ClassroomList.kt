@@ -34,7 +34,10 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 
+/** Test tag for the header of the classroom section. */
 const val CLASSROOM_HEADER_TEST_TAG = "TEST_TAG.classroom_header"
+
+/** Test tag for the classroom list. */
 const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"
 
 /** Displays a list of classroom summaries with a header. */

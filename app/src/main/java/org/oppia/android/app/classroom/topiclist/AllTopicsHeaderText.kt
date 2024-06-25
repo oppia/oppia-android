@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 
+/** Test tag for the header of the all topics section. */
 const val ALL_TOPICS_HEADER_TEST_TAG = "TEST_TAG.all_topics_header"
 
 /** Displays the header text for the topic list section. */
