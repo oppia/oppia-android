@@ -3,10 +3,13 @@ package org.oppia.android.app.onboarding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
+import org.oppia.android.app.options.AudioLanguageSelectionViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import javax.inject.Inject
@@ -15,7 +18,8 @@ import javax.inject.Inject
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
 
@@ -47,6 +51,23 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()
     }
+
+    val adapter = ArrayAdapter(
+      fragment.requireContext(),
+      R.layout.onboarding_language_dropdown_item,
+      R.id.onboarding_language_text_view,
+      audioLanguageSelectionViewModel.availableAudioLanguages
+    )
+
+    binding.audioLanguageDropdownList.apply {
+      setAdapter(adapter)
+      setText(
+        audioLanguageSelectionViewModel.defaultLanguageSelection,
+        false
+      )
+      setRawInputType(EditorInfo.TYPE_NULL)
+    }
+
     return binding.root
   }
 }

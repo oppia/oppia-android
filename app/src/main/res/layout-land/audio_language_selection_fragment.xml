@@ -65,6 +65,7 @@
       <com.google.android.material.textfield.TextInputLayout style="@style/LanguageDropdownStyle">
 
         <AutoCompleteTextView
+          android:id="@+id/audio_language_dropdown_list"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:inputType="none"

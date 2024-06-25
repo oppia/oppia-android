@@ -224,32 +224,6 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguage_onboardingV2Enabled_languageSelectionDropdownIsDisplayed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(withId(R.id.audio_language_dropdown_background)).check(
-        matches(
-          withEffectiveVisibility(Visibility.VISIBLE)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testAudioLanguage_onboardingV2Enabled_configChange_languageDropdownIsDisplayed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_language_dropdown_background)).check(
-        matches(
-          withEffectiveVisibility(Visibility.VISIBLE)
-        )
-      )
-    }
-  }
-
-  @Test
   fun testAudioLanguage_onboardingV2Enabled_allViewsAreDisplayed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
@@ -258,6 +232,9 @@ class AudioLanguageFragmentTest {
       )
       onView(withId(R.id.audio_language_subtitle)).check(
         matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+      )
+      onView(withId(R.id.audio_language_dropdown_list)).check(
+        matches(withText(context.getString(R.string.english_localized_language_name)))
       )
       onView(withId(R.id.onboarding_navigation_back)).check(
         matches(withEffectiveVisibility(Visibility.VISIBLE))
@@ -279,6 +256,9 @@ class AudioLanguageFragmentTest {
       )
       onView(withId(R.id.audio_language_subtitle)).check(
         matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+      )
+      onView(withId(R.id.audio_language_dropdown_list)).check(
+        matches(withText(context.getString(R.string.english_localized_language_name)))
       )
       onView(withId(R.id.onboarding_navigation_back)).check(
         matches(withEffectiveVisibility(Visibility.VISIBLE))
