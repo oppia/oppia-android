@@ -119,39 +119,37 @@ class CoverageRunnerTest {
       ).await()
     }
 
-    val expectedResult = listOf(
-      CoverageReport.newBuilder()
-        .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
-        .setFilePath("coverage/main/java/com/example/TwoSum.kt")
-        .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(3)
-            .setCoverage(Coverage.NONE)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(7)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(8)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(10)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .setLinesFound(4)
-        .setLinesHit(3)
-        .build()
-    )
+    val expectedResult = CoverageReport.newBuilder()
+      .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
+      .setFilePath("coverage/main/java/com/example/TwoSum.kt")
+      .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(3)
+          .setCoverage(Coverage.NONE)
+          .build()
+      )
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(7)
+          .setCoverage(Coverage.FULL)
+          .build()
+      )
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(8)
+          .setCoverage(Coverage.FULL)
+          .build()
+      )
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(10)
+          .setCoverage(Coverage.FULL)
+          .build()
+      )
+      .setLinesFound(4)
+      .setLinesHit(3)
+      .build()
 
     assertThat(result).isEqualTo(expectedResult)
   }
