@@ -54,7 +54,7 @@ fun ClassroomList(
       .fillMaxWidth(),
   ) {
     Text(
-      text = stringResource(id = R.string.classrooms),
+      text = stringResource(id = R.string.classrooms_list_activity_section_header),
       color = colorResource(id = R.color.component_color_shared_primary_text_color),
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Medium,
