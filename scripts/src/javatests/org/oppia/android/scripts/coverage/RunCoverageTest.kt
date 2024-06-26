@@ -8,16 +8,21 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+<<<<<<< HEAD
 import org.oppia.android.scripts.proto.BranchCoverage
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredFile
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.FunctionCoverage
+=======
+import org.oppia.android.testing.assertThrows
+>>>>>>> 356e4fbef00f9d55b7168b0bffad0fdbed3ef055
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
+import java.io.File
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
@@ -47,6 +52,28 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_invalidFile_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
+
+    assertThat(exception).hasMessageThat().contains("File doesn't exist")
+  }
+
+  @Test
+  fun testRunCoverage_missingTestFileNOtExempted_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
+      sampleFile.createNewFile()
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
+
+    assertThat(exception).hasMessageThat().contains("No appropriate test file found")
+  }
+
+  @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
     val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
 
@@ -62,7 +89,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_sampleTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -188,7 +215,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validScriptPathSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_scriptTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -314,7 +341,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validAppPathSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_appTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -440,7 +467,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validMultiSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_sharedAndLocalTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
