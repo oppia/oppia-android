@@ -151,7 +151,7 @@ class MyDownloadsActivityTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  fun testMyDownloadsActivity_pressBack_checkOpensHomeActivity() {
+  fun testMyDownloadsActivity_classroomsFlagDisabled_pressBack_opensHomeActivity() {
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
       intended(hasComponent(HomeActivity::class.java.name))
@@ -165,7 +165,7 @@ class MyDownloadsActivityTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  fun testMyDownloadsActivity_enableClassrooms_pressBack_checkOpensClassroomListActivity() {
+  fun testMyDownloadsActivity_classroomsFlagEnabled_pressBack_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
