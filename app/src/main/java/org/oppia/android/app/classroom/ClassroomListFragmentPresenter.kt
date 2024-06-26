@@ -20,6 +20,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
@@ -56,6 +57,9 @@ import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+
+/** Test tag for the classroom list screen. */
+const val CLASSROOM_LIST_SCREEN_TEST_TAG = "TEST_TAG.classroom_list_screen"
 
 /** The presenter for [ClassroomListFragment]. */
 class ClassroomListFragmentPresenter @Inject constructor(
@@ -177,7 +181,9 @@ class ClassroomListFragmentPresenter @Inject constructor(
       ?.plus(classroomListViewModel.topicList)
       ?.groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
-    LazyColumn {
+    LazyColumn(
+      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+    ) {
       groupedItems?.forEach { (type, items) ->
         when (type) {
           WelcomeViewModel::class -> items.forEach { item ->

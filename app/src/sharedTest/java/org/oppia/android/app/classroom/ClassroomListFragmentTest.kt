@@ -4,8 +4,11 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -156,7 +159,32 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
-    // composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
+
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToNode(
+      hasTestTag(ALL_TOPICS_HEADER_TEST_TAG)
+    )
+    composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_scrollToBottom_classroomListSticks_checkClassroomListVisible() {
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToIndex(3)
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_switchClassroom_checkTopicListUpdatesCorrectly() {
+
+  }
+
+  @Test
+  fun testFragment_clickOnTopicCard_returnBack_checkClassroomSelectionIsRetained() {
+
+  }
+
+  @Test
+  fun testFragment_loginProfiles_switchClassrooms_checkClassroomsRetainedIndividually() {
+
   }
 
   private fun logIntoAdminTwice() {
