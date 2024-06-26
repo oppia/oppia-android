@@ -162,8 +162,8 @@ class RunCoverageTest {
         )
         .addCoveredLine(
           CoveredLine.newBuilder()
-            .setLineNumber(10).
-            setCoverage(Coverage.FULL)
+            .setLineNumber(10)
+            .setCoverage(Coverage.FULL)
             .build()
         )
         .setLinesFound(4)
