@@ -53,6 +53,10 @@ class AddProfileActivityPresenter @Inject constructor(
   private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
   private lateinit var alertDialog: AlertDialog
+  private val galleryIntent = Intent(
+    Intent.ACTION_PICK,
+    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+  )
   lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
   fun handleOnCreate() {
@@ -196,11 +200,9 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     uploadImageView.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
       resultLauncher.launch(galleryIntent)
     }
     binding.addProfileActivityEditUserImageView.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
       resultLauncher.launch(galleryIntent)
     }
 
