@@ -280,7 +280,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       "Main",
-      "MainTest"
+      "MainTest",
       sourceContent,
       testContent,
       sourceSubpackage = "coverage/main/java/com/example",
