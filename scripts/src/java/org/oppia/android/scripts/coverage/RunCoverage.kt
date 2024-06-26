@@ -88,6 +88,10 @@ class RunCoverage(
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
+    if (testFilePaths.isEmpty()) {
+      error("No appropriate test file found for $filePath")
+    }
+
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
     return testTargets.mapNotNull { testTarget ->

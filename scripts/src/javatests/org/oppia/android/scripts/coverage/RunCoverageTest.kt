@@ -43,21 +43,25 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validFile_runsCoverage() {
-    testBazelWorkspace.initEmptyWorkspace()
-    val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
-    sampleFile.createNewFile()
-    main(tempFolder.root.absolutePath, "file.kt")
-  }
-
-  @Test
-  fun testRunCoverage_invalidFile_runsCoverage() {
+  fun testRunCoverage_invalidFile_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     val exception = assertThrows<IllegalStateException>() {
       main(tempFolder.root.absolutePath, "file.kt")
     }
 
     assertThat(exception).hasMessageThat().contains("File doesn't exist")
+  }
+
+  @Test
+  fun testRunCoverage_missingTestFileNOtExempted_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
+      sampleFile.createNewFile()
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
+
+    assertThat(exception).hasMessageThat().contains("No appropriate test file found")
   }
 
   @Test
