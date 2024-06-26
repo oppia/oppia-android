@@ -62,6 +62,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    */
   fun addSourceAndTestFileWithContent(
     filename: String,
+    testFilename: String,
     sourceContent: String,
     testContent: String,
     sourceSubpackage: String,
@@ -73,10 +74,9 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       sourceSubpackage
     )
 
-    val testFileName = "${filename}Test"
     addTestContentAndBuildFile(
       filename,
-      testFileName,
+      testFilename,
       testContent,
       sourceSubpackage,
       testSubpackage

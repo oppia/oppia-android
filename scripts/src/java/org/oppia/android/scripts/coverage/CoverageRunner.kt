@@ -105,7 +105,7 @@ class CoverageRunner(
 
 private fun extractTargetName(bazelTestTarget: String): String {
   val targetName = bazelTestTarget.substringAfterLast(":").trim()
-  return targetName.removeSuffix("Test").removeSuffix("LocalTest")
+  return targetName.removeSuffix("LocalTest").removeSuffix("Test")
 }
 
 private fun calculateSha1(filePath: String): String {
