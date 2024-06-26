@@ -87,23 +87,28 @@ class ClassroomController @Inject constructor(
   private fun createClassroomList(
     contentLocale: OppiaLocale.ContentLocale
   ): ClassroomList {
-    return if (loadLessonProtosFromAssets) {
-      val classroomIdList = assetRepository.loadProtoFromLocalAssets(
-        assetName = "classrooms",
-        baseMessage = ClassroomIdList.getDefaultInstance()
-      )
-      return ClassroomList.newBuilder().apply {
-        addAllClassroomSummary(
-          classroomIdList.classroomIdsList.map { classroomId ->
-            createEphemeralClassroomSummary(classroomId, contentLocale)
-          }.filter { ephemeralClassroomSummary ->
-            ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
-              topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
-            }
+    return if (loadLessonProtosFromAssets)
+      loadClassroomListFromProto(contentLocale)
+    else
+      loadClassroomListFromJson(contentLocale)
+  }
+
+  private fun loadClassroomListFromProto(contentLocale: OppiaLocale.ContentLocale): ClassroomList {
+    val classroomIdList = assetRepository.loadProtoFromLocalAssets(
+      assetName = "classrooms",
+      baseMessage = ClassroomIdList.getDefaultInstance()
+    )
+    return ClassroomList.newBuilder().apply {
+      addAllClassroomSummary(
+        classroomIdList.classroomIdsList.map { classroomId ->
+          createEphemeralClassroomSummary(classroomId, contentLocale)
+        }.filter { ephemeralClassroomSummary ->
+          ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
+            topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
           }
-        )
-      }.build()
-    } else loadClassroomListFromJson(contentLocale)
+        }
+      )
+    }.build()
   }
 
   private fun loadClassroomListFromJson(contentLocale: OppiaLocale.ContentLocale): ClassroomList {
@@ -157,10 +162,10 @@ class ClassroomController @Inject constructor(
           }
         )
       }.build()
-    } else loadClassroomSummaryFromJson(classroomId)
+    } else createClassroomSummaryFromJson(classroomId)
   }
 
-  private fun loadClassroomSummaryFromJson(classroomId: String): ClassroomSummary {
+  private fun createClassroomSummaryFromJson(classroomId: String): ClassroomSummary {
     val classroomJsonObject = jsonAssetRetriever
       .loadJsonFromAsset("$classroomId.json")
       ?: return ClassroomSummary.getDefaultInstance()
@@ -212,10 +217,6 @@ class ClassroomController @Inject constructor(
         ?: return ClassroomRecord.TopicIdList.getDefaultInstance()
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
-      val topicSummaryList = mutableListOf<TopicSummary>()
-      topicIdArray.forEach { topicId ->
-        topicSummaryList.add(createTopicSummary(topicId, classroomId))
-      }
       ClassroomRecord.TopicIdList.newBuilder().apply {
         topicIdArray.forEach { topicId ->
           addTopicIds(topicId)
@@ -381,6 +382,4 @@ internal fun createClassroomThumbnail2(): LessonThumbnail {
     .build()
 }
 
-private fun String?.isNullOrEmpty(): Boolean = this == null || this.isEmpty() || this == "null"
-
-private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
+private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrBlank() || this != "null"
