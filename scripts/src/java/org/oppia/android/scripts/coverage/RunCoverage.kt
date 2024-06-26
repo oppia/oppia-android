@@ -79,12 +79,6 @@ class RunCoverage(
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
 
-  companion object {
-    // The minimum coverage percentage threshold for coverage analysis,
-    // The script will fail if the file has less than the minimum specified coverage.
-    const val MIN_COVERAGE_PERCENTAGE = 20
-  }
-
   /**
    * Executes coverage analysis for the specified file.
    *
@@ -118,13 +112,11 @@ class RunCoverage(
       runCoverageForTarget(testTarget)
     }
 
-    println("Generated Coverage Reports proto: $coverageReports")
-
     if (coverageReports.isNotEmpty()) {
       val reporter = CoverageReporter(repoRoot, coverageReports, reportFormat, reportOutputPath)
-      val coverageRatio = reporter.computeCoverageRatio()
-      val generatedReport = reporter.generateRichTextReport(coverageRatio)
-      println("\nGenerated report at: $generatedReport\n")
+      val (computedCoverageRatio, reportOutputPath) = reporter.generateRichTextReport()
+      println("\nComputed Coverage Ratio is: $computedCoverageRatio")
+      println("\nGenerated report at: $reportOutputPath\n")
     } else {
       println("No coverage reports generated.")
     }
@@ -167,7 +159,6 @@ private fun findTestFile(repoRoot: String, filePath: String): List<String> {
 }
 
 private fun getReportOutputPath(repoRoot: String, filePath: String, reportFormat: ReportFormat): String {
-  println("Repo root: $repoRoot")
   val fileWithoutExtension = filePath.substringBeforeLast(".")
   val defaultFilename = when (reportFormat) {
     ReportFormat.HTML -> "coverage.html"

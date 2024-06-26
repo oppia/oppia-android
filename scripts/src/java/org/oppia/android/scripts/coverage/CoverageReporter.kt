@@ -10,24 +10,24 @@ class CoverageReporter(
   private val reportFormat: ReportFormat,
   private val reportOutputPath: String
 ) {
+  val computedCoverageRatio = computeCoverageRatio()
+  val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
 
-  fun generateRichTextReport(computedCoverageRatio: Float): String {
+  val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
+
+  val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
+  val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
+
+  fun generateRichTextReport(): Pair<Float, String> {
     println("output: $reportOutputPath")
     println("report format: $reportFormat")
     return when (reportFormat) {
-      ReportFormat.MARKDOWN -> generateMarkdownReport(computedCoverageRatio)
-      ReportFormat.HTML -> generateHtmlReport(computedCoverageRatio)
+      ReportFormat.MARKDOWN -> generateMarkdownReport()
+      ReportFormat.HTML -> generateHtmlReport()
     }
   }
 
-  private fun generateMarkdownReport(computedCoverageRatio: Float): String {
-    val computedCoveragePercentage = computedCoverageRatio * 100
-    val formattedCoveragePercentage = "%.2f".format(computedCoveragePercentage)
-    val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
-
-    val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
-    val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
-
+  private fun generateMarkdownReport(): Pair<Float, String> {
     val markdownReport = """
         ## Coverage Report
 
@@ -43,17 +43,10 @@ class CoverageReporter(
 
     println("\n$markdownReport")
 
-    return reportOutputPath
+    return Pair(computedCoverageRatio, reportOutputPath)
   }
 
-
-  fun generateHtmlReport(computedCoverageRatio: Float): String {
-    val computedCoveragePercentage = "%.2f".format(computedCoverageRatio).toFloat()
-    val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
-
-    val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
-    val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
-
+  fun generateHtmlReport(): Pair<Float, String> {
     var htmlContent = """
     <!DOCTYPE html>
     <html lang="en">
@@ -134,7 +127,7 @@ class CoverageReporter(
       <div class="summary-box">
         <ul>
           <li><strong>Covered File:</strong> $filePath</li>
-          <li><strong>Coverage percentage:</strong> ${computedCoveragePercentage * 100}% covered</li>
+          <li><strong>Coverage percentage:</strong> $formattedCoveragePercentage% covered</li>
           <li><strong>Line coverage:</strong> $totalLinesHit covered / $totalLinesFound found</li>
         </ul>
       </div>
@@ -180,10 +173,10 @@ class CoverageReporter(
       writeText(htmlContent)
     }
 
-    return reportOutputPath
+    return Pair(computedCoverageRatio, reportOutputPath)
   }
 
-  fun computeCoverageRatio(): Float {
+  private fun computeCoverageRatio(): Float {
     val report = coverageReportList.getOrNull(0)
     return if (report != null && report.linesFound != 0) {
       report.linesHit.toFloat() / report.linesFound.toFloat()
