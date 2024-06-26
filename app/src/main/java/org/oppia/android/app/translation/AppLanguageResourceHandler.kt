@@ -188,6 +188,27 @@ class AppLanguageResourceHandler @Inject constructor(
     }
   }
 
+  /**
+   * Returns an [OppiaLanguage] from its human-readable, localized representation.
+   * It is expected that each input string is not localized to the user's current locale, but it
+   * will be localized for that specific language as per [computeLocalizedDisplayName].
+   */
+  fun getOppiaLanguageFromDisplayName(displayName: String): OppiaLanguage {
+    return when (displayName) {
+      resources.getString(R.string.hindi_localized_language_name) -> OppiaLanguage.HINDI
+      resources.getString(R.string.portuguese_localized_language_name) -> OppiaLanguage.PORTUGUESE
+      resources.getString(R.string.swahili_localized_language_name) -> OppiaLanguage.SWAHILI
+      resources.getString(R.string.brazilian_portuguese_localized_language_name) ->
+        OppiaLanguage.BRAZILIAN_PORTUGUESE
+      resources.getString(R.string.english_localized_language_name) -> OppiaLanguage.ENGLISH
+      resources.getString(R.string.arabic_localized_language_name) -> OppiaLanguage.ARABIC
+      resources.getString(R.string.hinglish_localized_language_name) -> OppiaLanguage.HINGLISH
+      resources.getString(R.string.nigerian_pidgin_localized_language_name) ->
+        OppiaLanguage.NIGERIAN_PIDGIN
+      else -> OppiaLanguage.UNRECOGNIZED
+    }
+  }
+
   private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
     // TODO(#3791): Remove this dependency.
     val locale = Locale(languageCode, regionCode)

@@ -3,12 +3,25 @@ package org.oppia.android.app.onboarding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.OnboardingAppLanguageSelectionFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -16,9 +29,14 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger,
+  private val translationController: TranslationController
 ) {
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
+  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  var default = ""
 
   /** Handle creation and binding of the [OnboardingFragment] layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -27,6 +45,8 @@ class OnboardingFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+
+    createDefaultProfile()
 
     binding.apply {
       lifecycleOwner = fragment
@@ -41,8 +61,146 @@ class OnboardingFragmentPresenter @Inject constructor(
           OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
         fragment.startActivity(intent)
       }
-    }
 
+      onboardingLanguageLetsGoButton.setOnClickListener {
+        val intent =
+          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+        fragment.startActivity(intent)
+      }
+
+      val adapter = ArrayAdapter(
+        fragment.requireContext(),
+        R.layout.onboarding_language_dropdown_item,
+        R.id.onboarding_language_text_view,
+        getSupportedLanguages()
+      )
+
+      binding.onboardingLanguageDropdown.apply {
+        setAdapter(adapter)
+        getSystemLanguage()
+        setText(
+          default,
+          false
+        )
+        setRawInputType(EditorInfo.TYPE_NULL)
+
+        onItemClickListener =
+          AdapterView.OnItemClickListener { _, _, position, _ ->
+            val selectedOppiaLanguage = adapter.getItem(position)
+              ?.let { appLanguageResourceHandler.getOppiaLanguageFromDisplayName(it) }
+            val selection = AppLanguageSelection.newBuilder().apply {
+              selectedLanguage = selectedOppiaLanguage
+            }.build()
+
+            translationController.updateAppLanguage(profileId, selection)
+            translationController.getAppLanguage(profileId)
+          }
+      }
+    }
     return binding.root
+  }
+
+  private fun getSystemLanguage() {
+    translationController.getSystemLanguageLocale().toLiveData().observe(
+      fragment,
+      { result ->
+        default = processSystemLanguageResult(result)
+      }
+    )
+  }
+
+  private fun processSystemLanguageResult(result: AsyncResult<OppiaLocale.DisplayLocale>): String {
+    val systemLanguage = when (result) {
+      is AsyncResult.Success -> {
+        println("result.value.getCurrentLanguage() ${result.value.getCurrentLanguage()}")
+        appLanguageResourceHandler.computeLocalizedDisplayName(result.value.getCurrentLanguage())
+      }
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "OnboardingFragment",
+          "Failed to retrieve system language locale.",
+          result.error
+        )
+        appLanguageResourceHandler.computeLocalizedDisplayName(OppiaLanguage.ENGLISH)
+      }
+      is AsyncResult.Pending -> appLanguageResourceHandler.computeLocalizedDisplayName(
+        OppiaLanguage.ENGLISH
+      )
+    }
+    return systemLanguage
+  }
+
+  private fun getSupportedLanguages(): List<String> {
+    val supportedLanguages = mutableListOf<String>()
+    translationController.getSupportedAppLanguages().toLiveData().observe(
+      fragment,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> result.value.map {
+            supportedLanguages.add(
+              appLanguageResourceHandler.computeLocalizedDisplayName(
+                it
+              )
+            )
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "OnboardingFragment",
+              "Failed to retrieve supported language list.",
+              result.error
+            )
+          }
+          is AsyncResult.Pending -> {}
+        }
+      }
+    )
+    return supportedLanguages
+  }
+
+  private fun createDefaultProfile() {
+    profileManagementController.addProfile(
+      name = "",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+      .observe(
+        fragment,
+        { result ->
+          when (result) {
+            is AsyncResult.Success -> retrieveNewProfileId()
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "OnboardingFragment", "Error creating the default profile", result.error
+              )
+              Profile.getDefaultInstance()
+            }
+            is AsyncResult.Pending -> {}
+          }
+        }
+      )
+  }
+
+  private fun retrieveNewProfileId() {
+    profileManagementController.getProfiles().toLiveData().observe(
+      fragment,
+      { profilesResult ->
+        when (profilesResult) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "OnboardingFragment",
+              "Failed to retrieve the list of profiles",
+              profilesResult.error
+            )
+          }
+          is AsyncResult.Pending -> {}
+          is AsyncResult.Success -> {
+            profileId = profilesResult.value.firstOrNull()?.id ?: ProfileId.getDefaultInstance()
+          }
+        }
+      }
+    )
   }
 }
