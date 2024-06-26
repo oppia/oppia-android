@@ -42,7 +42,7 @@ fun main(vararg args: String) {
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
   if (!File(repoRoot, filePath).exists()) {
-    error("File doesn't exist.")
+    error("File doesn't exist: $filePath.")
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
