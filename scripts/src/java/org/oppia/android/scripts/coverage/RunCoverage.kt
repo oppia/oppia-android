@@ -32,7 +32,7 @@ fun main(vararg args: String) {
   val filePath = args[1]
 
   if (!File(repoRoot, filePath).exists()) {
-    error("File doesn't exist.")
+    error("File doesn't exist: $filePath.")
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
