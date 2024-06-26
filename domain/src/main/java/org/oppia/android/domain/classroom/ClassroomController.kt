@@ -87,23 +87,28 @@ class ClassroomController @Inject constructor(
   private fun createClassroomList(
     contentLocale: OppiaLocale.ContentLocale
   ): ClassroomList {
-    return if (loadLessonProtosFromAssets) {
-      val classroomIdList = assetRepository.loadProtoFromLocalAssets(
-        assetName = "classrooms",
-        baseMessage = ClassroomIdList.getDefaultInstance()
-      )
-      return ClassroomList.newBuilder().apply {
-        addAllClassroomSummary(
-          classroomIdList.classroomIdsList.map { classroomId ->
-            createEphemeralClassroomSummary(classroomId, contentLocale)
-          }.filter { ephemeralClassroomSummary ->
-            ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
-              topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
-            }
+    return if (loadLessonProtosFromAssets)
+      loadClassroomListFromProto(contentLocale)
+    else
+      loadClassroomListFromJson(contentLocale)
+  }
+
+  private fun loadClassroomListFromProto(contentLocale: OppiaLocale.ContentLocale): ClassroomList {
+    val classroomIdList = assetRepository.loadProtoFromLocalAssets(
+      assetName = "classrooms",
+      baseMessage = ClassroomIdList.getDefaultInstance()
+    )
+    return ClassroomList.newBuilder().apply {
+      addAllClassroomSummary(
+        classroomIdList.classroomIdsList.map { classroomId ->
+          createEphemeralClassroomSummary(classroomId, contentLocale)
+        }.filter { ephemeralClassroomSummary ->
+          ephemeralClassroomSummary.classroomSummary.topicSummaryList.any { topicSummary ->
+            topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
           }
-        )
-      }.build()
-    } else loadClassroomListFromJson(contentLocale)
+        }
+      )
+    }.build()
   }
 
   private fun loadClassroomListFromJson(contentLocale: OppiaLocale.ContentLocale): ClassroomList {
