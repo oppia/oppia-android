@@ -9,6 +9,7 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -90,7 +91,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -155,11 +156,7 @@ class MyDownloadsActivityTest {
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
       intended(hasComponent(HomeActivity::class.java.name))
-      it.onActivity { activity ->
-        assertThat(
-          activity.intent.extractCurrentUserProfileId().internalId
-        ).isEqualTo(-1)
-      }
+      hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
     }
   }
 
@@ -170,11 +167,7 @@ class MyDownloadsActivityTest {
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
       intended(hasComponent(ClassroomListActivity::class.java.name))
-      it.onActivity { activity ->
-        assertThat(
-          activity.intent.extractCurrentUserProfileId().internalId
-        ).isEqualTo(-1)
-      }
+      hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
     }
   }
 
