@@ -21,64 +21,34 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport(computedCoverageRatio: Float): String {
-    val computedCoveragePercentage = "%.2f".format(computedCoverageRatio)
-    val totalFiles = coverageReportList.size
-    val filePath = coverageReportList.firstOrNull()?.getCoveredFile(0)?.filePath ?: "Unknown"
+    val computedCoveragePercentage = computedCoverageRatio * 100
+    val formattedCoveragePercentage = "%.2f".format(computedCoveragePercentage)
+    val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
 
-    val (totalLinesFound, totalLinesHit) = computeTotalsFor("lines")
-    val (totalFunctionsFound, totalFunctionsHit) = computeTotalsFor("functions")
-    val (totalBranchesFound, totalBranchesHit) = computeTotalsFor("branches")
+    val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
+    val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
 
     val markdownReport = """
-            # Coverage Report
+        ## Coverage Report
 
-            **Total coverage:**
-            - **Files covered:** $totalFiles
-            - **Covered File:** $filePath
-            - **Coverage percentage:** $computedCoveragePercentage% covered
-            - **Line coverage:** $totalLinesHit covered / $totalLinesFound found
-            - **Function coverage:** $totalFunctionsHit covered / $totalFunctionsFound found
-            - **Branch coverage:** $totalBranchesFound covered / $totalBranchesHit found
+        - **Covered File:** $filePath
+        - **Coverage percentage:** $formattedCoveragePercentage% covered
+        - **Line coverage:** $totalLinesHit / $totalLinesFound lines covered
+    """.trimIndent()
 
-        """.trimIndent()
+    File(reportOutputPath).apply {
+      parentFile?.mkdirs()
+      writeText(markdownReport)
+    }
 
-    val outputFile = File(reportOutputPath)
-    outputFile.parentFile?.mkdirs()
-    outputFile.writeText(markdownReport)
-
-    println("MARKDOWN: $markdownReport")
+    println("\n$markdownReport")
 
     return reportOutputPath
   }
 
-  private fun computeTotalsFor(type: String): Pair<Int, Int> {
-    var totalFound = 0
-    var totalHit = 0
 
-    coverageReportList.forEach { coverageReport ->
-      coverageReport.coveredFileList.forEach { coveredFile ->
-        when (type) {
-          "lines" -> {
-            totalFound += coveredFile.linesFound
-            totalHit += coveredFile.linesHit
-          }
-          "functions" -> {
-            totalFound += coveredFile.functionsFound
-            totalHit += coveredFile.functionsHit
-          }
-          "branches" -> {
-            totalFound += coveredFile.branchesFound
-            totalHit += coveredFile.branchesHit
-          }
-        }
-      }
-    }
-
-    return Pair(totalFound, totalHit)
-  }
-
-  //just line coverage
   fun generateHtmlReport(): String {
+  /*
 //    val reportOutputPath = "path/to/your/report.html"  // Replace with your desired output path
 
     println("In HTML report generation")
@@ -93,8 +63,6 @@ class CoverageReporter(
     val filePath = coveredFile.filePath ?: "Unknown"
 
     val (totalLinesFound, totalLinesHit) = Pair(0,0)
-    val (totalFunctionsFound, totalFunctionsHit) = Pair(0, 0)
-    val (totalBranchesFound, totalBranchesHit) = Pair(0, 0)
 
     var htmlContent = """
         <!DOCTYPE html>
@@ -142,8 +110,6 @@ class CoverageReporter(
                     <li><strong>Covered File:</strong> $filePath</li>
                     <li><strong>Coverage percentage:</strong> $computedCoveragePercentage% covered</li>
                     <li><strong>Line coverage:</strong> $totalLinesHit covered / $totalLinesFound found</li>
-                    <li><strong>Function coverage:</strong> $totalFunctionsHit covered / $totalFunctionsFound found</li>
-                    <li><strong>Branch coverage:</strong> $totalBranchesHit covered / $totalBranchesFound found</li>
                 </ul>
             </div>
             <pre>
@@ -175,42 +141,17 @@ class CoverageReporter(
     outputFile.writeText(htmlContent)
 
     return reportOutputPath
-//    return ""
-  }
-
-  fun getColorBasedOnCoverage(hit: Int, found: Int): String {
-    val coveragePercentage = if (found == 0) 0 else (hit.toFloat() / found * 100).toInt()
-    return when {
-      coveragePercentage == 100 -> "#c8e6c9"
-      coveragePercentage >= 50 -> "#fff9c4"
-      else -> "#ffcdd2"
-    }
-  }
-
-  fun getCumulativeCoverageClass(): String {
-    val isLineCovered = true
-    val isBranchCovered = false
-    val isFunctionCovered = true
-
-    return when {
-      isLineCovered && isBranchCovered && isFunctionCovered -> "covered-line"
-      isLineCovered || isBranchCovered || isFunctionCovered -> "partially-covered-line"
-      else -> "not-covered-line"
-    }
+  */
+    return ""
   }
 
   fun computeCoverageRatio(): Float {
-    var totalFound = 0f
-    var totalHit = 0f
-
-    coverageReportList.forEach { coverageReport ->
-      coverageReport.coveredFileList.forEach { coveredFile ->
-        totalFound += (coveredFile.linesFound + coveredFile.functionsFound + coveredFile.branchesFound).toFloat()
-        totalHit += (coveredFile.linesHit + coveredFile.functionsHit + coveredFile.branchesHit).toFloat()
-      }
+    val report = coverageReportList.getOrNull(0)
+    return if (report != null && report.linesFound != 0) {
+      report.linesHit.toFloat() / report.linesFound.toFloat()
+    } else {
+      0f
     }
-
-    return if (totalFound > 0) (totalHit / totalFound * 100) else 0.0f
   }
 }
 

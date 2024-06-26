@@ -124,7 +124,7 @@ class RunCoverage(
       val reporter = CoverageReporter(repoRoot, coverageReports, reportFormat, reportOutputPath)
       val coverageRatio = reporter.computeCoverageRatio()
       val generatedReport = reporter.generateRichTextReport(coverageRatio)
-      println("Generated report: $generatedReport")
+      println("\nGenerated report at: $generatedReport\n")
     } else {
       println("No coverage reports generated.")
     }
