@@ -491,7 +491,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  fun testProfileChooserFragment_clickProfile_checkOpensHomeActivity() {
+  fun testProfileChooserFragment_clickProfile_opensHomeActivity() {
     profileManagementController.addProfile(
       name = "Admin",
       pin = "",
@@ -520,7 +520,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  fun testProfileChooserFragment_enableClassrooms_clickProfile_checkOpensClassroomListActivity() {
+  fun testProfileChooserFragment_enableClassrooms_clickProfile_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     profileManagementController.addProfile(
       name = "Admin",
