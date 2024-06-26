@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coverage Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .covered-line, .not-covered-line, .uncovered-line {
+            display: inline-block;
+            width: auto;
+            padding: 2px 4px;
+            margin: 0;
+        }
+        .covered-line {
+            background-color: #c8e6c9; /* Light green */
+        }
+        .not-covered-line {
+            background-color: #ffcdd2; /* Light red */
+        }
+        .uncovered-line {
+            background-color: #ffffff; /* White */
+        }
+        .coverage-summary {
+            margin-bottom: 20px;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coverage Report</h1>
+    <div class="coverage-summary">
+        <h2>Total coverage:</h2>
+        <ul>
+            <li><strong>Files covered:</strong> 1</li>
+            <li><strong>Covered File:</strong> utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt</li>
+            <li><strong>Coverage percentage:</strong> 87.50% covered</li>
+            <li><strong>Line coverage:</strong> 0 covered / 0 found</li>
+            <li><strong>Function coverage:</strong> 0 covered / 0 found</li>
+            <li><strong>Branch coverage:</strong> 0 covered / 0 found</li>
+        </ul>
+    </div>
+    <pre><div class="uncovered-line">   1: package org.oppia.android.util.parser.math</div>
+<div class="uncovered-line">   2: </div>
+<div class="uncovered-line">   3: import com.bumptech.glide.load.Key</div>
+<div class="uncovered-line">   4: import java.nio.ByteBuffer</div>
+<div class="uncovered-line">   5: import java.security.MessageDigest</div>
+<div class="uncovered-line">   6: </div>
+<div class="uncovered-line">   7: /**</div>
+<div class="uncovered-line">   8:  * Represents a set of LaTeX that can be rendered as a single bitmap.</div>
+<div class="uncovered-line">   9:  *</div>
+<div class="uncovered-line">  10:  * @property rawLatex the LaTeX to render</div>
+<div class="uncovered-line">  11:  * @property lineHeight the height (in pixels) of a text line (to help scale the LaTeX)</div>
+<div class="uncovered-line">  12:  * @property useInlineRendering whether the LaTeX will be inlined with text</div>
+<div class="uncovered-line">  13:  */</div>
+<div class="covered-line">  14: data class MathModel(</div>
+<div class="covered-line">  15:   val rawLatex: String,</div>
+<div class="covered-line">  16:   val lineHeight: Float,</div>
+<div class="covered-line">  17:   val useInlineRendering: Boolean</div>
+<div class="uncovered-line">  18: ) {</div>
+<div class="uncovered-line">  19:   /** Returns a Glide [Key] signature (see [MathModelSignature] for specifics). */</div>
+<div class="uncovered-line">  20:   fun toKeySignature(): MathModelSignature =</div>
+<div class="covered-line">  21:     MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering)</div>
+<div class="uncovered-line">  22: </div>
+<div class="uncovered-line">  23:   /**</div>
+<div class="uncovered-line">  24:    * Glide [Key] that provides caching support by allowing individual renderable math scenarios to</div>
+<div class="uncovered-line">  25:    * be comparable based on select parameters.</div>
+<div class="uncovered-line">  26:    *</div>
+<div class="uncovered-line">  27:    * @property rawLatex the raw LaTeX string used to render a cached bitmap</div>
+<div class="uncovered-line">  28:    * @property lineHeightHundredX an [Int] representation of the 100x scaled line height from</div>
+<div class="uncovered-line">  29:    *     [MathModel] (this is used to preserve up to 2 digits of the height, but any past that will</div>
+<div class="uncovered-line">  30:    *     be truncated to reduce cache size for highly reusable cached renders)</div>
+<div class="uncovered-line">  31:    * @property useInlineRendering whether the render is formatted to be displayed in-line with text</div>
+<div class="uncovered-line">  32:    */</div>
+<div class="covered-line">  33:   data class MathModelSignature(</div>
+<div class="covered-line">  34:     val rawLatex: String,</div>
+<div class="covered-line">  35:     val lineHeightHundredX: Int,</div>
+<div class="covered-line">  36:     val useInlineRendering: Boolean</div>
+<div class="uncovered-line">  37:   ) : Key {</div>
+<div class="uncovered-line">  38:     // Impl reference: http://bumptech.github.io/glide/doc/caching.html#custom-cache-invalidation.</div>
+<div class="uncovered-line">  39: </div>
+<div class="uncovered-line">  40:     override fun updateDiskCacheKey(messageDigest: MessageDigest) {</div>
+<div class="covered-line">  41:       val rawLatexBytes = rawLatex.encodeToByteArray()</div>
+<div class="covered-line">  42:       messageDigest.update(</div>
+<div class="covered-line">  43:         ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1).apply {</div>
+<div class="covered-line">  44:           put(rawLatexBytes)</div>
+<div class="covered-line">  45:           putInt(lineHeightHundredX)</div>
+<div class="covered-line">  46:           put(if (useInlineRendering) 1 else 0)</div>
+<div class="covered-line">  47:         }.array()</div>
+<div class="uncovered-line">  48:       )</div>
+<div class="covered-line">  49:     }</div>
+<div class="uncovered-line">  50: </div>
+<div class="uncovered-line">  51:     internal companion object {</div>
+<div class="uncovered-line">  52:       /** Returns a new [MathModelSignature] for the specified [MathModel] properties. */</div>
+<div class="uncovered-line">  53:       internal fun createSignature(</div>
+<div class="uncovered-line">  54:         rawLatex: String,</div>
+<div class="uncovered-line">  55:         lineHeight: Float,</div>
+<div class="uncovered-line">  56:         useInlineRendering: Boolean</div>
+<div class="uncovered-line">  57:       ): MathModelSignature {</div>
+<div class="covered-line">  58:         val lineHeightHundredX = (lineHeight * 100f).toInt()</div>
+<div class="covered-line">  59:         return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering)</div>
+<div class="uncovered-line">  60:       }</div>
+<div class="uncovered-line">  61:     }</div>
+<div class="uncovered-line">  62:   }</div>
+<div class="uncovered-line">  63: }</div>
+    </pre>
+</body>
+</html>

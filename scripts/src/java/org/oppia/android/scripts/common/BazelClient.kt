@@ -142,10 +142,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    *     or null if the coverage data file could not be parsed
    */
   fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
+    val computeInstrumentation = bazelTestTarget.split("/").let{"//${it[2]}/..."}
     val coverageCommandOutputLines = executeBazelCommand(
       "coverage",
       bazelTestTarget,
-      "--instrumentation_filter=//"
+      "--instrumentation_filter=$computeInstrumentation"
     )
     return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
       File(path).readLines()

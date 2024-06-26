@@ -31,6 +31,10 @@ fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
 
+  if (!File(repoRoot, filePath).exists()) {
+    error("File doesn't exist.")
+  }
+
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
       ?.substringAfter("=")
@@ -79,7 +83,7 @@ class RunCoverage(
       .getExemptedFilePathList()
 
     if (filePath in testFileExemptionList) {
-      println("This file is exempted from having a test file. Hence No coverage!")
+      println("This file is exempted from having a test file; skipping coverage check.")
       return emptyList()
     }
 

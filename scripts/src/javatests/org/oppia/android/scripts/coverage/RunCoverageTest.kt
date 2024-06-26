@@ -8,10 +8,12 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
+import java.io.File
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
@@ -41,6 +43,24 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_validFile_runsCoverage() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
+    sampleFile.createNewFile()
+    main(tempFolder.root.absolutePath, "file.kt")
+  }
+
+  @Test
+  fun testRunCoverage_invalidFile_runsCoverage() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
+
+    assertThat(exception).hasMessageThat().contains("File doesn't exist")
+  }
+
+  @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
     val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
 
@@ -56,7 +76,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_sampleTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -139,7 +159,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validScriptPathSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_scriptTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -222,7 +242,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validAppPathSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_appTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -305,7 +325,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_validMultiSampleTestFile_returnsCoverageData() {
+  fun testRunCoverage_sharedAndLocalTests_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
