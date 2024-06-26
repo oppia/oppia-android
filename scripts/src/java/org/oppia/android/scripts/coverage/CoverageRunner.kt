@@ -6,12 +6,9 @@ import kotlinx.coroutines.async
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.proto.BranchCoverage
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
-import org.oppia.android.scripts.proto.CoveredFile
 import org.oppia.android.scripts.proto.CoveredLine
-import org.oppia.android.scripts.proto.FunctionCoverage
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -42,9 +39,9 @@ class CoverageRunner(
   ): Deferred<CoverageReport> {
     return CoroutineScope(scriptBgDispatcher).async {
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: throw RuntimeException("Failed to retrieve coverage result for $bazelTestTarget")
+        ?: error("Failed to retrieve coverage result for $bazelTestTarget")
 
-        parseCoverageData(coverageResult, bazelTestTarget)
+      coverageDataFileLines(coverageResult, bazelTestTarget)
     }
   }
 
@@ -54,170 +51,61 @@ class CoverageRunner(
     return bazelClient.runCoverageForTestTarget(bazelTestTarget)
   }
 
-  private fun parseCoverageData(
+  private fun coverageDataFileLines(
     coverageData: List<String>,
     bazelTestTarget: String
   ): CoverageReport {
-    var filePath = ""
-    var linesFound = 0
-    var linesHit = 0
-    val coveredLines = mutableListOf<CoveredLine>()
-    val branchCoverage = mutableListOf<BranchCoverage>()
-    val functionCoverage = mutableListOf<FunctionCoverage>()
-
-    var functionsFound = 0
-    var functionsHit = 0
-    var branchesFound = 0
-    var branchesHit = 0
-
-    var parseFile = false
     val extractedFileName = "${extractTargetName(bazelTestTarget)}.kt"
 
-    coverageData.forEach { line ->
-      when {
-        // SF:<absolute path to the source file>
-        line.startsWith("SF:") -> {
-          val sourceFilePath = line.substringAfter("SF:")
-          if (sourceFilePath.substringAfterLast("/") == extractedFileName) {
-            filePath = line.substringAfter("SF:")
-            parseFile = true
-          } else {
-            parseFile = false
-          }
-        }
-        parseFile -> {
-          when {
-            // DA:<line number>,<execution count>
-            line.startsWith("DA:") -> {
-              val parts = line.substringAfter("DA:").split(",")
-              val lineNumber = parts[0].toInt()
-              val hitCount = parts[1].toInt()
-              val coverage =
-                if (hitCount > 0)
-                  Coverage.FULL
-                else
-                  Coverage.NONE
-              coveredLines.add(
-                CoveredLine.newBuilder()
-                  .setLineNumber(lineNumber)
-                  .setCoverage(coverage)
-                  .build()
-              )
-            }
-            // BRDA:<line number>,<block number>,<branch number>,<taken>
-            line.startsWith("BRDA:") -> {
-              val parts = line.substringAfter("BRDA:").split(",")
-              val lineNumber = parts[0].toInt()
-              val blockNumber = parts[1].toInt()
-              val branchNumber = parts[2].toInt()
-              val hitCount = parts[3].toInt()
-              val coverage =
-                if (hitCount > 0)
-                  Coverage.FULL
-                else
-                  Coverage.NONE
-              branchCoverage.add(
-                BranchCoverage.newBuilder()
-                  .setLineNumber(lineNumber)
-                  .setBlockNumber(blockNumber)
-                  .setBranchNumber(branchNumber)
-                  .setHitCount(hitCount)
-                  .setCoverage(coverage)
-                  .build()
-              )
-            }
-            // FN:<line number of function start>,<function name>
-            line.startsWith("FN:") -> {
-              val parts = line.substringAfter("FN:").split(",")
-              val currentFunctionLineNumber = parts[0].toInt()
-              val functionName = parts[1]
-              functionCoverage.add(
-                FunctionCoverage.newBuilder()
-                  .setLineNumber(currentFunctionLineNumber)
-                  .setFunctionName(functionName)
-                  .setExecutionCount(0)
-                  .setCoverage(Coverage.NONE)
-                  .build()
-              )
-            }
-            // FNDA:<execution count>,<function name>
-            line.startsWith("FNDA:") -> {
-              val parts = line.substringAfter("FNDA:").split(",")
-              val executionCount = parts[0].toInt()
-              val functionName = parts[1]
-              val index = functionCoverage.indexOfFirst { it.functionName == functionName }
-              if (index != -1) {
-                val updatedFunctionCoverage = functionCoverage[index].toBuilder()
-                  .setExecutionCount(executionCount)
-                  .setCoverage(
-                    if (executionCount > 0)
-                      Coverage.FULL
-                    else
-                      Coverage.NONE
-                  )
-                  .build()
-                functionCoverage[index] = updatedFunctionCoverage
-              }
-            }
-            // FNF:<number of functions found>
-            line.startsWith("FNF:") -> {
-              functionsFound = line.substringAfter("FNF:").toInt()
-            }
-            // FNH:<number of function hit>
-            line.startsWith("FNH:") -> {
-              functionsHit = line.substringAfter("FNH:").toInt()
-            }
-            // BRF:<number of branches found>
-            line.startsWith("BRF:") -> {
-              branchesFound = line.substringAfter("BRF:").toInt()
-            }
-            // BRH:<number of branches hit>
-            line.startsWith("BRH:") -> {
-              branchesHit = line.substringAfter("BRH:").toInt()
-            }
-            // LF:<number of instrumented lines>
-            line.startsWith("LF:") -> {
-              linesFound = line.substringAfter("LF:").toInt()
-            }
-            // LH:<number of lines with a non-zero execution count>
-            line.startsWith("LH:") -> {
-              linesHit = line.substringAfter("LH:").toInt()
-            }
-            line.startsWith("end_of_record") -> {
-              parseFile = false
-            }
-          }
-        }
+    val sfStartIdx = coverageData.indexOfFirst {
+      it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
+    }
+    if (sfStartIdx == -1) throw IllegalArgumentException("File not found")
+    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
+      it.startsWith("end_of_record")
+    }
+    if (eofIdx == -1) throw IllegalArgumentException("End of record not found")
+
+    val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
+
+    val coverageDataProps = fileSpecificCovDatLines.groupBy { line ->
+      line.substringBefore(":")
+    }.mapValues { (_, lines) ->
+      lines.map { line ->
+        line.substringAfter(":").split(",")
       }
     }
+
+    val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
+      ?: throw IllegalArgumentException("File path not found")
+
+    val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
+    val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0
+
+    val coveredLines = coverageDataProps["DA"]?.map { (lineNumStr, hitCountStr) ->
+      CoveredLine.newBuilder().apply {
+        this.lineNumber = lineNumStr.toInt()
+        this.coverage = if (hitCountStr.toInt() > 0) Coverage.FULL else Coverage.NONE
+      }.build()
+    }.orEmpty()
 
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
 
-    val coveredFile = CoveredFile.newBuilder()
+    return CoverageReport.newBuilder()
+      .setBazelTestTarget(bazelTestTarget)
       .setFilePath(filePath)
       .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(coveredLines)
-      .addAllBranchCoverage(branchCoverage)
-      .addAllFunctionCoverage(functionCoverage)
-      .setFunctionsFound(functionsFound)
-      .setFunctionsHit(functionsHit)
-      .setBranchesFound(branchesFound)
-      .setBranchesHit(branchesHit)
       .setLinesFound(linesFound)
       .setLinesHit(linesHit)
-      .build()
-
-    return CoverageReport.newBuilder()
-      .setBazelTestTarget(bazelTestTarget)
-      .addCoveredFile(coveredFile)
       .build()
   }
 }
 
 private fun extractTargetName(bazelTestTarget: String): String {
   val targetName = bazelTestTarget.substringAfterLast(":").trim()
-  return targetName.removeSuffix("Test").removeSuffix("LocalTest")
+  return targetName.removeSuffix("LocalTest").removeSuffix("Test")
 }
 
 private fun calculateSha1(filePath: String): String {

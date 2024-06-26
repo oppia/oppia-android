@@ -41,6 +41,10 @@ fun main(vararg args: String) {
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
+  if (!File(repoRoot, filePath).exists()) {
+    error("File doesn't exist.")
+  }
+
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
       ?.substringAfter("=")
@@ -94,22 +98,24 @@ class RunCoverage(
    */
   fun execute(): List<CoverageReport> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .getExemptedFilePathList()
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList) {
-      println("This file is exempted from having a test file. Hence No coverage!")
+      println("This file is exempted from having a test file; skipping coverage check.")
       return emptyList()
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
+    if (testFilePaths.isEmpty()) {
+      error("No appropriate test file found for $filePath")
+    }
+
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
     val coverageReports = testTargets.mapNotNull { testTarget ->
-      val coverageData = runCoverageForTarget(testTarget)
-      if (coverageData == null) {
-        println("Coverage data for $testTarget is null")
-      }
-      coverageData
+      runCoverageForTarget(testTarget)
     }
 
     println("Generated Coverage Reports proto: $coverageReports")
@@ -126,7 +132,7 @@ class RunCoverage(
     return coverageReports
   }
 
-  private fun runCoverageForTarget(testTarget: String): CoverageReport? {
+  private fun runCoverageForTarget(testTarget: String): CoverageReport {
     return runBlocking {
       CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
         .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
