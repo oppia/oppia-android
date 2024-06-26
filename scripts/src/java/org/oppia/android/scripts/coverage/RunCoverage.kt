@@ -82,7 +82,9 @@ class RunCoverage(
 
   fun execute(): List<CoverageReport> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .getExemptedFilePathList()
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file; skipping coverage check.")

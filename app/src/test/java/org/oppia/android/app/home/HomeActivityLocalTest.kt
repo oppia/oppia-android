@@ -29,6 +29,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -115,7 +116,7 @@ class HomeActivityLocalTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val internalProfileId: Int = 1
+  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -131,7 +132,7 @@ class HomeActivityLocalTest {
   fun testHomeActivity_onLaunch_logsEvent() {
     setUpTestApplicationComponent()
 
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getOldestEvent()
 
@@ -143,7 +144,7 @@ class HomeActivityLocalTest {
   @Test
   fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
     setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
@@ -160,7 +161,7 @@ class HomeActivityLocalTest {
     }
 
     setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -192,7 +193,7 @@ class HomeActivityLocalTest {
     )
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 

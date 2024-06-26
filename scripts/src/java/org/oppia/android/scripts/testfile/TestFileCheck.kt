@@ -23,62 +23,67 @@ fun main(vararg args: String) {
 
   val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
 
-  // A list of all the files to be exempted for this check.
-  // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-  val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-    .getExemptedFilePathList()
-
-  // A list of all kotlin files in the repo to be analyzed.
-  val searchFiles = RepositoryFile.collectSearchFiles(
-    repoPath = repoPath,
-    expectedExtension = ".kt",
-    exemptionsList = testFileExemptionList
-  )
-
-  // A list of all the prod files present in the repo.
-  val prodFilesList = searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
-
-  // A list of all the test files present in the repo.
-  val testFilesList = searchFiles.filter { file -> file.name.endsWith("Test.kt") }
-
-  // A list of all the prod files that do not have a corresponding test file.
-  val matchedFiles = prodFilesList.filter { prodFile ->
-    !testFilesList.any { testFile ->
-      testFile.name == computeExpectedTestFileName(prodFile)
-    }
-  }
-
-  logFailures(matchedFiles)
-
-  if (matchedFiles.isNotEmpty()) {
-    println(
-      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#test-file-presence-check for more details on how to fix this.\n"
-    )
-  }
-
-  if (matchedFiles.isNotEmpty()) {
-    throw Exception("TEST FILE CHECK FAILED")
-  } else {
-    println("TEST FILE CHECK PASSED")
-  }
+  TestFileCheck(repoPath, testFileExemptiontextProto).execute()
 }
 
 /**
- * Computes the expected test file name for a prod file.
+ * Class for checking the presence of test files in a repository.
  *
- * @param prodFile the prod file for which expected test file name has to be computed
- * @return expected name of the test file
+ * @param repoPath The path of the repo
+ * @param testFileExemptiontextProto the location of the test file exemption textproto file
  */
+class TestFileCheck(
+  private val repoPath: String,
+  private val testFileExemptiontextProto: String
+) {
+  /** Executes the test file presence check mechanism for the repository. */
+  fun execute() {
+    // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
+    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
+
+    val searchFiles = RepositoryFile.collectSearchFiles(
+      repoPath = repoPath,
+      expectedExtension = ".kt",
+      exemptionsList = testFileExemptionList
+    )
+
+    // A list of all the prod files present in the repo.
+    val prodFilesList = searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
+
+    // A list of all the test files present in the repo.
+    val testFilesList = searchFiles.filter { file -> file.name.endsWith("Test.kt") }
+
+    // A list of all the prod files that do not have a corresponding test file.
+    val matchedFiles = prodFilesList.filter { prodFile ->
+      !testFilesList.any { testFile ->
+        testFile.name == computeExpectedTestFileName(prodFile)
+      }
+    }
+
+    logFailures(matchedFiles)
+
+    if (matchedFiles.isNotEmpty()) {
+      println(
+        "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+          "#test-file-presence-check for more details on how to fix this.\n"
+      )
+    }
+
+    if (matchedFiles.isNotEmpty()) {
+      throw Exception("TEST FILE CHECK FAILED")
+    } else {
+      println("TEST FILE CHECK PASSED")
+    }
+  }
+}
+
 private fun computeExpectedTestFileName(prodFile: File): String {
   return "${prodFile.nameWithoutExtension}Test.kt"
 }
 
-/**
- * Logs the file names of all the prod files that do not have a test file.
- *
- * @param matchedFiles list of all the files missing a test file
- */
 private fun logFailures(matchedFiles: List<File>) {
   if (matchedFiles.isNotEmpty()) {
     matchedFiles.sorted().forEach { file ->
@@ -88,12 +93,6 @@ private fun logFailures(matchedFiles: List<File>) {
   }
 }
 
-/**
- * Loads the test file exemptions list to proto.
- *
- * @param testFileExemptiontextProto the location of the test file exemption textproto file
- * @return proto class from the parsed textproto file
- */
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
   val protoBinaryFile = File("$testFileExemptiontextProto.pb")
   val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()

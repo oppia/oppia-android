@@ -13,10 +13,11 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.testing.TestBazelWorkspace
+import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
-import java.io.File
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
@@ -79,7 +80,7 @@ class RunCoverageTest {
     ).execute()
 
     assertThat(outContent.toString())
-      .isEqualTo("This file is exempted from having a test file. Hence No coverage!\n")
+      .isEqualTo("This file is exempted from having a test file; skipping coverage check.\n")
   }
 
   @Test
