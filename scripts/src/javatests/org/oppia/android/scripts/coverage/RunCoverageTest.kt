@@ -372,9 +372,20 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    /*val expectedResult = listOf(
+    val expectedResult = listOf(
       CoverageReport.newBuilder()
-        .setBazelTestTarget("//app/test/java/com/example:TwoSumTest")
+        .setBazelTestTarget("//app/sharedTest/java/com/example:TwoSumTest")
+        .setFilePath("app/main/java/com/example/TwoSum.kt")
+        .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
+        .addCoveredLine(CoveredLine.newBuilder().setLineNumber(3).setCoverage(Coverage.NONE).build())
+        .addCoveredLine(CoveredLine.newBuilder().setLineNumber(7).setCoverage(Coverage.FULL).build())
+        .addCoveredLine(CoveredLine.newBuilder().setLineNumber(8).setCoverage(Coverage.FULL).build())
+        .addCoveredLine(CoveredLine.newBuilder().setLineNumber(10).setCoverage(Coverage.FULL).build())
+        .setLinesFound(4)
+        .setLinesHit(3)
+        .build(),
+      CoverageReport.newBuilder()
+        .setBazelTestTarget("//app/test/java/com/example:TwoSumLocalTest")
         .setFilePath("app/main/java/com/example/TwoSum.kt")
         .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
         .addCoveredLine(CoveredLine.newBuilder().setLineNumber(3).setCoverage(Coverage.NONE).build())
@@ -386,8 +397,7 @@ class RunCoverageTest {
         .build()
     )
 
-    assertThat(result).isEqualTo(expectedResult)*/
-    println("Result: $result")
+    assertThat(result).isEqualTo(expectedResult)
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
