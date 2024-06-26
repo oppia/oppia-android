@@ -4,9 +4,12 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
@@ -174,6 +177,33 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_switchClassroom_checkTopicListUpdatesCorrectly() {
+    // Click on science classroom card.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
+    testCoroutineDispatchers.runCurrent()
+
+    // Check that science classroom's topics are displayed.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+      .assertTextContains("First Test Topic")
+      .assertTextContains("3 Lessons")
+      .assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+      .assertTextContains("Second Test Topic")
+      .assertTextContains("1 Lesson")
+      .assertIsDisplayed()
+
+    // Click on maths classroom card.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(1).performClick()
+    testCoroutineDispatchers.runCurrent()
+
+    // Check that maths classroom's topics are displayed.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+      .assertTextContains("Fractions")
+      .assertTextContains("2 Lessons")
+      .assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+      .assertTextContains("Ratios and Proportional Reasoning")
+      .assertTextContains("4 Lessons")
+      .assertIsDisplayed()
   }
 
   @Test
