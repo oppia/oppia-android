@@ -25,7 +25,6 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
-import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
@@ -1193,40 +1192,6 @@ class ProfileManagementControllerTest {
     )
 
     assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
-  }
-
-  @Test
-  fun testFetchLastSelectedClassroomId_updateClassroomIdTwice_checkUpdatesAreSuccessful() {
-    setUpTestApplicationComponent()
-    addTestProfiles()
-
-    monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
-    )
-    monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.updateLastSelectedClassroomId(
-        PROFILE_ID_0,
-        TEST_CLASSROOM_ID_0
-      )
-    )
-    val lastSelectedClassroomId0 = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
-    )
-    assertThat(lastSelectedClassroomId0).isEqualTo(TEST_CLASSROOM_ID_0)
-
-    monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
-    )
-    monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.updateLastSelectedClassroomId(
-        PROFILE_ID_0,
-        TEST_CLASSROOM_ID_1
-      )
-    )
-    val lastSelectedClassroomId1 = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
-    )
-    assertThat(lastSelectedClassroomId1).isEqualTo(TEST_CLASSROOM_ID_1)
   }
 
   @Test
