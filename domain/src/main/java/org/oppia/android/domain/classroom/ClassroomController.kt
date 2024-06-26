@@ -217,10 +217,6 @@ class ClassroomController @Inject constructor(
         ?: return ClassroomRecord.TopicIdList.getDefaultInstance()
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
-      val topicSummaryList = mutableListOf<TopicSummary>()
-      topicIdArray.forEach { topicId ->
-        topicSummaryList.add(createTopicSummary(topicId, classroomId))
-      }
       ClassroomRecord.TopicIdList.newBuilder().apply {
         topicIdArray.forEach { topicId ->
           addTopicIds(topicId)
