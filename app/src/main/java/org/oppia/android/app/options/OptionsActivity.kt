@@ -124,11 +124,13 @@ class OptionsActivity :
       ActivityResultContracts.StartActivityForResult()
     ) { result ->
       if (result.resultCode == RESULT_OK && result.data != null) {
-        val textSizeResults = result.data!!.getProtoExtra(
+        val textSizeResults = result.data?.getProtoExtra(
           MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
           ReadingTextSizeActivityResultBundle.getDefaultInstance()
         )
-        optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+        if (textSizeResults != null) {
+          optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+        }
       }
     }
 
@@ -136,10 +138,12 @@ class OptionsActivity :
       ActivityResultContracts.StartActivityForResult()
     ) { result ->
       if (result.resultCode == RESULT_OK && result.data != null) {
-        val audioLanguage = result.data!!.getProtoExtra(
+        val audioLanguage = result.data?.getProtoExtra(
           MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
-        ).audioLanguage
-        optionActivityPresenter.updateAudioLanguage(audioLanguage)
+        )?.audioLanguage
+        if (audioLanguage != null) {
+          optionActivityPresenter.updateAudioLanguage(audioLanguage)
+        }
       }
     }
   }
