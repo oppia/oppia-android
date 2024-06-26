@@ -10,8 +10,8 @@ import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.QuestionPlayerActivityParams
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext

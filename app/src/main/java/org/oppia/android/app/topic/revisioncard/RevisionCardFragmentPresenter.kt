@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.RevisionCardFragmentArguments
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.revisioncard.RevisionCardFragment.Companion.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.RevisionCardFragmentBinding
@@ -18,13 +20,11 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.app.model.RevisionCardFragmentArguments
-import org.oppia.android.app.topic.revisioncard.RevisionCardFragment.Companion.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY
-import org.oppia.android.util.extensions.getProto
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -135,6 +135,9 @@ class RevisionCardFragmentPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): ReadingTextSize {
     return fragment.requireArguments()
-      .getProto(REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,RevisionCardFragmentArguments.getDefaultInstance()).readingTextSize
+      .getProto(
+        REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
+        RevisionCardFragmentArguments.getDefaultInstance()
+      ).readingTextSize
   }
 }

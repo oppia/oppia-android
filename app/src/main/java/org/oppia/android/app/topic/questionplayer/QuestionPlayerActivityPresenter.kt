@@ -12,14 +12,14 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.QuestionPlayerActivityParams
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
-import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -72,7 +72,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     }
   }
 
- private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+  private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
     startTrainingSessionWithCallback {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.question_player_fragment_placeholder,

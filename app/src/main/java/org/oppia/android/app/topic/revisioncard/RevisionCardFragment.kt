@@ -38,7 +38,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
           this.topicId = topicId
           this.subtopicId = subtopicId
           this.subtopicListSize = subtopicListSize
-          this.readingTextSize=readingTextSize
+          this.readingTextSize = readingTextSize
         }.build()
         return RevisionCardFragment().apply {
           arguments = Bundle().apply {
