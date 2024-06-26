@@ -31,10 +31,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.IsNot.not
 import org.junit.After
@@ -69,6 +71,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -115,6 +118,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -137,6 +141,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -953,10 +958,13 @@ class HomeActivityTest {
           targetViewId = R.id.promoted_story_list_recycler_view
         )
       ).perform(click())
+
+      val args = TopicActivityParams.newBuilder().apply {
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.storyId = FRACTIONS_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -1030,10 +1038,13 @@ class HomeActivityTest {
           R.id.topic_name_text_view
         )
       ).check(matches(withText(containsString("Fractions")))).perform(click())
+
+      val args = TopicActivityParams.newBuilder().apply {
+        this.topicId = FRACTIONS_TOPIC_ID
+        this.storyId = FRACTIONS_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -1195,8 +1206,13 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
+
+      val args = TopicActivityParams.newBuilder().apply {
+        this.topicId = TEST_TOPIC_ID_0
+        this.storyId = TEST_STORY_ID_0
+      }.build()
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
+      intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -1897,7 +1913,8 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(internalProfileId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
@@ -2015,6 +2032,20 @@ class HomeActivityTest {
   private fun logIntoUserTwice() {
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

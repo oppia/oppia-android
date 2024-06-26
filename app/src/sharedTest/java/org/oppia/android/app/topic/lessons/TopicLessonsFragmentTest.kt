@@ -59,6 +59,7 @@ import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
+import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -66,6 +67,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.story.StoryActivity.Companion.STORY_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -154,21 +156,28 @@ import javax.inject.Singleton
 class TopicLessonsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
+
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject
   lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
@@ -317,8 +326,13 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.story_name_text_view)
+
+      val args = StoryActivityParams.newBuilder().apply {
+        this.storyId = RATIOS_STORY_ID_0
+        this.topicId = RATIOS_TOPIC_ID
+      }.build()
       intended(hasComponent(StoryActivity::class.java.name))
-      intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, RATIOS_STORY_ID_0))
+      intended(hasProtoExtra(STORY_ACTIVITY_PARAMS_KEY, args))
     }
   }
 

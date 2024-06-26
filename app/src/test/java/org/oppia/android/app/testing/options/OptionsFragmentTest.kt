@@ -27,6 +27,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AppLanguageFragment
 import org.oppia.android.app.options.AudioLanguageFragment
 import org.oppia.android.app.options.OptionsActivity
@@ -201,9 +202,11 @@ class OptionsFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       isFromNavigationDrawer
     )
   }

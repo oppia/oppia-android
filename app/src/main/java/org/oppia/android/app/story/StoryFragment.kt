@@ -10,25 +10,33 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.StoryFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-private const val INTERNAL_PROFILE_ID_ARGUMENT_KEY = "StoryFragment.internal_profile_id"
-private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
-private const val KEY_STORY_ID_ARGUMENT = "STORY_ID"
 
 /** Fragment for displaying a story. */
 class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryFragmentScroller {
   companion object {
+    /** Arguments key for StoryFragment. */
+    const val STORY_FRAGMENT_ARGUMENTS_KEY = "StoryFragment.arguments"
+
     /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
     fun newInstance(internalProfileId: Int, topicId: String, storyId: String): StoryFragment {
-      val storyFragment = StoryFragment()
-      val args = Bundle()
-      args.putInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(KEY_TOPIC_ID_ARGUMENT, topicId)
-      args.putString(KEY_STORY_ID_ARGUMENT, storyId)
-      storyFragment.arguments = args
-      return storyFragment
+
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = StoryFragmentArguments.newBuilder().apply {
+        this.topicId = topicId
+        this.storyId = storyId
+      }.build()
+      return StoryFragment().apply {
+        arguments = Bundle().apply {
+          putProto(STORY_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -45,16 +53,19 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) {
+    val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to StoryFragment"
     }
-    val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
+    val args =
+      arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
+
+    val internalProfileId = arguments.extractCurrentUserProfileId().internalId
     val topicId =
-      checkNotNull(args.getStringFromBundle(KEY_TOPIC_ID_ARGUMENT)) {
+      checkNotNull(args.topicId) {
         "Expected topicId to be passed to StoryFragment"
       }
     val storyId =
-      checkNotNull(args.getStringFromBundle(KEY_STORY_ID_ARGUMENT)) {
+      checkNotNull(args.storyId) {
         "Expected storyId to be passed to StoryFragment"
       }
     return storyFragmentPresenter.handleCreateView(
