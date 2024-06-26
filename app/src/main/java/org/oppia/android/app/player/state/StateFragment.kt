@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -19,7 +20,8 @@ import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickL
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
@@ -36,6 +38,10 @@ class StateFragment :
   PreviousResponsesHeaderClickListener,
   ShowHintAvailabilityListener {
   companion object {
+
+    /** Arguments key for StateFragment. */
+    const val STATE_FRAGMENT_ARGUMENTS_KEY = "StateFragment.arguments"
+
     /**
      * Creates a new instance of a StateFragment.
      * @param internalProfileId used by StateFragment to mark progress.
@@ -50,14 +56,18 @@ class StateFragment :
       storyId: String,
       explorationId: String
     ): StateFragment {
-      val stateFragment = StateFragment()
-      val args = Bundle()
-      args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      stateFragment.arguments = args
-      return stateFragment
+
+      val args = StateFragmentArguments.newBuilder().apply {
+        this.internalProfileId = internalProfileId
+        this.topicId = topicId
+        this.storyId = storyId
+        this.explorationId = explorationId
+      }.build()
+      return StateFragment().apply {
+        arguments = Bundle().apply {
+          putProto(STATE_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -74,11 +84,13 @@ class StateFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getStringFromBundle(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    val storyId = arguments!!.getStringFromBundle(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
+    val args =
+      arguments?.getProto(STATE_FRAGMENT_ARGUMENTS_KEY, StateFragmentArguments.getDefaultInstance())
+    val internalProfileId = args?.internalProfileId ?: -1
+    val topicId = args?.topicId!!
+    val storyId = args.storyId!!
     val explorationId =
-      arguments!!.getStringFromBundle(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+      args.explorationId!!
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,

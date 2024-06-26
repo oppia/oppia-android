@@ -13,17 +13,20 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
@@ -63,14 +66,13 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     }
 
     retrieveReadingTextSize().observe(
-      activity as QuestionPlayerActivity,
-      { result ->
-        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
-      }
-    )
+      activity as QuestionPlayerActivity
+    ) { result ->
+      (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+    }
   }
 
-  fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+ private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
     startTrainingSessionWithCallback {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.question_player_fragment_placeholder,
@@ -158,12 +160,17 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
     val skillIds = checkNotNull(
-      activity.intent.getStringArrayListExtra(
-        QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
+      ArrayList(
+        activity.intent.getProtoExtra(
+          QUESTION_PLAYER_ACTIVITY_PARAMS_KEY,
+          QuestionPlayerActivityParams.getDefaultInstance()
+        )
+          .skillIdsList
       )
     ) {
       "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
     }
+
     val startDataProvider =
       questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
     startDataProvider.toLiveData().observe(
