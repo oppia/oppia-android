@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment for displaying [OngoingTopicListActivity]. */
@@ -15,14 +18,13 @@ class OngoingTopicListFragment : InjectableFragment() {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val ONGOING_TOPIC_LIST_FRAGMENT_TAG = "TAG_ONGOING_TOPIC_LIST_FRAGMENT"
-    internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY =
-      "OngoingTopicListFragment.profile_id"
 
     /** Returns a new [OngoingTopicListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): OngoingTopicListFragment {
       val ongoingTopicListFragment = OngoingTopicListFragment()
       val args = Bundle()
-      args.putInt(ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY, internalProfileId)
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      args.decorateWithUserProfileId(profileId)
       ongoingTopicListFragment.arguments = args
       return ongoingTopicListFragment
     }
@@ -43,9 +45,7 @@ class OngoingTopicListFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to OngoingTopicListFragment" }
-    val internalProfileId = args.getInt(
-      ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY, -1
-    )
+    val internalProfileId = args.extractCurrentUserProfileId().internalId
     return ongoingTopicListFragmentPresenter.handleCreateView(
       inflater,
       container,
