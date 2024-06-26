@@ -179,18 +179,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           fragment,
           Observer {
             if (it is AsyncResult.Success) {
-              activity.startActivity(
-                if (enableMultipleClassrooms.value)
-                  ClassroomListActivity.createClassroomListActivity(
-                    activity,
-                    model.profile.id
-                  )
-                else
-                  HomeActivity.createHomeActivity(
-                    activity,
-                    model.profile.id
-                  )
-              )
+              if (enableMultipleClassrooms.value) {
+                activity.startActivity(
+                  ClassroomListActivity.createClassroomListActivity(activity, model.profile.id)
+                )
+              } else {
+                activity.startActivity(
+                  HomeActivity.createHomeActivity(activity, model.profile.id)
+                )
+              }
             }
           }
         )
