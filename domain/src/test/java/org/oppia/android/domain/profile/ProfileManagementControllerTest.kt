@@ -1195,6 +1195,36 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testFetchLastSelectedClassroomId_updateClassroomIdTwice_checkUpdateIsSuccessful() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_0)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_0,
+        TEST_CLASSROOM_ID_1
+      )
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_0,
+        TEST_CLASSROOM_ID_2
+      )
+    )
+
+    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
+    )
+
+    assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_2)
+  }
+
+  @Test
   fun testFetchLastSelectedClassroomId_updateClassroomIds_checkUpdateIsSuccessfulPerProfile() {
     setUpTestApplicationComponent()
     addTestProfiles()
