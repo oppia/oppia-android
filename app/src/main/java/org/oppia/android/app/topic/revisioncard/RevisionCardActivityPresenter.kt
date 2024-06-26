@@ -30,6 +30,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
+@Suppress("DEPRECATION")
 @ActivityScope
 class RevisionCardActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -70,11 +71,10 @@ class RevisionCardActivityPresenter @Inject constructor(
     }
 
     retrieveReadingTextSize().observe(
-      activity,
-      { result ->
-        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
-      }
-    )
+      activity
+    ) { result ->
+      (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+    }
 
     revisionCardToolbar = binding.revisionCardToolbar
     revisionCardToolbarTitle = binding.revisionCardToolbarTitle

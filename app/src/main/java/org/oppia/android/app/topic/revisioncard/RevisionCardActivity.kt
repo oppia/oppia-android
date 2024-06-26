@@ -115,6 +115,7 @@ class RevisionCardActivity :
     revisionCardActivityPresenter.dismissConceptCard()
   }
 
+  @Deprecated("Deprecated in Java")
   override fun onBackPressed() {
     revisionCardActivityPresenter.setReadingTextSizeMedium()
     onReturnToTopicRequested()
