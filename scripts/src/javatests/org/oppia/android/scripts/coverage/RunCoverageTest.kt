@@ -134,7 +134,7 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    val expectedResultList = mutableListOf(
+    val expectedResultList = listOf(
       listOf(
         "SF:coverage/main/java/com/example/TwoSum.kt",
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
@@ -217,7 +217,7 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    val expectedResultList = mutableListOf(
+    val expectedResultList = listOf(
       listOf(
         "SF:scripts/java/com/example/TwoSum.kt",
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
@@ -300,7 +300,7 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    val expectedResultList = mutableListOf(
+    val expectedResultList = listOf(
       listOf(
         "SF:app/main/java/com/example/TwoSum.kt",
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
@@ -401,7 +401,7 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    val expectedResultList = mutableListOf(
+    val expectedResultList = listOf(
       listOf(
         "SF:app/main/java/com/example/TwoSum.kt",
         "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
