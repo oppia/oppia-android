@@ -44,7 +44,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    println(RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute())
+    RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute()
   }
 }
 
