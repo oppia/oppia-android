@@ -98,15 +98,11 @@ class RunCoverage(
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
     return testTargets.mapNotNull { testTarget ->
-      val coverageData = runCoverageForTarget(testTarget)
-      if (coverageData == null) {
-        println("Coverage data for $testTarget is null")
-      }
-      coverageData
+      runCoverageForTarget(testTarget)
     }
   }
 
-  private fun runCoverageForTarget(testTarget: String): CoverageReport? {
+  private fun runCoverageForTarget(testTarget: String): CoverageReport {
     return runBlocking {
       CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
         .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
