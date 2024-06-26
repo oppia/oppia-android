@@ -45,7 +45,7 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    println(RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute())
+    RunCoverage(repoRoot, filePath, commandExecutor, scriptBgDispatcher).execute()
   }
 }
 
@@ -79,7 +79,6 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-
   fun execute(): List<CoverageReport> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
