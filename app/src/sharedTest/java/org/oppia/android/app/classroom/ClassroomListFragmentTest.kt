@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -177,11 +178,11 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_switchClassroom_checkTopicListUpdatesCorrectly() {
-    // Click on science classroom card.
+    // Click on Science classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
 
-    // Check that science classroom's topics are displayed.
+    // Check that Science classroom's topics are displayed.
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
       .assertTextContains("First Test Topic")
       .assertTextContains("3 Lessons")
@@ -191,11 +192,11 @@ class ClassroomListFragmentTest {
       .assertTextContains("1 Lesson")
       .assertIsDisplayed()
 
-    // Click on maths classroom card.
+    // Click on Maths classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(1).performClick()
     testCoroutineDispatchers.runCurrent()
 
-    // Check that maths classroom's topics are displayed.
+    // Check that Maths classroom's topics are displayed.
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
       .assertTextContains("Fractions")
       .assertTextContains("2 Lessons")
@@ -208,6 +209,28 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_clickOnTopicCard_returnBack_checkClassroomSelectionIsRetained() {
+    // Click on Maths classroom card.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(1).performClick()
+    testCoroutineDispatchers.runCurrent()
+
+    // Check that Fractions topic is displayed and perform click.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+      .assertTextContains("Fractions")
+      .assertTextContains("2 Lessons")
+      .assertIsDisplayed()
+      .performClick()
+
+    pressBack()
+
+    // Check that Maths classroom is selected & its topics are displayed.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+      .assertTextContains("Fractions")
+      .assertTextContains("2 Lessons")
+      .assertIsDisplayed()
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+      .assertTextContains("Ratios and Proportional Reasoning")
+      .assertTextContains("4 Lessons")
+      .assertIsDisplayed()
   }
 
   @Test
