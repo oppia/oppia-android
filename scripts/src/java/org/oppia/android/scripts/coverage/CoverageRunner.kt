@@ -41,7 +41,7 @@ class CoverageRunner(
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
         ?: throw RuntimeException("Failed to retrieve coverage result for $bazelTestTarget")
 
-        parseCoverageData(coverageResult, bazelTestTarget)
+      parseCoverageData(coverageResult, bazelTestTarget)
     }
   }
 
@@ -55,60 +55,39 @@ class CoverageRunner(
     coverageData: List<String>,
     bazelTestTarget: String
   ): CoverageReport {
-    var filePath = ""
-    var linesFound = 0
-    var linesHit = 0
-    val coveredLines = mutableListOf<CoveredLine>()
-
-    var parseFile = false
     val extractedFileName = "${extractTargetName(bazelTestTarget)}.kt"
 
-    coverageData.forEach { line ->
-      when {
-        // SF:<absolute path to the source file>
-        line.startsWith("SF:") -> {
-          val sourceFilePath = line.substringAfter("SF:")
-          if (sourceFilePath.substringAfterLast("/") == extractedFileName) {
-            filePath = line.substringAfter("SF:")
-            parseFile = true
-          } else {
-            parseFile = false
-          }
-        }
-        parseFile -> {
-          when {
-            // DA:<line number>,<execution count>
-            line.startsWith("DA:") -> {
-              val parts = line.substringAfter("DA:").split(",")
-              val lineNumber = parts[0].toInt()
-              val hitCount = parts[1].toInt()
-              val coverage =
-                if (hitCount > 0)
-                  Coverage.FULL
-                else
-                  Coverage.NONE
-              coveredLines.add(
-                CoveredLine.newBuilder()
-                  .setLineNumber(lineNumber)
-                  .setCoverage(coverage)
-                  .build()
-              )
-            }
-            // LF:<number of instrumented lines>
-            line.startsWith("LF:") -> {
-              linesFound = line.substringAfter("LF:").toInt()
-            }
-            // LH:<number of lines with a non-zero execution count>
-            line.startsWith("LH:") -> {
-              linesHit = line.substringAfter("LH:").toInt()
-            }
-            line.startsWith("end_of_record") -> {
-              parseFile = false
-            }
-          }
-        }
+    val sfStartIdx = coverageData.indexOfFirst {
+      it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
+    }
+    if (sfStartIdx == -1) throw IllegalArgumentException("File not found")
+    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
+      it.startsWith("end_of_record")
+    }
+    if (eofIdx == -1) throw IllegalArgumentException("End of record not found")
+
+    val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
+
+    val coverageDataProps = fileSpecificCovDatLines.groupBy { line ->
+      line.substringBefore(":")
+    }.mapValues { (_, lines) ->
+      lines.map { line ->
+        line.substringAfter(":").split(",")
       }
     }
+
+    val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
+      ?: throw IllegalArgumentException("File path not found")
+
+    val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
+    val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0
+
+    val coveredLines = coverageDataProps["DA"]?.map { (lineNumStr, hitCountStr) ->
+      CoveredLine.newBuilder().apply {
+        this.lineNumber = lineNumStr.toInt()
+        this.coverage = if (hitCountStr.toInt() > 0) Coverage.FULL else Coverage.NONE
+      }.build()
+    }.orEmpty()
 
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
