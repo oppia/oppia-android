@@ -9,13 +9,16 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.model.AdminPinActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
@@ -31,9 +34,15 @@ class AdminPinActivityPresenter @Inject constructor(
   private var inputtedPin = false
   private var inputtedConfirmPin = false
 
+  private val args by lazy {
+    activity.intent.getProtoExtra(
+      ADMIN_PIN_ACTIVITY_PARAMS_KEY,
+      AdminPinActivityParams.getDefaultInstance()
+    )
+  }
+
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
 
@@ -108,18 +117,18 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       val profileId =
         ProfileId.newBuilder()
-          .setInternalId(activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1))
+          .setInternalId(args?.internalProfileId ?: -1)
           .build()
 
       profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
         activity,
         Observer {
           if (it is AsyncResult.Success) {
-            when (activity.intent.getIntExtra(ADMIN_PIN_ENUM_EXTRA_KEY, 0)) {
+            when (args?.adminPinEnum ?: 0) {
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                    context, activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
+                    context, profileId
                   )
                 )
                 activity.finish()
@@ -128,9 +137,8 @@ class AdminPinActivityPresenter @Inject constructor(
                 activity.startActivity(
                   AddProfileActivity.createAddProfileActivityIntent(
                     context,
-                    activity.intent.getIntExtra(
-                      ADMIN_PIN_COLOR_RGB_EXTRA_KEY, -10710042
-                    )
+                    args?.colorRgb ?: -10710042
+
                   )
                 )
                 activity.finish()
