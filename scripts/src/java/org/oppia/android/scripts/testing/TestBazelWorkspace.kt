@@ -57,12 +57,47 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    * @param filename the name of the source file (without the .kt extension)
    * @param sourceContent the content of the source file
    * @param testContent the content of the test file
-   * @param subpackage the subpackage under which the source and test files should be added
+   * @param sourceSubpackage the subpackage under which the source files should be added
+   * @param testSubpackage the subpackage under which the test files should be added
    */
   fun addSourceAndTestFileWithContent(
     filename: String,
     sourceContent: String,
     testContent: String,
+    sourceSubpackage: String,
+    testSubpackage: String
+  ) {
+    addSourceContentAndBuildFile(
+      filename,
+      sourceContent,
+      sourceSubpackage
+    )
+
+    val testFileName = "${filename}Test"
+    addTestContentAndBuildFile(
+      filename,
+      testFileName,
+      testContent,
+      sourceSubpackage,
+      testSubpackage
+    )
+  }
+
+  /**
+   * Adds a source file and 2 test files with the specified name and content,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param testContentShared the content of the test file for SharedTest Package
+   * @param testContentLocal the content of the test file for Test Package
+   * @param subpackage the subpackage under which the source and test files should be added
+   */
+  fun addMultiLevelSourceAndTestFileWithContent(
+    filename: String,
+    sourceContent: String,
+    testContentShared: String,
+    testContentLocal: String,
     subpackage: String
   ) {
     val sourceSubpackage = "$subpackage/main/java/com/example"
@@ -72,14 +107,24 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       sourceSubpackage
     )
 
-    val testSubpackage = "$subpackage/test/java/com/example"
-    val testFileName = "${filename}Test"
+    val testSubpackageShared = "$subpackage/sharedTest/java/com/example"
+    val testFileNameShared = "${filename}Test"
     addTestContentAndBuildFile(
       filename,
-      testFileName,
-      testContent,
+      testFileNameShared,
+      testContentShared,
       sourceSubpackage,
-      testSubpackage
+      testSubpackageShared
+    )
+
+    val testSubpackageLocal = "$subpackage/test/java/com/example"
+    val testFileNameLocal = "${filename}LocalTest"
+    addTestContentAndBuildFile(
+      filename,
+      testFileNameLocal,
+      testContentLocal,
+      sourceSubpackage,
+      testSubpackageLocal
     )
   }
 
@@ -172,7 +217,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testBuildFile.appendText(
       """
       kt_jvm_test(
-          name = "test",
+          name = "$testName",
           srcs = ["$testName.kt"],
           deps = [
               "//$sourceSubpackage:${filename.lowercase()}",
