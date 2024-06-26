@@ -237,6 +237,16 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "run_coverage",
+    testonly = True,
+    data = TEST_FILE_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.coverage.RunCoverageKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_lib",
+    ],
+)
+
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
 # this apparently needs to be a java_binary to set up runfiles correctly when executed within a
 # Starlark rule as a tool.
