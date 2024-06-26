@@ -157,10 +157,10 @@ class ClassroomController @Inject constructor(
           }
         )
       }.build()
-    } else loadClassroomSummaryFromJson(classroomId)
+    } else createClassroomSummaryFromJson(classroomId)
   }
 
-  private fun loadClassroomSummaryFromJson(classroomId: String): ClassroomSummary {
+  private fun createClassroomSummaryFromJson(classroomId: String): ClassroomSummary {
     val classroomJsonObject = jsonAssetRetriever
       .loadJsonFromAsset("$classroomId.json")
       ?: return ClassroomSummary.getDefaultInstance()
