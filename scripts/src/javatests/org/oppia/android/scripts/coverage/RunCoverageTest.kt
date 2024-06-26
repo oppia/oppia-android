@@ -8,12 +8,12 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.testing.TestBazelWorkspace
+import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
-import java.io.File
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
@@ -76,7 +76,7 @@ class RunCoverageTest {
     ).execute()
 
     assertThat(outContent.toString())
-      .isEqualTo("This file is exempted from having a test file. Hence No coverage!\n")
+      .isEqualTo("This file is exempted from having a test file; skipping coverage check.\n")
   }
 
   @Test
