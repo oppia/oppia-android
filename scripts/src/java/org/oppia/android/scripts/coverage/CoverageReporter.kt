@@ -16,7 +16,7 @@ class CoverageReporter(
     println("report format: $reportFormat")
     return when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport(computedCoverageRatio)
-      ReportFormat.HTML -> generateHtmlReport()
+      ReportFormat.HTML -> generateHtmlReport(computedCoverageRatio)
     }
   }
 
@@ -47,102 +47,140 @@ class CoverageReporter(
   }
 
 
-  fun generateHtmlReport(): String {
-  /*
-//    val reportOutputPath = "path/to/your/report.html"  // Replace with your desired output path
+  fun generateHtmlReport(computedCoverageRatio: Float): String {
+    val computedCoveragePercentage = "%.2f".format(computedCoverageRatio).toFloat()
+    val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
 
-    println("In HTML report generation")
-
-    val coverageReport = coverageReportList.firstOrNull() ?: return "No coverage report found."
-
-    val computedCoverageRatio = computeCoverageRatio() // Implement this function
-
-    val computedCoveragePercentage = "%.2f".format(computedCoverageRatio)
-    val totalFiles = coverageReportList.size
-    val coveredFile = coverageReport.getCoveredFile(0) ?: return "No covered file found."
-    val filePath = coveredFile.filePath ?: "Unknown"
-
-    val (totalLinesFound, totalLinesHit) = Pair(0,0)
+    val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
+    val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
 
     var htmlContent = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Coverage Report</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    padding: 20px;
-                }
-                .covered-line, .not-covered-line, .uncovered-line {
-                    display: inline-block;
-                    width: auto;
-                    padding: 2px 4px;
-                    margin: 0;
-                }
-                .covered-line {
-                    background-color: #c8e6c9; /* Light green */
-                }
-                .not-covered-line {
-                    background-color: #ffcdd2; /* Light red */
-                }
-                .uncovered-line {
-                    background-color: #ffffff; /* White */
-                }
-                .coverage-summary {
-                    margin-bottom: 20px;
-                }
-                pre {
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                }
-            </style>
-        </head>
-        <body>
-            <h1>Coverage Report</h1>
-            <div class="coverage-summary">
-                <h2>Total coverage:</h2>
-                <ul>
-                    <li><strong>Files covered:</strong> $totalFiles</li>
-                    <li><strong>Covered File:</strong> $filePath</li>
-                    <li><strong>Coverage percentage:</strong> $computedCoveragePercentage% covered</li>
-                    <li><strong>Line coverage:</strong> $totalLinesHit covered / $totalLinesFound found</li>
-                </ul>
-            </div>
-            <pre>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Coverage Report</title>
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #fdfdfd;
+        }
+        .line-number-col {
+            width: 5%;
+        }
+        .source-code-col {
+            width: 95%;
+        }
+        .covered-line, .not-covered-line, .uncovered-line {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-sizing: border-box;
+            border-radius: 4px;
+            padding: 2px 8px 2px 4px;
+            display: inline-block;
+        }
+        .covered-line {
+            background-color: #c8e6c9; /* Light green */
+        }
+        .not-covered-line {
+            background-color: #ffcdd2; /* Light red */
+        }
+        .uncovered-line {
+            background-color: #fafafa; /* Half white */
+        }
+        .coverage-summary {
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+        .summary-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            table {
+                width: auto;
+            }
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Coverage Report</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>Covered File:</strong> $filePath</li>
+          <li><strong>Coverage percentage:</strong> ${computedCoveragePercentage * 100}% covered</li>
+          <li><strong>Line coverage:</strong> $totalLinesHit covered / $totalLinesFound found</li>
+        </ul>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="line-number-col">Line No</th>
+            <th class="source-code-col">Source Code</th>
+          </tr>
+        </thead>
+        <tbody>
     """.trimIndent()
 
-    val fileContent = File("/mnt/c/Users/Baskaran/AndroidStudioProjects/oppia-android", filePath).readLines()
-    val coverageMap = coveredFile.coveredLineList.associateBy { it.lineNumber }
+    val fileContent = File(repoRoot, filePath).readLines()
+    val coverageMap = coverageReportList.firstOrNull()?.coveredLineList?.associateBy { it.lineNumber }
 
     fileContent.forEachIndexed { index, line ->
       val lineNumber = index + 1
-      val lineClass = when (coverageMap[lineNumber]?.coverage) {
+      val lineClass = when (coverageMap?.get(lineNumber)?.coverage) {
         Coverage.FULL -> "covered-line"
         Coverage.NONE -> "not-covered-line"
         else -> "uncovered-line"
       }
-      htmlContent += "<div class=\"$lineClass\">${lineNumber.toString().padStart(4, ' ')}: $line</div>\n"
+      htmlContent += """
+        <tr>
+            <td>${lineNumber.toString().padStart(4, ' ')}</td>
+            <td class="$lineClass">$line</td>
+        </tr>
+    """.trimIndent()
     }
 
     htmlContent += """
-            </pre>
-        </body>
-        </html>
+        </tbody>
+      </table>
+    </body>
+    </html>
     """.trimIndent()
 
-    println("HTML content: $htmlContent")
+    println(htmlContent)
 
-    val outputFile = File(reportOutputPath)
-    outputFile.parentFile.mkdirs()
-    outputFile.writeText(htmlContent)
+    File(reportOutputPath).apply {
+      parentFile?.mkdirs()
+      writeText(htmlContent)
+    }
 
     return reportOutputPath
-  */
-    return ""
   }
 
   fun computeCoverageRatio(): Float {
