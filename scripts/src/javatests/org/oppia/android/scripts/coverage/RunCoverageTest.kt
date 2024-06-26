@@ -56,7 +56,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_missingTestFileNOtExempted_throwsException() {
+  fun testRunCoverage_missingTestFileNotExempted_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     val exception = assertThrows<IllegalStateException>() {
       val sampleFile = File(tempFolder.root.absolutePath, "file.kt")

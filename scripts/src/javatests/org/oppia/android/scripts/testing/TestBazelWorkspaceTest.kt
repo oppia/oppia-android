@@ -518,6 +518,168 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testAddMultiLevelSourceAndTestFileWithContent_createsSourceAndTestFiles() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    val sourceContent =
+      """
+      fun main() {
+              println("Hello, World!")
+          }
+      """
+
+    val testContentShared =
+      """
+      import org.junit.Test
+      import kotlin.test.assertEquals
+      
+      class MainTest {
+          
+          @Test
+          fun testMain() {
+              assertEquals(1, 1)
+          }
+      }
+      """
+
+    val testContentLocal =
+      """
+      import org.junit.Test
+      import kotlin.test.assertEquals
+      
+      class MainTestLocal {
+          
+          @Test
+          fun testMain() {
+              assertEquals(1, 2)
+          }
+      }
+      """
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "Main",
+      sourceContent = sourceContent,
+      testContentShared = testContentShared,
+      testContentLocal = testContentLocal,
+      subpackage = "coverage"
+    )
+
+    val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
+    val testFileShared = File(tempFolder.root, "coverage/sharedTest/java/com/example/MainTest.kt")
+    val testFileLocal = File(tempFolder.root, "coverage/test/java/com/example/MainLocalTest.kt")
+
+    assertThat(sourceFile.exists()).isTrue()
+    assertThat(sourceFile.readText()).isEqualTo(sourceContent)
+
+    assertThat(testFileShared.exists()).isTrue()
+    assertThat(testFileShared.readText()).isEqualTo(testContentShared)
+
+    assertThat(testFileLocal.exists()).isTrue()
+    assertThat(testFileLocal.readText()).isEqualTo(testContentLocal)
+  }
+
+  @Test
+  fun testAddMultiLevelSourceAndTestFileWithContent_updatesBuildFiles() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    val sourceContent =
+      """
+      fun main() {
+              println("Hello, World!")
+          }
+      """
+
+    val testContentShared =
+      """
+      import org.junit.Test
+      import kotlin.test.assertEquals
+      
+      class MainTest {
+          
+          @Test
+          fun testMain() {
+              assertEquals(1, 1)
+          }
+      }
+      """
+
+    val testContentLocal =
+      """
+      import org.junit.Test
+      import kotlin.test.assertEquals
+      
+      class MainTestLocal {
+          
+          @Test
+          fun testMain() {
+              assertEquals(1, 2)
+          }
+      }
+      """
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "Main",
+      sourceContent = sourceContent,
+      testContentShared = testContentShared,
+      testContentLocal = testContentLocal,
+      subpackage = "coverage"
+    )
+
+    val sourceBuildFile = File(
+      tempFolder.root, "coverage/main/java/com/example/BUILD.bazel"
+    )
+    val testBuildFileShared = File(
+      tempFolder.root, "coverage/sharedTest/java/com/example/BUILD.bazel"
+    )
+    val testBuildFileLocal = File(
+      tempFolder.root, "coverage/test/java/com/example/BUILD.bazel"
+    )
+
+    assertThat(sourceBuildFile.exists()).isTrue()
+    assertThat(sourceBuildFile.readText()).contains(
+      """
+        kt_jvm_library(
+            name = "main",
+            srcs = ["Main.kt"],
+            visibility = ["//visibility:public"]
+        )
+      """.trimIndent()
+    )
+
+    assertThat(testBuildFileShared.exists()).isTrue()
+    assertThat(testBuildFileShared.readText()).contains(
+      """
+        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+        kt_jvm_test(
+            name = "MainTest",
+            srcs = ["MainTest.kt"],
+            deps = [
+                "//coverage/main/java/com/example:main",
+                "@maven//:junit_junit",
+            ],
+            visibility = ["//visibility:public"],
+            test_class = "com.example.MainTest",
+        )
+      """.trimIndent()
+    )
+
+    assertThat(testBuildFileLocal.exists()).isTrue()
+    assertThat(testBuildFileLocal.readText()).contains(
+      """
+        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+        kt_jvm_test(
+            name = "MainLocalTest",
+            srcs = ["MainLocalTest.kt"],
+            deps = [
+                "//coverage/main/java/com/example:main",
+                "@maven//:junit_junit",
+            ],
+            visibility = ["//visibility:public"],
+            test_class = "com.example.MainLocalTest",
+        )
+      """.trimIndent()
+    )
+  }
+
+  @Test
   fun testAddSourceContentAndBuildFile_createsSourceFileAndBuildFile() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     val sourceContent = "fun main() { println(\"Hello, World!\") }"
