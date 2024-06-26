@@ -174,17 +174,14 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_switchClassroom_checkTopicListUpdatesCorrectly() {
-
   }
 
   @Test
   fun testFragment_clickOnTopicCard_returnBack_checkClassroomSelectionIsRetained() {
-
   }
 
   @Test
   fun testFragment_loginProfiles_switchClassrooms_checkClassroomsRetainedIndividually() {
-
   }
 
   private fun logIntoAdminTwice() {
