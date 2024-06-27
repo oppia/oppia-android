@@ -64,6 +64,7 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
   }
 }
 
+/** Displays text section of the topic card. */
 @Composable
 fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
   Column(

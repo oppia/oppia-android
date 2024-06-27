@@ -156,7 +156,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
     )
   }
 
-  /** Triggers the view model to update the topic list.  */
+  /** Triggers the view model to update the topic list. */
   fun onClassroomSummaryClicked(classroomSummary: ClassroomSummary) {
     val classroomId = classroomSummary.classroomId
     profileManagementController.updateLastSelectedClassroomId(profileId, classroomId)
