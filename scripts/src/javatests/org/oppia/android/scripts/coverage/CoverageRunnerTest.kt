@@ -9,6 +9,9 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.util.concurrent.TimeUnit
@@ -37,7 +40,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_emptyDirectory_throwsException() {
+  fun testRunWithCoverageAsync_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
@@ -48,7 +51,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_invalidTestTarget_throwsException() {
+  fun testRunWithCoverageAsync_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
@@ -62,7 +65,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_validSampleTestTarget_returnsCoverageData() {
+  fun testRunWithCoverageAsync_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -103,38 +106,50 @@ class CoverageRunnerTest {
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
+      testFilename = "TwoSumTest",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val result = runBlocking {
       coverageRunner.runWithCoverageAsync(
-        "//coverage/test/java/com/example:test"
+        "//coverage/test/java/com/example:TwoSumTest"
       ).await()
     }
-    val expectedResult = listOf(
-      "SF:coverage/main/java/com/example/TwoSum.kt",
-      "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FN:3,com/example/TwoSum::<init> ()V",
-      "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FNDA:0,com/example/TwoSum::<init> ()V",
-      "FNF:2",
-      "FNH:1",
-      "BRDA:7,0,0,1",
-      "BRDA:7,0,1,1",
-      "BRDA:7,0,2,1",
-      "BRDA:7,0,3,1",
-      "BRF:4",
-      "BRH:4",
-      "DA:3,0",
-      "DA:7,1",
-      "DA:8,1",
-      "DA:10,1",
-      "LH:3",
-      "LF:4",
-      "end_of_record"
-    )
+
+    val expectedResult = CoverageReport.newBuilder()
+      .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
+      .setFilePath("coverage/main/java/com/example/TwoSum.kt")
+      .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(3)
+          .setCoverage(Coverage.NONE)
+          .build()
+      )
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(7)
+          .setCoverage(Coverage.FULL)
+          .build()
+      )
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(8)
+          .setCoverage(Coverage.FULL)
+          .build()
+      )
+      .addCoveredLine(
+        CoveredLine.newBuilder()
+          .setLineNumber(10)
+          .setCoverage(Coverage.FULL)
+          .build()
+      )
+      .setLinesFound(4)
+      .setLinesHit(3)
+      .build()
 
     assertThat(result).isEqualTo(expectedResult)
   }
