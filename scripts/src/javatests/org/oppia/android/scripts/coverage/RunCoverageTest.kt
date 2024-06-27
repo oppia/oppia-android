@@ -8,9 +8,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoverageReport
-import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
