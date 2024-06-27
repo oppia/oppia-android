@@ -2665,8 +2665,8 @@ class ExplorationProgressControllerTest {
     monitorFactory.ensureDataProviderExecutes(
       explorationProgressController.submitSolutionIsViewed()
     )
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(1)
-    assertThat(eventLogList[0]).hasViewExistingSolutionContextThat {
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasViewExistingSolutionContextThat {
       containsTestExp2Details()
       hasStateNameThat().isEqualTo("Fractions")
     }
