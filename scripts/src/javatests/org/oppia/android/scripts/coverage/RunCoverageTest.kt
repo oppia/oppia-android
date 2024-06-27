@@ -866,7 +866,7 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
+    val outputReportText = File(sampleHTMLOutputPath).readText()
 
     val expectedResult =
       """
