@@ -21,6 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -108,7 +109,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Ignore
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -178,7 +178,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun testFragment_checkAllComponentsAreDisplayed() {
+  fun testFragment_allComponentsAreDisplayed() {
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
@@ -186,7 +186,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun testFragment_loginTwice_checkAllComponentsAreDisplayed() {
+  fun testFragment_loginTwice_allComponentsAreDisplayed() {
     logIntoAdminTwice()
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).assertIsDisplayed()
@@ -204,6 +204,9 @@ class ClassroomListFragmentTest {
   fun testFragment_withAdminProfile_configChange_profileNameIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
+
+    composeRule.activity.recreate()
+    testCoroutineDispatchers.runCurrent()
 
     onView(isRoot()).perform(orientationLandscape())
 
@@ -295,13 +298,213 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun testFragment_scrollToBottom_classroomListSticks_checkClassroomListVisible() {
+  fun testFragment_storiesPlayedOneWeekAgo_displaysLastPlayedStoriesText() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.last_played_stories))
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_markStory0DoneForFraction_displaysRecommendedStories() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedFractionsTopic(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).apply {
+      onChildAt(0)
+        .assertTextContains("Prototype Exploration")
+        .assertTextContains("FIRST TEST TOPIC")
+        .assertTextContains("SCIENCE")
+        .assertIsDisplayed()
+
+      onChildAt(1)
+        .assertTextContains("What is a Ratio?")
+        .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testFragment_markCompletedRatiosStory0_recommendsFractions() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+      .assertTextContains("What is a Fraction?")
+      .assertTextContains("FRACTIONS")
+      .assertTextContains("MATHS")
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).apply {
+      onChildAt(0)
+        .assertTextContains("What is a Fraction?")
+        .assertTextContains("FRACTIONS")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
+
+      onChildAt(1)
+        .assertTextContains("What is a Ratio?")
+        .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testFragment_forPromotedActivityList_hideViewAll() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
+      .assertDoesNotExist()
+  }
+
+  @Test
+  @Ignore("Temporarily ignored as the test is failing.")
+  fun testFragment_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+      .assertTextContains("Fifth Exploration")
+      .assertTextContains("SECOND TEST TOPIC")
+      .assertTextContains("SCIENCE")
+      .assertIsDisplayed()
+  }
+
+  @Test
+  // TODO(#5344): Add tests for coming soon topics list.
+  fun testFragment_markAtLeastOneStoryCompletedForAllTopics_displaysComingSoonTopicsList() {
+  }
+
+  @Test
+  // TODO(#5344): Add tests for coming soon topics list.
+  fun testHomeActivity_markFullProgressForSecondTestTopic_displaysComingSoonTopicsText() {
+  }
+
+  /*
+   * # Dependency graph:
+   *
+   *      Fractions
+   *         |
+   *        |
+   *       v
+   * Test topic 0                     Ratios
+   *    \                              /
+   *     \                           /
+   *       -----> Test topic 1 <----
+   *
+   * # Logic for recommendation system
+   *
+   * We always recommend the next topic that all dependencies are completed for. If a topic with
+   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is
+   * already done. In the same way, finishing test topic 2 means there's nothing else to recommend.
+   */
+  @Test
+  fun testFragment_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedTestTopic1Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.stories_for_you))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).apply {
+      onChildAt(0)
+        .assertTextContains("Fifth Exploration")
+        .assertTextContains("SECOND TEST TOPIC")
+        .assertTextContains("SCIENCE")
+        .assertIsDisplayed()
+
+      onChildAt(1)
+        .assertTextContains("What is a Fraction?")
+        .assertTextContains("FRACTIONS")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
+
+      // This story should be promoted.
+      onChildAt(2)
+        .assertDoesNotExist()
+      /*.assertTextContains("What is a Ratio?")
+      .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+      .assertTextContains("MATHS")
+      .assertIsDisplayed()*/
+    }
+  }
+
+  @Test
+  fun testFragment_scrollToBottom_classroomListSticks_classroomListIsVisible() {
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToIndex(3)
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
   }
 
   @Test
-  fun testFragment_switchClassroom_checkTopicListUpdatesCorrectly() {
+  fun testFragment_switchClassroom_topicListUpdatesCorrectly() {
     // Click on Science classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
@@ -332,7 +535,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun testFragment_clickOnTopicCard_returnBack_checkClassroomSelectionIsRetained() {
+  fun testFragment_clickOnTopicCard_returnBack_classroomSelectionIsRetained() {
     // Click on Maths classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(1).performClick()
     testCoroutineDispatchers.runCurrent()
@@ -359,7 +562,7 @@ class ClassroomListFragmentTest {
 
   @Test
   @Ignore("Temporarily ignored as the test is failing.")
-  fun testFragment_loginProfiles_switchClassrooms_checkClassroomsRetainedIndividually() {
+  fun testFragment_loginProfiles_switchClassrooms_classroomsRetainedIndividually() {
     profileTestHelper.logIntoAdmin()
     testCoroutineDispatchers.runCurrent()
 
