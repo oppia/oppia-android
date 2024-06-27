@@ -8,7 +8,6 @@ class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportList: List<CoverageReport>,
   private val reportFormat: ReportFormat,
-  private val reportOutputPath: String
 ) {
   val computedCoverageRatio = computeCoverageRatio()
   val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
@@ -19,7 +18,6 @@ class CoverageReporter(
   val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
 
   fun generateRichTextReport(): Pair<Float, String> {
-    println("output: $reportOutputPath")
     println("report format: $reportFormat")
     return when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport()
@@ -28,7 +26,7 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport(): Pair<Float, String> {
-    val markdownReport = """
+    val markdownContent = """
         ## Coverage Report
 
         - **Covered File:** $filePath
@@ -36,14 +34,9 @@ class CoverageReporter(
         - **Line coverage:** $totalLinesHit / $totalLinesFound lines covered
     """.trimIndent()
 
-    File(reportOutputPath).apply {
-      parentFile?.mkdirs()
-      writeText(markdownReport)
-    }
+    println("\n$markdownContent")
 
-    println("\n$markdownReport")
-
-    return Pair(computedCoverageRatio, reportOutputPath)
+    return Pair(computedCoverageRatio, markdownContent)
   }
 
   fun generateHtmlReport(): Pair<Float, String> {
@@ -166,14 +159,7 @@ class CoverageReporter(
     </html>
     """.trimIndent()
 
-    println(htmlContent)
-
-    File(reportOutputPath).apply {
-      parentFile?.mkdirs()
-      writeText(htmlContent)
-    }
-
-    return Pair(computedCoverageRatio, reportOutputPath)
+    return Pair(computedCoverageRatio, htmlContent)
   }
 
   private fun computeCoverageRatio(): Float {

@@ -112,14 +112,20 @@ class RunCoverage(
       runCoverageForTarget(testTarget)
     }
 
-    if (coverageReports.isNotEmpty()) {
-      val reporter = CoverageReporter(repoRoot, coverageReports, reportFormat, reportOutputPath)
-      val (computedCoverageRatio, reportOutputPath) = reporter.generateRichTextReport()
-      println("\nComputed Coverage Ratio is: $computedCoverageRatio")
-      println("\nGenerated report at: $reportOutputPath\n")
-    } else {
-      println("No coverage reports generated.")
-    }
+    coverageReports.takeIf { it.isNotEmpty() }?.run {
+      val reporter = CoverageReporter(repoRoot, this, reportFormat)
+      val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+
+      File(reportOutputPath).apply {
+        parentFile?.mkdirs()
+        writeText(reportText)
+      }
+
+      if (File(reportOutputPath).exists()) {
+        println("\nComputed Coverage Ratio is: $computedCoverageRatio")
+        println("\nGenerated report at: $reportOutputPath\n")
+      }
+    } ?: println("No coverage reports generated.")
 
     return coverageReports
   }
