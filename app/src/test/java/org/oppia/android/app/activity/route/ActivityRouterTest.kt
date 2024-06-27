@@ -98,6 +98,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Singleton
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 
 private const val internalProfileId = 1
 
@@ -163,20 +164,6 @@ class ActivityRouterTest {
       val log = ShadowLog.getLogs().last()
       assertThat(log.tag).isEqualTo("ActivityRouter")
       assertThat(log.msg).isEqualTo("Destination screen case is not identified.")
-    }
-  }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
     }
   }
 

@@ -117,6 +117,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 
 /** Tests for [CompletedStoryListActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -504,20 +505,6 @@ class CompletedStoryListActivityTest {
           withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
-    }
-  }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
     }
   }
 
