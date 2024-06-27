@@ -2,6 +2,7 @@ package org.oppia.android.app.classroom
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
@@ -20,7 +21,11 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -47,8 +52,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -80,6 +87,8 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
@@ -98,6 +107,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -614,6 +624,52 @@ class ClassroomListFragmentTest {
   }
 
   @Test
+  fun testFragment_clickPromotedStory_opensTopicActivity() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+      .assertIsDisplayed()
+      .performClick()
+
+    testCoroutineDispatchers.runCurrent()
+
+    val args = TopicActivityParams.newBuilder().apply {
+      this.topicId = FRACTIONS_TOPIC_ID
+      this.storyId = FRACTIONS_STORY_ID_0
+    }.build()
+    intended(hasComponent(TopicActivity::class.java.name))
+    intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
+  }
+
+  @Test
+  fun testFragment_topicSummary_opensTopicActivityThroughPlayIntent() {
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+      .assertTextContains("First Test Topic")
+      .assertTextContains("3 Lessons")
+      .assertIsDisplayed()
+      .performClick()
+
+    testCoroutineDispatchers.runCurrent()
+
+    val args = TopicActivityParams.newBuilder().apply {
+      this.topicId = FRACTIONS_TOPIC_ID
+      this.storyId = FRACTIONS_STORY_ID_0
+    }.build()
+    intended(hasComponent(TopicActivity::class.java.name))
+    intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
+  }
+
+  @Test
   fun testFragment_scrollToBottom_classroomListSticks_classroomListIsVisible() {
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToIndex(3)
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
@@ -747,6 +803,20 @@ class ClassroomListFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
