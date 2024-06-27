@@ -6,7 +6,11 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
     name = "ActivityRouterTest",
-     srcs = ["ActivityRouterTest.kt",],
+     srcs = [
+         "//app/src/sharedTest/java/org/oppia/android/app/utility/EspressoTestsMatchers.kt",
+         "//app/src/sharedTest/java/org/oppia/android/app/utility/ProtoExtraMatcher.kt",
+         "ActivityRouterTest.kt",
+     ],
     custom_package = "org.oppia.android.app.activity.route",
     test_class = "org.oppia.android.app.activity.route.ActivityRouterTest",
     test_manifest = "//app:test_manifest",
