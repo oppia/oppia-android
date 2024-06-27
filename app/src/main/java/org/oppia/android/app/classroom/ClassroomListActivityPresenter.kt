@@ -9,7 +9,7 @@ import org.oppia.android.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
 /** Tag for identifying the [ClassroomListFragment] in transactions. */
-const val TAG_CLASSROOM_LIST_FRAGMENT = "CLASSROOM_LIST_FRAGMENT"
+private const val TAG_CLASSROOM_LIST_FRAGMENT = "CLASSROOM_LIST_FRAGMENT"
 
 /** The presenter for [ClassroomListActivity]. */
 class ClassroomListActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
