@@ -87,6 +87,9 @@ message Profile {
   // Represents the epoch timestamp in milliseconds when the nps survey was previously shown in
   // this profile.
   int64 survey_last_shown_timestamp_ms = 18;
+
+  // Represents the ID of the classroom that the user selected during their last login.
+  string last_selected_classroom_id = 19;
 }
 
 // Represents a profile avatar image.

@@ -37,7 +37,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_emptyDirectory_throwsException() {
+  fun testRunWithCoverageAsync_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
@@ -48,7 +48,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_invalidTestTarget_throwsException() {
+  fun testRunWithCoverageAsync_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
@@ -62,7 +62,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverage_validSampleTestTarget_returnsCoverageData() {
+  fun testRunWithCoverageAsync_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
@@ -105,12 +105,13 @@ class CoverageRunnerTest {
       filename = "TwoSum",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
     val result = runBlocking {
       coverageRunner.runWithCoverageAsync(
-        "//coverage/test/java/com/example:test"
+        "//coverage/test/java/com/example:TwoSumTest"
       ).await()
     }
     val expectedResult = listOf(
