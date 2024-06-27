@@ -16,13 +16,13 @@ class CoverageReporter(
   private val coverageReportList: List<CoverageReport>,
   private val reportFormat: ReportFormat,
 ) {
-  val computedCoverageRatio = computeCoverageRatio()
-  val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
+  private val computedCoverageRatio = computeCoverageRatio()
+  private val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
 
-  val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
+  private val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
 
-  val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
-  val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
+  private val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
+  private val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
 
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
@@ -191,6 +191,8 @@ class CoverageReporter(
 
 /** Represents the different types of formats available to generate code coverage reports. */
 enum class ReportFormat {
+  /** Indicates that the report should be formatted in .md format. */
   MARKDOWN,
+  /** Indicates that the report should be formatted in .html format. */
   HTML
 }

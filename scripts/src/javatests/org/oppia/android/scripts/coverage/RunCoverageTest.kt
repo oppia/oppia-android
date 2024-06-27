@@ -279,9 +279,9 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      sampleMDOutputPath,
-      ReportFormat.MARKDOWN,
       "scripts/java/com/example/TwoSum.kt",
+      ReportFormat.MARKDOWN,
+      sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
@@ -859,9 +859,9 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      sampleMDOutputPath,
-      ReportFormat.HTML,
       "scripts/java/com/example/TwoSum.kt",
+      ReportFormat.HTML,
+      sampleHTMLOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()

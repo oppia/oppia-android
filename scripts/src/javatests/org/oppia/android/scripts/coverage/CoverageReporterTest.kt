@@ -24,40 +24,6 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_validData_initializesCorrectly() {
-    val expectedTotalLinesFound = 10
-    val expectedTotalLinesHit = 8
-    val expectedFilePath = "SampleFile.kt"
-    val expectedFormattedCoveragePercentage = "80.00"
-    reporter = CoverageReporter(
-      tempFolder.root.absolutePath,
-      listOf(validCoverageReport),
-      ReportFormat.MARKDOWN
-    )
-    assertThat(expectedFilePath).isEqualTo(reporter.filePath)
-    assertThat(expectedTotalLinesFound).isEqualTo(reporter.totalLinesFound)
-    assertThat(expectedTotalLinesHit).isEqualTo(reporter.totalLinesHit)
-    assertThat(expectedFormattedCoveragePercentage).isEqualTo(reporter.formattedCoveragePercentage)
-  }
-
-  @Test
-  fun testCoverageReporter_emptyCoverageReportList_initializesWithDefaults() {
-    val expectedTotalLinesFound = 0
-    val expectedTotalLinesHit = 0
-    val expectedFormattedCoveragePercentage = "0.00"
-    val unknownFilePath = "Unknown"
-    reporter = CoverageReporter(
-      tempFolder.root.absolutePath,
-      emptyCoverageReportList,
-      ReportFormat.MARKDOWN
-    )
-    assertThat(unknownFilePath).isEqualTo(reporter.filePath)
-    assertThat(expectedTotalLinesFound).isEqualTo(reporter.totalLinesFound)
-    assertThat(expectedTotalLinesHit).isEqualTo(reporter.totalLinesHit)
-    assertThat(expectedFormattedCoveragePercentage).isEqualTo(reporter.formattedCoveragePercentage)
-  }
-
-  @Test
   fun testCoverageReporter_validData_generatesCorrectCoverageRatio() {
     reporter = CoverageReporter(
       tempFolder.root.absolutePath,
