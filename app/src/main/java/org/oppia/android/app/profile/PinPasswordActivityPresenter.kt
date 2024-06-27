@@ -40,6 +40,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) {
   private var internalProfileId = -1
+  private var profileId =  ProfileId.getDefaultInstance()
   private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
 
@@ -51,6 +52,7 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     val adminPin = args?.adminPin
     internalProfileId = args?.internalProfileId ?: -1
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
@@ -99,14 +101,8 @@ class PinPasswordActivityPresenter @Inject constructor(
         ) {
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
-              .loginToProfile(
-                ProfileId.newBuilder().setInternalId(internalProfileId).build()
-              ).toLiveData()
-              .observe(
-                activity,
-                {
+              .loginToProfile(profileId).toLiveData().observe(activity, {
                   if (it is AsyncResult.Success) {
-                    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
                     activity.startActivity(
                       if (enableMultipleClassrooms.value)
                         ClassroomListActivity.createClassroomListActivity(activity, profileId)
