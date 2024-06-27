@@ -1,6 +1,5 @@
 package org.oppia.android.app.home.classroomlist
 
-import org.oppia.android.app.classroom.ClassroomListViewModel
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.EphemeralClassroomSummary
@@ -9,14 +8,10 @@ import java.util.Objects
 
 /** The view model corresponding to individual classroom summaries in the classroom summary RecyclerView. */
 class ClassroomSummaryViewModel(
-  classroomListViewModel: ClassroomListViewModel,
+  private val classroomSummaryClickListener: ClassroomSummaryClickListener,
   ephemeralClassroomSummary: EphemeralClassroomSummary,
   translationController: TranslationController,
 ) : HomeItemViewModel() {
-
-  /** Click listener for [ClassroomSummary] items. */
-  private val classroomClickListener = classroomListViewModel as ClassroomSummaryClickListener
-
   /** The [ClassroomSummary] retrieved from the [EphemeralClassroomSummary]. */
   val classroomSummary: ClassroomSummary = ephemeralClassroomSummary.classroomSummary
 
@@ -29,8 +24,8 @@ class ClassroomSummaryViewModel(
   }
 
   /** Handles the click event for a [ClassroomSummary] by invoking the click listener. */
-  fun handleClassroomClick(classroomSummary: ClassroomSummary) {
-    classroomClickListener.onClassroomSummaryClicked(classroomSummary)
+  fun handleClassroomClick() {
+    classroomSummaryClickListener.onClassroomSummaryClicked(classroomSummary)
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the

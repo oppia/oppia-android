@@ -101,7 +101,7 @@ fun ClassroomCard(
         end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
       )
       .clickable {
-        classroomSummaryViewModel.handleClassroomClick(classroomSummaryViewModel.classroomSummary)
+        classroomSummaryViewModel.handleClassroomClick()
       },
     backgroundColor = if (isCardSelected) {
       colorResource(id = R.color.component_color_classroom_card_color)
