@@ -5,6 +5,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -78,7 +79,7 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): List<List<String>> {
+  fun execute(): List<CoverageReport> {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
@@ -97,15 +98,11 @@ class RunCoverage(
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
     return testTargets.mapNotNull { testTarget ->
-      val coverageData = runCoverageForTarget(testTarget)
-      if (coverageData == null) {
-        println("Coverage data for $testTarget is null")
-      }
-      coverageData
+      runCoverageForTarget(testTarget)
     }
   }
 
-  private fun runCoverageForTarget(testTarget: String): List<String>? {
+  private fun runCoverageForTarget(testTarget: String): CoverageReport {
     return runBlocking {
       CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
         .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
