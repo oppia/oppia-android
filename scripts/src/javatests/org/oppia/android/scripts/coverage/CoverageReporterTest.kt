@@ -23,7 +23,7 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_initializationWithValidData_initializesCorrectly() {
+  fun testCoverageReporter_validData_initializesCorrectly() {
     val expectedTotalLinesFound = 10
     val expectedTotalLinesHit = 8
     val expectedFilePath = "SampleFile.kt"
@@ -40,7 +40,7 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_initializationWithEmptyCoverageReportList_initializesWithDefaults() {
+  fun testCoverageReporter_emptyCoverageReportList_initializesWithDefaults() {
     val expectedTotalLinesFound = 0
     val expectedTotalLinesHit = 0
     val expectedFormattedCoveragePercentage = "0.00"
@@ -57,7 +57,7 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_generateMarkdownReportWithValidData_generatesCorrectCoverageRatio() {
+  fun testCoverageReporter_validData_generatesCorrectCoverageRatio() {
     reporter = CoverageReporter(
       tempFolder.root.absolutePath,
       listOf(validCoverageReport),
@@ -69,7 +69,7 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_generateMarkdownReportWithNoLinesFound_generatesCorrectCoverageRatio() {
+  fun testCoverageReporter_noLinesFound_generatesZeroCoverageRatio() {
     val expectedZeroCoverageRatio = 0F
     // to check divided by zero error doesn't occur
     val report = validCoverageReport.toBuilder().setLinesFound(0).build()
