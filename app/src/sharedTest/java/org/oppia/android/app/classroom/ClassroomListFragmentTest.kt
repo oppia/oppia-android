@@ -16,6 +16,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -43,6 +45,7 @@ import org.oppia.android.app.classroom.topiclist.ALL_TOPICS_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.welcome.WELCOME_TEST_TAG
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -487,13 +490,126 @@ class ClassroomListFragmentTest {
         .assertTextContains("MATHS")
         .assertIsDisplayed()
 
-      // This story should be promoted.
+      // TODO(#5344): This story should be promoted.
       onChildAt(2)
         .assertDoesNotExist()
       /*.assertTextContains("What is a Ratio?")
       .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
       .assertTextContains("MATHS")
       .assertIsDisplayed()*/
+    }
+  }
+
+  @Test
+  // TODO(#5344): Add tests for coming soon topics list.
+  fun testFragment_markStory0OfRatiosAndTestTopics0And1Done_playTestTopicStory0_noPromotions() {
+  }
+
+  @Test
+  fun testFragment_markStory0DoneFirstTestTopic_recommendedStoriesIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(1)
+      .assertTextContains("What is a Ratio?")
+      .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+      .assertTextContains("MATHS")
+      .assertIsDisplayed()
+  }
+
+  @Test
+  @Ignore("The promoted story list only contains 'What is a Fraction?' story.")
+  fun testFragment_markStory0DoneForFractions_recommendedStoriesIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedFractionsStory0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.activity.recreate()
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).apply {
+      onChildAt(0)
+        .assertTextContains("Prototype Exploration")
+        .assertTextContains("FIRST TEST TOPIC")
+        .assertTextContains("SCIENCE")
+        .assertIsDisplayed()
+
+      onChildAt(1)
+        .assertTextContains("What is a Ratio?")
+        .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testFragment_clickViewAll_opensRecentlyPlayedActivity() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedTestTopic1(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
+      .assertIsDisplayed()
+      .performClick()
+
+    intended(hasComponent(RecentlyPlayedActivity::class.java.name))
+  }
+
+  @Test
+  fun testFragment_markFullProgressForFractions_playRatios_displaysRecommendedStories() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedFractionsStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+      .assertTextContains(context.getString(R.string.stories_for_you))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).apply {
+      onChildAt(0)
+        .assertTextContains("What is a Ratio?")
+        .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
+
+      onChildAt(1)
+        .assertTextContains("Prototype Exploration")
+        .assertTextContains("FIRST TEST TOPIC")
+        .assertTextContains("SCIENCE")
+        .assertIsDisplayed()
     }
   }
 
