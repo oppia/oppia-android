@@ -8,9 +8,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoverageReport
-import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
@@ -84,7 +81,9 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    assertThat(result).isEqualTo("This file is exempted from having a test file; skipping coverage check.")
+    assertThat(result).isEqualTo(
+      "This file is exempted from having a test file; skipping coverage check."
+    )
   }
 
   @Test
@@ -145,13 +144,14 @@ class RunCoverageTest {
       "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
     ).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** coverage/main/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -216,13 +216,14 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** coverage/main/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -287,13 +288,14 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** scripts/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -358,13 +360,14 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** app/main/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -429,13 +432,14 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** app/main/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -500,13 +504,14 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** app/main/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -588,13 +593,14 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
         ## Coverage Report
         
         - **Covered File:** app/main/java/com/example/TwoSum.kt
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -659,7 +665,8 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleHTMLOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -796,7 +803,7 @@ class RunCoverageTest {
       </table>
     </body>
     </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -861,7 +868,8 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -998,7 +1006,7 @@ class RunCoverageTest {
       </table>
     </body>
     </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -1063,7 +1071,8 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleHTMLOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -1200,7 +1209,7 @@ class RunCoverageTest {
       </table>
     </body>
     </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -1265,7 +1274,8 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleHTMLOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -1402,7 +1412,7 @@ class RunCoverageTest {
       </table>
     </body>
     </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -1467,7 +1477,8 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleHTMLOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -1604,7 +1615,7 @@ class RunCoverageTest {
       </table>
     </body>
     </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -1686,7 +1697,8 @@ class RunCoverageTest {
 
     val outputReportText = File(sampleHTMLOutputPath).readText()
 
-    val expectedResult = """
+    val expectedResult =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -1823,7 +1835,7 @@ class RunCoverageTest {
       </table>
     </body>
     </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }

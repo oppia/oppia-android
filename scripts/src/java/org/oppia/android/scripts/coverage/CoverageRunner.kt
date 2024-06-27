@@ -60,7 +60,7 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) throw IllegalArgumentException("File not found, bazel: $bazelTestTarget coverage data: $coverageData, extracted: $extractedFileName")
+    if (sfStartIdx == -1) throw IllegalArgumentException("File not found")
     val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
       it.startsWith("end_of_record")
     }

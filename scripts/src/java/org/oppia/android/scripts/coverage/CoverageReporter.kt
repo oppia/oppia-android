@@ -1,9 +1,16 @@
 package org.oppia.android.scripts.coverage
 
-import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoverageReport
 import java.io.File
 
+/**
+ * Class responsible for generating rich text coverage report.
+ *
+ * @param repoRoot the root directory of the repository
+ * @param coverageReportList the list of coverage data proto
+ * @param reportFormat the format in which the report will be generated
+ */
 class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportList: List<CoverageReport>,
@@ -17,6 +24,13 @@ class CoverageReporter(
   val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
   val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
 
+  /**
+   * Generates a rich text report for the analysed coverage data based on the specified format.
+   * It supports Markdown and HTML formats.
+   *
+   * @return a pair where the first value is the computed coverage ratio represented in [0, 1]
+   *     and the second value is the generated report text
+   */
   fun generateRichTextReport(): Pair<Float, String> {
     println("report format: $reportFormat")
     return when (reportFormat) {
@@ -26,21 +40,23 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport(): Pair<Float, String> {
-    val markdownContent = """
+    val markdownContent =
+      """
         ## Coverage Report
 
         - **Covered File:** $filePath
         - **Coverage percentage:** $formattedCoveragePercentage% covered
         - **Line coverage:** $totalLinesHit / $totalLinesFound lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     println("\n$markdownContent")
 
     return Pair(computedCoverageRatio, markdownContent)
   }
 
-  fun generateHtmlReport(): Pair<Float, String> {
-    var htmlContent = """
+  private fun generateHtmlReport(): Pair<Float, String> {
+    var htmlContent =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -132,10 +148,11 @@ class CoverageReporter(
           </tr>
         </thead>
         <tbody>
-    """.trimIndent()
+      """.trimIndent()
 
     val fileContent = File(repoRoot, filePath).readLines()
-    val coverageMap = coverageReportList.firstOrNull()?.coveredLineList?.associateBy { it.lineNumber }
+    val coverageMap = coverageReportList
+      .firstOrNull()?.coveredLineList?.associateBy { it.lineNumber }
 
     fileContent.forEachIndexed { index, line ->
       val lineNumber = index + 1
@@ -149,7 +166,7 @@ class CoverageReporter(
             <td>${lineNumber.toString().padStart(4, ' ')}</td>
             <td class="$lineClass">$line</td>
         </tr>
-    """.trimIndent()
+      """.trimIndent()
     }
 
     htmlContent += """
@@ -172,6 +189,7 @@ class CoverageReporter(
   }
 }
 
+/** Represents the different types of formats available to generate code coverage reports. */
 enum class ReportFormat {
   MARKDOWN,
   HTML

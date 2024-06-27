@@ -54,7 +54,14 @@ fun main(vararg args: String) {
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    RunCoverage(repoRoot, filePath, reportFormat, reportOutputPath, commandExecutor, scriptBgDispatcher).execute()
+    RunCoverage(
+      repoRoot,
+      filePath,
+      reportFormat,
+      reportOutputPath,
+      commandExecutor,
+      scriptBgDispatcher
+    ).execute()
   }
 }
 
@@ -163,7 +170,11 @@ private fun findTestFile(repoRoot: String, filePath: String): List<String> {
     .map { it.relativeTo(repoRootFile).path }
 }
 
-private fun getReportOutputPath(repoRoot: String, filePath: String, reportFormat: ReportFormat): String {
+private fun getReportOutputPath(
+  repoRoot: String,
+  filePath: String,
+  reportFormat: ReportFormat
+): String {
   val fileWithoutExtension = filePath.substringBeforeLast(".")
   val defaultFilename = when (reportFormat) {
     ReportFormat.HTML -> "coverage.html"

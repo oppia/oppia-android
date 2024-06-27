@@ -1,10 +1,11 @@
 package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.proto.CoverageReport
-import java.io.File
 
 class CoverageReporterTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -91,13 +92,14 @@ class CoverageReporterTest {
     )
     val (_, reportText) = reporter.generateRichTextReport()
 
-    val expectedMarkdown = """
+    val expectedMarkdown =
+      """
         ## Coverage Report
         
         - **Covered File:** SampleFile.kt
         - **Coverage percentage:** 80.00% covered
         - **Line coverage:** 8 / 10 lines covered
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(reportText).isEqualTo(expectedMarkdown)
   }
@@ -105,7 +107,8 @@ class CoverageReporterTest {
   @Test
   fun testCoverageReporter_htmlReportText_check() {
     val sourceFile = tempFolder.newFile("SampleFile.kt")
-    sourceFile.writeText("""
+    sourceFile.writeText(
+      """
       fun main() {
         println("Hello, World!")
         val x = 10
@@ -116,16 +119,18 @@ class CoverageReporterTest {
             println(i)
         }
     }
-    """.trimIndent())
+      """.trimIndent()
+    )
 
     reporter = CoverageReporter(
       tempFolder.root.absolutePath,
       listOf(validCoverageReport),
       ReportFormat.HTML
     )
-    val (_, reportText) = reporter.generateHtmlReport()
+    val (_, reportText) = reporter.generateRichTextReport()
 
-    val expectedHTML = """
+    val expectedHTML =
+      """
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -250,7 +255,7 @@ class CoverageReporterTest {
     </table>
   </body>
   </html>
-    """.trimIndent()
+      """.trimIndent()
 
     assertThat(reportText).isEqualTo(expectedHTML)
   }
