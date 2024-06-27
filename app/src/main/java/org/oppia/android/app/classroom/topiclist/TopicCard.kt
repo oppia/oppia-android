@@ -46,9 +46,8 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
         painter = painterResource(
           id = topicSummaryViewModel.topicSummary.topicThumbnail.getDrawableResource()
         ),
-        contentDescription = "Picture of a ${
-          topicSummaryViewModel.topicSummary.topicThumbnail.thumbnailGraphic.name
-        }.",
+        contentDescription = "Picture of a " +
+          "${topicSummaryViewModel.topicSummary.topicThumbnail.thumbnailGraphic.name}.",
         modifier = Modifier
           .aspectRatio(4f / 3f)
           .background(
