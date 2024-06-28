@@ -104,7 +104,10 @@ class CoverageRunner(
 }
 
 private fun extractTargetName(bazelTestTarget: String): String {
-  val targetName = bazelTestTarget.substringAfterLast(":").trim()
+  val targetName = bazelTestTarget
+    .substringAfterLast("/")
+    .substringAfterLast(":")
+    .trim()
   return targetName.removeSuffix("LocalTest").removeSuffix("Test")
 }
 
