@@ -76,14 +76,18 @@ class CoverageReporter(
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -100,26 +104,52 @@ class CoverageReporter(
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -134,11 +164,19 @@ class CoverageReporter(
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> $filePath</li>
-          <li><strong>Coverage percentage:</strong> $formattedCoveragePercentage% covered</li>
-          <li><strong>Line coverage:</strong> $totalLinesHit covered / $totalLinesFound found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> $filePath <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> $formattedCoveragePercentage%</div>
+          <div><strong>Line coverage:</strong> $totalLinesHit / $totalLinesFound covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -163,7 +201,7 @@ class CoverageReporter(
       }
       htmlContent += """
         <tr>
-            <td>${lineNumber.toString().padStart(4, ' ')}</td>
+            <td class="line-number-row">${lineNumber.toString().padStart(4, ' ')}</td>
             <td class="$lineClass">$line</td>
         </tr>
       """.trimIndent()

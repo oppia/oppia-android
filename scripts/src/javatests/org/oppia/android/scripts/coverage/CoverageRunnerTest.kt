@@ -76,7 +76,7 @@ class CoverageRunnerTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b

@@ -98,7 +98,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -168,7 +168,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -312,7 +312,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -384,7 +384,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -456,7 +456,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -528,7 +528,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -617,7 +617,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -777,7 +777,7 @@ class RunCoverageTest {
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td>   7</td>
-        <td class="covered-line">            return if (a ==0 && b == 0) {</td>
+        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
         <td>   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
@@ -1023,7 +1023,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -1183,7 +1183,7 @@ class RunCoverageTest {
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td>   7</td>
-        <td class="covered-line">            return if (a ==0 && b == 0) {</td>
+        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
         <td>   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
@@ -1226,7 +1226,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -1386,7 +1386,7 @@ class RunCoverageTest {
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td>   7</td>
-        <td class="covered-line">            return if (a ==0 && b == 0) {</td>
+        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
         <td>   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
@@ -1429,7 +1429,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -1589,7 +1589,7 @@ class RunCoverageTest {
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td>   7</td>
-        <td class="covered-line">            return if (a ==0 && b == 0) {</td>
+        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
         <td>   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
@@ -1632,7 +1632,7 @@ class RunCoverageTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -1809,7 +1809,7 @@ class RunCoverageTest {
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td>   7</td>
-        <td class="covered-line">            return if (a ==0 && b == 0) {</td>
+        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
         <td>   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>

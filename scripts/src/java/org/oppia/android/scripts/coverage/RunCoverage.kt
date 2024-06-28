@@ -33,11 +33,13 @@ import java.util.concurrent.TimeUnit
 fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
-  val reportFormat = when (args.getOrNull(2)) {
-    "HTML" -> ReportFormat.HTML
-    "MARKDOWN", null -> ReportFormat.MARKDOWN
-    else -> throw IllegalArgumentException("Unsupported report format: ${args[2]}")
+  val format = args.getOrNull(2)
+  val reportFormat = when {
+    format.equals("HTML", ignoreCase = true) -> ReportFormat.HTML
+    format.equals("MARKDOWN", ignoreCase = true) || format == null -> ReportFormat.MARKDOWN
+    else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
+
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
