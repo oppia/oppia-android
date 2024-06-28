@@ -422,6 +422,7 @@ class BazelClientTest {
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
+      testFilename = "TwoSumTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
