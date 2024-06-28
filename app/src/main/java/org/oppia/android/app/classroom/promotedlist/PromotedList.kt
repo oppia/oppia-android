@@ -57,7 +57,11 @@ fun PromotedStoryList(
     modifier = Modifier
       .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
       .fillMaxWidth()
-      .padding(top = 24.dp),
+      .padding(
+        start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+        top = 24.dp,
+        end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+      ),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
   ) {
@@ -68,9 +72,7 @@ fun PromotedStoryList(
       fontWeight = FontWeight.Medium,
       fontSize = 18.sp,
       modifier = Modifier
-        .padding(
-          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-        ),
+        .weight(weight = 1f, fill = false),
     )
     if (promotedStoryListViewModel.getViewAllButtonVisibility() == View.VISIBLE) {
       Text(
@@ -80,12 +82,7 @@ fun PromotedStoryList(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         modifier = Modifier
-          .fillMaxHeight()
-          .align(Alignment.CenterVertically)
-          .padding(
-            start = 8.dp,
-            end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
-          )
+          .padding(start = 8.dp)
           .clickable { promotedStoryListViewModel.clickOnViewAll() },
       )
     }
@@ -182,11 +179,15 @@ fun PromotedStoryCard(
           .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
           .border(
             width = 2.dp,
-            color = colorResource(id = R.color.color_def_persian_blue),
+            color = colorResource(
+              id = R.color.component_color_classroom_promoted_list_classroom_label_color
+            ),
             shape = RoundedCornerShape(50)
           )
           .padding(horizontal = 16.dp, vertical = 6.dp),
-        color = colorResource(id = R.color.color_def_persian_blue),
+        color = colorResource(
+          id = R.color.component_color_classroom_promoted_list_classroom_label_color
+        ),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,

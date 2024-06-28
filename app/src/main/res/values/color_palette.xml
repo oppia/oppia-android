@@ -275,4 +275,5 @@
   <color name="color_palette_classroom_card_color">@color/color_def_greenish_white</color>
   <color name="color_palette_classroom_shared_text_color">@color/color_def_green</color>
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue</color>
 </resources>
