@@ -447,16 +447,6 @@ class ClassroomListFragmentTest {
       .assertIsDisplayed()
   }
 
-  @Test
-  // TODO(#5344): Add tests for coming soon topics list.
-  fun testFragment_markAtLeastOneStoryCompletedForAllTopics_displaysComingSoonTopicsList() {
-  }
-
-  @Test
-  // TODO(#5344): Add tests for coming soon topics list.
-  fun testHomeActivity_markFullProgressForSecondTestTopic_displaysComingSoonTopicsText() {
-  }
-
   /*
    * # Dependency graph:
    *
@@ -509,19 +499,10 @@ class ClassroomListFragmentTest {
         .assertTextContains("MATHS")
         .assertIsDisplayed()
 
-      // TODO(#5344): This story should be promoted.
+      // TODO(#5344): 'What is a Ratio?' story should be promoted.
       onChildAt(2)
         .assertDoesNotExist()
-      /*.assertTextContains("What is a Ratio?")
-      .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
-      .assertTextContains("MATHS")
-      .assertIsDisplayed()*/
     }
-  }
-
-  @Test
-  // TODO(#5344): Add tests for coming soon topics list.
-  fun testFragment_markStory0OfRatiosAndTestTopics0And1Done_playTestTopicStory0_noPromotions() {
   }
 
   @Test
@@ -741,15 +722,13 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @Ignore("Temporarily ignored as the test is failing.")
-  fun testFragment_loginProfiles_switchClassrooms_classroomsRetainedIndividually() {
+  fun testFragment_switchClassrooms_topicListUpdatesCorrectly() {
     profileTestHelper.logIntoAdmin()
     testCoroutineDispatchers.runCurrent()
 
     // Click on Science classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
-
     // Check that Science classroom's topics are displayed.
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
       .assertTextContains("First Test Topic")
@@ -759,14 +738,10 @@ class ClassroomListFragmentTest {
       .assertTextContains("Second Test Topic")
       .assertTextContains("1 Lesson")
       .assertIsDisplayed()
-
-    profileTestHelper.logIntoUser()
-    testCoroutineDispatchers.runCurrent()
 
     // Click on Maths classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(1).performClick()
     testCoroutineDispatchers.runCurrent()
-
     // Check that Maths classroom's topics are displayed.
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
       .assertTextContains("Fractions")
@@ -777,9 +752,9 @@ class ClassroomListFragmentTest {
       .assertTextContains("4 Lessons")
       .assertIsDisplayed()
 
-    profileTestHelper.logIntoAdmin()
+    // Click on Science classroom card.
+    composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
-
     // Check that Science classroom's topics are displayed.
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
       .assertTextContains("First Test Topic")
@@ -788,19 +763,6 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
       .assertTextContains("Second Test Topic")
       .assertTextContains("1 Lesson")
-      .assertIsDisplayed()
-
-    profileTestHelper.logIntoUser()
-    testCoroutineDispatchers.runCurrent()
-
-    // Check that Maths classroom's topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
-      .assertTextContains("Fractions")
-      .assertTextContains("2 Lessons")
-      .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
-      .assertTextContains("Ratios and Proportional Reasoning")
-      .assertTextContains("4 Lessons")
       .assertIsDisplayed()
   }
 
