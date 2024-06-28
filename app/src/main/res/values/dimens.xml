@@ -535,6 +535,7 @@
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
   <dimen name="promoted_story_card_padding_horizontal">16dp</dimen>
   <dimen name="promoted_story_card_padding_vertical">8dp</dimen>
+  <dimen name="promoted_story_card_elevation">4dp</dimen>
   <!-- The width is set to sp so that it will scale according to the device screen -->
   <dimen name="promoted_story_card_layout_width">280sp</dimen>
   <dimen name="promoted_story_card_width">280sp</dimen>
@@ -546,6 +547,7 @@
   <!-- Topic Card -->
   <dimen name="topic_card_margin_start">8dp</dimen>
   <dimen name="topic_card_margin_end">8dp</dimen>
+  <dimen name="topic_card_elevation">4dp</dimen>
 
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">40dp</dimen>
@@ -834,4 +836,5 @@
   <dimen name="classrooms_card_padding">20dp</dimen>
   <dimen name="classrooms_card_icon_padding_bottom">20dp</dimen>
   <dimen name="classrooms_card_icon_size">80dp</dimen>
+  <dimen name="classrooms_card_elevation">4dp</dimen>
 </resources>

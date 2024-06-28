@@ -109,7 +109,7 @@ fun ClassroomCard(
       colorResource(id = R.color.component_color_shared_screen_primary_background_color)
     },
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
-    elevation = 4.dp,
+    elevation = dimensionResource(id = R.dimen.classrooms_card_elevation),
   ) {
     Column(
       modifier = Modifier.padding(all = dimensionResource(id = R.dimen.classrooms_card_padding)),

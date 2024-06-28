@@ -129,7 +129,7 @@ fun PromotedStoryCard(
     backgroundColor = colorResource(
       id = R.color.component_color_shared_screen_primary_background_color
     ),
-    elevation = 4.dp,
+    elevation = dimensionResource(id = R.dimen.promoted_story_card_elevation),
   ) {
     Column(
       modifier = cardColumnModifier

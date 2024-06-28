@@ -37,7 +37,7 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
         end = dimensionResource(R.dimen.topic_card_margin_end),
       )
       .clickable { topicSummaryViewModel.clickOnSummaryTile() },
-    elevation = 4.dp,
+    elevation = dimensionResource(id = R.dimen.topic_card_elevation),
   ) {
     Column(
       verticalArrangement = Arrangement.Center,
