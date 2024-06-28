@@ -41,7 +41,7 @@ fun main(vararg args: String) {
   val reportFormat = when (format) {
     "HTML" -> ReportFormat.HTML
     "MARKDOWN" -> ReportFormat.MARKDOWN
-    else -> throw IllegalArgumentException("Unsupported report format: $format")
+    else -> error("Unsupported report format: $format")
   }
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
