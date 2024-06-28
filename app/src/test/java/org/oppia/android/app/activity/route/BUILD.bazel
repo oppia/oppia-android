@@ -6,11 +6,7 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
     name = "ActivityRouterTest",
-     srcs = [
-         "//app/src/sharedTest/java/org/oppia/android/app/utility/EspressoTestsMatchers.kt",
-         "//app/src/sharedTest/java/org/oppia/android/app/utility/ProtoExtraMatcher.kt",
-         "ActivityRouterTest.kt",
-     ],
+    srcs = ["ActivityRouterTest.kt"],
     custom_package = "org.oppia.android.app.activity.route",
     test_class = "org.oppia.android.app.activity.route.ActivityRouterTest",
     test_manifest = "//app:test_manifest",
@@ -24,6 +20,7 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//app/test_deps"
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
