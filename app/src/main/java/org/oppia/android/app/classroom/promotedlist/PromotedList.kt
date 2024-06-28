@@ -58,7 +58,7 @@ fun PromotedStoryList(
       .fillMaxWidth()
       .padding(
         start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-        top = 24.dp,
+        top = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_top),
         end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
       ),
     horizontalArrangement = Arrangement.SpaceBetween,
@@ -69,7 +69,7 @@ fun PromotedStoryList(
       color = colorResource(id = R.color.component_color_shared_primary_text_color),
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Medium,
-      fontSize = 18.sp,
+      fontSize = dimensionResource(id = R.dimen.promoted_story_list_header_text_size).value.sp,
       modifier = Modifier
         .weight(weight = 1f, fill = false),
     )
@@ -79,9 +79,11 @@ fun PromotedStoryList(
         color = colorResource(id = R.color.component_color_home_activity_view_all_text_color),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontSize = dimensionResource(id = R.dimen.promoted_story_list_view_all_text_size).value.sp,
         modifier = Modifier
-          .padding(start = 8.dp)
+          .padding(
+            start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start)
+          )
           .clickable { promotedStoryListViewModel.clickOnViewAll() },
       )
     }
@@ -89,7 +91,7 @@ fun PromotedStoryList(
   LazyRow(
     modifier = Modifier
       .testTag(PROMOTED_STORY_LIST_TEST_TAG)
-      .padding(top = 12.dp),
+      .padding(top = dimensionResource(id = R.dimen.promoted_story_list_padding)),
     contentPadding = PaddingValues(
       start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
       end = promotedStoryListViewModel.endPadding.dp,
@@ -119,9 +121,9 @@ fun PromotedStoryCard(
     modifier = Modifier
       .width(width = dimensionResource(id = R.dimen.promoted_story_card_layout_width))
       .padding(
-        start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
-        end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
-        bottom = 8.dp,
+        start = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_start),
+        end = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_end),
+        bottom = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_bottom),
       )
       .clickable { promotedStoryViewModel.clickOnStoryTile() },
     backgroundColor = colorResource(
@@ -150,24 +152,48 @@ fun PromotedStoryCard(
       )
       Text(
         text = promotedStoryViewModel.nextChapterTitle,
-        modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+        modifier = Modifier.padding(
+          start = dimensionResource(
+            id = R.dimen.promoted_story_card_padding_horizontal
+          ),
+          top = dimensionResource(
+            id = R.dimen.promoted_story_card_padding_vertical
+          ),
+          end = dimensionResource(
+            id = R.dimen.promoted_story_card_padding_horizontal
+          ),
+        ),
         color = colorResource(id = R.color.component_color_shared_primary_text_color),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
+        fontSize = dimensionResource(
+          id = R.dimen.promoted_story_card_chapter_title_text_size
+        ).value.sp,
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
       )
       Text(
         text = machineLocale.run { promotedStoryViewModel.topicTitle.toMachineUpperCase() },
-        modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+        modifier = Modifier.padding(
+          start = dimensionResource(
+            id = R.dimen.promoted_story_card_padding_horizontal
+          ),
+          top = dimensionResource(
+            id = R.dimen.promoted_story_card_padding_vertical
+          ),
+          end = dimensionResource(
+            id = R.dimen.promoted_story_card_padding_horizontal
+          ),
+        ),
         color = colorResource(
           id = R.color.component_color_shared_story_card_topic_name_text_color
         ),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Light,
-        fontSize = 14.sp,
+        fontSize = dimensionResource(
+          id = R.dimen.promoted_story_card_topic_title_text_size
+        ).value.sp,
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
@@ -175,7 +201,10 @@ fun PromotedStoryCard(
       Text(
         text = machineLocale.run { promotedStoryViewModel.classroomTitle.toMachineUpperCase() },
         modifier = Modifier
-          .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
+          .padding(
+            horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
+            vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
+          )
           .border(
             width = 2.dp,
             color = colorResource(
@@ -183,13 +212,18 @@ fun PromotedStoryCard(
             ),
             shape = RoundedCornerShape(50)
           )
-          .padding(horizontal = 16.dp, vertical = 6.dp),
+          .padding(
+            horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
+            vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
+          ),
         color = colorResource(
           id = R.color.component_color_classroom_promoted_list_classroom_label_color
         ),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontSize = dimensionResource(
+          id = R.dimen.promoted_story_card_classroom_title_text_size
+        ).value.sp,
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
