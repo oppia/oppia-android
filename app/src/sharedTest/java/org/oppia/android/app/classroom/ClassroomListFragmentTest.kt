@@ -112,6 +112,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -161,6 +162,9 @@ class ClassroomListFragmentTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
@@ -308,7 +312,9 @@ class ClassroomListFragmentTest {
     logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
-      .assertTextContains(context.getString(R.string.view_all), ignoreCase = true)
+      .assertTextContains(
+        machineLocale.run { context.getString(R.string.view_all).toMachineUpperCase() }
+      )
       .assertIsDisplayed()
   }
 
