@@ -80,10 +80,14 @@ fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
     Text(
       text = topicSummaryViewModel.title,
       modifier = Modifier
-        .padding(start = 8.dp, top = 8.dp, end = 8.dp),
+        .padding(
+          start = dimensionResource(id = R.dimen.topic_list_item_text_padding),
+          top = dimensionResource(id = R.dimen.topic_list_item_text_padding),
+          end = dimensionResource(id = R.dimen.topic_list_item_text_padding)
+        ),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,
-      fontSize = 14.sp,
+      fontSize = dimensionResource(id = R.dimen.topic_list_item_text_size).value.sp,
       textAlign = TextAlign.Start,
       maxLines = 1,
       overflow = TextOverflow.Ellipsis,
@@ -91,11 +95,11 @@ fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
     Text(
       text = topicSummaryViewModel.computeLessonCountText(),
       modifier = Modifier
-        .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp),
+        .padding(all = dimensionResource(id = R.dimen.topic_list_item_text_padding)),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Light,
-      fontSize = 14.sp,
+      fontSize = dimensionResource(id = R.dimen.topic_list_item_text_size).value.sp,
       fontStyle = FontStyle.Italic,
       textAlign = TextAlign.Start,
       maxLines = 1,

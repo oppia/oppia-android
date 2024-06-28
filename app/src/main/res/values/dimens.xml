@@ -387,6 +387,8 @@
 
   <!-- Topic List Item -->
   <dimen name="topic_list_item_margin_top_bottom">12dp</dimen>
+  <dimen name="topic_list_item_text_padding">8dp</dimen>
+  <dimen name="topic_list_item_text_size">14sp</dimen>
 
   <!-- Master Skills Text View -->
   <dimen name="master_skills_text_view_margin_end">88dp</dimen>
