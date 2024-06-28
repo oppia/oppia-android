@@ -26,7 +26,7 @@ fun AllTopicsHeaderText() {
     color = colorResource(id = R.color.component_color_classroom_all_topics_header_text_color),
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Medium,
-    fontSize = 18.sp,
+    fontSize = dimensionResource(id = R.dimen.all_topics_text_size).value.sp,
     modifier = Modifier
       .testTag(ALL_TOPICS_HEADER_TEST_TAG)
       .fillMaxWidth()
