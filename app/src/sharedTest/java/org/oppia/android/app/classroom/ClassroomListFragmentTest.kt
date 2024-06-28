@@ -183,8 +183,8 @@ class ClassroomListFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
