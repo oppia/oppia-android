@@ -58,7 +58,7 @@ fun ClassroomList(
       color = colorResource(id = R.color.component_color_shared_primary_text_color),
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Medium,
-      fontSize = 18.sp,
+      fontSize = dimensionResource(id = R.dimen.classrooms_list_header_text_size).value.sp,
       modifier = Modifier
         .testTag(CLASSROOM_HEADER_TEST_TAG)
         .padding(
@@ -112,7 +112,7 @@ fun ClassroomCard(
     elevation = 4.dp,
   ) {
     Column(
-      modifier = Modifier.padding(all = 20.dp),
+      modifier = Modifier.padding(all = dimensionResource(id = R.dimen.classrooms_card_padding)),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -126,8 +126,8 @@ fun ClassroomCard(
           ),
           contentDescription = classroomSummaryViewModel.title,
           modifier = Modifier
-            .padding(bottom = 20.dp)
-            .size(80.dp),
+            .padding(bottom = dimensionResource(id = R.dimen.classrooms_card_icon_padding_bottom))
+            .size(size = dimensionResource(id = R.dimen.classrooms_card_icon_size)),
         )
       }
       Text(
@@ -135,7 +135,7 @@ fun ClassroomCard(
         color = colorResource(id = R.color.component_color_classroom_card_text_color),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
+        fontSize = dimensionResource(id = R.dimen.classrooms_card_label_text_size).value.sp,
       )
     }
   }

@@ -823,6 +823,11 @@
   <dimen name="classrooms_text_margin_top">20dp</dimen>
   <dimen name="classrooms_text_margin_end">28dp</dimen>
   <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_list_header_text_size">18sp</dimen>
   <dimen name="classrooms_card_width">150dp</dimen>
   <dimen name="classrooms_card_height">182dp</dimen>
+  <dimen name="classrooms_card_label_text_size">18sp</dimen>
+  <dimen name="classrooms_card_padding">20dp</dimen>
+  <dimen name="classrooms_card_icon_padding_bottom">20dp</dimen>
+  <dimen name="classrooms_card_icon_size">80dp</dimen>
 </resources>
