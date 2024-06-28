@@ -130,7 +130,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "format=markdown"
+      "format=markdown",
+      "processTimeout=10"
     )
 
     val outputReport = File(
@@ -192,7 +193,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "format=html"
+      "format=html",
+      "processTimeout=10"
     )
 
     val outputReport = File(
