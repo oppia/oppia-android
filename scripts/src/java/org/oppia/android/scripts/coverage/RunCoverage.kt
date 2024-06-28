@@ -40,7 +40,6 @@ fun main(vararg args: String) {
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
-
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
   if (!File(repoRoot, filePath).exists()) {

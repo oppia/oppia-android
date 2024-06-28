@@ -686,14 +686,18 @@ class RunCoverageTest {
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -710,26 +714,52 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -744,11 +774,19 @@ class RunCoverageTest {
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> coverage/main/java/com/example/TwoSum.kt</li>
-          <li><strong>Coverage percentage:</strong> 75.00% covered</li>
-          <li><strong>Line coverage:</strong> 3 covered / 4 found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> coverage/main/java/com/example/TwoSum.kt <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -758,46 +796,46 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td>   1</td>
+        <td class="line-number-row">   1</td>
         <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td>   2</td>
+        <td class="line-number-row">   2</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   3</td>
+        <td class="line-number-row">   3</td>
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
-        <td>   4</td>
+        <td class="line-number-row">   4</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   5</td>
+        <td class="line-number-row">   5</td>
         <td class="uncovered-line">    companion object {</td>
     </tr><tr>
-        <td>   6</td>
+        <td class="line-number-row">   6</td>
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td>   7</td>
+        <td class="line-number-row">   7</td>
         <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td>   8</td>
+        <td class="line-number-row">   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
     </tr><tr>
-        <td>   9</td>
+        <td class="line-number-row">   9</td>
         <td class="uncovered-line">            } else {</td>
     </tr><tr>
-        <td>  10</td>
+        <td class="line-number-row">  10</td>
         <td class="covered-line">                a + b</td>
     </tr><tr>
-        <td>  11</td>
+        <td class="line-number-row">  11</td>
         <td class="uncovered-line">            }</td>
     </tr><tr>
-        <td>  12</td>
+        <td class="line-number-row">  12</td>
         <td class="uncovered-line">        }</td>
     </tr><tr>
-        <td>  13</td>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td>  14</td>
+        <td class="line-number-row">  14</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
@@ -889,14 +927,18 @@ class RunCoverageTest {
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -913,26 +955,52 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -947,11 +1015,19 @@ class RunCoverageTest {
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> scripts/java/com/example/TwoSum.kt</li>
-          <li><strong>Coverage percentage:</strong> 75.00% covered</li>
-          <li><strong>Line coverage:</strong> 3 covered / 4 found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> scripts/java/com/example/TwoSum.kt <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -961,46 +1037,46 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td>   1</td>
+        <td class="line-number-row">   1</td>
         <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td>   2</td>
+        <td class="line-number-row">   2</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   3</td>
+        <td class="line-number-row">   3</td>
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
-        <td>   4</td>
+        <td class="line-number-row">   4</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   5</td>
+        <td class="line-number-row">   5</td>
         <td class="uncovered-line">    companion object {</td>
     </tr><tr>
-        <td>   6</td>
+        <td class="line-number-row">   6</td>
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td>   7</td>
+        <td class="line-number-row">   7</td>
         <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td>   8</td>
+        <td class="line-number-row">   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
     </tr><tr>
-        <td>   9</td>
+        <td class="line-number-row">   9</td>
         <td class="uncovered-line">            } else {</td>
     </tr><tr>
-        <td>  10</td>
+        <td class="line-number-row">  10</td>
         <td class="covered-line">                a + b</td>
     </tr><tr>
-        <td>  11</td>
+        <td class="line-number-row">  11</td>
         <td class="uncovered-line">            }</td>
     </tr><tr>
-        <td>  12</td>
+        <td class="line-number-row">  12</td>
         <td class="uncovered-line">        }</td>
     </tr><tr>
-        <td>  13</td>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td>  14</td>
+        <td class="line-number-row">  14</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
@@ -1092,14 +1168,18 @@ class RunCoverageTest {
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -1116,26 +1196,52 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -1150,11 +1256,19 @@ class RunCoverageTest {
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt</li>
-          <li><strong>Coverage percentage:</strong> 75.00% covered</li>
-          <li><strong>Line coverage:</strong> 3 covered / 4 found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -1164,46 +1278,46 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td>   1</td>
+        <td class="line-number-row">   1</td>
         <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td>   2</td>
+        <td class="line-number-row">   2</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   3</td>
+        <td class="line-number-row">   3</td>
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
-        <td>   4</td>
+        <td class="line-number-row">   4</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   5</td>
+        <td class="line-number-row">   5</td>
         <td class="uncovered-line">    companion object {</td>
     </tr><tr>
-        <td>   6</td>
+        <td class="line-number-row">   6</td>
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td>   7</td>
+        <td class="line-number-row">   7</td>
         <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td>   8</td>
+        <td class="line-number-row">   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
     </tr><tr>
-        <td>   9</td>
+        <td class="line-number-row">   9</td>
         <td class="uncovered-line">            } else {</td>
     </tr><tr>
-        <td>  10</td>
+        <td class="line-number-row">  10</td>
         <td class="covered-line">                a + b</td>
     </tr><tr>
-        <td>  11</td>
+        <td class="line-number-row">  11</td>
         <td class="uncovered-line">            }</td>
     </tr><tr>
-        <td>  12</td>
+        <td class="line-number-row">  12</td>
         <td class="uncovered-line">        }</td>
     </tr><tr>
-        <td>  13</td>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td>  14</td>
+        <td class="line-number-row">  14</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
@@ -1295,14 +1409,18 @@ class RunCoverageTest {
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -1319,26 +1437,52 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -1353,11 +1497,19 @@ class RunCoverageTest {
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt</li>
-          <li><strong>Coverage percentage:</strong> 75.00% covered</li>
-          <li><strong>Line coverage:</strong> 3 covered / 4 found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -1367,46 +1519,46 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td>   1</td>
+        <td class="line-number-row">   1</td>
         <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td>   2</td>
+        <td class="line-number-row">   2</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   3</td>
+        <td class="line-number-row">   3</td>
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
-        <td>   4</td>
+        <td class="line-number-row">   4</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   5</td>
+        <td class="line-number-row">   5</td>
         <td class="uncovered-line">    companion object {</td>
     </tr><tr>
-        <td>   6</td>
+        <td class="line-number-row">   6</td>
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td>   7</td>
+        <td class="line-number-row">   7</td>
         <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td>   8</td>
+        <td class="line-number-row">   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
     </tr><tr>
-        <td>   9</td>
+        <td class="line-number-row">   9</td>
         <td class="uncovered-line">            } else {</td>
     </tr><tr>
-        <td>  10</td>
+        <td class="line-number-row">  10</td>
         <td class="covered-line">                a + b</td>
     </tr><tr>
-        <td>  11</td>
+        <td class="line-number-row">  11</td>
         <td class="uncovered-line">            }</td>
     </tr><tr>
-        <td>  12</td>
+        <td class="line-number-row">  12</td>
         <td class="uncovered-line">        }</td>
     </tr><tr>
-        <td>  13</td>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td>  14</td>
+        <td class="line-number-row">  14</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
@@ -1498,14 +1650,18 @@ class RunCoverageTest {
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -1522,26 +1678,52 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -1556,11 +1738,19 @@ class RunCoverageTest {
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt</li>
-          <li><strong>Coverage percentage:</strong> 75.00% covered</li>
-          <li><strong>Line coverage:</strong> 3 covered / 4 found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -1570,46 +1760,46 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td>   1</td>
+        <td class="line-number-row">   1</td>
         <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td>   2</td>
+        <td class="line-number-row">   2</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   3</td>
+        <td class="line-number-row">   3</td>
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
-        <td>   4</td>
+        <td class="line-number-row">   4</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   5</td>
+        <td class="line-number-row">   5</td>
         <td class="uncovered-line">    companion object {</td>
     </tr><tr>
-        <td>   6</td>
+        <td class="line-number-row">   6</td>
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td>   7</td>
+        <td class="line-number-row">   7</td>
         <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td>   8</td>
+        <td class="line-number-row">   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
     </tr><tr>
-        <td>   9</td>
+        <td class="line-number-row">   9</td>
         <td class="uncovered-line">            } else {</td>
     </tr><tr>
-        <td>  10</td>
+        <td class="line-number-row">  10</td>
         <td class="covered-line">                a + b</td>
     </tr><tr>
-        <td>  11</td>
+        <td class="line-number-row">  11</td>
         <td class="uncovered-line">            }</td>
     </tr><tr>
-        <td>  12</td>
+        <td class="line-number-row">  12</td>
         <td class="uncovered-line">        }</td>
     </tr><tr>
-        <td>  13</td>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td>  14</td>
+        <td class="line-number-row">  14</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
@@ -1718,14 +1908,18 @@ class RunCoverageTest {
         }
         th, td {
             padding: 8px;
+            margin-left: 20px;
             text-align: left;
             border-bottom: 1px solid #fdfdfd;
         }
         .line-number-col {
-            width: 5%;
+            width: 2%;
+        }
+        .line-number-row {
+            border-right: 1px dashed #000000
         }
         .source-code-col {
-            width: 95%;
+            width: 98%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
             white-space: pre-wrap;
@@ -1742,26 +1936,52 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #fafafa; /* Half white */
+            background-color: #f1f1f1; /* light gray */
         }
         .coverage-summary {
-            margin-bottom: 20px;
+          margin-bottom: 20px;
         }
         h2 {
-            text-align: center;
+          text-align: center;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
         }
         .summary-box {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
             body {
@@ -1776,11 +1996,19 @@ class RunCoverageTest {
     <body>
       <h2>Coverage Report</h2>
       <div class="summary-box">
-        <ul>
-          <li><strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt</li>
-          <li><strong>Coverage percentage:</strong> 75.00% covered</li>
-          <li><strong>Line coverage:</strong> 3 covered / 4 found</li>
-        </ul>
+        <div class="summary-left">
+          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
       </div>
       <table>
         <thead>
@@ -1790,46 +2018,46 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td>   1</td>
+        <td class="line-number-row">   1</td>
         <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td>   2</td>
+        <td class="line-number-row">   2</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   3</td>
+        <td class="line-number-row">   3</td>
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
-        <td>   4</td>
+        <td class="line-number-row">   4</td>
         <td class="uncovered-line"></td>
     </tr><tr>
-        <td>   5</td>
+        <td class="line-number-row">   5</td>
         <td class="uncovered-line">    companion object {</td>
     </tr><tr>
-        <td>   6</td>
+        <td class="line-number-row">   6</td>
         <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td>   7</td>
+        <td class="line-number-row">   7</td>
         <td class="covered-line">            return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td>   8</td>
+        <td class="line-number-row">   8</td>
         <td class="covered-line">                "Both numbers are zero"</td>
     </tr><tr>
-        <td>   9</td>
+        <td class="line-number-row">   9</td>
         <td class="uncovered-line">            } else {</td>
     </tr><tr>
-        <td>  10</td>
+        <td class="line-number-row">  10</td>
         <td class="covered-line">                a + b</td>
     </tr><tr>
-        <td>  11</td>
+        <td class="line-number-row">  11</td>
         <td class="uncovered-line">            }</td>
     </tr><tr>
-        <td>  12</td>
+        <td class="line-number-row">  12</td>
         <td class="uncovered-line">        }</td>
     </tr><tr>
-        <td>  13</td>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td>  14</td>
+        <td class="line-number-row">  14</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
