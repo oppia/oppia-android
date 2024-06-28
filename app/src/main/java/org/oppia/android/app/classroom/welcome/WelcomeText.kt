@@ -47,7 +47,7 @@ fun WelcomeText(welcomeViewModel: WelcomeViewModel) {
         )
       },
     color = colorResource(id = R.color.component_color_shared_primary_text_color),
-    fontSize = 24.sp,
+    fontSize = dimensionResource(id = R.dimen.home_welcome_text_size).value.sp,
     fontFamily = FontFamily.SansSerif,
   )
 }

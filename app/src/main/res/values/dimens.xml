@@ -512,6 +512,7 @@
   <dimen name="home_outer_margin">28dp</dimen>
   <dimen name="home_welcome_outer_padding">28dp</dimen>
   <dimen name="home_welcome_text_view_margin_end">4dp</dimen>
+  <dimen name="home_welcome_text_size">24sp</dimen>
 
   <!-- These values are getting used only in tablet mode and therefore mentioned as 0dp here -->
   <!-- Profile Progress Header -->
