@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
  *
  * Example:
  *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt HTML
+ *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt format=HTML
  * Example with custom process timeout:
  *     bazel run //scripts:run_coverage -- $(pwd)
  *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=10

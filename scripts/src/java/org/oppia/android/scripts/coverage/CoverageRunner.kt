@@ -60,7 +60,9 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) throw IllegalArgumentException("File not found")
+    if (sfStartIdx == -1) throw IllegalArgumentException(
+      "Coverage data not found for the file: $extractedFileName"
+    )
     val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
       it.startsWith("end_of_record")
     }
