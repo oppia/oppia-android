@@ -68,7 +68,7 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat().contains("No appropriate test file found")
   }
 
-  /*@Test
+  @Test
   fun testRunCoverage_invalidFormat_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     val exception = assertThrows<IllegalStateException>() {
@@ -265,7 +265,7 @@ class RunCoverageTest {
     )
 
     assertThat(outputReport.exists()).isTrue()
-  }*/
+  }
 
   @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
