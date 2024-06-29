@@ -25,6 +25,8 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
@@ -132,6 +134,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.lastSelectedClassroomId).isEqualTo("")
   }
 
   @Test
@@ -1166,6 +1169,113 @@ class ProfileManagementControllerTest {
     )
 
     assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
+  }
+
+  @Test
+  fun testFetchLastSelectedClassroomId_updateClassroomId_checkUpdateIsSuccessful() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_0)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_0,
+        TEST_CLASSROOM_ID_1
+      )
+    )
+
+    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
+    )
+
+    assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+  }
+
+  @Test
+  fun testFetchLastSelectedClassroomId_updateClassroomIdTwice_checkUpdateIsSuccessful() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_0)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_0,
+        TEST_CLASSROOM_ID_1
+      )
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_0,
+        TEST_CLASSROOM_ID_2
+      )
+    )
+
+    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
+    )
+
+    assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_2)
+  }
+
+  @Test
+  fun testFetchLastSelectedClassroomId_updateClassroomIds_checkUpdateIsSuccessfulPerProfile() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    // Login to profile 0 and update the last selected classroom to classroom 1.
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_0)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_0,
+        TEST_CLASSROOM_ID_1
+      )
+    )
+
+    // Login to profile 1 and update the last selected classroom to classroom 2.
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateLastSelectedClassroomId(
+        PROFILE_ID_1,
+        TEST_CLASSROOM_ID_2
+      )
+    )
+
+    // Verify that last selected classroom of profile 0 is classroom 1.
+    val profile0SelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
+    )
+    assertThat(profile0SelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+
+    // Verify that last selected classroom of profile 1 is classroom 2.
+    val classroomIdProfile1 = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_1)
+    )
+    assertThat(classroomIdProfile1).isEqualTo(TEST_CLASSROOM_ID_2)
+  }
+
+  @Test
+  fun testFetchLastSelectedClassroomId_withoutUpdatingClassroomId_returnEmptyClassroomId() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_0)
+    )
+    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
+    )
+    assertThat(lastSelectedClassroomId).isEmpty()
   }
 
   private fun addTestProfiles() {
