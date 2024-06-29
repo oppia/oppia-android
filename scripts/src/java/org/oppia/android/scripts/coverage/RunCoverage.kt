@@ -52,6 +52,7 @@ fun main(vararg args: String) {
     format.equals("HTML", ignoreCase = true) -> ReportFormat.HTML
     format.equals("MARKDOWN", ignoreCase = true) || format == null -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
+  }
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
