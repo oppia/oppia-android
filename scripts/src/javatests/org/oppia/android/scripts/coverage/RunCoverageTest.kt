@@ -38,6 +38,51 @@ class RunCoverageTest {
     sampleHTMLOutputPath = "${tempFolder.root}/coverage_reports/report.html"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     System.setOut(PrintStream(outContent))
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a == 0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      testFilename = "TwoSumTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
   }
 
   @After
@@ -82,21 +127,12 @@ class RunCoverageTest {
   fun testRunCoverage_caseSensitiveMarkdownArgument_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+/*    val sourceContent =
       """
       package com.example
       
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
+      fun main() {
+        println("Hello")      
       }
       """.trimIndent()
 
@@ -104,17 +140,8 @@ class RunCoverageTest {
       """
       package com.example
       
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
       class TwoSumTest {
       
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
       }
       """.trimIndent()
 
@@ -125,7 +152,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
+    )*/
 
     main(
       "${tempFolder.root}",
@@ -145,7 +172,7 @@ class RunCoverageTest {
   fun testRunCoverage_caseSensitiveHTMLArgument_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -188,7 +215,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
+    )*/
 
     main(
       "${tempFolder.root}",
@@ -208,7 +235,7 @@ class RunCoverageTest {
   fun testRunCoverage_reorderedArguments_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -251,7 +278,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
+    )*/
 
     main(
       "${tempFolder.root}",
@@ -289,7 +316,7 @@ class RunCoverageTest {
   fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -332,7 +359,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
+    )*/
 
     main(
       "${tempFolder.root}",
@@ -359,7 +386,7 @@ class RunCoverageTest {
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -402,7 +429,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
+    )*/
 
     RunCoverage(
       "${tempFolder.root}",
