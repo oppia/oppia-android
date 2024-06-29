@@ -24,9 +24,6 @@ import java.util.concurrent.TimeUnit
  *
  * Example:
  *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt HTML *
- * Example reverted:
- *     bazel run //scripts:run_coverage -- $(pwd)
  *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt format=HTML
  * Example with custom process timeout:
  *     bazel run //scripts:run_coverage -- $(pwd)
@@ -46,13 +43,6 @@ fun main(vararg args: String) {
     "MARKDOWN" -> ReportFormat.MARKDOWN
     else -> error("Unsupported report format: $format")
   }
-
-/*  val format = args.getOrNull(2)
-  val reportFormat = when {
-    format.equals("HTML", ignoreCase = true) -> ReportFormat.HTML
-    format.equals("MARKDOWN", ignoreCase = true) || format == null -> ReportFormat.MARKDOWN
-    else -> throw IllegalArgumentException("Unsupported report format: $format")
-  }*/
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
