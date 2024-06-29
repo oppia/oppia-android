@@ -6,7 +6,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
@@ -24,10 +23,9 @@ class RunCoverageTest {
   private val originalOut: PrintStream = System.out
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
-//  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
-//  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
-  private lateinit var commandExecutor: CommandExecutor
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var sampleFilePath: String
   private lateinit var sampleMDOutputPath: String
@@ -35,13 +33,54 @@ class RunCoverageTest {
 
   @Before
   fun setUp() {
-    commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
-
     sampleFilePath = "/path/to/Sample.kt"
     sampleMDOutputPath = "${tempFolder.root}/coverage_reports/report.md"
     sampleHTMLOutputPath = "${tempFolder.root}/coverage_reports/report.html"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     System.setOut(PrintStream(outContent))
+  }
+
+  @After
+  fun tearDown() {
+    System.setOut(originalOut)
+    scriptBgDispatcher.close()
+  }
+
+  @Test
+  fun testRunCoverage_invalidFile_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
+
+    assertThat(exception).hasMessageThat().contains("File doesn't exist")
+  }
+
+  @Test
+  fun testRunCoverage_missingTestFileNotExempted_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
+      sampleFile.createNewFile()
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
+
+    assertThat(exception).hasMessageThat().contains("No appropriate test file found")
+  }
+
+  @Test
+  fun testRunCoverage_invalidFormat_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalStateException>() {
+      main(tempFolder.root.absolutePath, "file.kt", "format=PDF")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Unsupported report format")
+  }
+
+  @Test
+  fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
+    testBazelWorkspace.initEmptyWorkspace()
 
     val sourceContent =
       """
@@ -88,90 +127,11 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "scripts/java/com/example",
-      testSubpackage = "scripts/javatests/com/example"
-    )
-  }
-
-  @After
-  fun tearDown() {
-    System.setOut(originalOut)
-    scriptBgDispatcher.close()
-  }
-
-  @Test
-  fun testRunCoverage_invalidFile_throwsException() {
-    testBazelWorkspace.initEmptyWorkspace()
-    val exception = assertThrows<IllegalStateException>() {
-      main(tempFolder.root.absolutePath, "file.kt")
-    }
-
-    assertThat(exception).hasMessageThat().contains("File doesn't exist")
-  }
-
-  @Test
-  fun testRunCoverage_missingTestFileNotExempted_throwsException() {
-    testBazelWorkspace.initEmptyWorkspace()
-    val exception = assertThrows<IllegalStateException>() {
-      val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
-      sampleFile.createNewFile()
-      main(tempFolder.root.absolutePath, "file.kt")
-    }
-
-    assertThat(exception).hasMessageThat().contains("No appropriate test file found")
-  }
-
-  @Test
-  fun testRunCoverage_invalidFormat_throwsException() {
-    testBazelWorkspace.initEmptyWorkspace()
-    val exception = assertThrows<IllegalStateException>() {
-      main(tempFolder.root.absolutePath, "file.kt", "format=PDF")
-    }
-
-    assertThat(exception).hasMessageThat().contains("Unsupported report format")
-  }
-
-  @Test
-  fun testRunCoverage_caseSensitiveMarkdownArgument_returnsCoverageData() {
-    testBazelWorkspace.initEmptyWorkspace()
-
-/*    val sourceContent =
-      """
-      package com.example
-      
-      fun main() {
-        println("Hello")      
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      class TwoSumTest {
-      
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )*/
-
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       "format=markdown",
-      "processTimeout=10"
+      "processTimeout=100"
     )
 
     val outputReport = File(
@@ -182,10 +142,10 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_caseSensitiveHTMLArgument_returnsCoverageData() {
+  fun testRunCoverage_ignoreCaseHTMLArgument_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -228,13 +188,13 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )*/
+    )
 
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       "format=html",
-      "processTimeout=10"
+      "processTimeout=100"
     )
 
     val outputReport = File(
@@ -248,7 +208,7 @@ class RunCoverageTest {
   fun testRunCoverage_reorderedArguments_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -291,12 +251,12 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )*/
+    )
 
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "processTimeout=10",
+      "processTimeout=100",
       "format=MARKDOWN"
     )
 
@@ -316,7 +276,7 @@ class RunCoverageTest {
       exemptedFilePath,
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor = commandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -329,7 +289,7 @@ class RunCoverageTest {
   fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -372,7 +332,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )*/
+    )
 
     main(
       "${tempFolder.root}",
@@ -399,7 +359,7 @@ class RunCoverageTest {
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -442,15 +402,15 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )*/
+    )
 
     RunCoverage(
-      repoRoot = "${tempFolder.root}",
-      filePath = "coverage/main/java/com/example/TwoSum.kt",
-      reportFormat = ReportFormat.MARKDOWN,
-      reportOutputPath = sampleMDOutputPath,
-      commandExecutor = commandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
+      "${tempFolder.root}",
+      "coverage/main/java/com/example/TwoSum.kt",
+      ReportFormat.MARKDOWN,
+      sampleMDOutputPath,
+      longCommandExecutor,
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(sampleMDOutputPath).readText()
@@ -471,7 +431,7 @@ class RunCoverageTest {
   fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -514,14 +474,14 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
-    )*/
+    )
 
     RunCoverage(
       "${tempFolder.root}",
       "scripts/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -593,7 +553,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -665,7 +625,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -737,7 +697,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -826,7 +786,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -848,7 +808,7 @@ class RunCoverageTest {
   fun testRunCoverage_sampleTestsHTMLFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -891,14 +851,14 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )*/
+    )
 
     RunCoverage(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1089,7 +1049,7 @@ class RunCoverageTest {
   fun testRunCoverage_scriptTestsHTMLFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    /*val sourceContent =
+    val sourceContent =
       """
       package com.example
       
@@ -1132,14 +1092,14 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
-    )*/
+    )
 
     RunCoverage(
       "${tempFolder.root}",
       "scripts/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1380,7 +1340,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1621,7 +1581,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1862,7 +1822,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -2120,7 +2080,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      commandExecutor = commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -2309,7 +2269,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 1L, processTimeoutUnit = TimeUnit.MILLISECONDS
+      scriptBgDispatcher, processTimeout = 100, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
