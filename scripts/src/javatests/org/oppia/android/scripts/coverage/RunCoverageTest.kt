@@ -26,6 +26,7 @@ class RunCoverageTest {
 //  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
 //  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
+  private lateinit var commandExecutor: CommandExecutor
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var sampleFilePath: String
   private lateinit var sampleMDOutputPath: String
