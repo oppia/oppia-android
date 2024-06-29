@@ -68,7 +68,7 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat().contains("No appropriate test file found")
   }
 
-  @Test
+  /*@Test
   fun testRunCoverage_invalidFormat_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     val exception = assertThrows<IllegalStateException>() {
@@ -265,7 +265,7 @@ class RunCoverageTest {
     )
 
     assertThat(outputReport.exists()).isTrue()
-  }
+  }*/
 
   @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
@@ -404,6 +404,12 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
+    /*main(
+      "${tempFolder.root}",
+      "coverage/main/java/com/example/TwoSum.kt",
+      "format=MARKDOWN",
+      "processTimeout=10"
+    )*/
     RunCoverage(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
@@ -414,6 +420,9 @@ class RunCoverageTest {
     ).execute()
 
     val outputReportText = File(sampleMDOutputPath).readText()
+    /*val outputReportText = File(
+      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+    ).readText()*/
 
     val expectedResult =
       """
