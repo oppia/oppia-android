@@ -23,8 +23,8 @@ class RunCoverageTest {
   private val originalOut: PrintStream = System.out
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
-  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
-  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+//  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
+//  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var sampleFilePath: String
@@ -33,6 +33,8 @@ class RunCoverageTest {
 
   @Before
   fun setUp() {
+    commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
+
     sampleFilePath = "/path/to/Sample.kt"
     sampleMDOutputPath = "${tempFolder.root}/coverage_reports/report.md"
     sampleHTMLOutputPath = "${tempFolder.root}/coverage_reports/report.html"
@@ -445,7 +447,7 @@ class RunCoverageTest {
       "coverage/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -517,7 +519,7 @@ class RunCoverageTest {
       "scripts/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -589,7 +591,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -661,7 +663,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -733,7 +735,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -822,7 +824,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -894,7 +896,7 @@ class RunCoverageTest {
       "coverage/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1135,7 +1137,7 @@ class RunCoverageTest {
       "scripts/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1376,7 +1378,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1617,7 +1619,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -1858,7 +1860,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
@@ -2116,7 +2118,7 @@ class RunCoverageTest {
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
       sampleHTMLOutputPath,
-      longCommandExecutor,
+      commandExecutor,
       scriptBgDispatcher
     ).execute()
 
