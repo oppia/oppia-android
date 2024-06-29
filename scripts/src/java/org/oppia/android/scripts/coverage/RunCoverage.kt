@@ -37,7 +37,7 @@ fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
 
-/*  val format = args.find { it.startsWith("format=", ignoreCase = true) }
+  val format = args.find { it.startsWith("format=") }
     ?.substringAfter("=")
     ?.uppercase() ?: "MARKDOWN"
 
@@ -45,14 +45,14 @@ fun main(vararg args: String) {
     "HTML" -> ReportFormat.HTML
     "MARKDOWN" -> ReportFormat.MARKDOWN
     else -> error("Unsupported report format: $format")
-  }*/
+  }
 
-  val format = args.getOrNull(2)
+/*  val format = args.getOrNull(2)
   val reportFormat = when {
     format.equals("HTML", ignoreCase = true) -> ReportFormat.HTML
     format.equals("MARKDOWN", ignoreCase = true) || format == null -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
-  }
+  }*/
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
