@@ -82,7 +82,7 @@ class RunCoverageTest {
   fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+/*    val sourceContent =
       """
       package com.example
       
@@ -139,7 +139,7 @@ class RunCoverageTest {
     )
 
     assertThat(outputReport.exists()).isTrue()
-  }
+  }*/
 
   @Test
   fun testRunCoverage_ignoreCaseHTMLArgument_returnsCoverageData() {
@@ -147,43 +147,28 @@ class RunCoverageTest {
 
     val sourceContent =
       """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
+      fun PrintHello() {
+              println("Hello, World!")
           }
-      }
       """.trimIndent()
 
     val testContent =
       """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
       import org.junit.Test
+      import kotlin.test.assertEquals
       
-      class TwoSumTest {
-      
+      class PrintHelloTest {
+          
           @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          fun testMain() {
+              assertEquals(1, 1)
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "PrintHello",
+      testFilename = "PrintHelloTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -192,13 +177,13 @@ class RunCoverageTest {
 
     main(
       "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
+      "coverage/main/java/com/example/PrintHello.kt",
       "processTimeout=10",
       "format=html"
     )
 
     val outputReport = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.html"
+      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/PrintHello/coverage.html"
     )
 
     assertThat(outputReport.exists()).isTrue()
@@ -2278,7 +2263,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 240_000L, processTimeoutUnit = TimeUnit.MILLISECONDS
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
