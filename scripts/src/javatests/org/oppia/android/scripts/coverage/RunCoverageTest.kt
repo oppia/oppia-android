@@ -276,7 +276,7 @@ class RunCoverageTest {
       exemptedFilePath,
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
-      commandExecutor,
+      longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 

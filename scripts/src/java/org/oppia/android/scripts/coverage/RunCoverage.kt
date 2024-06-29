@@ -51,9 +51,10 @@ fun main(vararg args: String) {
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
+    /*val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
       ?.substringAfter("=")
-      ?.toLongOrNull() ?: 100
+      ?.toLongOrNull() ?: 100*/
+    val processTimeout = 100L
 
     val commandExecutor: CommandExecutor = CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
