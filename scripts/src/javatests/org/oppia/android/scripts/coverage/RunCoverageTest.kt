@@ -276,43 +276,28 @@ class RunCoverageTest {
 
     val sourceContent =
       """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
+      fun PrintHello() {
+              println("Hello, World!")
           }
-      }
       """.trimIndent()
 
     val testContent =
       """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
       import org.junit.Test
+      import kotlin.test.assertEquals
       
-      class TwoSumTest {
-      
+      class PrintHelloTest {
+          
           @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          fun testMain() {
+              assertEquals(1, 1)
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "PrintHello",
+      testFilename = "PrintHelloTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -321,11 +306,13 @@ class RunCoverageTest {
 
     main(
       "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
+      "coverage/main/java/com/example/PrintHello.kt",
+      "processTimeout=10",
+      "format=html"
     )
 
     val outputReportText = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/PrintHello/coverage.html"
     ).readText()
 
     val expectedResult =
@@ -333,8 +320,8 @@ class RunCoverageTest {
         ## Coverage Report
         
         - **Covered File:** coverage/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
+        - **Coverage percentage:** 00.00% covered
+        - **Line coverage:** 0 / 1 lines covered
       """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
