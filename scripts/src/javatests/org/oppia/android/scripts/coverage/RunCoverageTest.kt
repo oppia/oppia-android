@@ -193,8 +193,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "format=html",
-      "processTimeout=10"
+      "processTimeout=10",
+      "format=html"
     )
 
     val outputReport = File(
@@ -2278,7 +2278,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 240_000L, processTimeoutUnit = TimeUnit.MILLISECONDS
     )
   }
 }
