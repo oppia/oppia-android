@@ -76,7 +76,7 @@ class CoverageRunnerTest {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a ==0 && b == 0) {
+                  return if (a == 0 && b == 0) {
                       "Both numbers are zero"
                   } else {
                       a + b
@@ -122,7 +122,7 @@ class CoverageRunnerTest {
     val expectedResult = CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
       .setFilePath("coverage/main/java/com/example/TwoSum.kt")
-      .setFileSha1Hash("f6fb075e115775f6729615a79f0e7e34fe9735b5")
+      .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
       .addCoveredLine(
         CoveredLine.newBuilder()
           .setLineNumber(3)
