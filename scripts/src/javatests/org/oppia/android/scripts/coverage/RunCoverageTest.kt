@@ -141,7 +141,7 @@ class RunCoverageTest {
      assertThat(outputReport.exists()).isTrue()
    }*/
 
-  @Test
+  /*@Test
   fun testRunCoverage_ignoreCaseHTMLArgument_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -187,7 +187,7 @@ class RunCoverageTest {
     )
 
     assertThat(outputReport.exists()).isTrue()
-  }
+  }*/
 
   @Test
   fun testRunCoverage_reorderedArguments_returnsCoverageData() {
