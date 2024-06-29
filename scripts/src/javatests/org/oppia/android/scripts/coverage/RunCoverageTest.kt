@@ -78,68 +78,68 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat().contains("Unsupported report format")
   }
 
-  @Test
-  fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
-    testBazelWorkspace.initEmptyWorkspace()
+  /* @Test
+   fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
+     testBazelWorkspace.initEmptyWorkspace()
 
-/*    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
+    val sourceContent =
+       """
+       package com.example
 
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
+       class TwoSum {
 
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
+           companion object {
+               fun sumNumbers(a: Int, b: Int): Any {
+                   return if (a == 0 && b == 0) {
+                       "Both numbers are zero"
+                   } else {
+                       a + b
+                   }
+               }
+           }
+       }
+       """.trimIndent()
 
-    main(
-      "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
-      "format=markdown",
-      "processTimeout=10"
-    )
+     val testContent =
+       """
+       package com.example
 
-    val outputReport = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
-    )
+       import org.junit.Assert.assertEquals
+       import org.junit.Test
 
-    assertThat(outputReport.exists()).isTrue()
-  }*/
+       class TwoSumTest {
+
+           @Test
+           fun testSumNumbers() {
+               assertEquals(TwoSum.sumNumbers(0, 1), 1)
+               assertEquals(TwoSum.sumNumbers(3, 4), 7)
+               assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+           }
+       }
+       """.trimIndent()
+
+     testBazelWorkspace.addSourceAndTestFileWithContent(
+       filename = "TwoSum",
+       testFilename = "TwoSumTest",
+       sourceContent = sourceContent,
+       testContent = testContent,
+       sourceSubpackage = "coverage/main/java/com/example",
+       testSubpackage = "coverage/test/java/com/example"
+     )
+
+     main(
+       "${tempFolder.root}",
+       "coverage/main/java/com/example/TwoSum.kt",
+       "format=markdown",
+       "processTimeout=10"
+     )
+
+     val outputReport = File(
+       "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+     )
+
+     assertThat(outputReport.exists()).isTrue()
+   }*/
 
   @Test
   fun testRunCoverage_ignoreCaseHTMLArgument_returnsCoverageData() {
