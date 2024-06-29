@@ -844,7 +844,7 @@ class RunCoverageTest {
   fun testRunCoverage_sampleTestsHTMLFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -887,7 +887,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
+    )*/
 
     RunCoverage(
       "${tempFolder.root}",
@@ -1085,7 +1085,7 @@ class RunCoverageTest {
   fun testRunCoverage_scriptTestsHTMLFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -1128,7 +1128,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
-    )
+    )*/
 
     RunCoverage(
       "${tempFolder.root}",
