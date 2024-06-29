@@ -85,7 +85,7 @@ class ComputeAffectedTests(
   val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
   val commandExecutor: CommandExecutor =
     CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 1L, processTimeoutUnit = TimeUnit.MILLISECONDS
     )
 ) {
   private companion object {
