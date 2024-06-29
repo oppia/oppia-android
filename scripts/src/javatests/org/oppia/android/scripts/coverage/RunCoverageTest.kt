@@ -83,6 +83,15 @@ class RunCoverageTest {
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      testFilename = "TwoSumTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "scripts/java/com/example",
+      testSubpackage = "scripts/javatests/com/example"
+    )
   }
 
   @After
@@ -458,7 +467,7 @@ class RunCoverageTest {
   fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
-    val sourceContent =
+    /*val sourceContent =
       """
       package com.example
       
@@ -501,7 +510,7 @@ class RunCoverageTest {
       testContent = testContent,
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
-    )
+    )*/
 
     RunCoverage(
       "${tempFolder.root}",
