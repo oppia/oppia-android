@@ -387,6 +387,8 @@
 
   <!-- Topic List Item -->
   <dimen name="topic_list_item_margin_top_bottom">12dp</dimen>
+  <dimen name="topic_list_item_text_padding">8dp</dimen>
+  <dimen name="topic_list_item_text_size">14sp</dimen>
 
   <!-- Master Skills Text View -->
   <dimen name="master_skills_text_view_margin_end">88dp</dimen>
@@ -453,6 +455,7 @@
   <dimen name="all_topics_text_margin_top">56dp</dimen>
   <dimen name="all_topics_text_margin_end">32dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
+  <dimen name="all_topics_text_size">18dp</dimen>
 
   <!-- Coming Soon -->
   <dimen name="coming_soon_padding_end">16dp</dimen>
@@ -509,6 +512,7 @@
   <dimen name="home_outer_margin">28dp</dimen>
   <dimen name="home_welcome_outer_padding">28dp</dimen>
   <dimen name="home_welcome_text_view_margin_end">4dp</dimen>
+  <dimen name="home_welcome_text_size">24sp</dimen>
 
   <!-- These values are getting used only in tablet mode and therefore mentioned as 0dp here -->
   <!-- Profile Progress Header -->
@@ -527,11 +531,23 @@
   <!-- Promoted Story Card -->
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_bottom">8dp</dimen>
+  <dimen name="promoted_story_card_margin_top">8dp</dimen>
+  <dimen name="promoted_story_card_padding_horizontal">16dp</dimen>
+  <dimen name="promoted_story_card_padding_vertical">8dp</dimen>
+  <dimen name="promoted_story_card_elevation">4dp</dimen>
   <!-- The width is set to sp so that it will scale according to the device screen -->
   <dimen name="promoted_story_card_layout_width">280sp</dimen>
   <dimen name="promoted_story_card_width">280sp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
-  <dimen name="promoted_story_card_margin_top">8dp</dimen>
+  <dimen name="promoted_story_card_chapter_title_text_size">18sp</dimen>
+  <dimen name="promoted_story_card_topic_title_text_size">14sp</dimen>
+  <dimen name="promoted_story_card_classroom_title_text_size">14sp</dimen>
+
+  <!-- Topic Card -->
+  <dimen name="topic_card_margin_start">8dp</dimen>
+  <dimen name="topic_card_margin_end">8dp</dimen>
+  <dimen name="topic_card_elevation">4dp</dimen>
 
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">40dp</dimen>
@@ -633,6 +649,11 @@
   <!--  PromotedStoryList-->
   <dimen name="promoted_story_list_layout_margin_end">28dp</dimen>
   <dimen name="promoted_story_list_layout_margin_start">28dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_top">24dp</dimen>
+  <dimen name="promoted_story_list_header_text_size">18sp</dimen>
+  <dimen name="promoted_story_list_view_all_text_size">14sp</dimen>
+  <dimen name="promoted_story_list_view_all_padding_start">8sp</dimen>
+  <dimen name="promoted_story_list_padding">12dp</dimen>
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
@@ -804,4 +825,18 @@
   <dimen name="tablet_shared_margin_medium">16dp</dimen>
   <dimen name="tablet_shared_margin_large">28dp</dimen>
   <dimen name="tablet_shared_margin_xl">36dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">28dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">28dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_list_header_text_size">18sp</dimen>
+  <dimen name="classrooms_card_width">150dp</dimen>
+  <dimen name="classrooms_card_height">182dp</dimen>
+  <dimen name="classrooms_card_label_text_size">18sp</dimen>
+  <dimen name="classrooms_card_padding">20dp</dimen>
+  <dimen name="classrooms_card_icon_padding_bottom">20dp</dimen>
+  <dimen name="classrooms_card_icon_size">80dp</dimen>
+  <dimen name="classrooms_card_elevation">4dp</dimen>
 </resources>

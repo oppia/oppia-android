@@ -326,6 +326,9 @@
   <string name="home_activity_title">Home</string>
   <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <!--  ClassroomListActivity-->
+  <string name="classroom_list_activity_title">Home</string>
+  <string name="classrooms_list_activity_section_header">Classrooms</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->

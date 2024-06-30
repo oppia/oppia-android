@@ -1,6 +1,5 @@
 package org.oppia.android.app.onboarding
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.provider.MediaStore
@@ -10,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -19,8 +19,6 @@ import org.oppia.android.databinding.CreateProfileFragmentBinding
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
-
-private const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** Presenter for [CreateProfileFragment]. */
 @FragmentScope
@@ -33,6 +31,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
   private lateinit var selectedImage: String
+  lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
   /** Initialize layout bindings. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -83,31 +82,42 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
-    binding.createProfileEditPictureIcon.setOnClickListener { openGalleryIntent() }
-    binding.createProfilePicturePrompt.setOnClickListener { openGalleryIntent() }
-    binding.createProfileUserImageView.setOnClickListener { openGalleryIntent() }
+    addViewOnClickListeners(binding)
 
     return binding.root
   }
 
   /** Receive the result of image upload and load it into the image view. */
-  fun handleOnActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-    if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+  fun handleOnActivityResult(intent: Intent?) {
+    intent?.let {
       binding.createProfilePicturePrompt.visibility = View.GONE
-      intent?.let {
-        selectedImage =
-          checkNotNull(intent.data.toString()) { "Could not find the selected image." }
-        imageLoader.loadBitmap(
-          selectedImage,
-          ImageViewTarget(uploadImageView)
-        )
-      }
+      selectedImage =
+        checkNotNull(intent.data.toString()) { "Could not find the selected image." }
+      imageLoader.loadBitmap(
+        selectedImage,
+        ImageViewTarget(uploadImageView)
+      )
     }
   }
 
-  private fun openGalleryIntent() {
+  private fun addViewOnClickListeners(binding: CreateProfileFragmentBinding) {
     val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-    fragment.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+
+    binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
+    binding.createProfileEditPictureIcon.setOnClickListener {
+      activityResultLauncher.launch(
+        galleryIntent
+      )
+    }
+    binding.createProfilePicturePrompt.setOnClickListener {
+      activityResultLauncher.launch(
+        galleryIntent
+      )
+    }
+    binding.createProfileUserImageView.setOnClickListener {
+      activityResultLauncher.launch(
+        galleryIntent
+      )
+    }
   }
 }

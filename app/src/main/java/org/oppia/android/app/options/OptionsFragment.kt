@@ -21,12 +21,6 @@ const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_readi
 /** OnActivity result key to access [AudioLanguage] result. */
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
 
-/** Request code for [ReadingTextSize]. */
-const val REQUEST_CODE_TEXT_SIZE = 1
-
-/** Request code for [AudioLanguage]. */
-const val REQUEST_CODE_AUDIO_LANGUAGE = 3
-
 /** Arguments key for OptionsFragment. */
 const val OPTIONS_FRAGMENT_ARGUMENTS_KEY = "OptionsFragment.arguments"
 
