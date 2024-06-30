@@ -364,12 +364,16 @@ class RunCoverageTest {
       package com.example
       
       class TwoSum {
-        companion object {
-          fun computeFibonacci(n: Int): Long {
-            return if (n <= 1) n.toLong()
-            else computeFibonacci(n - 1) + computeFibonacci(n - 2)
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a == 0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
           }
-        }
       }
       """.trimIndent()
 
@@ -381,12 +385,13 @@ class RunCoverageTest {
       import org.junit.Test
       
       class TwoSumTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(TwoSum.computeFibonacci(45), 1134903170L)
-          assertEquals(TwoSum.computeFibonacci(50), 12586269025L)
-          assertEquals(TwoSum.computeFibonacci(60), 1548008755920L)
-        }
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
       }
       """.trimIndent()
 
