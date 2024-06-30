@@ -19,6 +19,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -27,10 +28,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -48,6 +52,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -96,6 +101,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -193,21 +199,13 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.create_profile_activity_nickname_error))
-        .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-      // No screen change as the navigation to the next screen is not implemented yet.
-      // This should fail in the future once the screen has been implemented.
-      onView(withId(R.id.create_profile_nickname_label))
-        .check(
-          matches(
-            withText(
-              context.getString(
-                R.string.create_profile_activity_nickname_label
-              )
-            )
-          )
+      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
+      intended(
+        allOf(
+          hasComponent(IntroActivity::class.java.name),
+          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
         )
+      )
     }
   }
 
@@ -259,18 +257,13 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // No screen change as the navigation to the next screen is not implemented yet.
-      // This should fail in the future once the screen has been implemented.
-      onView(withId(R.id.create_profile_nickname_label))
-        .check(
-          matches(
-            withText(
-              context.getString(
-                R.string.create_profile_activity_nickname_label
-              )
-            )
-          )
+      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
+      intended(
+        allOf(
+          hasComponent(IntroActivity::class.java.name),
+          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
         )
+      )
     }
   }
 
@@ -307,18 +300,13 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // No screen change as the navigation to the next screen is not implemented yet.
-      // This should fail in the future once the screen has been implemented.
-      onView(withId(R.id.create_profile_nickname_label))
-        .check(
-          matches(
-            withText(
-              context.getString(
-                R.string.create_profile_activity_nickname_label
-              )
-            )
-          )
+      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
+      intended(
+        allOf(
+          hasComponent(IntroActivity::class.java.name),
+          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
         )
+      )
     }
   }
 
@@ -373,18 +361,13 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // No screen change as the navigation to the next screen is not implemented yet.
-      // This should fail in the future once the screen has been implemented.
-      onView(withId(R.id.create_profile_nickname_label))
-        .check(
-          matches(
-            withText(
-              context.getString(
-                R.string.create_profile_activity_nickname_label
-              )
-            )
-          )
+      val expectedParams = IntroActivityParams.newBuilder().setProfileNickname("John").build()
+      intended(
+        allOf(
+          hasComponent(IntroActivity::class.java.name),
+          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
         )
+      )
     }
   }
 
@@ -489,6 +472,20 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
       return scenario
     }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

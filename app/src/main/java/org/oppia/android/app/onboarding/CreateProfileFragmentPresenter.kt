@@ -69,6 +69,11 @@ class CreateProfileFragmentPresenter @Inject constructor(
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
       createProfileViewModel.hasErrorMessage.set(nickname.isBlank())
+
+      if (createProfileViewModel.hasErrorMessage.get() != true) {
+        val intent = IntroActivity.createIntroActivity(activity, nickname)
+        fragment.startActivity(intent)
+      }
     }
 
     binding.createProfileNicknameEdittext.addTextChangedListener(object : TextWatcher {
