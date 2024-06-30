@@ -71,7 +71,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_invalidFormat_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
-    val exception = assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalArgumentException>() {
       main(tempFolder.root.absolutePath, "file.kt", "format=PDF")
     }
 
