@@ -158,6 +158,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when the survey activity is visible to the user.
   SURVEY_ACTIVITY = 49;
+
+  // Screen name value for the scenario when the classroom list activity is visible to the user.
+  CLASSROOM_LIST_ACTIVITY = 50;
 }
 
 // Defines the current visible UI screen of the application.
