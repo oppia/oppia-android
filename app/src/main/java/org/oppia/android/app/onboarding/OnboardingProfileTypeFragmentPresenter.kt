@@ -23,6 +23,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+
     binding.apply {
       lifecycleOwner = fragment
 
