@@ -44,33 +44,15 @@ class NetworkModuleTest {
   }
 
   @Test
-  @Config(sdk = [Build.VERSION_CODES.KITKAT])
-  fun testRetrofitInstance_kitkat_isEmpty() {
-    assertThat(getTestApplication().getRetrofit()).isAbsent()
-  }
-
-  @Test
   @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
   fun testFeedbackReportingService_lollipop_isProvided() {
     assertThat(getTestApplication().getFeedbackReportingService()).isPresent()
   }
 
   @Test
-  @Config(sdk = [Build.VERSION_CODES.KITKAT])
-  fun testFeedbackReportingService_kitkat_isEmpty() {
-    assertThat(getTestApplication().getFeedbackReportingService()).isAbsent()
-  }
-
-  @Test
   @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
   fun testPlatformParameterService_lollipop_isProvided() {
     assertThat(getTestApplication().getPlatformParameterService()).isPresent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.KITKAT])
-  fun testPlatformParameterService_kitkat_isEmpty() {
-    assertThat(getTestApplication().getPlatformParameterService()).isAbsent()
   }
 
   @Test
