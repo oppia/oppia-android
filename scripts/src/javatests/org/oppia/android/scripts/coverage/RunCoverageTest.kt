@@ -9,7 +9,6 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
-import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
@@ -93,7 +92,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "processTimeout=100"
+      "processTimeout=10"
     )
 
     val outputReportText = File(
