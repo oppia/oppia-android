@@ -60,13 +60,13 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) error(
+    if (sfStartIdx == -1) throw IllegalArgumentException(
       "Coverage data not found for the file: $extractedFileName"
     )
     val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
       it.startsWith("end_of_record")
     }
-    if (eofIdx == -1) error("End of record not found")
+    if (eofIdx == -1) throw IllegalArgumentException("End of record not found")
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
 
@@ -79,7 +79,7 @@ class CoverageRunner(
     }
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
-      ?: error("File path not found")
+      ?: throw IllegalArgumentException("File path not found")
 
     val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
     val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0

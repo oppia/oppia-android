@@ -34,14 +34,14 @@ fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
 
-  val format = args.find { it.startsWith("format=") }
+  val format = args.find { it.startsWith("format=", ignoreCase = true) }
     ?.substringAfter("=")
     ?.uppercase() ?: "MARKDOWN"
 
   val reportFormat = when (format) {
     "HTML" -> ReportFormat.HTML
     "MARKDOWN" -> ReportFormat.MARKDOWN
-    else -> error("Unsupported report format: $format")
+    else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
@@ -51,12 +51,12 @@ fun main(vararg args: String) {
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    /*val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
+    val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
       ?.substringAfter("=")
-      ?.toLongOrNull() ?: 1*/
+      ?.toLongOrNull() ?: 5
 
     val commandExecutor: CommandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 1, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
 
     RunCoverage(
