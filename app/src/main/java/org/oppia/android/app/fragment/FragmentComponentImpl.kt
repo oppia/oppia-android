@@ -7,6 +7,7 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
+import org.oppia.android.app.classroom.ClassroomListFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
@@ -196,6 +197,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(exitSurveyConfirmationDialogFragment: ExitSurveyConfirmationDialogFragment)
   fun inject(surveyWelcomeDialogFragment: SurveyWelcomeDialogFragment)
   fun inject(surveyOutroDialogFragment: SurveyOutroDialogFragment)
+  fun inject(classroomListFragment: ClassroomListFragment)
   fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
   fun inject(createProfileFragment: CreateProfileFragment)
 }

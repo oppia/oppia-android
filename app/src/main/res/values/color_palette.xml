@@ -273,9 +273,15 @@
   <color name="color_palette_onboarding_primary_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_primary_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_onboarding_profile_type_background_color">@color/color_def_jade</color>
+  <color name="color_palette_learner_profile_type_background_color">@color/color_def_oppia_brown</color>
+  <color name="color_palette_supervisor_profile_type_background_color">@color/color_def_light_orange</color>
   <color name="color_palette_onboarding_edit_icon_color">@color/color_def_persian_green</color>
   <color name="color_palette_onboarding_black_color">@color/color_def_black</color>
-
   <color name="color_palette_edittext_stroke_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_text_error_color">@color/color_def_error_text</color>
+  <!-- CLASSROOM -->
+  <color name="color_palette_classroom_card_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_shared_text_color">@color/color_def_green</color>
+  <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue</color>
 </resources>
