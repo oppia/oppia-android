@@ -356,7 +356,7 @@ class RunCoverageTest {
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
-  @Test(timeout=1000000)
+  @Test(timeout = 1000000)
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
