@@ -7,6 +7,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
@@ -192,6 +193,8 @@ class MavenDependenciesRetriever(
     finalDependenciesList: List<MavenListDependency>
   ): Deferred<MavenDependencyList> {
     return CoroutineScope(scriptBgDispatcher).async {
+      println("delaying...")
+      delay(400000)
       val candidates = finalDependenciesList.map { MavenListDependencyPomCandidate(it) }
       val undoneCandidates = candidates.filterTo(mutableSetOf()) { it.latestPomFileText == null }
       var attemptCount = 0
