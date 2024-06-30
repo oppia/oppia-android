@@ -161,6 +161,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when the classroom list activity is visible to the user.
   CLASSROOM_LIST_ACTIVITY = 50;
+
+  // Screen name value for the scenario when the profile type activity is visible to the user.
+  ONBOARDING_PROFILE_TYPE_ACTIVITY = 51;
 }
 
 // Defines the current visible UI screen of the application.

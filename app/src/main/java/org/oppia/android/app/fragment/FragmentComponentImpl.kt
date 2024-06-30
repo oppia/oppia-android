@@ -37,6 +37,7 @@ import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragme
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
+import org.oppia.android.app.onboarding.OnboardingProfileTypeFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
 import org.oppia.android.app.options.AudioLanguageFragment
@@ -196,4 +197,5 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(surveyWelcomeDialogFragment: SurveyWelcomeDialogFragment)
   fun inject(surveyOutroDialogFragment: SurveyOutroDialogFragment)
   fun inject(classroomListFragment: ClassroomListFragment)
+  fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
 }

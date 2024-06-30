@@ -261,7 +261,7 @@
   <color name="color_palette_nps_unselected_background_color">@color/color_def_pale_green</color>
   <color name="color_palette_survey_dialog_stroke_color">@color/color_def_light_blue</color>
   <color name="color_palette_survey_radio_button_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_survey_disabled_button_color">@color/color_def_survey_disabled_button_grey</color>
+  <color name="color_palette_survey_disabled_button_color">@color/color_def_disabled_button_grey</color>
   <color name="color_palette_survey_disabled_button_text_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_button_text_color">@color/color_def_persian_green</color>
   <color name="color_palette_edit_text_unselected_color">@color/color_def_grey</color>
@@ -271,6 +271,9 @@
   <!-- ON-BOARDING -->
   <color name="color_palette_onboarding_primary_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_primary_text_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_onboarding_profile_type_background_color">@color/color_def_jade</color>
+  <color name="color_palette_learner_profile_type_background_color">@color/color_def_oppia_brown</color>
+  <color name="color_palette_supervisor_profile_type_background_color">@color/color_def_light_orange</color>
   <!-- CLASSROOM -->
   <color name="color_palette_classroom_card_color">@color/color_def_greenish_white</color>
   <color name="color_palette_classroom_shared_text_color">@color/color_def_green</color>
