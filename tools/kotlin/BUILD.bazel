@@ -3,7 +3,7 @@ Configurations for a codebase-wide build toolchain for Kotlin.
 """
 
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
-load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_compiler_plugin", "kt_javac_options", "kt_kotlinc_options")
 
 # This exposes a patch that fixes an issue with duplicate processor arguments. See:
 # github.com/bazelbuild/rules_kotlin/pull/940.
@@ -53,4 +53,12 @@ define_kt_toolchain(
     jvm_target = "9",
     kotlinc_options = ":oppia_kotlinc_options",
     language_version = "1.6",
+)
+
+kt_compiler_plugin(
+    name = "jetpack_compose_compiler_plugin",
+    id = "androidx.compose.compiler",
+    target_embedded_compiler = True,
+    visibility = ["//app:app_visibility"],
+    deps = ["//third_party:androidx_compose_compiler_compiler"],
 )
