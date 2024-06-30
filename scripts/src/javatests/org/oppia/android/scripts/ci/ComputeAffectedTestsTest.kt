@@ -70,6 +70,9 @@ class ComputeAffectedTestsTest {
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
     val exception = assertThrows<SecurityException>() { main(arrayOf()) }
+    println("Intentionally making sleep...")
+    Thread.sleep(350_000L)
+    println("End of sleep")
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -901,7 +904,7 @@ class ComputeAffectedTestsTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
