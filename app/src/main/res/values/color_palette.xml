@@ -51,7 +51,7 @@
   <color name="color_palette_content_background_solid_color">@color/color_def_oppia_solid_blue</color>
   <color name="color_palette_content_background_stroke_color">@color/color_def_oppia_stroke_blue</color>
   <color name="color_palette_rounded_rect_background_color">@color/color_def_white</color>
-  <color name="color_palette_rounded_rect_stroke_color">@color/color_def_oppia_grey_border</color>
+  <color name="color_palette_rounded_rect_stroke_color">@color/color_def_oppia_grey</color>
   <color name="color_palette_item_selection_selected_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_item_selection_unselected_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_item_selection_selected_text_color">@color/color_def_oppia_dark_blue</color>
@@ -244,7 +244,7 @@
   <color name="color_palette_avatar_background_22_color">@color/color_def_avatar_background_22</color>
   <color name="color_palette_avatar_background_23_color">@color/color_def_avatar_background_23</color>
   <color name="color_palette_avatar_background_24_color">@color/color_def_avatar_background_24</color>
-  <color name="color_palette_avatar_background_25_color">@color/color_def_avatar_background_25</color>
+  <color name="color_palette_avatar_background_25_color">@color/color_def_oppia_grey</color>
   <!-- SURVEY -->
   <color name="color_palette_survey_background_color">@color/color_def_white_f5</color>
   <color name="color_palette_survey_shared_button_color">@color/color_def_white_f6</color>
