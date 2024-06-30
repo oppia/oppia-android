@@ -50,6 +50,7 @@ class MavenDependenciesListCheck(
     val pathToMavenDependenciesPb = args[2]
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
+        delay(300000)
         checkMavenDependenciesList(
           pathToRoot, pathToMavenInstallJson, pathToMavenDependenciesPb, scriptBgDispatcher
         )
