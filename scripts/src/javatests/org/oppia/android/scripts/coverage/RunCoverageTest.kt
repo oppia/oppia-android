@@ -96,7 +96,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "processTimeout=10"
+      "processTimeout=1"
     )
 
     val outputReportText = File(
