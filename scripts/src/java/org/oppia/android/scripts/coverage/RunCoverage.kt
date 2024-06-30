@@ -51,12 +51,12 @@ fun main(vararg args: String) {
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
+    /*val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
       ?.substringAfter("=")
-      ?.toLongOrNull() ?: 1
+      ?.toLongOrNull() ?: 1*/
 
     val commandExecutor: CommandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 1, processTimeoutUnit = TimeUnit.MINUTES
     )
 
     RunCoverage(
