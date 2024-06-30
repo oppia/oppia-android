@@ -2,6 +2,7 @@ package org.oppia.android.scripts.license
 
 import com.google.protobuf.TextFormat
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.delay
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
