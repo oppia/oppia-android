@@ -89,6 +89,10 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
+    println("Intentionally making sleep...")
+    Thread.sleep(200_000L)
+    println("End of sleep")
+
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
@@ -113,7 +117,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 1, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
