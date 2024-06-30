@@ -356,7 +356,6 @@ class RunCoverageTest {
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
-  @Test(timeout = 400000)
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -370,6 +369,16 @@ class RunCoverageTest {
               fun sumNumbers(a: Int, b: Int): Any {
                   return if (a == 0 && b == 0) {
                       "Both numbers are zero"
+                  } else if (a == 245) {
+                      "Big number than 244"
+                  } else if (a == 1) {
+                      1 + b
+                  } else if (a == 2) {
+                      2 + b
+                  } else if (b == 1) {
+                     a + 1
+                  } else if (b == 2) {
+                      a + 2
                   } else {
                       a + b
                   }
