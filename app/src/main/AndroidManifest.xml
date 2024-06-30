@@ -340,7 +340,10 @@
       android:name=".app.onboarding.OnboardingProfileTypeActivity"
       android:label="@string/onboarding_profile_type_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-
+    <activity
+      android:name=".app.onboarding.CreateProfileActivity"
+      android:label="@string/create_profile_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
       android:authorities="${applicationId}.workmanager-init"

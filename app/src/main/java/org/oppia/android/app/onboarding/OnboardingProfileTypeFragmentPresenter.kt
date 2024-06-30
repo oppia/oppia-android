@@ -27,6 +27,11 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = fragment
 
+      profileTypeLearnerNavigationCard.setOnClickListener {
+        val intent = CreateProfileActivity.createProfileActivityIntent(activity)
+        fragment.startActivity(intent)
+      }
+
       profileTypeSupervisorNavigationCard.setOnClickListener {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
         fragment.startActivity(intent)
@@ -36,6 +41,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
         activity.finish()
       }
     }
+
     return binding.root
   }
 }
