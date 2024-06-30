@@ -355,6 +355,7 @@ class RunCoverageTest {
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
+  @Test
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -383,6 +384,8 @@ class RunCoverageTest {
         @Test
         fun testSumNumbers() {
           assertEquals(TwoSum.computeFibonacci(45), 1134903170L)
+          assertEquals(TwoSum.computeFibonacci(50), 12586269025L)
+          assertEquals(TwoSum.computeFibonacci(60), 1548008755920L)
         }
       }
       """.trimIndent()
@@ -396,21 +399,14 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-/*    RunCoverage(
+    RunCoverage(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
-    ).execute()*/
-
-    main(
-      "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
-      "processTimeout=100",
-      "format=MARKDOWN"
-    )
+    ).execute()
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
@@ -2268,7 +2264,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 20, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
