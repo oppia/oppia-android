@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
@@ -219,5 +220,6 @@ interface ActivityComponentImpl :
   fun inject(walkthroughActivity: WalkthroughActivity)
   fun inject(surveyActivity: SurveyActivity)
   fun inject(colorBindingAdaptersTestActivity: ColorBindingAdaptersTestActivity)
+  fun inject(classroomListActivity: ClassroomListActivity)
   fun inject(onboardingProfileTypeActivity: OnboardingProfileTypeActivity)
 }

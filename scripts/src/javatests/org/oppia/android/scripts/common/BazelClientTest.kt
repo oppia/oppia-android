@@ -422,12 +422,14 @@ class BazelClientTest {
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
+      testFilename = "TwoSumTest",
       sourceContent = sourceContent,
       testContent = testContent,
-      subpackage = "coverage"
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:TwoSumTest")
     val expectedResult = listOf(
       "SF:coverage/main/java/com/example/TwoSum.kt",
       "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",

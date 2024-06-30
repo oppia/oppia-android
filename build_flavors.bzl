@@ -59,7 +59,7 @@ _FLAVOR_METADATA = {
     },
     "dev_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 19,
+        "min_sdk_version": 21,
         "target_sdk_version": 33,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
@@ -88,7 +88,7 @@ _FLAVOR_METADATA = {
     },
     "alpha_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 19,
+        "min_sdk_version": 21,
         "target_sdk_version": 33,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
