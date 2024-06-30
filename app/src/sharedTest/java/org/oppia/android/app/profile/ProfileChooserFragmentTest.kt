@@ -41,8 +41,10 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
@@ -78,15 +80,17 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -107,6 +111,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -480,6 +485,57 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testProfileChooserFragment_clickProfile_opensHomeActivity() {
+    profileManagementController.addProfile(
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
+    )
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_chooser_item
+        )
+      ).perform(click())
+      intended(hasComponent(HomeActivity::class.java.name))
+      hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testProfileChooserFragment_enableClassrooms_clickProfile_opensClassroomListActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    profileManagementController.addProfile(
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
+    )
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_chooser_item
+        )
+      ).perform(click())
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+      hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
+    }
+  }
+
   private fun createProfileChooserActivityIntent(): Intent {
     return ProfileChooserActivity
       .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
@@ -512,7 +568,7 @@ class ProfileChooserFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

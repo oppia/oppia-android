@@ -362,6 +362,10 @@
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">4dp</dimen>
 
+  <!-- Topic Card -->
+  <dimen name="topic_card_margin_start">0dp</dimen>
+  <dimen name="topic_card_margin_end">32dp</dimen>
+
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">8dp</dimen>
   <dimen name="topic_practice_subtopic_layout_margin_end">0dp</dimen>
@@ -507,4 +511,12 @@
   <dimen name="topic_fragment_tab_layout_margin_start">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_margin_end">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">72dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">72dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_card_width">150dp</dimen>
+  <dimen name="classrooms_card_height">182dp</dimen>
 </resources>
