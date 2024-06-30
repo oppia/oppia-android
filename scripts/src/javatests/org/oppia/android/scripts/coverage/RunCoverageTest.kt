@@ -337,6 +337,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
+      "processTimeout=100"
     )
 
     val outputReportText = File(
@@ -483,14 +484,20 @@ class RunCoverageTest {
       testSubpackage = "scripts/javatests/com/example"
     )
 
-    RunCoverage(
+    main(
+      "${tempFolder.root}",
+      "scripts/java/com/example/TwoSum.kt",
+      "processTimeout=100",
+      "format=MARKDOWN"
+    )
+    /*RunCoverage(
       "${tempFolder.root}",
       "scripts/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
-    ).execute()
+    ).execute()*/
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
@@ -555,14 +562,20 @@ class RunCoverageTest {
       testSubpackage = "app/test/java/com/example"
     )
 
-    RunCoverage(
+    main(
+      "${tempFolder.root}",
+      "app/main/java/com/example/TwoSum.kt",
+      "processTimeout=100",
+      "format=MARKDOWN"
+    )
+    /*RunCoverage(
       "${tempFolder.root}",
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
-    ).execute()
+    ).execute()*/
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
@@ -627,14 +640,20 @@ class RunCoverageTest {
       testSubpackage = "app/test/java/com/example"
     )
 
-    RunCoverage(
+    main(
+      "${tempFolder.root}",
+      "app/main/java/com/example/TwoSum.kt",
+      "processTimeout=100",
+      "format=MARKDOWN"
+    )
+/*    RunCoverage(
       "${tempFolder.root}",
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
-    ).execute()
+    ).execute()*/
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
@@ -699,14 +718,20 @@ class RunCoverageTest {
       testSubpackage = "app/sharedTest/java/com/example"
     )
 
-    RunCoverage(
+    main(
+      "${tempFolder.root}",
+      "app/main/java/com/example/TwoSum.kt",
+      "processTimeout=100",
+      "format=MARKDOWN"
+    )
+/*    RunCoverage(
       "${tempFolder.root}",
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
-    ).execute()
+    ).execute()*/
 
     val outputReportText = File(sampleMDOutputPath).readText()
 
@@ -788,14 +813,20 @@ class RunCoverageTest {
       subpackage = "app"
     )
 
-    RunCoverage(
+    main(
+      "${tempFolder.root}",
+      "app/main/java/com/example/TwoSum.kt",
+      "processTimeout=100",
+      "format=MARKDOWN"
+    )
+/*    RunCoverage(
       "${tempFolder.root}",
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.MARKDOWN,
       sampleMDOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
-    ).execute()
+    ).execute()*/
 
     val outputReportText = File(sampleMDOutputPath).readText()
 

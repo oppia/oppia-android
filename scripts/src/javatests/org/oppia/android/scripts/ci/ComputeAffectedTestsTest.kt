@@ -71,7 +71,7 @@ class ComputeAffectedTestsTest {
   fun testUtility_noArguments_printsUsageStringAndExits() {
     val exception = assertThrows<SecurityException>() { main(arrayOf()) }
     println("Intentionally making sleep...")
-    Thread.sleep(350_000L)
+    Thread.sleep(550_000L)
     println("End of sleep")
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
