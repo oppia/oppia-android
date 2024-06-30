@@ -130,7 +130,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "format=markdown",
+      "format=Markdown",
       "processTimeout=100"
     )
 
@@ -193,7 +193,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "format=html",
+      "format=Html",
       "processTimeout=100"
     )
 
