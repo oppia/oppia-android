@@ -14,10 +14,12 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
@@ -27,6 +29,8 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -67,7 +71,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -174,14 +179,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           fragment,
           Observer {
             if (it is AsyncResult.Success) {
-              activity.startActivity(
-                (
-                  HomeActivity.createHomeActivity(
-                    activity,
-                    model.profile.id.internalId
-                  )
-                  )
-              )
+              if (enableMultipleClassrooms.value) {
+                activity.startActivity(
+                  ClassroomListActivity.createClassroomListActivity(activity, model.profile.id)
+                )
+              } else {
+                activity.startActivity(
+                  HomeActivity.createHomeActivity(activity, model.profile.id)
+                )
+              }
             }
           }
         )
@@ -227,10 +233,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
+      val profileId =
+        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId
+          profileId
         )
       )
     } else {

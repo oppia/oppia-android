@@ -9,22 +9,29 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.LanguageDialogFragmentArguments
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-
-private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
-private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected_index"
 
 /**
  * DialogFragment that controls language selection in audio and written translations.
  */
 class LanguageDialogFragment : InjectableDialogFragment() {
-  @Inject lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+  @Inject
+  lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   companion object {
+
+    /** Arguments key for LanguageDialogFragment. */
+    const val LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY = "LanguageDialogFragment.arguments"
+
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
@@ -37,12 +44,16 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       currentLanguageCode: String
     ): LanguageDialogFragment {
       val selectedIndex = languageArrayList.indexOf(currentLanguageCode)
-      val languageDialogFragment = LanguageDialogFragment()
-      val args = Bundle()
-      args.putStringArrayList(LANGUAGE_LIST_ARGUMENT_KEY, languageArrayList)
-      args.putInt(SELECTED_INDEX_ARGUMENT_KEY, selectedIndex)
-      languageDialogFragment.arguments = args
-      return languageDialogFragment
+
+      val args = LanguageDialogFragmentArguments.newBuilder().apply {
+        this.addAllLanguages(languageArrayList)
+        this.selectedIndex = selectedIndex
+      }.build()
+      return LanguageDialogFragment().apply {
+        arguments = Bundle().apply {
+          putProto(LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -52,12 +63,18 @@ class LanguageDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
+    val arguments =
+      checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 
-    var selectedIndex = args.getInt(SELECTED_INDEX_ARGUMENT_KEY, 0)
-    val languageCodeArrayList: ArrayList<String> = checkNotNull(
-      args.getStringArrayList(LANGUAGE_LIST_ARGUMENT_KEY)
+    val args = arguments.getProto(
+      LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+      LanguageDialogFragmentArguments.getDefaultInstance()
     )
+    var selectedIndex = args?.selectedIndex ?: 0
+    val languageCodeArrayList: ArrayList<String> = checkNotNull(
+      args?.languagesList?.let { ArrayList(it) }
+    )
+
     val languageNameArrayList = ArrayList<String>()
 
     for (languageCode in languageCodeArrayList) {

@@ -304,4 +304,14 @@
   <color name="component_color_begin_survey_button_text_color">@color/color_palette_button_text_color</color>
   <color name="component_color_survey_edit_text_unselected_color">@color/color_palette_edit_text_unselected_color</color>
   <color name="component_color_button_shadow_color">@color/color_palette_button_shadow_color</color>
+  <color name="component_color_onboarding_shared_white_color">@color/color_palette_white_text_color</color>
+  <color name="component_color_onboarding_shared_green_color">@color/color_palette_onboarding_primary_color</color>
+  <color name="component_color_onboarding_shared_text_color">@color/color_palette_onboarding_primary_text_color</color>
+  <!-- Classroom List Activity -->
+  <color name="component_color_classroom_card_color">@color/color_palette_classroom_card_color</color>
+  <color name="component_color_classroom_card_icon_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_card_text_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_all_topics_header_text_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_topic_list_background_color">@color/color_palette_classroom_topic_list_background_color</color>
+  <color name="component_color_classroom_promoted_list_classroom_label_color">@color/color_palette_classroom_promoted_list_classroom_label_color</color>
 </resources>

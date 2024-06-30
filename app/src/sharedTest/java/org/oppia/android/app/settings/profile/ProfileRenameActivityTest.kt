@@ -144,7 +144,7 @@ class ProfileRenameActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = ProfileRenameActivity.createProfileRenameActivity(
       context = this.context.applicationContext,
-      profileId = 1
+      internalProfileId = 1
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_RENAME_ACTIVITY)
@@ -155,7 +155,7 @@ class ProfileRenameActivityTest {
     activityTestRule.launchActivity(
       ProfileRenameActivity.createProfileRenameActivity(
         context = this.context.applicationContext,
-        profileId = 1
+        internalProfileId = 1
       )
     )
     val title = activityTestRule.activity.title

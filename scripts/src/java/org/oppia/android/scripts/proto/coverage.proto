@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Coverage Report that contains the bazel coverage data retrieved from the
+// Bazel coverage execution.
+message CoverageReport {
+  // The test target for which the coverage report is generated.
+  string bazel_test_target = 1;
+  // The relative path of the covered file.
+  string file_path = 2;
+  // SHA-1 hash of the file content at the time of report (to guard against changes).
+  string file_sha1_hash = 3;
+  // The lines of code covered in the report.
+  repeated CoveredLine covered_line = 4;
+  // The total number of lines found in the covered file.
+  int32 lines_found = 5;
+  // The total number of lines hit in the covered file.
+  int32 lines_hit = 6;
+}
+
+// Information about a single line that was covered during the tests.
+message CoveredLine {
+  // The line number of the covered line.
+  int32 line_number = 1;
+  // The coverage status of the covered line.
+  Coverage coverage = 2;
+}
+
+enum Coverage {
+  // Coverage status is unspecified.
+  UNSPECIFIED = 0;
+  // The line, branch, or function is fully covered, ie. executed atleast once.
+  FULL = 1;
+  // The line, branch, or function is not covered at all.
+  NONE = 2;
+}

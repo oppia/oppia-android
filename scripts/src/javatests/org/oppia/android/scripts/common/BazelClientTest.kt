@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit
  * Note that this test executes real commands on the local filesystem & requires Bazel in the local
  * environment.
  */
-// Same parameter value: helpers reduce test context, even if they are used by 1 test.
-// Function name: test names are conventionally named with underscores.
+// Same parameter value: helpers reduce test context, even if they are used by 1 test
+// Function name: test names are conventionally named with underscores
 @Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -377,6 +377,97 @@ class BazelClientTest {
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
     assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
+  }
+
+  @Test
+  fun testRunCodeCoverage_forSampleTestTarget_returnsCoverageResult() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a == 0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      testFilename = "TwoSumTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:TwoSumTest")
+    val expectedResult = listOf(
+      "SF:coverage/main/java/com/example/TwoSum.kt",
+      "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/TwoSum::<init> ()V",
+      "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/TwoSum::<init> ()V",
+      "FNF:2",
+      "FNH:1",
+      "BRDA:7,0,0,1",
+      "BRDA:7,0,1,1",
+      "BRDA:7,0,2,1",
+      "BRDA:7,0,3,1",
+      "BRF:4",
+      "BRH:4",
+      "DA:3,0",
+      "DA:7,1",
+      "DA:8,1",
+      "DA:10,1",
+      "LH:3",
+      "LF:4",
+      "end_of_record"
+    )
+
+    assertThat(result).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCodeCoverage_forNonTestTarget_fails() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val exception = assertThrows<IllegalStateException>() {
+      bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    }
+
+    // Verify that the underlying Bazel command failed since the test target was not available.
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+    assertThat(exception).hasMessageThat().contains("no such package")
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {

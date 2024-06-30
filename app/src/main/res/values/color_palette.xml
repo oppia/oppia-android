@@ -268,4 +268,12 @@
   <color name="color_palette_edit_text_inactive_color">@color/color_def_black_87</color>
   <color name="color_palette_edit_text_active_color">@color/color_def_black_87</color>
   <color name="color_palette_button_shadow_color">@color/color_def_black_25</color>
+  <!-- ON-BOARDING -->
+  <color name="color_palette_onboarding_primary_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_onboarding_primary_text_color">@color/color_def_accessible_grey</color>
+  <!-- CLASSROOM -->
+  <color name="color_palette_classroom_card_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_shared_text_color">@color/color_def_green</color>
+  <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue</color>
 </resources>
