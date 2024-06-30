@@ -31,6 +31,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
   private lateinit var selectedImage: String
+
+  /** Launcher for picking an image from device gallery. */
   lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
   /** Initialize layout bindings. */
