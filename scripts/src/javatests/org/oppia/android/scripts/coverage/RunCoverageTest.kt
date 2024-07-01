@@ -197,7 +197,8 @@ class RunCoverageTest {
       "processTimeout=20"
     )
 
-    val filePath = "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.html"
+    val filePath = "${tempFolder.root}" +
+      "/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.html"
     File(filePath).createNewFile()
 
     assertThat(File(filePath).exists()).isTrue()
