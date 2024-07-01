@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_onboarding_learner_intro_background_color">
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/learner_intro_title_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.20" />
+
+    <TextView
+      android:id="@+id/onboarding_learner_intro_title"
+      style="@style/OnboardingHeaderStyle"
+      android:text="@string/onboarding_learner_intro_activity_text"
+      android:textColor="@color/component_color_onboarding_learner_intro_header_color"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/learner_intro_title_guide" />
+
+    <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/onboarding_learner_intro_classroom"
+      style="@style/OnboardingLearnerIntroBulletsStyle"
+      android:layout_marginStart="@dimen/tablet_shared_margin_xl"
+      android:layout_marginTop="@dimen/tablet_shared_margin_xl"
+      android:text="@string/onboarding_learner_intro_classroom_text"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_title"
+      app:layout_constraintWidth_percent="0.4" />
+
+    <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/onboarding_learner_intro_practice"
+      style="@style/OnboardingLearnerIntroBulletsStyle"
+      android:layout_marginTop="@dimen/tablet_shared_margin_large"
+      android:text="@string/onboarding_learner_intro_practice_text"
+      app:layout_constraintStart_toStartOf="@id/onboarding_learner_intro_classroom"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_classroom" />
+
+    <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/onboarding_learner_intro_feedback"
+      style="@style/OnboardingLearnerIntroBulletsStyle"
+      android:layout_marginTop="@dimen/tablet_shared_margin_large"
+      android:text="@string/onboarding_learner_intro_feedback_text"
+      app:layout_constraintStart_toStartOf="@id/onboarding_learner_intro_classroom"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_practice" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/learner_intro_center_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.49" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:id="@+id/onboarding_learner_intro_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
+      app:layout_constraintTop_toBottomOf="@id/learner_intro_center_guide" />
+
+    <ImageView
+      android:id="@+id/learner_intro_otter_imageview"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/tablet_shared_margin_large"
+      android:contentDescription="@string/onboarding_otter_content_description"
+      app:layout_constraintEnd_toStartOf="@id/onboarding_navigation_continue"
+      app:layout_constraintStart_toEndOf="@id/onboarding_navigation_back"
+      app:layout_constraintTop_toBottomOf="@id/onboarding_learner_intro_feedback"
+      app:srcCompat="@drawable/otter" />
+
+    <Button
+      android:id="@+id/onboarding_navigation_back"
+      style="@style/OnboardingNavigationSecondaryButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/tablet_shared_margin_xl"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_large"
+      android:text="@string/onboarding_navigation_back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+      android:id="@+id/onboarding_navigation_continue"
+      style="@style/OnboardingNavigationPrimaryButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/tablet_shared_margin_xl"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_large"
+      android:text="@string/onboarding_navigation_continue"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
