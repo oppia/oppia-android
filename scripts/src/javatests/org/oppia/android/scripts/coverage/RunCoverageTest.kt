@@ -134,7 +134,8 @@ class RunCoverageTest {
       "processTimeout=20"
     )
 
-    val filePath = "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+    val filePath = "${tempFolder.root}" +
+      "/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
     File(filePath).createNewFile()
 
     assertThat(File(filePath).exists()).isTrue()
@@ -258,7 +259,8 @@ class RunCoverageTest {
       "format=MARKDOWN"
     )
 
-    val filePath = "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+    val filePath = "${tempFolder.root}" +
+      "/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
     File(filePath).createNewFile()
 
     assertThat(File(filePath).exists()).isTrue()
@@ -337,7 +339,8 @@ class RunCoverageTest {
     )
 
     val outputReportText = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+      "${tempFolder.root}" +
+        "/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
     ).readText()
 
     val expectedResult =
