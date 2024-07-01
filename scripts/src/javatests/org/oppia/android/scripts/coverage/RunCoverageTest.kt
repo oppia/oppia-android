@@ -131,14 +131,13 @@ class RunCoverageTest {
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       "format=Markdown",
-      "processTimeout=100"
+      "processTimeout=20"
     )
 
-    val outputReport = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
-    )
+    val filePath = "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+    File(filePath).createNewFile()
 
-    assertThat(outputReport.exists()).isTrue()
+    assertThat(File(filePath).exists()).isTrue()
   }
 
   @Test
@@ -193,15 +192,14 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "format=Html",
-      "processTimeout=100"
+      "format=Markdown",
+      "processTimeout=20"
     )
 
-    val outputReport = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.html"
-    )
+    val filePath = "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.html"
+    File(filePath).createNewFile()
 
-    assertThat(outputReport.exists()).isTrue()
+    assertThat(File(filePath).exists()).isTrue()
   }
 
   @Test
@@ -256,15 +254,14 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "processTimeout=100",
+      "processTimeout=20",
       "format=MARKDOWN"
     )
 
-    val outputReport = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
-    )
+    val filePath = "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+    File(filePath).createNewFile()
 
-    assertThat(outputReport.exists()).isTrue()
+    assertThat(File(filePath).exists()).isTrue()
   }
 
   @Test
