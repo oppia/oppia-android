@@ -159,7 +159,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "format=Markdown",
+      "format=Html",
       "processTimeout=10"
     )
 
