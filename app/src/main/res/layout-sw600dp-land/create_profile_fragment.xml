@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.onboarding.CreateProfileViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_onboarding_shared_green_color">
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/create_profile_picture_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.10" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:id="@+id/create_profile_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
+      app:layout_constraintTop_toTopOf="@id/create_profile_picture_guide" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+      android:id="@+id/create_profile_user_image_view"
+      android:layout_width="150dp"
+      android:layout_height="150dp"
+      android:layout_margin="@dimen/tablet_shared_margin_xl"
+      android:clickable="true"
+      android:contentDescription="@string/create_profile_activity_current_picture_content_description"
+      android:focusable="true"
+      android:padding="@dimen/onboarding_profile_picture_padding"
+      android:scaleType="fitXY"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/create_profile_background"
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+      app:srcCompat="@{@drawable/ic_profile_icon}"
+      app:strokeColor="@color/component_color_onboarding_shared_white_color"
+      app:strokeWidth="@dimen/onboarding_profile_picture_stroke_width" />
+
+    <ImageView
+      android:id="@+id/create_profile_edit_picture_icon"
+      android:layout_width="56dp"
+      android:layout_height="56dp"
+      android:contentDescription="@string/create_profile_activity_edit_icon_content_description"
+      android:elevation="@dimen/onboarding_shared_elevation"
+      android:paddingStart="@dimen/onboarding_shared_padding_medium"
+      android:paddingTop="@dimen/onboarding_shared_padding_medium"
+      app:layout_constraintBottom_toBottomOf="@id/create_profile_user_image_view"
+      app:layout_constraintEnd_toEndOf="@id/create_profile_user_image_view"
+      app:srcCompat="@drawable/create_profile_picture_icon" />
+
+    <TextView
+      android:id="@+id/create_profile_picture_prompt"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/tablet_shared_margin_large"
+      android:fontFamily="sans-serif-medium"
+      android:padding="@dimen/onboarding_shared_padding_medium"
+      android:text="@string/create_profile_activity_profile_picture_prompt"
+      android:textAlignment="center"
+      android:textColor="@color/component_color_onboarding_shared_text_color"
+      android:textSize="@dimen/onboarding_shared_text_size_small"
+      app:layout_constraintBottom_toBottomOf="@id/create_profile_user_image_view"
+      app:layout_constraintEnd_toEndOf="@id/create_profile_user_image_view"
+      app:layout_constraintStart_toStartOf="@id/create_profile_user_image_view"
+      app:layout_constraintTop_toTopOf="@id/create_profile_user_image_view" />
+
+    <TextView
+      android:id="@+id/create_profile_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/tablet_shared_margin_xl"
+      android:fontFamily="sans-serif-medium"
+      android:text="@string/create_profile_activity_header"
+      android:textColor="@color/component_color_onboarding_shared_black_color"
+      android:textSize="@dimen/onboarding_shared_text_size_large"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_user_image_view" />
+
+    <TextView
+      android:id="@+id/create_profile_nickname_label"
+      style="@style/NicknameLabelStyle"
+      android:layout_marginTop="@dimen/tablet_shared_margin_large"
+      android:labelFor="@id/create_profile_nickname_edittext"
+      android:text="@string/create_profile_activity_nickname_label"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_title" />
+
+    <EditText
+      android:id="@+id/create_profile_nickname_edittext"
+      style="@style/NicknameTextStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/tablet_shared_margin_x_small"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_x_small"
+      android:background="@{viewModel.hasErrorMessage ? @drawable/edit_text_white_background_error_border: @drawable/edit_text_white_background_with_border}"
+      android:textSize="@dimen/onboarding_shared_text_size_large"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_label"
+      app:layout_constraintWidth_percent="0.4"
+      tools:text="John" />
+
+    <TextView
+      android:id="@+id/create_profile_nickname_error"
+      style="@style/OnboardingErrorStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/tablet_shared_margin_x_small"
+      android:layout_marginEnd="@dimen/tablet_shared_margin_small"
+      android:text="@string/create_profile_activity_nickname_error"
+      android:visibility="@{viewModel.hasErrorMessage ? View.VISIBLE : View.GONE}"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_edittext" />
+
+    <Button
+      android:id="@+id/onboarding_navigation_back"
+      style="@style/OnboardingNavigationSecondaryButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/tablet_shared_margin_xl"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_xl"
+      android:padding="@dimen/onboarding_shared_padding_medium"
+      android:text="@string/onboarding_navigation_back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+      android:id="@+id/onboarding_navigation_continue"
+      style="@style/OnboardingNavigationPrimaryButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/tablet_shared_margin_xl"
+      android:layout_marginBottom="@dimen/tablet_shared_margin_xl"
+      android:padding="@dimen/onboarding_shared_padding_medium"
+      android:text="@string/onboarding_navigation_continue"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
