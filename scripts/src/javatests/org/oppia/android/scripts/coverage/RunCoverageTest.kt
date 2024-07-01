@@ -131,7 +131,7 @@ class RunCoverageTest {
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       "format=Markdown",
-      "processTimeout=20"
+      "processTimeout=10"
     )
 
     val filePath = "${tempFolder.root}" +
@@ -194,7 +194,7 @@ class RunCoverageTest {
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
       "format=Markdown",
-      "processTimeout=20"
+      "processTimeout=10"
     )
 
     val filePath = "${tempFolder.root}" +
@@ -256,7 +256,7 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-      "processTimeout=20",
+      "processTimeout=10",
       "format=MARKDOWN"
     )
 
@@ -2270,7 +2270,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 20, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }

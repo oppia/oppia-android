@@ -286,7 +286,7 @@ jobs:
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
             echo "Attempt $i/5 to run test targets"
-            bazel test --keep_going --test_timeout=1000 --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
+            bazel test --keep_going --test_timeout=600 --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
           done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
           last_error_code=$?
@@ -307,7 +307,7 @@ jobs:
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
             echo "Attempt $i/5 to run test targets"
-            bazel test --keep_going --test_timeout=1000 -- $BAZEL_TEST_TARGETS
+            bazel test --keep_going --test_timeout=600 -- $BAZEL_TEST_TARGETS
           done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
           last_error_code=$?
