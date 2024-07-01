@@ -137,7 +137,7 @@ class RunCoverageTest {
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "${coverageDir}/${filePath.removeSuffix(".kt")}/coverage.md"
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
@@ -164,7 +164,7 @@ class RunCoverageTest {
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "${coverageDir}/${filePath.removeSuffix(".kt")}/coverage.html"
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.html"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
@@ -191,7 +191,7 @@ class RunCoverageTest {
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "${coverageDir}/${filePath.removeSuffix(".kt")}/coverage.md"
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
@@ -235,7 +235,7 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "${coverageDir}/${filePath.removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
     ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePath)
@@ -643,20 +643,22 @@ class RunCoverageTest {
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
-  private fun getExpectedMarkdownText(filePath: String) : String {
-    val markdownText = """
+  private fun getExpectedMarkdownText(filePath: String): String {
+    val markdownText =
+      """
         ## Coverage Report
         
-        - **Covered File:** ${filePath}
+        - **Covered File:** $filePath
         - **Coverage percentage:** 75.00% covered
         - **Line coverage:** 3 / 4 lines covered
       """.trimIndent()
 
     return markdownText
   }
-  
-  private fun getExpectedHtmlText(filePath: String) : String {
-    val htmlText = """
+
+  private fun getExpectedHtmlText(filePath: String): String {
+    val htmlText =
+      """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -765,7 +767,7 @@ class RunCoverageTest {
       <h2>Coverage Report</h2>
       <div class="summary-box">
         <div class="summary-left">
-          <strong>Covered File:</strong> ${filePath} <br>
+          <strong>Covered File:</strong> $filePath <br>
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>
