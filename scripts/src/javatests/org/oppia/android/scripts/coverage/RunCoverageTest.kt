@@ -334,15 +334,16 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    main(
+    RunCoverage(
       "${tempFolder.root}",
       "coverage/main/java/com/example/TwoSum.kt",
-    )
+      ReportFormat.MARKDOWN,
+      sampleMDOutputPath,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
-    ).readText()
+    val outputReportText = File(sampleMDOutputPath).readText()
 
     val expectedResult =
       """
