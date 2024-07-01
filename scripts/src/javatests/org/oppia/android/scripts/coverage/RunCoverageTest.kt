@@ -335,11 +335,29 @@ class RunCoverageTest {
     val filePath = "app/main/java/com/example/TwoSum.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
+    val testContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)
+              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumLocalTest",
       sourceContent = sourceContent,
-      testContent = testContent,
+      testContent = testContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
