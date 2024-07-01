@@ -371,9 +371,17 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setHintUnlockedContext)
     }
 
-    /** Logs that the hint corresponding to [hintIndex] has been viewed by the learner. */
+    /** Logs that the hint corresponding to [hintIndex] has been revealed by the learner. */
+    fun logRevealHint(hintIndex: Int) {
+      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setRevealHintContext)
+    }
+
+    /**
+     * Logs the event indicating that the learner has viewed a hint corresponding to [hintIndex],
+     * excluding the first-time viewing.
+     */
     fun logViewHint(hintIndex: Int) {
-      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setAccessHintContext)
+      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setViewExistingHintContext)
     }
 
     /** Logs that the solution to the current card has been unlocked by the learner. */
@@ -382,8 +390,16 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     /** Logs that the solution to the current card has been viewed by the learner. */
+    fun logRevealSolution() {
+      logStateEvent(EventBuilder::setRevealSolutionContext)
+    }
+
+    /**
+     * Logs the event indicating that the learner has viewed the solution to the current card,
+     * excluding the first-time viewing.
+     */
     fun logViewSolution() {
-      logStateEvent(EventBuilder::setAccessSolutionContext)
+      logStateEvent(EventBuilder::setViewExistingSolutionContext)
     }
 
     /**
