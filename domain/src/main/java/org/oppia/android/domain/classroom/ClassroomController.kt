@@ -382,4 +382,4 @@ internal fun createClassroomThumbnail2(): LessonThumbnail {
     .build()
 }
 
-private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrBlank() || this != "null"
+private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrBlank() && this != "null"

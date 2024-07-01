@@ -259,6 +259,38 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/classroomlist/ClassroomList.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/promotedlist/PromotedList.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/topiclist/AllTopicsHeaderText.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/topiclist/TopicCard.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/welcome/WelcomeText.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryItemViewModel.kt"
   test_file_not_required: true
 }
@@ -815,6 +847,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path:"app/src/main/java/org/oppia/android/app/hintsandsolution/ViewSolutionInterface.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path:"app/src/main/java/org/oppia/android/app/hintsandsolution/ViewHintListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeActivityPresenter.kt"
   test_file_not_required: true
 }
@@ -852,6 +892,14 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/ClassroomSummaryClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/ClassroomSummaryViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1024,6 +1072,33 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingProfileTypeActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingProfileTypeFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileViewModel.kt"
+  test_file_not_required: true
+}test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/IntroActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/IntroFragmentPresenter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
