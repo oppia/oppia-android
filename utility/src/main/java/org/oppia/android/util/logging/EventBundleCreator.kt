@@ -425,6 +425,7 @@ class EventBundleCreator @Inject constructor(
       value: ExplorationEventContext
     ) : EventActivityContext<ExplorationEventContext>(activityName, value) {
       override fun ExplorationEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("classroom_id", classroomId)
         store.putNonSensitiveValue("topic_id", topicId)
         store.putNonSensitiveValue("story_id", storyId)
         store.putNonSensitiveValue("exploration_id", explorationId)
