@@ -31,6 +31,7 @@ class ResumeLessonActivity :
     val params = intent.getProtoExtra(PARAMS_KEY, ResumeLessonActivityParams.getDefaultInstance())
     resumeLessonActivityPresenter.handleOnCreate(
       params.profileId,
+      params.classroomId,
       params.topicId,
       params.storyId,
       params.explorationId,
@@ -50,6 +51,7 @@ class ResumeLessonActivity :
     fun createResumeLessonActivityIntent(
       context: Context,
       profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
@@ -58,6 +60,7 @@ class ResumeLessonActivity :
     ): Intent {
       val params = ResumeLessonActivityParams.newBuilder().apply {
         this.profileId = profileId
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId

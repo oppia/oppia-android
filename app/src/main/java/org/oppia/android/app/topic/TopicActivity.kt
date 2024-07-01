@@ -36,6 +36,7 @@ class TopicActivity :
 
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
+  private lateinit var classroomId: String
   private var storyId: String? = null
 
   @Inject
@@ -49,13 +50,18 @@ class TopicActivity :
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
     )
+    classroomId = checkNotNull(
+      args?.classroomId
+    ) {
+      "Expected classroom ID to be included in intent for TopicActivity."
+    }
     topicId = checkNotNull(
       args?.topicId
     ) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = args?.storyId
-    topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -68,11 +74,17 @@ class TopicActivity :
     )
   }
 
-  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
         this,
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )
@@ -119,6 +131,7 @@ class TopicActivity :
 
   override fun routeToResumeLesson(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -129,6 +142,7 @@ class TopicActivity :
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -145,11 +159,22 @@ class TopicActivity :
   class TopicActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
-    override fun createIntent(profileId: ProfileId, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, topicId)
+    override fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent =
+      createTopicActivityIntent(activity, profileId.internalId, classroomId, topicId)
 
-    override fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent =
-      createTopicPlayStoryActivityIntent(activity, profileId.internalId, topicId, storyId)
+    override fun createIntent(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+      storyId: String
+    ): Intent =
+      createTopicPlayStoryActivityIntent(
+        activity,
+        profileId.internalId,
+        classroomId,
+        topicId,
+        storyId
+      )
   }
 
   companion object {
@@ -160,9 +185,13 @@ class TopicActivity :
     fun createTopicActivityIntent(
       context: Context,
       internalProfileId: Int,
+      classroomId: String,
       topicId: String
     ): Intent {
-      val args = TopicActivityParams.newBuilder().setTopicId(topicId).build()
+      val args = TopicActivityParams.newBuilder().apply {
+        this.topicId = topicId
+        this.classroomId = classroomId
+      }.build()
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
         putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
@@ -175,10 +204,11 @@ class TopicActivity :
     fun createTopicPlayStoryActivityIntent(
       context: Context,
       internalProfileId: Int,
+      classroomId: String,
       topicId: String,
       storyId: String
     ): Intent {
-      return createTopicActivityIntent(context, internalProfileId, topicId).apply {
+      return createTopicActivityIntent(context, internalProfileId, classroomId, topicId).apply {
         val args =
           getProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, TopicActivityParams.getDefaultInstance())
         val updateArg = args.toBuilder().setStoryId(storyId).build()

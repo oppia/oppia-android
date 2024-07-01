@@ -104,6 +104,8 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
@@ -254,6 +256,7 @@ class ExplorationActivityTest {
 
   private fun getApplicationDependencies(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -263,6 +266,7 @@ class ExplorationActivityTest {
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
           internalProfileId,
+          classroomId,
           topicId,
           storyId,
           explorationId
@@ -324,6 +328,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -440,6 +445,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -466,6 +472,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -494,6 +501,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -523,6 +531,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -545,6 +554,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -571,6 +581,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -597,6 +608,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -616,6 +628,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -643,6 +656,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -670,6 +684,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -689,6 +704,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -715,6 +731,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -741,6 +758,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -768,6 +786,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -795,6 +814,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -817,6 +837,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -842,6 +863,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -871,6 +893,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -900,6 +923,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -930,6 +954,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -969,6 +994,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1015,6 +1041,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1058,6 +1085,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1102,6 +1130,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1141,6 +1170,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1203,6 +1233,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1263,6 +1294,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1292,6 +1324,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1321,6 +1354,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0
@@ -1359,6 +1393,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1387,6 +1422,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1418,6 +1454,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1458,6 +1495,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1490,6 +1528,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1516,6 +1555,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1549,6 +1589,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1589,6 +1630,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1625,6 +1667,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1662,6 +1705,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1701,6 +1745,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1741,6 +1786,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1780,6 +1826,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1831,6 +1878,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1882,6 +1930,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
@@ -1923,6 +1972,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1955,6 +2005,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -1985,6 +2036,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -2018,6 +2070,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.replayExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -2048,6 +2101,7 @@ class ExplorationActivityTest {
     )
     explorationDataController.replayExploration(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -2082,6 +2136,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2112,6 +2167,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2142,6 +2198,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2178,6 +2235,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2223,6 +2281,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2259,6 +2318,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2300,6 +2360,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2336,6 +2397,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2362,6 +2424,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2399,6 +2462,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -2436,6 +2500,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2

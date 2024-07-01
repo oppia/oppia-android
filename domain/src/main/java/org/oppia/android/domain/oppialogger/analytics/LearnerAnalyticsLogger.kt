@@ -75,6 +75,7 @@ class LearnerAnalyticsLogger @Inject constructor(
     profileId: ProfileId,
     learnerId: String?,
     exploration: Exploration,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): ExplorationAnalyticsLogger {
@@ -82,6 +83,7 @@ class LearnerAnalyticsLogger @Inject constructor(
       installationId,
       profileId,
       learnerId,
+      classroomId,
       topicId,
       storyId,
       exploration.id,
@@ -185,6 +187,7 @@ class LearnerAnalyticsLogger @Inject constructor(
     installationId: String?,
     profileId: ProfileId,
     learnerId: String?,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -213,6 +216,7 @@ class LearnerAnalyticsLogger @Inject constructor(
         ExplorationContext.newBuilder().apply {
           sessionId = learnerSessionId
           this.explorationId = explorationId
+          this.classroomId = classroomId
           this.topicId = topicId
           this.storyId = storyId
           this.explorationVersion = explorationVersion

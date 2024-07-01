@@ -316,6 +316,9 @@ message EventLog {
   // Represents the event context for all exploration related events containing learner-specific and
   // exploration-specific details.
   message ExplorationContext {
+    // The active classroom ID when the event is logged.
+    string classroom_id = 9;
+
     // The active topic ID when the event is logged.
     string topic_id = 1;
 

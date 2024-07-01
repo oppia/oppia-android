@@ -56,6 +56,7 @@ class ExplorationActivity :
     explorationActivityPresenter.handleOnCreate(
       this,
       params.profileId,
+      params.classroomId,
       params.topicId,
       params.storyId,
       params.explorationId,

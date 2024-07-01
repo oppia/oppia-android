@@ -28,6 +28,7 @@ class IntentFactoryShimImpl @Inject constructor(
   override fun createTopicPlayStoryActivityIntent(
     context: Context,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): Intent {
@@ -35,7 +36,9 @@ class IntentFactoryShimImpl @Inject constructor(
       ProfileId.newBuilder().apply {
         internalId = internalProfileId
       }.build(),
-      topicId, storyId
+      classroomId,
+      topicId,
+      storyId
     )
   }
 
@@ -45,12 +48,14 @@ class IntentFactoryShimImpl @Inject constructor(
   override fun createTopicActivityIntent(
     context: Context,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): Intent {
     return topicActivityIntentFactory.createIntent(
       ProfileId.newBuilder().apply {
         internalId = internalProfileId
       }.build(),
+      classroomId,
       topicId
     )
   }

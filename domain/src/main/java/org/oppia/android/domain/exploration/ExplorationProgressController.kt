@@ -148,6 +148,7 @@ class ExplorationProgressController @Inject constructor(
    */
   internal fun beginExplorationAsync(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -165,6 +166,7 @@ class ExplorationProgressController @Inject constructor(
     val message =
       ControllerMessage.InitializeController(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -468,6 +470,7 @@ class ExplorationProgressController @Inject constructor(
                   it.beginExplorationImpl(
                     message.callbackFlow,
                     message.profileId,
+                    message.classroomId,
                     message.topicId,
                     message.storyId,
                     message.explorationId,
@@ -549,6 +552,7 @@ class ExplorationProgressController @Inject constructor(
   private suspend fun ControllerState.beginExplorationImpl(
     beginExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -562,6 +566,7 @@ class ExplorationProgressController @Inject constructor(
 
       explorationProgress.apply {
         currentProfileId = profileId
+        currentClassroomId = classroomId
         currentTopicId = topicId
         currentStoryId = storyId
         currentExplorationId = explorationId
@@ -1160,6 +1165,7 @@ class ExplorationProgressController @Inject constructor(
         profileId,
         learnerId,
         exploration,
+        explorationProgress.currentClassroomId,
         explorationProgress.currentTopicId,
         explorationProgress.currentStoryId
       )
@@ -1269,6 +1275,7 @@ class ExplorationProgressController @Inject constructor(
     /** [ControllerMessage] for initializing a new play session. */
     data class InitializeController(
       val profileId: ProfileId,
+      val classroomId: String,
       val topicId: String,
       val storyId: String,
       val explorationId: String,

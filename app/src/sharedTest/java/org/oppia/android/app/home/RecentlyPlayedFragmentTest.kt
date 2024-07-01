@@ -87,6 +87,8 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
@@ -846,6 +848,7 @@ class RecentlyPlayedFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
+        classroomId = TEST_CLASSROOM_ID_0
         profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
@@ -903,6 +906,7 @@ class RecentlyPlayedFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
+        classroomId = TEST_CLASSROOM_ID_1
         profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
@@ -942,6 +946,7 @@ class RecentlyPlayedFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
+        classroomId = TEST_CLASSROOM_ID_1
         profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
@@ -986,6 +991,7 @@ class RecentlyPlayedFragmentTest {
         explorationId = FRACTIONS_EXPLORATION_ID_0
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
+        classroomId = TEST_CLASSROOM_ID_1
         profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED

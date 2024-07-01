@@ -121,6 +121,7 @@ class EventBundleCreatorTest {
   private companion object {
     private const val TEST_TIMESTAMP_1 = 1556094120000
     private const val TEST_TIMESTAMP_2 = 1234567898765
+    private const val TEST_CLASSROOM_ID = "test_classroom_id"
     private const val TEST_TOPIC_ID = "test_topic_id"
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXPLORATION_ID = "test_exploration_id"
@@ -2185,6 +2186,7 @@ class EventBundleCreatorTest {
   ) = EventLog.Context.newBuilder().setter(value).build()
 
   private fun createExplorationContext(
+    classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
     storyId: String = TEST_STORY_ID,
     explorationId: String = TEST_EXPLORATION_ID,
@@ -2193,6 +2195,7 @@ class EventBundleCreatorTest {
     stateName: String = TEST_STATE_NAME,
     learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
   ) = ExplorationContext.newBuilder().apply {
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
