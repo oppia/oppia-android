@@ -847,6 +847,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path:"app/src/main/java/org/oppia/android/app/hintsandsolution/ViewSolutionInterface.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path:"app/src/main/java/org/oppia/android/app/hintsandsolution/ViewHintListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeActivityPresenter.kt"
   test_file_not_required: true
 }
