@@ -76,6 +76,7 @@ private const val SESSION_LENGTH_3 = 100000L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationActiveTimeControllerTest.TestApplication::class)
 class ExplorationActiveTimeControllerTest {
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
