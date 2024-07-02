@@ -2,6 +2,7 @@ package org.oppia.android.app.onboarding
 
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,13 +12,24 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.CreateProfileFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Presenter for [CreateProfileFragment]. */
@@ -25,23 +37,40 @@ import javax.inject.Inject
 class CreateProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
+  private val imageLoader: ImageLoader,
   private val createProfileViewModel: CreateProfileViewModel,
-  private val imageLoader: ImageLoader
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger,
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
   private lateinit var selectedImage: String
+  private lateinit var profileName: String
+  private lateinit var profileId: ProfileId
+  private lateinit var profileType: ProfileType
+  private var selectedImageUri: Uri? = null
+  private var allowDownloadAccess = enableDownloadsSupport.value
 
   /** Launcher for picking an image from device gallery. */
   lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
   /** Initialize layout bindings. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    profileId: ProfileId,
+    profileType: ProfileType
+  ): View {
     binding = CreateProfileFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
+    this.profileId = profileId
+    this.profileType = profileType
+
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = createProfileViewModel
@@ -68,11 +97,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
-      createProfileViewModel.hasErrorMessage.set(nickname.isBlank())
-
-      if (createProfileViewModel.hasErrorMessage.get() != true) {
-        val intent = IntroActivity.createIntroActivity(activity, nickname)
-        fragment.startActivity(intent)
+      if (!checkNicknameAndUpdateError(nickname)) {
+        updateProfileDetails(nickname)
       }
     }
 
@@ -87,6 +113,12 @@ class CreateProfileFragmentPresenter @Inject constructor(
     addViewOnClickListeners(binding)
 
     return binding.root
+  }
+
+  private fun checkNicknameAndUpdateError(nickname: String): Boolean {
+    val hasError = nickname.isBlank()
+    createProfileViewModel.hasErrorMessage.set(hasError)
+    return hasError
   }
 
   /** Receive the result of image upload and load it into the image view. */
@@ -107,19 +139,87 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
     binding.createProfileEditPictureIcon.setOnClickListener {
-      activityResultLauncher.launch(
-        galleryIntent
-      )
+      activityResultLauncher.launch(galleryIntent)
     }
     binding.createProfilePicturePrompt.setOnClickListener {
-      activityResultLauncher.launch(
-        galleryIntent
-      )
+      activityResultLauncher.launch(galleryIntent)
     }
     binding.createProfileUserImageView.setOnClickListener {
-      activityResultLauncher.launch(
-        galleryIntent
-      )
+      activityResultLauncher.launch(galleryIntent)
     }
   }
+
+  private fun updateProfileDetails(profileName: String) {
+    profileManagementController.updateNewProfileDetails(
+      profileId,
+      profileType,
+      selectedImageUri,
+      selectUniqueRandomColor(),
+      profileName
+    ).toLiveData().observe(
+      fragment,
+      { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            createProfileViewModel.hasErrorMessage.set(false)
+
+            val intent =
+              IntroActivity.createIntroActivity(activity, profileName).apply {
+                decorateWithUserProfileId(profileId)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              }
+
+            fragment.startActivity(intent)
+          }
+          is AsyncResult.Failure -> {
+            createProfileViewModel.hasErrorMessage.set(true)
+
+            binding.createProfileNicknameError.text = result.error.localizedMessage
+
+            oppiaLogger.e(
+              "CreateProfileFragment",
+              "Failed to update profile details.",
+              result.error
+            )
+          }
+          is AsyncResult.Pending -> {}
+        }
+      }
+    )
+  }
+
+  /** Randomly selects a color for the new profile that is not already in use. */
+  private fun selectUniqueRandomColor(): Int {
+    return COLORS_LIST.map {
+      ContextCompat.getColor(fragment.requireContext(), it)
+    }.random()
+  }
+
+  private val COLORS_LIST = listOf(
+    R.color.component_color_avatar_background_1_color,
+    R.color.component_color_avatar_background_2_color,
+    R.color.component_color_avatar_background_3_color,
+    R.color.component_color_avatar_background_4_color,
+    R.color.component_color_avatar_background_5_color,
+    R.color.component_color_avatar_background_6_color,
+    R.color.component_color_avatar_background_7_color,
+    R.color.component_color_avatar_background_8_color,
+    R.color.component_color_avatar_background_9_color,
+    R.color.component_color_avatar_background_10_color,
+    R.color.component_color_avatar_background_11_color,
+    R.color.component_color_avatar_background_12_color,
+    R.color.component_color_avatar_background_13_color,
+    R.color.component_color_avatar_background_14_color,
+    R.color.component_color_avatar_background_15_color,
+    R.color.component_color_avatar_background_16_color,
+    R.color.component_color_avatar_background_17_color,
+    R.color.component_color_avatar_background_18_color,
+    R.color.component_color_avatar_background_19_color,
+    R.color.component_color_avatar_background_20_color,
+    R.color.component_color_avatar_background_21_color,
+    R.color.component_color_avatar_background_22_color,
+    R.color.component_color_avatar_background_23_color,
+    R.color.component_color_avatar_background_24_color,
+    R.color.component_color_avatar_background_25_color
+  )
 }

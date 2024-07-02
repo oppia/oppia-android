@@ -14,6 +14,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
@@ -75,6 +76,7 @@ private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "set_last_selected_classroom_id_provider_id"
 private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "retrieve_last_selected_classroom_id_provider_id"
+private const val UPDATE_PROFILE_DETAILS_PROVIDER_ID = "update_profile_details_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -654,6 +656,61 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       UPDATE_AUDIO_LANGUAGE_PROVIDER_ID
     ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Updates the provided details of an newly created profile to migrate onboarding flow v2 support.
+   * @param profileId The ID of the profile to update.
+   * @return A [DataProvider] that represents the result of the update operation.
+   */
+  fun updateNewProfileDetails(
+    profileId: ProfileId,
+    profileType: ProfileType,
+    avatarImagePath: Uri?,
+    colorRgb: Int,
+    newName: String
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val profileDir = directoryManagementUtil.getOrCreateDir(profileId.toString())
+
+      val updatedProfile = profile.toBuilder()
+
+      if (avatarImagePath != null) {
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir)
+            ?: return@storeDataWithCustomChannelAsync Pair(
+              it,
+              ProfileActionStatus.FAILED_TO_STORE_IMAGE
+            )
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
+      } else {
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+      }
+
+      updatedProfile.profileType = profileType
+
+      updatedProfile.name = newName
+
+      updatedProfile.isAdmin = true
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_DETAILS_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }
