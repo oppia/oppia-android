@@ -10,18 +10,23 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonListener {
-  @Inject lateinit var audioLanguageFragmentPresenterV1: AudioLanguageFragmentPresenterV1
+  @Inject
+  lateinit var audioLanguageFragmentPresenterV1: AudioLanguageFragmentPresenterV1
 
-  @Inject lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
+  @Inject
+  lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
 
   @Inject
   @field:EnableOnboardingFlowV2
@@ -41,9 +46,13 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
       checkNotNull(
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
-      ) { "Expected arguments to be passed to AudioLanguageFragment" }
+      ) { "Expected arguments to be passed to AudioLanguageFragment." }
+
+    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+      "Expected a profileId argument to be passed to AudioLanguageFragment."
+    }
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenter.handleCreateView(inflater, container)
+      audioLanguageFragmentPresenter.handleCreateView(inflater, container, profileId)
     } else {
       audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
     }
@@ -73,13 +82,14 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
      * Returns a new [AudioLanguageFragment] corresponding to the specified [AudioLanguage] (as the
      * initial selection).
      */
-    fun newInstance(audioLanguage: AudioLanguage): AudioLanguageFragment {
+    fun newInstance(audioLanguage: AudioLanguage, profileId: ProfileId): AudioLanguageFragment {
       return AudioLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AudioLanguageFragmentArguments.newBuilder().apply {
             this.audioLanguage = audioLanguage
           }.build()
           putProto(FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
