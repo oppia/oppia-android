@@ -7,7 +7,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
@@ -22,6 +25,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -37,6 +41,8 @@ class OnboardingFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var acceptDefaultLanguageSelection = true
+  val hasProfileEverBeenAddedValue = ObservableField(true)
 
   /** Handle creation and binding of the [OnboardingFragment] layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -46,11 +52,11 @@ class OnboardingFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    createDefaultProfile()
-
     getSystemLanguage()
 
     getSupportedLanguages()
+
+    subscribeToWasProfileEverBeenAdded()
 
     binding.apply {
       lifecycleOwner = fragment
@@ -59,18 +65,6 @@ class OnboardingFragmentPresenter @Inject constructor(
         R.string.onboarding_language_activity_title,
         appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
-
-      onboardingLanguageLetsGoButton.setOnClickListener {
-        val intent =
-          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-        fragment.startActivity(intent)
-      }
-
-      onboardingLanguageLetsGoButton.setOnClickListener {
-        val intent =
-          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-        fragment.startActivity(intent)
-      }
 
       val adapter = ArrayAdapter(
         fragment.requireContext(),
@@ -97,18 +91,35 @@ class OnboardingFragmentPresenter @Inject constructor(
 
         onItemClickListener =
           AdapterView.OnItemClickListener { _, _, position, _ ->
-            val selectedOppiaLanguage = adapter.getItem(position)
-              ?.let { appLanguageResourceHandler.getOppiaLanguageFromDisplayName(it) }
-            val selection = AppLanguageSelection.newBuilder().apply {
-              selectedLanguage = selectedOppiaLanguage
-            }.build()
-
-            translationController.updateAppLanguage(profileId, selection)
-            translationController.getAppLanguage(profileId)
+            adapter.getItem(position).let {
+              if (it != null) {
+                acceptDefaultLanguageSelection = false
+                updateSelectedLanguage(it)
+              }
+            }
           }
+      }
+
+      onboardingLanguageLetsGoButton.setOnClickListener {
+        if (acceptDefaultLanguageSelection) {
+          onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
+            fragment, { updateSelectedLanguage(it) }
+          )
+        }
+
+        val intent =
+          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+        intent.decorateWithUserProfileId(profileId)
+        fragment.startActivity(intent)
       }
     }
     return binding.root
+  }
+
+  private fun updateSelectedLanguage(selectedLanguage: String) {
+    val oppiaLanguage = appLanguageResourceHandler.getOppiaLanguageFromDisplayName(selectedLanguage)
+    val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(oppiaLanguage).build()
+    translationController.updateAppLanguage(profileId, selection)
   }
 
   private fun getSystemLanguage() {
@@ -170,6 +181,43 @@ class OnboardingFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  private fun subscribeToWasProfileEverBeenAdded() {
+    wasProfileEverBeenAdded.observe(
+      fragment,
+      {
+        if (it) {
+          retrieveNewProfileId()
+        } else {
+          createDefaultProfile()
+        }
+      }
+    )
+  }
+
+  private val wasProfileEverBeenAdded: LiveData<Boolean> by lazy {
+    Transformations.map(
+      profileManagementController.getWasProfileEverAdded().toLiveData(),
+      ::processWasProfileEverBeenAddedResult
+    )
+  }
+
+  private fun processWasProfileEverBeenAddedResult(
+    wasProfileEverBeenAddedResult: AsyncResult<Boolean>
+  ): Boolean {
+    return when (wasProfileEverBeenAddedResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileChooserFragment",
+          "Failed to retrieve the information on wasProfileEverBeenAdded",
+          wasProfileEverBeenAddedResult.error
+        )
+        false
+      }
+      is AsyncResult.Pending -> false
+      is AsyncResult.Success -> wasProfileEverBeenAddedResult.value
+    }
   }
 
   private fun createDefaultProfile() {
