@@ -10,6 +10,7 @@ import org.oppia.android.app.model.ScreenName.INTRO_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The activity for showing the learner welcome screen. */
@@ -17,16 +18,14 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var onboardingLearnerIntroActivityPresenter: IntroActivityPresenter
 
-  private lateinit var profileNickname: String
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val params = intent.extractParams()
-    this.profileNickname = params.profileNickname
+    val profileNickname = intent.extractParams().profileNickname
+    val profileId = intent.extractCurrentUserProfileId()
 
-    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname)
+    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, profileId)
   }
 
   companion object {
