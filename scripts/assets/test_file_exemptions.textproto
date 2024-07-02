@@ -2522,6 +2522,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/ProtoExtraMatcher.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt"
   test_file_not_required: true
 }
