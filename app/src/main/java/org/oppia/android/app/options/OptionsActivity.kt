@@ -118,7 +118,7 @@ class OptionsActivity :
       extraOptionsTitle,
       isFirstOpen,
       selectedFragment,
-      internalProfileId!!
+      internalProfileId
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
 
