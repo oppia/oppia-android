@@ -10,13 +10,22 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
+import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonListener {
+  @Inject lateinit var audioLanguageFragmentPresenterV1: AudioLanguageFragmentPresenterV1
+
   @Inject lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
+
+  @Inject
+  @field:EnableOnboardingFlowV2
+  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -33,19 +42,27 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
-    return audioLanguageFragmentPresenter.handleOnCreateView(inflater, container, audioLanguage)
+    return if (enableOnboardingFlowV2.value) {
+      audioLanguageFragmentPresenter.handleCreateView(inflater, container)
+    } else {
+      audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
-      audioLanguage = audioLanguageFragmentPresenter.getLanguageSelected()
-    }.build()
-    outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    if (!enableOnboardingFlowV2.value) {
+      val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
+        audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
+      }.build()
+      outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    }
   }
 
   override fun onLanguageSelected(audioLanguage: AudioLanguage) {
-    audioLanguageFragmentPresenter.onLanguageSelected(audioLanguage)
+    if (!enableOnboardingFlowV2.value) {
+      audioLanguageFragmentPresenterV1.onLanguageSelected(audioLanguage)
+    }
   }
 
   companion object {

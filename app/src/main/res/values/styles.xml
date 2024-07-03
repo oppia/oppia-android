@@ -788,4 +788,32 @@
     <item name="drawableStartCompat">@drawable/ic_green_check</item>
     <item name="drawableTint">@color/component_color_onboarding_learner_intro_check_color</item>
   </style>
+
+  <style name="AudioLanguageSubtitleStyle" parent="TextViewCenterHorizontal">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
+    <item name="android:textSize">@dimen/audio_fragment_title_text_size</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="AudioLanguageTextStyle" parent="TextViewCenter">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
+  </style>
+
+  <style name="LanguageDropdownStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
+    <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
+    <item name="boxBackgroundColor">@color/component_color_onboarding_shared_white_color</item>
+    <item name="boxStrokeWidth">0dp</item>
+    <item name="boxStrokeWidthFocused">0dp</item>
+    <item name="endIconDrawable">@drawable/ic_arrow_drop_down_black_24dp</item>
+    <item name="endIconTint">@color/component_color_shared_black_background_color</item>
+  </style>
 </resources>

@@ -794,6 +794,7 @@
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
+  <dimen name="audio_fragment_title_text_size">24sp</dimen>
 
   <!-- Clickable Item Min width -->
   <dimen name="clickable_item_min_width">144dp</dimen>
