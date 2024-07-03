@@ -43,7 +43,8 @@ class CompletedStoryItemViewModel(
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String) {
+    storyId: String
+  ) {
     val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
       internalProfileId,

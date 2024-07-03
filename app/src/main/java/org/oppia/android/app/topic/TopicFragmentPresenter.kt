@@ -138,7 +138,8 @@ class TopicFragmentPresenter @Inject constructor(
         classroomId,
         topicId,
         storyId,
-        enableExtraTopicTabsUi.value)
+        enableExtraTopicTabsUi.value
+      )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)

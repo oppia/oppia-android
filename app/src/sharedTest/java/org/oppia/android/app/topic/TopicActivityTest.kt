@@ -170,7 +170,9 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
+    launchTopicActivity(
+      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+    ).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
 

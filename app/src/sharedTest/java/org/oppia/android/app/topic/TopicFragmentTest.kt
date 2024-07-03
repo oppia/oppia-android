@@ -72,7 +72,6 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
@@ -209,16 +208,18 @@ class TopicFragmentTest {
   fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent(false)
     markSpotlightSeen(FIRST_CHAPTER)
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
-    )).use {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
+    ).use {
       // Mark lessons spotlight seen.
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId,TEST_CLASSROOM_ID_1,  FRACTIONS_TOPIC_ID
+      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     )).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(doesNotExist())
@@ -583,7 +584,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_disableExtraTabs_configChange_practiceTopicTabIsNotDisplayed() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId,TEST_CLASSROOM_ID_1,  FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 

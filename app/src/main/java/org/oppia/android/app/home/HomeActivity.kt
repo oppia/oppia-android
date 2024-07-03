@@ -93,7 +93,8 @@ class HomeActivity :
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String) {
+    storyId: String
+  ) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         this,
