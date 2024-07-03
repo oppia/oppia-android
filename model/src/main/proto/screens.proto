@@ -158,6 +158,18 @@ enum ScreenName {
 
   // Screen name value for the scenario when the survey activity is visible to the user.
   SURVEY_ACTIVITY = 49;
+
+  // Screen name value for the scenario when the classroom list activity is visible to the user.
+  CLASSROOM_LIST_ACTIVITY = 50;
+
+  // Screen name value for the scenario when the profile type activity is visible to the user.
+  ONBOARDING_PROFILE_TYPE_ACTIVITY = 51;
+
+  // Screen name value for the scenario when the create new learner profile activity is visible to the user.
+  CREATE_PROFILE_ACTIVITY = 52;
+
+  // Screen name value for the scenario when the learner welcome activity is visible to the user.
+  INTRO_ACTIVITY = 53;
 }
 
 // Defines the current visible UI screen of the application.

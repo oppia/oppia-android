@@ -9,11 +9,13 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.model.AdministratorControlActivityStateBundle
 import org.oppia.android.app.settings.profile.LoadProfileEditDeletionDialogListener
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsActivity]. */
@@ -198,13 +200,18 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Saves the state of the views on configuration changes. */
   fun handleOnSaveInstanceState(outState: Bundle) {
     val titleTextView = binding.extraControlsTitle
-    if (titleTextView != null) {
-      outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
-    }
-    outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
-    isProfileDeletionDialogVisible.let {
-      outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, it)
-    }
-    selectedProfileId.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
+    val args = AdministratorControlActivityStateBundle.newBuilder()
+      .apply {
+        if (titleTextView != null) {
+          selectedControlsTitle = titleTextView.text.toString()
+        }
+        lastLoadedFragment = this@AdministratorControlsActivityPresenter.lastLoadedFragment
+        this@AdministratorControlsActivityPresenter.isProfileDeletionDialogVisible.let {
+          isProfileDeletionDialogVisible = it
+        }
+        selectedProfileId = this@AdministratorControlsActivityPresenter.selectedProfileId
+      }
+      .build()
+    outState.putProto(ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY, args)
   }
 }

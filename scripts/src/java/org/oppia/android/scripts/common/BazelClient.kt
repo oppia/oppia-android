@@ -131,6 +131,42 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
+   * Runs code coverage for the specified Bazel test target.
+   *
+   * Null return typically occurs when the coverage command fails to generate the 'coverage.dat' file
+   * This can happen due to: Test failures or misconfigurations that prevent the coverage data
+   * from being generated properly.
+   *
+   * @param bazelTestTarget Bazel test target for which code coverage will be run
+   * @return the generated coverage data as a list of strings
+   *     or null if the coverage data file could not be parsed
+   */
+  fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
+    val computeInstrumentation = bazelTestTarget.split("/").let { "//${it[2]}/..." }
+    val coverageCommandOutputLines = executeBazelCommand(
+      "coverage",
+      bazelTestTarget,
+      "--instrumentation_filter=$computeInstrumentation"
+    )
+    return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
+      File(path).readLines()
+    }
+  }
+
+  private fun parseCoverageDataFilePath(coverageCommandOutputLines: List<String>): String? {
+    val regex = ".*coverage\\.dat$".toRegex()
+    for (line in coverageCommandOutputLines) {
+      val match = regex.find(line)
+      val extractedPath = match?.value?.substringAfterLast(",")?.trim()
+      if (extractedPath != null) {
+        println("Parsed Coverage Data File: $extractedPath")
+        return extractedPath
+      }
+    }
+    return null
+  }
+
+  /**
    * Returns the results of a query command with a potentially large list of [values] that will be
    * split up into multiple commands to avoid overflow the system's maximum argument limit.
    *

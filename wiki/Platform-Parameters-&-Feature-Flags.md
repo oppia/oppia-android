@@ -2,7 +2,9 @@
 
 - [Introduction](#introduction)
 - [How to create a Platform Parameter](#how-to-create-a-platform-parameter)
-- [How to consume a Platform Parameter](#how-to-consume-a-platform-parameter)
+- [How to create a Feature Flag](#how-to-create-a-feature-flag)
+- [How to consume a Platform Parameter or Feature Flag](#how-to-consume-a-platform-parameter-or-feature-flag)
+- [Ensuring your Feature Flags are logged on each app session](#ensuring-your-feature-flags-are-logged-on-each-app-session)
 - [How to write tests related Platform Parameter](#how-to-write-tests-related-platform-parameter)
   - [1. We actually don't test for platform parameter(s)](#1-we-actually-dont-test-for-platform-parameters)
   - [2. We test for different values of platform parameter(s)](#2-we-test-for-different-values-of-platform-parameters) 
@@ -14,13 +16,13 @@ In order to release these types of features in a smooth manner, we need to be ab
 
 ## How to create a Platform Parameter
 1. Create the Constants
-    - If the Platform Parameter you intend to create is related to a particular feature, so first check that do there exist a file in the `utility\src\main\java\org\oppia\android\util\platformparameter` which contains other Platform Parameters related to the same feature. If there is no such then create a new Kotlin file along with its name corresponding to the feature.
-    - After searching/making a "constants" file related to a feature, we need to define three things:
+    - Platform parameters are typically stored inside `utility\src\main\java\org\oppia\android\util\platformparameter` in the `PlatformParameterConstants.kt`.
+    - To create a new platform parameter, we need to define three things:
         1. Qualifier Annotation which will help us to distinguish our Platform Parameter from others.
         
         <br>
 
-        ```
+        ```kotlin
         /**
          * Qualifier for the platform parameter that defines the time period in hours, after which the
          * [PlatformParameterSyncUpWorker] will run again.
@@ -33,7 +35,7 @@ In order to release these types of features in a smooth manner, we need to be ab
         
         <br>
 
-        ```
+        ```kotlin
         /**
          * Name of the platform parameter that defines the time period in hours, after which the
          * [PlatformParameterSyncUpWorker] will run again.
@@ -45,7 +47,7 @@ In order to release these types of features in a smooth manner, we need to be ab
 
         <br>
 
-        ```
+        ```kotlin
         /**
          * Default value of the platform parameter that defines the time period in hours, after which the
          * [PlatformParameterSyncUpWorker] will run again.
@@ -59,7 +61,7 @@ In order to release these types of features in a smooth manner, we need to be ab
 
     <br>
 
-    ```
+    ```kotlin
     /* Dagger module that provides values for individual Platform Parameters. */
     @Module
     class PlatformParameterModule {
@@ -83,29 +85,145 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
     - Note that permission will be required before accessing the Feature Gating console in the Oppia backend.
 
 
-## How to consume a Platform Parameter
-To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue\<T\>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter in `PlatformParameterSyncUpWorkManagerInitializer`
+## How to create a Feature Flag
+1. Create the Constant
+    - Feature flags, like platform parameters, are stored inside `utility\src\main\java\org\oppia\android\util\platformparameter` in the `FeatureFlagConstants.kt` file.
+    - To add new feature flags, we need to define three things:
+        1. Qualifier Annotation which will help us to distinguish our Platform Parameter from others. Each feature flag should be prepended with an `Enable` prefix to distinguish it from platform parameters.
+        
+        <br>
 
-```
+        ```kotlin
+        /**
+        * Qualifier for the [EnableAppAndOsDeprecation] feature flag that controls whether to enable
+        * app and OS deprecation or not.
+        */
+        @Qualifier
+        annotation class EnableAppAndOsDeprecation
+        ```
+
+        2. The name of the Feature Flag in String format. This should also be prefixed with `android_enable_` to distinguish it from other feature flags on the Oppia-Web gating console.
+        
+        <br>
+
+        ```kotlin
+        /** Name of the feature flag that controls whether to enable app and os deprecation. */
+        const val APP_AND_OS_DEPRECATION = "android_enable_app_and_os_deprecation"
+        ```
+
+        3. The default value for the Feature Flag. For eg - here we define a `EnableAppAndOsDeprecation` feature flag and its default value as a constant.
+
+        <br>
+
+        ```kotlin
+        /**
+        * Default value for the feature flag corresponding to [EnableAppAndOsDeprecation].
+        */
+        const val ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
+        ```
+
+2. Provide your Feature Flag
+    - Feature Flags are still a special type of Platform Parameter and are provided in a similar manner. For providing your Feature Flag in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - Since feature flags can only be booleans, The return type for this @Provides annotated method will be equal to `PlatformPrameterValue<Boolean>`. Any other type will cause the platform parameter sync to fail. For eg- here we provide `EnableAppAndOsDeprecation` feature flag.
+
+    <br>
+
+    ```kotlin
+    /* Dagger module that provides values for individual Platform Parameters. */
+    @Module
+    class PlatformParameterModule {
+      ...
+      @Provides
+      @EnableAppAndOsDeprecation
+      fun provideEnableAppAndOsDeprecation(
+        platformParameterSingleton: PlatformParameterSingleton
+      ): PlatformParameterValue<Boolean> {
+        return platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
+          ?: PlatformParameterValue.createDefaultParameter(
+            ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
+          )
+      }
+    }
+    ```
+
+3. Add Feature Flags to Feature Gating Console
+    - All feature flags should be added to the feature flags console to allow them to be remotely enabled or disabled.
+    - Add the name and the value of our Platform Parameter. This change will make our Compile-Time Platform Parameter to be a Run-Time Platform Parameter. This means that we can control its value from backend.
+    - Note that permission will be required before accessing the Feature Gating console in the Oppia backend.
+
+## How to consume a Platform Parameter or Feature Flag
+To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue<T>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter and the `EnableAppAndOSDeprecation` feature flag in `PlatformParameterSyncUpWorkManagerInitializer`
+
+```kotlin
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   private val context: Context,
-  @SyncUpWorkerTimePeriodInHours private val syncUpWorkerTimePeriod : PlatformParameterValue<Int>
+  @SyncUpWorkerTimePeriodInHours private val syncUpWorkerTimePeriod : PlatformParameterValue<Int>,
+  @EnableAppAndOsDeprecation private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
 ) : ApplicationStartupListener {
   ...
   fun exampleFunction(){
     val time: Int = syncUpWorkerTimePeriod.value
-    // now we can use the value in the "time" variable, which will be an integer.
+    // Now we can use the value in the "time" variable, which will be an integer.
+
+    val appAndOsDeprecationEnabled = enableAppAndOsDeprecation.value
+    // This value can then be used to gate some features as desired.
   }
 }
 ```
 
-## How to write tests related Platform Parameter
+## Ensuring your Feature Flags are logged on each app session
+As a requirement, all feature flags should be logged at the beginning of each app session. This is done automatically via the `FeatureFlagsLogger.kt` inside `domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/` but some configuration is required. To ensure any newly added feature flags are logged as part of this requirement, follow the steps below;
+
+### 1. Import the feature flag to the FeatureFlagsLogger
+To get the value of the feature flag for logging, we need to consume the created feature flag as shown in the example below to ensure the value is present;
+
+```kotlin
+/**
+ * Convenience logger for feature flags.
+ *
+ * This logger is meant to be used for feature flag-related logging on every app launch. It is
+ * primarily used within the ApplicationLifecycleObserver to log the status of feature flags in a
+ * given app session.
+ */
+@Singleton
+class FeatureFlagsLogger @Inject constructor(
+  ...
+  @EnableAppAndOsDeprecation
+  private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
+) {
+  ...
+}
+```
+
+### 2. Add an entry to the list of loggable feature flags
+The FeatureFlagsLogger contains a variable `featureFlagItemMap`, which is a map of feature flags to be logged and their names. Any newly added feature flags should also be added here to ensure that they are logged as well.
+
+```kotlin
+/**
+   * A variable containing a list of all the feature flags in the app.
+   *
+   * @return a list of key-value pairs of [String] and [PlatformParameterValue]
+   */
+  private var featureFlagItemMap: Map<String, PlatformParameterValue<Boolean>> = mapOf(
+    ...
+    APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation
+  )
+```
+
+### 3. Update the Feature Flags Logger test
+Besides the feature-flag logger, the `FeatureFlagLoggerTest` located at `domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/FeatureFlagsLoggerTest.kt` will also need to be updated to reflect the newly added feature flag(s). There are two tests that will need to be changed.
+
+- The first test that should be updated is the `testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged` test. For this, only the constant `expectedFeatureFlagCount` will need to be updated. If a new feature flag was added, increment the count and if one was removed, decrement the count.
+
+- The second test that will need to be updated is the `testLogFeatureFlags_allFeatureFlagNamesAreLogged`. This is a parameterized test that iterates through each currently existing feature flag to ensure each one of them is logged as expected. To update this test and ensure it passes after a feature flag change, modify the `RunParameterized()` section and either add the expected values for the new flag or remove the expected values for a removed feature flag.
+
+## How to write tests related to Platform Parameters
 Before writing a test we must understand the purpose of the platform parameter in our class/classes (that needs to be tested). After verifying this we can divide testing procedures into following groups - 
 
 ### 1. We actually don't test for platform parameter(s)
 We just need specific platform parameter(s) in the dagger graph because our class needs it, but our test cases are not actually verifying the behaviour of class based on different values of the platform parameter. These are the simplest cases to write tests for. We will only need to create a `TestModule` inside the Test class and then include this into the @Component for the `TestApplicationComponent`. For eg - 
 
-```
+```kotlin
 @Module
 class TestModule {
   @Provides

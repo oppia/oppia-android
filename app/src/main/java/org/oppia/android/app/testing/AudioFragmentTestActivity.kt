@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-const val AUDIO_FRAGMENT_TEST_PROFILE_ID_ARGUMENT_KEY =
-  "AudioFragmentTestActivity.audio_fragment_test_profile_id"
 
 /** Test Activity used for testing AudioFragment. */
 class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -20,14 +20,17 @@ class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val internalProfileId =
-      intent.getIntExtra(AUDIO_FRAGMENT_TEST_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */ -1)
+      intent?.extractCurrentUserProfileId()?.internalId ?: -1
     audioFragmentTestActivityController.handleOnCreate(internalProfileId)
   }
 
   companion object {
     fun createAudioFragmentTestActivity(context: Context, internalProfileId: Int?): Intent {
+      val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
-      intent.putExtra(AUDIO_FRAGMENT_TEST_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      if (profileId != null) {
+        intent.decorateWithUserProfileId(profileId)
+      }
       return intent
     }
   }

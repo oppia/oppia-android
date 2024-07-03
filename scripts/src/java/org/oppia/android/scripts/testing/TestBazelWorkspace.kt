@@ -51,6 +51,186 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   }
 
   /**
+   * Adds a source file and test file with the specified name and content,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param testContent the content of the test file
+   * @param sourceSubpackage the subpackage under which the source files should be added
+   * @param testSubpackage the subpackage under which the test files should be added
+   */
+  fun addSourceAndTestFileWithContent(
+    filename: String,
+    testFilename: String,
+    sourceContent: String,
+    testContent: String,
+    sourceSubpackage: String,
+    testSubpackage: String
+  ) {
+    addSourceContentAndBuildFile(
+      filename,
+      sourceContent,
+      sourceSubpackage
+    )
+
+    addTestContentAndBuildFile(
+      filename,
+      testFilename,
+      testContent,
+      sourceSubpackage,
+      testSubpackage
+    )
+  }
+
+  /**
+   * Adds a source file and 2 test files with the specified name and content,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param testContentShared the content of the test file for SharedTest Package
+   * @param testContentLocal the content of the test file for Test Package
+   * @param subpackage the subpackage under which the source and test files should be added
+   */
+  fun addMultiLevelSourceAndTestFileWithContent(
+    filename: String,
+    sourceContent: String,
+    testContentShared: String,
+    testContentLocal: String,
+    subpackage: String
+  ) {
+    val sourceSubpackage = "$subpackage/main/java/com/example"
+    addSourceContentAndBuildFile(
+      filename,
+      sourceContent,
+      sourceSubpackage
+    )
+
+    val testSubpackageShared = "$subpackage/sharedTest/java/com/example"
+    val testFileNameShared = "${filename}Test"
+    addTestContentAndBuildFile(
+      filename,
+      testFileNameShared,
+      testContentShared,
+      sourceSubpackage,
+      testSubpackageShared
+    )
+
+    val testSubpackageLocal = "$subpackage/test/java/com/example"
+    val testFileNameLocal = "${filename}LocalTest"
+    addTestContentAndBuildFile(
+      filename,
+      testFileNameLocal,
+      testContentLocal,
+      sourceSubpackage,
+      testSubpackageLocal
+    )
+  }
+
+  /**
+   * Adds a source file with the specified name and content to the specified subpackage,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param sourceContent the content of the source file
+   * @param sourceSubpackage the subpackage under which the source file should be added
+   * @return the target name of the added source file
+   */
+  fun addSourceContentAndBuildFile(
+    filename: String,
+    sourceContent: String,
+    sourceSubpackage: String
+  ) {
+    initEmptyWorkspace()
+    ensureWorkspaceIsConfiguredForKotlin()
+    setUpWorkspaceForRulesJvmExternal(
+      listOf("junit:junit:4.12")
+    )
+
+    // Create the source subpackage directory if it doesn't exist
+    if (!File(temporaryRootFolder.root, sourceSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(sourceSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create the source file
+    val sourceFile = temporaryRootFolder.newFile(
+      "${sourceSubpackage.replace(".", "/")}/$filename.kt"
+    )
+    sourceFile.writeText(sourceContent)
+
+    // Create or update the BUILD file for the source file
+    val buildFileRelativePath = "${sourceSubpackage.replace(".", "/")}/BUILD.bazel"
+    val buildFile = File(temporaryRootFolder.root, buildFileRelativePath)
+    if (!buildFile.exists()) {
+      temporaryRootFolder.newFile(buildFileRelativePath)
+    }
+    prepareBuildFileForLibraries(buildFile)
+
+    buildFile.appendText(
+      """
+      kt_jvm_library(
+          name = "${filename.lowercase()}",
+          srcs = ["$filename.kt"],
+          visibility = ["//visibility:public"]
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  /**
+   * Adds a test file with the specified name and content to the specified subpackage,
+   * and updates the corresponding build configuration.
+   *
+   * @param filename the name of the source file (without the .kt extension)
+   * @param testName the name of the test file (without the .kt extension)
+   * @param testContent the content of the test file
+   * @param testSubpackage the subpackage for the test file
+   */
+  fun addTestContentAndBuildFile(
+    filename: String,
+    testName: String,
+    testContent: String,
+    sourceSubpackage: String,
+    testSubpackage: String
+  ) {
+    initEmptyWorkspace()
+
+    // Create the test subpackage directory for the test file if it doesn't exist
+    if (!File(temporaryRootFolder.root, testSubpackage.replace(".", "/")).exists()) {
+      temporaryRootFolder.newFolder(*(testSubpackage.split(".")).toTypedArray())
+    }
+
+    // Create the test file
+    val testFile = temporaryRootFolder.newFile("${testSubpackage.replace(".", "/")}/$testName.kt")
+    testFile.writeText(testContent)
+
+    // Create or update the BUILD file for the test file
+    val testBuildFileRelativePath = "${testSubpackage.replace(".", "/")}/BUILD.bazel"
+    val testBuildFile = File(temporaryRootFolder.root, testBuildFileRelativePath)
+    if (!testBuildFile.exists()) {
+      temporaryRootFolder.newFile(testBuildFileRelativePath)
+    }
+    prepareBuildFileForTests(testBuildFile)
+
+    // Add the test file to the BUILD file with appropriate dependencies
+    testBuildFile.appendText(
+      """
+      kt_jvm_test(
+          name = "$testName",
+          srcs = ["$testName.kt"],
+          deps = [
+              "//$sourceSubpackage:${filename.lowercase()}",
+              "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.$testName",
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  /**
    * Generates and adds a new kt_jvm_test target with the target name [testName] and test file
    * [testFile]. This can be used to add multiple tests to the same build file, and will
    * automatically set up the local WORKSPACE file, if needed, to support kt_jvm_test.

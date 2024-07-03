@@ -13,6 +13,7 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//app",
+        "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:application_injector",

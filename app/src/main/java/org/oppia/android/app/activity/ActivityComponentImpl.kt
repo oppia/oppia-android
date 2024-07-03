@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
@@ -31,7 +32,10 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
+import org.oppia.android.app.onboarding.CreateProfileActivity
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
+import org.oppia.android.app.onboarding.OnboardingProfileTypeActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.options.AppLanguageActivity
 import org.oppia.android.app.options.AudioLanguageActivity
@@ -218,4 +222,8 @@ interface ActivityComponentImpl :
   fun inject(walkthroughActivity: WalkthroughActivity)
   fun inject(surveyActivity: SurveyActivity)
   fun inject(colorBindingAdaptersTestActivity: ColorBindingAdaptersTestActivity)
+  fun inject(classroomListActivity: ClassroomListActivity)
+  fun inject(onboardingProfileTypeActivity: OnboardingProfileTypeActivity)
+  fun inject(createProfileActivity: CreateProfileActivity)
+  fun inject(introActivity: IntroActivity)
 }
