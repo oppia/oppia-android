@@ -26,6 +26,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
@@ -2247,7 +2248,7 @@ class ExplorationProgressControllerTest {
 
     val exploration = loadExploration(TEST_EXPLORATION_ID_2)
     val eventLog = fakeAnalyticsEventLogger.getOldestEvent()
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(4)
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(5)
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
@@ -2311,8 +2312,8 @@ class ExplorationProgressControllerTest {
     )
     waitForGetCurrentStateSuccessfulLoad()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(2)[0]
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(2)
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
@@ -2471,6 +2472,23 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testPlayNewExp_logsStartExplorationEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val hasStartExplorationEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == START_EXPLORATION_CONTEXT
+    }
+    assertThat(hasStartExplorationEvent).isTrue()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvents(4)[0]
+    assertThat(eventLog).hasStartExplorationContextThat().containsTestExp2Details()
+  }
+
+  @Test
   fun testResumeExp_stateOneTwoDone_finishThreeAndMoveForward_noLogReachInvestedEngagementEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2623,6 +2641,28 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testResumeExp_doesNotLogStartExplorationEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    endExploration()
+
+    fakeAnalyticsEventLogger.clearAllEvents()
+
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint
+    )
+
+    val hasStartExplorationEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == START_EXPLORATION_CONTEXT
+    }
+    assertThat(hasStartExplorationEvent).isFalse()
+  }
+
+  @Test
   fun testStartOverExp_submitCorrectAnswer_doesNotLogResumeLessonSubmitCorrectAnswerEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2666,6 +2706,27 @@ class ExplorationProgressControllerTest {
       it.context.activityContextCase == RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
     }
     assertThat(resumeLessonSubmitIncorrectAnswerEventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testStartOverExp_doesNotLogStartExplorationEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    endExploration()
+
+    fakeAnalyticsEventLogger.clearAllEvents()
+
+    restartExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    val hasStartExplorationEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == START_EXPLORATION_CONTEXT
+    }
+    assertThat(hasStartExplorationEvent).isFalse()
   }
 
   @Test
@@ -2843,7 +2904,12 @@ class ExplorationProgressControllerTest {
   @Test
   fun testHint_existingHintViewed_logsExistingHintViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
-    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
     waitForGetCurrentStateSuccessfulLoad()
     playThroughPrototypeState1AndMoveToNextState()
     // Submit 2 wrong answers to trigger a hint becoming available.
@@ -3003,7 +3069,12 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSolution_viewExistingSolution_logsExistingSolutionViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
-    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
     waitForGetCurrentStateSuccessfulLoad()
     playThroughPrototypeState1AndMoveToNextState()
     // Submit 2 wrong answers to trigger the hint.
@@ -3676,6 +3747,7 @@ class ExplorationProgressControllerTest {
     pendingState.helpIndex.isSolutionRevealed()
 
   private fun EventLogSubject.ExplorationContextSubject.containsTestExp2Details() {
+    hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID_0)
     hasTopicIdThat().isEqualTo(TEST_TOPIC_ID_0)
     hasStoryIdThat().isEqualTo(TEST_STORY_ID_0)
     hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
@@ -3688,6 +3760,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun EventLogSubject.ExplorationContextSubject.containsFractionsExp0Details() {
+    hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID_1)
     hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
     hasStoryIdThat().isEqualTo(FRACTIONS_STORY_ID_0)
     hasExplorationIdThat().isEqualTo(FRACTIONS_EXPLORATION_ID_0)
