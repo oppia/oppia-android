@@ -127,7 +127,7 @@ message EventLog {
       LearnerDetailsContext app_in_foreground_context = 25;
 
       // The event being logged is related to starting an exploration.
-      ExplorationContext start_exploration_context = 54;
+      ExplorationContext start_exploration_context = 56;
 
       // The event being logged is related to exiting an exploration.
       ExplorationContext exit_exploration_context = 26;
