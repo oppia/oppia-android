@@ -111,6 +111,7 @@ import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.CompleteAppOnboardingContext as CompleteAppOnboardingEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ConsoleLoggerContext as ConsoleLoggerEventContext
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext as FeatureFlagListEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
@@ -237,6 +238,7 @@ class EventBundleCreator @Inject constructor(
       PAUSE_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, pauseVoiceOverContext)
       APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
       APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
+      START_EXPLORATION_CONTEXT -> ExplorationContext(activityName, startExplorationContext)
       EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
       FINISH_EXPLORATION_CONTEXT -> ExplorationContext(activityName, finishExplorationContext)
       PROGRESS_SAVING_SUCCESS_CONTEXT ->

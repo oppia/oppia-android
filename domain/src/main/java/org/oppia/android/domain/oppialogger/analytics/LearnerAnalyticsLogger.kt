@@ -239,6 +239,11 @@ class LearnerAnalyticsLogger @Inject constructor(
       }
     }
 
+    /** Logs that an exploration has been started by the learner. */
+    fun logStartExploration() {
+      getExpectedStateLogger()?.logStartExploration()
+    }
+
     /** Logs that the current exploration has been exited (i.e. not finished). */
     fun logExitExploration() {
       getExpectedStateLogger()?.logExitExploration()
@@ -324,6 +329,11 @@ class LearnerAnalyticsLogger @Inject constructor(
     private val baseExplorationLogContext: ExplorationContext?
   ) {
     private val linkedSkillId by lazy { currentState.linkedSkillId }
+
+    /** Logs that an exploration has been started (at this state). */
+    internal fun logStartExploration() {
+      logStateEvent(EventBuilder::setStartExplorationContext)
+    }
 
     /** Logs that the current exploration has been exited (at this state). */
     internal fun logExitExploration() {

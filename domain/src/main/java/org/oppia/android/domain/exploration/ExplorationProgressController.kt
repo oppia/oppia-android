@@ -905,6 +905,10 @@ class ExplorationProgressController @Inject constructor(
       val state = progress.stateDeck.getCurrentState()
       hintHandler.startWatchingForHintsInNewState(state)
       startState(logStartCard = true)
+
+      if (!isRestart) {
+        explorationAnalyticsLogger.logStartExploration()
+      }
     }
 
     // Advance the stage, but do not notify observers since the current state can be reported
