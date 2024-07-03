@@ -234,9 +234,11 @@ class TopicLessonsFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
-    )).use {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
       clickLessonTab()
       verifyTextOnStorySummaryListItemAtPosition(itemPosition = 1, stringToMatch = "100%")
     }
@@ -705,8 +707,10 @@ class TopicLessonsFragmentTest {
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     testCoroutineDispatchers.runCurrent()
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -759,8 +763,10 @@ class TopicLessonsFragmentTest {
       profileId = profileId,
       version = 1 // Old version, but it doesn't matter since the new version is incompatible.
     )
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -795,8 +801,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadFractionsTopic_clickChap_chapterMarkedAsNotStarted_opensExpAct() {
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -836,8 +844,10 @@ class TopicLessonsFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -877,8 +887,10 @@ class TopicLessonsFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
@@ -1025,9 +1037,11 @@ class TopicLessonsFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
-    )).use {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
@@ -1106,8 +1120,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_checkDropDownIconWithScreenReader_isClickable() {
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       fakeAccessibilityService.setScreenReaderEnabled(true)
       clickLessonTab()
@@ -1126,8 +1142,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonPlayFragment_loadRatiosTopic_checkDropDownIconWithoutScreenReader_isNotClickable() {
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       testCoroutineDispatchers.runCurrent()
@@ -1145,8 +1163,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithScreenReader_isNotClickable() {
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       fakeAccessibilityService.setScreenReaderEnabled(true)
       clickLessonTab()
@@ -1165,8 +1185,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithoutScreenReader_isClickable() {
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID)
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
     ).use {
       clickLessonTab()
       testCoroutineDispatchers.runCurrent()

@@ -218,9 +218,11 @@ class TopicFragmentTest {
       onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
-    launch<TopicActivity>(createTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
-    )).use {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(doesNotExist())
     }
