@@ -16,8 +16,6 @@ import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SY
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
@@ -50,6 +48,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_IN
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
@@ -57,6 +57,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EX
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
@@ -506,29 +508,55 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies that the [EventLog] under test has a context corresponding to [ACCESS_HINT_CONTEXT]
+   * Verifies that the [EventLog] under test has a context corresponding to [REVEAL_HINT_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasAccessHintContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(ACCESS_HINT_CONTEXT)
+  fun hasRevealHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REVEAL_HINT_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasAccessHintContext] and returns a [HintContextSubject]
+   * Verifies the [EventLog]'s context per [hasRevealHintContext] and returns a [HintContextSubject]
    * to test the corresponding context.
    */
-  fun hasAccessHintContextThat(): HintContextSubject {
-    hasAccessHintContext()
-    return HintContextSubject.assertThat(actual.context.accessHintContext)
+  fun hasRevealHintContextThat(): HintContextSubject {
+    hasRevealHintContext()
+    return HintContextSubject.assertThat(actual.context.revealHintContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasAccessHintContextThat].
+   * [hasRevealHintContextThat].
    */
-  fun hasAccessHintContextThat(block: HintContextSubject.() -> Unit) {
-    hasAccessHintContextThat().block()
+  fun hasRevealHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasRevealHintContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to [VIEW_EXISTING_HINT_CONTEXT]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasViewExistingHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_EXISTING_HINT_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasViewExistingHintContext] and returns a [HintContextSubject]
+   * to test the corresponding context.
+   */
+  fun hasViewExistingHintContextThat(): HintContextSubject {
+    hasViewExistingHintContext()
+    return HintContextSubject.assertThat(actual.context.viewExistingHintContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasViewExistingHintContextThat].
+   */
+  fun hasViewExistingHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasViewExistingHintContextThat().block()
   }
 
   /**
@@ -559,28 +587,54 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
-   * [ACCESS_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   * [REVEAL_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasAccessSolutionContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(ACCESS_SOLUTION_CONTEXT)
+  fun hasRevealSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REVEAL_SOLUTION_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasAccessSolutionContext] and returns an
+   * Verifies the [EventLog]'s context per [hasRevealSolutionContext] and returns an
    * [ExplorationContextSubject] to test the corresponding context.
    */
-  fun hasAccessSolutionContextThat(): ExplorationContextSubject {
-    hasAccessSolutionContext()
-    return ExplorationContextSubject.assertThat(actual.context.accessSolutionContext)
+  fun hasRevealSolutionContextThat(): ExplorationContextSubject {
+    hasRevealSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.revealSolutionContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasAccessSolutionContextThat].
+   * [hasRevealSolutionContextThat].
    */
-  fun hasAccessSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
-    hasAccessSolutionContextThat().block()
+  fun hasRevealSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasRevealSolutionContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [VIEW_EXISTING_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasViewExistingSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasViewExistingSolutionContext] and returns an
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasViewExistingSolutionContextThat(): ExplorationContextSubject {
+    hasViewExistingSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.viewExistingSolutionContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasViewExistingSolutionContextThat].
+   */
+  fun hasViewExistingSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasViewExistingSolutionContextThat().block()
   }
 
   /**

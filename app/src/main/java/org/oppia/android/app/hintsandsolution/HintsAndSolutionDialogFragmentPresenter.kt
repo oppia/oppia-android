@@ -185,11 +185,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.expandableHintHeader.setOnClickListener {
       if (hintViewModel.isHintRevealed.get()) {
         expandOrCollapseItem(position)
+        if (position in expandedItemIndexes)
+        (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
       }
     }
     binding.expandHintListIcon.setOnClickListener {
       if (hintViewModel.isHintRevealed.get()) {
         expandOrCollapseItem(position)
+        if (position in expandedItemIndexes)
+        (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
       }
     }
 
@@ -262,11 +266,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.expandableSolutionHeader.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
+        if (position in expandedItemIndexes)
+        (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
       }
     }
     binding.expandSolutionListIcon.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
+        if (position in expandedItemIndexes)
+        (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
       }
     }
 

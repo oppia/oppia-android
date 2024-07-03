@@ -794,6 +794,7 @@
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
+  <dimen name="audio_fragment_title_text_size">24sp</dimen>
 
   <!-- Clickable Item Min width -->
   <dimen name="clickable_item_min_width">144dp</dimen>
@@ -803,7 +804,9 @@
   <dimen name="onboarding_shared_elevation">8dp</dimen>
   <dimen name="onboarding_profile_picture_stroke_width">4dp</dimen>
   <dimen name="onboarding_profile_picture_padding">2dp</dimen>
+
   <dimen name="onboarding_shared_padding_small">4dp</dimen>
+  <dimen name="onboarding_shared_padding_medium">8dp</dimen>
 
   <dimen name="onboarding_shared_text_size_x_small">12sp</dimen>
   <dimen name="onboarding_shared_text_size_small">14sp</dimen>

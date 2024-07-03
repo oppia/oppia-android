@@ -9,6 +9,8 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.hintsandsolution.ViewHintListener
+import org.oppia.android.app.hintsandsolution.ViewSolutionInterface
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
@@ -37,7 +39,9 @@ class ExplorationActivity :
   HintsAndSolutionListener,
   RouteToHintsAndSolutionListener,
   RevealHintListener,
+  ViewHintListener,
   RevealSolutionInterface,
+  ViewSolutionInterface,
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
@@ -188,5 +192,13 @@ class ExplorationActivity :
 
   override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)
+  }
+
+  override fun viewHint(hintIndex: Int) {
+    explorationActivityPresenter.viewHint(hintIndex)
+  }
+
+  override fun viewSolution() {
+    explorationActivityPresenter.viewSolution()
   }
 }

@@ -2807,7 +2807,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_offeredThenViewed_logsViewHintEvent_logsProgressSavingSuccessEvent() {
+  fun testHint_offeredThenViewed_logsRevealedHint_logsPgrssSavSuccEvent_logsExtingHintViwdEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
@@ -2821,15 +2821,45 @@ class ExplorationProgressControllerTest {
     monitorFactory.ensureDataProviderExecutes(
       explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     )
-
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    assertThat(eventLogList[0]).hasAccessHintContextThat {
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsViewed(hintIndex = 0)
+    )
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(3)
+    assertThat(eventLogList[0]).hasRevealHintContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
       hasHintIndexThat().isEqualTo(0)
     }
     assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat {
       containsTestExp2Details()
+    }
+    assertThat(eventLogList[2]).hasViewExistingHintContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasHintIndexThat().isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testHint_existingHintViewed_logsExistingHintViewedEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger a hint becoming available.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsViewed(hintIndex = 0)
+    )
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(eventLog).hasViewExistingHintContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasHintIndexThat().isEqualTo(0)
     }
   }
 
@@ -2873,7 +2903,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHint_lastHintWithNoSol_offeredThenViewed_logsViewHintEvt_logsProgressSavingSuccessEvt() {
+  fun testHint_lastHintWithNoSol_offeredThenViewed_logsRevealedHintEvt_logsPgrssSavingSucssEvt() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_1,
@@ -2895,7 +2925,7 @@ class ExplorationProgressControllerTest {
     )
 
     val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    assertThat(eventLogList[0]).hasAccessHintContextThat {
+    assertThat(eventLogList[0]).hasRevealHintContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
       hasHintIndexThat().isEqualTo(0)
@@ -2954,12 +2984,49 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitSolutionIsRevealed()
     )
 
-    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    assertThat(eventLogList[0]).hasAccessSolutionContextThat {
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsViewed()
+    )
+
+    val eventLogList = fakeAnalyticsEventLogger.getMostRecentEvents(3)
+    assertThat(eventLogList[0]).hasRevealSolutionContextThat {
       containsTestExp2Details()
       hasStateNameThat().isEqualTo("Fractions")
     }
     assertThat(eventLogList[1]).hasProgressSavingSuccessContextThat().containsTestExp2Details()
+    assertThat(eventLogList[2]).hasViewExistingSolutionContextThat {
+      containsTestExp2Details()
+      hasStateNameThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testSolution_viewExistingSolution_logsExistingSolutionViewedEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger the hint.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    // Submit another wrong answer to trigger the solution.
+    submitWrongAnswerForPrototypeState2()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsRevealed()
+    )
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsViewed()
+    )
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasViewExistingSolutionContextThat {
+      containsTestExp2Details()
+      hasStateNameThat().isEqualTo("Fractions")
+    }
   }
 
   @Test
