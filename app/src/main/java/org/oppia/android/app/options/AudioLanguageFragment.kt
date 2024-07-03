@@ -22,11 +22,9 @@ import javax.inject.Inject
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonListener {
-  @Inject
-  lateinit var audioLanguageFragmentPresenterV1: AudioLanguageFragmentPresenterV1
+  @Inject lateinit var audioLanguageFragmentPresenterV1: AudioLanguageFragmentPresenterV1
 
-  @Inject
-  lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
+  @Inject lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
 
   @Inject
   @field:EnableOnboardingFlowV2
