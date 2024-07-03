@@ -82,6 +82,7 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_INSTALL_ID = "test_installation_id"
     private const val TEST_LEARNER_ID = "test_learner_id"
     private const val UNKNOWN_INSTALL_ID = "unknown_installation_id"
+    private const val TEST_CLASSROOM_ID = "test_classroom_id"
     private const val TEST_TOPIC_ID = "test_topic_id"
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXP_5_STATE_THREE_NAME = "NumericExpressionInput.IsEquivalentTo"
@@ -642,6 +643,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasExitExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -683,6 +685,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasFinishExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -710,6 +713,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -754,6 +758,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasEndCardContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -798,6 +803,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasHintUnlockedContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -842,6 +848,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAccessHintContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -885,6 +892,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSolutionUnlockedContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -911,6 +919,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAccessSolutionContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -942,6 +951,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -990,6 +1000,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1066,6 +1077,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPauseVoiceOverContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1682,6 +1694,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1711,6 +1724,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1743,6 +1757,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1771,6 +1786,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasProgressSavingSuccessContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1796,6 +1812,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasProgressSavingFailureContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1821,6 +1838,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasLessonSavedAdvertentlyContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1846,6 +1864,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasResumeLessonSubmitCorrectAnswerContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1871,6 +1890,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasResumeLessonSubmitIncorrectAnswerContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1897,9 +1917,12 @@ class LearnerAnalyticsLoggerTest {
     installationId: String? = TEST_INSTALL_ID,
     profileId: ProfileId = this@LearnerAnalyticsLoggerTest.profileId,
     learnerId: String? = TEST_LEARNER_ID,
+    classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
     storyId: String = TEST_STORY_ID
-  ) = beginExploration(installationId, profileId, learnerId, exploration, topicId, storyId)
+  ) = beginExploration(
+    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId
+  )
 
   private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }
 

@@ -1482,6 +1482,14 @@ class EventLogSubject private constructor(
     private val actual: EventLog.ExplorationContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
+     * Returns a [StringSubject] to test [EventLog.ExplorationContext.getClassroomId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasClassroomIdThat(): StringSubject = assertThat(actual.classroomId)
+
+    /**
      * Returns a [StringSubject] to test [EventLog.ExplorationContext.getTopicId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
