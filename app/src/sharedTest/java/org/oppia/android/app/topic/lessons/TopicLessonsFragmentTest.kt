@@ -370,6 +370,7 @@ class TopicLessonsFragmentTest {
       val args = StoryActivityParams.newBuilder().apply {
         this.storyId = RATIOS_STORY_ID_0
         this.topicId = RATIOS_TOPIC_ID
+        this.classroomId = TEST_CLASSROOM_ID_1
       }.build()
       intended(hasComponent(StoryActivity::class.java.name))
       intended(hasProtoExtra(STORY_ACTIVITY_PARAMS_KEY, args))

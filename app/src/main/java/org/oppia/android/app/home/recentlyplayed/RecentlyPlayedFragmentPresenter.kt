@@ -196,6 +196,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

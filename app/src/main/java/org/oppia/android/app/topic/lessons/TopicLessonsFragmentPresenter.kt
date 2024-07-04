@@ -399,6 +399,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

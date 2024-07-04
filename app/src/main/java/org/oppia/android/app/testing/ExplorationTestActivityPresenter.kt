@@ -70,6 +70,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               ProfileId.newBuilder().apply { internalId = INTERNAL_PROFILE_ID }.build(),
+              CLASSROOM_ID,
               TOPIC_ID,
               STORY_ID,
               EXPLORATION_ID,

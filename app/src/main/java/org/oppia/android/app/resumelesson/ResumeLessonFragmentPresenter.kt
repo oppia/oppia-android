@@ -199,6 +199,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

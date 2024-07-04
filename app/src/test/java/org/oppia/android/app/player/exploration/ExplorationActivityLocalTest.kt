@@ -157,6 +157,7 @@ class ExplorationActivityLocalTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -191,6 +192,7 @@ class ExplorationActivityLocalTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -244,6 +246,7 @@ class ExplorationActivityLocalTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -288,6 +291,7 @@ class ExplorationActivityLocalTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -375,6 +379,7 @@ class ExplorationActivityLocalTest {
 
   private fun createExplorationActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -382,6 +387,7 @@ class ExplorationActivityLocalTest {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      classroomId,
       topicId,
       storyId,
       explorationId,

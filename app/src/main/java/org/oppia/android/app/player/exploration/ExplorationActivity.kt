@@ -80,6 +80,7 @@ class ExplorationActivity :
     fun createExplorationActivityIntent(
       context: Context,
       profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
@@ -88,6 +89,7 @@ class ExplorationActivity :
     ): Intent {
       val params = ExplorationActivityParams.newBuilder().apply {
         this.profileId = profileId
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId

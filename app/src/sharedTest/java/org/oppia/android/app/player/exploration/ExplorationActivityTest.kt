@@ -284,6 +284,7 @@ class ExplorationActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createExplorationActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -299,6 +300,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -317,6 +319,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -344,6 +347,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -367,6 +371,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -390,6 +395,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -413,6 +419,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -434,6 +441,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -461,6 +469,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -490,6 +499,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -520,6 +530,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -543,6 +554,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -570,6 +582,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -597,6 +610,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -617,6 +631,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -645,6 +660,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -673,6 +689,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -693,6 +710,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -720,6 +738,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -747,6 +766,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -775,6 +795,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -803,6 +824,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -826,6 +848,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -852,6 +875,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -882,6 +906,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -912,6 +937,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -943,6 +969,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -983,6 +1010,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1030,6 +1058,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1074,6 +1103,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1119,6 +1149,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1159,6 +1190,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1222,6 +1254,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1267,6 +1300,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1283,6 +1317,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1313,6 +1348,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1343,6 +1379,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
@@ -1382,6 +1419,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1411,6 +1449,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1443,6 +1482,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1484,6 +1524,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1517,6 +1558,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1544,6 +1586,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1578,6 +1621,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1619,6 +1663,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1656,6 +1701,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1694,6 +1740,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1734,6 +1781,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1775,6 +1823,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1815,6 +1864,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1867,6 +1917,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1919,6 +1970,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1961,6 +2013,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -1994,6 +2047,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -2025,6 +2079,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -2059,6 +2114,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -2090,6 +2146,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
@@ -2125,6 +2182,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2156,6 +2214,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2187,6 +2246,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2224,6 +2284,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2270,6 +2331,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2307,6 +2369,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2349,6 +2412,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2386,6 +2450,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2413,6 +2478,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2451,6 +2517,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2489,6 +2556,7 @@ class ExplorationActivityTest {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
@@ -2533,6 +2601,7 @@ class ExplorationActivityTest {
 
   private fun createExplorationActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -2543,6 +2612,7 @@ class ExplorationActivityTest {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      classroomId,
       topicId,
       storyId,
       explorationId,
