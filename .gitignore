@@ -25,3 +25,4 @@ bazel-*
 .bazelproject
 .aswb
 *.pb
+coverage_reports

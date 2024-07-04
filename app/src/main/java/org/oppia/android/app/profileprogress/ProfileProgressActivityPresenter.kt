@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.GALLERY_INTENT_RESULT_CODE
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
@@ -50,18 +49,11 @@ class ProfileProgressActivityPresenter @Inject constructor(
     ) as ProfileProgressFragment?
   }
 
-  fun openGalleryIntent() {
-    val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
-    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
-  }
-
-  fun handleOnActivityResult(intent: Intent?) {
-    intent?.let {
-      profileManagementController.updateProfileAvatar(
-        profileId,
-        intent.data,
-        /* colorRgb= */ 10710042
-      )
-    }
+  fun updateProfileAvatar(intent: Intent?) {
+    profileManagementController.updateProfileAvatar(
+      profileId,
+      intent?.data,
+      /* colorRgb= */ 10710042
+    )
   }
 }

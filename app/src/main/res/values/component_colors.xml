@@ -148,6 +148,7 @@
   <color name="component_color_avatar_background_22_color">@color/color_palette_avatar_background_22_color</color>
   <color name="component_color_avatar_background_23_color">@color/color_palette_avatar_background_23_color</color>
   <color name="component_color_avatar_background_24_color">@color/color_palette_avatar_background_24_color</color>
+  <color name="component_color_avatar_background_25_color">@color/color_palette_avatar_background_25_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
   <color name="component_color_pin_password_activity_show_hide_color">@color/color_palette_show_hide_color</color>
@@ -304,7 +305,26 @@
   <color name="component_color_begin_survey_button_text_color">@color/color_palette_button_text_color</color>
   <color name="component_color_survey_edit_text_unselected_color">@color/color_palette_edit_text_unselected_color</color>
   <color name="component_color_button_shadow_color">@color/color_palette_button_shadow_color</color>
+  <!-- Onboarding v2 -->
   <color name="component_color_onboarding_shared_white_color">@color/color_palette_white_text_color</color>
   <color name="component_color_onboarding_shared_green_color">@color/color_palette_onboarding_primary_color</color>
+  <color name="component_color_onboarding_shared_black_color">@color/color_palette_onboarding_black_color</color>
   <color name="component_color_onboarding_shared_text_color">@color/color_palette_onboarding_primary_text_color</color>
+  <color name="component_color_onboarding_profile_type_background_color">@color/color_palette_onboarding_profile_type_background_color</color>
+  <color name="component_color_onboarding_learner_profile_type_background_color">@color/color_palette_learner_profile_type_background_color</color>
+  <color name="component_color_onboarding_supervisor_profile_type_background_color">@color/color_palette_supervisor_profile_type_background_color</color><!-- Classroom List Activity -->
+  <color name="component_color_onboarding_profile_edit_icon_color">@color/color_palette_onboarding_edit_icon_color</color>
+  <color name="component_color_onboarding_learner_intro_background_color">@color/color_palette_onboarding_learner_intro_background_color</color>
+  <color name="component_color_onboarding_learner_intro_header_color">@color/color_palette_onboarding_learner_intro_header_color</color>
+  <color name="component_color_onboarding_learner_intro_list_color">@color/color_palette_onboarding_learner_intro_list_color</color>
+  <color name="component_color_onboarding_learner_intro_check_color">@color/color_palette_onboarding_learner_intro_check_color</color>
+  <color name="component_color_edittext_stroke_color">@color/color_palette_edittext_stroke_color</color>
+  <color name="component_color_shared_error_color">@color/color_palette_text_error_color</color>
+  <!-- Classroom List Activity -->
+  <color name="component_color_classroom_card_color">@color/color_palette_classroom_card_color</color>
+  <color name="component_color_classroom_card_icon_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_card_text_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_all_topics_header_text_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_topic_list_background_color">@color/color_palette_classroom_topic_list_background_color</color>
+  <color name="component_color_classroom_promoted_list_classroom_label_color">@color/color_palette_classroom_promoted_list_classroom_label_color</color>
 </resources>
