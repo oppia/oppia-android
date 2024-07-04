@@ -14,10 +14,10 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 ## Prepare developer environment
 
-1. Download/Install [Android Studio Bumblebee | Patch 3](https://developer.android.com/studio/archive). 
-   
+1. Download/Install [Android Studio Bumblebee | Patch 3](https://developer.android.com/studio/archive).
+
    **Note**: We recommend installing **Android Studio Bumblebee | 2021.1.1 Patch 3** because newer versions of Android Studio[ do not support running tests where shared source sets are used](https://issuetracker.google.com/issues/232007221#comment18), a configuration we use at Oppia.
-   
+
    **Direct download Url**: [Windows](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-windows.exe) | [Linux](https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2021.1.1.23/android-studio-2021.1.1.23-linux.tar.gz) | [Intel Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac.dmg) | [Apple Silicon Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac_arm.dmg)
 
    You can have multiple versions of Android Studio installed on your machine at the same time.
@@ -25,10 +25,10 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 2. Configure your Android Studio
    - In Android Studio, open Tools > SDK Manager.
      - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 30` (for Bazel support).
-     - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 29.0.2 (this is needed for Bazel support).
+     - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
-   
+
    - Must have **JDK 11** selected:
      - In Android Studio, open Settings > Build, Execution, Deployment > Build Tools > Gradle and edit the Gradle JDK field.
 
@@ -55,8 +55,8 @@ Please follow these steps to set up Oppia Android on your local machine.
 
     - For Windows
        1. Install [Git Bash Command Line](https://gitforwindows.org/)
-          
-          **Note**: When installing Git bash, check the option to add it to powershell, so that you can run bash commands from within powershell. 
+
+          **Note**: When installing Git bash, check the option to add it to powershell, so that you can run bash commands from within powershell.
        2. Open Git Bash Command Line.
        3. Navigate to `opensource\oppia-android\`.
        4. Run the script `bash scripts/setup.sh`.
@@ -134,7 +134,7 @@ We strongly recommend running tests on Robolectric which is faster because it do
    - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
    - For target, select the **Use the device/snapshot dropdown** option.
    - Verify that your setup looks like below:
-   
+
      ![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
 - Finally, Click the "Apply" and "Okay" buttons.
 - You may need to repeat step (3) above to run the test with the new configuration.
@@ -142,7 +142,7 @@ We strongly recommend running tests on Robolectric which is faster because it do
 - This configuration will run all the tests in that class.
 5. To run only a specific test in a file:
    - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
-   
+
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 

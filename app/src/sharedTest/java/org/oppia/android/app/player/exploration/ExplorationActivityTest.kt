@@ -26,7 +26,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
@@ -70,7 +69,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
@@ -82,6 +83,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -2366,11 +2368,14 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args = HelpActivityParams.newBuilder().apply {
+        this.isFromNavigationDrawer = false
+      }.build()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
-        hasExtra(
-          HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          HelpActivity.HELP_ACTIVITY_PARAMS_KEY,
+          /* value= */ args
         )
       )
     }
@@ -2400,11 +2405,14 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val args =
+        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(false)
+          .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
-        hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
+        hasProtoExtra(
+          OptionsActivity.OPTIONS_ACTIVITY_PARAMS_KEY,
+          /* value= */ args
         )
       )
     }

@@ -26,7 +26,6 @@ import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -42,6 +41,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.navigation.NavigationView
 import dagger.Component
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
@@ -72,6 +72,7 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -131,6 +132,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -324,11 +326,12 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.nav_header_profile_name)).perform(click())
       testCoroutineDispatchers.runCurrent()
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
-        hasExtra(
-          ProfileProgressActivity.PROFILE_ID_EXTRA_KEY,
-          internalProfileId
+        hasProtoExtra(
+          PROFILE_ID_INTENT_DECORATOR,
+          profileId
         )
       )
     }
@@ -779,8 +782,9 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
+      val profileId = ProfileId.newBuilder().setInternalId(0).build()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }
   }
 

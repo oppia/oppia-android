@@ -9,10 +9,12 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ConceptCardFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
@@ -22,14 +24,20 @@ private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
 class ConceptCardFragment : InjectableDialogFragment() {
 
   companion object {
+
+    const val CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY = "ConceptCardFragment.arguments"
+
     /** The fragment tag corresponding to the concept card dialog fragment. */
     private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
     private fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
+      val args = ConceptCardFragmentArguments.newBuilder().apply {
+        this.skillId = skillId
+      }.build()
       return ConceptCardFragment().apply {
         arguments = Bundle().apply {
-          putString(SKILL_ID_ARGUMENT_KEY, skillId)
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+          putProto(CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
         }
       }
     }
@@ -112,14 +120,19 @@ class ConceptCardFragment : InjectableDialogFragment() {
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val args = checkNotNull(arguments) {
+    val arguments = checkNotNull(arguments) {
       "Expected arguments to be passed to ConceptCardFragment"
     }
+    val args = arguments.getProto(
+      CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+      ConceptCardFragmentArguments.getDefaultInstance()
+    )
+
     val skillId =
-      checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
+      checkNotNull(args.skillId) {
         "Expected skillId to be passed to ConceptCardFragment"
       }
-    val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    val profileId = arguments.extractCurrentUserProfileId()
     return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId, profileId)
   }
 
@@ -128,5 +141,10 @@ class ConceptCardFragment : InjectableDialogFragment() {
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  private fun getSkillId(): String? = arguments?.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)
+  private fun getSkillId(): String? {
+    return arguments?.getProto(
+      CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+      ConceptCardFragmentArguments.getDefaultInstance()
+    )?.skillId
+  }
 }

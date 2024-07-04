@@ -14,7 +14,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -40,11 +39,14 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.model.FAQSingleActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -149,15 +151,15 @@ class FAQListFragmentTest {
           position = 3
         )
       ).perform(click())
+      val args = getFAQSingleActivityParams(
+        question = getResources().getString(R.string.faq_question_create_profile),
+        answer = getResources().getString(R.string.faq_answer_create_profile)
+      )
       intended(
         allOf(
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_create_profile)
-          ),
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_create_profile)
+          hasProtoExtra(
+            FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
+            args
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -175,15 +177,16 @@ class FAQListFragmentTest {
           position = 3
         )
       ).perform(click())
+      val args = getFAQSingleActivityParams(
+        question = getResources().getString(R.string.faq_question_create_profile),
+        answer = getResources().getString(R.string.faq_answer_create_profile)
+      )
+
       intended(
         allOf(
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_create_profile)
-          ),
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_create_profile)
+          hasProtoExtra(
+            FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
+            args
           ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
@@ -200,21 +203,26 @@ class FAQListFragmentTest {
           position = 1
         )
       ).perform(click())
+      val args = getFAQSingleActivityParams(
+        question = getResources().getString(R.string.faq_question_whats_oppia, getAppName()),
+        answer = getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
+      )
       intended(
         allOf(
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
-            getResources().getString(R.string.faq_question_whats_oppia, getAppName())
-          ),
-          hasExtra(
-            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
-            getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
-          ),
+          hasProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )
     }
   }
+
+  private fun getFAQSingleActivityParams(question: String, answer: String):
+    FAQSingleActivityParams {
+      return FAQSingleActivityParams.newBuilder().apply {
+        this.question = question
+        this.answer = answer
+      }.build()
+    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

@@ -5,7 +5,7 @@ on:
       - develop
     paths:
       - 'wiki/**'
-  # Triggers this workflow when the wiki is changed
+  # Triggers this workflow when the wiki is changed.
   # (see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#gollum).
   gollum:
 

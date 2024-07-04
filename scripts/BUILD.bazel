@@ -43,6 +43,16 @@ package_group(
 )
 
 kt_jvm_binary(
+    name = "compute_aab_differences",
+    testonly = True,
+    data = ["@androidsdk//:aapt2_binary"],
+    main_class = "org.oppia.android.scripts.apkstats.ComputeAabDifferencesKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:compute_aab_differences_lib",
+    ],
+)
+
+kt_jvm_binary(
     name = "compute_affected_tests",
     testonly = True,
     main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",
@@ -231,7 +241,19 @@ kt_jvm_binary(
     name = "wiki_table_of_contents_check",
     testonly = True,
     main_class = "org.oppia.android.scripts.wiki.WikiTableOfContentsCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/wiki:wiki_table_of_contents_check_lib"],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/wiki:wiki_table_of_contents_check_lib"
+    ],
+)
+
+kt_jvm_binary(
+    name = "run_coverage",
+    testonly = True,
+    data = TEST_FILE_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.coverage.RunCoverageKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_lib",
+    ],
 )
 
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,

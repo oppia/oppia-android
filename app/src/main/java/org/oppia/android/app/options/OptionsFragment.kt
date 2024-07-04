@@ -9,24 +9,20 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OptionsFragmentArguments
 import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** OnActivity result key to access [ReadingTextSize] result. */
 const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_reading_text_size"
-/** OnActivity result key to access [OppiaLanguage] result. */
-const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
+
 /** OnActivity result key to access [AudioLanguage] result. */
 const val MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY = "OptionsFragment.message_audio_language"
-/** Request code for [ReadingTextSize]. */
-const val REQUEST_CODE_TEXT_SIZE = 1
-/** Request code for [AudioLanguage]. */
-const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
-private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
-private const val IS_FIRST_OPEN_EXTRA = "IS_FIRST_OPEN_EXTRA"
-private const val SELECTED_FRAGMENT_EXTRA = "SELECTED_FRAGMENT_EXTRA"
+/** Arguments key for OptionsFragment. */
+const val OPTIONS_FRAGMENT_ARGUMENTS_KEY = "OptionsFragment.arguments"
 
 /** Fragment that contains an introduction to the app. */
 class OptionsFragment : InjectableFragment() {
@@ -40,13 +36,17 @@ class OptionsFragment : InjectableFragment() {
       isFirstOpen: Boolean,
       selectedFragment: String
     ): OptionsFragment {
-      val args = Bundle()
-      args.putBoolean(IS_MULTIPANE_EXTRA, isMultipane)
-      args.putBoolean(IS_FIRST_OPEN_EXTRA, isFirstOpen)
-      args.putString(SELECTED_FRAGMENT_EXTRA, selectedFragment)
-      val fragment = OptionsFragment()
-      fragment.arguments = args
-      return fragment
+
+      val args = OptionsFragmentArguments.newBuilder().apply {
+        this.isMultipane = isMultipane
+        this.isFirstOpen = isFirstOpen
+        this.selectedFragment = selectedFragment
+      }.build()
+      return OptionsFragment().apply {
+        arguments = Bundle().apply {
+          putProto(OPTIONS_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -60,11 +60,16 @@ class OptionsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
-    val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA)
-    val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_EXTRA)
-    val selectedFragment = checkNotNull(args.getStringFromBundle(SELECTED_FRAGMENT_EXTRA))
+    val args = arguments.getProto(
+      OPTIONS_FRAGMENT_ARGUMENTS_KEY,
+      OptionsFragmentArguments.getDefaultInstance()
+    )
+
+    val isMultipane = args.isMultipane
+    val isFirstOpen = args.isFirstOpen
+    val selectedFragment = checkNotNull(args.selectedFragment)
     return optionsFragmentPresenter.handleCreateView(
       inflater,
       container,

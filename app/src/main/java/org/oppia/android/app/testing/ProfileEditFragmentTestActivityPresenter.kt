@@ -3,8 +3,8 @@ package org.oppia.android.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.settings.profile.PROFILE_EDIT_PROFILE_ID_EXTRA_KEY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditFragmentTestActivity]. */
@@ -15,7 +15,7 @@ class ProfileEditFragmentTestActivityPresenter @Inject constructor(
   /** Handles onCreate function of [ProfileEditActivity]. */
   fun handleOnCreate() {
     activity.setContentView(R.layout.profile_edit_activity)
-    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
+    val profileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: 0
     if (getProfileEditFragment() == null) {
       activity.supportFragmentManager.beginTransaction().replace(
         R.id.profile_edit_fragment_placeholder,

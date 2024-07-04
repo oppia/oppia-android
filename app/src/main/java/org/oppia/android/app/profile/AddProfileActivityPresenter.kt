@@ -1,6 +1,5 @@
 package org.oppia.android.app.profile
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -10,6 +9,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,17 +24,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.AddProfileActivityParams
+import org.oppia.android.app.profile.AddProfileActivity.Companion.ADD_PROFILE_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-
-const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -52,6 +53,11 @@ class AddProfileActivityPresenter @Inject constructor(
   private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
   private lateinit var alertDialog: AlertDialog
+  private val galleryIntent = Intent(
+    Intent.ACTION_PICK,
+    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+  )
+  lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
@@ -181,25 +187,23 @@ class AddProfileActivityPresenter @Inject constructor(
     }
   }
 
-  fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
-      data?.let {
-        selectedImage = data.data
-        Glide.with(activity)
-          .load(selectedImage)
-          .centerCrop()
-          .apply(RequestOptions.circleCropTransform())
-          .into(uploadImageView)
-      }
+  fun updateProfileAvatar(data: Intent?) {
+    data?.let {
+      selectedImage = data.data
+      Glide.with(activity)
+        .load(selectedImage)
+        .centerCrop()
+        .apply(RequestOptions.circleCropTransform())
+        .into(uploadImageView)
     }
   }
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     uploadImageView.setOnClickListener {
-      openGalleryIntent()
+      resultLauncher.launch(galleryIntent)
     }
     binding.addProfileActivityEditUserImageView.setOnClickListener {
-      openGalleryIntent()
+      resultLauncher.launch(galleryIntent)
     }
 
     binding.addProfileActivityCreateButton.setOnClickListener {
@@ -223,13 +227,18 @@ class AddProfileActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
 
+      val rgbColor = activity.intent.getProtoExtra(
+        ADD_PROFILE_ACTIVITY_PARAMS_KEY,
+        AddProfileActivityParams.getDefaultInstance()
+      )?.colorRgb ?: 10710042
+
       profileManagementController
         .addProfile(
           name = name,
           pin = pin,
           avatarImagePath = selectedImage,
           allowDownloadAccess = allowDownloadAccess,
-          colorRgb = activity.intent.getIntExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, -10710042),
+          colorRgb = rgbColor,
           isAdmin = false
         ).toLiveData()
         .observe(
@@ -239,11 +248,6 @@ class AddProfileActivityPresenter @Inject constructor(
           }
         )
     }
-  }
-
-  private fun openGalleryIntent() {
-    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {

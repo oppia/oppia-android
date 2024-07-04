@@ -16,7 +16,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -27,14 +26,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.protobuf.MessageLite
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -59,6 +54,7 @@ import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
+import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -66,9 +62,11 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.story.StoryActivity.Companion.STORY_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -125,7 +123,6 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -154,21 +151,28 @@ import javax.inject.Singleton
 class TopicLessonsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
+
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject
   lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
@@ -317,8 +321,13 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.story_name_text_view)
+
+      val args = StoryActivityParams.newBuilder().apply {
+        this.storyId = RATIOS_STORY_ID_0
+        this.topicId = RATIOS_TOPIC_ID
+      }.build()
       intended(hasComponent(StoryActivity::class.java.name))
-      intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, RATIOS_STORY_ID_0))
+      intended(hasProtoExtra(STORY_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
@@ -1146,20 +1155,6 @@ class TopicLessonsFragmentTest {
         targetViewId = R.id.chapter_play_state_icon
       )
     ).check(matches(withDrawable(R.drawable.ic_check_24dp)))
-  }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

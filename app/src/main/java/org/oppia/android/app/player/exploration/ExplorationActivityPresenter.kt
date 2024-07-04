@@ -211,7 +211,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */ false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -221,7 +221,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -401,12 +401,28 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationFragment.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
+    explorationFragment.viewHint(hintIndex)
+  }
+
   fun revealSolution() {
     val explorationFragment =
       activity.supportFragmentManager.findFragmentByTag(
         TAG_EXPLORATION_FRAGMENT
       ) as ExplorationFragment
     explorationFragment.revealSolution()
+  }
+
+  fun viewSolution() {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
+    explorationFragment.viewSolution()
   }
 
   private fun showProgressDatabaseFullDialogFragment() {

@@ -268,8 +268,16 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex))
   }
 
+  fun viewHint(hintIndex: Int) {
+    explorationProgressController.submitHintIsViewed(hintIndex)
+  }
+
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
+  }
+
+  fun viewSolution() {
+    explorationProgressController.submitSolutionIsViewed()
   }
 
   private fun getAudioFragment(): Fragment? {

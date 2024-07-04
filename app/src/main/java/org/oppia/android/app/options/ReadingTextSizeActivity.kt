@@ -67,7 +67,7 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
     val intent = Intent().apply {
       putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
     }
-    setResult(REQUEST_CODE_TEXT_SIZE, intent)
+    setResult(RESULT_OK, intent)
     finish()
   }
 

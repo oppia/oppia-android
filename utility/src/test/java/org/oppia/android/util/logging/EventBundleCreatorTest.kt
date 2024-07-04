@@ -20,8 +20,6 @@ import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
@@ -47,11 +45,15 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -85,7 +87,6 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -275,17 +276,15 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language"),
-    Iteration("ar", "inLang=ARABIC", "expLang=Arabic"),
-    Iteration("en", "inLang=ENGLISH", "expLang=English"),
-    Iteration("hi", "inLang=HINDI", "expLang=Hindi"),
-    Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
-    Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
-    Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
-    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili"),
-    Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
-  )
+  @Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language")
+  @Iteration("ar", "inLang=ARABIC", "expLang=Arabic")
+  @Iteration("en", "inLang=ENGLISH", "expLang=English")
+  @Iteration("hi", "inLang=HINDI", "expLang=Hindi")
+  @Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish")
+  @Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese")
+  @Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese")
+  @Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+  @Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
   fun testFillEventBundle_eventWithSelectedAppLanguage_savesCorrectAppLanguageInBundle() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
@@ -316,17 +315,15 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language"),
-    Iteration("ar", "inLang=ARABIC", "expLang=Arabic"),
-    Iteration("en", "inLang=ENGLISH", "expLang=English"),
-    Iteration("hi", "inLang=HINDI", "expLang=Hindi"),
-    Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
-    Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
-    Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
-    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili"),
-    Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
-  )
+  @Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language")
+  @Iteration("ar", "inLang=ARABIC", "expLang=Arabic")
+  @Iteration("en", "inLang=ENGLISH", "expLang=English")
+  @Iteration("hi", "inLang=HINDI", "expLang=Hindi")
+  @Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish")
+  @Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese")
+  @Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese")
+  @Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+  @Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
   fun testFillEventBundle_eventWithSelectedWrittenTranslationsLanguage_savesCorrectWrittenLang() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
@@ -355,17 +352,15 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language"),
-    Iteration("ar", "inLang=ARABIC", "expLang=Arabic"),
-    Iteration("en", "inLang=ENGLISH", "expLang=English"),
-    Iteration("hi", "inLang=HINDI", "expLang=Hindi"),
-    Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish"),
-    Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese"),
-    Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese"),
-    Iteration("sw", "inLang=SWAHILI", "expLang=Swahili"),
-    Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
-  )
+  @Iteration("lang_unspecified", "inLang=LANGUAGE_UNSPECIFIED", "expLang=unspecified_language")
+  @Iteration("ar", "inLang=ARABIC", "expLang=Arabic")
+  @Iteration("en", "inLang=ENGLISH", "expLang=English")
+  @Iteration("hi", "inLang=HINDI", "expLang=Hindi")
+  @Iteration("hi_en", "inLang=HINGLISH", "expLang=Hinglish")
+  @Iteration("pt", "inLang=PORTUGUESE", "expLang=Portuguese")
+  @Iteration("pt_br", "inLang=BRAZILIAN_PORTUGUESE", "expLang=Brazilian Portuguese")
+  @Iteration("sw", "inLang=SWAHILI", "expLang=Swahili")
+  @Iteration("pcm", "inLang=NIGERIAN_PIDGIN", "expLang=Nigerian Pidgin")
   fun testFillEventBundle_eventWithSelectedAudioTranslationsLanguage_savesCorrectAudioLang() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
@@ -1106,18 +1101,18 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_revealHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessHintContext())
+    val eventLog = createEventLog(context = createRevealHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_hint")
     assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1131,18 +1126,70 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
+  fun testFillEventBundle_revealHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessHintContext())
+    val eventLog = createEventLog(context = createRevealHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_hint")
     assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingHintEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_hint")
+    assertThat(bundle).hasSize(18)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingHintEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_hint")
+    assertThat(bundle).hasSize(20)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1212,14 +1259,14 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessSolutionContext())
+    val eventLog = createEventLog(context = createRevealSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_solution")
     assertThat(bundle).hasSize(17)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1236,14 +1283,64 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessSolutionContext())
+    val eventLog = createEventLog(context = createRevealSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_solution")
     assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingSolutionEvent_studyOff_fillsNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_solution")
+    assertThat(bundle).hasSize(17)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_solution")
+    assertThat(bundle).hasSize(19)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1887,145 +1984,143 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("home", "name=HOME_ACTIVITY", "expNameStr=home_activity"),
-    Iteration("splash", "name=SPLASH_ACTIVITY", "expNameStr=splash_activity"),
-    Iteration(
-      "profileChooser",
-      "name=PROFILE_CHOOSER_ACTIVITY",
-      "expNameStr=profile_chooser_activity"
-    ),
-    Iteration("addProfile", "name=ADD_PROFILE_ACTIVITY", "expNameStr=add_profile_activity"),
-    Iteration("background", "name=BACKGROUND_SCREEN", "expNameStr=background_screen"),
-    Iteration("appVersion", "name=APP_VERSION_ACTIVITY", "expNameStr=app_version_activity"),
-    Iteration(
-      "administratorControls",
-      "name=ADMINISTRATOR_CONTROLS_ACTIVITY",
-      "expNameStr=administrator_controls_activity"
-    ),
-    Iteration(
-      "profileAndDeviceId",
-      "name=PROFILE_AND_DEVICE_ID_ACTIVITY",
-      "expNameStr=profile_and_device_id_activity"
-    ),
-    Iteration(
-      "completedStoryList",
-      "name=COMPLETED_STORY_LIST_ACTIVITY",
-      "expNameStr=completed_story_list_activity"
-    ),
-    Iteration("faqSingle", "name=FAQ_SINGLE_ACTIVITY", "expNameStr=faq_single_activity"),
-    Iteration("faqList", "name=FAQ_LIST_ACTIVITY", "expNameStr=faq_list_activity"),
-    Iteration("licenseList", "name=LICENSE_LIST_ACTIVITY", "expNameStr=license_list_activity"),
-    Iteration(
-      "licenseTextViewer",
-      "name=LICENSE_TEXT_VIEWER_ACTIVITY",
-      "expNameStr=license_text_viewer_activity"
-    ),
-    Iteration(
-      "thirdPartyDependencyList",
-      "name=THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY",
-      "expNameStr=third_party_dependency_list_activity"
-    ),
-    Iteration("help", "name=HELP_ACTIVITY", "expNameStr=help_activity"),
-    Iteration(
-      "recentlyPlayed",
-      "name=RECENTLY_PLAYED_ACTIVITY",
-      "expNameStr=recently_played_activity"
-    ),
-    Iteration("myDownloads", "name=MY_DOWNLOADS_ACTIVITY", "expNameStr=my_downloads_activity"),
-    Iteration("onboarding", "name=ONBOARDING_ACTIVITY", "expNameStr=onboarding_activity"),
-    Iteration(
-      "ongoingTopicList",
-      "name=ONGOING_TOPIC_LIST_ACTIVITY",
-      "expNameStr=ongoing_topic_list_activity"
-    ),
-    Iteration(
-      "audioLanguage",
-      "name=AUDIO_LANGUAGE_ACTIVITY",
-      "expNameStr=audio_language_activity"
-    ),
-    Iteration("appLanguage", "name=APP_LANGUAGE_ACTIVITY", "expNameStr=app_language_activity"),
-    Iteration("options", "name=OPTIONS_ACTIVITY", "expNameStr=options_activity"),
-    Iteration(
-      "readingTextSize",
-      "name=READING_TEXT_SIZE_ACTIVITY",
-      "expNameStr=reading_text_size_activity"
-    ),
-    Iteration("exploration", "name=EXPLORATION_ACTIVITY", "expNameStr=exploration_activity"),
-    Iteration("adminAuth", "name=ADMIN_AUTH_ACTIVITY", "expNameStr=admin_auth_activity"),
-    Iteration("pinPassword", "name=PIN_PASSWORD_ACTIVITY", "expNameStr=pin_password_activity"),
-    Iteration(
-      "profilePicture",
-      "name=PROFILE_PICTURE_ACTIVITY",
-      "expNameStr=profile_picture_activity"
-    ),
-    Iteration(
-      "profileProgress",
-      "name=PROFILE_PROGRESS_ACTIVITY",
-      "expNameStr=profile_progress_activity"
-    ),
-    Iteration("resumeLesson", "name=RESUME_LESSON_ACTIVITY", "expNameStr=resume_lesson_activity"),
-    Iteration("profileEdit", "name=PROFILE_EDIT_ACTIVITY", "expNameStr=profile_edit_activity"),
-    Iteration(
-      "profileResetPin",
-      "name=PROFILE_RESET_PIN_ACTIVITY",
-      "expNameStr=profile_reset_pin_activity"
-    ),
-    Iteration(
-      "profileRename",
-      "name=PROFILE_RENAME_ACTIVITY",
-      "expNameStr=profile_rename_activity"
-    ),
-    Iteration("profileList", "name=PROFILE_LIST_ACTIVITY", "expNameStr=profile_list_activity"),
-    Iteration("story", "name=STORY_ACTIVITY", "expNameStr=story_activity"),
-    Iteration("topic", "name=TOPIC_ACTIVITY", "expNameStr=topic_activity"),
-    Iteration("revisionCard", "name=REVISION_CARD_ACTIVITY", "expNameStr=revision_card_activity"),
-    Iteration(
-      "questionPlayer",
-      "name=QUESTION_PLAYER_ACTIVITY",
-      "expNameStr=question_player_activity"
-    ),
-    Iteration("walkthrough", "name=WALKTHROUGH_ACTIVITY", "expNameStr=walkthrough_activity"),
-    Iteration(
-      "developerOptions",
-      "name=DEVELOPER_OPTIONS_ACTIVITY",
-      "expNameStr=developer_options_activity"
-    ),
-    Iteration(
-      "viewEventLogs",
-      "name=VIEW_EVENT_LOGS_ACTIVITY",
-      "expNameStr=view_event_logs_activity"
-    ),
-    Iteration(
-      "markTopicsCompleted",
-      "name=MARK_TOPICS_COMPLETED_ACTIVITY",
-      "expNameStr=mark_topics_completed_activity"
-    ),
-    Iteration(
-      "mathExpressionParser",
-      "name=MATH_EXPRESSION_PARSER_ACTIVITY",
-      "expNameStr=math_expression_parser_activity"
-    ),
-    Iteration(
-      "markChaptersCompleted",
-      "name=MARK_CHAPTERS_COMPLETED_ACTIVITY",
-      "expNameStr=mark_chapters_completed_activity"
-    ),
-    Iteration(
-      "markStoriesCompleted",
-      "name=MARK_STORIES_COMPLETED_ACTIVITY",
-      "expNameStr=mark_stories_completed_activity"
-    ),
-    Iteration(
-      "forceNetworkType",
-      "name=FORCE_NETWORK_TYPE_ACTIVITY",
-      "expNameStr=force_network_type_activity"
-    ),
-    Iteration("adminPin", "name=ADMIN_PIN_ACTIVITY", "expNameStr=admin_pin_activity"),
-    Iteration("policies", "name=POLICIES_ACTIVITY", "expNameStr=policies_activity"),
-    Iteration("unspecified", "name=SCREEN_NAME_UNSPECIFIED", "expNameStr=screen_name_unspecified"),
-    Iteration("foreground", "name=FOREGROUND_SCREEN", "expNameStr=foreground_screen"),
+  @Iteration("home", "name=HOME_ACTIVITY", "expNameStr=home_activity")
+  @Iteration("splash", "name=SPLASH_ACTIVITY", "expNameStr=splash_activity")
+  @Iteration(
+    "profileChooser",
+    "name=PROFILE_CHOOSER_ACTIVITY",
+    "expNameStr=profile_chooser_activity"
   )
+  @Iteration("addProfile", "name=ADD_PROFILE_ACTIVITY", "expNameStr=add_profile_activity")
+  @Iteration("background", "name=BACKGROUND_SCREEN", "expNameStr=background_screen")
+  @Iteration("appVersion", "name=APP_VERSION_ACTIVITY", "expNameStr=app_version_activity")
+  @Iteration(
+    "administratorControls",
+    "name=ADMINISTRATOR_CONTROLS_ACTIVITY",
+    "expNameStr=administrator_controls_activity"
+  )
+  @Iteration(
+    "profileAndDeviceId",
+    "name=PROFILE_AND_DEVICE_ID_ACTIVITY",
+    "expNameStr=profile_and_device_id_activity"
+  )
+  @Iteration(
+    "completedStoryList",
+    "name=COMPLETED_STORY_LIST_ACTIVITY",
+    "expNameStr=completed_story_list_activity"
+  )
+  @Iteration("faqSingle", "name=FAQ_SINGLE_ACTIVITY", "expNameStr=faq_single_activity")
+  @Iteration("faqList", "name=FAQ_LIST_ACTIVITY", "expNameStr=faq_list_activity")
+  @Iteration("licenseList", "name=LICENSE_LIST_ACTIVITY", "expNameStr=license_list_activity")
+  @Iteration(
+    "licenseTextViewer",
+    "name=LICENSE_TEXT_VIEWER_ACTIVITY",
+    "expNameStr=license_text_viewer_activity"
+  )
+  @Iteration(
+    "thirdPartyDependencyList",
+    "name=THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY",
+    "expNameStr=third_party_dependency_list_activity"
+  )
+  @Iteration("help", "name=HELP_ACTIVITY", "expNameStr=help_activity")
+  @Iteration(
+    "recentlyPlayed",
+    "name=RECENTLY_PLAYED_ACTIVITY",
+    "expNameStr=recently_played_activity"
+  )
+  @Iteration("myDownloads", "name=MY_DOWNLOADS_ACTIVITY", "expNameStr=my_downloads_activity")
+  @Iteration("onboarding", "name=ONBOARDING_ACTIVITY", "expNameStr=onboarding_activity")
+  @Iteration(
+    "ongoingTopicList",
+    "name=ONGOING_TOPIC_LIST_ACTIVITY",
+    "expNameStr=ongoing_topic_list_activity"
+  )
+  @Iteration(
+    "audioLanguage",
+    "name=AUDIO_LANGUAGE_ACTIVITY",
+    "expNameStr=audio_language_activity"
+  )
+  @Iteration("appLanguage", "name=APP_LANGUAGE_ACTIVITY", "expNameStr=app_language_activity")
+  @Iteration("options", "name=OPTIONS_ACTIVITY", "expNameStr=options_activity")
+  @Iteration(
+    "readingTextSize",
+    "name=READING_TEXT_SIZE_ACTIVITY",
+    "expNameStr=reading_text_size_activity"
+  )
+  @Iteration("exploration", "name=EXPLORATION_ACTIVITY", "expNameStr=exploration_activity")
+  @Iteration("adminAuth", "name=ADMIN_AUTH_ACTIVITY", "expNameStr=admin_auth_activity")
+  @Iteration("pinPassword", "name=PIN_PASSWORD_ACTIVITY", "expNameStr=pin_password_activity")
+  @Iteration(
+    "profilePicture",
+    "name=PROFILE_PICTURE_ACTIVITY",
+    "expNameStr=profile_picture_activity"
+  )
+  @Iteration(
+    "profileProgress",
+    "name=PROFILE_PROGRESS_ACTIVITY",
+    "expNameStr=profile_progress_activity"
+  )
+  @Iteration("resumeLesson", "name=RESUME_LESSON_ACTIVITY", "expNameStr=resume_lesson_activity")
+  @Iteration("profileEdit", "name=PROFILE_EDIT_ACTIVITY", "expNameStr=profile_edit_activity")
+  @Iteration(
+    "profileResetPin",
+    "name=PROFILE_RESET_PIN_ACTIVITY",
+    "expNameStr=profile_reset_pin_activity"
+  )
+  @Iteration(
+    "profileRename",
+    "name=PROFILE_RENAME_ACTIVITY",
+    "expNameStr=profile_rename_activity"
+  )
+  @Iteration("profileList", "name=PROFILE_LIST_ACTIVITY", "expNameStr=profile_list_activity")
+  @Iteration("story", "name=STORY_ACTIVITY", "expNameStr=story_activity")
+  @Iteration("topic", "name=TOPIC_ACTIVITY", "expNameStr=topic_activity")
+  @Iteration("revisionCard", "name=REVISION_CARD_ACTIVITY", "expNameStr=revision_card_activity")
+  @Iteration(
+    "questionPlayer",
+    "name=QUESTION_PLAYER_ACTIVITY",
+    "expNameStr=question_player_activity"
+  )
+  @Iteration("walkthrough", "name=WALKTHROUGH_ACTIVITY", "expNameStr=walkthrough_activity")
+  @Iteration(
+    "developerOptions",
+    "name=DEVELOPER_OPTIONS_ACTIVITY",
+    "expNameStr=developer_options_activity"
+  )
+  @Iteration(
+    "viewEventLogs",
+    "name=VIEW_EVENT_LOGS_ACTIVITY",
+    "expNameStr=view_event_logs_activity"
+  )
+  @Iteration(
+    "markTopicsCompleted",
+    "name=MARK_TOPICS_COMPLETED_ACTIVITY",
+    "expNameStr=mark_topics_completed_activity"
+  )
+  @Iteration(
+    "mathExpressionParser",
+    "name=MATH_EXPRESSION_PARSER_ACTIVITY",
+    "expNameStr=math_expression_parser_activity"
+  )
+  @Iteration(
+    "markChaptersCompleted",
+    "name=MARK_CHAPTERS_COMPLETED_ACTIVITY",
+    "expNameStr=mark_chapters_completed_activity"
+  )
+  @Iteration(
+    "markStoriesCompleted",
+    "name=MARK_STORIES_COMPLETED_ACTIVITY",
+    "expNameStr=mark_stories_completed_activity"
+  )
+  @Iteration(
+    "forceNetworkType",
+    "name=FORCE_NETWORK_TYPE_ACTIVITY",
+    "expNameStr=force_network_type_activity"
+  )
+  @Iteration("adminPin", "name=ADMIN_PIN_ACTIVITY", "expNameStr=admin_pin_activity")
+  @Iteration("policies", "name=POLICIES_ACTIVITY", "expNameStr=policies_activity")
+  @Iteration("unspecified", "name=SCREEN_NAME_UNSPECIFIED", "expNameStr=screen_name_unspecified")
+  @Iteration("foreground", "name=FOREGROUND_SCREEN", "expNameStr=foreground_screen")
   fun testMetricsBundle_addScreenName_verifyConversionToCorrectAnalyticalName() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
@@ -2118,16 +2213,23 @@ class EventBundleCreatorTest {
   private fun createHintUnlockedContext(hintContext: HintContext = createHintContext()) =
     createEventContext(hintContext, EventContextBuilder::setHintUnlockedContext)
 
-  private fun createAccessHintContext(hintContext: HintContext = createHintContext()) =
-    createEventContext(hintContext, EventContextBuilder::setAccessHintContext)
+  private fun createRevealHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setRevealHintContext)
+
+  private fun createViewExistingHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setViewExistingHintContext)
 
   private fun createSolutionUnlockedContext(
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
 
-  private fun createAccessSolutionContext(
+  private fun createRevealSolutionContext(
     explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setAccessSolutionContext)
+  ) = createEventContext(explorationContext, EventContextBuilder::setRevealSolutionContext)
+
+  private fun createViewExistingSolutionContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setViewExistingSolutionContext)
 
   private fun createSubmitAnswerContext(
     submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()

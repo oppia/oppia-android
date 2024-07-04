@@ -12,7 +12,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
@@ -20,6 +19,7 @@ import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.Walkthroug
 import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
 import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */
@@ -35,13 +35,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = activity.intent.getIntExtra(
-        WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, /* defaultValue= */ -1
-      )
-    }.build()
+    val profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
     viewModel.initialize(profileId)
-
     binding =
       WalkthroughTopicListFragmentBinding.inflate(
         inflater,
