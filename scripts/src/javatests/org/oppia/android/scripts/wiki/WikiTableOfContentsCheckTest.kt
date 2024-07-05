@@ -14,11 +14,14 @@ import java.io.PrintStream
 class WikiTableOfContentsCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
+  private val WIKI_TOC_CHECK_PASSED_OUTPUT_INDICATOR = "WIKI TABLE OF CONTENTS CHECK PASSED"
+  private val WIKI_TOC_CHECK_FAILED_OUTPUT_INDICATOR = "WIKI TABLE OF CONTENTS CHECK FAILED"
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
+    tempFolder.newFolder("wiki")
     System.setOut(PrintStream(outContent))
   }
 
@@ -28,9 +31,8 @@ class WikiTableOfContentsCheckTest {
   }
 
   @Test
-  fun testValidToCWithMatchingHeaders() {
-    tempFolder.newFolder("wiki")
-    val file = tempFolder.newFile("wiki/ValidToCWithMatchingHeaders.md")
+  fun testWikiTOCCheck_validWikiTOC_checkPass() {
+    val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText("""
             ## Table of Contents
             
@@ -46,7 +48,91 @@ class WikiTableOfContentsCheckTest {
 
     runScript()
 
-    assertThat(outContent.toString().trim()).contains("WIKI TABLE OF CONTENTS CHECK PASSED")
+    assertThat(outContent.toString().trim()).contains(WIKI_TOC_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testWikiTOCCheck_missingWikiTOC_returnsNoTOCFound() {
+    val file = tempFolder.newFile("wiki/wiki.md")
+    file.writeText("""          
+            - [Introduction](#introduction)
+            - [Usage](#usage)
+            
+            ## Introduction
+            Content
+            
+            ## Usage
+            Content
+        """.trimIndent())
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).contains("No Table of Contents found")
+  }
+
+  @Test
+  fun testWikiTOCCheck_mismatchWikiTOC_checkFail() {
+    val file = tempFolder.newFile("wiki/wiki.md")
+    file.writeText("""   
+            ## Table of Contents
+             
+            - [Introduction](#introductions)
+            - [Usage](#usage)
+            
+            ## Introduction
+            Content
+            
+            ## Usage
+            Content
+        """.trimIndent())
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(WIKI_TOC_CHECK_FAILED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testWikiTOCCheck_validWikiTOCWithSeparator_checkPass() {
+    val file = tempFolder.newFile("wiki/wiki.md")
+    file.writeText("""   
+            ## Table of Contents
+             
+            - [Introduction To Wiki](#introduction-to-wiki)
+            - [Usage Wiki-Content](#usage-wiki-content)
+            
+            ## Introduction
+            Content
+            
+            ## Usage
+            Content
+        """.trimIndent())
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).contains(WIKI_TOC_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testWikiTOCCheck_validWikiTOCWithSpecialCharacter_checkPass() {
+    val file = tempFolder.newFile("wiki/wiki.md")
+    file.writeText("""   
+            ## Table of Contents
+             
+            - [Introduction](#introduction?)
+            - [Usage?](#usage)
+            
+            ## Introduction
+            Content
+            
+            ## Usage
+            Content
+        """.trimIndent())
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).contains(WIKI_TOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   private fun runScript() {
