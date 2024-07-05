@@ -1,5 +1,6 @@
 package org.oppia.android.app.databinding;
 
+import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import com.google.android.material.textfield.TextInputLayout;
@@ -14,5 +15,15 @@ public final class TextInputLayoutBindingAdapters {
       String errorMessage
   ) {
     textInputLayout.setError(errorMessage);
+  }
+
+
+  /** Binding adapter for setting the text of an [AutoCompleteTextView]. */
+  @BindingAdapter({"selection", "filter"})
+  public static void setSelection(
+      @NonNull AutoCompleteTextView textView,
+      String selectedItem,
+      Boolean filter) {
+    textView.setText(selectedItem, filter);
   }
 }
