@@ -22,6 +22,7 @@ fun main(vararg args: String) {
   // Check if the wiki directory exists.
   if (wikiDir.exists() && wikiDir.isDirectory) {
     processWikiDirectory(wikiDir)
+    println("WIKI TABLE OF CONTENTS CHECK PASSED")
   } else {
     println("No contents found in the Wiki directory.")
   }
@@ -34,20 +35,53 @@ fun main(vararg args: String) {
  */
 fun processWikiDirectory(wikiDir: File) {
   wikiDir.listFiles()?.forEach { file ->
-    processWikiFile(file)
+    checkTableOfContents(file)
   }
 }
 
 /**
- * Processes the contents of a single wiki file to ensure the accuracy of the Table of Contents.
+ * Checks the contents of a single wiki file to ensure the accuracy of the Table of Contents.
  *
  * @param file the wiki file to process.
  */
-fun processWikiFile(file: File) {
-  var inTableOfContents = false
-  var skipBlankLine = false
+fun checkTableOfContents(file: File) {
+//  var inTableOfContents = false
+//  var skipBlankLine = false
 
-  file.forEachLine { line ->
+  println("File: $file")
+  val fileContents = file.readLines()
+  val tocStartIdx = fileContents.indexOfFirst {
+    it.contains("## Table of Contents")
+  }
+
+  println("start: $tocStartIdx")
+  if (tocStartIdx == -1) {
+    println("No Table of Contents found for the file $file")
+    return
+  }
+
+  /*val blankLineIdx = fileContents.subList(tocStartIdx, fileContents.size).indexOfFirst {
+    it.isBlank()
+  }
+  println("blank: $blankLineIdx")*/
+
+  // Skipping the blank line after the ## Table of Contents
+  val eOfIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
+    it.isBlank()
+  }
+  println("end: $eOfIdx")
+  if (eOfIdx == -1) throw Exception("Table of Contents didn't end with a blank line")
+
+  val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + eOfIdx + 1)
+  println("Toc line: $tocSpecificLines")
+
+  for (line in tocSpecificLines) {
+    if (line.trimStart().startsWith("- [") && !line.contains("https://")) {
+      validateTableOfContents(file, line)
+    }
+  }
+
+/*  file.forEachLine { line ->
     when {
       // Checking for Table of Contents section.
       line.trim() == "## Table of Contents" -> {
@@ -63,7 +97,7 @@ fun processWikiFile(file: File) {
       // Checking for end of Table of Contents section.
       inTableOfContents && line.isBlank() -> inTableOfContents = false
     }
-  }
+  }*/
 }
 
 /**
@@ -86,7 +120,7 @@ fun validateTableOfContents(file: File, line: String) {
   // Checks if the table of content title matches with the header link text.
   val matches = title.equals(link, ignoreCase = true)
   if (!matches) {
-    throw Exception(
+    throw Exception("\nWIKI TABLE OF CONTENTS CHECK FAILED" +
       "\nMismatch of Table of Content with headers in the File: ${file.name}. " +
         "\nThe Title: '${titleRegex.find(line)?.groupValues?.get(1)}' " +
         "doesn't match with its corresponding Link: '${linkRegex.find(line)?.groupValues?.get(1)}'."
