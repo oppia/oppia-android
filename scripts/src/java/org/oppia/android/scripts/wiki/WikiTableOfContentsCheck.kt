@@ -45,32 +45,20 @@ fun processWikiDirectory(wikiDir: File) {
  * @param file the wiki file to process.
  */
 fun checkTableOfContents(file: File) {
-//  var inTableOfContents = false
-//  var skipBlankLine = false
-
-  println("File: $file")
   val fileContents = file.readLines()
   val tocStartIdx = fileContents.indexOfFirst {
     it.contains("## Table of Contents")
   }
-
-  println("start: $tocStartIdx")
   if (tocStartIdx == -1) {
     println("No Table of Contents found for the file $file")
     return
   }
 
-  /*val blankLineIdx = fileContents.subList(tocStartIdx, fileContents.size).indexOfFirst {
-    it.isBlank()
-  }
-  println("blank: $blankLineIdx")*/
-
   // Skipping the blank line after the ## Table of Contents
   val eOfIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
     it.isBlank()
   }
-  println("end: $eOfIdx")
-  if (eOfIdx == -1) throw Exception("Table of Contents didn't end with a blank line")
+  if (eOfIdx == -1) error("Table of Contents didn't end with a blank line")
 
   val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + eOfIdx + 1)
   println("Toc line: $tocSpecificLines")
@@ -80,24 +68,6 @@ fun checkTableOfContents(file: File) {
       validateTableOfContents(file, line)
     }
   }
-
-/*  file.forEachLine { line ->
-    when {
-      // Checking for Table of Contents section.
-      line.trim() == "## Table of Contents" -> {
-        inTableOfContents = true
-        skipBlankLine = true
-      }
-      // Checking to skip the blank line immediately after the ## Table of Contents.
-      skipBlankLine && line.isBlank() -> skipBlankLine = false
-      // Validating the contents in the Table of Content.
-      inTableOfContents && line.trimStart().startsWith("- [") && !line.contains("https://") -> {
-        validateTableOfContents(file, line)
-      }
-      // Checking for end of Table of Contents section.
-      inTableOfContents && line.isBlank() -> inTableOfContents = false
-    }
-  }*/
 }
 
 /**
@@ -120,7 +90,7 @@ fun validateTableOfContents(file: File, line: String) {
   // Checks if the table of content title matches with the header link text.
   val matches = title.equals(link, ignoreCase = true)
   if (!matches) {
-    throw Exception("\nWIKI TABLE OF CONTENTS CHECK FAILED" +
+    error("\nWIKI TABLE OF CONTENTS CHECK FAILED" +
       "\nMismatch of Table of Content with headers in the File: ${file.name}. " +
         "\nThe Title: '${titleRegex.find(line)?.groupValues?.get(1)}' " +
         "doesn't match with its corresponding Link: '${linkRegex.find(line)?.groupValues?.get(1)}'."
