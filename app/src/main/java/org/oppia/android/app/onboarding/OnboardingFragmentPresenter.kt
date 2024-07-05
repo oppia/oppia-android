@@ -1,5 +1,6 @@
 package org.oppia.android.app.onboarding
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,17 +43,23 @@ class OnboardingFragmentPresenter @Inject constructor(
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
   private var acceptDefaultLanguageSelection = true
-  val hasProfileEverBeenAddedValue = ObservableField(true)
+  private lateinit var selectedLanguage: String
 
   /** Handle creation and binding of the [OnboardingFragment] layout. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, outState: Bundle?): View {
     binding = OnboardingAppLanguageSelectionFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
 
-    getSystemLanguage()
+    outState?.getString("SELECTED_LANGUAGE", "").let {
+      if (it != null) {
+        onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(it)
+      } else {
+        getSystemLanguage()
+      }
+    }
 
     getSupportedLanguages()
 
@@ -66,22 +73,25 @@ class OnboardingFragmentPresenter @Inject constructor(
         appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
 
-      val adapter = ArrayAdapter(
-        fragment.requireContext(),
-        R.layout.onboarding_language_dropdown_item,
-        R.id.onboarding_language_text_view,
-        onboardingAppLanguageViewModel.supportedAppLanguagesList
+      onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(fragment, { languagesList ->
+        val adapter = ArrayAdapter(
+          fragment.requireContext(),
+          R.layout.onboarding_language_dropdown_item,
+          R.id.onboarding_language_text_view,
+          languagesList
+        )
+        onboardingLanguageDropdown.setAdapter(adapter)
+      })
+
+      onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
+        fragment,
+        { language ->
+          selectedLanguage = language
+          onboardingLanguageDropdown.setText(selectedLanguage, false)
+        }
       )
 
       onboardingLanguageDropdown.apply {
-
-        setAdapter(adapter)
-
-        onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
-          fragment,
-          { language -> setText(language, false) }
-        )
-
         setRawInputType(EditorInfo.TYPE_NULL)
 
         onItemClickListener =
@@ -89,24 +99,14 @@ class OnboardingFragmentPresenter @Inject constructor(
             adapter.getItem(position).let {
               if (it != null) {
                 acceptDefaultLanguageSelection = false
-                updateSelectedLanguage(it)
+                selectedLanguage = it as String
+                onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(selectedLanguage)
               }
             }
           }
       }
 
-      onboardingLanguageLetsGoButton.setOnClickListener {
-        if (acceptDefaultLanguageSelection) {
-          onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
-            fragment, { updateSelectedLanguage(it) }
-          )
-        }
-
-        val intent =
-          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-        intent.decorateWithUserProfileId(profileId)
-        fragment.startActivity(intent)
-      }
+      onboardingLanguageLetsGoButton.setOnClickListener { updateSelectedLanguage(selectedLanguage) }
     }
     return binding.root
   }
@@ -114,7 +114,23 @@ class OnboardingFragmentPresenter @Inject constructor(
   private fun updateSelectedLanguage(selectedLanguage: String) {
     val oppiaLanguage = appLanguageResourceHandler.getOppiaLanguageFromDisplayName(selectedLanguage)
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(oppiaLanguage).build()
-    translationController.updateAppLanguage(profileId, selection)
+    translationController.updateAppLanguage(profileId, selection).toLiveData()
+      .observe(fragment, { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            val intent =
+              OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+            intent.decorateWithUserProfileId(profileId)
+            fragment.startActivity(intent)
+          }
+          is AsyncResult.Failure -> oppiaLogger.e(
+            "OnboardingFragment",
+            "Failed to set AppLanguageSelection",
+            result.error
+          )
+          is AsyncResult.Pending -> {}
+        }
+      })
   }
 
   private fun getSystemLanguage() {
@@ -241,5 +257,9 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun retrieveProfileId(profileList: List<Profile>) {
     profileId = profileList.firstOrNull()?.id ?: ProfileId.getDefaultInstance()
+  }
+
+  fun saveToSavedInstanceState(outState: Bundle) {
+    outState.putString("SELECTED_LANGUAGE", selectedLanguage) // todo move to proto
   }
 }
