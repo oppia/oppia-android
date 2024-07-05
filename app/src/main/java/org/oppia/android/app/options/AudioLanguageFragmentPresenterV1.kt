@@ -11,7 +11,7 @@ import org.oppia.android.databinding.AudioLanguageItemBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
-class AudioLanguageFragmentPresenter @Inject constructor(
+class AudioLanguageFragmentPresenterV1 @Inject constructor(
   private val fragment: Fragment,
   private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
