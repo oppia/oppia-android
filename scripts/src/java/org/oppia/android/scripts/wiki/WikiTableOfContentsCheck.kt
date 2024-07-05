@@ -90,8 +90,9 @@ fun validateTableOfContents(file: File, line: String) {
   // Checks if the table of content title matches with the header link text.
   val matches = title.equals(link, ignoreCase = true)
   if (!matches) {
-    error("\nWIKI TABLE OF CONTENTS CHECK FAILED" +
-      "\nMismatch of Table of Content with headers in the File: ${file.name}. " +
+    error(
+      "\nWIKI TABLE OF CONTENTS CHECK FAILED" +
+        "\nMismatch of Table of Content with headers in the File: ${file.name}. " +
         "\nThe Title: '${titleRegex.find(line)?.groupValues?.get(1)}' " +
         "doesn't match with its corresponding Link: '${linkRegex.find(line)?.groupValues?.get(1)}'."
     )

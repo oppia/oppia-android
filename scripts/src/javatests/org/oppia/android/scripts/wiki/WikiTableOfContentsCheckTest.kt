@@ -33,7 +33,8 @@ class WikiTableOfContentsCheckTest {
   @Test
   fun testWikiTOCCheck_validWikiTOC_checkPass() {
     val file = tempFolder.newFile("wiki/wiki.md")
-    file.writeText("""
+    file.writeText(
+      """
             ## Table of Contents
             
             - [Introduction](#introduction)
@@ -44,7 +45,8 @@ class WikiTableOfContentsCheckTest {
             
             ## Usage
             Content
-        """.trimIndent())
+      """.trimIndent()
+    )
 
     runScript()
 
@@ -54,7 +56,8 @@ class WikiTableOfContentsCheckTest {
   @Test
   fun testWikiTOCCheck_missingWikiTOC_returnsNoTOCFound() {
     val file = tempFolder.newFile("wiki/wiki.md")
-    file.writeText("""          
+    file.writeText(
+      """          
             - [Introduction](#introduction)
             - [Usage](#usage)
             
@@ -63,7 +66,8 @@ class WikiTableOfContentsCheckTest {
             
             ## Usage
             Content
-        """.trimIndent())
+      """.trimIndent()
+    )
 
     runScript()
 
@@ -73,7 +77,8 @@ class WikiTableOfContentsCheckTest {
   @Test
   fun testWikiTOCCheck_mismatchWikiTOC_checkFail() {
     val file = tempFolder.newFile("wiki/wiki.md")
-    file.writeText("""   
+    file.writeText(
+      """   
             ## Table of Contents
              
             - [Introduction](#introductions)
@@ -84,7 +89,8 @@ class WikiTableOfContentsCheckTest {
             
             ## Usage
             Content
-        """.trimIndent())
+      """.trimIndent()
+    )
 
     val exception = assertThrows<IllegalStateException>() {
       runScript()
@@ -96,7 +102,8 @@ class WikiTableOfContentsCheckTest {
   @Test
   fun testWikiTOCCheck_validWikiTOCWithSeparator_checkPass() {
     val file = tempFolder.newFile("wiki/wiki.md")
-    file.writeText("""   
+    file.writeText(
+      """   
             ## Table of Contents
              
             - [Introduction To Wiki](#introduction-to-wiki)
@@ -107,7 +114,8 @@ class WikiTableOfContentsCheckTest {
             
             ## Usage
             Content
-        """.trimIndent())
+      """.trimIndent()
+    )
 
     runScript()
 
@@ -117,7 +125,8 @@ class WikiTableOfContentsCheckTest {
   @Test
   fun testWikiTOCCheck_validWikiTOCWithSpecialCharacter_checkPass() {
     val file = tempFolder.newFile("wiki/wiki.md")
-    file.writeText("""   
+    file.writeText(
+      """   
             ## Table of Contents
              
             - [Introduction](#introduction?)
@@ -128,7 +137,8 @@ class WikiTableOfContentsCheckTest {
             
             ## Usage
             Content
-        """.trimIndent())
+      """.trimIndent()
+    )
 
     runScript()
 
