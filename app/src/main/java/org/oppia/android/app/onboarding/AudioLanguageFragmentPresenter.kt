@@ -57,7 +57,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       fragment,
       { selectedLanguage ->
         audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
-      })
+      }
+    )
 
     binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.audio_language_fragment_text,
@@ -68,15 +69,18 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       activity.finish()
     }
 
-    audioLanguageSelectionViewModel.availableAudioLanguages.observe(fragment, { languages ->
-      val adapter = ArrayAdapter(
-        fragment.requireContext(),
-        R.layout.onboarding_language_dropdown_item,
-        R.id.onboarding_language_text_view,
-        languages
-      )
-      binding.audioLanguageDropdownList.setAdapter(adapter)
-    })
+    audioLanguageSelectionViewModel.availableAudioLanguages.observe(
+      fragment,
+      { languages ->
+        val adapter = ArrayAdapter(
+          fragment.requireContext(),
+          R.layout.onboarding_language_dropdown_item,
+          R.id.onboarding_language_text_view,
+          languages
+        )
+        binding.audioLanguageDropdownList.setAdapter(adapter)
+      }
+    )
 
     binding.audioLanguageDropdownList.apply {
       setRawInputType(EditorInfo.TYPE_NULL)

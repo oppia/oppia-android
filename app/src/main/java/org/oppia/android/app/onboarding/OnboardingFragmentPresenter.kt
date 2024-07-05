@@ -8,7 +8,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -73,15 +72,18 @@ class OnboardingFragmentPresenter @Inject constructor(
         appLanguageResourceHandler.getStringInLocale(R.string.app_name)
       )
 
-      onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(fragment, { languagesList ->
-        val adapter = ArrayAdapter(
-          fragment.requireContext(),
-          R.layout.onboarding_language_dropdown_item,
-          R.id.onboarding_language_text_view,
-          languagesList
-        )
-        onboardingLanguageDropdown.setAdapter(adapter)
-      })
+      onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(
+        fragment,
+        { languagesList ->
+          val adapter = ArrayAdapter(
+            fragment.requireContext(),
+            R.layout.onboarding_language_dropdown_item,
+            R.id.onboarding_language_text_view,
+            languagesList
+          )
+          onboardingLanguageDropdown.setAdapter(adapter)
+        }
+      )
 
       onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
         fragment,
@@ -115,22 +117,25 @@ class OnboardingFragmentPresenter @Inject constructor(
     val oppiaLanguage = appLanguageResourceHandler.getOppiaLanguageFromDisplayName(selectedLanguage)
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(oppiaLanguage).build()
     translationController.updateAppLanguage(profileId, selection).toLiveData()
-      .observe(fragment, { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            val intent =
-              OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-            intent.decorateWithUserProfileId(profileId)
-            fragment.startActivity(intent)
+      .observe(
+        fragment,
+        { result ->
+          when (result) {
+            is AsyncResult.Success -> {
+              val intent =
+                OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+              intent.decorateWithUserProfileId(profileId)
+              fragment.startActivity(intent)
+            }
+            is AsyncResult.Failure -> oppiaLogger.e(
+              "OnboardingFragment",
+              "Failed to set AppLanguageSelection",
+              result.error
+            )
+            is AsyncResult.Pending -> {}
           }
-          is AsyncResult.Failure -> oppiaLogger.e(
-            "OnboardingFragment",
-            "Failed to set AppLanguageSelection",
-            result.error
-          )
-          is AsyncResult.Pending -> {}
         }
-      })
+      )
   }
 
   private fun getSystemLanguage() {

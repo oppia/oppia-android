@@ -36,7 +36,6 @@ class CreateProfileActivityPresenter @Inject constructor(
         val fragmentArgs =
           CreateProfileFragmentArguments.newBuilder().setProfileType(profileType).build()
         putProto(CREATE_PROFILE_FRAGMENT_ARGS, fragmentArgs)
-        println("CreateProfileActivityPresenter, bundle profileId $profileId")
         decorateWithUserProfileId(profileId)
       }
 
