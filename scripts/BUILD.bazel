@@ -242,7 +242,7 @@ kt_jvm_binary(
     testonly = True,
     main_class = "org.oppia.android.scripts.wiki.WikiTableOfContentsCheckKt",
     runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/wiki:wiki_table_of_contents_check_lib"
+        "//scripts/src/java/org/oppia/android/scripts/wiki:wiki_table_of_contents_check_lib",
     ],
 )
 
