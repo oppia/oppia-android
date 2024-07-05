@@ -56,7 +56,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
     getSupportedLanguages()
 
-    subscribeToWasProfileEverBeenAdded()
+    subscribeToGetProfileList()
 
     binding.apply {
       lifecycleOwner = fragment
@@ -79,12 +79,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
         onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
           fragment,
-          { language ->
-            setText(
-              language,
-              false
-            )
-          }
+          { language -> setText(language, false) }
         )
 
         setRawInputType(EditorInfo.TYPE_NULL)
@@ -183,12 +178,12 @@ class OnboardingFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun subscribeToWasProfileEverBeenAdded() {
-    wasProfileEverBeenAdded.observe(
+  private fun subscribeToGetProfileList() {
+    existingProfiles.observe(
       fragment,
-      {
-        if (it) {
-          retrieveNewProfileId()
+      { profilesList ->
+        if (!profilesList.isNullOrEmpty()) {
+          retrieveProfileId(profilesList)
         } else {
           createDefaultProfile()
         }
@@ -196,28 +191,26 @@ class OnboardingFragmentPresenter @Inject constructor(
     )
   }
 
-  private val wasProfileEverBeenAdded: LiveData<Boolean> by lazy {
+  private val existingProfiles: LiveData<List<Profile>> by lazy {
     Transformations.map(
-      profileManagementController.getWasProfileEverAdded().toLiveData(),
-      ::processWasProfileEverBeenAddedResult
+      profileManagementController.getProfiles().toLiveData(),
+      ::processGetProfilesResult
     )
   }
 
-  private fun processWasProfileEverBeenAddedResult(
-    wasProfileEverBeenAddedResult: AsyncResult<Boolean>
-  ): Boolean {
-    return when (wasProfileEverBeenAddedResult) {
+  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
+    val profileList = when (profilesResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ProfileChooserFragment",
-          "Failed to retrieve the information on wasProfileEverBeenAdded",
-          wasProfileEverBeenAddedResult.error
+          " OnboardingFragment", "Failed to retrieve the list of profiles", profilesResult.error
         )
-        false
+        emptyList()
       }
-      is AsyncResult.Pending -> false
-      is AsyncResult.Success -> wasProfileEverBeenAddedResult.value
+      is AsyncResult.Pending -> emptyList()
+      is AsyncResult.Success -> profilesResult.value
     }
+
+    return profileList
   }
 
   private fun createDefaultProfile() {
@@ -227,13 +220,13 @@ class OnboardingFragmentPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false
+      isAdmin = true
     ).toLiveData()
       .observe(
         fragment,
         { result ->
           when (result) {
-            is AsyncResult.Success -> retrieveNewProfileId()
+            is AsyncResult.Success -> subscribeToGetProfileList()
             is AsyncResult.Failure -> {
               oppiaLogger.e(
                 "OnboardingFragment", "Error creating the default profile", result.error
@@ -246,24 +239,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       )
   }
 
-  private fun retrieveNewProfileId() {
-    profileManagementController.getProfiles().toLiveData().observe(
-      fragment,
-      { profilesResult ->
-        when (profilesResult) {
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "OnboardingFragment",
-              "Failed to retrieve the list of profiles",
-              profilesResult.error
-            )
-          }
-          is AsyncResult.Pending -> {}
-          is AsyncResult.Success -> {
-            profileId = profilesResult.value.firstOrNull()?.id ?: ProfileId.getDefaultInstance()
-          }
-        }
-      }
-    )
+  private fun retrieveProfileId(profileList: List<Profile>) {
+    profileId = profileList.firstOrNull()?.id ?: ProfileId.getDefaultInstance()
   }
 }
