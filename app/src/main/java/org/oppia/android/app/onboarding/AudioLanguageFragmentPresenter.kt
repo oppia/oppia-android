@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -43,7 +44,20 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.lifecycleOwner = fragment
+    binding.apply {
+      lifecycleOwner = fragment
+      viewModel = audioLanguageSelectionViewModel
+    }
+
+    audioLanguageSelectionViewModel.setProfileId(profileId)
+
+    audioLanguageSelectionViewModel.setAvailableAudioLanguages()
+
+    audioLanguageSelectionViewModel.languagePreselectionLiveData.observe(
+      fragment,
+      { selectedLanguage ->
+        audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
+      })
 
     binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.audio_language_fragment_text,
@@ -54,20 +68,27 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       activity.finish()
     }
 
-    val adapter = ArrayAdapter(
-      fragment.requireContext(),
-      R.layout.onboarding_language_dropdown_item,
-      R.id.onboarding_language_text_view,
-      audioLanguageSelectionViewModel.availableAudioLanguages
-    )
+    audioLanguageSelectionViewModel.availableAudioLanguages.observe(fragment, { languages ->
+      val adapter = ArrayAdapter(
+        fragment.requireContext(),
+        R.layout.onboarding_language_dropdown_item,
+        R.id.onboarding_language_text_view,
+        languages
+      )
+      binding.audioLanguageDropdownList.setAdapter(adapter)
+    })
 
     binding.audioLanguageDropdownList.apply {
-      setAdapter(adapter)
-      setText(
-        audioLanguageSelectionViewModel.defaultLanguageSelection,
-        false
-      )
       setRawInputType(EditorInfo.TYPE_NULL)
+
+      onItemClickListener =
+        AdapterView.OnItemClickListener { _, _, position, _ ->
+          adapter.getItem(position).let {
+            if (it != null) {
+              // todo update profile audio language
+            }
+          }
+        }
     }
 
     return binding.root
