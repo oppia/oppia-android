@@ -16,12 +16,12 @@ import java.io.File
  */
 fun main(vararg args: String) {
   // Path to the repo's wiki.
-  val githubWorkspace = "${args[0]}/wiki/"
-  val wikiDirectory = File(githubWorkspace)
+  val wikiDirPath = "${args[0]}/wiki/"
+  val wikiDir = File(wikiDirPath)
 
   // Check if the wiki directory exists.
-  if (wikiDirectory.exists() && wikiDirectory.isDirectory) {
-    processWikiDirectory(wikiDirectory)
+  if (wikiDir.exists() && wikiDir.isDirectory) {
+    processWikiDirectory(wikiDir)
   } else {
     println("No contents found in the Wiki directory.")
   }
@@ -30,10 +30,10 @@ fun main(vararg args: String) {
 /**
  * Checks every file in the wiki repo.
  *
- * @param wikiDirectory the default working directory
+ * @param wikiDir the default working directory
  */
-fun processWikiDirectory(wikiDirectory: File) {
-  wikiDirectory.listFiles()?.forEach { file ->
+fun processWikiDirectory(wikiDir: File) {
+  wikiDir.listFiles()?.forEach { file ->
     processWikiFile(file)
   }
 }
