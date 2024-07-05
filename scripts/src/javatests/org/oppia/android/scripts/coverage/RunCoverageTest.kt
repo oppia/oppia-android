@@ -200,7 +200,7 @@ class RunCoverageTest {
   fun testRunCoverage_testFileExempted_noCoverage() {
     val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
 
-    val result = RunCoverage(
+    RunCoverage(
       "${tempFolder.root}",
       exemptedFilePath,
       ReportFormat.MARKDOWN,
@@ -209,7 +209,7 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    assertThat(result).isEqualTo(
+    assertThat(outContent.toString().trim()).isEqualTo(
       "This file is exempted from having a test file; skipping coverage check."
     )
   }

@@ -108,10 +108,11 @@ class RunCoverage(
       .filter { it.testFileNotRequired }
       .map { it.exemptedFilePath }
 
-    if (filePath in testFileExemptionList) {
-      println("This file is exempted from having a test file; skipping coverage check.")
-      return "Exempted from coverage check"
-    }
+    if (filePath in testFileExemptionList)
+      return "This file is exempted from having a test file; skipping coverage check.".also {
+        println(it)
+      }
+
 
     val testFilePaths = findTestFile(repoRoot, filePath)
     if (testFilePaths.isEmpty()) {
