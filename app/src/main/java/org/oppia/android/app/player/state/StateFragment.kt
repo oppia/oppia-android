@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -23,7 +24,6 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :

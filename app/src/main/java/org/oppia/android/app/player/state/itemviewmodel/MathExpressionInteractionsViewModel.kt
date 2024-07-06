@@ -12,6 +12,7 @@ import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -51,7 +52,6 @@ import org.oppia.android.util.math.toPlainText
 import org.oppia.android.util.math.toRawLatex
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
-import org.oppia.android.app.model.UserAnswerState
 
 /**
  * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math

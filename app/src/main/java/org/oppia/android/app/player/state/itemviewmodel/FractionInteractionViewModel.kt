@@ -8,6 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.FractionParsingUiError
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -18,7 +19,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.FractionParser
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel private constructor(

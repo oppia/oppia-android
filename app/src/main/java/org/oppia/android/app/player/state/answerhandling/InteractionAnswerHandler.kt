@@ -28,10 +28,9 @@ interface InteractionAnswerHandler {
     return null
   }
 
-  fun getUserAnswerState():UserAnswerState{
+  fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.getDefaultInstance()
   }
-
 }
 
 /**

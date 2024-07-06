@@ -4,13 +4,13 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts

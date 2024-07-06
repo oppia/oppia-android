@@ -13,6 +13,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -29,7 +30,6 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 /** [ViewModel] for state-fragment. */
 @FragmentScope

@@ -7,6 +7,7 @@ import androidx.databinding.ObservableField
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToNumberParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -15,7 +16,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandle
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel private constructor(

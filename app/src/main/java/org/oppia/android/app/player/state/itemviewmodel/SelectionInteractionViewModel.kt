@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
@@ -9,10 +8,12 @@ import androidx.databinding.ObservableList
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -22,8 +23,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
-import org.oppia.android.app.model.ItemSelectionAnswerState
-import org.oppia.android.app.model.UserAnswerState
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -120,8 +119,8 @@ class SelectionInteractionViewModel private constructor(
     }
   }
 
-  override fun getUserAnswerState():UserAnswerState {
-  return  UserAnswerState.newBuilder().apply {
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
       this.itemSelection = ItemSelectionAnswerState.newBuilder().addAllSelectedIndexes(
         selectedItems
       ).build()
@@ -160,7 +159,7 @@ class SelectionInteractionViewModel private constructor(
    * It checks the pending error for the current selection input, and correspondingly
    * updates the error string based on the specified error category.
    */
-  override fun checkPendingAnswerError(category:AnswerErrorCategory): String? {
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME ->

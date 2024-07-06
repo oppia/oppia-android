@@ -28,6 +28,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
@@ -93,7 +94,6 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -912,7 +912,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
     private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-   private val userAnswerState: UserAnswerState
+    private val userAnswerState: UserAnswerState
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1425,7 +1425,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].
        */
-      fun create(resourceBucketName: String, entityType: String, profileId: ProfileId,userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance()): Builder {
+      fun create(
+        resourceBucketName: String,
+        entityType: String,
+        profileId: ProfileId,
+        userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance()
+      ): Builder {
         return Builder(
           accessibilityService,
           htmlParserFactory,

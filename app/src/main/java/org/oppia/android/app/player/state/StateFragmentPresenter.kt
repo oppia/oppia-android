@@ -27,6 +27,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
@@ -54,7 +55,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -127,7 +127,7 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId,userAnswerState),
+      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, userAnswerState),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
@@ -367,7 +367,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
   ) {
-    if (stateViewModel.getCanSubmitAnswer().get()==true){
+    if (stateViewModel.getCanSubmitAnswer().get() == true) {
       recyclerViewAssembler.resetUserAnswerState()
     }
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
@@ -392,7 +392,7 @@ class StateFragmentPresenter @Inject constructor(
 
   /** Returns the [UserAnswerState] representing the user's current pending answer. */
   fun getUserAnswerState(): UserAnswerState {
-    return  stateViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
+    return stateViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
