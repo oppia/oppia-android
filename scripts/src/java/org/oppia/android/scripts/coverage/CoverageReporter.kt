@@ -8,21 +8,21 @@ import java.io.File
  * Class responsible for generating rich text coverage report.
  *
  * @param repoRoot the root directory of the repository
- * @param coverageReportList the list of coverage data proto
+ * @param coverageReport the coverage data proto
  * @param reportFormat the format in which the report will be generated
  */
 class CoverageReporter(
   private val repoRoot: String,
-  private val coverageReportList: List<CoverageReport>,
+  private val coverageReport: CoverageReport,
   private val reportFormat: ReportFormat,
 ) {
   private val computedCoverageRatio = computeCoverageRatio()
   private val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
 
-  private val filePath = coverageReportList.firstOrNull()?.filePath ?: "Unknown"
+  private val filePath = coverageReport.filePath
 
-  private val totalLinesFound = coverageReportList.getOrNull(0)?.linesFound ?: 0
-  private val totalLinesHit = coverageReportList.getOrNull(0)?.linesHit ?: 0
+  private val totalLinesFound = coverageReport.linesFound
+  private val totalLinesHit = coverageReport.linesHit
 
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
@@ -189,12 +189,11 @@ class CoverageReporter(
       """.trimIndent()
 
     val fileContent = File(repoRoot, filePath).readLines()
-    val coverageMap = coverageReportList
-      .firstOrNull()?.coveredLineList?.associateBy { it.lineNumber }
+    val coverageMap = coverageReport.coveredLineList.associateBy { it.lineNumber }
 
     fileContent.forEachIndexed { index, line ->
       val lineNumber = index + 1
-      val lineClass = when (coverageMap?.get(lineNumber)?.coverage) {
+      val lineClass = when (coverageMap.get(lineNumber)?.coverage) {
         Coverage.FULL -> "covered-line"
         Coverage.NONE -> "not-covered-line"
         else -> "uncovered-line"
@@ -218,9 +217,9 @@ class CoverageReporter(
   }
 
   private fun computeCoverageRatio(): Float {
-    val report = coverageReportList.getOrNull(0)
-    return if (report != null && report.linesFound != 0) {
-      report.linesHit.toFloat() / report.linesFound.toFloat()
+//    val report = coverageReportList.getOrNull(0)
+    return if (coverageReport.linesFound != 0) {
+      coverageReport.linesHit.toFloat() / coverageReport.linesFound.toFloat()
     } else {
       0f
     }

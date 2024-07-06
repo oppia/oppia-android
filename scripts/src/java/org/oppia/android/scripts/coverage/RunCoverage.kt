@@ -199,8 +199,8 @@ class RunCoverage(
     println("Coverage Reports: $coverageReports")
 
     /*calculate into one*/
-    val aggregateReport = calculateAggregateCoverageReport(coverageReports)
-    println("Aggregate Report: $aggregateReport")
+    val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
+    println("Aggregate Report: $aggregatedCoverageReport")
 
     /*implementation to make the multiple coverage reports into one report
     * and send that as one single source to generate text report
@@ -210,7 +210,20 @@ class RunCoverage(
     * but instead send just one coverage report and handle the aggregation here
     * */
 
-    coverageReports.takeIf { it.isNotEmpty() }?.run {
+    val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
+    val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+
+    File(reportOutputPath).apply {
+      parentFile?.mkdirs()
+      writeText(reportText)
+    }
+
+    if (File(reportOutputPath).exists()) {
+      println("\nComputed Coverage Ratio is: $computedCoverageRatio")
+      println("\nGenerated report at: $reportOutputPath\n")
+    }
+
+    /*coverageReports.takeIf { it.isNotEmpty() }?.run {
       val reporter = CoverageReporter(repoRoot, this, reportFormat)
       val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
@@ -223,7 +236,7 @@ class RunCoverage(
         println("\nComputed Coverage Ratio is: $computedCoverageRatio")
         println("\nGenerated report at: $reportOutputPath\n")
       }
-    } ?: println("No coverage reports generated.")
+    } ?: println("No coverage reports generated.")*/
 
     return reportOutputPath
   }
@@ -260,10 +273,10 @@ fun calculateAggregateCoverageReport(coverageReports: List<CoverageReport>): Cov
   val totalLinesFound = aggregatedCoveredLines.size
   val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
 
-  val aggregateTargetList = coverageReports.joinToString(separator = ", ") { it.bazelTestTarget }
+  val aggregatedTargetList = coverageReports.joinToString(separator = ", ") { it.bazelTestTarget }
 
   return CoverageReport.newBuilder()
-    .setBazelTestTarget(aggregateTargetList)
+    .setBazelTestTarget(aggregatedTargetList)
     .setFilePath(coverageReports.first().filePath)
     .setFileSha1Hash(coverageReports.first().fileSha1Hash)
     .addAllCoveredLine(aggregatedCoveredLines)
