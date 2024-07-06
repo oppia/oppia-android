@@ -66,6 +66,7 @@ class CoverageReporter(
       <style>
         body {
             font-family: Arial, sans-serif;
+            font-size: 12px;
             line-height: 1.6;
             padding: 20px;
         }
@@ -78,24 +79,20 @@ class CoverageReporter(
             padding: 8px;
             margin-left: 20px;
             text-align: left;
-            border-bottom: 1px solid #fdfdfd;
+            white-space: pre-wrap;
+            border-bottom: 1px solid #e3e3e3;
         }
         .line-number-col {
-            width: 2%;
+            width: 4%;
         }
         .line-number-row {
-            border-right: 1px dashed #000000
+            border-right: 1px solid #ababab
         }
         .source-code-col {
-            width: 98%;
+            width: 96%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
+            /*white-space: pre-wrap;*/
         }
         .covered-line {
             background-color: #c8e6c9; /* Light green */
@@ -104,7 +101,7 @@ class CoverageReporter(
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
+            background-color: #f7f7f7; /* light gray */
         }
         .coverage-summary {
           margin-bottom: 20px;
@@ -118,7 +115,6 @@ class CoverageReporter(
           text-align: center;
         }
         .summary-box {
-          background-color: #f0f0f0;
           border: 1px solid #ccc;
           border-radius: 8px;
           padding: 10px;
@@ -152,12 +148,12 @@ class CoverageReporter(
           background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
+          body {
+              padding: 10px;
+          }
+          table {
+              width: auto;
+          }
         }
       </style>
     </head>

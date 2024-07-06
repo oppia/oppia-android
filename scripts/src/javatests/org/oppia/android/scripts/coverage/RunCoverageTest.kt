@@ -620,6 +620,23 @@ class RunCoverageTest {
     val filePath = "app/main/java/com/example/TwoSum.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
+
+    val testContentShared =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(TwoSum.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
     val testContentLocal =
       """
       package com.example
@@ -633,7 +650,6 @@ class RunCoverageTest {
           fun testSumNumbers() {
               assertEquals(TwoSum.sumNumbers(0, 1), 1)
               assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
@@ -641,7 +657,7 @@ class RunCoverageTest {
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "TwoSum",
       sourceContent = sourceContent,
-      testContentShared = testContent,
+      testContentShared = testContentShared,
       testContentLocal = testContentLocal,
       subpackage = "app"
     )
@@ -656,26 +672,7 @@ class RunCoverageTest {
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  private fun getExpectedMarkdownText(filePath: String): String {
-    val markdownText =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** $filePath
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
-
-    return markdownText
-  }
-
-  private fun getExpectedHtmlText(filePath: String): String {
-    val htmlText =
+    val expectedResult =
       """
     <!DOCTYPE html>
     <html lang="en">
@@ -686,6 +683,7 @@ class RunCoverageTest {
       <style>
         body {
             font-family: Arial, sans-serif;
+            font-size: 12px;
             line-height: 1.6;
             padding: 20px;
         }
@@ -698,24 +696,20 @@ class RunCoverageTest {
             padding: 8px;
             margin-left: 20px;
             text-align: left;
-            border-bottom: 1px solid #fdfdfd;
+            white-space: pre-wrap;
+            border-bottom: 1px solid #e3e3e3;
         }
         .line-number-col {
-            width: 2%;
+            width: 4%;
         }
         .line-number-row {
-            border-right: 1px dashed #000000
+            border-right: 1px solid #ababab
         }
         .source-code-col {
-            width: 98%;
+            width: 96%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
+            /*white-space: pre-wrap;*/
         }
         .covered-line {
             background-color: #c8e6c9; /* Light green */
@@ -724,7 +718,7 @@ class RunCoverageTest {
             background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
+            background-color: #f7f7f7; /* light gray */
         }
         .coverage-summary {
           margin-bottom: 20px;
@@ -738,7 +732,6 @@ class RunCoverageTest {
           text-align: center;
         }
         .summary-box {
-          background-color: #f0f0f0;
           border: 1px solid #ccc;
           border-radius: 8px;
           padding: 10px;
@@ -772,12 +765,200 @@ class RunCoverageTest {
           background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
+          body {
+              padding: 10px;
+          }
+          table {
+              width: auto;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Coverage Report</h2>
+      <div class="summary-box">
+        <div class="summary-left">
+          <strong>Covered File:</strong> $filePath <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 50.00%</div>
+          <div><strong>Line coverage:</strong> 2 / 4 covered</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="line-number-col">Line No</th>
+            <th class="source-code-col">Source Code</th>
+          </tr>
+        </thead>
+        <tbody><tr>
+        <td class="line-number-row">   1</td>
+        <td class="uncovered-line">package com.example</td>
+    </tr><tr>
+        <td class="line-number-row">   2</td>
+        <td class="uncovered-line"></td>
+    </tr><tr>
+        <td class="line-number-row">   3</td>
+        <td class="not-covered-line">class TwoSum {</td>
+    </tr><tr>
+        <td class="line-number-row">   4</td>
+        <td class="uncovered-line">  companion object {</td>
+    </tr><tr>
+        <td class="line-number-row">   5</td>
+        <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
+    </tr><tr>
+        <td class="line-number-row">   6</td>
+        <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+    </tr><tr>
+        <td class="line-number-row">   7</td>
+        <td class="not-covered-line">          "Both numbers are zero"</td>
+    </tr><tr>
+        <td class="line-number-row">   8</td>
+        <td class="uncovered-line">      } else {</td>
+    </tr><tr>
+        <td class="line-number-row">   9</td>
+        <td class="covered-line">          a + b</td>
+    </tr><tr>
+        <td class="line-number-row">  10</td>
+        <td class="uncovered-line">      }</td>
+    </tr><tr>
+        <td class="line-number-row">  11</td>
+        <td class="uncovered-line">    }</td>
+    </tr><tr>
+        <td class="line-number-row">  12</td>
+        <td class="uncovered-line">  }</td>
+    </tr><tr>
+        <td class="line-number-row">  13</td>
+        <td class="uncovered-line">}</td>
+    </tr>    </tbody>
+      </table>
+    </body>
+    </html>
+      """.trimIndent()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  private fun getExpectedMarkdownText(filePath: String): String {
+    val markdownText =
+      """
+        ## Coverage Report
+        
+        - **Covered File:** $filePath
+        - **Coverage percentage:** 75.00% covered
+        - **Line coverage:** 3 / 4 lines covered
+      """.trimIndent()
+
+    return markdownText
+  }
+
+  private fun getExpectedHtmlText(filePath: String): String {
+    val htmlText =
+      """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Coverage Report</title>
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            margin-left: 20px;
+            text-align: left;
+            white-space: pre-wrap;
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .line-number-col {
+            width: 4%;
+        }
+        .line-number-row {
+            border-right: 1px solid #ababab
+        }
+        .source-code-col {
+            width: 96%;
+        }
+        .covered-line, .not-covered-line, .uncovered-line {
+            /*white-space: pre-wrap;*/
+        }
+        .covered-line {
+            background-color: #c8e6c9; /* Light green */
+        }
+        .not-covered-line {
+            background-color: #ffcdd2; /* Light red */
+        }
+        .uncovered-line {
+            background-color: #f7f7f7; /* light gray */
+        }
+        .coverage-summary {
+          margin-bottom: 20px;
+        }
+        h2 {
+          text-align: center;
+        }
+        ul {
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
+        }
+        .summary-box {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
+        }
+        @media screen and (max-width: 768px) {
+          body {
+              padding: 10px;
+          }
+          table {
+              width: auto;
+          }
         }
       </style>
     </head>

@@ -129,11 +129,11 @@ class RunCoverage(
     * also that's going to save me a light year :|
     * */
 
-    /*val coverageReports = testTargets.mapNotNull { testTarget ->
+    val coverageReports = testTargets.mapNotNull { testTarget ->
       runCoverageForTarget(testTarget)
-    }*/
+    }
 
-    val coverageReports = listOf(CoverageReport.newBuilder()
+    /*val coverageReports = listOf(CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
       .setFilePath("coverage/main/java/com/example/TwoSum.kt")
       .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
@@ -196,7 +196,7 @@ class RunCoverage(
         .setLinesHit(2)
         .build()
     )
-    println("Coverage Reports: $coverageReports")
+    println("Coverage Reports: $coverageReports")*/
 
     /*calculate into one*/
     val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
