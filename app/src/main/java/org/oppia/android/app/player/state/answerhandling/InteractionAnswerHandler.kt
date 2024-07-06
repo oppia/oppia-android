@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state.answerhandling
 
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 
 /**
  * A handler for interaction answers. Handlers can either require an additional user action before the answer can be
@@ -26,6 +27,11 @@ interface InteractionAnswerHandler {
   fun getPendingAnswer(): UserAnswer? {
     return null
   }
+
+  fun getUserAnswerState():UserAnswerState{
+    return UserAnswerState.getDefaultInstance()
+  }
+
 }
 
 /**

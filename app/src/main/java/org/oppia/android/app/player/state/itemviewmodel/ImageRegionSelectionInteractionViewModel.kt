@@ -20,6 +20,7 @@ import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel private constructor(
@@ -192,7 +193,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return ImageRegionSelectionInteractionViewModel(
         entityId,

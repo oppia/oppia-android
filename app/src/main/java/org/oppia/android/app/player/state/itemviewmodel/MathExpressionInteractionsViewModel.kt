@@ -51,6 +51,7 @@ import org.oppia.android.util.math.toPlainText
 import org.oppia.android.util.math.toRawLatex
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
+import org.oppia.android.app.model.UserAnswerState
 
 /**
  * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math
@@ -241,7 +242,8 @@ class MathExpressionInteractionsViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return MathExpressionInteractionsViewModel(
         interaction,

@@ -23,6 +23,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -41,6 +42,9 @@ class StateFragment :
 
     /** Arguments key for StateFragment. */
     const val STATE_FRAGMENT_ARGUMENTS_KEY = "StateFragment.arguments"
+
+    /** Arguments key for StateFragment. */
+    const val STATE_FRAGMENT_USER_ANSWER_STATE_KEY = "StateFragment.user_answer_state"
 
     /**
      * Creates a new instance of a StateFragment.
@@ -86,6 +90,12 @@ class StateFragment :
   ): View? {
     val args =
       arguments?.getProto(STATE_FRAGMENT_ARGUMENTS_KEY, StateFragmentArguments.getDefaultInstance())
+
+    val userAnswerState = savedInstanceState?.getProto(
+      STATE_FRAGMENT_USER_ANSWER_STATE_KEY,
+      UserAnswerState.getDefaultInstance()
+    ) ?: UserAnswerState.getDefaultInstance()
+
     val internalProfileId = args?.internalProfileId ?: -1
     val topicId = args?.topicId!!
     val storyId = args.storyId!!
@@ -97,7 +107,8 @@ class StateFragment :
       internalProfileId,
       topicId,
       storyId,
-      explorationId
+      explorationId,
+      userAnswerState
     )
   }
 
@@ -146,4 +157,12 @@ class StateFragment :
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putProto(
+      STATE_FRAGMENT_USER_ANSWER_STATE_KEY,
+      stateFragmentPresenter.getUserAnswerState()
+    )
+  }
 }

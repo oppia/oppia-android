@@ -19,6 +19,7 @@ import org.oppia.android.app.utility.toAccessibleAnswerString
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.toAnswerString
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
 class RatioExpressionInputInteractionViewModel private constructor(
@@ -148,7 +149,8 @@ class RatioExpressionInputInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return RatioExpressionInputInteractionViewModel(
         interaction,

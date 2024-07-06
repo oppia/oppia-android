@@ -93,6 +93,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -143,7 +144,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private var userAnswerState: UserAnswerState
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -323,8 +325,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPreviousButton,
       isSplitView.get()!!,
       writtenTranslationContext,
-      timeToStartNoticeAnimationMs
+      timeToStartNoticeAnimationMs,
+      userAnswerState
     )
+  }
+
+  fun resetUserAnswerState() {
+    userAnswerState = UserAnswerState.getDefaultInstance()
   }
 
   private fun addContentItem(
@@ -904,7 +911,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+   private val userAnswerState: UserAnswerState
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1390,7 +1398,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         backgroundCoroutineDispatcher,
         hasConversationView,
         resourceHandler,
-        translationController
+        translationController,
+        userAnswerState
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1416,7 +1425,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].
        */
-      fun create(resourceBucketName: String, entityType: String, profileId: ProfileId): Builder {
+      fun create(resourceBucketName: String, entityType: String, profileId: ProfileId,userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance()): Builder {
         return Builder(
           accessibilityService,
           htmlParserFactory,
@@ -1430,7 +1439,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           resourceHandler,
           translationController,
           multiAdapterBuilderFactory,
-          singleAdapterFactory
+          singleAdapterFactory,
+          userAnswerState
         )
       }
     }

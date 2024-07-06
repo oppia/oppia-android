@@ -29,6 +29,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 /** [ViewModel] for state-fragment. */
 @FragmentScope
@@ -148,6 +149,13 @@ class StateViewModel @Inject constructor(
         }
       }
     )
+  }
+
+  fun getUserAnswerState(
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+  ): UserAnswerState {
+    return retrieveAnswerHandler(getAnswerItemList())?.getUserAnswerState()
+      ?: UserAnswerState.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(

@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
@@ -21,6 +22,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.model.ItemSelectionAnswerState
+import org.oppia.android.app.model.UserAnswerState
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -49,7 +52,8 @@ class SelectionInteractionViewModel private constructor(
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -106,6 +110,22 @@ class SelectionInteractionViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+
+    if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
+      userAnswerState.itemSelection.selectedIndexesList.forEach { selectedIndex ->
+        selectedItems += selectedIndex
+        updateIsAnswerAvailable()
+        choiceItems[selectedIndex].isAnswerSelected.set(true)
+      }
+    }
+  }
+
+  override fun getUserAnswerState():UserAnswerState {
+  return  UserAnswerState.newBuilder().apply {
+      this.itemSelection = ItemSelectionAnswerState.newBuilder().addAllSelectedIndexes(
+        selectedItems
+      ).build()
+    }.build()
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -140,7 +160,7 @@ class SelectionInteractionViewModel private constructor(
    * It checks the pending error for the current selection input, and correspondingly
    * updates the error string based on the specified error category.
    */
-  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+  override fun checkPendingAnswerError(category:AnswerErrorCategory): String? {
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME ->
@@ -267,7 +287,8 @@ class SelectionInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return SelectionInteractionViewModel(
         entityId,
@@ -277,7 +298,8 @@ class SelectionInteractionViewModel private constructor(
         isSplitView,
         writtenTranslationContext,
         translationController,
-        resourceHandler
+        resourceHandler,
+        userAnswerState
       )
     }
   }

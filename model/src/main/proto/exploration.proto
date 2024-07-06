@@ -420,3 +420,32 @@ enum CheckpointState {
   // Progress made in the exploration is not saved.
   CHECKPOINT_UNSAVED = 3;
 }
+
+// Corresponds to a item selection answer that user has selected.
+message ItemSelectionAnswerState {
+  repeated int32 selected_indexes = 1;
+}
+
+// Corresponds to a raw representation of the current answer entered by the user
+// which is used to retain state on configuration changes
+message UserAnswerState {
+  AnswerErrorCategory answer_error_category = 1;
+  oneof answer_input_type{
+    ItemSelectionAnswerState item_Selection = 2;
+  }
+}
+
+// Represents categories of errors that can be inferred from a pending answer.
+enum AnswerErrorCategory {
+  // Corresponds to an unknown or unsupported error category.
+  ANSWER_ERROR_CATEGORY_UNSPECIFIED = 0;
+
+  // Corresponds to the pending answer having zero errors.
+  NO_ERROR = 1;
+
+  // Corresponds to errors that may be found while the user is trying to input an answer.
+  REAL_TIME = 2;
+
+  // Corresponds to errors that may be found only when a user tries to submit an answer.
+  SUBMIT_TIME = 3;
+}
