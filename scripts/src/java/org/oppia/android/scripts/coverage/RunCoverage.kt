@@ -116,16 +116,14 @@ class RunCoverage(
       }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
-    println("Test file paths: $testFilePaths")
     if (testFilePaths.isEmpty()) {
       error("No appropriate test file found for $filePath")
     }
 
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-    println("Test Targets: $testTargets")
 
     /*since I couldn't actually find any multi test target : file ones to test
-    * I am probably for now introducing mock data to test multi aggregated coverage report
+    * I am for now introducing mock data to test multi aggregated coverage report
     * also that's going to save me a light year :|
     * */
 

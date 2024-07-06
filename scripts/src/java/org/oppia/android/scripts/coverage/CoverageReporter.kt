@@ -213,7 +213,6 @@ class CoverageReporter(
   }
 
   private fun computeCoverageRatio(): Float {
-//    val report = coverageReportList.getOrNull(0)
     return if (coverageReport.linesFound != 0) {
       coverageReport.linesHit.toFloat() / coverageReport.linesFound.toFloat()
     } else {
