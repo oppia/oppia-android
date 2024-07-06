@@ -221,7 +221,7 @@ class RunCoverage(
   }
 }
 
-fun calculateAggregateCoverageReport(coverageReports: List<CoverageReport>): CoverageReport {
+private fun calculateAggregateCoverageReport(coverageReports: List<CoverageReport>): CoverageReport {
   fun aggregateCoverage(coverages: List<Coverage>): Coverage {
     return if (coverages.contains(Coverage.FULL)) Coverage.FULL
     else Coverage.NONE
