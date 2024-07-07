@@ -134,8 +134,8 @@ class RunCoverage(
       val coverageReports = deferredCoverageReports.awaitAll()
 
       /*val coverageReports = listOf(CoverageReport.newBuilder()
-      .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
-      .setFilePath("coverage/main/java/com/example/TwoSum.kt")
+      .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
+      .setFilePath("coverage/main/java/com/example/AddNums.kt")
       .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
       .addCoveredLine(
         CoveredLine.newBuilder()
@@ -165,8 +165,8 @@ class RunCoverage(
       .setLinesHit(2)
       .build(),
       CoverageReport.newBuilder()
-        .setBazelTestTarget("//coverage/test/java/com/example:TwoSumLocalTest")
-        .setFilePath("coverage/main/java/com/example/TwoSum.kt")
+        .setBazelTestTarget("//coverage/test/java/com/example:AddNumsLocalTest")
+        .setFilePath("coverage/main/java/com/example/AddNums.kt")
         .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
         .addCoveredLine(
           CoveredLine.newBuilder()

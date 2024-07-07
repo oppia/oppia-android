@@ -44,7 +44,7 @@ class RunCoverageTest {
       """
       package com.example
       
-      class TwoSum {
+      class AddNums {
         companion object {
           fun sumNumbers(a: Int, b: Int): Any {
             return if (a == 0 && b == 0) {
@@ -64,12 +64,12 @@ class RunCoverageTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumTest {
+      class AddNumsTest {
         @Test
         fun testSumNumbers() {
-          assertEquals(TwoSum.sumNumbers(0, 1), 1)
-          assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-          assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
         }
       }
       """.trimIndent()
@@ -117,12 +117,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -144,12 +144,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_ignoreCaseHTMLArgument_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -171,12 +171,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_reorderedArguments_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -216,12 +216,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -245,12 +245,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -274,12 +274,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "scripts/java/com/example/TwoSum.kt"
+    val filePath = "scripts/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "scripts/java/com/example",
@@ -303,12 +303,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_appTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "app/main/java/com/example",
@@ -332,7 +332,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_localTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     val testContentLocal =
@@ -342,20 +342,20 @@ class RunCoverageTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumLocalTest {
+      class AddNumsLocalTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumLocalTest",
+      filename = "AddNums",
+      testFilename = "AddNumsLocalTest",
       sourceContent = sourceContent,
       testContent = testContentLocal,
       sourceSubpackage = "app/main/java/com/example",
@@ -379,12 +379,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sharedTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "app/main/java/com/example",
@@ -408,7 +408,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     val testContentLocal =
@@ -418,19 +418,19 @@ class RunCoverageTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumLocalTest {
+      class AddNumsLocalTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
-      filename = "TwoSum",
+      filename = "AddNums",
       sourceContent = sourceContent,
       testContentShared = testContent,
       testContentLocal = testContentLocal,
@@ -454,12 +454,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sampleTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -483,12 +483,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_scriptTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "scripts/java/com/example/TwoSum.kt"
+    val filePath = "scripts/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "scripts/java/com/example",
@@ -512,12 +512,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_appTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "app/main/java/com/example",
@@ -541,7 +541,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_localTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     val testContentLocal =
@@ -551,20 +551,20 @@ class RunCoverageTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumLocalTest {
+      class AddNumsLocalTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumLocalTest",
+      filename = "AddNums",
+      testFilename = "AddNumsLocalTest",
       sourceContent = sourceContent,
       testContent = testContentLocal,
       sourceSubpackage = "app/main/java/com/example",
@@ -588,12 +588,12 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sharedTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "app/main/java/com/example",
@@ -617,7 +617,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+    val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -628,11 +628,11 @@ class RunCoverageTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumTest {
+      class AddNumsTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)       
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
           }
       }
       """.trimIndent()
@@ -644,18 +644,18 @@ class RunCoverageTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumLocalTest {
+      class AddNumsLocalTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
-      filename = "TwoSum",
+      filename = "AddNums",
       sourceContent = sourceContent,
       testContentShared = testContentShared,
       testContentLocal = testContentLocal,
@@ -664,7 +664,7 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      "app/main/java/com/example/AddNums.kt",
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
@@ -806,7 +806,7 @@ class RunCoverageTest {
         <td class="uncovered-line"></td>
     </tr><tr>
         <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
+        <td class="not-covered-line">class AddNums {</td>
     </tr><tr>
         <td class="line-number-row">   4</td>
         <td class="uncovered-line">  companion object {</td>
@@ -994,7 +994,7 @@ class RunCoverageTest {
         <td class="uncovered-line"></td>
     </tr><tr>
         <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
+        <td class="not-covered-line">class AddNums {</td>
     </tr><tr>
         <td class="line-number-row">   4</td>
         <td class="uncovered-line">  companion object {</td>

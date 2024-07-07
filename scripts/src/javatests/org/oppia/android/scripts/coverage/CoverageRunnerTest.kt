@@ -72,7 +72,7 @@ class CoverageRunnerTest {
       """
       package com.example
       
-      class TwoSum {
+      class AddNums {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
@@ -93,20 +93,20 @@ class CoverageRunnerTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumTest {
+      class AddNumsTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -115,13 +115,13 @@ class CoverageRunnerTest {
 
     val result = runBlocking {
       coverageRunner.runWithCoverageAsync(
-        "//coverage/test/java/com/example:TwoSumTest"
+        "//coverage/test/java/com/example:AddNumsTest"
       ).await()
     }
 
     val expectedResult = CoverageReport.newBuilder()
-      .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
-      .setFilePath("coverage/main/java/com/example/TwoSum.kt")
+      .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
+      .setFilePath("coverage/main/java/com/example/AddNums.kt")
       .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
       .addCoveredLine(
         CoveredLine.newBuilder()
