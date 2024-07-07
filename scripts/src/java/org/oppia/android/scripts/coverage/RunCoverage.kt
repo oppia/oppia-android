@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.coverage
 
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.BazelClient
