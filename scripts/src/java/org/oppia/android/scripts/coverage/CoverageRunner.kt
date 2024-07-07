@@ -3,7 +3,6 @@ package org.oppia.android.scripts.coverage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -39,9 +38,6 @@ class CoverageRunner(
     bazelTestTarget: String
   ): Deferred<CoverageReport> {
     return CoroutineScope(scriptBgDispatcher).async {
-      println("Delaying 10 seconds...")
-      delay(10000)
-      println("Delayed 10 seconds...")
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
         ?: error("Failed to retrieve coverage result for $bazelTestTarget")
 

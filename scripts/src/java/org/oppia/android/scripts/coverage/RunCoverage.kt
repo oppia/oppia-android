@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.coverage
 
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.*
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -112,9 +112,10 @@ class RunCoverage(
       .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList)
-      return@runBlocking "This file is exempted from having a test file; skipping coverage check.".also {
-        println(it)
-      }
+      return@runBlocking "This file is exempted from having a test file; skipping coverage check."
+        .also {
+          println(it)
+        }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
     if (testFilePaths.isEmpty()) {
@@ -123,23 +124,12 @@ class RunCoverage(
 
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    // remove after testing with static data
-    println("Test targets acquired: $testTargets")
-
-    val staticTestTargets = listOf(
-      "//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest",
-      "//utility/src/test/java/org/oppia/android/util/math:FloatExtensionsTest")
-
     /*since I couldn't actually find any multi test target : file ones to test
     * I am for now introducing mock data to test multi aggregated coverage report
     * also that's going to save me a light year :|
     * */
 
-    /*val coverageReports = staticTestTargets.mapNotNull { testTarget ->
-      runCoverageForTarget(testTarget)
-    }*/
-
-    val deferredCoverageReports = staticTestTargets.map { testTarget ->
+    val deferredCoverageReports = testTargets.map { testTarget ->
       runCoverageForTarget(testTarget)
     }
 
@@ -228,8 +218,7 @@ class RunCoverage(
 
   private fun runCoverageForTarget(testTarget: String): Deferred<CoverageReport> {
     return CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-        .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
-//        .await()
+      .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
   }
 }
 
