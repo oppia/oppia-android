@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
  *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt format=HTML
  * Example with custom process timeout:
  *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=10
+ *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=15
  *
  */
 fun main(vararg args: String) {
@@ -106,37 +106,34 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): String = runBlocking {
+  fun execute() = runBlocking {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
       .map { it.exemptedFilePath }
 
-    if (filePath in testFileExemptionList)
-      return@runBlocking "This file is exempted from having a test file; skipping coverage check."
-        .also {
-          println(it)
-        }
+    if (filePath in testFileExemptionList) {
+      println("This file is exempted from having a test file; skipping coverage check.")
+    } else {
+      val testFilePaths = findTestFile(repoRoot, filePath)
+      if (testFilePaths.isEmpty()) {
+        error("No appropriate test file found for $filePath")
+      }
 
-    val testFilePaths = findTestFile(repoRoot, filePath)
-    if (testFilePaths.isEmpty()) {
-      error("No appropriate test file found for $filePath")
-    }
+      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-
-    /*since I couldn't actually find any multi test target : file ones to test
+      /*since I couldn't actually find any multi test target : file ones to test
     * I am for now introducing mock data to test multi aggregated coverage report
     * also that's going to save me a light year :|
     * */
 
-    val deferredCoverageReports = testTargets.map { testTarget ->
-      runCoverageForTarget(testTarget)
-    }
+      val deferredCoverageReports = testTargets.map { testTarget ->
+        runCoverageForTarget(testTarget)
+      }
 
-    val coverageReports = deferredCoverageReports.awaitAll()
+      val coverageReports = deferredCoverageReports.awaitAll()
 
-    /*val coverageReports = listOf(CoverageReport.newBuilder()
+      /*val coverageReports = listOf(CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
       .setFilePath("coverage/main/java/com/example/TwoSum.kt")
       .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
@@ -200,21 +197,22 @@ class RunCoverage(
         .build()
     )*/
 
-    val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
-    val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
-    val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+      val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
+      val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
+      val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
-    File(reportOutputPath).apply {
-      parentFile?.mkdirs()
-      writeText(reportText)
+      File(reportOutputPath).apply {
+        parentFile?.mkdirs()
+        writeText(reportText)
+      }
+
+      if (File(reportOutputPath).exists()) {
+        println("\nComputed Coverage Ratio is: $computedCoverageRatio")
+        println("\nGenerated report at: $reportOutputPath\n")
+      }
+
+      println("COVERAGE ANALYSIS COMPLETED.")
     }
-
-    if (File(reportOutputPath).exists()) {
-      println("\nComputed Coverage Ratio is: $computedCoverageRatio")
-      println("\nGenerated report at: $reportOutputPath\n")
-    }
-
-    return@runBlocking "Coverage analysis completed."
   }
 
   private fun runCoverageForTarget(testTarget: String): Deferred<CoverageReport> {
