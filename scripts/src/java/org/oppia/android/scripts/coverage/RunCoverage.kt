@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.coverage
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -104,14 +105,14 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): String {
+  fun execute(): String = runBlocking {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
       .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList)
-      return "This file is exempted from having a test file; skipping coverage check.".also {
+      return@runBlocking "This file is exempted from having a test file; skipping coverage check.".also {
         println(it)
       }
 
@@ -122,14 +123,27 @@ class RunCoverage(
 
     val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
+    // remove after testing with static data
+    println("Test targets acquired: $testTargets")
+
+    val staticTestTargets = listOf(
+      "//utility/src/test/java/org/oppia/android/util/parser/math:MathModelTest",
+      "//utility/src/test/java/org/oppia/android/util/math:FloatExtensionsTest")
+
     /*since I couldn't actually find any multi test target : file ones to test
     * I am for now introducing mock data to test multi aggregated coverage report
     * also that's going to save me a light year :|
     * */
 
-    val coverageReports = testTargets.mapNotNull { testTarget ->
+    /*val coverageReports = staticTestTargets.mapNotNull { testTarget ->
+      runCoverageForTarget(testTarget)
+    }*/
+
+    val deferredCoverageReports = staticTestTargets.map { testTarget ->
       runCoverageForTarget(testTarget)
     }
+
+    val coverageReports = deferredCoverageReports.awaitAll()
 
     /*val coverageReports = listOf(CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:TwoSumTest")
@@ -209,15 +223,13 @@ class RunCoverage(
       println("\nGenerated report at: $reportOutputPath\n")
     }
 
-    return reportOutputPath
+    return@runBlocking "Coverage analysis completed."
   }
 
-  private fun runCoverageForTarget(testTarget: String): CoverageReport {
-    return runBlocking {
-      CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+  private fun runCoverageForTarget(testTarget: String): Deferred<CoverageReport> {
+    return CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
         .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
-        .await()
-    }
+//        .await()
   }
 }
 
@@ -230,10 +242,8 @@ private fun calculateAggregateCoverageReport(
   }
 
   val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
-  println("All covered lines: $allCoveredLines")
 
   val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-  println("Grouped covered lines: $groupedCoveredLines")
 
   val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
     CoveredLine.newBuilder()
@@ -241,7 +251,6 @@ private fun calculateAggregateCoverageReport(
       .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
       .build()
   }
-  println("Aggregated Covered lines: $aggregatedCoveredLines")
 
   val totalLinesFound = aggregatedCoveredLines.size
   val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }

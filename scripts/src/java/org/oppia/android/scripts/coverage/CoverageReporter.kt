@@ -32,7 +32,7 @@ class CoverageReporter(
    *     and the second value is the generated report text
    */
   fun generateRichTextReport(): Pair<Float, String> {
-    println("report format: $reportFormat")
+    println("Report format: $reportFormat")
     return when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport()
       ReportFormat.HTML -> generateHtmlReport()
