@@ -122,7 +122,7 @@ class CoverageRunnerTest {
     val expectedResult = CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
       .setFilePath("coverage/main/java/com/example/AddNums.kt")
-      .setFileSha1Hash("1020b8f405555b3f4537fd07b912d3fb9ffa3354")
+      .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
       .addCoveredLine(
         CoveredLine.newBuilder()
           .setLineNumber(3)
