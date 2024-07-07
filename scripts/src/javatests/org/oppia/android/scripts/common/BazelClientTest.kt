@@ -429,7 +429,9 @@ class BazelClientTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:AddNumsTest")
+    val result = bazelClient.runCoverageForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
     val expectedResult = listOf(
       "SF:coverage/main/java/com/example/AddNums.kt",
       "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
