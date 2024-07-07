@@ -37,6 +37,24 @@ import java.util.concurrent.TimeUnit
 fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
+  println("FilePath = $filePath")
+
+  val filePaths = listOf(
+    "utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt",
+    "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt",
+    "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt"
+  )
+
+  /*Pseudo
+  * filePaths -> filePath {
+  *   testFilePaths
+  *   testTargets
+  *   runCoverageForTarget()
+  * }.awaitAll()
+  *
+  * Final Result: map -> file : result
+  * sample: [valid_file1.kt: ".md/text_report", exempted_file2.kt: "exempted"]
+  * */
 
   val format = args.find { it.startsWith("format=", ignoreCase = true) }
     ?.substringAfter("=")
@@ -65,7 +83,7 @@ fun main(vararg args: String) {
 
     RunCoverage(
       repoRoot,
-      filePath,
+      filePaths,
       reportFormat,
       reportOutputPath,
       commandExecutor,
@@ -84,7 +102,7 @@ fun main(vararg args: String) {
  */
 class RunCoverage(
   private val repoRoot: String,
-  private val filePath: String,
+  private val filePaths: List<String>,
   private val reportFormat: ReportFormat,
   private val reportOutputPath: String,
   private val commandExecutor: CommandExecutor,
@@ -107,12 +125,18 @@ class RunCoverage(
    *     the file is exempted from having a test file, an empty list is returned
    */
   fun execute() = runBlocking {
-    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
+    /*val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
-      .map { it.exemptedFilePath }
+      .map { it.exemptedFilePath }*/
 
-    if (filePath in testFileExemptionList) {
+    val coverageResults = filePaths.map { filePath ->
+      runCoverageForFile(filePath)
+    }
+
+    println("Coverage Results: $coverageResults")
+
+    /*if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file; skipping coverage check.")
     } else {
       val testFilePaths = findTestFile(repoRoot, filePath)
@@ -143,6 +167,47 @@ class RunCoverage(
       }
 
       println("COVERAGE ANALYSIS COMPLETED.")
+    }*/
+  }
+
+  private suspend fun runCoverageForFile(filePath: String): String {
+    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
+
+    if (filePath in testFileExemptionList) {
+      return ("This file is exempted from having a test file; skipping coverage check.")
+    } else {
+      val testFilePaths = findTestFile(repoRoot, filePath)
+      if (testFilePaths.isEmpty()) {
+        error("No appropriate test file found for $filePath")
+      }
+
+      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+
+      val deferredCoverageReports = testTargets.map { testTarget ->
+        runCoverageForTarget(testTarget)
+      }
+
+      val coverageReports = deferredCoverageReports.awaitAll()
+
+      val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
+      val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
+      val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+
+      File(reportOutputPath).apply {
+        parentFile?.mkdirs()
+        writeText(reportText)
+      }
+
+      if (File(reportOutputPath).exists()) {
+        println("\nComputed Coverage Ratio is: $computedCoverageRatio")
+        println("\nGenerated report at: $reportOutputPath\n")
+      }
+
+      println("COVERAGE ANALYSIS COMPLETED.")
+      return reportText
     }
   }
 
