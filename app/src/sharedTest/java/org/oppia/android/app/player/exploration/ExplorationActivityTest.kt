@@ -251,27 +251,6 @@ class ExplorationActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun getApplicationDependencies(
-    internalProfileId: Int,
-    classroomId: String,
-    topicId: String,
-    storyId: String,
-    explorationId: String
-  ) {
-    launch(ExplorationInjectionActivity::class.java).use {
-      it.onActivity { activity ->
-        explorationDataController = activity.explorationDataController
-        explorationDataController.startPlayingNewExploration(
-          internalProfileId,
-          classroomId,
-          topicId,
-          storyId,
-          explorationId
-        )
-      }
-    }
-  }
-
   // TODO(#388): Fill in remaining tests for this activity.
   @get:Rule
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
