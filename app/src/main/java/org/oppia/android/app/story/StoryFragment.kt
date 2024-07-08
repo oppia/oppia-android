@@ -60,7 +60,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     savedInstanceState: Bundle?
   ): View? {
     val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to StoryFragment"
+      "Expected arguments to be passed to StoryFragment."
     }
     val args =
       arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
@@ -68,15 +68,15 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     val internalProfileId = arguments.extractCurrentUserProfileId().internalId
     val classroomId =
       checkNotNull(args.classroomId) {
-        "Expected classroomId to be passed to StoryFragment"
+        "Expected classroomId to be passed to StoryFragment."
       }
     val topicId =
       checkNotNull(args.topicId) {
-        "Expected topicId to be passed to StoryFragment"
+        "Expected topicId to be passed to StoryFragment."
       }
     val storyId =
       checkNotNull(args.storyId) {
-        "Expected storyId to be passed to StoryFragment"
+        "Expected storyId to be passed to StoryFragment."
       }
     return storyFragmentPresenter.handleCreateView(
       inflater,
