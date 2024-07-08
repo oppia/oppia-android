@@ -201,7 +201,7 @@ message ResumeLessonFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
   ProfileId profile_id = 1;
 
-  // The ID of the topic to which the opening exploration belongs.
+  // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 7;
 
   // The ID of the topic to which the opening exploration belongs.
@@ -342,7 +342,7 @@ message SurveyActivityParams {
 
 // Represents the parameters needed to create TopicActivity.
 message TopicActivityParams {
-  // The ID of the classroom to be loaded.
+  // The ID of the classroom to which the topic to be loaded belongs.
   string classroom_id = 3;
 
   // The ID of the topic to be loaded.
@@ -354,7 +354,7 @@ message TopicActivityParams {
 
 // Arguments required when creating a TopicFragment.
 message TopicFragmentArguments {
-  // The ID of the classroom to be loaded.
+  // The ID of the classroom to which the topic to be loaded belongs.
   string classroom_id = 3;
 
   // The ID of the topic to be loaded.
