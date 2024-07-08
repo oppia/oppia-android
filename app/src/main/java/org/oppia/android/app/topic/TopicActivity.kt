@@ -50,14 +50,10 @@ class TopicActivity :
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
     )
-    classroomId = checkNotNull(
-      args?.classroomId
-    ) {
+    classroomId = checkNotNull(args?.classroomId) {
       "Expected classroom ID to be included in intent for TopicActivity."
     }
-    topicId = checkNotNull(
-      args?.topicId
-    ) {
+    topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = args?.storyId
