@@ -5,13 +5,13 @@ import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToRatioParser
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -90,6 +90,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
           answerText.toString(),
           numberOfTerms = numberOfTerms
         ).getErrorMessageFromStringRes(resourceHandler)
+      else -> null
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError

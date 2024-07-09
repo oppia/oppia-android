@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.MathEquation
@@ -14,7 +15,6 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -162,6 +162,7 @@ class MathExpressionInteractionsViewModel private constructor(
           answerText.toString(), allowedVariables, resourceHandler
         )
       }
+      else -> { null }
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError

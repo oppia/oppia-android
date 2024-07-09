@@ -6,6 +6,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
@@ -15,7 +16,6 @@ import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -63,6 +63,9 @@ class SelectionInteractionViewModel private constructor(
       ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
       ?: listOf()
   }
+
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
+
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
   }
@@ -119,6 +122,8 @@ class SelectionInteractionViewModel private constructor(
       updateSelectionText()
       updateIsAnswerAvailable()
     }
+
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   override fun getUserAnswerState(): UserAnswerState {
@@ -126,6 +131,7 @@ class SelectionInteractionViewModel private constructor(
       this.itemSelection = ItemSelectionAnswerState.newBuilder().addAllSelectedIndexes(
         selectedItems
       ).build()
+      this.answerErrorCategory = answerErrorCetegory
     }.build()
   }
 
@@ -162,10 +168,14 @@ class SelectionInteractionViewModel private constructor(
    * updates the error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     pendingAnswerError = when (category) {
-      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.REAL_TIME -> {
+        null
+      }
       AnswerErrorCategory.SUBMIT_TIME ->
         getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
+      else -> null
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
