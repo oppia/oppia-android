@@ -14,6 +14,7 @@ import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
+/** Argument key for [CreateProfileActivity] intent parameters. */
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 
 /** The presenter for [OnboardingProfileTypeFragment]. */
