@@ -6,8 +6,6 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.ClassroomIdList
-import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.EphemeralChapterSummary
@@ -32,7 +30,7 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
-import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -108,7 +106,8 @@ class TopicController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val classroomController: ClassroomController,
 ) {
 
   /**
@@ -562,12 +561,13 @@ class TopicController @Inject constructor(
       contentId = "description"
       html = topicData.getStringFromObject("topic_description")
     }.build()
+    val classroomId = classroomController.getClassroomIdByTopicId(topicId)
     // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
       .setDescription(topicDescription)
-      .setClassroomId(getClassroomIdByTopicId(topicId))
+      .setClassroomId(classroomId)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
@@ -916,105 +916,6 @@ class TopicController @Inject constructor(
         )
     }.build()
   }
-
-  private fun getClassroomIdByTopicId(topicId: String): String {
-    var classroomId = TEST_CLASSROOM_ID_0
-    loadClassrooms().forEach {
-      if (it.topicPrerequisitesMap.keys.contains(topicId)) {
-        classroomId = it.id
-      }
-    }
-    return classroomId
-  }
-
-  // TODO(#5344): Remove this in favor of per-classroom data handling.
-  private fun loadClassrooms(): List<ClassroomRecord> {
-    return if (loadLessonProtosFromAssets) {
-      assetRepository.loadProtoFromLocalAssets(
-        assetName = "classrooms",
-        baseMessage = ClassroomIdList.getDefaultInstance()
-      ).classroomIdsList.map { classroomId ->
-        loadClassroomById(classroomId)
-      }
-    } else loadClassroomsFromJson()
-  }
-
-  // TODO(#5344): Remove this in favor of per-classroom data handling.
-  private fun loadClassroomsFromJson(): List<ClassroomRecord> {
-    // Load the classrooms.json file.
-    val classroomIdsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
-    checkNotNull(classroomIdsObj) { "Failed to load classrooms.json." }
-    val classroomIds = classroomIdsObj.optJSONArray("classroom_id_list")
-    checkNotNull(classroomIds) { "classrooms.json is missing classroom IDs." }
-
-    // Initialize a list to store the [ClassroomRecord]s.
-    val classroomRecords = mutableListOf<ClassroomRecord>()
-
-    // Iterate over all classroomIds and load each classroom's JSON.
-    for (i in 0 until classroomIds.length()) {
-      val classroomId = checkNotNull(classroomIds.optString(i)) {
-        "Expected non-null classroom ID at index $i."
-      }
-      val classroomRecord = loadClassroomById(classroomId)
-      classroomRecords.add(classroomRecord)
-    }
-
-    return classroomRecords
-  }
-
-  // TODO(#5344): Move this to classroom controller.
-  private fun loadClassroomById(classroomId: String): ClassroomRecord {
-    return if (loadLessonProtosFromAssets) {
-      assetRepository.tryLoadProtoFromLocalAssets(
-        assetName = classroomId,
-        defaultMessage = ClassroomRecord.getDefaultInstance()
-      ) ?: ClassroomRecord.getDefaultInstance()
-    } else loadClassroomByIdFromJson(classroomId)
-  }
-
-  // TODO(#5344): Remove this in favor of per-classroom data handling.
-  private fun loadClassroomByIdFromJson(classroomId: String): ClassroomRecord {
-    // Load the classroom obj.
-    val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
-    checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
-
-    val classroomTitle = classroomObj.getJSONObject("classroom_title")
-
-    // Load the topic prerequisite map.
-    val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
-      "Expected classroom to have non-null topic_prerequisites."
-    }
-    val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
-      val topicIdArray = checkNotNull(topicPrereqsObj.optJSONArray(topicId)) {
-        "Expected topic $topicId to have a non-null string list."
-      }
-      return@associateWith List(topicIdArray.length()) { index ->
-        checkNotNull(topicIdArray.optString(index)) {
-          "Expected topic $topicId to have non-null string at index $index."
-        }
-      }
-    }
-    return ClassroomRecord.newBuilder().apply {
-      id = checkNotNull(classroomObj.optString("classroom_id")) {
-        "Expected classroom to have ID."
-      }
-      translatableTitle = SubtitledHtml.newBuilder().apply {
-        contentId = classroomTitle.getStringFromObject("content_id")
-        html = classroomTitle.getStringFromObject("html")
-      }.build()
-      putAllTopicPrerequisites(
-        topicPrereqs.mapValues { (_, topicIds) ->
-          ClassroomRecord.TopicIdList.newBuilder().apply {
-            addAllTopicIds(topicIds)
-          }.build()
-        }
-      )
-    }.build()
-  }
-
-  // TODO(#5344): Remove this in favor of per-classroom data handling.
-  private fun loadCombinedClassroomsTopicIdList(): List<String> =
-    loadClassrooms().flatMap { it.topicPrerequisitesMap.keys.toList() }
 
   private companion object {
     private fun JSONObject.getRemovableOptionalString(name: String) =
