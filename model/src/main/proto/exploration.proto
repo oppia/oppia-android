@@ -437,8 +437,8 @@ message UserAnswerState {
 
 // Represents categories of errors that can be inferred from a pending answer.
 enum AnswerErrorCategory {
-  // Corresponds to the pending answer having zero errors.
-  NO_ERROR = 0;
+  // Corresponds to the pending answer having no error.
+  NO_ERROR_UNSPECIFIED = 0;
 
   // Corresponds to errors that may be found while the user is trying to input an answer.
   REAL_TIME = 1;
