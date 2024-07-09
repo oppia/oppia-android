@@ -14,6 +14,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.MessageDigest
+import java.time.LocalDateTime
 
 /**
  * Class responsible for running coverage analysis asynchronously.
@@ -42,8 +43,12 @@ class CoverageRunner(
       println("Delaying 10 seconds...")
       delay(10000)
       println("Delayed 10 seconds...")
+      println("$bazelTestTarget start: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: error("Failed to retrieve coverage result for $bazelTestTarget")
+        ?: return@async generateFailedCoverageReport()
+
+      println("$bazelTestTarget end: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
+      println("Coverage Result done of: $bazelTestTarget")
 
       coverageDataFileLines(coverageResult, bazelTestTarget)
     }
@@ -64,13 +69,11 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) throw IllegalArgumentException(
-      "Coverage data not found for the file: $extractedFileName"
-    )
+    if (sfStartIdx == -1) return generateFailedCoverageReport()
     val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
       it.startsWith("end_of_record")
     }
-    if (eofIdx == -1) throw IllegalArgumentException("End of record not found")
+    if (eofIdx == -1) return generateFailedCoverageReport()
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
 
@@ -83,8 +86,6 @@ class CoverageRunner(
     }
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
-      ?: throw IllegalArgumentException("File path not found")
-
     val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
     val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0
 
@@ -105,8 +106,15 @@ class CoverageRunner(
       .addAllCoveredLine(coveredLines)
       .setLinesFound(linesFound)
       .setLinesHit(linesHit)
+      .setIsGenerated(true)
       .build()
   }
+}
+
+private fun generateFailedCoverageReport(): CoverageReport {
+  return CoverageReport.newBuilder()
+    .setIsGenerated(false)
+    .build()
 }
 
 private fun extractTargetName(bazelTestTarget: String): String {

@@ -40,12 +40,19 @@ fun main(vararg args: String) {
   val filePath = args[1]
   println("FilePath = $filePath")
 
+  //TODO: once the file list is received (git client), it need to be filtered to just have
+  // .kt files and also not Test.kt files
   val filePaths = listOf(
     "utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt",
     "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt",
-    "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt"
+    "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt",
+    "utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt",
+    "utility/src/main/java/org/oppia/android/util/math/RealExtensions.kt",
+//    "utility/src/main/java/org/oppia/android/util/logging/ConsoleLogger.kt",
+//    "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthWrapperImpl.kt"
   )
 
+  // TODO: (remove)
   /*Pseudo
   * filePaths -> filePath {
   *   testFilePaths
@@ -138,6 +145,7 @@ class RunCoverage(
     }.awaitAll()
 
     println("Coverage Results: $coverageResults")
+    println("COVERAGE ANALYSIS COMPLETED.")
 
     /*if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file; skipping coverage check.")
@@ -174,17 +182,23 @@ class RunCoverage(
   }
 
   private suspend fun runCoverageForFile(filePath: String): String {
+    // TODO: move this above as a common list
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
       .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList) {
-      return ("This file is exempted from having a test file; skipping coverage check.")
+      return "The file: $filePath is exempted from having a test file; skipping coverage check.".also {
+        println(it)
+      }
     } else {
       val testFilePaths = findTestFile(repoRoot, filePath)
+
       if (testFilePaths.isEmpty()) {
-        error("No appropriate test file found for $filePath")
+        return "No appropriate test file found for $filePath".also {
+          println(it)
+        }
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
@@ -193,10 +207,12 @@ class RunCoverage(
         runCoverageForTarget(testTarget)
       }
 
-      // change to val
+      // TODO: change to val
+      println("Getting coverage report of $filePath")
       var coverageReports = deferredCoverageReports.awaitAll()
+      println("Got coverage report of $filePath")
 
-      // for testing many : 1 targets
+      // TODO: (remove) this is for testing many : 1 targets
       if (filePath == "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt") {
         coverageReports = listOf(
           CoverageReport.newBuilder()
@@ -229,6 +245,7 @@ class RunCoverage(
             )
             .setLinesFound(4)
             .setLinesHit(2)
+            .setIsGenerated(true)
             .build(),
           CoverageReport.newBuilder()
             .setBazelTestTarget("//coverage/test/java/com/example:AddNumsLocalTest")
@@ -260,13 +277,34 @@ class RunCoverage(
             )
             .setLinesFound(4)
             .setLinesHit(2)
+            .setIsGenerated(true)
             .build()
         )
+      }
+
+      // Check Coverage Reports are a success or fail case based on their retrieval
+      // if coverageReports.get(0) -> .isGenerated == false ->
+      // return "Coverage data not found for the file: $filePath"
+//      println("Coverage Report is Generated: ${coverageReports.firstOrNull()}")
+      coverageReports.firstOrNull()?.let {
+        if (!it.isGenerated) {
+          return "Failed to generate coverage report for the file: $filePath.".also {
+            println(it)
+          }
+        }
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
       val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+
+      // TODO: (remove)
+      // Use this computed Coverage Ratio to set / check the minimum threshold met or not
+      // even if it fails for one of the files, make a one time change to the MIN THRESHOLD
+      // and fail the case
+      // Oh.. also this needs to check with testExemption to make sure it if also below the
+      // override min coverage threshold
+      // (make it clear on the md report that the file is exempted for coverage threshold)
 
       File(reportOutputPath).apply {
         parentFile?.mkdirs()
@@ -278,11 +316,11 @@ class RunCoverage(
         println("\nGenerated report at: $reportOutputPath\n")
       }
 
-      println("COVERAGE ANALYSIS COMPLETED.")
       return reportText
     }
   }
 
+  // TODO: (remove) remove if redundant
   private fun runCoverageForTarget(testTarget: String): Deferred<CoverageReport> {
     return CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
       .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
@@ -320,6 +358,7 @@ private fun calculateAggregateCoverageReport(
     .addAllCoveredLine(aggregatedCoveredLines)
     .setLinesFound(totalLinesFound)
     .setLinesHit(totalLinesHit)
+    .setIsGenerated(true)
     .build()
 }
 

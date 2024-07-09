@@ -40,6 +40,36 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport(): Pair<Float, String> {
+    // TODO: (remove)
+    /*Thinking of alternating or having 2 versions
+    * one for just printing to the console
+    * two an actual md template with dropdowns as discussed in meeting
+    *
+    * Adding the meeting template for reference here
+    * Total coverage:
+    *  Files covered: (# changed / # run with coverage)
+    *  Coverage percentage: ##% covered / ##% expected
+    *  LOC: # covered / # instrumented
+    *
+    *  (indent left) Specific coverage:
+    *  app/src/.../app
+    *  home
+    *  HomeActivity.kt - 87% (110/115)
+    *  ...
+    *  ...
+    *
+    * ### Coverage Report
+    * <details>
+    * <summary>MathModel.kt - 100%</summary>
+    * <ul>
+    * <li><b>Covered File:</b> <a href="https://github.com/oppia/oppia-android/blob/develop/utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt">
+    * utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt</a>
+    * </li>
+    * <li><b>Coverage Percentage</b>: 100%
+    * <li><b>Lines Coverage</b>: 19/19 covered
+    * </ul>
+    * </details>
+    */
     val markdownContent =
       """
         ## Coverage Report
