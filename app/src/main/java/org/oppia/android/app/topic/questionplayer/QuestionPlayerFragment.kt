@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
@@ -22,8 +23,6 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
-import org.oppia.android.app.player.state.StateFragment
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -59,7 +58,9 @@ class QuestionPlayerFragment :
       UserAnswerState.getDefaultInstance()
     ) ?: UserAnswerState.getDefaultInstance()
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId,userAnswerState)
+    return questionPlayerFragmentPresenter.handleCreateView(
+      inflater, container, profileId, userAnswerState
+    )
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {

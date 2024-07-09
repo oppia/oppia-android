@@ -20,6 +20,7 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
@@ -36,7 +37,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
-import org.oppia.android.app.model.UserAnswerState
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -81,7 +81,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     this.profileId = profileId
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId,userAnswerState),
+      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId, userAnswerState),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
