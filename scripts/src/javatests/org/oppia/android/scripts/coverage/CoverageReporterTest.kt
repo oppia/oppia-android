@@ -71,7 +71,7 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_generateHTMLReport_hasCorrectContentAndFormatting() {
+  fun testCoverageReporter_generateHtmlReport_hasCorrectContentAndFormatting() {
     val sourceFile = tempFolder.newFile("SampleFile.kt")
     sourceFile.writeText(
       """
@@ -95,7 +95,7 @@ class CoverageReporterTest {
     )
     val (_, reportText) = reporter.generateRichTextReport()
 
-    val expectedHTML =
+    val expectedHtml =
       """
     <!DOCTYPE html>
     <html lang="en">
@@ -261,6 +261,6 @@ class CoverageReporterTest {
     </html>
       """.trimIndent()
 
-    assertThat(reportText).isEqualTo(expectedHTML)
+    assertThat(reportText).isEqualTo(expectedHtml)
   }
 }
