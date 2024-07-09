@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-class OnboardingAppLanguageViewModel @Inject constructor() :
-  ObservableViewModel() {
+/** ViewModel for managing language selection in [OnboardingFragment]. */
+class OnboardingAppLanguageViewModel @Inject constructor() : ObservableViewModel() {
   /** The selected app language displayed in the language dropdown. */
   val languageSelectionLiveData: LiveData<String> get() = _languageSelectionLiveData
   private val _languageSelectionLiveData = MutableLiveData<String>()
 
   /** Sets the app language selection. */
   fun setSelectedLanguageDisplayName(language: String) {
-    println("setSelectedLanguageDisplayName Livedata $language")
     _languageSelectionLiveData.value = language
   }
 

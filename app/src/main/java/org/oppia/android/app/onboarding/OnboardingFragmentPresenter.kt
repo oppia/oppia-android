@@ -14,6 +14,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -24,9 +25,15 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+
+private const val ONBOARDING_FRAGMENT_SAVED_STATE_KEY = "OnboardingFragment.saved_state"
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -37,11 +44,12 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val translationController: TranslationController,
-  private val onboardingAppLanguageViewModel: OnboardingAppLanguageViewModel
+  private val onboardingAppLanguageViewModel: OnboardingAppLanguageViewModel,
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
+  private var allowDownloadAccess = enableDownloadsSupport.value
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
-  private var acceptDefaultLanguageSelection = true
   private lateinit var selectedLanguage: String
 
   /** Handle creation and binding of the [OnboardingFragment] layout. */
@@ -52,12 +60,16 @@ class OnboardingFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    outState?.getString("SELECTED_LANGUAGE", "").let {
-      if (it != null) {
-        onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(it)
-      } else {
-        getSystemLanguage()
-      }
+    val savedSelectedLanguage = outState?.getProto(
+      ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
+      OnboardingFragmentStateBundle.getDefaultInstance()
+    )?.selectedLanguage
+
+    if (!savedSelectedLanguage.isNullOrBlank()) {
+      selectedLanguage = savedSelectedLanguage
+      onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(savedSelectedLanguage)
+    } else {
+      getSystemLanguage()
     }
 
     getSupportedLanguages()
@@ -98,10 +110,9 @@ class OnboardingFragmentPresenter @Inject constructor(
 
         onItemClickListener =
           AdapterView.OnItemClickListener { _, _, position, _ ->
-            adapter.getItem(position).let {
-              if (it != null) {
-                acceptDefaultLanguageSelection = false
-                selectedLanguage = it as String
+            adapter.getItem(position).let { selectedItem ->
+              if (selectedItem != null) {
+                selectedLanguage = selectedItem as String
                 onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(selectedLanguage)
               }
             }
@@ -110,6 +121,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
       onboardingLanguageLetsGoButton.setOnClickListener { updateSelectedLanguage(selectedLanguage) }
     }
+
     return binding.root
   }
 
@@ -178,11 +190,7 @@ class OnboardingFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             val supportedLanguages = mutableListOf<String>()
             result.value.map {
-              supportedLanguages.add(
-                appLanguageResourceHandler.computeLocalizedDisplayName(
-                  it
-                )
-              )
+              supportedLanguages.add(appLanguageResourceHandler.computeLocalizedDisplayName(it))
               onboardingAppLanguageViewModel.setSupportedAppLanguages(supportedLanguages)
             }
           }
@@ -239,7 +247,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       name = "",
       pin = "",
       avatarImagePath = null,
-      allowDownloadAccess = false,
+      allowDownloadAccess = allowDownloadAccess,
       colorRgb = -10710042,
       isAdmin = true
     ).toLiveData()
@@ -248,12 +256,9 @@ class OnboardingFragmentPresenter @Inject constructor(
         { result ->
           when (result) {
             is AsyncResult.Success -> subscribeToGetProfileList()
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "OnboardingFragment", "Error creating the default profile", result.error
-              )
-              Profile.getDefaultInstance()
-            }
+            is AsyncResult.Failure -> oppiaLogger.e(
+              "OnboardingFragment", "Error creating the default profile", result.error
+            )
             is AsyncResult.Pending -> {}
           }
         }
@@ -264,7 +269,11 @@ class OnboardingFragmentPresenter @Inject constructor(
     profileId = profileList.firstOrNull()?.id ?: ProfileId.getDefaultInstance()
   }
 
+  /** Save the current dropdown selection to be retrieved on configuration change. */
   fun saveToSavedInstanceState(outState: Bundle) {
-    outState.putString("SELECTED_LANGUAGE", selectedLanguage) // todo move to proto
+    outState.putProto(
+      ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
+      OnboardingFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build()
+    )
   }
 }

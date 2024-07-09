@@ -266,6 +266,9 @@ message AudioLanguageFragmentArguments {
 message AudioLanguageFragmentStateBundle {
   // The default audio language selected by the user.
   AudioLanguage audio_language = 1;
+
+  // The selected language display name.
+  string selected_language = 2;
 }
 
 // Activity Parameters needed to create the policy page.
@@ -858,4 +861,10 @@ message CreateProfileActivityParams {
 message CreateProfileFragmentArguments {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
+}
+
+// The bundle of properties that are saved on configuration change in OnboardingFragment.
+message OnboardingFragmentStateBundle {
+  // The selected language display name.
+  string selected_language = 1;
 }

@@ -46,11 +46,16 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment." }
 
-    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
-      "Expected a profileId argument to be passed to AudioLanguageFragment."
-    }
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenter.handleCreateView(inflater, container, profileId)
+      val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+        "Expected a profileId argument to be passed to AudioLanguageFragment."
+      }
+      audioLanguageFragmentPresenter.handleCreateView(
+        inflater,
+        container,
+        profileId,
+        savedInstanceState
+      )
     } else {
       audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
     }
@@ -58,7 +63,9 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    if (!enableOnboardingFlowV2.value) {
+    if (enableOnboardingFlowV2.value) {
+      audioLanguageFragmentPresenter.handleSavedState(outState)
+    } else {
       val state = AudioLanguageFragmentStateBundle.newBuilder().apply {
         audioLanguage = audioLanguageFragmentPresenterV1.getLanguageSelected()
       }.build()
@@ -74,7 +81,9 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
 
   companion object {
     private const val FRAGMENT_ARGUMENTS_KEY = "AudioLanguageFragment.arguments"
-    private const val FRAGMENT_SAVED_STATE_KEY = "AudioLanguageFragment.saved_state"
+
+    /** Argument key for the [AudioLanguageFragment] saved instance state bundle. */
+    const val FRAGMENT_SAVED_STATE_KEY = "AudioLanguageFragment.saved_state"
 
     /**
      * Returns a new [AudioLanguageFragment] corresponding to the specified [AudioLanguage] (as the

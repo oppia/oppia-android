@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 private const val PRE_SELECTED_LANGUAGE_PROVIDER_ID = "systemLanguage+appLanguageProvider"
 
-/** Language list view model for the recycler view in [AudioLanguageFragment]. */
+/** ViewModel for managing language selection in [AudioLanguageFragment]. */
 @FragmentScope
 class AudioLanguageSelectionViewModel @Inject constructor(
   private val fragment: Fragment,
@@ -32,6 +32,8 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
+
+  /** An [ObservableField] to bind the resolved audio language to the dropdown text. */
   val selectedAudioLanguage = ObservableField("")
 
   private val appLanguageSelectionProvider: DataProvider<AppLanguageSelection> by lazy {
@@ -64,8 +66,9 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
   }
 
-  // TODO(#4938): Update the pre-selection logic to include admin audio language for non-sole
-  //  learners.
+  // TODO(#4938): Update the pre-selection logic to include the admin profile audio language for
+  //  non-sole learners.
+  /** The [LiveData] representing the language to be displayed by default in the dropdown menu. */
   val languagePreselectionLiveData: LiveData<String> by lazy {
     Transformations.map(languagePreselectionProvider.toLiveData()) { languageResult ->
       return@map when (languageResult) {
@@ -97,6 +100,7 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
   }
 
+  /** Receive and set the current profileId in this viewModel. */
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
