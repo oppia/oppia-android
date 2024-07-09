@@ -36,6 +36,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -69,7 +70,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId
+    profileId: ProfileId,
+    userAnswerState: UserAnswerState
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
@@ -79,7 +81,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     this.profileId = profileId
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
+      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId,userAnswerState),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
@@ -152,6 +154,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(questionViewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()
+  }
+
+  /** Returns the [UserAnswerState] representing the user's current pending answer. */
+  fun getUserAnswerState(): UserAnswerState {
+    return questionViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
   }
 
   /**
@@ -257,6 +264,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>
   ) {
+    if (questionViewModel.getCanSubmitAnswer().get() == true) {
+      recyclerViewAssembler.resetUserAnswerState()
+    }
     val answerOutcomeLiveData =
       Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
     answerOutcomeLiveData.observe(

@@ -22,6 +22,8 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
+import org.oppia.android.app.player.state.StateFragment
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -52,8 +54,12 @@ class QuestionPlayerFragment :
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to QuestionPlayerFragment"
     }
+    val userAnswerState = savedInstanceState?.getProto(
+      QUESTION_PLAYER_FRAGMENT_STATE_KEY,
+      UserAnswerState.getDefaultInstance()
+    ) ?: UserAnswerState.getDefaultInstance()
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId)
+    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId,userAnswerState)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -98,6 +104,9 @@ class QuestionPlayerFragment :
   companion object {
     private const val PROFILE_ID_ARGUMENT_KEY = "QuestionPlayerFragment.profile_id"
 
+    /** Arguments key for QuestionPlayerFragment saved state. */
+    const val QUESTION_PLAYER_FRAGMENT_STATE_KEY = "QuestionPlayerFragment.state"
+
     /**
      * Creates a new fragment to play a question session.
      *
@@ -111,5 +120,13 @@ class QuestionPlayerFragment :
         }
       }
     }
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putProto(
+      QUESTION_PLAYER_FRAGMENT_STATE_KEY,
+      questionPlayerFragmentPresenter.getUserAnswerState()
+    )
   }
 }

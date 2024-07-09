@@ -12,6 +12,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswerState
 
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor(
@@ -90,6 +91,13 @@ class QuestionPlayerViewModel @Inject constructor(
         questionCount.toString()
       )
     }
+  }
+
+  fun getUserAnswerState(
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+  ): UserAnswerState {
+    return retrieveAnswerHandler(getAnswerItemList())?.getUserAnswerState()
+      ?: UserAnswerState.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(

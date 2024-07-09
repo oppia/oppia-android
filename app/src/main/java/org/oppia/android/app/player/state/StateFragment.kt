@@ -43,8 +43,8 @@ class StateFragment :
     /** Arguments key for StateFragment. */
     const val STATE_FRAGMENT_ARGUMENTS_KEY = "StateFragment.arguments"
 
-    /** Arguments key for StateFragment. */
-    const val STATE_FRAGMENT_USER_ANSWER_STATE_KEY = "StateFragment.user_answer_state"
+    /** Arguments key for StateFragment saved state. */
+    const val STATE_FRAGMENT_STATE_KEY = "StateFragment.state"
 
     /**
      * Creates a new instance of a StateFragment.
@@ -92,7 +92,7 @@ class StateFragment :
       arguments?.getProto(STATE_FRAGMENT_ARGUMENTS_KEY, StateFragmentArguments.getDefaultInstance())
 
     val userAnswerState = savedInstanceState?.getProto(
-      STATE_FRAGMENT_USER_ANSWER_STATE_KEY,
+      STATE_FRAGMENT_STATE_KEY,
       UserAnswerState.getDefaultInstance()
     ) ?: UserAnswerState.getDefaultInstance()
 
@@ -161,7 +161,7 @@ class StateFragment :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     outState.putProto(
-      STATE_FRAGMENT_USER_ANSWER_STATE_KEY,
+      STATE_FRAGMENT_STATE_KEY,
       stateFragmentPresenter.getUserAnswerState()
     )
   }
