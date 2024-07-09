@@ -87,6 +87,7 @@ class FractionInteractionViewModel private constructor(
             fractionParser.getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
       }
+      else -> {}
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError

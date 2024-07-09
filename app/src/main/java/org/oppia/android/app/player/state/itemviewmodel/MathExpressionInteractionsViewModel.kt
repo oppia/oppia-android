@@ -162,7 +162,7 @@ class MathExpressionInteractionsViewModel private constructor(
           answerText.toString(), allowedVariables, resourceHandler
         )
       }
-      else -> { null }
+      else -> null
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError

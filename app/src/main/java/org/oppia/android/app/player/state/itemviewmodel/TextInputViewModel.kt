@@ -64,7 +64,7 @@ class TextInputViewModel private constructor(
           answerText.toString()
         ).createForText(resourceHandler)
       }
-      else -> { null }
+      else -> null
     }.also {
       pendingAnswerError = it
       errorMessage.set(it)

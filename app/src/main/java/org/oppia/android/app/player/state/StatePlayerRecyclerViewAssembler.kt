@@ -330,6 +330,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
   }
 
+  /** Reset userAnswerState once the user submits an answer. */
   fun resetUserAnswerState() {
     userAnswerState = UserAnswerState.getDefaultInstance()
   }

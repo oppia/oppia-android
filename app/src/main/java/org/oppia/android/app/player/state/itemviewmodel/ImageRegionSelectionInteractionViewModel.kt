@@ -103,6 +103,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
             ).getErrorMessageFromStringRes(resourceHandler)
         }
       }
+      else -> {}
     }
 
     errorMessage.set(pendingAnswerError)
