@@ -113,9 +113,11 @@ class SelectionInteractionViewModel private constructor(
     if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
       userAnswerState.itemSelection.selectedIndexesList.forEach { selectedIndex ->
         selectedItems += selectedIndex
-        updateIsAnswerAvailable()
         choiceItems[selectedIndex].isAnswerSelected.set(true)
       }
+      updateItemSelectability()
+      updateSelectionText()
+      updateIsAnswerAvailable()
     }
   }
 
