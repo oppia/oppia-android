@@ -52,18 +52,6 @@ fun main(vararg args: String) {
 //    "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthWrapperImpl.kt"
   )
 
-  // TODO: (remove)
-  /*Pseudo
-  * filePaths -> filePath {
-  *   testFilePaths
-  *   testTargets
-  *   runCoverageForTarget()
-  * }.awaitAll()
-  *
-  * Final Result: map -> file : result
-  * sample: [valid_file1.kt: ".md/text_report", exempted_file2.kt: "exempted"]
-  * */
-
   val format = args.find { it.startsWith("format=", ignoreCase = true) }
     ?.substringAfter("=")
     ?.uppercase() ?: "MARKDOWN"
@@ -120,6 +108,14 @@ class RunCoverage(
 
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  private val testFileExemptionList by lazy {
+    loadTestFileExemptionsProto(testFileExemptionTextProto)
+      .testFileExemptionList
+      .associateBy { it.exemptedFilePath }
+  }
+
+  private val MIN_THRESHOLD = 10 // Example threshold, yet to be decided on a value
+  private var coverageCheckState = CoverageCheck.PASS
 
   /**
    * Executes coverage analysis for the specified file.
@@ -128,16 +124,8 @@ class RunCoverage(
    * prints a message indicating no coverage analysis is performed. Otherwise, initializes
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
-   *
-   * @return a list of lists containing coverage data for each requested test target, if
-   *     the file is exempted from having a test file, an empty list is returned
    */
   fun execute() = runBlocking {
-    /*val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .testFileExemptionList
-      .filter { it.testFileNotRequired }
-      .map { it.exemptedFilePath }*/
-
     val coverageResults = filePaths.map { filePath ->
       async {
         runCoverageForFile(filePath)
@@ -146,49 +134,11 @@ class RunCoverage(
 
     println("Coverage Results: $coverageResults")
     println("COVERAGE ANALYSIS COMPLETED.")
-
-    /*if (filePath in testFileExemptionList) {
-      println("This file is exempted from having a test file; skipping coverage check.")
-    } else {
-      val testFilePaths = findTestFile(repoRoot, filePath)
-      if (testFilePaths.isEmpty()) {
-        error("No appropriate test file found for $filePath")
-      }
-
-      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-
-      val deferredCoverageReports = testTargets.map { testTarget ->
-        runCoverageForTarget(testTarget)
-      }
-
-      val coverageReports = deferredCoverageReports.awaitAll()
-
-      val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
-      val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
-      val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
-
-      File(reportOutputPath).apply {
-        parentFile?.mkdirs()
-        writeText(reportText)
-      }
-
-      if (File(reportOutputPath).exists()) {
-        println("\nComputed Coverage Ratio is: $computedCoverageRatio")
-        println("\nGenerated report at: $reportOutputPath\n")
-      }
-
-      println("COVERAGE ANALYSIS COMPLETED.")
-    }*/
   }
 
   private suspend fun runCoverageForFile(filePath: String): String {
-    // TODO: move this above as a common list
-    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .testFileExemptionList
-      .filter { it.testFileNotRequired }
-      .map { it.exemptedFilePath }
-
-    if (filePath in testFileExemptionList) {
+    val exemption = testFileExemptionList[filePath]
+    if (exemption != null && exemption.testFileNotRequired) {
       return "The file: $filePath is exempted from having a test file; skipping coverage check.".also {
         println(it)
       }
@@ -202,90 +152,14 @@ class RunCoverage(
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-
       val deferredCoverageReports = testTargets.map { testTarget ->
-        runCoverageForTarget(testTarget)
+        CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+          .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
       }
 
-      // TODO: change to val
-      println("Getting coverage report of $filePath")
-      var coverageReports = deferredCoverageReports.awaitAll()
-      println("Got coverage report of $filePath")
+      val coverageReports = deferredCoverageReports.awaitAll()
 
-      // TODO: (remove) this is for testing many : 1 targets
-      if (filePath == "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt") {
-        coverageReports = listOf(
-          CoverageReport.newBuilder()
-            .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
-            .setFilePath("coverage/main/java/com/example/AddNums.kt")
-            .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(3)
-                .setCoverage(Coverage.NONE)
-                .build()
-            )
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(7)
-                .setCoverage(Coverage.NONE)
-                .build()
-            )
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(8)
-                .setCoverage(Coverage.FULL)
-                .build()
-            )
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(10)
-                .setCoverage(Coverage.FULL)
-                .build()
-            )
-            .setLinesFound(4)
-            .setLinesHit(2)
-            .setIsGenerated(true)
-            .build(),
-          CoverageReport.newBuilder()
-            .setBazelTestTarget("//coverage/test/java/com/example:AddNumsLocalTest")
-            .setFilePath("coverage/main/java/com/example/AddNums.kt")
-            .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(3)
-                .setCoverage(Coverage.FULL)
-                .build()
-            )
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(7)
-                .setCoverage(Coverage.NONE)
-                .build()
-            )
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(8)
-                .setCoverage(Coverage.FULL)
-                .build()
-            )
-            .addCoveredLine(
-              CoveredLine.newBuilder()
-                .setLineNumber(10)
-                .setCoverage(Coverage.NONE)
-                .build()
-            )
-            .setLinesFound(4)
-            .setLinesHit(2)
-            .setIsGenerated(true)
-            .build()
-        )
-      }
-
-      // Check Coverage Reports are a success or fail case based on their retrieval
-      // if coverageReports.get(0) -> .isGenerated == false ->
-      // return "Coverage data not found for the file: $filePath"
-//      println("Coverage Report is Generated: ${coverageReports.firstOrNull()}")
+      // Check if the coverage reports are successfully generated else return failure message.
       coverageReports.firstOrNull()?.let {
         if (!it.isGenerated) {
           return "Failed to generate coverage report for the file: $filePath.".also {
@@ -298,13 +172,11 @@ class RunCoverage(
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
       val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
-      // TODO: (remove)
-      // Use this computed Coverage Ratio to set / check the minimum threshold met or not
-      // even if it fails for one of the files, make a one time change to the MIN THRESHOLD
-      // and fail the case
-      // Oh.. also this needs to check with testExemption to make sure it if also below the
-      // override min coverage threshold
-      // (make it clear on the md report that the file is exempted for coverage threshold)
+      val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
+
+      println("**************************Coverage threshold : $coverageCheckThreshold")
+      if (computedCoverageRatio*100 < coverageCheckThreshold) coverageCheckState = CoverageCheck.FAIL
+      println("***************Coverage check state: $coverageCheckState")
 
       File(reportOutputPath).apply {
         parentFile?.mkdirs()
@@ -320,10 +192,9 @@ class RunCoverage(
     }
   }
 
-  // TODO: (remove) remove if redundant
-  private fun runCoverageForTarget(testTarget: String): Deferred<CoverageReport> {
-    return CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-      .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
+  private enum class CoverageCheck {
+    PASS,
+    FAIL
   }
 }
 
