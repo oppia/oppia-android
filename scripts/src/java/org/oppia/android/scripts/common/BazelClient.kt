@@ -144,13 +144,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
     val instrumentation = bazelTestTarget.split(":")[0]
     val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
-    println("In computing coverage for test in bazel client for $bazelTestTarget")
     val coverageCommandOutputLines = executeBazelCommand(
       "coverage",
       bazelTestTarget,
       "--instrumentation_filter=$computeInstrumentation"
     )
-    println("After computing coverage for test in bazel client for $bazelTestTarget")
     return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
       File(path).readLines()
     }
@@ -162,7 +160,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       val match = regex.find(line)
       val extractedPath = match?.value?.substringAfterLast(",")?.trim()
       if (extractedPath != null) {
-        println("Raw Coverage Data: $extractedPath")
+//        println("Raw Coverage Data: $extractedPath")
         return extractedPath
       }
     }

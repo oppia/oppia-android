@@ -40,11 +40,11 @@ class CoverageRunner(
     bazelTestTarget: String
   ): Deferred<CoverageReport> {
     return CoroutineScope(scriptBgDispatcher).async {
-      println("$bazelTestTarget start: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
+//      println("$bazelTestTarget start: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
         ?: return@async generateFailedCoverageReport()
 
-      println("$bazelTestTarget end: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
+//      println("$bazelTestTarget end: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
 
       coverageDataFileLines(coverageResult, bazelTestTarget)
     }

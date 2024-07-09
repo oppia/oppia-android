@@ -32,7 +32,19 @@ class CoverageReporter(
    *     and the second value is the generated report text
    */
   fun generateRichTextReport(): Pair<Float, String> {
-    println("Report format: $reportFormat")
+    logCoverageReport()
+
+    // Rough
+    /* If HTML -> HTML report -> send reportText -> Done
+    *  If MD   -> generate report() -> send reportText ("file.kt, 23%, 2/4 lines, :x:")
+    *  oh wait no... the last one is decided also based on exemption
+    *  so after coverageCheckThreshold -> determine coverage status ->
+    *     set coverage status to PASS or FAIL
+    *     reportText += " > :tick: ; < :wrong:"
+    *
+    *  In execute after awaitAll -> check MD -> generateMD report
+    * */
+
     return when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport()
       ReportFormat.HTML -> generateHtmlReport()
@@ -69,15 +81,38 @@ class CoverageReporter(
     * <li><b>Lines Coverage</b>: 19/19 covered
     * </ul>
     * </details>
-    */
-    val markdownContent =
-      """
-        ## Coverage Report
+    *
+    * Sample template for reference:
+    * |Covered File|Percentage|Line Coverage|Status|
+      |-------------|:----------:|:---------------:|:------:|
+      |[HomeActivity.kt](https://www.github.com)|53.00%|4/7 lines|:x:|
 
-        - **Covered File:** $filePath
-        - **Coverage percentage:** $formattedCoveragePercentage% covered
-        - **Line coverage:** $totalLinesHit / $totalLinesFound lines covered
-      """.trimIndent()
+
+      # Coverage Report
+
+      ## Failed Coverage
+
+      | File Path                      | Coverage Percentage | Line Coverage     |
+      |-------------------------------|----------------------|-------------------|
+      | src/main/file1.kt              | 45.00%              | 90/200 lines      |
+      | src/main/file2.kt              | 50.50%              | 101/200 lines     |
+      | src/main/really_long_file_name.kt | 60.00%          | 120/200 lines     |
+
+      <details>
+      <summary>Success Coverage</summary>
+
+      | File Path                      | Coverage Percentage | Line Coverage     |Status
+      |-------------------------------|:----------------------:|-------------------|:------:|
+      | src/main/file3.kt              | 85.00%              | 170/200 lines     |:white_check_mark:|
+      | src/main/file4.kt              | 90.50%              | 181/200 lines     |:white_check_mark:|
+      | src/main/file5.kt              | 95.00%              | 190/200 lines     |:x:|
+
+      </details>
+
+    */
+    val markdownContent = "|$filePath" +
+      "|$formattedCoveragePercentage%" +
+      "|$totalLinesHit / $totalLinesFound"
 
     println("\n$markdownContent")
 
@@ -248,6 +283,23 @@ class CoverageReporter(
     } else {
       0f
     }
+  }
+
+  private fun logCoverageReport() {
+    // TODO: (remove) as this looks un even in the output log
+    val logReportText = listOf(
+      "Covered File: $filePath",
+      "Coverage percentage: $formattedCoveragePercentage% covered",
+      "Line coverage: $totalLinesHit / $totalLinesFound lines covered"
+    )
+
+    val maxLength = logReportText.maxOf {it.length}
+    val horizontalBorder = "+-${"-".repeat(maxLength)}-+"
+    val reportText = logReportText.joinToString(separator = "\n") { line ->
+      "| ${line.padEnd(maxLength)} |"
+    }
+
+    println("$horizontalBorder\n$reportText\n$horizontalBorder")
   }
 }
 
