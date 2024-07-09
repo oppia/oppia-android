@@ -422,9 +422,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @Ignore("Temporarily ignored as the test is failing.")
-  // TODO(#5344): Update the logic or fix the test.
-  fun testFragment_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
+  fun testFragment_markStory0DoneForRatiosAndFirstTestTopic_displaysSuggestedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
@@ -437,12 +435,18 @@ class ClassroomListFragmentTest {
     logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
-      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertTextContains(context.getString(R.string.stories_for_you))
       .assertIsDisplayed()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
       .assertTextContains("Fifth Exploration")
       .assertTextContains("SECOND TEST TOPIC")
+      .assertTextContains("SCIENCE")
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(1)
+      .assertTextContains("Math Expressions")
+      .assertTextContains("FIRST TEST TOPIC")
       .assertTextContains("SCIENCE")
       .assertIsDisplayed()
   }
@@ -499,16 +503,17 @@ class ClassroomListFragmentTest {
         .assertTextContains("MATHS")
         .assertIsDisplayed()
 
-      // TODO(#5344): 'What is a Ratio?' story should be promoted.
-      onChildAt(2)
-        .assertDoesNotExist()
+      performScrollToIndex(2)
+      onChildAt(1)
+        .assertTextContains("What is a Ratio?")
+        .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
+        .assertTextContains("MATHS")
+        .assertIsDisplayed()
     }
   }
 
   @Test
-  @Ignore
-  // TODO(#5344): Update logic or fix the test.
-  fun testFragment_markStory0DoneFirstTestTopic_recommendedStoriesIsCorrect() {
+  fun testFragment_markStory0DoneFirstTestTopic_suggestedStoriesIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
@@ -517,13 +522,19 @@ class ClassroomListFragmentTest {
     logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
-      .assertTextContains(context.getString(R.string.recommended_stories))
+      .assertTextContains(context.getString(R.string.stories_for_you))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(1)
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
       .assertTextContains("What is a Ratio?")
       .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
       .assertTextContains("MATHS")
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(1)
+      .assertTextContains("Math Expressions")
+      .assertTextContains("FIRST TEST TOPIC")
+      .assertTextContains("SCIENCE")
       .assertIsDisplayed()
   }
 
