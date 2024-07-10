@@ -27,9 +27,11 @@ class TextInputViewModel private constructor(
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = ""
+  var answerText: CharSequence = userAnswerState.textualAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
   val hintText: CharSequence = deriveHintText(interaction)
   private var pendingAnswerError: String? = null
 
@@ -54,9 +56,11 @@ class TextInputViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     return when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME -> {
@@ -100,6 +104,13 @@ class TextInputViewModel private constructor(
       writtenTranslationContext = this@TextInputViewModel.writtenTranslationContext
     }
   }.build()
+
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.textualAnswer = answerText.toString()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
+  }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
@@ -146,7 +157,8 @@ class TextInputViewModel private constructor(
         isSplitView,
         writtenTranslationContext,
         resourceHandler,
-        translationController
+        translationController,
+        userAnswerState
       )
     }
   }

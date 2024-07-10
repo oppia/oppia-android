@@ -28,10 +28,12 @@ class FractionInteractionViewModel private constructor(
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = ""
+  var answerText: CharSequence = userAnswerState.textualAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
@@ -55,6 +57,7 @@ class FractionInteractionViewModel private constructor(
       /* pendingAnswerError= */null,
       /* inputAnswerAvailable= */true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -70,6 +73,7 @@ class FractionInteractionViewModel private constructor(
 
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
         if (answerText.isNotEmpty()) {
@@ -110,6 +114,13 @@ class FractionInteractionViewModel private constructor(
       override fun afterTextChanged(s: Editable) {
       }
     }
+  }
+
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.textualAnswer = answerText.toString()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
@@ -161,7 +172,8 @@ class FractionInteractionViewModel private constructor(
         answerErrorReceiver,
         writtenTranslationContext,
         resourceHandler,
-        translationController
+        translationController,
+        userAnswerState
       )
     }
   }

@@ -23,9 +23,11 @@ class NumericInputViewModel private constructor(
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = ""
+  var answerText: CharSequence = userAnswerState.textualAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
   var isAnswerAvailable = ObservableField<Boolean>(false)
@@ -49,6 +51,7 @@ class NumericInputViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   /**
@@ -56,6 +59,7 @@ class NumericInputViewModel private constructor(
    * error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME ->
         if (answerText.isNotEmpty())
@@ -69,6 +73,13 @@ class NumericInputViewModel private constructor(
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
+  }
+
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.textualAnswer = answerText.toString()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
   }
 
   fun getAnswerTextWatcher(): TextWatcher {
@@ -122,7 +133,8 @@ class NumericInputViewModel private constructor(
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,
-        resourceHandler
+        resourceHandler,
+        userAnswerState
       )
     }
   }

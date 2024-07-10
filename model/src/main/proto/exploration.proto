@@ -432,6 +432,9 @@ message UserAnswerState {
   AnswerErrorCategory answer_error_category = 1;
   oneof answer_input_type{
     ItemSelectionAnswerState item_selection = 2;
+
+    // A raw answer entered by user in a text-based interactions.
+    string textual_answer = 3;
   }
 }
 

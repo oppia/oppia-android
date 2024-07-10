@@ -65,7 +65,8 @@ class MathExpressionInteractionsViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
-  private val interactionType: InteractionType
+  private val interactionType: InteractionType,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(interactionType.viewType), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
 
@@ -73,13 +74,15 @@ class MathExpressionInteractionsViewModel private constructor(
    * Defines the current answer text being entered by the learner. This is expected to be directly
    * bound to the corresponding edit text.
    */
-  var answerText: CharSequence = ""
+  var answerText: CharSequence = userAnswerState.textualAnswer
     // The value of ths field is set from the Binding and from the TextWatcher. Any
     // programmatic modification needs to be done here, so that the Binding and the TextWatcher
     // do not step on each other.
     set(value) {
       field = value.toString().trim()
     }
+
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -118,6 +121,14 @@ class MathExpressionInteractionsViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
+  }
+
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.textualAnswer = answerText.toString()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -154,6 +165,7 @@ class MathExpressionInteractionsViewModel private constructor(
   }.build()
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     pendingAnswerError = when (category) {
       // There's no support for real-time errors.
       AnswerErrorCategory.REAL_TIME -> null
@@ -254,7 +266,8 @@ class MathExpressionInteractionsViewModel private constructor(
         resourceHandler,
         translationController,
         mathExpressionAccessibilityUtil,
-        interactionType
+        interactionType,
+        userAnswerState
       )
     }
 
