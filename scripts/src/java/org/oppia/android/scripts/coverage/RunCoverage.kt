@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -40,7 +39,7 @@ fun main(vararg args: String) {
   val filePath = args[1]
   println("File Path: $filePath")
 
-  //TODO: once the file list is received (git client), it need to be filtered to just have
+  // TODO: once the file list is received (git client), it need to be filtered to just have
   // .kt files and also not Test.kt files
   val filePaths = listOf(
     "utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt",
@@ -52,10 +51,9 @@ fun main(vararg args: String) {
 
   val format = args.find { it.startsWith("format=", ignoreCase = true) }
     ?.substringAfter("=")
-    ?.uppercase() ?: "MARKDOWN"
+    ?.uppercase() ?: "HTML"
 
   val reportFormat = when (format) {
-    // TODO: (default to HTML) as that would be much simpler for local development
     "HTML" -> ReportFormat.HTML
     "MARKDOWN" -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
@@ -113,7 +111,7 @@ class RunCoverage(
       .associateBy { it.exemptedFilePath }
   }
 
-  private val MIN_THRESHOLD = 10 // TODO: (to be decided) min threshold, yet to be decided on a value
+  private val MIN_THRESHOLD = 10 // yet to be decided on a value
   private var coverageCheckState = CoverageCheck.PASS
 
   /**
@@ -139,9 +137,10 @@ class RunCoverage(
   private suspend fun runCoverageForFile(filePath: String): String {
     val exemption = testFileExemptionList[filePath]
     if (exemption != null && exemption.testFileNotRequired) {
-      return "The file: $filePath is exempted from having a test file; skipping coverage check.".also {
-        println(it)
-      }
+      return "The file: $filePath is exempted from having a test file; skipping coverage check."
+        .also {
+          println(it)
+        }
     } else {
       val testFilePaths = findTestFile(repoRoot, filePath)
 
@@ -159,7 +158,6 @@ class RunCoverage(
 
       val coverageReports = deferredCoverageReports.awaitAll()
 
-      // TODO: (yet to decide) if this too needs to be set as coverage state -> FAIL.
       // Check if the coverage reports are successfully generated else return failure message.
       coverageReports.firstOrNull()?.let {
         if (!it.isGenerated) {
@@ -176,7 +174,7 @@ class RunCoverage(
       val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired
         ?: MIN_THRESHOLD
 
-      if (computedCoverageRatio*100 < coverageCheckThreshold) {
+      if (computedCoverageRatio * 100 < coverageCheckThreshold) {
         coverageCheckState = CoverageCheck.FAIL
         reportText += "|:x:|"
       } else {
@@ -208,7 +206,7 @@ class RunCoverage(
       result.contains("|") && result.split("|")[4].trim() == ":white_check_mark:"
     }
 
-    val anamolyCases = coverageResults.filterNot { it.contains("|") }
+    val anomalyCases = coverageResults.filterNot { it.contains("|") }
 
     val coverageFailuresRows = coverageFailures.joinToString(separator = "\n")
     val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
@@ -226,11 +224,11 @@ class RunCoverage(
       coverageSuccessesRows +
       "\n</details>"
 
-    val anamolyCasesList = anamolyCases.joinToString(separator = "\n") { "- $it" }
+    val anomalyCasesList = anomalyCases.joinToString(separator = "\n") { "- $it" }
     val finalReportText = failureMarkdownTable +
       "\n\n" + successMarkdownTable +
       "\n\n" + "### Anamoly Cases\n" +
-      anamolyCasesList
+      anomalyCasesList
 
     println(finalReportText)
   }

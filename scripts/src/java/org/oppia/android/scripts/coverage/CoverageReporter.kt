@@ -213,20 +213,15 @@ class CoverageReporter(
   }
 
   private fun logCoverageReport() {
-    // TODO: (remove) as this looks un even in the output log
-    val logReportText = listOf(
-      "Covered File: $filePath",
-      "Coverage percentage: $formattedCoveragePercentage% covered",
-      "Line coverage: $totalLinesHit / $totalLinesFound lines covered"
-    )
-
-    val maxLength = logReportText.maxOf {it.length}
-    val horizontalBorder = "+-${"-".repeat(maxLength)}-+"
-    val reportText = logReportText.joinToString(separator = "\n") { line ->
-      "| ${line.padEnd(maxLength)} |"
-    }
-
-    println("$horizontalBorder\n$reportText\n$horizontalBorder")
+    val logReportText =
+      """
+      Coverage Report:
+      ---------------
+      Covered File: $filePath
+      Coverage percentage: $formattedCoveragePercentage% covered
+      Line coverage: $totalLinesHit / $totalLinesFound lines covered
+      """
+    println("$logReportText")
   }
 }
 
