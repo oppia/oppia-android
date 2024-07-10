@@ -33,8 +33,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     temporaryRootFolder.newFile(".bazelrc").also {
       it.writeText(
         """
-            --noenable_bzlmod
-            build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+          --noenable_bzlmod
+          build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
         """.trimIndent()
       )
     }
