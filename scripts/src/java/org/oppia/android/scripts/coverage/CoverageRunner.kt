@@ -3,7 +3,6 @@ package org.oppia.android.scripts.coverage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -14,7 +13,6 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.MessageDigest
-import java.time.LocalDateTime
 
 /**
  * Class responsible for running coverage analysis asynchronously.
@@ -40,11 +38,8 @@ class CoverageRunner(
     bazelTestTarget: String
   ): Deferred<CoverageReport> {
     return CoroutineScope(scriptBgDispatcher).async {
-//      println("$bazelTestTarget start: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
         ?: return@async generateFailedCoverageReport()
-
-//      println("$bazelTestTarget end: ${LocalDateTime.now()} on thread: ${Thread.currentThread().name}")
 
       coverageDataFileLines(coverageResult, bazelTestTarget)
     }

@@ -34,17 +34,6 @@ class CoverageReporter(
   fun generateRichTextReport(): Pair<Float, String> {
     logCoverageReport()
 
-    // Rough
-    /* If HTML -> HTML report -> send reportText -> Done
-    *  If MD   -> generate report() -> send reportText ("file.kt, 23%, 2/4 lines, :x:")
-    *  oh wait no... the last one is decided also based on exemption
-    *  so after coverageCheckThreshold -> determine coverage status ->
-    *     set coverage status to PASS or FAIL
-    *     reportText += " > :tick: ; < :wrong:"
-    *
-    *  In execute after awaitAll -> check MD -> generateMD report
-    * */
-
     return when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport()
       ReportFormat.HTML -> generateHtmlReport()
@@ -52,69 +41,9 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport(): Pair<Float, String> {
-    // TODO: (remove)
-    /*Thinking of alternating or having 2 versions
-    * one for just printing to the console
-    * two an actual md template with dropdowns as discussed in meeting
-    *
-    * Adding the meeting template for reference here
-    * Total coverage:
-    *  Files covered: (# changed / # run with coverage)
-    *  Coverage percentage: ##% covered / ##% expected
-    *  LOC: # covered / # instrumented
-    *
-    *  (indent left) Specific coverage:
-    *  app/src/.../app
-    *  home
-    *  HomeActivity.kt - 87% (110/115)
-    *  ...
-    *  ...
-    *
-    * ### Coverage Report
-    * <details>
-    * <summary>MathModel.kt - 100%</summary>
-    * <ul>
-    * <li><b>Covered File:</b> <a href="https://github.com/oppia/oppia-android/blob/develop/utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt">
-    * utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt</a>
-    * </li>
-    * <li><b>Coverage Percentage</b>: 100%
-    * <li><b>Lines Coverage</b>: 19/19 covered
-    * </ul>
-    * </details>
-    *
-    * Sample template for reference:
-    * |Covered File|Percentage|Line Coverage|Status|
-      |-------------|:----------:|:---------------:|:------:|
-      |[HomeActivity.kt](https://www.github.com)|53.00%|4/7 lines|:x:|
-
-
-      # Coverage Report
-
-      ## Failed Coverage
-
-      | File Path                      | Coverage Percentage | Line Coverage     |
-      |-------------------------------|----------------------|-------------------|
-      | src/main/file1.kt              | 45.00%              | 90/200 lines      |
-      | src/main/file2.kt              | 50.50%              | 101/200 lines     |
-      | src/main/really_long_file_name.kt | 60.00%          | 120/200 lines     |
-
-      <details>
-      <summary>Success Coverage</summary>
-
-      | File Path                      | Coverage Percentage | Line Coverage     |Status
-      |-------------------------------|:----------------------:|-------------------|:------:|
-      | src/main/file3.kt              | 85.00%              | 170/200 lines     |:white_check_mark:|
-      | src/main/file4.kt              | 90.50%              | 181/200 lines     |:white_check_mark:|
-      | src/main/file5.kt              | 95.00%              | 190/200 lines     |:x:|
-
-      </details>
-
-    */
-    val markdownContent = "|$filePath" +
+    val markdownContent = "|${getFilenameAsLink(filePath)}" +
       "|$formattedCoveragePercentage%" +
       "|$totalLinesHit / $totalLinesFound"
-
-    println("\n$markdownContent")
 
     return Pair(computedCoverageRatio, markdownContent)
   }
@@ -278,11 +207,9 @@ class CoverageReporter(
   }
 
   private fun computeCoverageRatio(): Float {
-    return if (coverageReport.linesFound != 0) {
-      coverageReport.linesHit.toFloat() / coverageReport.linesFound.toFloat()
-    } else {
-      0f
-    }
+    return coverageReport.linesFound.takeIf { it != 0 }?.let {
+      coverageReport.linesHit.toFloat() / it.toFloat()
+    } ?: 0f
   }
 
   private fun logCoverageReport() {
@@ -301,6 +228,12 @@ class CoverageReporter(
 
     println("$horizontalBorder\n$reportText\n$horizontalBorder")
   }
+}
+
+private fun getFilenameAsLink(filePath: String): String {
+  val filename = filePath.substringAfterLast("/").trim()
+  val filenameAsLink = "[$filename](https://github.com/oppia/oppia-android/tree/develop/$filePath)"
+  return filenameAsLink
 }
 
 /** Represents the different types of formats available to generate code coverage reports. */

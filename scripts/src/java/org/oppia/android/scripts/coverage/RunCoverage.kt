@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit
 fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
-  println("FilePath = $filePath")
+  println("File Path: $filePath")
 
   //TODO: once the file list is received (git client), it need to be filtered to just have
   // .kt files and also not Test.kt files
@@ -48,8 +48,6 @@ fun main(vararg args: String) {
     "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt",
     "utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt",
     "utility/src/main/java/org/oppia/android/util/math/RealExtensions.kt",
-//    "utility/src/main/java/org/oppia/android/util/logging/ConsoleLogger.kt",
-//    "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthWrapperImpl.kt"
   )
 
   val format = args.find { it.startsWith("format=", ignoreCase = true) }
@@ -57,7 +55,7 @@ fun main(vararg args: String) {
     ?.uppercase() ?: "MARKDOWN"
 
   val reportFormat = when (format) {
-    // TODO: (default to HTML) as it would be much simpler for local development
+    // TODO: (default to HTML) as that would be much simpler for local development
     "HTML" -> ReportFormat.HTML
     "MARKDOWN" -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
@@ -115,7 +113,7 @@ class RunCoverage(
       .associateBy { it.exemptedFilePath }
   }
 
-  private val MIN_THRESHOLD = 10 // Example threshold, yet to be decided on a value
+  private val MIN_THRESHOLD = 10 // TODO: (to be decided) min threshold, yet to be decided on a value
   private var coverageCheckState = CoverageCheck.PASS
 
   /**
@@ -135,7 +133,6 @@ class RunCoverage(
 
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
-//    println("Coverage Results: $coverageResults")
     println("\nCOVERAGE ANALYSIS COMPLETED.")
   }
 
@@ -162,8 +159,8 @@ class RunCoverage(
 
       val coverageReports = deferredCoverageReports.awaitAll()
 
-      // Check if the coverage reports are successfully generated else return failure message.
       // TODO: (yet to decide) if this too needs to be set as coverage state -> FAIL.
+      // Check if the coverage reports are successfully generated else return failure message.
       coverageReports.firstOrNull()?.let {
         if (!it.isGenerated) {
           return "Failed to generate coverage report for the file: $filePath.".also {
@@ -176,16 +173,15 @@ class RunCoverage(
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
       var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
-      val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
+      val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired
+        ?: MIN_THRESHOLD
 
-//      println("**************************Coverage threshold : $coverageCheckThreshold")
       if (computedCoverageRatio*100 < coverageCheckThreshold) {
         coverageCheckState = CoverageCheck.FAIL
         reportText += "|:x:|"
       } else {
         reportText += "|:white_check_mark:|"
       }
-//      println("***************Coverage check state: $coverageCheckState")
 
       File(reportOutputPath).apply {
         parentFile?.mkdirs()
@@ -200,65 +196,49 @@ class RunCoverage(
     }
   }
 
+  private fun generateFinalMdReport(coverageResults: List<String>) {
+    val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
+      "|--------------|------------|---------------|--------|\n"
+
+    val coverageFailures = coverageResults.filter { result ->
+      result.contains("|") && result.split("|")[4].trim() == ":x:"
+    }
+
+    val coverageSuccesses = coverageResults.filter { result ->
+      result.contains("|") && result.split("|")[4].trim() == ":white_check_mark:"
+    }
+
+    val anamolyCases = coverageResults.filterNot { it.contains("|") }
+
+    val coverageFailuresRows = coverageFailures.joinToString(separator = "\n")
+    val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
+
+    val failureMarkdownTable = "## Coverage Report\n\n" +
+      "- Total covered files: ${coverageResults.size}\n" +
+      "- Coverage Status: **$coverageCheckState**\n" +
+      "- Min Coverage Required: $MIN_THRESHOLD%\n\n" +
+      coverageTableHeader +
+      coverageFailuresRows
+
+    val successMarkdownTable = "<details>\n" +
+      "<summary>Succeeded Coverages</summary><br>\n\n" +
+      coverageTableHeader +
+      coverageSuccessesRows +
+      "\n</details>"
+
+    val anamolyCasesList = anamolyCases.joinToString(separator = "\n") { "- $it" }
+    val finalReportText = failureMarkdownTable +
+      "\n\n" + successMarkdownTable +
+      "\n\n" + "### Anamoly Cases\n" +
+      anamolyCasesList
+
+    println(finalReportText)
+  }
+
   private enum class CoverageCheck {
     PASS,
     FAIL
   }
-}
-
-private fun generateFinalMdReport(coverageResults: List<String>) {
-  /*val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
-    "|--------------|------------|---------------|--------|\n"
-
-  println("Coverage table header: $coverageTableHeader")
-
-  *//*val coverageFailures = coverageResults.map { result ->
-    result.split("|").fil{it}
-  }*//*
-  println(coverageResults[0].split("|")[4])
-  println("Coverage Failures: $coverageResults")*/
-
-  val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
-    "|--------------|------------|---------------|--------|\n"
-
-  val coverageFailures = coverageResults.filter { result ->
-    result.contains("|") && result.split("|")[4].trim() == ":x:"
-  }
-
-  val coverageSuccesses = coverageResults.filter { result ->
-    result.contains("|") && result.split("|")[4].trim() == ":white_check_mark:"
-  }
-
-  val exemptedCases = coverageResults.filterNot { it.contains("|") }
-
-  val coverageFailuresRows = coverageFailures.joinToString(separator = "\n")
-  val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
-
-  val failureMarkdownTable = "## Coverage Report\n\n" +
-    "Total covered files: ${coverageResults.size}\n" +
-    "Coverage Status: FAIL\n" +
-    "Min Coverage Required: 10%\n\n" + // make use of MIN_THRESHOLD
-    coverageTableHeader +
-    coverageFailuresRows
-
-  val successMarkdownTable = "<details>\n" +
-    "<summary>Succeeded Coverages</summary>\n\n" +
-    coverageTableHeader +
-    coverageSuccessesRows +
-    "\n</details>"
-
-  val exemptedCasesList = exemptedCases.joinToString(separator = "\n") { "- $it" }
-
-  val finalReportText = failureMarkdownTable + "\n\n" + successMarkdownTable + "\n\n" + "### Exempted Cases\n" + exemptedCasesList
-/*
-
-  println("""
-      ## Coverage Report
-      $coverageResults
-  """.trimIndent())
-*/
-
-  println(finalReportText)
 }
 
 private fun calculateAggregateCoverageReport(
