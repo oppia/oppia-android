@@ -288,7 +288,7 @@ class ClassroomControllerTest {
   }
 
   @Test
-  fun testGetClassroomIdByTopicId_nonExistentTopic_returnsNull() {
+  fun testGetClassroomIdByTopicId_nonExistentTopic_returnsEmptyId() {
     val classroomId = classroomController.getClassroomIdByTopicId("invalid_topic_id")
 
     assertThat(classroomId).isEmpty()

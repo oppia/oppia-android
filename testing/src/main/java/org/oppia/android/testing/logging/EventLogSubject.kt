@@ -786,7 +786,7 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
-   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasStartExplorationContextThat] except for the conditions of, and subject returned by,
    * [hasStartExplorationContextThat].
    */
   fun hasStartExplorationContextThat(block: ExplorationContextSubject.() -> Unit) {
