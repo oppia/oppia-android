@@ -31,10 +31,12 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   }
   private val bazelRcFile by lazy {
     temporaryRootFolder.newFile(".bazelrc").also {
-      it.writeText("""
+      it.writeText(
+        """
             --noenable_bzlmod
             build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-        """.trimIndent())
+        """.trimIndent()
+      )
     }
   }
 
