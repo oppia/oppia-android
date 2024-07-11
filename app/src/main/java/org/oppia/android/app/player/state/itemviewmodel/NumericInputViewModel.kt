@@ -26,8 +26,8 @@ class NumericInputViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = userAnswerState.textualAnswer
-  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
+  var answerText: CharSequence = userAnswerState.textInputAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
   var isAnswerAvailable = ObservableField<Boolean>(false)
@@ -77,7 +77,7 @@ class NumericInputViewModel private constructor(
 
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
-      this.textualAnswer = answerText.toString()
+      this.textInputAnswer = answerText.toString()
       this.answerErrorCategory = answerErrorCetegory
     }.build()
   }

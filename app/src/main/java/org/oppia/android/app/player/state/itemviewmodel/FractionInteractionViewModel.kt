@@ -32,8 +32,8 @@ class FractionInteractionViewModel private constructor(
   userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = userAnswerState.textualAnswer
-  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
+  var answerText: CharSequence = userAnswerState.textInputAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
@@ -118,7 +118,7 @@ class FractionInteractionViewModel private constructor(
 
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
-      this.textualAnswer = answerText.toString()
+      this.textInputAnswer = answerText.toString()
       this.answerErrorCategory = answerErrorCetegory
     }.build()
   }

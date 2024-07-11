@@ -30,8 +30,8 @@ class TextInputViewModel private constructor(
   private val translationController: TranslationController,
   userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = userAnswerState.textualAnswer
-  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
+  var answerText: CharSequence = userAnswerState.textInputAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
   val hintText: CharSequence = deriveHintText(interaction)
   private var pendingAnswerError: String? = null
 
@@ -107,7 +107,7 @@ class TextInputViewModel private constructor(
 
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
-      this.textualAnswer = answerText.toString()
+      this.textInputAnswer = answerText.toString()
       this.answerErrorCategory = answerErrorCetegory
     }.build()
   }

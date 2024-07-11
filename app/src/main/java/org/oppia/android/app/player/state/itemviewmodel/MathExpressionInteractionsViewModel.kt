@@ -74,7 +74,7 @@ class MathExpressionInteractionsViewModel private constructor(
    * Defines the current answer text being entered by the learner. This is expected to be directly
    * bound to the corresponding edit text.
    */
-  var answerText: CharSequence = userAnswerState.textualAnswer
+  var answerText: CharSequence = userAnswerState.textInputAnswer
     // The value of ths field is set from the Binding and from the TextWatcher. Any
     // programmatic modification needs to be done here, so that the Binding and the TextWatcher
     // do not step on each other.
@@ -82,7 +82,7 @@ class MathExpressionInteractionsViewModel private constructor(
       field = value.toString().trim()
     }
 
-  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR_UNSPECIFIED
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -126,7 +126,7 @@ class MathExpressionInteractionsViewModel private constructor(
 
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
-      this.textualAnswer = answerText.toString()
+      this.textInputAnswer = answerText.toString()
       this.answerErrorCategory = answerErrorCetegory
     }.build()
   }

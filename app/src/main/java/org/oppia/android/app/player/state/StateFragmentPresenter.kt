@@ -367,9 +367,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
   ) {
-    if (stateViewModel.getCanSubmitAnswer().get() == true) {
-      recyclerViewAssembler.resetUserAnswerState()
-    }
+    recyclerViewAssembler.resetUserAnswerState()
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
     answerOutcomeLiveData.observe(
       fragment,

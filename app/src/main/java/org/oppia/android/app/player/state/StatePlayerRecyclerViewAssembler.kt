@@ -1430,7 +1430,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         resourceBucketName: String,
         entityType: String,
         profileId: ProfileId,
-        userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance()
+        userAnswerState: UserAnswerState
       ): Builder {
         return Builder(
           accessibilityService,
