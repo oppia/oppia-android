@@ -8,7 +8,6 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ScreenName.INTRO_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
@@ -22,37 +21,25 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileNickname = intent.extractParams().profileNickname
+    val profileNickname =
+      intent.getProtoExtra(PARAMS_KEY, IntroActivityParams.getDefaultInstance()).profileNickname
+
     val profileId = intent.extractCurrentUserProfileId()
 
     onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, profileId)
   }
 
   companion object {
-    private const val PARAMS_KEY = "OnboardingIntroActivity.params"
+    const val PARAMS_KEY = "OnboardingIntroActivity.params"
 
     /**
      * A convenience function for creating a new [OnboardingLearnerIntroActivity] intent by prefilling
      * common params needed by the activity.
      */
-    fun createIntroActivity(context: Context, profileNickname: String): Intent {
-      val params = IntroActivityParams.newBuilder()
-        .setProfileNickname(profileNickname)
-        .build()
-      return createOnboardingLearnerIntroActivity(context, params)
-    }
-
-    private fun createOnboardingLearnerIntroActivity(
-      context: Context,
-      params: IntroActivityParams
-    ): Intent {
+    fun createIntroActivity(context: Context): Intent {
       return Intent(context, IntroActivity::class.java).apply {
-        putProtoExtra(PARAMS_KEY, params)
         decorateWithScreenName(INTRO_ACTIVITY)
       }
     }
-
-    private fun Intent.extractParams() =
-      getProtoExtra(PARAMS_KEY, IntroActivityParams.getDefaultInstance())
   }
 }
