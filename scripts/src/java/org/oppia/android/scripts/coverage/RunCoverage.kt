@@ -102,16 +102,16 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): String {
+  fun execute() {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
       .map { it.exemptedFilePath }
 
-    if (filePath in testFileExemptionList)
-      return "This file is exempted from having a test file; skipping coverage check.".also {
-        println(it)
-      }
+    if (filePath in testFileExemptionList) {
+      println("This file is exempted from having a test file; skipping coverage check.")
+      return
+    }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
     if (testFilePaths.isEmpty()) {
@@ -138,8 +138,6 @@ class RunCoverage(
         println("\nGenerated report at: $reportOutputPath\n")
       }
     } ?: println("No coverage reports generated.")
-
-    return reportOutputPath
   }
 
   private fun runCoverageForTarget(testTarget: String): CoverageReport {
