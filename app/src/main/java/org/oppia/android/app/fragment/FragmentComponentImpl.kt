@@ -7,6 +7,7 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
+import org.oppia.android.app.classroom.ClassroomListFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
@@ -35,7 +36,10 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
+import org.oppia.android.app.onboarding.CreateProfileFragment
+import org.oppia.android.app.onboarding.IntroFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
+import org.oppia.android.app.onboarding.OnboardingProfileTypeFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
 import org.oppia.android.app.options.AudioLanguageFragment
@@ -194,4 +198,8 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(exitSurveyConfirmationDialogFragment: ExitSurveyConfirmationDialogFragment)
   fun inject(surveyWelcomeDialogFragment: SurveyWelcomeDialogFragment)
   fun inject(surveyOutroDialogFragment: SurveyOutroDialogFragment)
+  fun inject(classroomListFragment: ClassroomListFragment)
+  fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
+  fun inject(createProfileFragment: CreateProfileFragment)
+  fun inject(introFragment: IntroFragment)
 }

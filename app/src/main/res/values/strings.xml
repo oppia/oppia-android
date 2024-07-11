@@ -326,6 +326,9 @@
   <string name="home_activity_title">Home</string>
   <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <!--  ClassroomListActivity-->
+  <string name="classroom_list_activity_title">Home</string>
+  <string name="classrooms_list_activity_section_header">Classrooms</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
@@ -643,6 +646,40 @@
   <string name="onboarding_language_activity_explanation_text">You can change your language selection anytime in the app settings</string>
   <string name="onboarding_language_activity_button_text">Let\'s go!</string>
 
+  <!-- Onboarding Profile Type Activity -->
+  <string name="onboarding_profile_type_activity_title">Select Profile Type</string>
+  <string name="onboarding_profile_type_activity_header">Tell us more about you!</string>
+  <string name="onboarding_profile_type_activity_student_text">I\'m a student and I want to learn new things!</string>
+  <string name="onboarding_profile_type_activity_parent_text">I\'m the parent, teacher, or guardian of a student.</string>
+  <string name="onboarding_step_count_two">STEP 2 OF 5</string>
+
+  <!-- Onboarding Create New Profile Activity -->
+  <string name="create_profile_activity_title">Create Profile</string>
+  <string name="create_profile_activity_header">What should we call you?</string>
+  <string name="create_profile_activity_nickname_label">Nickname</string>
+  <string name="create_profile_activity_profile_picture_prompt">Tap here to add a picture</string>
+  <string name="create_profile_activity_nickname_error">Click in the box above to type your nickname.</string>
+  <string name="create_profile_activity_edit_icon_content_description">Edit profile picture</string>
+  <string name="create_profile_activity_current_picture_content_description">Current profile picture</string>
+  <string name="onboarding_step_count_three">STEP 3 OF 5</string>
+
+  <!-- Onboarding Learner Intro Activity -->
+  <string name="onboarding_learner_intro_activity_title">Welcome</string>
+  <string name="onboarding_learner_intro_activity_text">Welcome, %s!</string>
+  <string name="onboarding_learner_intro_classroom_text">Learn Math through fun, story-based lessons.</string>
+  <string name="onboarding_learner_intro_practice_text">Try practice questions to test your knowledge.</string>
+  <string name="onboarding_learner_intro_feedback_text">Get feedback to improve using %s\'s corrections.</string>
+  <string name="onboarding_step_count_four">STEP 4 OF 5</string>
+
   <!-- Onboarding Shared Strings -->
   <string name="onboarding_otter_content_description">Cute otter wearing glasses.</string>
+  <string name="onboarding_learner_otter_content_description">Cute otter with books.</string>
+  <string name="onboarding_parent_otter_content_description">Mama and baby otter.</string>
+  <string name="onboarding_navigation_back">Back</string>
+  <string name="onboarding_navigation_continue">Continue</string>
+
+  <!-- Onboarding Audio Language Fragment -->
+  <string name="audio_language_fragment_text">In %s, you can listen to lessons!</string>
+  <string name="audio_language_fragment_subtitle">Select the audio language to listen to lessons</string>
+  <string name="onboarding_step_count_five">STEP 5 OF 5</string>
 </resources>
