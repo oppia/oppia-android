@@ -35,6 +35,7 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
+/** Displays a list of coming soon topics. */
 @Composable
 fun ComingSoonTopicList(
   comingSoonTopicListViewModel: ComingSoonTopicListViewModel,
