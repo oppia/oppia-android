@@ -18,38 +18,47 @@ import java.util.concurrent.TimeUnit
  * Entry point function for running coverage analysis for a source file.
  *
  * Usage:
- *   bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <relative_path_to_file>
+ *    bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <list_of_relative_path_to_files>
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
- * - relative_path_to_file: the relative path to the file to analyse coverage
- * - reportFormat: the format of the coverage report. Defaults to MARKDOWN if not specified.
- *   Available options: MARKDOWN, HTML.
+ * - list_of_relative_path_to_files: the list of relative path to the files to analyse coverage
+ * - reportFormat: the format of the coverage report. Defaults to HTML if not specified.
+ *    Available options: MARKDOWN, HTML.
+ * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
+ *    in minutes.
  *
  * Example:
- *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt format=HTML
+ *    bazel run //scripts:run_coverage -- $(pwd)
+ *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --format=HTML
+ *
+ * Example with list of files:
+ *    bazel run //scripts:run_coverage -- $(pwd)
+ *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
+ *    utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt --format=MARKDOWN
+ *
  * Example with custom process timeout:
- *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=15
+ *    bazel run //scripts:run_coverage -- $(pwd)
+ *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --processTimeout=15
  *
  */
 fun main(vararg args: String) {
   val repoRoot = args[0]
-  val filePath = args[1]
-  println("File Path: $filePath")
 
-  // TODO: once the file list is received (git client), it need to be filtered to just have
-  // .kt files and also not Test.kt files
-  val filePaths = listOf(
-    "utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt",
-    "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt",
-    "utility/src/main/java/org/oppia/android/util/math/NumericExpressionEvaluator.kt",
-    "utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt",
-    "utility/src/main/java/org/oppia/android/util/math/RealExtensions.kt",
-  )
+  val filePathList = args.drop(1)
+    .takeWhile { !it.startsWith("--") }
+    .map { it.trim(',', '[', ']') }
+    .filter { it.endsWith(".kt") && !it.endsWith("Test.kt") }
 
-  val format = args.find { it.startsWith("format=", ignoreCase = true) }
+  for (file in filePathList) {
+    if (!File(repoRoot, file).exists()) {
+      error("File doesn't exist: $file")
+    }
+  }
+
+  println("Running coverage analysis for the files: $filePathList")
+
+  val format = args.find { it.startsWith("--format=", ignoreCase = true) }
     ?.substringAfter("=")
     ?.uppercase() ?: "HTML"
 
@@ -59,14 +68,8 @@ fun main(vararg args: String) {
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
-  val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
-
-  if (!File(repoRoot, filePath).exists()) {
-    error("File doesn't exist: $filePath.")
-  }
-
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val processTimeout: Long = args.find { it.startsWith("processTimeout=") }
+    val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
       ?.substringAfter("=")
       ?.toLongOrNull() ?: 10
 
@@ -76,9 +79,8 @@ fun main(vararg args: String) {
 
     RunCoverage(
       repoRoot,
-      filePaths,
+      filePathList,
       reportFormat,
-      reportOutputPath,
       commandExecutor,
       scriptBgDispatcher
     ).execute()
@@ -95,9 +97,8 @@ fun main(vararg args: String) {
  */
 class RunCoverage(
   private val repoRoot: String,
-  private val filePaths: List<String>,
+  private val filePathList: List<String>,
   private val reportFormat: ReportFormat,
-  private val reportOutputPath: String,
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
@@ -123,7 +124,7 @@ class RunCoverage(
    * coverage analysis for each test target found.
    */
   fun execute() = runBlocking {
-    val coverageResults = filePaths.map { filePath ->
+    val coverageResults = filePathList.map { filePath ->
       async {
         runCoverageForFile(filePath)
       }
@@ -174,13 +175,15 @@ class RunCoverage(
       val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired
         ?: MIN_THRESHOLD
 
-      if (computedCoverageRatio * 100 < coverageCheckThreshold) {
-        coverageCheckState = CoverageCheck.FAIL
-        reportText += "|:x:|"
-      } else {
-        reportText += "|:white_check_mark:|"
-      }
+      coverageCheckState = computedCoverageRatio.takeIf { it * 100 <coverageCheckThreshold }
+        ?.let { CoverageCheck.FAIL } ?: CoverageCheck.PASS
 
+      reportText += if (reportFormat == ReportFormat.MARKDOWN) {
+        computedCoverageRatio.takeIf { it * 100 < coverageCheckThreshold }
+          ?.let { "|:x:|" } ?: "|:white_check_mark:|"
+      } else ""
+
+      val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
       File(reportOutputPath).apply {
         parentFile?.mkdirs()
         writeText(reportText)
@@ -212,7 +215,7 @@ class RunCoverage(
     val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
 
     val failureMarkdownTable = "## Coverage Report\n\n" +
-      "- Total covered files: ${coverageResults.size}\n" +
+      "- No of files assessed: ${coverageResults.size}\n" +
       "- Coverage Status: **$coverageCheckState**\n" +
       "- Min Coverage Required: $MIN_THRESHOLD%\n\n" +
       coverageTableHeader +
@@ -230,6 +233,7 @@ class RunCoverage(
       "\n\n" + "### Anamoly Cases\n" +
       anomalyCasesList
 
+    // remove later
     println(finalReportText)
   }
 
