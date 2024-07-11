@@ -43,6 +43,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.classroom.classroomlist.CLASSROOM_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.classroomlist.CLASSROOM_LIST_TEST_TAG
+import org.oppia.android.app.classroom.promotedlist.COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.promotedlist.COMING_SOON_TOPIC_LIST_TEST_TAG
 import org.oppia.android.app.classroom.promotedlist.PROMOTED_STORY_LIST_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.promotedlist.PROMOTED_STORY_LIST_TEST_TAG
 import org.oppia.android.app.classroom.topiclist.ALL_TOPICS_HEADER_TEST_TAG
@@ -622,6 +624,90 @@ class ClassroomListFragmentTest {
         .assertTextContains("SCIENCE")
         .assertIsDisplayed()
     }
+  }
+
+  @Test
+  fun testFragment_markAtLeastOneStoryCompletedForAllTopics_displaysComingSoonTopicsList() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedFractionsTopic(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic1(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
+      .assertTextContains(context.getString(R.string.coming_soon))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
+      .onChildAt(0)
+      .onChildAt(1)
+      .assertTextContains("Third Test Topic")
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_markFullProgressForSecondTestTopic_displaysComingSoonTopicsText() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedTestTopic1(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
+      .assertTextContains(context.getString(R.string.coming_soon))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
+      .onChildAt(0)
+      .onChildAt(1)
+      .assertTextContains("Third Test Topic")
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun testFragment_markStory0OfRatiosAndTestTopics0And1Done_playTestTopicStory0_noPromotions() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic1(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoAdminTwice()
+
+    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
+      .assertTextContains(context.getString(R.string.coming_soon))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
+      .onChildAt(0)
+      .onChildAt(1)
+      .assertTextContains("Third Test Topic")
+      .assertIsDisplayed()
   }
 
   @Test

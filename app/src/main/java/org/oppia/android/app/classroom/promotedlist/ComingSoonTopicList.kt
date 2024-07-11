@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -35,6 +36,12 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
+/** Test tag for the header of the promoted story list. */
+const val COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG = "TEST_TAG.coming_soon_topic_list_header"
+
+/** Test tag for the promoted story list. */
+const val COMING_SOON_TOPIC_LIST_TEST_TAG = "TEST_TAG.coming_soon_topic_list"
+
 /** Displays a list of coming soon topics. */
 @Composable
 fun ComingSoonTopicList(
@@ -47,17 +54,20 @@ fun ComingSoonTopicList(
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Medium,
     fontSize = dimensionResource(id = R.dimen.coming_soon_topic_list_header_text_size).value.sp,
-    modifier = Modifier.padding(
-      start = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_start),
-      top = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_top),
-      end = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_end),
-    ),
+    modifier = Modifier
+      .padding(
+        start = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_start),
+        top = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_top),
+        end = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_end),
+      )
+      .testTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG),
   )
   LazyRow(
     modifier = Modifier
       .padding(
         top = dimensionResource(id = R.dimen.coming_soon_topic_list_padding)
-      ),
+      )
+      .testTag(COMING_SOON_TOPIC_LIST_TEST_TAG),
     contentPadding = PaddingValues(
       start = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_start),
       end = dimensionResource(id = R.dimen.home_padding_end),
