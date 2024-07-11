@@ -17,13 +17,16 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.CreateProfileFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -37,7 +40,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private val imageLoader: ImageLoader,
   private val createProfileViewModel: CreateProfileViewModel,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
@@ -111,6 +115,11 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private fun checkNicknameAndUpdateError(nickname: String): Boolean {
     val hasError = nickname.isBlank()
     createProfileViewModel.hasErrorMessage.set(hasError)
+    createProfileViewModel.errorMessage.set(
+      appLanguageResourceHandler.getStringInLocale(
+        R.string.create_profile_activity_nickname_error
+      )
+    )
     return hasError
   }
 
@@ -118,6 +127,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   fun handleOnActivityResult(intent: Intent?) {
     intent?.let {
       binding.createProfilePicturePrompt.visibility = View.GONE
+      selectedImageUri = intent.data
       selectedImage =
         checkNotNull(intent.data.toString()) { "Could not find the selected image." }
       imageLoader.loadBitmap(
@@ -144,11 +154,12 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   private fun updateProfileDetails(profileName: String) {
     profileManagementController.updateNewProfileDetails(
-      profileId,
-      profileType,
-      selectedImageUri,
-      selectUniqueRandomColor(),
-      profileName
+      profileId = profileId,
+      profileType = profileType,
+      avatarImagePath = selectedImageUri,
+      colorRgb = selectUniqueRandomColor(),
+      newName = profileName,
+      isAdmin = true
     ).toLiveData().observe(
       fragment,
       { result ->
@@ -156,8 +167,13 @@ class CreateProfileFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             createProfileViewModel.hasErrorMessage.set(false)
 
+            val params = IntroActivityParams.newBuilder()
+              .setProfileNickname(profileName)
+              .build()
+
             val intent =
-              IntroActivity.createIntroActivity(activity, profileName).apply {
+              IntroActivity.createIntroActivity(activity).apply {
+                putProtoExtra(IntroActivity.PARAMS_KEY, params)
                 decorateWithUserProfileId(profileId)
               }
 
@@ -166,7 +182,15 @@ class CreateProfileFragmentPresenter @Inject constructor(
           is AsyncResult.Failure -> {
             createProfileViewModel.hasErrorMessage.set(true)
 
-            binding.createProfileNicknameError.text = result.error.localizedMessage
+            val errorMessage = when (result.error) {
+              is ProfileManagementController.ProfileNameOnlyLettersException ->
+                appLanguageResourceHandler.getStringInLocale(
+                  R.string.add_profile_error_name_only_letters
+                )
+              else -> result.error.localizedMessage
+            }
+
+            createProfileViewModel.errorMessage.set(errorMessage)
 
             oppiaLogger.e(
               "CreateProfileFragment",

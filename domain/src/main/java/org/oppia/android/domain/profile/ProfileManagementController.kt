@@ -670,11 +670,15 @@ class ProfileManagementController @Inject constructor(
     profileType: ProfileType,
     avatarImagePath: Uri?,
     colorRgb: Int,
-    newName: String
+    newName: String,
+    isAdmin: Boolean
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
+      if (!enableLearnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
+      }
       val profile =
         it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
@@ -702,7 +706,7 @@ class ProfileManagementController @Inject constructor(
 
       updatedProfile.name = newName
 
-      updatedProfile.isAdmin = true
+      updatedProfile.isAdmin = isAdmin
 
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
@@ -711,7 +715,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_DETAILS_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
     }
   }
 
