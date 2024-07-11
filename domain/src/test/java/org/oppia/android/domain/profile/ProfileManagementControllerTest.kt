@@ -24,6 +24,7 @@ import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
@@ -1276,6 +1277,90 @@ class ProfileManagementControllerTest {
       profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
     )
     assertThat(lastSelectedClassroomId).isEmpty()
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_checkUpdateIsSuccessful() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -1,
+      "John",
+      isAdmin = true
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+
+    assertThat(profile.name).isEqualTo("John")
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.avatar.avatarImageUri).isEqualTo("")
+    assertThat(profile.avatar.avatarColorRgb).isEqualTo(-1)
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_invalidName_checkUpdateFailed() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -1,
+      "John123",
+      isAdmin = true
+    )
+    val failure = monitorFactory.waitForNextFailureResult(updateProvider)
+
+    assertThat(failure).hasMessageThat().contains("John123 does not contain only letters")
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_nullAvatarUri_setsAvatarColorSuccessfully() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -11235672,
+      "John",
+      isAdmin = true
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+
+    assertThat(profile.avatar.avatarImageUri).isEqualTo("")
+    assertThat(profile.avatar.avatarColorRgb).isEqualTo(-11235672)
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_invalidProfileId_checkUpdateFailed() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_3,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -1,
+      "John",
+      isAdmin = true
+    )
+    val failure = monitorFactory.waitForNextFailureResult(updateProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("ProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
   }
 
   private fun addTestProfiles() {
