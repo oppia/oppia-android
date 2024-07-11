@@ -30,6 +30,7 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
+    /** Argument key for [IntroActivity]'s intent parameters. */
     const val PARAMS_KEY = "OnboardingIntroActivity.params"
 
     /**
