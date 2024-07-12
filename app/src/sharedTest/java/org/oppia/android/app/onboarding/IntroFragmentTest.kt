@@ -33,6 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -82,6 +83,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -249,11 +251,14 @@ class IntroFragmentTest {
 
   private fun launchOnboardingLearnerIntroActivity():
     ActivityScenario<IntroActivity>? {
+      val params = IntroActivityParams.newBuilder()
+        .setProfileNickname(testProfileNickname)
+        .build()
+
       val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(
-          context,
-          testProfileNickname,
-        )
+        IntroActivity.createIntroActivity(context).apply {
+          putProtoExtra(IntroActivity.PARAMS_KEY, params)
+        }
       )
       testCoroutineDispatchers.runCurrent()
       return scenario

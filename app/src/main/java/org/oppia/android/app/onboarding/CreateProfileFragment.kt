@@ -1,13 +1,17 @@
 package org.oppia.android.app.onboarding
 
+import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.CreateProfileActivityParams
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment for displaying a new learner profile creation flow. */
@@ -25,11 +29,30 @@ class CreateProfileFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return createProfileFragmentPresenter.handleCreateView(inflater, container)
-  }
+    createProfileFragmentPresenter.activityResultLauncher = registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+      if (result.resultCode == Activity.RESULT_OK) {
+        createProfileFragmentPresenter.handleOnActivityResult(result.data)
+      }
+    }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    createProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
+    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+      "Expected CreateProfileFragment to have a profileId argument."
+    }
+    val profileType = checkNotNull(
+      arguments?.getProto(
+        CREATE_PROFILE_PARAMS_KEY, CreateProfileActivityParams.getDefaultInstance()
+      )?.profileType
+    ) {
+      "Expected CreateProfileFragment to have a profileType argument."
+    }
+
+    return createProfileFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      profileId,
+      profileType
+    )
   }
 }

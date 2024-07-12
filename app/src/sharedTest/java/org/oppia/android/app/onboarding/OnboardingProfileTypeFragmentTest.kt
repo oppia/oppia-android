@@ -11,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -37,10 +38,13 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.CreateProfileActivityParams
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -86,6 +90,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -95,6 +100,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -121,6 +127,9 @@ class OnboardingProfileTypeFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   @Before
   fun setUp() {
@@ -253,12 +262,14 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      // Does nothing for now, but should fail once navigation is implemented in a future PR.
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(matches(isDisplayed()))
 
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(matches(isDisplayed()))
+      val params = CreateProfileActivityParams.newBuilder()
+        .setProfileType(ProfileType.SOLE_LEARNER)
+        .build()
+
+      intended(hasComponent(CreateProfileActivity::class.java.name))
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
+      intended(hasProtoExtra(CREATE_PROFILE_PARAMS_KEY, params))
     }
   }
 
@@ -267,9 +278,17 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val params = CreateProfileActivityParams.newBuilder()
+        .setProfileType(ProfileType.SOLE_LEARNER)
+        .build()
+
       intended(hasComponent(CreateProfileActivity::class.java.name))
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
+      intended(hasProtoExtra(CREATE_PROFILE_PARAMS_KEY, params))
     }
   }
 

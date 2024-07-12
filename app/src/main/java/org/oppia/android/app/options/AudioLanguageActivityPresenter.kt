@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -7,6 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.AudioLanguageActivityBinding
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
@@ -15,12 +17,10 @@ import javax.inject.Inject
 @ActivityScope
 class AudioLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var audioLanguage: AudioLanguage
-  private var internalProfileId = -1
 
   /** Handles when the activity is first created. */
-  fun handleOnCreate(audioLanguage: AudioLanguage, internalProfileId: Int) {
+  fun handleOnCreate(audioLanguage: AudioLanguage, profileId: ProfileId) {
     this.audioLanguage = audioLanguage
-    this.internalProfileId = internalProfileId
 
     val binding: AudioLanguageActivityBinding =
       DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)
@@ -28,8 +28,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
       finishWithResult()
     }
     if (getAudioLanguageFragment() == null) {
-      val audioLanguageFragment =
-        AudioLanguageFragment.newInstance(audioLanguage)
+      val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage, profileId)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
     }
@@ -56,7 +55,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
       putProtoExtra(MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, result)
     }
 
-    activity.setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
+    activity.setResult(RESULT_OK, intent)
     activity.finish()
   }
 

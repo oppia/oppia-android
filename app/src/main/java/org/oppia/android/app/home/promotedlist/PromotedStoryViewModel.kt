@@ -39,6 +39,11 @@ class PromotedStoryViewModel(
       promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
     )
   }
+  val classroomTitle by lazy {
+    translationController.extractString(
+      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
+    )
+  }
 
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
 

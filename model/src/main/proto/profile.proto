@@ -88,8 +88,29 @@ message Profile {
   // this profile.
   int64 survey_last_shown_timestamp_ms = 18;
 
+  // Represents the ID of the classroom that the user selected during their last login.
+  string last_selected_classroom_id = 19;
+
+  // Represents the type of user which informs the configuration options available to them.
+  ProfileType profile_type = 20;
+
   // Indicates whether this user has completed the onboarding flow.
-  bool already_onboarded_profile = 20;
+  bool already_onboarded_profile = 21;
+}
+
+// Represents the type of user using the app.
+enum ProfileType {
+  // The undefined ProfileType.
+  PROFILE_TYPE_UNSPECIFIED = 0;
+
+  // Represents a single learner profile without an admin pin set.
+  SOLE_LEARNER = 1;
+
+  // Represents an admin profile when there are more than one profiles.
+  SUPERVISOR = 2;
+
+  // Represents a non-admin profile in a multiple profile setup.
+  ADDITIONAL_LEARNER = 3;
 }
 
 // Represents a profile avatar image.

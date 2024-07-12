@@ -107,14 +107,14 @@ message EventLog {
       // The event being logged is related to offering a hint when it becomes available.
       HintContext hint_unlocked_context = 18;
 
-      // The event being logged is related to accessing a hint.
-      HintContext access_hint_context = 19;
+      // The event being logged is related to revealing a hint.
+      HintContext reveal_hint_context = 19;
 
       // The event being logged is related to offering a solution when it becomes available.
       ExplorationContext solution_unlocked_context = 20;
 
       // The event being logged is related to accessing a solution.
-      ExplorationContext access_solution_context = 21;
+      ExplorationContext reveal_solution_context = 21;
 
       // The event being logged is related to submitting an answer.
       SubmitAnswerContext submit_answer_context = 22;
@@ -219,13 +219,19 @@ message EventLog {
       // the lesson.
       ExplorationContext resume_lesson_submit_incorrect_answer_context = 53;
 
+      // The event being logged is related to viewing a hint that was already unlocked.
+      HintContext view_existing_hint_context = 54;
+
+      // The event being logged is related to viewing a solution that was already unlocked.
+      ExplorationContext view_existing_solution_context = 55;
+
       // The event being logged indicates that the profile user has started going through the
       // onboarding flow.
-      ProfileOnboardingContext start_profile_onboarding_event = 54;
+      ProfileOnboardingContext start_profile_onboarding_event = 56;
 
       // The event being logged indicates that the profile user has reached the home screen for the
       // first time.
-      ProfileOnboardingContext end_profile_onboarding_event = 55;
+      ProfileOnboardingContext end_profile_onboarding_event = 57;
     }
   }
 
@@ -238,7 +244,7 @@ message EventLog {
     ProfileId profile_id = 1;
 
     // Represents the type of user profile.
-    //ProfileType profile_type = 2; // todo revert
+    ProfileType profile_type = 2;
   }
 
   // Structure of a question context.
@@ -291,7 +297,7 @@ message EventLog {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
-    // Corresponds to the index of the index being shown or last seen.
+    // Corresponds to the index of the hint being shown or last seen.
     int32 hint_index = 4;
 
     reserved 2;

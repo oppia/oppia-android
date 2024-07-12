@@ -13,6 +13,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [IntroFragment]. */
@@ -30,7 +31,7 @@ class IntroFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileNickname: String,
-    internalProfileId: Int
+    profileId: ProfileId
   ): View {
     binding = LearnerIntroFragmentBinding.inflate(
       inflater,
@@ -41,8 +42,6 @@ class IntroFragmentPresenter @Inject constructor(
     binding.lifecycleOwner = fragment
 
     setLearnerName(profileNickname)
-
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     analyticsController.logLowPriorityEvent(
       oppiaLogger.createProfileOnboardingStartedContext(profileId),
@@ -62,9 +61,9 @@ class IntroFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
         fragment.requireContext(),
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE,
-        internalProfileId
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
+      intent.decorateWithUserProfileId(profileId)
       fragment.startActivity(intent)
     }
 

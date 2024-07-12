@@ -114,7 +114,7 @@ class HomeActivity :
       ExitProfileDialogArguments
         .newBuilder().apply {
           if (enableOnboardingFlowV2.value) {
-            // this.profileType = profileType // todo revert
+            this.profileType = profileType
           }
           this.highlightItem = HighlightItem.NONE
         }

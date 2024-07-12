@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -21,6 +23,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.core.AllOf.allOf
+import org.hamcrest.core.IsInstanceOf
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -308,8 +316,12 @@ class AudioLanguageFragmentTest {
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      // Verifies that accepting the default language selection works correctly.
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
@@ -324,7 +336,79 @@ class AudioLanguageFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      // Verifies that accepting the default language selection works correctly.
       intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_languageSelectionChanged_languageIsUpdated() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+        onData(
+          allOf(
+            `is`(IsInstanceOf.instanceOf(String::class.java)), `is`("Naijá")
+          )
+        )
+          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+          .perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.audio_language_dropdown_list)).check(
+          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+        )
+
+        // Verifies that the selected language is set successfully.
+        // Language being correctly set is a condition for navigating to the next screen.
+        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(HomeActivity::class.java.name))
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_languageSelectionChanged_configChange_languageIsUpdated() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+        onData(
+          CoreMatchers.allOf(
+            `is`(instanceOf(String::class.java)), `is`("Naijá")
+          )
+        )
+          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+          .perform(click())
+
+        onView(isRoot()).perform(orientationLandscape())
+
+        testCoroutineDispatchers.runCurrent()
+
+        // Verifies that the selected language is still set successfully after configuration change.
+        onView(withId(R.id.audio_language_dropdown_list)).check(
+          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+        )
+
+        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        intended(hasComponent(HomeActivity::class.java.name))
+      }
     }
   }
 

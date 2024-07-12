@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -53,7 +55,10 @@ class OptionsActivity :
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
-  private var profileId: Int? = -1
+  private lateinit var profileId: ProfileId
+  private var internalProfileId: Int = -1
+  private lateinit var readingTextSizeLauncher: ActivityResultLauncher<Intent>
+  private lateinit var audioLanguageLauncher: ActivityResultLauncher<Intent>
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -90,7 +95,8 @@ class OptionsActivity :
       OptionsActivityParams.getDefaultInstance()
     )
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
-    profileId = intent.extractCurrentUserProfileId().internalId
+    profileId = intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
     if (savedInstanceState != null) {
       isFirstOpen = false
     }
@@ -112,29 +118,34 @@ class OptionsActivity :
       extraOptionsTitle,
       isFirstOpen,
       selectedFragment,
-      profileId!!
+      internalProfileId
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
-  }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    checkNotNull(data) {
-      "Expected data to be passed as an activity result for request: $requestCode."
-    }
-    when (requestCode) {
-      REQUEST_CODE_TEXT_SIZE -> {
-        val textSizeResults = data.getProtoExtra(
+    readingTextSizeLauncher = registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+      if (result.resultCode == RESULT_OK && result.data != null) {
+        val textSizeResults = result.data?.getProtoExtra(
           MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
           ReadingTextSizeActivityResultBundle.getDefaultInstance()
         )
-        optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+        if (textSizeResults != null) {
+          optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+        }
       }
-      REQUEST_CODE_AUDIO_LANGUAGE -> {
-        val audioLanguage = data.getProtoExtra(
+    }
+
+    audioLanguageLauncher = registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+      if (result.resultCode == RESULT_OK && result.data != null) {
+        val audioLanguage = result.data?.getProtoExtra(
           MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
-        ).audioLanguage
-        optionActivityPresenter.updateAudioLanguage(audioLanguage)
+        )?.audioLanguage
+        if (audioLanguage != null) {
+          optionActivityPresenter.updateAudioLanguage(audioLanguage)
+        }
       }
     }
   }
@@ -144,22 +155,20 @@ class OptionsActivity :
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
         oppiaLanguage,
-        profileId!!
+        internalProfileId
       )
     )
   }
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
-    startActivityForResult(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage),
-      REQUEST_CODE_AUDIO_LANGUAGE
-    )
+    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage)
+    intent.decorateWithUserProfileId(profileId)
+    audioLanguageLauncher.launch(intent)
   }
 
   override fun routeReadingTextSize(readingTextSize: ReadingTextSize) {
-    startActivityForResult(
-      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize),
-      REQUEST_CODE_TEXT_SIZE
+    readingTextSizeLauncher.launch(
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize)
     )
   }
 
@@ -184,7 +193,7 @@ class OptionsActivity :
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.audio_language)
     )
-    optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
+    optionActivityPresenter.loadAudioLanguageFragment(audioLanguage, profileId)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

@@ -74,6 +74,11 @@ private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "record_survey_last_shown_timestamp_provider_id"
 private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "retrieve_survey_last_shown_timestamp_provider_id"
+private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
+  "set_last_selected_classroom_id_provider_id"
+private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
+  "retrieve_last_selected_classroom_id_provider_id"
+private const val UPDATE_PROFILE_DETAILS_PROVIDER_ID = "update_profile_details_data_provider_id"
 private const val UPDATE_ONBOARDING_STATE_PROVIDER_ID = "update_onboarding_state_provider_id"
 private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
 private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_provider_id"
@@ -761,6 +766,70 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Updates the provided details of an newly created profile to migrate onboarding flow v2 support.
+   *
+   * @param profileId The ID of the profile to update
+   * @param avatarImagePath The path to the selected image
+   * @param colorRgb The randomly selected unique color to be used in place of a picture
+   * @param newName The nickname to identify the profile
+   * @param isAdmin Boolean representing whether the profile has administrator privileges
+   * @return A [DataProvider] that represents the result of the update operation
+   */
+  fun updateNewProfileDetails(
+    profileId: ProfileId,
+    profileType: ProfileType,
+    avatarImagePath: Uri?,
+    colorRgb: Int,
+    newName: String,
+    isAdmin: Boolean
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      if (!enableLearnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
+      }
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val profileDir = directoryManagementUtil.getOrCreateDir(profileId.toString())
+
+      val updatedProfile = profile.toBuilder()
+
+      if (avatarImagePath != null) {
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir)
+            ?: return@storeDataWithCustomChannelAsync Pair(
+              it,
+              ProfileActionStatus.FAILED_TO_STORE_IMAGE
+            )
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
+      } else {
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+      }
+
+      updatedProfile.profileType = profileType
+
+      updatedProfile.name = newName
+
+      updatedProfile.isAdmin = isAdmin
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_DETAILS_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
+    }
+  }
+
+  /**
    * Log in to the user's Profile by setting the current profile Id, updating profile's last logged
    * in time and updating the total number of logins for the current profile Id.
    *
@@ -954,6 +1023,47 @@ class ProfileManagementController @Inject constructor(
       val surveyLastShownTimestampMs =
         it.profilesMap[profileId.internalId]?.surveyLastShownTimestampMs ?: 0L
       AsyncResult.Success(surveyLastShownTimestampMs)
+    }
+  }
+
+  /**
+   * Sets the last selected [classroomId] for the specified [profileId]. Returns a [DataProvider]
+   * indicating whether the save was a success.
+   */
+  fun updateLastSelectedClassroomId(
+    profileId: ProfileId,
+    classroomId: String
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { profileDatabase ->
+      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val updatedProfile = profile?.toBuilder()?.setLastSelectedClassroomId(
+        classroomId
+      )?.build()
+      val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Returns a [DataProvider] containing a nullable last selected classroom ID for the specified
+   * [profileId].
+   */
+  fun retrieveLastSelectedClassroomId(
+    profileId: ProfileId
+  ): DataProvider<String?> {
+    return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
+      val lastSelectedClassroomId = it.profilesMap[profileId.internalId]?.lastSelectedClassroomId
+      AsyncResult.Success(lastSelectedClassroomId)
     }
   }
 
