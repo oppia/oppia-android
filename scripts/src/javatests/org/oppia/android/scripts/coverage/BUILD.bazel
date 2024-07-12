@@ -6,6 +6,7 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "RunCoverageTest",
+    size = "large",
     srcs = ["RunCoverageTest.kt"],
     deps = [
         "//scripts:test_file_check_assets",
