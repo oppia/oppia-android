@@ -278,6 +278,10 @@ class OnboardingProfileTypeFragmentTest {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val params = CreateProfileActivityParams.newBuilder()
         .setProfileType(ProfileType.SOLE_LEARNER)
         .build()

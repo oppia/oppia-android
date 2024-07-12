@@ -807,6 +807,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testOnboardingFragment_onboardingV2Enabled_englishLocale_englishIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
 
