@@ -143,7 +143,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_ignoreCaseHTMLArgument_returnsCoverageData() {
+  fun testRunCoverage_ignoreCaseHtmlArgument_returnsCoverageData() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -453,7 +453,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_sampleTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_sampleTestsHtmlFormat_returnsCoverageData() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -482,7 +482,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_scriptTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_scriptTestsHtmlFormat_returnsCoverageData() {
     val filePath = "scripts/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -511,7 +511,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_appTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_appTestsHtmlFormat_returnsCoverageData() {
     val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -540,7 +540,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_localTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_localTestsHtmlFormat_returnsCoverageData() {
     val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -587,7 +587,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_sharedTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedTestsHtmlFormat_returnsCoverageData() {
     val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -616,7 +616,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_sharedAndLocalTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedAndLocalTestsHtmlFormat_returnsCoverageData() {
     val filePath = "app/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
