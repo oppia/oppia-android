@@ -32,8 +32,7 @@
       android:enabled="@{viewModel.isEnabled}"
       android:focusable="false"
       android:labelFor="@id/item_selection_contents_text_view"
-      android:checked="@{viewModel.answerSelected}"
-      />
+      android:checked="@{viewModel.answerSelected}" />
     <TextView
       android:id="@+id/item_selection_contents_text_view"
       android:layout_width="wrap_content"

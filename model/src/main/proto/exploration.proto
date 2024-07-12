@@ -423,11 +423,11 @@ enum CheckpointState {
 
 // Represents the state of item selection answers that the user has selected.
 message ItemSelectionAnswerState {
-  // List of selected item indexes
+  // List of selected item indices.
   repeated int32 selected_indexes = 1;
 }
 
-// Represents the user's answer state, retaining state across configuration changes.
+// Represents the user's answer state, retained across configuration changes.
 message UserAnswerState {
   // Represents the last error state.
   AnswerErrorCategory answer_error_category = 1;

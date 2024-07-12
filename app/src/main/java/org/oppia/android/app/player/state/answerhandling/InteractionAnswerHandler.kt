@@ -29,7 +29,7 @@ interface InteractionAnswerHandler {
     return null
   }
 
-  /** Returns the current answer. */
+  /** Returns the current pending answer. */
   fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.getDefaultInstance()
   }
