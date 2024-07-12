@@ -123,7 +123,7 @@ class CreateProfileActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      CreateProfileActivity.createProfileActivityIntent(context, colorRgb = -10710042)
+      CreateProfileActivity.createProfileActivityIntent(context)
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.CREATE_PROFILE_ACTIVITY)
@@ -144,7 +144,7 @@ class CreateProfileActivityTest {
   private fun launchNewLearnerProfileActivity():
     ActivityScenario<CreateProfileActivity>? {
       val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context, colorRgb = -10710042)
+        CreateProfileActivity.createProfileActivityIntent(context)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
