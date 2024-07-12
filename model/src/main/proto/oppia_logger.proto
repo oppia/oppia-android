@@ -238,7 +238,7 @@ message EventLog {
     ProfileId profile_id = 1;
 
     // Represents the type of user profile.
-    ProfileType profile_type = 2;
+    //ProfileType profile_type = 2; // todo revert
   }
 
   // Structure of a question context.
