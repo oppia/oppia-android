@@ -50,12 +50,6 @@ fun main(vararg args: String) {
     .map { it.trim(',', '[', ']') }
     .filter { it.endsWith(".kt") && !it.endsWith("Test.kt") }
 
-  for (file in filePathList) {
-    if (!File(repoRoot, file).exists()) {
-      error("File doesn't exist: $file")
-    }
-  }
-
   println("Running coverage analysis for the files: $filePathList")
 
   val format = args.find { it.startsWith("--format=", ignoreCase = true) }
@@ -66,6 +60,12 @@ fun main(vararg args: String) {
     "HTML" -> ReportFormat.HTML
     "MARKDOWN" -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
+  }
+
+  for (file in filePathList) {
+    if (!File(repoRoot, file).exists()) {
+      error("File doesn't exist: $file")
+    }
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->

@@ -96,20 +96,20 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_missingTestFileNotExempted_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
-    val exception = assertThrows<IllegalStateException>() {
-      val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
-      sampleFile.createNewFile()
-      main(tempFolder.root.absolutePath, "file.kt")
-    }
+    val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
+    sampleFile.createNewFile()
+    main(tempFolder.root.absolutePath, "file.kt")
 
-    assertThat(exception).hasMessageThat().contains("No appropriate test file found")
+    assertThat(outContent.toString().trim()).contains(
+      "No appropriate test file found for file.kt"
+    )
   }
 
   @Test
   fun testRunCoverage_invalidFormat_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     val exception = assertThrows<IllegalArgumentException>() {
-      main(tempFolder.root.absolutePath, "file.kt", "format=PDF")
+      main(tempFolder.root.absolutePath, "file.kt", "--format=PDF")
     }
 
     assertThat(exception).hasMessageThat().contains("Unsupported report format")
@@ -132,8 +132,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "format=Markdown",
-      "processTimeout=10"
+      "--format=Markdown",
+      "--processTimeout=10"
     )
 
     val outputFilePath = "${tempFolder.root}" +
@@ -159,8 +159,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "format=Html",
-      "processTimeout=10"
+      "--format=Html",
+      "--processTimeout=10"
     )
 
     val outputFilePath = "${tempFolder.root}" +
@@ -186,8 +186,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "processTimeout=10",
-      "format=MARKDOWN"
+      "--processTimeout=10",
+      "--format=MARKDOWN"
     )
 
     val outputFilePath = "${tempFolder.root}" +
@@ -198,19 +198,18 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
-    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    val exemptedFilePathList = listOf("app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt")
 
     RunCoverage(
       "${tempFolder.root}",
-      exemptedFilePath,
+      exemptedFilePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    assertThat(outContent.toString().trim()).isEqualTo(
-      "This file is exempted from having a test file; skipping coverage check."
+    assertThat(outContent.toString().trim()).contains(
+      "The file: ${exemptedFilePathList[0]} is exempted from having a test file; skipping coverage check."
     )
   }
 
@@ -235,17 +234,17 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.html"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val expectedResult = getExpectedHtmlText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -259,22 +258,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+    ).readText()
+
+    val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "scripts/java/com/example/AddNums.kt"
+    val filePathList = listOf("scripts/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -288,22 +290,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+    ).readText()
+
+    val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_appTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -317,22 +322,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+    ).readText()
+
+    val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_localTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     val testContentLocal =
@@ -364,22 +372,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+    ).readText()
+
+    val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sharedTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -393,22 +404,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+    ).readText()
+
+    val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     val testContentLocal =
@@ -439,22 +453,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+    ).readText()
+
+    val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sampleTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -468,22 +485,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.HTML,
-      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_scriptTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "scripts/java/com/example/AddNums.kt"
+    val filePathList = listOf("scripts/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -497,22 +517,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.HTML,
-      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_appTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -526,22 +549,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.HTML,
-      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_localTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     val testContentLocal =
@@ -573,22 +599,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.HTML,
-      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sharedTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -602,22 +631,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.HTML,
-      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsHTMLFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/AddNums.kt"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -664,14 +696,17 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/AddNums.kt",
+      filePathList,
       ReportFormat.HTML,
-      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
     val expectedResult =
       """
     <!DOCTYPE html>
@@ -778,7 +813,7 @@ class RunCoverageTest {
       <h2>Coverage Report</h2>
       <div class="summary-box">
         <div class="summary-left">
-          <strong>Covered File:</strong> $filePath <br>
+          <strong>Covered File:</strong> ${filePathList[0]} <br>
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>
@@ -847,13 +882,12 @@ class RunCoverageTest {
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filename = filePath.substringAfterLast("/")
+
     val markdownText =
       """
-        ## Coverage Report
-        
-        - **Covered File:** $filePath
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
+        |[$filename]($oppiaDevelopGitHubLink/$filePath)|75.00%|3 / 4|:white_check_mark:|
       """.trimIndent()
 
     return markdownText
