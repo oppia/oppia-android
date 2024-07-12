@@ -10,14 +10,16 @@ import org.oppia.android.scripts.proto.CoverageReport
 class CoverageReporterTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
+  private lateinit var filename: String
   private lateinit var reporter: CoverageReporter
   private lateinit var validCoverageReport: CoverageReport
   private val emptyCoverageReportList = listOf<CoverageReport>()
 
   @Before
   fun setUp() {
+    filename = "SampleFile.kt"
     validCoverageReport = CoverageReport.newBuilder()
-      .setFilePath("SampleFile.kt")
+      .setFilePath(filename)
       .setLinesFound(10)
       .setLinesHit(8)
       .build()
@@ -51,6 +53,8 @@ class CoverageReporterTest {
 
   @Test
   fun testCoverageReporter_generateMarkdownReport_hasCorrectContentAndFormatting() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+
     reporter = CoverageReporter(
       tempFolder.root.absolutePath,
       validCoverageReport,
@@ -60,19 +64,15 @@ class CoverageReporterTest {
 
     val expectedMarkdown =
       """
-        ## Coverage Report
-        
-        - **Covered File:** SampleFile.kt
-        - **Coverage percentage:** 80.00% covered
-        - **Line coverage:** 8 / 10 lines covered
-      """.trimIndent()
+          |[$filename]($oppiaDevelopGitHubLink/$filename)|80.00%|8 / 10
+        """.trimIndent()
 
     assertThat(reportText).isEqualTo(expectedMarkdown)
   }
 
   @Test
   fun testCoverageReporter_generateHtmlReport_hasCorrectContentAndFormatting() {
-    val sourceFile = tempFolder.newFile("SampleFile.kt")
+    val sourceFile = tempFolder.newFile(filename)
     sourceFile.writeText(
       """
       fun main() {
@@ -201,7 +201,7 @@ class CoverageReporterTest {
       <h2>Coverage Report</h2>
       <div class="summary-box">
         <div class="summary-left">
-          <strong>Covered File:</strong> SampleFile.kt <br>
+          <strong>Covered File:</strong> $filename <br>
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>

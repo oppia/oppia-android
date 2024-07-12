@@ -71,7 +71,7 @@ fun main(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
       ?.substringAfter("=")
-      ?.toLongOrNull() ?: 10
+      ?.toLongOrNull() ?: 5
 
     val commandExecutor: CommandExecutor = CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
@@ -237,8 +237,11 @@ class RunCoverage(
     println(finalReportText)
   }
 
+  /** Corresponds to status of the coverage analysis. */
   private enum class CoverageCheck {
+    /** Indicates successful generation of coverage retrieval for a specified file. */
     PASS,
+    /** Indicates failure or anomaly during coverage retrieval for a specified file. */
     FAIL
   }
 }

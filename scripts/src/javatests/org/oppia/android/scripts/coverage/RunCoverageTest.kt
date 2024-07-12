@@ -73,8 +73,6 @@ class RunCoverageTest {
         }
       }
       """.trimIndent()
-
-    System.setOut(PrintStream(outContent))
   }
 
   @After
@@ -95,6 +93,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_missingTestFileNotExempted_throwsException() {
+    System.setOut(PrintStream(outContent))
     testBazelWorkspace.initEmptyWorkspace()
     val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
     sampleFile.createNewFile()
@@ -198,7 +197,10 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
-    val exemptedFilePathList = listOf("app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt")
+    System.setOut(PrintStream(outContent))
+    val exemptedFilePathList = listOf(
+      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    )
 
     RunCoverage(
       "${tempFolder.root}",
@@ -209,7 +211,8 @@ class RunCoverageTest {
     ).execute()
 
     assertThat(outContent.toString().trim()).contains(
-      "The file: ${exemptedFilePathList[0]} is exempted from having a test file; skipping coverage check."
+      "The file: ${exemptedFilePathList[0]} is exempted from having a test file; " +
+        "skipping coverage check."
     )
   }
 
@@ -1070,7 +1073,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }

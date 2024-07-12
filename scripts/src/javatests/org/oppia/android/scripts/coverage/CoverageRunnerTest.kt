@@ -149,6 +149,7 @@ class CoverageRunnerTest {
       )
       .setLinesFound(4)
       .setLinesHit(3)
+      .setIsGenerated(true)
       .build()
 
     assertThat(result).isEqualTo(expectedResult)
