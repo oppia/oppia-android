@@ -662,12 +662,13 @@ class ProfileManagementController @Inject constructor(
 
   /**
    * Updates the provided details of an newly created profile to migrate onboarding flow v2 support.
-   * @param profileId The ID of the profile to update.
-   * @param avatarImagePath The path to the selected image.
-   * @param colorRgb The randomly selected unique color to be used in place of a picture.
-   * @param newName The nickname to identify the profile.
-   * @param isAdmin Boolean representing whether the profile has administrator privileges.
-   * @return A [DataProvider] that represents the result of the update operation.
+   *
+   * @param profileId The ID of the profile to update
+   * @param avatarImagePath The path to the selected image
+   * @param colorRgb The randomly selected unique color to be used in place of a picture
+   * @param newName The nickname to identify the profile
+   * @param isAdmin Boolean representing whether the profile has administrator privileges
+   * @return A [DataProvider] that represents the result of the update operation
    */
   fun updateNewProfileDetails(
     profileId: ProfileId,

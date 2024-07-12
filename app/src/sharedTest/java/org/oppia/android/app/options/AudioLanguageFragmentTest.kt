@@ -321,7 +321,7 @@ class AudioLanguageFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // Verifies that aceepting the default language selection works correctly.
+      // Verifies that accepting the default language selection works correctly.
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }

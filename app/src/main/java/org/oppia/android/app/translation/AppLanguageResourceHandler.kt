@@ -190,8 +190,8 @@ class AppLanguageResourceHandler @Inject constructor(
 
   /**
    * Returns an [OppiaLanguage] from its human-readable, localized representation.
-   * It is expected that each input string is not localized to the user's current locale, but it
-   * will be localized for that specific language as per [computeLocalizedDisplayName].
+   * It is expected that each input string is localized to the user's current locale, as per
+   * [computeLocalizedDisplayName].
    */
   fun getOppiaLanguageFromDisplayName(displayName: String): OppiaLanguage {
     val localizedNameMap = OppiaLanguage.values()
@@ -202,8 +202,8 @@ class AppLanguageResourceHandler @Inject constructor(
 
   /**
    * Returns an [AudioLanguage] from its human-readable, localized representation.
-   * It is expected that each input string is not localized to the user's current locale, but it
-   * will be localized for that specific language as per [computeLocalizedDisplayName].
+   * It is expected that each input string is localized to the user's current locale, as per
+   * [computeLocalizedDisplayName].
    */
   fun getAudioLanguageFromLocalizedName(localizedName: String): AudioLanguage {
     val localizedNameMap = AudioLanguage.values()

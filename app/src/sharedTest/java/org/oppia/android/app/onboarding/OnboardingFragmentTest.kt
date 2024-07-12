@@ -977,7 +977,7 @@ class OnboardingFragmentTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.LANGUAGE_UNSPECIFIED_VALUE,
     appStringIetfTag = "fr",
-    appStringAndroidLanguageId = "fr",
+    appStringAndroidLanguageId = "fr-CA",
     appStringAndroidRegionId = "CA"
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
