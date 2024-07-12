@@ -73,8 +73,6 @@ class RunCoverageTest {
         }
       }
       """.trimIndent()
-
-    System.setOut(PrintStream(outContent))
   }
 
   @After
@@ -198,6 +196,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
+    System.setOut(PrintStream(outContent))
     val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
 
     RunCoverage(
@@ -1036,7 +1035,7 @@ class RunCoverageTest {
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 10, processTimeoutUnit = TimeUnit.MINUTES
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 }
