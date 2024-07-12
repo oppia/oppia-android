@@ -64,8 +64,8 @@ class CoverageReporterTest {
 
     val expectedMarkdown =
       """
-          |[$filename]($oppiaDevelopGitHubLink/$filename)|80.00%|8 / 10
-        """.trimIndent()
+        |[$filename]($oppiaDevelopGitHubLink/$filename)|80.00%|8 / 10
+      """.trimIndent()
 
     assertThat(reportText).isEqualTo(expectedMarkdown)
   }

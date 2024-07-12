@@ -235,6 +235,12 @@ class RunCoverage(
 
     // remove later
     println(finalReportText)
+
+    val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
+    File(finalReportOutputPath).apply {
+      parentFile?.mkdirs()
+      writeText(finalReportText)
+    }
   }
 
   /** Corresponds to status of the coverage analysis. */

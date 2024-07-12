@@ -30,8 +30,10 @@ class RunCoverageTest {
   private lateinit var markdownOutputPath: String
   private lateinit var htmlOutputPath: String
 
-  private lateinit var sourceContent: String
-  private lateinit var testContent: String
+  private lateinit var addSourceContent: String
+  private lateinit var addTestContent: String
+  private lateinit var subSourceContent: String
+  private lateinit var subTestContent: String
 
   @Before
   fun setUp() {
@@ -40,7 +42,7 @@ class RunCoverageTest {
     htmlOutputPath = "${tempFolder.root}/coverage_reports/report.html"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    sourceContent =
+    addSourceContent =
       """
       package com.example
       
@@ -57,7 +59,7 @@ class RunCoverageTest {
       }
       """.trimIndent()
 
-    testContent =
+    addTestContent =
       """
       package com.example
       
@@ -70,6 +72,40 @@ class RunCoverageTest {
           assertEquals(AddNums.sumNumbers(0, 1), 1)
           assertEquals(AddNums.sumNumbers(3, 4), 7)         
           assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+
+    subSourceContent =
+      """
+      package com.example
+      
+      class SubNums {
+        companion object {
+          fun subNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a - b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    subTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class SubNumsTest {
+        @Test
+        fun testSubNumbers() {
+          assertEquals(SubNums.subNumbers(1, 0), 1)
+          assertEquals(SubNums.subNumbers(4, 3), 1)         
+          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
         }
       }
       """.trimIndent()
@@ -122,8 +158,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -149,8 +185,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -176,8 +212,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -224,8 +260,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -253,8 +289,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -269,13 +305,143 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.first().removeSuffix(".kt")}/coverage.md"
     ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList[0])
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
+
+  @Test
+  fun testRunCoverage_withMultipleFilesMarkdownFormat_returnsCoverageData() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/SubNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "SubNums",
+      testFilename = "SubNumsTest",
+      sourceContent = subSourceContent,
+      testContent = subTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    for (file in filePathList) {
+      val outputReportText = File(
+        "${tempFolder.root}" +
+          "$coverageDir/${file.removeSuffix(".kt")}/coverage.md"
+      ).readText()
+      val expectedResult = getExpectedMarkdownText(file)
+
+      assertThat(outputReportText).isEqualTo(expectedResult)
+    }
+  }
+
+  @Test
+  fun testRunCoverage_withMultipleFilesHtmlFormat_returnsCoverageData() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/SubNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "SubNums",
+      testFilename = "SubNumsTest",
+      sourceContent = subSourceContent,
+      testContent = subTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    for (file in filePathList) {
+      val outputReportText = File(
+        "${tempFolder.root}" +
+          "$coverageDir/${file.removeSuffix(".kt")}/coverage.html"
+      ).readText()
+      val expectedResult = getExpectedHtmlText(file)
+
+      assertThat(outputReportText).isEqualTo(expectedResult)
+    }
+  }
+
+  // on halt
+  /*@Test
+  fun testRunCoverage_withMultipleValidAndAnomalyFiles_returnsCoverageData() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    for (file in filePathList) {
+      val outputReportText = File(
+        "${tempFolder.root}" +
+          "$coverageDir/${file.removeSuffix(".kt")}/coverage.html"
+      ).readText()
+      val expectedResult = getExpectedMarkdownText(file)
+
+      assertThat(outputReportText).isEqualTo(expectedResult)
+    }
+  }*/
 
   @Test
   fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
@@ -285,8 +451,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
     )
@@ -317,8 +483,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
@@ -346,7 +512,7 @@ class RunCoverageTest {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
+    val addTestContentLocal =
       """
       package com.example
       
@@ -367,8 +533,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsLocalTest",
-      sourceContent = sourceContent,
-      testContent = testContentLocal,
+      sourceContent = addSourceContent,
+      testContent = addTestContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
@@ -399,8 +565,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/sharedTest/java/com/example"
     )
@@ -428,7 +594,7 @@ class RunCoverageTest {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
+    val addTestContentLocal =
       """
       package com.example
       
@@ -448,9 +614,9 @@ class RunCoverageTest {
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
-      sourceContent = sourceContent,
-      testContentShared = testContent,
-      testContentLocal = testContentLocal,
+      sourceContent = addSourceContent,
+      testContentShared = addTestContent,
+      testContentLocal = addTestContentLocal,
       subpackage = "app"
     )
 
@@ -480,8 +646,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -512,8 +678,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
     )
@@ -544,8 +710,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
@@ -573,7 +739,7 @@ class RunCoverageTest {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
+    val addTestContentLocal =
       """
       package com.example
       
@@ -594,8 +760,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsLocalTest",
-      sourceContent = sourceContent,
-      testContent = testContentLocal,
+      sourceContent = addSourceContent,
+      testContent = addTestContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
@@ -626,8 +792,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/sharedTest/java/com/example"
     )
@@ -656,7 +822,7 @@ class RunCoverageTest {
 
     testBazelWorkspace.initEmptyWorkspace()
 
-    val testContentShared =
+    val addTestContentShared =
       """
       package com.example
       
@@ -672,7 +838,7 @@ class RunCoverageTest {
       }
       """.trimIndent()
 
-    val testContentLocal =
+    val addTestContentLocal =
       """
       package com.example
       
@@ -691,9 +857,9 @@ class RunCoverageTest {
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
-      sourceContent = sourceContent,
-      testContentShared = testContentShared,
-      testContentLocal = testContentLocal,
+      sourceContent = addSourceContent,
+      testContentShared = addTestContentShared,
+      testContentLocal = addTestContentLocal,
       subpackage = "app"
     )
 
@@ -1031,13 +1197,13 @@ class RunCoverageTest {
         <td class="uncovered-line"></td>
     </tr><tr>
         <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class AddNums {</td>
+        <td class="not-covered-line">class ${getExpectedClassName(filePath)} {</td>
     </tr><tr>
         <td class="line-number-row">   4</td>
         <td class="uncovered-line">  companion object {</td>
     </tr><tr>
         <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
+        <td class="uncovered-line">    fun ${getExpectedFuncName(filePath)}(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td class="line-number-row">   6</td>
         <td class="covered-line">      return if (a == 0 && b == 0) {</td>
@@ -1049,7 +1215,7 @@ class RunCoverageTest {
         <td class="uncovered-line">      } else {</td>
     </tr><tr>
         <td class="line-number-row">   9</td>
-        <td class="covered-line">          a + b</td>
+        <td class="covered-line">          ${getExpectedLogic(filePath)}</td>
     </tr><tr>
         <td class="line-number-row">  10</td>
         <td class="uncovered-line">      }</td>
@@ -1069,6 +1235,26 @@ class RunCoverageTest {
       """.trimIndent()
 
     return htmlText
+  }
+
+  private fun getExpectedClassName(filePath: String): String {
+    return filePath.substringAfterLast("/").removeSuffix(".kt")
+  }
+
+  private fun getExpectedFuncName(filePath: String): String {
+    when {
+      filePath.endsWith("AddNums.kt") -> return "sumNumbers"
+      filePath.endsWith("SubNums.kt") -> return "subNumbers"
+      else -> return ""
+    }
+  }
+
+  private fun getExpectedLogic(filePath: String): String {
+    when {
+      filePath.endsWith("AddNums.kt") -> return "a + b"
+      filePath.endsWith("SubNums.kt") -> return "a - b"
+      else -> return ""
+    }
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
