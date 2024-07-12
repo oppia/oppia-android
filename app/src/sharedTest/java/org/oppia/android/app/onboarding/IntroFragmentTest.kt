@@ -253,7 +253,6 @@ class IntroFragmentTest {
         IntroActivity.createIntroActivity(
           context,
           testProfileNickname,
-          testInternalProfileId
         )
       )
       testCoroutineDispatchers.runCurrent()

@@ -29,7 +29,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
     }
     if (getAudioLanguageFragment() == null) {
       val audioLanguageFragment =
-        AudioLanguageFragment.newInstance(audioLanguage, internalProfileId)
+        AudioLanguageFragment.newInstance(audioLanguage)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
     }

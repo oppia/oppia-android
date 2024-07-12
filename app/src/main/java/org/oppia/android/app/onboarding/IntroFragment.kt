@@ -29,15 +29,10 @@ class IntroFragment : InjectableFragment() {
       checkNotNull(arguments?.getStringFromBundle(PROFILE_NICKNAME_ARGUMENT_KEY)) {
         "Expected profileNickname to be included in the arguments for IntroFragment."
       }
-    val internalProfileId =
-      checkNotNull(arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)) {
-        "Expected profileIde to be included in the arguments for IntroFragment"
-      }
     return introFragmentPresenter.handleCreateView(
       inflater,
       container,
-      profileNickname,
-      internalProfileId
+      profileNickname
     )
   }
 }

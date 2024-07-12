@@ -853,9 +853,3 @@ message IntroActivityParams {
   // The internal Id associated with the newly created profile.
   int32 profile_id = 2;
 }
-
-// Params required when creating a new CreateProfileActivity.
-message CreateProfileActivityParams {
-  // Color for the new profile that is not already in use.
-  int32 color_rgb = 1;
-}

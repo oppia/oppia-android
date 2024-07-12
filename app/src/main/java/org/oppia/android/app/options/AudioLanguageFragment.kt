@@ -10,7 +10,6 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -44,11 +43,8 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AudioLanguageFragment" }
 
-    val internalProfileId = arguments?.retrieveProfileIdFromArguments() ?: -1
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
     return if (enableOnboardingFlowV2.value) {
-      audioLanguageFragmentPresenter.handleCreateView(inflater, container, profileId)
+      audioLanguageFragmentPresenter.handleCreateView(inflater, container)
     } else {
       audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
     }
@@ -79,14 +75,12 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
      * initial selection).
      */
     fun newInstance(
-      audioLanguage: AudioLanguage,
-      internalProfileId: Int = -1
+      audioLanguage: AudioLanguage
     ): AudioLanguageFragment {
       return AudioLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AudioLanguageFragmentArguments.newBuilder().apply {
             this.audioLanguage = audioLanguage
-            this.profileId = internalProfileId
           }.build()
           putProto(FRAGMENT_ARGUMENTS_KEY, args)
         }
@@ -97,12 +91,6 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
       return getProto(
         FRAGMENT_ARGUMENTS_KEY, AudioLanguageFragmentArguments.getDefaultInstance()
       ).audioLanguage
-    }
-
-    private fun Bundle.retrieveProfileIdFromArguments(): Int {
-      return getProto(
-        FRAGMENT_ARGUMENTS_KEY, AudioLanguageFragmentArguments.getDefaultInstance()
-      ).profileId
     }
 
     private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage {

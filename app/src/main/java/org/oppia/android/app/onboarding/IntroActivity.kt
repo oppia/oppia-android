@@ -26,9 +26,8 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     val params = intent.extractParams()
     this.profileNickname = params.profileNickname
-    this.internalProfileId = params.profileId
 
-    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, internalProfileId)
+    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname)
   }
 
   companion object {
@@ -40,12 +39,10 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
      */
     fun createIntroActivity(
       context: Context,
-      profileNickname: String,
-      internalProfileId: Int
+      profileNickname: String
     ): Intent {
       val params = IntroActivityParams.newBuilder()
         .setProfileNickname(profileNickname)
-        .setProfileId(internalProfileId)
         .build()
       return createOnboardingLearnerIntroActivity(context, params)
     }

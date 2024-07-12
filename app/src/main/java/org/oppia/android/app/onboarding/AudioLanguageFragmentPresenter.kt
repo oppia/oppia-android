@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
-import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageSelectionViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
@@ -31,8 +29,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
    */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId
+    container: ViewGroup?
   ): View {
 
     // Hide toolbar as it's not needed in this layout. The toolbar is created by a shared activity
@@ -69,13 +66,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         false
       )
       setRawInputType(EditorInfo.TYPE_NULL)
-    }
-
-    binding.onboardingNavigationContinue.setOnClickListener {
-      val intent =
-        HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-      fragment.startActivity(intent)
-      fragment.activity?.finish()
     }
 
     return binding.root

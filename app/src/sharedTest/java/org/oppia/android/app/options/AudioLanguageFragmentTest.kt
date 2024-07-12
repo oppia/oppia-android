@@ -12,7 +12,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -22,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -312,12 +310,7 @@ class AudioLanguageFragmentTest {
     ).use {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(
-        allOf(
-          hasComponent(HomeActivity::class.java.name),
-          hasExtraWithKey("NavigationDrawerFragmentPresenter.navigation_profile_id")
-        )
-      )
+      intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 
@@ -331,12 +324,7 @@ class AudioLanguageFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(
-        allOf(
-          hasComponent(HomeActivity::class.java.name),
-          hasExtraWithKey("NavigationDrawerFragmentPresenter.navigation_profile_id")
-        )
-      )
+      intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 
