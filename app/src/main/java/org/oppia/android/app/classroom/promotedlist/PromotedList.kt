@@ -127,7 +127,7 @@ fun PromotedStoryCard(
       )
       .clickable { promotedStoryViewModel.clickOnStoryTile() },
     backgroundColor = colorResource(
-      id = R.color.component_color_shared_screen_primary_background_color
+      id = R.color.component_color_classroom_promoted_list_card_background_color
     ),
     elevation = dimensionResource(id = R.dimen.promoted_story_card_elevation),
   ) {

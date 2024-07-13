@@ -100,9 +100,9 @@ fun ClassroomCard(
         classroomSummaryViewModel.handleClassroomClick()
       },
     backgroundColor = if (isCardSelected) {
-      colorResource(id = R.color.component_color_classroom_card_color)
+      colorResource(id = R.color.component_color_classroom_card_selected_color)
     } else {
-      colorResource(id = R.color.component_color_shared_screen_primary_background_color)
+      colorResource(id = R.color.component_color_classroom_card_color)
     },
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = dimensionResource(id = R.dimen.classrooms_card_elevation),
@@ -110,10 +110,12 @@ fun ClassroomCard(
     Column(
       modifier = Modifier.padding(
         horizontal = dimensionResource(id = R.dimen.classrooms_card_padding_horizontal),
-        vertical = if (isSticky) 
+        vertical = if (isSticky) {
           dimensionResource(id = R.dimen.classrooms_card_collapsed_padding_vertical)
-        else
-          dimensionResource(id = R.dimen.classrooms_card_padding_vertical),
+        }
+        else {
+          dimensionResource(id = R.dimen.classrooms_card_padding_vertical)
+        },
       ),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
