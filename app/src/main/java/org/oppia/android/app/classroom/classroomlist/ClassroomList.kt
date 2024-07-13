@@ -112,8 +112,7 @@ fun ClassroomCard(
         horizontal = dimensionResource(id = R.dimen.classrooms_card_padding_horizontal),
         vertical = if (isSticky) {
           dimensionResource(id = R.dimen.classrooms_card_collapsed_padding_vertical)
-        }
-        else {
+        } else {
           dimensionResource(id = R.dimen.classrooms_card_padding_vertical)
         },
       ),
