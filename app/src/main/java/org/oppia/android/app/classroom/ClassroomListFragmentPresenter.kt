@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -182,8 +183,11 @@ class ClassroomListFragmentPresenter @Inject constructor(
       ?.plus(classroomListViewModel.topicList)
       ?.groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
+    val listState = rememberLazyListState()
+
     LazyColumn(
-      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
+      state = listState
     ) {
       groupedItems?.forEach { (type, items) ->
         when (type) {
@@ -200,10 +204,11 @@ class ClassroomListFragmentPresenter @Inject constructor(
               )
             }
           }
-          ClassroomSummaryViewModel::class -> stickyHeader {
+          ClassroomSummaryViewModel::class -> stickyHeader(key = "classroom_carousel") {
             ClassroomList(
               classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
-              classroomListViewModel.selectedClassroomId.get() ?: ""
+              selectedClassroomId = classroomListViewModel.selectedClassroomId.get() ?: "",
+              isSticky = listState.firstVisibleItemIndex >= 2
             )
           }
           AllTopicsViewModel::class -> items.forEach { _ ->

@@ -1,6 +1,9 @@
 package org.oppia.android.app.classroom.classroomlist
 
-import android.content.res.Configuration
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,9 +21,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -44,7 +48,8 @@ const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"
 @Composable
 fun ClassroomList(
   classroomSummaryList: List<ClassroomSummaryViewModel>,
-  selectedClassroomId: String
+  selectedClassroomId: String,
+  isSticky: Boolean,
 ) {
   Column(
     modifier = Modifier
@@ -76,7 +81,7 @@ fun ClassroomList(
       ),
     ) {
       items(classroomSummaryList) {
-        ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId)
+        ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId, isSticky)
       }
     }
   }
@@ -86,15 +91,24 @@ fun ClassroomList(
 @Composable
 fun ClassroomCard(
   classroomSummaryViewModel: ClassroomSummaryViewModel,
-  selectedClassroomId: String
+  selectedClassroomId: String,
+  isSticky: Boolean,
 ) {
-  val screenWidth = LocalConfiguration.current.screenWidthDp
-  val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-  val isTablet = if (isPortrait) screenWidth > 600 else screenWidth > 840
   val isCardSelected = classroomSummaryViewModel.classroomSummary.classroomId == selectedClassroomId
+  val transitionState = remember { MutableTransitionState(isSticky) }
+  val transition = updateTransition(transitionState, label = "transition")
+  val cardHeight by transition.animateDp(
+    { tween(durationMillis = 300) },
+    label = "cardHeightTransition"
+  ) { isSticky ->
+    if (isSticky)
+      dimensionResource(id = R.dimen.classrooms_card_collapsed_height)
+    else
+      dimensionResource(id = R.dimen.classrooms_card_height)
+  }
   Card(
     modifier = Modifier
-      .height(dimensionResource(id = R.dimen.classrooms_card_height))
+      .height(cardHeight)
       .width(dimensionResource(id = R.dimen.classrooms_card_width))
       .padding(
         start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
@@ -116,7 +130,7 @@ fun ClassroomCard(
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      if (isPortrait || isTablet) { // Hides the classroom icon for landscape phone layouts.
+      if (!isSticky) {
         Image(
           painter = painterResource(
             id = classroomSummaryViewModel
