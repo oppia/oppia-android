@@ -552,4 +552,6 @@
   <dimen name="classrooms_text_margin_top">20dp</dimen>
   <dimen name="classrooms_text_margin_end">72dp</dimen>
   <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_card_margin_start">8dp</dimen>
+  <dimen name="classrooms_card_margin_end">0dp</dimen>
 </resources>

@@ -1,9 +1,6 @@
 package org.oppia.android.app.classroom.classroomlist
 
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,8 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -95,24 +89,12 @@ fun ClassroomCard(
   isSticky: Boolean,
 ) {
   val isCardSelected = classroomSummaryViewModel.classroomSummary.classroomId == selectedClassroomId
-  val transitionState = remember { MutableTransitionState(isSticky) }
-  val transition = updateTransition(transitionState, label = "transition")
-  val cardHeight by transition.animateDp(
-    { tween(durationMillis = 300) },
-    label = "cardHeightTransition"
-  ) { isStickyState ->
-    if (isStickyState)
-      dimensionResource(id = R.dimen.classrooms_card_collapsed_height)
-    else
-      dimensionResource(id = R.dimen.classrooms_card_height)
-  }
   Card(
     modifier = Modifier
-      .height(cardHeight)
       .width(dimensionResource(id = R.dimen.classrooms_card_width))
       .padding(
-        start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
-        end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
+        start = dimensionResource(R.dimen.classrooms_card_margin_start),
+        end = dimensionResource(R.dimen.classrooms_card_margin_end),
       )
       .clickable {
         classroomSummaryViewModel.handleClassroomClick()
@@ -126,11 +108,17 @@ fun ClassroomCard(
     elevation = dimensionResource(id = R.dimen.classrooms_card_elevation),
   ) {
     Column(
-      modifier = Modifier.padding(all = dimensionResource(id = R.dimen.classrooms_card_padding)),
+      modifier = Modifier.padding(
+        horizontal = dimensionResource(id = R.dimen.classrooms_card_padding_horizontal),
+        vertical = if (isSticky) 
+          dimensionResource(id = R.dimen.classrooms_card_collapsed_padding_vertical)
+        else
+          dimensionResource(id = R.dimen.classrooms_card_padding_vertical),
+      ),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      if (!isSticky) {
+      AnimatedVisibility(visible = !isSticky) {
         Image(
           painter = painterResource(
             id = classroomSummaryViewModel
