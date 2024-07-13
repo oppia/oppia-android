@@ -100,8 +100,8 @@ fun ClassroomCard(
   val cardHeight by transition.animateDp(
     { tween(durationMillis = 300) },
     label = "cardHeightTransition"
-  ) { isSticky ->
-    if (isSticky)
+  ) { isStickyState ->
+    if (isStickyState)
       dimensionResource(id = R.dimen.classrooms_card_collapsed_height)
     else
       dimensionResource(id = R.dimen.classrooms_card_height)
