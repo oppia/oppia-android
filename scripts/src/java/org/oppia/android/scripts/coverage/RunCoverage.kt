@@ -133,6 +133,7 @@ class RunCoverage(
 
       val coverageReports = deferredCoverageReports.awaitAll()
 
+      // For reference. (to be removed)
       /*val coverageReports = listOf(CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
       .setFilePath("coverage/main/java/com/example/AddNums.kt")
