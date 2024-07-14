@@ -42,7 +42,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
-import org.oppia.android.app.classroom.classroomlist.CLASSROOM_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.classroomlist.ALL_CLASSROOMS_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.classroomlist.CLASSROOM_LIST_TEST_TAG
 import org.oppia.android.app.classroom.promotedlist.PROMOTED_STORY_LIST_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.promotedlist.PROMOTED_STORY_LIST_TEST_TAG
@@ -196,7 +196,7 @@ class ClassroomListFragmentTest {
   @Test
   fun testFragment_allComponentsAreDisplayed() {
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(ALL_CLASSROOMS_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
   }
@@ -207,7 +207,7 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(ALL_CLASSROOMS_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
 
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToNode(

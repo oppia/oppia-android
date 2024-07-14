@@ -32,9 +32,6 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 
-/** Test tag for the header of the classroom section. */
-const val CLASSROOM_HEADER_TEST_TAG = "TEST_TAG.classroom_header"
-
 /** Test tag for the classroom list. */
 const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"
 
@@ -45,38 +42,21 @@ fun ClassroomList(
   selectedClassroomId: String,
   isSticky: Boolean,
 ) {
-  Column(
+  LazyRow(
     modifier = Modifier
+      .testTag(CLASSROOM_LIST_TEST_TAG)
       .background(
         color = colorResource(id = R.color.component_color_shared_screen_primary_background_color)
       )
       .fillMaxWidth(),
+    contentPadding = PaddingValues(
+      start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+      top = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+      end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+    ),
   ) {
-    Text(
-      text = stringResource(id = R.string.classrooms_list_activity_section_header),
-      color = colorResource(id = R.color.component_color_shared_primary_text_color),
-      fontFamily = FontFamily.SansSerif,
-      fontWeight = FontWeight.Medium,
-      fontSize = dimensionResource(id = R.dimen.classrooms_list_header_text_size).value.sp,
-      modifier = Modifier
-        .testTag(CLASSROOM_HEADER_TEST_TAG)
-        .padding(
-          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
-          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-          bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
-        ),
-    )
-    LazyRow(
-      modifier = Modifier.testTag(CLASSROOM_LIST_TEST_TAG),
-      contentPadding = PaddingValues(
-        start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-        end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-      ),
-    ) {
-      items(classroomSummaryList) {
-        ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId, isSticky)
-      }
+    items(classroomSummaryList) {
+      ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId, isSticky)
     }
   }
 }

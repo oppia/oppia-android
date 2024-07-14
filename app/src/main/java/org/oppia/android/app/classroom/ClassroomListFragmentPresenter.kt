@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
+import org.oppia.android.app.classroom.classroomlist.AllClassroomsHeaderText
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
 import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
@@ -37,6 +38,7 @@ import org.oppia.android.app.classroom.welcome.WelcomeText
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.home.classroomlist.AllClassroomsViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
@@ -204,7 +206,12 @@ class ClassroomListFragmentPresenter @Inject constructor(
               )
             }
           }
-          ClassroomSummaryViewModel::class -> stickyHeader(key = "classroom_carousel") {
+          AllClassroomsViewModel::class -> items.forEach { _ ->
+            item {
+              AllClassroomsHeaderText()
+            }
+          }
+          ClassroomSummaryViewModel::class -> stickyHeader() {
             ClassroomList(
               classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
               selectedClassroomId = classroomListViewModel.selectedClassroomId.get() ?: "",
