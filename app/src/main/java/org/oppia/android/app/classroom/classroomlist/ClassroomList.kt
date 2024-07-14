@@ -34,6 +34,9 @@ import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 /** Test tag for the classroom list. */
 const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"
 
+/** Test tag for the classroom card icon. */
+const val CLASSROOM_CARD_ICON_TEST_TAG = "TEST_TAG.classroom_card_icon"
+
 /** Displays a list of classroom summaries with a header. */
 @Composable
 fun ClassroomList(
@@ -108,6 +111,7 @@ fun ClassroomCard(
           ),
           contentDescription = classroomSummaryViewModel.title,
           modifier = Modifier
+            .testTag("${CLASSROOM_CARD_ICON_TEST_TAG}_${classroomSummaryViewModel.title}")
             .padding(bottom = dimensionResource(id = R.dimen.classrooms_card_icon_padding_bottom))
             .size(size = dimensionResource(id = R.dimen.classrooms_card_icon_size)),
         )
