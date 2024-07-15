@@ -244,7 +244,8 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun createDefaultProfile() {
     profileManagementController.addProfile(
-      name = "",
+      name = "Admin", // TODO(#4938): Refactor to empty name once proper admin profile creation flow
+      // is implemented.
       pin = "",
       avatarImagePath = null,
       allowDownloadAccess = allowDownloadAccess,

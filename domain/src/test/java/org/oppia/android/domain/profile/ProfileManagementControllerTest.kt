@@ -1363,6 +1363,42 @@ class ProfileManagementControllerTest {
       .contains("ProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
   }
 
+  @Test
+  fun testUpdateProfile_updateProfileType_existingAdminProfile_checkUpdateSucceeded() {
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SUPERVISOR
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  @Test
+  fun testUpdateProfile_updateProfileType_existingNonAdminProfile_checkUpdateSucceeded() {
+    setUpTestApplicationComponent()
+    addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.ADDITIONAL_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  @Test
+  fun testUpdateProfile_updateProfileType_newDefaultProfile_checkUpdateSucceeded() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
   private fun addTestProfiles() {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
