@@ -132,7 +132,12 @@ class RunCoverage(
 
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
-    println("\nCOVERAGE ANALYSIS COMPLETED.")
+    if (coverageCheckState == CoverageCheck.FAIL) {
+      error("\nCoverage Analysis Failed as minimum coverage threshold not met!" +
+        "\nMinimum Coverage Threshold = $MIN_THRESHOLD%")
+    } else {
+      println("\nCoverage Analysis Completed Succesffully!")
+    }
   }
 
   private suspend fun runCoverageForFile(filePath: String): String {
@@ -228,10 +233,15 @@ class RunCoverage(
       "\n</details>"
 
     val anomalyCasesList = anomalyCases.joinToString(separator = "\n") { "- $it" }
+    val anomalySection = if (anomalyCases.isNotEmpty()) {
+      "\n\n### Anomaly Cases\n$anomalyCasesList"
+    } else {
+      ""
+    }
+
     val finalReportText = failureMarkdownTable +
       "\n\n" + successMarkdownTable +
-      "\n\n" + "### Anamoly Cases\n" +
-      anomalyCasesList
+      anomalySection
 
     // remove later
     println(finalReportText)

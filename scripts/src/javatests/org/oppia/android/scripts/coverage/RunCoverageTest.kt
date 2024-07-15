@@ -151,7 +151,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
+  fun testRunCoverage_ignoreCaseMarkdownArgument_generatesCoverageReport() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -178,7 +178,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_ignoreCaseHtmlArgument_returnsCoverageData() {
+  fun testRunCoverage_ignoreCaseHtmlArgument_generatesCoverageReport() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -205,7 +205,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_reorderedArguments_returnsCoverageData() {
+  fun testRunCoverage_reorderedArguments_generatesCoverageReport() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -232,7 +232,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_testFileExempted_noCoverage() {
+  fun testRunCoverage_testFileExempted_skipsCoverage() {
     System.setOut(PrintStream(outContent))
     val exemptedFilePathList = listOf(
       "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
@@ -247,13 +247,13 @@ class RunCoverageTest {
     ).execute()
 
     assertThat(outContent.toString().trim()).contains(
-      "The file: ${exemptedFilePathList[0]} is exempted from having a test file; " +
+      "The file: ${exemptedFilePathList.get(0)} is exempted from having a test file; " +
         "skipping coverage check."
     )
   }
 
   @Test
-  fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
+  fun testRunCoverage_sampleTestsDefaultFormat_generatesCoverageReport() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -282,7 +282,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_sampleTestsMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -305,16 +305,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList.first().removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList[0])
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_withMultipleFilesMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_withMultipleFilesMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/SubNums.kt"
@@ -360,7 +360,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withMultipleFilesHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_withMultipleFilesHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/SubNums.kt"
@@ -405,9 +405,105 @@ class RunCoverageTest {
     }
   }
 
-  // on halt
-  /*@Test
-  fun testRunCoverage_withMultipleValidAndAnomalyFiles_returnsCoverageData() {
+  @Test
+  fun testRunCoverage_withMultipleSuccessAndFailureFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult =
+      """
+      ## Coverage Report
+
+      - No of files assessed: 2
+      - Coverage Status: **FAIL**
+      - Min Coverage Required: 10%
+
+      | Covered File | Percentage | Line Coverage | Status |
+      |--------------|------------|---------------|--------|
+      |[LowTestNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(1)})|0.00%|0 / 4|:x:|
+
+      <details>
+      <summary>Succeeded Coverages</summary><br>
+
+      | Covered File | Percentage | Line Coverage | Status |
+      |--------------|------------|---------------|--------|
+      |[AddNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|75.00%|3 / 4|:white_check_mark:|
+      </details>
+      """.trimIndent()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withMultipleValidAndAnomalyFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
@@ -423,7 +519,6 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-
     RunCoverage(
       "${tempFolder.root}",
       filePathList,
@@ -432,19 +527,40 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    for (file in filePathList) {
-      val outputReportText = File(
-        "${tempFolder.root}" +
-          "$coverageDir/${file.removeSuffix(".kt")}/coverage.html"
-      ).readText()
-      val expectedResult = getExpectedMarkdownText(file)
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
 
-      assertThat(outputReportText).isEqualTo(expectedResult)
-    }
-  }*/
+    val expectedResult =
+      """
+      ## Coverage Report
+
+      - No of files assessed: 2
+      - Coverage Status: **PASS**
+      - Min Coverage Required: 10%
+
+      | Covered File | Percentage | Line Coverage | Status |
+      |--------------|------------|---------------|--------|
+
+
+      <details>
+      <summary>Succeeded Coverages</summary><br>
+
+      | Covered File | Percentage | Line Coverage | Status |
+      |--------------|------------|---------------|--------|
+      |[AddNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|75.00%|3 / 4|:white_check_mark:|
+      </details>
+
+      ### Anamoly Cases
+      - The file: ${filePathList.get(1)} is exempted from having a test file; skipping coverage check.
+      """.trimIndent()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
 
   @Test
-  fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_scriptTestsMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf("scripts/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -467,16 +583,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList[0])
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_appTestsMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_appTestsMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -499,16 +615,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList[0])
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_localTestsMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_localTestsMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -549,16 +665,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList[0])
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedTestsMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedTestsMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -581,16 +697,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList[0])
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -630,16 +746,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.md"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList[0])
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sampleTestsHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_sampleTestsHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -662,16 +778,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
     ).readText()
 
-    val expectedResult = getExpectedHtmlText(filePathList[0])
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_scriptTestsHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_scriptTestsHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf("scripts/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -694,16 +810,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
     ).readText()
 
-    val expectedResult = getExpectedHtmlText(filePathList[0])
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_appTestsHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_appTestsHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -726,16 +842,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
     ).readText()
 
-    val expectedResult = getExpectedHtmlText(filePathList[0])
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_localTestsHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_localTestsHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -776,16 +892,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
     ).readText()
 
-    val expectedResult = getExpectedHtmlText(filePathList[0])
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedTestsHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedTestsHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -808,16 +924,16 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
     ).readText()
 
-    val expectedResult = getExpectedHtmlText(filePathList[0])
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedAndLocalTestsHtmlFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedAndLocalTestsHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -873,7 +989,7 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList[0].removeSuffix(".kt")}/coverage.html"
+        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
     ).readText()
 
     val expectedResult =
@@ -982,7 +1098,7 @@ class RunCoverageTest {
       <h2>Coverage Report</h2>
       <div class="summary-box">
         <div class="summary-left">
-          <strong>Covered File:</strong> ${filePathList[0]} <br>
+          <strong>Covered File:</strong> ${filePathList.get(0)} <br>
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>
