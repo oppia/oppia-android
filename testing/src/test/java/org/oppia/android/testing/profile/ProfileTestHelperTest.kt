@@ -145,6 +145,14 @@ class ProfileTestHelperTest {
     assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
   }
 
+  @Test
+  fun testProfileOnboarding_markOnboardingCompleted_chekIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = profileManagementController.getCurrentProfileId()
+    val onboardingProvider = profileTestHelper.markProfileOnboarded(profileId!!)
+    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {

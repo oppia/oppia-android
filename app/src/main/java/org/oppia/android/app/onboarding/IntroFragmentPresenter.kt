@@ -13,6 +13,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class IntroFragmentPresenter @Inject constructor(
   private var fragment: Fragment,
   private val activity: AppCompatActivity,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val profileManagementController: ProfileManagementController,
   private val analyticsController: AnalyticsController,
   private val oppiaLogger: OppiaLogger
 ) {
@@ -43,10 +45,7 @@ class IntroFragmentPresenter @Inject constructor(
 
     setLearnerName(profileNickname)
 
-    analyticsController.logLowPriorityEvent(
-      oppiaLogger.createProfileOnboardingStartedContext(profileId),
-      profileId = profileId
-    )
+    markProfileOnboardingStarted(profileId)
 
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()
@@ -75,5 +74,14 @@ class IntroFragmentPresenter @Inject constructor(
       appLanguageResourceHandler.getStringInLocaleWithWrapping(
         R.string.onboarding_learner_intro_activity_text, profileName
       )
+  }
+
+  private fun markProfileOnboardingStarted(profileId: ProfileId) {
+    profileManagementController.markProfileOnboardingStarted(profileId)
+
+    analyticsController.logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingStartedContext(profileId),
+      profileId = profileId
+    )
   }
 }

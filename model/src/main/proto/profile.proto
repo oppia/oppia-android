@@ -94,8 +94,11 @@ message Profile {
   // Represents the type of user which informs the configuration options available to them.
   ProfileType profile_type = 20;
 
-  // Indicates whether this user has completed the onboarding flow.
-  bool already_onboarded_profile = 21;
+  // Indicates whether this profile has started the onboarding flow.
+  bool started_profile_oboarding = 21;
+
+  // Indicates whether this profile has completed the onboarding flow.
+  bool completed_profile_oboarding = 22;
 }
 
 // Represents the type of user using the app.

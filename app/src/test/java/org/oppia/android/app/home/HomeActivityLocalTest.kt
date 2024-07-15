@@ -154,7 +154,7 @@ class HomeActivityLocalTest {
     setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvents(2).last()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
       assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
@@ -202,9 +202,13 @@ class HomeActivityLocalTest {
 
   @Test
   fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getProfileTestHelper().markProfileOnboarded(profileId)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
     setUpTestWithOnboardingV2Enabled()
-    profileTestHelper.addOnlyAdminProfileWithoutPin()
-    profileTestHelper.markProfileOnboarded(internalProfileId)
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 

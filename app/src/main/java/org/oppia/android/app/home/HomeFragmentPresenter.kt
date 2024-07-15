@@ -179,17 +179,11 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun handleProfileOnboardingState(profile: Profile) {
-    if (!profile.alreadyOnboardedProfile) {
-      profileManagementController.updateProfileOnboardingState(profileId)
-      analyticsController.logLowPriorityEvent(
-        oppiaLogger.createProfileOnboardingEndedContext(
-          profileId
-        ),
-        profileId
-      )
+    if (!profile.completedProfileOboarding) {
+      markProfileOnboardingEnded(profileId)
 
-      // App onboarding is completed by the fist profile on the app, while profile onboarding is
-      // completed by each profile.
+      // App onboarding is completed by the fist profile on the app(SOLE_LEARNER or SUPERVISOR),
+      // while profile onboarding is completed by each profile.
       if (profile.profileType == ProfileType.SOLE_LEARNER ||
         profile.profileType == ProfileType.SUPERVISOR
       ) {
@@ -197,6 +191,15 @@ class HomeFragmentPresenter @Inject constructor(
         logAppOnboardedEvent(profileId)
       }
     }
+  }
+
+  private fun markProfileOnboardingEnded(profileId: ProfileId) {
+    profileManagementController.markProfileOnboardingEnded(profileId)
+
+    analyticsController.logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingEndedContext(profileId),
+      profileId = profileId
+    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {

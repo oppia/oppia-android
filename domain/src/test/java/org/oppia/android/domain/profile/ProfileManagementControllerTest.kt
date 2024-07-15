@@ -1577,6 +1577,22 @@ class ProfileManagementControllerTest {
     assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
   }
 
+  @Test
+  fun testProfileOnboarding_markOnboardingStarted_isSuccess() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James", pin = "")
+    val onboardingProvider = profileManagementController.markProfileOnboardingStarted(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
+  @Test
+  fun testProfileOnboarding_markOnboardingCompleted_isSuccess() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James", pin = "")
+    val onboardingProvider = profileManagementController.markProfileOnboardingEnded(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
   private fun addTestProfiles() {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)

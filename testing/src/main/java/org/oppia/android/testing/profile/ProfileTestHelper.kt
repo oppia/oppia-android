@@ -120,10 +120,8 @@ class ProfileTestHelper @Inject constructor(
   }
 
   /** Marks a profile as having seen the onboarding flow. */
-  fun markProfileOnboarded(internalProfileId: Int): DataProvider<Any?> {
-    return profileManagementController.updateProfileOnboardingState(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    )
+  fun markProfileOnboarded(profileId: ProfileId): DataProvider<Any?> {
+    return profileManagementController.markProfileOnboardingEnded(profileId)
   }
 
   /** Returns the continue button animation seen for profile. */

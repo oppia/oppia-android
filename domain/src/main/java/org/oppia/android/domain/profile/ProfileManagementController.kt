@@ -79,7 +79,9 @@ private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
 private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "retrieve_last_selected_classroom_id_provider_id"
 private const val UPDATE_PROFILE_DETAILS_PROVIDER_ID = "update_profile_details_data_provider_id"
-private const val UPDATE_ONBOARDING_STATE_PROVIDER_ID = "update_onboarding_state_provider_id"
+private const val UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID =
+  "update_start_onboarding_flow_provider_id"
+private const val UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID = "update_end_onboarding_flow_provider_id"
 private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
 private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_provider_id"
 
@@ -341,11 +343,14 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the onboarding status of the profile so that the onboarding flow is not shown after the initial login.
+   * Marks that the profile has started the onboarding flow, so that they can skip the profile setup
+   * step if onboarding was previously abandoned.
+   *
+   *
    * @param profileId The ID of the profile to update.
    * @return A [DataProvider] that represents the result of the update operation.
    */
-  fun updateProfileOnboardingState(profileId: ProfileId): DataProvider<Any?> {
+  fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -354,14 +359,42 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setAlreadyOnboardedProfile(true).build()
+      val updatedProfile = profile.toBuilder().setStartedProfileOboarding(true).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(UPDATE_ONBOARDING_STATE_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Marks that the profile has completed the onboarding flow so that the onboarding flow is not
+   * shown after the initial login.
+   *
+   * @param profileId The ID of the profile to update.
+   * @return A [DataProvider] that represents the result of the update operation.
+   */
+  fun markProfileOnboardingEnded(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfile = profile.toBuilder().setCompletedProfileOboarding(true).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }

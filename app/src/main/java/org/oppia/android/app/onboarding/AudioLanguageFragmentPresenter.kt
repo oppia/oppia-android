@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.ProfileId
@@ -24,6 +25,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
@@ -33,7 +36,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
   private lateinit var selectedLanguage: String
@@ -139,9 +143,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       .observe(fragment) {
         when (it) {
           is AsyncResult.Success -> {
-            val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-            fragment.startActivity(intent)
-            fragment.activity?.finishAffinity()
+            loginToProfile(profileId)
           }
           is AsyncResult.Failure ->
             oppiaLogger.e(
@@ -152,6 +154,31 @@ class AudioLanguageFragmentPresenter @Inject constructor(
           is AsyncResult.Pending -> {} // Wait for a result.
         }
       }
+  }
+
+  private fun loginToProfile(profileId: ProfileId) {
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(
+      fragment,
+      { result ->
+        if (result is AsyncResult.Success) {
+          navigateToHomeScreen(profileId)
+        }
+      }
+    )
+  }
+
+  private fun navigateToHomeScreen(profileId: ProfileId) {
+    if (enableMultipleClassrooms.value) {
+      fragment.startActivity(
+        ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
+      )
+    } else {
+      fragment.startActivity(
+        HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
+      )
+    }
+
+    fragment.activity?.finishAffinity()
   }
 
   /** Save the current dropdown selection to be retrieved on configuration change. */
