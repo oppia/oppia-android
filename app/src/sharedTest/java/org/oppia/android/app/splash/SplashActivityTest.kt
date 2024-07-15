@@ -92,7 +92,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -133,6 +132,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -198,7 +198,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_secondOpen_routesToChooseProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
-    setUpTestWithOnboardingV2Enabled(false)
+    initializeTestApplication()
 
     launchSplashActivityFully {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -620,7 +620,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
         .perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
     }
 
     // Note this is a different "recreation" than other tests since the same instrumentation
@@ -660,7 +660,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testSplashActivity_onboarded_dismissGaNoticeForever_retriggerNotice_doesNotShowNotice() {
     // Open the app in GA upgrade mode, then dismiss the notice permanently.
     simulateAppAlreadyOpenedWithFlavor(BuildFlavor.BETA)
@@ -945,21 +944,20 @@ class SplashActivityTest {
 
     // The profile chooser opens immediately for the testing flavor since it has no delay.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_onboarded_devFlavor_doesNotWaitToStart() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.DEVELOPER)
     initializeTestApplicationWithFlavor(BuildFlavor.DEVELOPER)
 
     // The profile chooser opens immediately for the developer flavor since it has no delay.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -981,13 +979,13 @@ class SplashActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testSplashActivity_onboarded_alphaFlavor_intentsToProfileChooser() {
+  fun testSplashActivity_onboarded_alphaFlavor_waitTwoSeconds_intentsToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.ALPHA)
     initializeTestApplicationWithFlavor(BuildFlavor.ALPHA)
 
-    // The profile chooser should appear once the app state has finished loading.
+    // The profile chooser should appear after the 2 seconds wait for the alpha splash screen.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(2))
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -1028,7 +1026,7 @@ class SplashActivityTest {
 
     // The profile chooser opens immediately for the GA flavor since it has no delay.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -1056,7 +1054,7 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_initialOpen_onboardingV2Enabled_routesToOnboardingActivity() {
-    setUpTestWithOnboardingV2Enabled(true)
+    initializeTestApplication(onboardingV2Enabled = true)
 
     launchSplashActivityPartially {
       intended(hasComponent(OnboardingActivity::class.java.name))
@@ -1066,9 +1064,8 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2Enabled_existingSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
-    setUpTestWithOnboardingV2Enabled(true)
+    initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-
     launchSplashActivityPartially {
       intended(hasComponent(HomeActivity::class.java.name))
     }
@@ -1077,7 +1074,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2Enabled_existingAdminProfile_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
-    setUpTestWithOnboardingV2Enabled(true)
+    initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfile()
 
     launchSplashActivityPartially {
@@ -1088,17 +1085,12 @@ class SplashActivityTest {
   @Test
   fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
-    setUpTestWithOnboardingV2Enabled(true)
+    initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addMoreProfiles(5)
 
     launchSplashActivityPartially {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
-  }
-
-  private fun setUpTestWithOnboardingV2Enabled(onboardingV2Enabled: Boolean = false) {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
-    initializeTestApplication()
   }
 
   private fun simulateAppAlreadyOnboarded() {
@@ -1166,8 +1158,9 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
   }
 
-  private fun initializeTestApplication() {
+  private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
