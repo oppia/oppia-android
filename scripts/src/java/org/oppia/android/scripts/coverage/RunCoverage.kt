@@ -14,6 +14,8 @@ import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+private val MIN_THRESHOLD = 10 // yet to be decided on a value
+
 /**
  * Entry point function for running coverage analysis for a source file.
  *
@@ -103,6 +105,7 @@ class RunCoverage(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
+  private var coverageCheckState = CoverageCheck.PASS
 
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
@@ -111,9 +114,6 @@ class RunCoverage(
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
-
-  private val MIN_THRESHOLD = 10 // yet to be decided on a value
-  private var coverageCheckState = CoverageCheck.PASS
 
   /**
    * Executes coverage analysis for the specified file.
@@ -135,7 +135,7 @@ class RunCoverage(
     if (coverageCheckState == CoverageCheck.FAIL) {
       error(
         "\nCoverage Analysis Failed as minimum coverage threshold not met!" +
-        "\nMinimum Coverage Threshold = $MIN_THRESHOLD%"
+          "\nMinimum Coverage Threshold = $MIN_THRESHOLD%"
       )
     } else {
       println("\nCoverage Analysis Completed Succesffully!")
@@ -176,30 +176,7 @@ class RunCoverage(
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
-      val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
-      var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
-
-      val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired
-        ?: MIN_THRESHOLD
-
-      if (computedCoverageRatio * 100 < coverageCheckThreshold) {
-        coverageCheckState = CoverageCheck.FAIL
-      }
-
-      reportText += if (reportFormat == ReportFormat.MARKDOWN) {
-        computedCoverageRatio.takeIf { it * 100 < coverageCheckThreshold }
-          ?.let { "|:x:|" } ?: "|:white_check_mark:|"
-      } else ""
-
-      val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
-      File(reportOutputPath).apply {
-        parentFile?.mkdirs()
-        writeText(reportText)
-      }
-
-      if (File(reportOutputPath).exists()) {
-        println("\nGenerated report at: $reportOutputPath\n")
-      }
+      val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
 
       return reportText
     }
@@ -232,25 +209,25 @@ class RunCoverage(
     val coverageFailuresRows = coverageFailures.joinToString(separator = "\n")
     val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
 
-    val failureMarkdownTable = if (coverageFailuresRows.isNotEmpty()) {
+    val failureMarkdownTable = coverageFailuresRows.takeIf { it.isNotEmpty() }?.let {
       "### Failed Coverages\n" +
-      "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
-      coverageTableHeader +
-      coverageFailuresRows
-    } else ""
+        "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
+        coverageTableHeader +
+        it
+    } ?: ""
 
-    val successMarkdownTable = if (coverageSuccessesRows.isNotEmpty()) {
+    val successMarkdownTable = coverageSuccessesRows.takeIf { it.isNotEmpty() }?.let {
       "<details>\n" +
-      "<summary>Succeeded Coverages</summary><br>\n\n" +
-      coverageTableHeader +
-      coverageSuccessesRows +
-      "\n</details>"
-    } else ""
+        "<summary>Succeeded Coverages</summary><br>\n\n" +
+        coverageTableHeader +
+        it +
+        "\n</details>"
+    } ?: ""
 
     val anomalyCasesList = anomalyCases.joinToString(separator = "\n") { "- $it" }
-    val anomalySection = if (anomalyCases.isNotEmpty()) {
+    val anomalySection = anomalyCases.takeIf { it.isNotEmpty() }?.let {
       "\n\n### Anomaly Cases\n$anomalyCasesList"
-    } else ""
+    } ?: ""
 
     val finalReportText = "## Coverage Report\n\n" +
       "- No of files assessed: ${coverageResults.size}\n" +
@@ -266,6 +243,73 @@ class RunCoverage(
     }
   }
 
+  private fun generateAggregatedCoverageReport(aggregatedCoverageReport: CoverageReport): String {
+    val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
+    var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+
+    val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.filePath]
+      ?.overrideMinCoveragePercentRequired
+      ?: MIN_THRESHOLD
+
+    if (computedCoverageRatio * 100 < coverageCheckThreshold) {
+      coverageCheckState = CoverageCheck.FAIL
+    }
+
+    reportText += if (reportFormat == ReportFormat.MARKDOWN) {
+      computedCoverageRatio.takeIf { it * 100 < coverageCheckThreshold }
+        ?.let { "|:x:|" } ?: "|:white_check_mark:|"
+    } else ""
+
+    val reportOutputPath = getReportOutputPath(
+      repoRoot, aggregatedCoverageReport.filePath, reportFormat
+    )
+    File(reportOutputPath).apply {
+      parentFile?.mkdirs()
+      writeText(reportText)
+    }
+
+    if (File(reportOutputPath).exists()) {
+      println("\nGenerated report at: $reportOutputPath\n")
+    }
+
+    return reportText
+  }
+
+  private fun calculateAggregateCoverageReport(
+    coverageReports: List<CoverageReport>
+  ): CoverageReport {
+    fun aggregateCoverage(coverages: List<Coverage>): Coverage {
+      return if (coverages.contains(Coverage.FULL)) Coverage.FULL
+      else Coverage.NONE
+    }
+
+    val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
+
+    val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
+
+    val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
+      CoveredLine.newBuilder()
+        .setLineNumber(lineNumber)
+        .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
+        .build()
+    }
+
+    val totalLinesFound = aggregatedCoveredLines.size
+    val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
+
+    val aggregatedTargetList = coverageReports.joinToString(separator = ", ") { it.bazelTestTarget }
+
+    return CoverageReport.newBuilder()
+      .setBazelTestTarget(aggregatedTargetList)
+      .setFilePath(coverageReports.first().filePath)
+      .setFileSha1Hash(coverageReports.first().fileSha1Hash)
+      .addAllCoveredLine(aggregatedCoveredLines)
+      .setLinesFound(totalLinesFound)
+      .setLinesHit(totalLinesHit)
+      .setIsGenerated(true)
+      .build()
+  }
+
   /** Corresponds to status of the coverage analysis. */
   private enum class CoverageCheck {
     /** Indicates successful generation of coverage retrieval for a specified file. */
@@ -273,41 +317,6 @@ class RunCoverage(
     /** Indicates failure or anomaly during coverage retrieval for a specified file. */
     FAIL
   }
-}
-
-private fun calculateAggregateCoverageReport(
-  coverageReports: List<CoverageReport>
-): CoverageReport {
-  fun aggregateCoverage(coverages: List<Coverage>): Coverage {
-    return if (coverages.contains(Coverage.FULL)) Coverage.FULL
-    else Coverage.NONE
-  }
-
-  val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
-
-  val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-
-  val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
-    CoveredLine.newBuilder()
-      .setLineNumber(lineNumber)
-      .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
-      .build()
-  }
-
-  val totalLinesFound = aggregatedCoveredLines.size
-  val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-
-  val aggregatedTargetList = coverageReports.joinToString(separator = ", ") { it.bazelTestTarget }
-
-  return CoverageReport.newBuilder()
-    .setBazelTestTarget(aggregatedTargetList)
-    .setFilePath(coverageReports.first().filePath)
-    .setFileSha1Hash(coverageReports.first().fileSha1Hash)
-    .addAllCoveredLine(aggregatedCoveredLines)
-    .setLinesFound(totalLinesFound)
-    .setLinesHit(totalLinesHit)
-    .setIsGenerated(true)
-    .build()
 }
 
 private fun findTestFile(repoRoot: String, filePath: String): List<String> {
