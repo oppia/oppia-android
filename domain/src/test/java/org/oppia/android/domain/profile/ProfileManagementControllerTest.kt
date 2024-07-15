@@ -1500,6 +1500,42 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testUpdateProfile_updateProfileType_existingAdminProfile_checkUpdateSucceeded() {
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SUPERVISOR
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  @Test
+  fun testUpdateProfile_updateProfileType_existingNonAdminProfile_checkUpdateSucceeded() {
+    setUpTestApplicationComponent()
+    addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.ADDITIONAL_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  @Test
+  fun testUpdateProfile_updateProfileType_newDefaultProfile_checkUpdateSucceeded() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  @Test
   fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerState() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
