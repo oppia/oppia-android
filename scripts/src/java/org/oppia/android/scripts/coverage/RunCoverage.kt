@@ -58,7 +58,7 @@ fun main(vararg args: String) {
 
   val reportFormat = when (format) {
     "HTML" -> ReportFormat.HTML
-    "MARKDOWN" -> ReportFormat.MARKDOWN
+    "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
@@ -133,8 +133,10 @@ class RunCoverage(
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
     if (coverageCheckState == CoverageCheck.FAIL) {
-      error("\nCoverage Analysis Failed as minimum coverage threshold not met!" +
-        "\nMinimum Coverage Threshold = $MIN_THRESHOLD%")
+      error(
+        "\nCoverage Analysis Failed as minimum coverage threshold not met!" +
+        "\nMinimum Coverage Threshold = $MIN_THRESHOLD%"
+      )
     } else {
       println("\nCoverage Analysis Completed Succesffully!")
     }
@@ -180,8 +182,9 @@ class RunCoverage(
       val coverageCheckThreshold = exemption?.overrideMinCoveragePercentRequired
         ?: MIN_THRESHOLD
 
-      coverageCheckState = computedCoverageRatio.takeIf { it * 100 <coverageCheckThreshold }
-        ?.let { CoverageCheck.FAIL } ?: CoverageCheck.PASS
+      if (computedCoverageRatio * 100 < coverageCheckThreshold) {
+        coverageCheckState = CoverageCheck.FAIL
+      }
 
       reportText += if (reportFormat == ReportFormat.MARKDOWN) {
         computedCoverageRatio.takeIf { it * 100 < coverageCheckThreshold }
@@ -203,6 +206,8 @@ class RunCoverage(
   }
 
   private fun generateFinalMdReport(coverageResults: List<String>) {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+
     val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
       "|--------------|------------|---------------|--------|\n"
 
@@ -214,37 +219,45 @@ class RunCoverage(
       result.contains("|") && result.split("|")[4].trim() == ":white_check_mark:"
     }
 
-    val anomalyCases = coverageResults.filterNot { it.contains("|") }
+    val anomalyCases = coverageResults
+      .filterNot { it.contains("|") }
+      .map {
+        it.replace(Regex("""([\w/]+\.kt)""")) { matchResult ->
+          "[${matchResult.value.substringAfterLast("/").trim()}]" +
+            "($oppiaDevelopGitHubLink/${matchResult.value})"
+        }
+      }
 
+    println("Anomalycases: $anomalyCases")
     val coverageFailuresRows = coverageFailures.joinToString(separator = "\n")
     val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
 
-    val failureMarkdownTable = "## Coverage Report\n\n" +
-      "- No of files assessed: ${coverageResults.size}\n" +
-      "- Coverage Status: **$coverageCheckState**\n" +
-      "- Min Coverage Required: $MIN_THRESHOLD%\n\n" +
+    val failureMarkdownTable = if (coverageFailuresRows.isNotEmpty()) {
+      "### Failed Coverages\n" +
+      "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
       coverageTableHeader +
       coverageFailuresRows
+    } else ""
 
-    val successMarkdownTable = "<details>\n" +
+    val successMarkdownTable = if (coverageSuccessesRows.isNotEmpty()) {
+      "<details>\n" +
       "<summary>Succeeded Coverages</summary><br>\n\n" +
       coverageTableHeader +
       coverageSuccessesRows +
       "\n</details>"
+    } else ""
 
     val anomalyCasesList = anomalyCases.joinToString(separator = "\n") { "- $it" }
     val anomalySection = if (anomalyCases.isNotEmpty()) {
       "\n\n### Anomaly Cases\n$anomalyCasesList"
-    } else {
-      ""
-    }
+    } else ""
 
-    val finalReportText = failureMarkdownTable +
+    val finalReportText = "## Coverage Report\n\n" +
+      "- No of files assessed: ${coverageResults.size}\n" +
+      "- Coverage Status: **$coverageCheckState**\n" +
+      failureMarkdownTable +
       "\n\n" + successMarkdownTable +
       anomalySection
-
-    // remove later
-    println(finalReportText)
 
     val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
     File(finalReportOutputPath).apply {

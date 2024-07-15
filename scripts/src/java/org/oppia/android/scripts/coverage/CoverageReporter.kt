@@ -226,8 +226,9 @@ class CoverageReporter(
 }
 
 private fun getFilenameAsLink(filePath: String): String {
+  val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
   val filename = filePath.substringAfterLast("/").trim()
-  val filenameAsLink = "[$filename](https://github.com/oppia/oppia-android/tree/develop/$filePath)"
+  val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
   return filenameAsLink
 }
 
