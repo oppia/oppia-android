@@ -33,7 +33,12 @@ class HomeFragmentTestActivity :
   }
 
   // Override functions are needed to fulfill listener definitions.
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {}
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {}
+  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {}
+  override fun routeToTopicPlayStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {}
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {}
 }

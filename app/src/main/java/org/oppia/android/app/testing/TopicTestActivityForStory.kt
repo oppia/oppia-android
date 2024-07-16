@@ -18,6 +18,7 @@ import org.oppia.android.app.topic.TopicActivityPresenter
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
@@ -39,6 +40,7 @@ class TopicTestActivityForStory :
     (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
+      classroomId = TEST_CLASSROOM_ID_0,
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0
     )
@@ -52,11 +54,17 @@ class TopicTestActivityForStory :
     )
   }
 
-  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
         this,
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )
@@ -65,6 +73,7 @@ class TopicTestActivityForStory :
 
   override fun routeToResumeLesson(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -75,6 +84,7 @@ class TopicTestActivityForStory :
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -86,6 +96,7 @@ class TopicTestActivityForStory :
 
   override fun routeToExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -96,6 +107,7 @@ class TopicTestActivityForStory :
       ExplorationActivity.createExplorationActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
