@@ -334,7 +334,7 @@ class SurveyFragmentPresenter @Inject constructor(
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
       fragment.requireView().windowToken,
-      0
+      0 // Flag value to force hide the keyboard when possible.
     )
   }
 
