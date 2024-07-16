@@ -71,6 +71,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -170,6 +171,7 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -183,6 +185,7 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -202,6 +205,7 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -226,6 +230,7 @@ class TopicRevisionFragmentTest {
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -240,6 +245,7 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -265,6 +271,7 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -289,20 +296,30 @@ class TopicRevisionFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
+  private fun createTopicActivityIntent(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String
+  ): Intent {
     return TopicActivity.createTopicActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
       internalProfileId = internalProfileId,
+      classroomId = classroomId,
       topicId = topicId
     )
   }
 
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     return launch(
-      createTopicActivityIntent(internalProfileId = internalProfileId, topicId = topicId)
+      createTopicActivityIntent(
+        internalProfileId = internalProfileId,
+        classroomId = classroomId,
+        topicId = topicId
+      )
     )
   }
 

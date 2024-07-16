@@ -25,6 +25,9 @@ message Topic {
   // A brief description of the topic.
   SubtitledHtml description = 11;
 
+  // The ID of the classroom to which the topic belongs to.
+  string classroom_id = 12;
+
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
 
@@ -235,6 +238,9 @@ message CompletedStory {
 
   // The title of the story being completed.
   SubtitledHtml story_title = 8;
+
+  // The ID of the classroom which contains this story.
+  string classroom_id = 10;
 
   // The ID of the topic which contains this story.
   string topic_id = 3;

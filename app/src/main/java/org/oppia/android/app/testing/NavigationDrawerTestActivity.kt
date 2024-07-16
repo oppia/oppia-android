@@ -61,15 +61,23 @@ class NavigationDrawerTestActivity :
     homeActivityPresenter.handleOnRestart()
   }
 
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {
+    startActivity(
+      TopicActivity.createTopicActivityIntent(this, internalProfileId, classroomId, topicId)
+    )
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         this,
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )

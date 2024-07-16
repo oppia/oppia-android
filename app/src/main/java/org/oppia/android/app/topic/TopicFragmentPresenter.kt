@@ -49,6 +49,7 @@ class TopicFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     isConfigChanged: Boolean
@@ -77,7 +78,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, topicId, isConfigChanged)
+    setUpViewPager(viewPager, classroomId, topicId, isConfigChanged)
     return binding.root
   }
 
@@ -124,9 +125,21 @@ class TopicFragmentPresenter @Inject constructor(
     return if (enableExtraTopicTabsUi.value) tab.positionWithFourTabs else tab.positionWithTwoTabs
   }
 
-  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
+  private fun setUpViewPager(
+    viewPager2: ViewPager2,
+    classroomId: String,
+    topicId: String,
+    isConfigChanged: Boolean
+  ) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableExtraTopicTabsUi.value)
+      ViewPagerAdapter(
+        fragment,
+        internalProfileId,
+        classroomId,
+        topicId,
+        storyId,
+        enableExtraTopicTabsUi.value
+      )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
