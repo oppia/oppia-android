@@ -32,8 +32,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
-import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 
 /**
  * Convenience logger for feature flags.
