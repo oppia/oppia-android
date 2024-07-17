@@ -8,7 +8,6 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -70,13 +69,6 @@ class ProfileChooserViewModel @Inject constructor(
     }.toMutableList()
 
     val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
-
-    // TODO(#4938): Remove hacky workaround once proper admin profile creation flow is implemented.
-    if (enableOnboardingFlowV2.value) {
-      adminProfile.let {
-        profileManagementController.updateProfileType(it.profile.id, ProfileType.SUPERVISOR)
-      }
-    }
 
     sortedProfileList.remove(adminProfile)
     adminPin = adminProfile.profile.pin
