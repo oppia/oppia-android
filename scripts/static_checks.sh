@@ -111,7 +111,7 @@ echo "********************************"
 bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
 echo ""
 
-# TODO checks.
+# TO-DO checks.
 echo "********************************"
 echo "Running TODO correctness checks"
 echo "********************************"
