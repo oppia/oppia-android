@@ -14,7 +14,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileOnboardingState
+import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -83,7 +83,7 @@ private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_pr
 private const val UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID =
   "update_start_onboarding_flow_provider_id"
 private const val UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID = "update_end_onboarding_flow_provider_id"
-private const val PROFILE_ONBOARDING_STATE_PROVIDER_ID = "profile_onboarding_state_data_provider_id"
+private const val PROFILE_ONBOARDING_MODE_PROVIDER_ID = "profile_onboarding_mode_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -400,22 +400,22 @@ class ProfileManagementController @Inject constructor(
   }
 
   /** Returns the state of the app based on the number and type of existing profiles. */
-  fun getProfileOnboardingState(): DataProvider<ProfileOnboardingState> {
+  fun getProfileOnboardingState(): DataProvider<ProfileOnboardingMode> {
     return getProfiles()
-      .transform(PROFILE_ONBOARDING_STATE_PROVIDER_ID) { profileList ->
+      .transform(PROFILE_ONBOARDING_MODE_PROVIDER_ID) { profileList ->
         when {
           profileList.size > 1 -> {
-            ProfileOnboardingState.MULTIPLE_PROFILES
+            ProfileOnboardingMode.MULTIPLE_PROFILES
           }
           profileList.size == 1 -> {
             if (profileList.first().isAdmin && profileList.first().pin.isNotBlank()) {
-              ProfileOnboardingState.ADMIN_PROFILE_ONLY
+              ProfileOnboardingMode.ADMIN_PROFILE_ONLY
             } else {
-              ProfileOnboardingState.SOLE_LEARNER_PROFILE
+              ProfileOnboardingMode.SOLE_LEARNER_PROFILE
             }
           }
           else -> {
-            ProfileOnboardingState.NEW_INSTALL
+            ProfileOnboardingMode.NEW_INSTALL
           }
         }
       }

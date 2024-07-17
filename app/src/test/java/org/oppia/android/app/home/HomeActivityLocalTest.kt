@@ -204,7 +204,7 @@ class HomeActivityLocalTest {
   fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
-      testComponent.getProfileTestHelper().markProfileOnboarded(profileId)
+      testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 

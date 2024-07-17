@@ -169,9 +169,9 @@ enum AudioLanguage {
 }
 
 // Indicates the state of the app with regards to the number and type of existing profiles.
-enum ProfileOnboardingState {
+enum ProfileOnboardingMode {
   // Indicates that the number or type of profiles is unknown.
-  PROFILE_ONBOARDING_STATE_UNSPECIFIED = 0;
+  PROFILE_ONBOARDING_MODE_UNSPECIFIED = 0;
 
   // Indicates that this is a new app install given that there are no existing profiles.
   NEW_INSTALL = 1;

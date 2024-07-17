@@ -45,6 +45,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
@@ -52,13 +53,16 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -124,6 +128,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -1007,19 +1012,20 @@ class SplashActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testSplashActivity_onboarded_betaFlavor_intentsToProfileChooser() {
+  fun testSplashActivity_onboarded_betaFlavor_waitTwoSeconds_intentsToProfileChooser() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
 
-    // The profile chooser should appear after the app state loads completely.
+    // The profile chooser should appear after the 2 seconds wait for the beta splash screen.
     launchSplashActivityPartially {
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(2))
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_onboarded_gaFlavor_doesNotWaitToStart() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
     initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
@@ -1062,17 +1068,41 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_onboardingV2Enabled_existingSoleLearnerProfile_routesToHomeActivity() {
-    simulateAppAlreadyOnboarded()
+  fun testSplashActivity_onboardingV2Enabled_profilePartiallyOnboarded_routesToIntroActivity() {
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    val params = IntroActivityParams.newBuilder()
+      .setProfileNickname("Admin")
+      .build()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(IntroActivity::class.java.name))
+      intended(hasProtoExtra(IntroActivity.PARAMS_KEY, params))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
+    runInNewTestApplication {
+      profileTestHelper.addOnlyAdminProfileWithoutPin()
+      appStartupStateController.markOnboardingFlowCompleted()
+      testCoroutineDispatchers.advanceUntilIdle()
+    }
+    initializeTestApplication(onboardingV2Enabled = true)
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    profileTestHelper.markProfileOnboardingEnded(profileId)
     launchSplashActivityPartially {
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 
   @Test
-  fun testSplashActivity_onboardingV2Enabled_existingAdminProfile_routesToProfileChooserActivity() {
+  fun testSplashActivity_onboardingV2_onboardedAdminProfile_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfile()
@@ -1290,6 +1320,8 @@ class SplashActivityTest {
 
     fun getMonitorFactory(): DataProviderTestMonitor.Factory
 
+    fun getProfieTestHelper(): ProfileTestHelper
+
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
@@ -1302,6 +1334,8 @@ class SplashActivityTest {
       get() = component.getTestCoroutineDispatchers()
     val monitorFactory: DataProviderTestMonitor.Factory
       get() = component.getMonitorFactory()
+    val profileTestHelper: ProfileTestHelper
+      get() = component.getProfieTestHelper()
 
     fun inject(splashActivityTest: SplashActivityTest) {
       component.inject(splashActivityTest)

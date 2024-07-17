@@ -149,7 +149,7 @@ class ProfileTestHelperTest {
   fun testProfileOnboarding_markOnboardingCompleted_chekIsSuccessful() {
     profileTestHelper.addOnlyAdminProfile()
     val profileId = profileManagementController.getCurrentProfileId()
-    val onboardingProvider = profileTestHelper.markProfileOnboarded(profileId!!)
+    val onboardingProvider = profileTestHelper.markProfileOnboardingEnded(profileId!!)
     monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
   }
 

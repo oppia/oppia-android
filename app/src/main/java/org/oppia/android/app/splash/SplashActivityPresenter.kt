@@ -16,9 +16,10 @@ import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileOnboardingState
+import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.DeprecationNoticeActionResponse
@@ -26,6 +27,8 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
+import org.oppia.android.app.onboarding.IntroActivity
+import org.oppia.android.app.onboarding.IntroActivity.Companion.PARAMS_KEY
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
@@ -41,10 +44,12 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -271,10 +276,11 @@ class SplashActivityPresenter @Inject constructor(
           OsDeprecationNoticeDialogFragment::newInstance
         )
       }
+      StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfiles()
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        OnboardingActivity.createOnboardingActivity(activity)
+        launchOnboardingActivity()
         activity.finish()
       }
     }
@@ -289,11 +295,11 @@ class SplashActivityPresenter @Inject constructor(
           AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
       }
+      StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfiles()
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-        activity.finish()
+        launchOnboardingActivity()
       }
     }
   }
@@ -324,14 +330,12 @@ class SplashActivityPresenter @Inject constructor(
     )
   }
 
-  private fun computeLoginRoute(onboardingState: ProfileOnboardingState) {
-    when (onboardingState) {
-      ProfileOnboardingState.NEW_INSTALL -> {
-        OnboardingActivity.createOnboardingActivity(activity)
-        activity.finish()
+  private fun computeLoginRoute(onboardingMode: ProfileOnboardingMode) {
+    when (onboardingMode) {
+      ProfileOnboardingMode.NEW_INSTALL -> {
+        launchOnboardingActivity()
       }
-
-      ProfileOnboardingState.SOLE_LEARNER_PROFILE -> fetchProfiles()
+      ProfileOnboardingMode.SOLE_LEARNER_PROFILE -> fetchProfiles()
       else -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         activity.finish()
@@ -346,9 +350,12 @@ class SplashActivityPresenter @Inject constructor(
         { result ->
           when (result) {
             is AsyncResult.Success -> {
-              val profileId =
-                getSoleLearnerProfile(result.value)?.id ?: ProfileId.getDefaultInstance()
-              logInToSoleLearnerProfile(profileId)
+              val soleLearnerProfile = getSoleLearnerProfile(result.value)
+              if (soleLearnerProfile != null) {
+                ensureProfileOnboarded(soleLearnerProfile)
+              } else {
+                launchOnboardingActivity()
+              }
             }
             is AsyncResult.Pending -> {} // no-op
             is AsyncResult.Failure -> oppiaLogger.e(
@@ -364,7 +371,31 @@ class SplashActivityPresenter @Inject constructor(
     return profiles.find { it.isAdmin && it.pin.isNullOrBlank() }
   }
 
-  private fun logInToSoleLearnerProfile(profileId: ProfileId) {
+  private fun ensureProfileOnboarded(profile: Profile) {
+    if (profile.startedProfileOboarding && !profile.completedProfileOboarding) {
+      resumeOnboarding(profile.id, profile.name)
+    } else if (profile.startedProfileOboarding && profile.completedProfileOboarding) {
+      loginToProfile(profile.id)
+    } else {
+      launchOnboardingActivity()
+    }
+  }
+
+  private fun resumeOnboarding(profileId: ProfileId, profileName: String) {
+    val introActivityParams = IntroActivityParams.newBuilder()
+      .setProfileNickname(profileName)
+      .build()
+
+    val intent = IntroActivity.createIntroActivity(activity)
+    intent.apply {
+      putProtoExtra(PARAMS_KEY, introActivityParams)
+      decorateWithUserProfileId(profileId)
+    }
+
+    activity.startActivity(intent)
+  }
+
+  private fun loginToProfile(profileId: ProfileId) {
     profileManagementController.loginToProfile(profileId).toLiveData().observe(
       activity,
       {
@@ -378,6 +409,11 @@ class SplashActivityPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  private fun launchOnboardingActivity() {
+    activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+    activity.finish()
   }
 
   private fun computeInitStateDataProvider(): DataProvider<SplashInitState> {
