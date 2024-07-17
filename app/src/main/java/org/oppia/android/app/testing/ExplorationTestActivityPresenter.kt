@@ -12,6 +12,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.utility.SplitScreenManager
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -22,6 +23,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 private const val INTERNAL_PROFILE_ID = 0
+private const val CLASSROOM_ID = TEST_CLASSROOM_ID_0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
 private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_2
@@ -52,6 +54,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     explorationDataController.replayExploration(
       INTERNAL_PROFILE_ID,
+      CLASSROOM_ID,
       TOPIC_ID,
       STORY_ID,
       EXPLORATION_ID
@@ -67,6 +70,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               ProfileId.newBuilder().apply { internalId = INTERNAL_PROFILE_ID }.build(),
+              CLASSROOM_ID,
               TOPIC_ID,
               STORY_ID,
               EXPLORATION_ID,

@@ -27,7 +27,7 @@ class OngoingTopicItemViewModel(
   }
 
   fun onTopicItemClicked() {
-    routeToTopic(internalProfileId, topic.topicId)
+    routeToTopic(internalProfileId, topic.classroomId, topic.topicId)
   }
 
   fun computeStoryCountText(): String {
@@ -36,10 +36,11 @@ class OngoingTopicItemViewModel(
     )
   }
 
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {
+  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {
     val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
       internalProfileId,
+      classroomId,
       topicId
     )
     activity.startActivity(intent)
