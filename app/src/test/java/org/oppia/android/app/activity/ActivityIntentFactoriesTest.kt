@@ -115,7 +115,9 @@ class ActivityIntentFactoriesTest {
   fun testTopicActivityIntentFactory_createIntent_returnsIntentToStartTopicActivity() {
     val intent =
       getTopicActivityIntentFactory().createIntent(
-        ProfileId.getDefaultInstance(), topicId = "test_topic_id"
+        ProfileId.getDefaultInstance(),
+        classroomId = "test_classroom_id",
+        topicId = "test_topic_id"
       )
     val args = intent.getProtoExtra(
       TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
@@ -132,7 +134,10 @@ class ActivityIntentFactoriesTest {
   fun testTopicActivityIntentFactory_createIntent_withStoryId_returnsIntentToStartTopicActivity() {
     val intent =
       getTopicActivityIntentFactory().createIntent(
-        ProfileId.getDefaultInstance(), topicId = "test_topic_id", storyId = "test_story_id"
+        ProfileId.getDefaultInstance(),
+        classroomId = "test_classroom_id",
+        topicId = "test_topic_id",
+        storyId = "test_story_id"
       )
     val args = intent.getProtoExtra(
       TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
