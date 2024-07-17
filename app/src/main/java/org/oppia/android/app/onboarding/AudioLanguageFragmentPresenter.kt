@@ -168,16 +168,12 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun navigateToHomeScreen(profileId: ProfileId) {
-    if (enableMultipleClassrooms.value) {
-      fragment.startActivity(
-        ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
-      )
+    val intent = if (enableMultipleClassrooms.value) {
+      ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
     } else {
-      fragment.startActivity(
-        HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-      )
+      HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
     }
-
+    fragment.startActivity(intent)
     fragment.activity?.finishAffinity()
   }
 

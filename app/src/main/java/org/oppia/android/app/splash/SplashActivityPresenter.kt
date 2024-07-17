@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
@@ -47,6 +48,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -75,8 +77,8 @@ class SplashActivityPresenter @Inject constructor(
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
   private val profileManagementController: ProfileManagementController,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
   lateinit var startupMode: StartupMode
 
@@ -403,12 +405,21 @@ class SplashActivityPresenter @Inject constructor(
           // Prevent launching if the current activity is finishing, which would cause duplicate
           // intents.
           if (!activity.isFinishing) {
-            activity.startActivity(HomeActivity.createHomeActivity(activity, profileId))
-            activity.finish()
+            launchHomeScreen(profileId)
           }
         }
       }
     )
+  }
+
+  private fun launchHomeScreen(profileId: ProfileId) {
+    val intent = if (enableMultipleClassrooms.value) {
+      ClassroomListActivity.createClassroomListActivity(activity, profileId)
+    } else {
+      HomeActivity.createHomeActivity(activity, profileId)
+    }
+    activity.startActivity(intent)
+    activity.finish()
   }
 
   private fun launchOnboardingActivity() {
