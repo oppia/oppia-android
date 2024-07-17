@@ -30,6 +30,8 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 
 /**
  * Convenience logger for feature flags.
@@ -64,7 +66,9 @@ class FeatureFlagsLogger @Inject constructor(
   @EnableNpsSurvey
   private val enableNpsSurvey: PlatformParameterValue<Boolean>,
   @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  @EnableMultipleClassrooms
+  private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) {
   /**
    * A variable containing a list of all the feature flags in the app.
@@ -83,7 +87,8 @@ class FeatureFlagsLogger @Inject constructor(
     INTERACTION_CONFIG_CHANGE_STATE_RETENTION to enableInteractionConfigChangeStateRetention,
     APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
     ENABLE_NPS_SURVEY to enableNpsSurvey,
-    ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2
+    ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
+    ENABLE_MULTIPLE_CLASSROOMS to enableMultipleClassrooms
   )
 
   /**

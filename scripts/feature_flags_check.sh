@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "********************************"
-echo "Performing feature flag checks"
+echo "Running feature flag checks"
 echo "********************************"
 
 failed_checks=0
@@ -59,6 +59,11 @@ function get_imported_classes_in_logger() {
   # Get annotation classes
   logged_classes=$(grep -E '@Enable[A-Za-z0-9_]+' "$file_path")
 
+  # Replace the @ symbol and spaces within each element of the list
+  for i in "${!logged_classes[@]}"; do
+    logged_classes[$i]=$(echo "${logged_classes[$i]}" | tr -d '@' | tr -d ' ')
+  done
+
   # Print the logged classes
   echo "$logged_classes"
 }
@@ -107,38 +112,32 @@ function ensure_all_flags_are_imported() {
   imported_classes=($(get_imported_classes_in_logger))
   flags_added_to_map=($(get_flags_added_into_the_logging_map))
 
-  # Replace the @ symbol and spaces within each element of the list
-  for i in "${!imported_classes[@]}"; do
-    imported_classes[$i]=$(echo "${imported_classes[$i]}" | tr -d '@' | tr -d ' ')
-  done
+  file_path=$(find . -name FeatureFlagsLogger.kt)
+  imports_line_number=$(grep -n 'class FeatureFlagsLogger @Inject constructor(' "$file_path" | head -n 1 | awk -F: '{print $1}')
+  flags_map_line_number=$(grep -n 'Map<String, PlatformParameterValue<Boolean>> = mapOf(' "$file_path" | head -n 1 | awk -F: '{print $1}')
 
-  # Iterate through each element in the feature_flags array to check if it is imported
-  # in the FeatureFlagsLogger.kt
   for element in "${feature_flags[@]}"; do
-    # Check if the element is in the imported_classes array
     in_array=$(item_in_array "$element" "${imported_classes[@]}")
     if [[ $in_array -ne 1 ]]; then
       failed_checks=$((failed_checks + 1))
-      echo "ERROR: $element is not imported in FeatureFlagsLogger.kt"
+      echo "$element is not imported in the constructor argument in $file_path at line $imports_line_number"
     fi
   done
 
-  # Iterate through each element in the feature_flags array to check if it is added to the logging map
   for element in "${feature_flags[@]}"; do
-    # Check if the element is in the feature_flags array
     in_array=$(item_in_array "$element" "${flags_added_to_map[@]}")
     if [[ $in_array -ne 1 ]]; then
       failed_checks=$((failed_checks + 1))
-      echo "ERROR: $element is not added to the logging map in FeatureFlagsLogger.kt"
+      echo "$element is not added to the logging map in $file_path at line $flags_map_line_number"
     fi
   done
 
   if [[ $failed_checks -eq 0 ]]; then
-    echo "All feature flags are imported and added to the logging map in FeatureFlagsLogger.kt"
+    echo "Feature flag checks completed successfully"
     exit 0
   else
     echo "********************************"
-    echo "$failed_checks Feature flag issues found."
+    echo "Feature flag issues found."
     echo "Please fix the above issues."
     echo "********************************"
     exit 1
