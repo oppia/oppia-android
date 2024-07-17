@@ -88,7 +88,7 @@ class FeatureFlagsLogger @Inject constructor(
     APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
     ENABLE_NPS_SURVEY to enableNpsSurvey,
     ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
-    ENABLE_MULTIPLE_CLASSROOMS to enableMultipleClassrooms
+    ENABLE_MULTIPLE_CLASSROOMS to enableMultipleClassrooms,
   )
 
   /**
