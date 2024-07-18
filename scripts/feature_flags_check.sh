@@ -26,7 +26,7 @@ function get_classes_from_constants_file() {
   file_path=$(find . -name FeatureFlagConstants.kt)
 
   # Get a list of feature flag annotation classes
-  annotation_classes=$(grep -F -E '[\s\w]*annotation\s*class' "$file_path")
+  annotation_classes=$(grep -E '[\s\w]*annotation\s*class' "$file_path")
 
   # Convert the string into an array, splitting by newline
   IFS=$'\n' read -rd '' -a array <<<"$annotation_classes"
