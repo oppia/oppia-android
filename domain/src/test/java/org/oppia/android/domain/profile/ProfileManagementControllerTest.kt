@@ -24,7 +24,7 @@ import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileOnboardingState
+import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
@@ -1540,12 +1540,12 @@ class ProfileManagementControllerTest {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
 
-    val profileOnboardingStateProvider = profileManagementController.getProfileOnboardingState()
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
 
-    val profileOnboardingStateResult =
-      monitorFactory.waitForNextSuccessfulResult(profileOnboardingStateProvider)
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
-    assertThat(profileOnboardingStateResult).isEqualTo(ProfileOnboardingState.SOLE_LEARNER_PROFILE)
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.SOLE_LEARNER_PROFILE)
   }
 
   @Test
@@ -1553,12 +1553,12 @@ class ProfileManagementControllerTest {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
 
-    val profileOnboardingStateProvider = profileManagementController.getProfileOnboardingState()
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
 
-    val profileOnboardingStateResult =
-      monitorFactory.waitForNextSuccessfulResult(profileOnboardingStateProvider)
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
-    assertThat(profileOnboardingStateResult).isEqualTo(ProfileOnboardingState.ADMIN_PROFILE_ONLY)
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.ADMIN_PROFILE_ONLY)
   }
 
   @Test
@@ -1568,24 +1568,24 @@ class ProfileManagementControllerTest {
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
     addNonAdminProfileAndWait(name = "Rohit", pin = "")
 
-    val profileOnboardingStateProvider = profileManagementController.getProfileOnboardingState()
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
 
-    val profileOnboardingStateResult =
-      monitorFactory.waitForNextSuccessfulResult(profileOnboardingStateProvider)
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
-    assertThat(profileOnboardingStateResult).isEqualTo(ProfileOnboardingState.MULTIPLE_PROFILES)
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.MULTIPLE_PROFILES)
   }
 
   @Test
   fun testProfileOnboardingState_noProfilesFound_returnsNewInstallState() {
     setUpTestWithOnboardingV2Enabled(true)
 
-    val profileOnboardingStateProvider = profileManagementController.getProfileOnboardingState()
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
 
-    val profileOnboardingStateResult =
-      monitorFactory.waitForNextSuccessfulResult(profileOnboardingStateProvider)
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
-    assertThat(profileOnboardingStateResult).isEqualTo(ProfileOnboardingState.NEW_INSTALL)
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.NEW_INSTALL)
   }
 
   @Test
