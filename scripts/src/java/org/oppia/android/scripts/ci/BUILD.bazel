@@ -31,3 +31,15 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/proto:affected_tests_java_proto",
     ],
 )
+
+kt_jvm_library(
+    name = "compute_changed_files_lib",
+    testonly = True,
+    srcs = [
+        "ComputeChangedFiles.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+    ],
+)
