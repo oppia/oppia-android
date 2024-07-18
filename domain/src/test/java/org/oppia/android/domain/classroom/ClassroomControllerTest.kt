@@ -252,6 +252,48 @@ class ClassroomControllerTest {
     assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
+  @Test
+  fun testGetClassroomIdByTopicId_testTopic0_returnsCorrectClassroomId() {
+    val classroomId = classroomController.getClassroomIdByTopicId(TEST_TOPIC_ID_0)
+
+    assertThat(classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+  }
+
+  @Test
+  fun testGetClassroomIdByTopicId_testTopic1_returnsCorrectClassroomId() {
+    val classroomId = classroomController.getClassroomIdByTopicId(TEST_TOPIC_ID_1)
+
+    assertThat(classroomId).isEqualTo(TEST_CLASSROOM_ID_0)
+  }
+
+  @Test
+  fun testGetClassroomIdByTopicId_fractionsTopic_returnsCorrectClassroomId() {
+    val classroomId = classroomController.getClassroomIdByTopicId(FRACTIONS_TOPIC_ID)
+
+    assertThat(classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+  }
+
+  @Test
+  fun testGetClassroomIdByTopicId_ratiosTopic_returnsCorrectClassroomId() {
+    val classroomId = classroomController.getClassroomIdByTopicId(RATIOS_TOPIC_ID)
+
+    assertThat(classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+  }
+
+  @Test
+  fun testGetClassroomIdByTopicId_testTopic2_returnsCorrectClassroomId() {
+    val classroomId = classroomController.getClassroomIdByTopicId(TEST_TOPIC_ID_2)
+
+    assertThat(classroomId).isEqualTo(TEST_CLASSROOM_ID_2)
+  }
+
+  @Test
+  fun testGetClassroomIdByTopicId_nonExistentTopic_returnsEmptyId() {
+    val classroomId = classroomController.getClassroomIdByTopicId("invalid_topic_id")
+
+    assertThat(classroomId).isEmpty()
+  }
+
   private fun getClassroomList(profileId: ProfileId) =
     monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId))
 

@@ -66,6 +66,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -271,6 +272,7 @@ class CompletedStoryListActivityTest {
       ).perform(click())
 
       val args = TopicActivityParams.newBuilder().apply {
+        this.classroomId = TEST_CLASSROOM_ID_1
         this.topicId = FRACTIONS_TOPIC_ID
         this.storyId = FRACTIONS_STORY_ID_0
       }.build()
@@ -302,6 +304,7 @@ class CompletedStoryListActivityTest {
       ).perform(click())
 
       val args = TopicActivityParams.newBuilder().apply {
+        this.classroomId = TEST_CLASSROOM_ID_1
         this.topicId = FRACTIONS_TOPIC_ID
         this.storyId = FRACTIONS_STORY_ID_0
       }.build()

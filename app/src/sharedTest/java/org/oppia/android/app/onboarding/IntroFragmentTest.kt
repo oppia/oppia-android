@@ -9,6 +9,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -35,6 +38,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -95,6 +99,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -195,21 +200,8 @@ class IntroFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // Do nothing for now, but will fail once navigation is implemented
-      onView(withId(R.id.onboarding_learner_intro_title))
-        .check(matches(withText("Welcome, John!")))
-      onView(withText(R.string.onboarding_learner_intro_classroom_text))
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.onboarding_learner_intro_practice_text))
-        .check(matches(isDisplayed()))
-      onView(
-        withText(
-          context.getString(
-            R.string.onboarding_learner_intro_feedback_text,
-            context.getString(R.string.app_name)
-          )
-        )
-      ).check(matches(isDisplayed()))
+      intended(hasComponent(AudioLanguageActivity::class.java.name))
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }
 
@@ -221,21 +213,8 @@ class IntroFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // Do nothing for now, but will fail once navigation is implemented
-      onView(withId(R.id.onboarding_learner_intro_title))
-        .check(matches(withText("Welcome, John!")))
-      onView(withText(R.string.onboarding_learner_intro_classroom_text))
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.onboarding_learner_intro_practice_text))
-        .check(matches(isDisplayed()))
-      onView(
-        withText(
-          context.getString(
-            R.string.onboarding_learner_intro_feedback_text,
-            context.getString(R.string.app_name)
-          )
-        )
-      ).check(matches(isDisplayed()))
+      intended(hasComponent(AudioLanguageActivity::class.java.name))
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }
 

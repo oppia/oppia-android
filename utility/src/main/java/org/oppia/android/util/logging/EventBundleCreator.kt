@@ -53,6 +53,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_S
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
@@ -246,6 +247,7 @@ class EventBundleCreator @Inject constructor(
       PAUSE_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, pauseVoiceOverContext)
       APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
       APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
+      START_EXPLORATION_CONTEXT -> ExplorationContext(activityName, startExplorationContext)
       EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
       FINISH_EXPLORATION_CONTEXT -> ExplorationContext(activityName, finishExplorationContext)
       PROGRESS_SAVING_SUCCESS_CONTEXT ->
@@ -438,6 +440,7 @@ class EventBundleCreator @Inject constructor(
       value: ExplorationEventContext
     ) : EventActivityContext<ExplorationEventContext>(activityName, value) {
       override fun ExplorationEventContext.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("classroom_id", classroomId)
         store.putNonSensitiveValue("topic_id", topicId)
         store.putNonSensitiveValue("story_id", storyId)
         store.putNonSensitiveValue("exploration_id", explorationId)

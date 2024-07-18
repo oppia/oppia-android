@@ -506,7 +506,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -539,7 +544,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = true)
     testCoroutineDispatchers.runCurrent()
@@ -572,7 +582,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -605,7 +620,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = null)
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -635,7 +655,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
 
@@ -670,7 +695,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = null)
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
 
@@ -705,7 +735,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
@@ -724,7 +759,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
@@ -741,7 +781,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
@@ -792,10 +837,15 @@ class AudioPlayerControllerTest {
     )
   }
 
-  private fun beginExploration(topicId: String, storyId: String, explorationId: String) {
+  private fun beginExploration(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     val playingProvider =
       explorationDataController.startPlayingNewExploration(
-        internalProfileId = 0, topicId, storyId, explorationId
+        internalProfileId = 0, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(playingProvider)
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.getCurrentState())

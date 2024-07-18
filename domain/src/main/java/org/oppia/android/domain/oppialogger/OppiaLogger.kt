@@ -87,6 +87,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
 
   /** Returns the context of the event indicating that the user opened the exploration activity. */
   fun createOpenExplorationActivityContext(
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -94,6 +95,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
     return EventLog.Context.newBuilder()
       .setOpenExplorationActivity(
         EventLog.ExplorationContext.newBuilder()
+          .setClassroomId(classroomId)
           .setTopicId(topicId)
           .setStoryId(storyId)
           .setExplorationId(explorationId)
