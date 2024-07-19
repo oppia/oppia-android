@@ -145,7 +145,8 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     val instrumentation = bazelTestTarget.split(":")[0]
     val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
     val coverageCommandOutputLines = executeBazelCommand(
-      "coverage",
+      "test",
+      "--collect_code_coverage",
       bazelTestTarget,
       "--instrumentation_filter=$computeInstrumentation"
     )
@@ -160,7 +161,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       val match = regex.find(line)
       val extractedPath = match?.value?.substringAfterLast(",")?.trim()
       if (extractedPath != null) {
-//        println("Raw Coverage Data: $extractedPath")
+        println("Raw Coverage Data: $extractedPath")
         return extractedPath
       }
     }
