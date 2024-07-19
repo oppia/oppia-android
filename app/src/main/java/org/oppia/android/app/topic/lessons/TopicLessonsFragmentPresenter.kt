@@ -54,6 +54,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private lateinit var binding: TopicLessonsFragmentBinding
   private var internalProfileId: Int = -1
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private var isDefaultStoryExpanded: Boolean = false
@@ -68,11 +69,13 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     isDefaultStoryExpanded: Boolean
   ): View? {
     this.internalProfileId = internalProfileId
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.isDefaultStoryExpanded = isDefaultStoryExpanded
@@ -274,7 +277,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+    routeToStoryListener.routeToStory(internalProfileId, classroomId, topicId, storySummary.storyId)
   }
 
   fun selectChapterSummary(
@@ -308,6 +311,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 explorationCheckpointLiveData.removeObserver(this)
                 routeToResumeLessonListener.routeToResumeLesson(
                   profileId,
+                  classroomId,
                   topicId,
                   storyId,
                   explorationId,
@@ -318,6 +322,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 explorationCheckpointLiveData.removeObserver(this)
                 playExploration(
                   profileId,
+                  classroomId,
                   topicId,
                   storyId,
                   explorationId,
@@ -332,6 +337,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ChapterPlayState.IN_PROGRESS_NOT_SAVED -> {
         playExploration(
           profileId,
+          classroomId,
           topicId,
           storyId,
           explorationId,
@@ -342,6 +348,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       else -> {
         playExploration(
           profileId,
+          classroomId,
           topicId,
           storyId,
           explorationId,
@@ -354,6 +361,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun playExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -364,21 +372,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          internalProfileId, topicId, storyId, explorationId
+          internalProfileId, classroomId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          internalProfileId, topicId, storyId, explorationId
+          internalProfileId, classroomId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          internalProfileId, topicId, storyId, explorationId
+          internalProfileId, classroomId, topicId, storyId, explorationId
         )
       }
     }
@@ -391,6 +399,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

@@ -11,6 +11,7 @@ import org.oppia.android.app.topic.revision.TopicRevisionFragment
 class ViewPagerAdapter(
   fragment: Fragment,
   private val internalProfileId: Int,
+  private val classroomId: String,
   private val topicId: String,
   private val storyId: String,
   private val enableExtraTopicTabsUi: Boolean
@@ -24,7 +25,7 @@ class ViewPagerAdapter(
         TopicInfoFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.LESSONS -> {
-        TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
+        TopicLessonsFragment.newInstance(internalProfileId, classroomId, topicId, storyId)
       }
       TopicTab.PRACTICE -> {
         TopicPracticeFragment.newInstance(internalProfileId, topicId)
