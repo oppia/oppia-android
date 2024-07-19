@@ -279,44 +279,44 @@ jobs:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
-#          # Attempt to build 5 times in case there are flaky builds.
-#          # TODO(#3970): Remove this once there are no longer app test build failures.
-#          i=0
-#          # Disable exit-on-first-failure.
-#          set +e
-#          while [ $i -ne 5 ]; do
-#            i=$(( $i+1 ))
-#            echo "Attempt $i/5 to run test targets"
+          # Attempt to build 5 times in case there are flaky builds.
+          # TODO(#3970): Remove this once there are no longer app test build failures.
+          # i=0
+          # Disable exit-on-first-failure.
+          # set +e
+          # while [ $i -ne 5 ]; do
+            # i=$(( $i+1 ))
+            # echo "Attempt $i/5 to run test targets"
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
-#          done
+          # done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
-          last_error_code=$?
+          # last_error_code=$?
           # Reenable exit-on-first-failure.
-          set -e
+          # set -e
           # Exit only if the most recent exit was a failure (by using a subshell).
-          (exit $last_error_code)
+          #(exit $last_error_code)
 
       - name: Run Oppia Coverage (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
-#          # Attempt to build 5 times in case there are flaky builds.
-#          # TODO(#3970): Remove this once there are no longer app test build failures.
-#          i=0
-#          # Disable exit-on-first-failure.
-#          set +e
-#          while [ $i -ne 5 ]; do
-#            i=$(( $i+1 ))
-#            echo "Attempt $i/5 to run test targets"
+          # Attempt to build 5 times in case there are flaky builds.
+          # TODO(#3970): Remove this once there are no longer app test build failures.
+          # i=0
+          # Disable exit-on-first-failure.
+          # set +e
+          # while [ $i -ne 5 ]; do
+            # i=$(( $i+1 ))
+            # echo "Attempt $i/5 to run test targets"
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
-          done
+          # done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
-          last_error_code=$?
+          # last_error_code=$?
           # Reenable exit-on-first-failure.
-          set -e
+          # set -e
           # Exit only if the most recent exit was a failure (by using a subshell).
-          (exit $last_error_code)
+          #(exit $last_error_code)
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
