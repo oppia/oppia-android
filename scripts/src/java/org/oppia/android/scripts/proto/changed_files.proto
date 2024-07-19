@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+message ChangedFilesBucket {
+  // The name of the GitHub Actions cache that should be downloaded prior to running any targets in
+  // this bucket.
+  string cache_bucket_name = 1;
+
+  // The list of chnaged files that belong to this bucket and should be run.
+  repeated string changed_files = 2;
+}

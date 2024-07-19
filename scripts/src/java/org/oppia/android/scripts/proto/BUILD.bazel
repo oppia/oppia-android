@@ -22,6 +22,17 @@ java_proto_library(
 )
 
 oppia_proto_library(
+    name = "changed_files_proto",
+    srcs = ["changed_files.proto"],
+)
+
+java_proto_library(
+    name = "changed_files_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":changed_files_proto"],
+)
+
+oppia_proto_library(
     name = "coverage_proto",
     srcs = ["coverage.proto"],
 )
