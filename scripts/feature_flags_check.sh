@@ -6,7 +6,7 @@ echo "********************************"
 
 failed_checks=0
 
-item_in_array() {
+function item_in_array() {
   local item="$1"
   shift
   local array=("$@")
@@ -107,7 +107,7 @@ function get_flags_added_into_the_logging_map() {
   echo "${class_names[@]}"
 }
 
-function ensure_all_flags_are_imported() {
+function perform_checks_on_feature_flags() {
   feature_flags=($(get_classes_from_constants_file))
   imported_classes=($(get_imported_classes_in_logger))
   flags_added_to_map=($(get_flags_added_into_the_logging_map))
@@ -144,4 +144,4 @@ function ensure_all_flags_are_imported() {
   fi
 }
 
-ensure_all_flags_are_imported
+perform_checks_on_feature_flags
