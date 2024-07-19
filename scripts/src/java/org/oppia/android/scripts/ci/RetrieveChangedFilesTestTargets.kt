@@ -52,20 +52,21 @@ fun main(args: Array<String>) {
       CommandExecutorImpl(
         scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
       )
-  }
 
-  val bazelClient = BazelClient(rootDirectory, commandExecutor)
+    val bazelClient = BazelClient(rootDirectory, commandExecutor)
 
-  val changedFilesBucket =
-    ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(protoBase64)
-  bucketNameOutputFile.printWriter().use { writer ->
-    writer.println(changedFilesBucket.cacheBucketName)
-  }
+    val changedFilesBucket =
+      ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(protoBase64)
+    bucketNameOutputFile.printWriter().use { writer ->
+      writer.println(changedFilesBucket.cacheBucketName)
+    }
 
-  val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesBucket.changedFilesList)
-  println("Changed Files Test Targets: $changedFilesTestTargets")
+    val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesBucket.changedFilesList)
+    println("Changed Files Test Targets: $changedFilesTestTargets")
 
-  fileTestTargetsListOutputFile.printWriter().use { writer ->
-    writer.println(changedFilesTestTargets.joinToString(separator = " "))
+    fileTestTargetsListOutputFile.printWriter().use { writer ->
+      writer.println(changedFilesTestTargets.joinToString(separator = " "))
+    }
+
   }
 }
