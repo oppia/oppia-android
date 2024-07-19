@@ -47,10 +47,12 @@ fun main(args: Array<String>) {
   val bucketNameOutputFile = File(args[2])
   val fileTestTargetsListOutputFile = File(args[3])
 
-  val commandExecutor: CommandExecutor =
-    CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
-    )
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    val commandExecutor: CommandExecutor =
+      CommandExecutorImpl(
+        scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+      )
+  }
 
   val bazelClient = BazelClient(rootDirectory, commandExecutor)
 
