@@ -18,7 +18,8 @@ private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
 
 fun main(args: Array<String>) {
   val pathToRoot = args[0]
-  val baseCommit = args[1]
+  val pathToOutputFile = args[1]
+  val baseCommit = args[2]
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     ComputeChangedFiles(scriptBgDispatcher)
