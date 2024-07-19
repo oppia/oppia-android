@@ -55,6 +55,6 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
-        "//scripts/src/java/org/oppia/android/scripts/proto:affected_tests_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/proto:changed_files_java_proto",
     ],
 )
