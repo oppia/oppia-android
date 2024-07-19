@@ -8,7 +8,7 @@ kt_jvm_test(
     name = "RunCoverageTest",
     size = "large",
     srcs = ["RunCoverageTest.kt"],
-    shard_count = 6,
+    shard_count = 24,
     deps = [
         "//scripts:test_file_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_lib",
