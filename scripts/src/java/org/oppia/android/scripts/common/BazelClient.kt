@@ -161,7 +161,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       val match = regex.find(line)
       val extractedPath = match?.value?.substringAfterLast(",")?.trim()
       if (extractedPath != null) {
-        println("Raw Coverage Data: $extractedPath")
+//        println("Raw Coverage Data: $extractedPath")
         return extractedPath
       }
     }
