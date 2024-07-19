@@ -153,6 +153,21 @@ jobs:
           echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
 
+      - name: Extract test caching bucket & changed files test targets
+        env:
+          CHANGED_FILESS_BUCKET_BASE64_ENCODED_SHARD: ${{ matrix.changed-files-bucket-base64-encoded-shard }}
+        run: |
+          # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
+          # user-friendly shard prefix from the matrix value.
+          CHANGED_FILES_TEST_TARGETS_BUCKET_BASE64=$(echo "$CHANGED_FILESS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
+          bazel run //scripts:retrieve_changed_files_test_targets -- $(pwd) $CHANGED_FILES_TEST_TARGETS_BUCKET_BASE64 $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
+          TEST_CATEGORY=$(cat ./test_bucket_name)
+          BAZEL_TEST_TARGETS=$(cat ./bazel_test_targets)
+          echo "Test category: $TEST_CATEGORY"
+          echo "Bazel test targets: $BAZEL_TEST_TARGETS"
+          echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
+          echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
+
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
       # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
