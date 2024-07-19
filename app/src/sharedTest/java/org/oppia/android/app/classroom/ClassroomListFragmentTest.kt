@@ -630,6 +630,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markAtLeastOneStoryCompletedForAllTopics_displaysComingSoonTopicsList() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId,
@@ -647,7 +648,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
       .assertTextContains(context.getString(R.string.coming_soon))
@@ -682,6 +682,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markStory0OfRatiosAndTestTopics0And1Done_playTestTopicStory0_noPromotions() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
@@ -699,7 +700,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
       .assertTextContains(context.getString(R.string.coming_soon))
