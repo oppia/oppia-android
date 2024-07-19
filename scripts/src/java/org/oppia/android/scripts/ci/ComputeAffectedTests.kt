@@ -140,7 +140,7 @@ class ComputeAffectedTests(
     println("Encoded Test Buckets: $encodedTestBucketEntries")
     File(pathToOutputFile).printWriter().use { writer ->
       encodedTestBucketEntries.forEachIndexed { index, (encoded, bucket) ->
-      println("Shard index: $index, encoded: $encoded")
+        println("Shard index: $index, encoded: $encoded")
         writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
       }
     }

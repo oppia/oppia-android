@@ -118,7 +118,7 @@ class ComputeChangedFiles(
     val changedFiles = computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
     println("Changed Files: $changedFiles")
 
-    val ktFiles = changedFiles.filter{ it.endsWith(".kt") }
+    val ktFiles = changedFiles.filter { it.endsWith(".kt") }
     println("Kotlin Files: $ktFiles")
 
     val groupedBuckets = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
@@ -170,7 +170,9 @@ class ComputeChangedFiles(
     }
     println("Final Computed Buckets: $computedBuckets")
 
-    val encodedFileBucketEntries = computedBuckets.associateBy { it.toCompressedBase64() }.entries.shuffled()
+    val encodedFileBucketEntries = computedBuckets
+      .associateBy { it.toCompressedBase64() }
+      .entries.shuffled()
     println("Encoded File Bucket Entries: $encodedFileBucketEntries")
     File(pathToOutputFile).printWriter().use { writer ->
       encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
@@ -179,13 +181,6 @@ class ComputeChangedFiles(
       }
     }
   }
-
-  /*private fun computeAllFiles(
-    gitClient: GitClient,
-    rootDirectory: File
-  ): List<String> {
-    val allFiles = gitClient
-  }*/
 
   private fun computeChangedFilesForNonDevelopBranch(
     gitClient: GitClient,
@@ -274,34 +269,34 @@ class ComputeChangedFiles(
     }
   }
 
-    private enum class GroupingStrategy {
-      /** Indicates that a particular file bucket should be sharded by itself. */
-      BUCKET_SEPARATELY,
+  private enum class GroupingStrategy {
+    /** Indicates that a particular file bucket should be sharded by itself. */
+    BUCKET_SEPARATELY,
 
-      /**
-       * Indicates that a particular file bucket should be combined with all other generically grouped
-       * buckets.
-       */
-      BUCKET_GENERICALLY
-    }
+    /**
+     * Indicates that a particular file bucket should be combined with all other generically grouped
+     * buckets.
+     */
+    BUCKET_GENERICALLY
+  }
 
-    private enum class ShardingStrategy {
-      /**
-       * Indicates that the file bucket don't need as much
-       * parallelization.
-       */
-      LARGE_PARTITIONS,
+  private enum class ShardingStrategy {
+    /**
+     * Indicates that the file bucket don't need as much
+     * parallelization.
+     */
+    LARGE_PARTITIONS,
 
-      /**
-       * Indicates that the file bucket are somewhere between [LARGE_PARTITIONS] and
-       * [SMALL_PARTITIONS].
-       */
-      MEDIUM_PARTITIONS,
+    /**
+     * Indicates that the file bucket are somewhere between [LARGE_PARTITIONS] and
+     * [SMALL_PARTITIONS].
+     */
+    MEDIUM_PARTITIONS,
 
-      /**
-       * Indicates that the file bucket require more parallelization for
-       * faster CI runs.
-       */
-      SMALL_PARTITIONS
-    }
+    /**
+     * Indicates that the file bucket require more parallelization for
+     * faster CI runs.
+     */
+    SMALL_PARTITIONS
+  }
 }
