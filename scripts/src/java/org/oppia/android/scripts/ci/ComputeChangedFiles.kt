@@ -16,14 +16,66 @@ private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
 private const val MAX_TEST_COUNT_PER_MEDIUM_SHARD = 25
 private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
 
+/**
+ * The main entrypoint for computing the list of changed files based on changes in the local
+ * Oppia Android Git repository.
+ *
+ * Usage:
+ *   bazel run //scripts:compute_changed_files -- \\
+ *     <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference> \\
+ *     <compute_all_files=true/false>
+ *
+ * Arguments:
+ * - path_to_directory_root: directory path to the root of the Oppia Android repository.
+ * - path_to_output_file: path to the file in which the changed files will be printed.
+ * - merge_base_commit: the base commit against which the local changes will be compared when
+ *     determining which tests to run. When running outside of CI you can use the result of running:
+ *     'git merge-base develop HEAD'
+ * - compute_all_tests: whether to compute a list of all files to run.
+ *
+ * Example:
+ *   bazel run //scripts:compute_changed_files -- $(pwd) /tmp/changed_file_buckets.proto64 \\
+ *     abcdef0123456789 compute_all_files=false
+ */
 fun main(args: Array<String>) {
+  if (args.size < 4) {
+    println(
+      "Usage: bazel run //scripts:compute_changed_files --" +
+        " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
+        " <compute_all_files=true/false>"
+    )
+    exitProcess(1)
+  }
+
   val pathToRoot = args[0]
   val pathToOutputFile = args[1]
   val baseCommit = args[2]
-
+  val computeAllFilesSetting = args[3].let {
+    check(it.startsWith(COMPUTE_ALL_FILES_PREFIX)) {
+      "Expected last argument to start with '$COMPUTE_ALL_FILES_PREFIX'"
+    }
+    val computeAllFilesValue = it.removePrefix(COMPUTE_ALL_FILES_PREFIX)
+    return@let computeAllFilesValue.toBooleanStrictOrNull()
+      ?: error(
+        "Expected last argument to have 'true' or 'false' passed to it, not:" +
+          " '$computeAllFilesValue'"
+      )
+  }
+  println("Compute All Files Setting set to: $computeAllFilesSetting")
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     ComputeChangedFiles(scriptBgDispatcher)
-      .compute(pathToRoot, baseCommit)
+//      .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
+      .compute(pathToRoot, pathToOutputFile, baseCommit)
+  }
+}
+
+// Update this later
+// Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
+private fun String.toBooleanStrictOrNull(): Boolean? {
+  return when (lowercase(Locale.US)) {
+    "false" -> false
+    "true" -> true
+    else -> null
   }
 }
 
@@ -44,7 +96,9 @@ class ComputeChangedFiles(
 
   fun compute(
     pathToRoot: String,
-    baseCommit: String
+    pathToOutputFile: String,
+    baseCommit: String,
+//    computeAllFilesSetting: Boolean
   ) {
     val rootDirectory = File(pathToRoot).absoluteFile
     check(rootDirectory.isDirectory) { "Expected '$pathToRoot' to be a directory" }
@@ -118,7 +172,7 @@ class ComputeChangedFiles(
 
     val encodedFileBucketEntries = computedBuckets.associateBy { it.toCompressedBase64() }.entries.shuffled()
     println("Encoded File Bucket Entries: $encodedFileBucketEntries")
-    File("$rootDirectory/compute_changed_files/changed_files.proto64").printWriter().use { writer ->
+    File(pathToOutputFile).printWriter().use { writer ->
       encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
         println("Shard index: $index, encoded: $encoded")
         writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
@@ -126,10 +180,18 @@ class ComputeChangedFiles(
     }
   }
 
+  /*private fun computeAllFiles(
+    gitClient: GitClient,
+    rootDirectory: File
+  ): List<String> {
+    val allFiles = gitClient
+  }*/
+
   private fun computeChangedFilesForNonDevelopBranch(
     gitClient: GitClient,
     rootDirectory: File
   ): List<String> {
+    // Update later
     val changedFiles = gitClient.changedFiles.filter { filepath ->
       File(rootDirectory, filepath).exists()
     }.toSet()
@@ -137,14 +199,6 @@ class ComputeChangedFiles(
 
     return changedFiles.toList()
   }
-
-  /*private fun groupFilesByBucket(changedFiles: List<String>): Map<GroupingStrategy, Map<FileBucket, List<String>>> {
-    return changedFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
-      .entries.groupBy(
-        keySelector = { checkNotNull(it.key).groupingStrategy },
-        valueTransform = { checkNotNull(it.key) to it.value }
-      ).mapValues { (_, fileLists) -> fileLists.toMap() }
-  }*/
 
   private enum class FileBucket(
     val cacheBucketName: String,
