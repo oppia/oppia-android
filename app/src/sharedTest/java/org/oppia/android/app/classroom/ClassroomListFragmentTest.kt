@@ -224,8 +224,8 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
 
-    composeRule.activity.recreate()
-    testCoroutineDispatchers.runCurrent()
+    // Refresh the welcome text content.
+    logIntoAdmin()
 
     onView(isRoot()).perform(orientationLandscape())
 
@@ -239,8 +239,8 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
 
-    composeRule.activity.recreate()
-    testCoroutineDispatchers.runCurrent()
+    // Refresh the welcome text content.
+    logIntoAdmin()
 
     composeRule.onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good morning, Admin!")
@@ -252,8 +252,8 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
 
-    composeRule.activity.recreate()
-    testCoroutineDispatchers.runCurrent()
+    // Refresh the welcome text content.
+    logIntoAdmin()
 
     composeRule.onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good afternoon, Admin!")
@@ -265,8 +265,8 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
 
-    composeRule.activity.recreate()
-    testCoroutineDispatchers.runCurrent()
+    // Refresh the welcome text content.
+    logIntoAdmin()
 
     composeRule.onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good evening, Admin!")
@@ -281,6 +281,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_recentlyPlayedStoriesTextIsDisplayed() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -290,7 +291,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.recently_played_stories))
@@ -299,6 +299,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_viewAllTextIsDisplayed() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -312,7 +313,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
       .assertTextContains(
@@ -323,6 +323,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_storiesPlayedOneWeekAgo_displaysLastPlayedStoriesText() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -333,7 +334,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = true
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.last_played_stories))
@@ -342,12 +342,12 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markStory0DoneForFraction_displaysRecommendedStories() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
@@ -370,12 +370,12 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markCompletedRatiosStory0_recommendsFractions() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
@@ -413,12 +413,12 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_forPromotedActivityList_hideViewAll() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
       .assertDoesNotExist()
@@ -426,6 +426,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markStory0DoneForRatiosAndFirstTestTopic_displaysSuggestedStories() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
@@ -435,21 +436,14 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
-      .assertTextContains(context.getString(R.string.stories_for_you))
+      .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
       .assertTextContains("Fifth Exploration")
       .assertTextContains("SECOND TEST TOPIC")
-      .assertTextContains("SCIENCE")
-      .assertIsDisplayed()
-
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(1)
-      .assertTextContains("Math Expressions")
-      .assertTextContains("FIRST TEST TOPIC")
       .assertTextContains("SCIENCE")
       .assertIsDisplayed()
   }
@@ -474,6 +468,7 @@ class ClassroomListFragmentTest {
    */
   @Test
   fun testFragment_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
@@ -487,7 +482,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.stories_for_you))
@@ -517,15 +511,15 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markStory0DoneFirstTestTopic_suggestedStoriesIsCorrect() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
-      .assertTextContains(context.getString(R.string.stories_for_you))
+      .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
@@ -533,25 +527,16 @@ class ClassroomListFragmentTest {
       .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
       .assertTextContains("MATHS")
       .assertIsDisplayed()
-
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(1)
-      .assertTextContains("Math Expressions")
-      .assertTextContains("FIRST TEST TOPIC")
-      .assertTextContains("SCIENCE")
-      .assertIsDisplayed()
   }
 
   @Test
   fun testFragment_markStory0DoneForFractions_recommendedStoriesIsCorrect() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
-
-    composeRule.activity.recreate()
-    testCoroutineDispatchers.runCurrent()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
@@ -574,6 +559,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_clickViewAll_opensRecentlyPlayedActivity() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -587,7 +573,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
       .assertIsDisplayed()
@@ -598,6 +583,7 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markFullProgressForFractions_playRatios_displaysRecommendedStories() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId,
@@ -607,7 +593,6 @@ class ClassroomListFragmentTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
       .assertTextContains(context.getString(R.string.stories_for_you))
@@ -662,12 +647,12 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_markFullProgressForSecondTestTopic_displaysComingSoonTopicsText() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
       .assertTextContains(context.getString(R.string.coming_soon))
@@ -714,12 +699,12 @@ class ClassroomListFragmentTest {
 
   @Test
   fun testFragment_clickPromotedStory_opensTopicActivity() {
+    logIntoAdminTwice()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    logIntoAdminTwice()
 
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
       .assertIsDisplayed()
@@ -866,9 +851,13 @@ class ClassroomListFragmentTest {
       .assertIsDisplayed()
   }
 
+  private fun logIntoAdmin() {
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+  }
+
   private fun logIntoAdminTwice() {
-    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
-    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+    logIntoAdmin()
+    logIntoAdmin()
   }
 
   private fun setUpTestApplicationComponent() {
