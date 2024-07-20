@@ -49,8 +49,8 @@ fun main(args: Array<String>) {
   val bucketNameOutputFile = File(args[2])
   val fileTestTargetsListOutputFile = File(args[3])
 
-  private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
-  private val testFileExemptionList by lazy {
+  val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  val testFileExemptionList by lazy {
     loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
@@ -90,7 +90,7 @@ fun main(args: Array<String>) {
   }
 }
 
-private fun findTestFile(rootDirectory: String, filePath: String): List<String> {
+private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
