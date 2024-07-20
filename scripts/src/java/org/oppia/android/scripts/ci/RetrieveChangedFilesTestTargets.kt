@@ -6,6 +6,7 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
+import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -42,10 +43,18 @@ fun main(args: Array<String>) {
     exitProcess(1)
   }*/
 
-  val rootDirectory = File(args[0]).absoluteFile
+  val repoRoot = args[0]
+  val rootDirectory = File(repoRoot).absoluteFile
   val protoBase64 = args[1]
   val bucketNameOutputFile = File(args[2])
   val fileTestTargetsListOutputFile = File(args[3])
+
+  private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  private val testFileExemptionList by lazy {
+    loadTestFileExemptionsProto(testFileExemptionTextProto)
+      .testFileExemptionList
+      .associateBy { it.exemptedFilePath }
+  }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor: CommandExecutor =
@@ -61,12 +70,55 @@ fun main(args: Array<String>) {
       writer.println(changedFilesBucket.cacheBucketName)
     }
 
-    val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesBucket.changedFilesList)
+    val changedFilesTestFiles = changedFilesBucket.changedFilesList.flatMap { changedFile ->
+      val exemption = testFileExemptionList[changedFile]
+      if (exemption != null && exemption.testFileNotRequired) {
+        emptyList()
+      } else {
+        findTestFile(rootDirectory, changedFile)
+      }
+    }
+    println("Changed Files Test Files: $changedFilesTestFiles")
+
+    val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesTestFiles)
     println("Changed Files Test Targets: $changedFilesTestTargets")
 
     fileTestTargetsListOutputFile.printWriter().use { writer ->
       writer.println(changedFilesTestTargets.joinToString(separator = " "))
     }
 
+  }
+}
+
+private fun findTestFile(rootDirectory: String, filePath: String): List<String> {
+  val possibleTestFilePaths = when {
+    filePath.startsWith("scripts/") -> {
+      listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+    }
+    filePath.startsWith("app/") -> {
+      listOf(
+        filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+        filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+        filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
+      )
+    }
+    else -> {
+      listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
+    }
+  }
+
+  // val repoRootFile = File(repoRoot).absoluteFile
+
+  return possibleTestFilePaths
+    .map { File(rootDirectory, it) }
+    .filter(File::exists)
+    .map { it.relativeTo(rootDirectory).path }
+}
+
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions.newBuilder().also { builder ->
+      builder.mergeFrom(stream)
+    }.build()
   }
 }
