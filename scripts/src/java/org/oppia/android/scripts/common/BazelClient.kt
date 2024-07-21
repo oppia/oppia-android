@@ -144,7 +144,8 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
     val instrumentation = bazelTestTarget.split(":")[0]
     val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
-    val coverageCommandOutputLines = executeBazelCommand(
+//    val coverageCommandOutputLines = executeBazelCommand(
+    executeBazelCommand(
       "test",
       "--collect_code_coverage",
       "--combined_report=lcov",
@@ -153,9 +154,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     )
     println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").exists())
     println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").readText())
-    return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
+    /*return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
       File(path).readLines()
-    }
+    }*/
+
+    return File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").readLines()
   }
 
   private fun parseCoverageDataFilePath(coverageCommandOutputLines: List<String>): String? {
