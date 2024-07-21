@@ -327,3 +327,4 @@ class SplashActivityPresenter @Inject constructor(
     }
   }
 }
+

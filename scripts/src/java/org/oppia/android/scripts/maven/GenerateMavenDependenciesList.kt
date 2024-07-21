@@ -204,3 +204,5 @@ class GenerateMavenDependenciesList(
     println("\nScript executed successfully: maven_dependencies.textproto updated successfully.")
   }
 }
+
+println("trigger")

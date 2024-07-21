@@ -44,3 +44,4 @@ class CompletedStoryItemViewModel(
     activity.startActivity(intent)
   }
 }
+

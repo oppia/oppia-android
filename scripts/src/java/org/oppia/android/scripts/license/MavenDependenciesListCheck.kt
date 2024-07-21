@@ -201,3 +201,5 @@ class MavenDependenciesListCheck(
     }
   }
 }
+
+println("trigger")

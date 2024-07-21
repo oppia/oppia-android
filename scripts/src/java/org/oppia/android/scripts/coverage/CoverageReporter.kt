@@ -239,3 +239,5 @@ enum class ReportFormat {
   /** Indicates that the report should be formatted in .html format. */
   HTML
 }
+
+println("trigger")

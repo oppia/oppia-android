@@ -248,3 +248,4 @@ private fun lcm(x: Int, y: Int): Int {
   // Reference: https://en.wikipedia.org/wiki/Least_common_multiple#Calculation.
   return (x * y).absoluteValue / gcd(x, y)
 }
+

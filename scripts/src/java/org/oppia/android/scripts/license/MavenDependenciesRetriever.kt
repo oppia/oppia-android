@@ -511,3 +511,5 @@ class MavenDependenciesRetriever(
     }
   }
 }
+
+println("trigger")

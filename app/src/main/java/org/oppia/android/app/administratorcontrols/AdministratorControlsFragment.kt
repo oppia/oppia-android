@@ -62,3 +62,4 @@ class AdministratorControlsFragment : InjectableFragment() {
     administratorControlsFragmentPresenter.setSelectedFragment(selectedFragment)
   }
 }
+

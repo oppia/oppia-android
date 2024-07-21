@@ -282,3 +282,5 @@ class TodoOpenCheck(
     return protoObj
   }
 }
+
+println("trigger")

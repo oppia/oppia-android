@@ -77,3 +77,4 @@ public final class RecyclerViewBindingAdapter {
     recyclerView.addItemDecoration(new DividerItemDecorator(drawable));
   }
 }
+

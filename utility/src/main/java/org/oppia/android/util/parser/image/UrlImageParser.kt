@@ -548,3 +548,4 @@ private fun Context.dpToPx(dp: Float): Float =
   TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 
 private fun DisplayMetrics.computeDiagonalPpi() = sqrt(xdpi * xdpi + ydpi * ydpi)
+
