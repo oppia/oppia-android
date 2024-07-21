@@ -81,8 +81,11 @@ fun main(args: Array<String>) {
     val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesTestFiles)
     println("Changed Files Test Targets: $changedFilesTestTargets")
 
+    val changedFilesTestTargetWithoutSuffix = changedFilesTestTargets.map { it.removeSuffix(".kt") }
+    println("Changed Files Test Targets without suffix: $changedFilesTestTargetWithoutSuffix")
+
     fileTestTargetsListOutputFile.printWriter().use { writer ->
-      writer.println(changedFilesTestTargets.joinToString(separator = " "))
+      writer.println(changedFilesTestTargetWithoutSuffix.joinToString(separator = " "))
     }
   }
 }
