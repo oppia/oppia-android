@@ -147,9 +147,12 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     val coverageCommandOutputLines = executeBazelCommand(
       "test",
       "--collect_code_coverage",
+      "--combined_report=lcov",
       bazelTestTarget,
       "--instrumentation_filter=$computeInstrumentation"
     )
+    println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").exists())
+    println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").readText())
     return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
       File(path).readLines()
     }
