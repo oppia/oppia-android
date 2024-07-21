@@ -512,4 +512,3 @@ class MavenDependenciesRetriever(
   }
 }
 
-println("trigger")

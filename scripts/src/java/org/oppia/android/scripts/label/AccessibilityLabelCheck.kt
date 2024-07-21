@@ -196,4 +196,3 @@ private fun loadAccessibilityLabelExemptionsProto(
   return protoObj
 }
 
-println("trigger")

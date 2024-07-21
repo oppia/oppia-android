@@ -475,4 +475,3 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   }
 }
 
-println("trigger")

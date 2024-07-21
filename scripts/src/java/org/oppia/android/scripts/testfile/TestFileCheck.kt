@@ -107,4 +107,3 @@ private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): Tes
   return protoObj
 }
 
-println("trigger")

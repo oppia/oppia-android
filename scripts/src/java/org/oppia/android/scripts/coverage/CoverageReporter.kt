@@ -240,4 +240,3 @@ enum class ReportFormat {
   HTML
 }
 
-println("trigger")
