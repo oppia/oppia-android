@@ -236,6 +236,8 @@ class RunCoverage(
       "\n\n" + successMarkdownTable +
       anomalySection
 
+    println("Final Coverage Report: $finalReportText")
+
     val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
     File(finalReportOutputPath).apply {
       parentFile?.mkdirs()
