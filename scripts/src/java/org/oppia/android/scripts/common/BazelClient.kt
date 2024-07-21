@@ -175,13 +175,17 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     val hasShardCount = buildRule.any { "shard_count" in it }
     if (hasShardCount) {
       println("In has Shard count")
-//      val coverageCommandOutputLines = executeBazelCommand(
-    executeBazelCommand(
+      val coverageCommandOutputLines = executeBazelCommand(
+//    executeBazelCommand(
         "test",
         "--collect_code_coverage",
         "--combined_report=lcov",
         bazelTestTarget,
         "--instrumentation_filter=$computeInstrumentation"
+      )
+      println(
+        "Coverage command output lines " +
+        "with bazel tests --collect coverage: $coverageCommandOutputLines"
       )
       return File(rootDirectory, "/bazel-out/_coverage/_coverage_report.dat").readLines()
     } else {
