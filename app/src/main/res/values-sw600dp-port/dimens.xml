@@ -282,7 +282,7 @@
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">60dp</dimen>
-  <dimen name="all_topics_text_margin_top">52dp</dimen>
+  <dimen name="all_topics_text_margin_top">40dp</dimen>
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">16dp</dimen>
 
