@@ -10,17 +10,17 @@ on:
     types:
       - completed
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      # Push events on develop branch
-      - develop
+#  pull_request:
+#  push:
+#    branches:
+#      # Push events on develop branch
+#      - develop
 
 jobs:
   compute_changed_files:
     name: Compute changed files
     runs-on: ubuntu-20.04
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    #if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
       can_skip_tests: ${{ steps.compute-file-matrix.outputs.can_skip_tests }}
