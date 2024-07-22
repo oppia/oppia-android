@@ -5,12 +5,16 @@ name: Code Coverage
 # Controls when the action will run. Triggers the workflow on pull request
 # events or push events in the develop branch.
 on:
+  workflow_run:
+    workflows: ["Unit Tests (Robolectric - Bazel)"]
+    types:
+      - completed
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      # Push events on develop branch
-      - develop
+#  pull_request:
+#  push:
+#    branches:
+#      # Push events on develop branch
+#      - develop
 
 jobs:
   compute_changed_files:

@@ -162,10 +162,10 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       "attr(name, $targetName, $targetPath)",
       "--output=build",
     )
-    println("BUILD: $buildRule")
-    println("BUILD has shard count: ${buildRule.any { "shard_count" in it }}")
+//    println("BUILD: $buildRule")
+//    println("BUILD has shard count: ${buildRule.any { "shard_count" in it }}")
 
-    println("Printing for the bazel test target: $bazelTestTarget")
+//    println("Printing for the bazel test target: $bazelTestTarget")
 //    println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").exists())
 //    println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").readText())
     /*return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
@@ -174,47 +174,25 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
 
     val hasShardCount = buildRule.any { "shard_count" in it }
     if (hasShardCount) {
-      println("In has Shard count")
-      val coverageCommandOutputLines = executeBazelCommand(
-//    executeBazelCommand(
+//      println("In has Shard count")
+//      val coverageCommandOutputLines = executeBazelCommand(
+    executeBazelCommand(
         "test",
         "--collect_code_coverage",
         "--combined_report=lcov",
         bazelTestTarget,
         "--instrumentation_filter=$computeInstrumentation"
       )
-      println(
+      /*println(
         "Coverage command output lines " +
         "with bazel tests --collect coverage: $coverageCommandOutputLines"
-      )
+      )*/
 
-      val regex = """(.*/shard_\d+_of_\d+/coverage\.dat)""".toRegex()
-      val shardCoveragePaths = coverageCommandOutputLines
-        .flatMap { regex.findAll(it).map { matchResult ->
-          matchResult.value.trim()
-        }
-      }
-
-      println("Shard coverage path: $shardCoveragePaths")
-
-      val lcovCommand = buildString {
-        append("lcov ")
-        shardCoveragePaths.forEach { path ->
-          append("--add-tracefile $path ")
-        }
-        append("--output-file ${rootDirectory}/coverage_reports/lcov_combined.dat")
-      }
-
-      val process = ProcessBuilder(*lcovCommand.split(" ").toTypedArray())
-        .redirectErrorStream(true)
-        .start()
-
-      val output = process.inputStream.bufferedReader().readText()
-      println("Output: $output")
-
-      return File(rootDirectory, "/bazel-out/_coverage/_coverage_report.dat").readLines()
+      return File(rootDirectory, "/bazel-out/_coverage/_coverage_report.dat")
+        .takeIf { it.exists() && it.isFile }
+        ?.readLines()
     } else {
-      println("In does not have Shard count")
+//      println("In does not have Shard count")
       val coverageCommandOutputLines = executeBazelCommand(
 //    executeBazelCommand(
         "coverage",
