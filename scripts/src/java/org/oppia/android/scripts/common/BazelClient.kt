@@ -187,6 +187,31 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
         "Coverage command output lines " +
         "with bazel tests --collect coverage: $coverageCommandOutputLines"
       )
+
+      val regex = """(.*/shard_\d+_of_\d+/coverage\.dat)""".toRegex()
+      val shardCoveragePaths = coverageCommandOutputLines
+        .flatMap { regex.findAll(it).map { matchResult ->
+          matchResult.value.trim()
+        }
+      }
+
+      println("Shard coverage path: $shardCoveragePaths")
+
+      val lcovCommand = buildString {
+        append("lcov ")
+        shardCoveragePaths.forEach { path ->
+          append("--add-tracefile $path ")
+        }
+        append("--output-file ${rootDirectory}/coverage_reports/lcov_combined.dat")
+      }
+
+      val process = ProcessBuilder(*lcovCommand.split(" ").toTypedArray())
+        .redirectErrorStream(true)
+        .start()
+
+      val output = process.inputStream.bufferedReader().readText()
+      println("Output: $output")
+
       return File(rootDirectory, "/bazel-out/_coverage/_coverage_report.dat").readLines()
     } else {
       println("In does not have Shard count")
