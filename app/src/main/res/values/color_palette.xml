@@ -167,6 +167,8 @@
   <color name="color_palette_profile_chooser_silver_text_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_profile_chooser_white_text_color">@color/color_def_white</color>
   <color name="color_palette_profile_chooser_avatar_border_color">@color/color_def_dark_silver</color>
+  <color name="color_palette_profile_selection_background_color">@color/color_def_ivory</color>
+  <color name="color_palette_profile_selection_profile_icon_background_color">@color/color_def_light_orange</color>
   <color name="color_palette_topic_card_item_background_color">@color/color_def_blue_sapphire</color>
   <color name="color_palette_profile_progress_activity_story_count_card_stroke_color">@color/color_def_grey</color>
   <color name="color_palette_section_title_divider_color">@color/color_def_light_grey</color>
