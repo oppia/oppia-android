@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
@@ -66,7 +67,7 @@ private val COLORS_LIST = listOf(
 
 /** The presenter for [ProfileChooserFragment]. */
 @FragmentScope
-class ProfileChooserFragmentPresenter @Inject constructor(
+class ProfileChooserFragmentPresenterV1 @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
@@ -78,7 +79,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
-  val hasProfileEverBeenAddedValue = ObservableField(true)
+  val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -107,7 +108,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun subscribeToWasProfileEverBeenAdded() {
     wasProfileEverBeenAdded.observe(
       activity,
-      {
+      Observer<Boolean> {
         hasProfileEverBeenAddedValue.set(it)
         val spanCount = if (it) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
@@ -177,7 +178,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       updateLearnerIdIfAbsent(model.profile)
-      ensureProfileOnboarded(model.profile)
+      loginToProfile(model.profile)
     }
   }
 
