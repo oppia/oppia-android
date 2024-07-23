@@ -96,7 +96,7 @@ dependencies {
       "com.google.firebase:firebase-auth-ktx:$com_google_firebase_firebase_auth_ktx",
       "com.google.guava:guava:$com_google_guava_guava",
       "com.google.protobuf:protobuf-javalite:$com_google_protobuf_protobuf_javalite",
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$org_jetbrains_kotlin_kotlin_stdlib_jdk7",
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$org_jetbrains_kotlin_kotlin_stdlib_jdk8",
       "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$org_jetbrains_kotlinx_kotlinx_coroutines_guava"
   )
   compileOnly(

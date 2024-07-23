@@ -86,12 +86,11 @@ dependencies {
       "com.github.bumptech.glide:glide:$com_github_bumptech_glide_glide",
       "com.google.dagger:dagger:$com_google_dagger_dagger",
       "com.google.firebase:firebase-analytics-ktx:$com_google_firebase_firebase_analytics_ktx",
-      "com.google.firebase:firebase-core:$com_google_firebase_firebase_core",
       "com.google.firebase:firebase-crashlytics:$com_google_firebase_firebase_crashlytics",
       "com.google.firebase:firebase-firestore-ktx:$com_google_firebase_firebase_firestore_ktx",
       "com.google.firebase:firebase-auth-ktx:$com_google_firebase_firebase_auth_ktx",
       "com.google.protobuf:protobuf-javalite:$com_google_protobuf_protobuf_javalite",
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$org_jetbrains_kotlin_kotlin_stdlib_jdk7",
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$org_jetbrains_kotlin_kotlin_stdlib_jdk8",
       "org.jetbrains.kotlinx:kotlinx-coroutines-core:$org_jetbrains_kotlinx_kotlinx_coroutines_core",
   )
   compileOnly(
