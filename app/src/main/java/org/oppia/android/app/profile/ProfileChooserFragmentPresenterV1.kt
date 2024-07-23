@@ -248,33 +248,6 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
     }
   }
 
-  private fun ensureProfileOnboarded(profile: Profile) {
-    if (!isAdminWithPin(profile.isAdmin, profile.pin) && !profile.completedProfileOboarding) {
-      launchOnboardingScreen(profile.id, profile.name)
-    } else {
-      loginToProfile(profile)
-    }
-  }
-
-  // TODO(#4938): Replace with proper admin profile migration.
-  private fun isAdminWithPin(isAdmin: Boolean, pin: String?): Boolean {
-    return isAdmin && !pin.isNullOrBlank()
-  }
-
-  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
-    val introActivityParams = IntroActivityParams.newBuilder()
-      .setProfileNickname(profileName)
-      .build()
-
-    val intent = IntroActivity.createIntroActivity(activity)
-    intent.apply {
-      putProtoExtra(IntroActivity.PARAMS_KEY, introActivityParams)
-      decorateWithUserProfileId(profileId)
-    }
-
-    activity.startActivity(intent)
-  }
-
   private fun loginToProfile(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
       profileManagementController.loginToProfile(profile.id).toLiveData().observe(
