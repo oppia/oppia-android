@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.CreateProfileActivityParams
+import org.oppia.android.app.model.CreateProfileFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class CreateProfileFragment : InjectableFragment() {
     }
     val profileType = checkNotNull(
       arguments?.getProto(
-        CREATE_PROFILE_PARAMS_KEY, CreateProfileActivityParams.getDefaultInstance()
+        CREATE_PROFILE_FRAGMENT_ARGS, CreateProfileFragmentArguments.getDefaultInstance()
       )?.profileType
     ) {
       "Expected CreateProfileFragment to have a profileType argument."
