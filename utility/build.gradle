@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 33
-  buildToolsVersion "30.0.2"
+  compileSdkVersion target_sdk_version
+  buildToolsVersion build_tools_version
 
   defaultConfig {
-    minSdkVersion 21
-    targetSdkVersion 33
+    minSdkVersion min_sdk_version
+    targetSdkVersion target_sdk_version
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -78,47 +78,47 @@ android.sourceSets.test.kotlin.exclude(filesToExclude)
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'androidx.appcompat:appcompat:1.0.2',
-      'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
-      'androidx.work:work-runtime-ktx:2.4.0',
-      'com.github.oppia:androidsvg:5bc9c7553e94c3476e8ea32baea3c77567228fcd',
-      'com.github.oppia:kotlitex:ccdf4170817fa3b48b8e1e452772dd58ecb71cf2',
-      'com.github.bumptech.glide:glide:4.11.0',
-      'com.google.dagger:dagger:2.41',
-      'com.google.firebase:firebase-analytics-ktx:17.5.0',
-      'com.google.firebase:firebase-core:17.5.0',
-      'com.google.firebase:firebase-crashlytics:17.0.0',
-      'com.google.firebase:firebase-firestore-ktx:24.2.1',
-      'com.google.firebase:firebase-auth-ktx:19.3.1',
-      'com.google.protobuf:protobuf-javalite:3.17.3',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
+      "androidx.appcompat:appcompat:$androidx_appcompat_appcompat",
+      "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_lifecycle_livedata_ktx",
+      "androidx.work:work-runtime-ktx:$androidx_work_work_runtime_ktx",
+      "com.github.oppia:androidsvg:$com_github_oppia_androidsvg",
+      "com.github.oppia:kotlitex:$com_github_oppia_kotlitex",
+      "com.github.bumptech.glide:glide:$com_github_bumptech_glide_glide",
+      "com.google.dagger:dagger:$com_google_dagger_dagger",
+      "com.google.firebase:firebase-analytics-ktx:$com_google_firebase_firebase_analytics_ktx",
+      "com.google.firebase:firebase-core:$com_google_firebase_firebase_core",
+      "com.google.firebase:firebase-crashlytics:$com_google_firebase_firebase_crashlytics",
+      "com.google.firebase:firebase-firestore-ktx:$com_google_firebase_firebase_firestore_ktx",
+      "com.google.firebase:firebase-auth-ktx:$com_google_firebase_firebase_auth_ktx",
+      "com.google.protobuf:protobuf-javalite:$com_google_protobuf_protobuf_javalite",
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$org_jetbrains_kotlin_kotlin_stdlib_jdk7",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-core:$org_jetbrains_kotlinx_kotlinx_coroutines_core",
   )
   compileOnly(
-      'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
-      'javax.annotation:javax.annotation-api:1.3.2',
-      'org.glassfish.jaxb:jaxb-runtime:2.3.2',
+      "jakarta.xml.bind:jakarta.xml.bind-api:$jakarta_xml_bind_jakarta_xml_bind_api",
+      "javax.annotation:javax.annotation-api:$javax_annotation_javax_annotation_api",
+      "org.glassfish.jaxb:jaxb-runtime:$org_glassfish_jaxb_jaxb_runtime",
   )
   testImplementation(
-      'androidx.test.ext:junit:1.1.1',
-      'androidx.test.ext:truth:1.4.0',
-      'com.google.dagger:dagger:2.41',
-      'com.google.truth:truth:1.1.3',
-      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'junit:junit:4.12',
-      "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      'org.mockito:mockito-core:2.19.0',
-      'org.robolectric:robolectric:4.5',
+      "androidx.test.ext:junit:$androidx_test_ext_junit",
+      "androidx.test.ext:truth:$androidx_test_ext_truth",
+      "com.google.dagger:dagger:$com_google_dagger_dagger",
+      "com.google.truth:truth:$com_google_truth_truth",
+      "com.google.truth.extensions:truth-liteproto-extension:$com_google_truth_extensions_truth_liteproto_extension",
+      "junit:junit:$junit_junit",
+      "org.jetbrains.kotlin:kotlin-test-junit:$org_jetbrains_kotlin_kotlin_test_junit",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-test:$org_jetbrains_kotlinx_kotlinx_coroutines_test",
+      "org.mockito:mockito-core:$org_mockito_mockito_core",
+      "org.robolectric:robolectric:$org_robolectric_robolectric",
       project(":data"),
       project(":testing"),
   )
   kapt(
-      'com.github.bumptech.glide:compiler:4.11.0',
-      'com.google.dagger:dagger-compiler:2.41'
+      "com.github.bumptech.glide:compiler:$com_github_bumptech_glide_compiler",
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler"
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.41'
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler"
   )
   // TODO(#59): Remove this once Bazel is introduced
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be

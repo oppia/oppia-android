@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 33
-  buildToolsVersion "30.0.2"
+  compileSdkVersion target_sdk_version
+  buildToolsVersion build_tools_version
 
   defaultConfig {
-    minSdkVersion 21
-    targetSdkVersion 33
+    minSdkVersion min_sdk_version
+    targetSdkVersion target_sdk_version
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -62,48 +62,50 @@ android {
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'androidx.appcompat:appcompat:1.0.2',
-      'com.google.dagger:dagger:2.41',
-      'com.google.guava:guava:28.1-android',
-      'com.google.protobuf:protobuf-javalite:3.17.3',
-      'com.squareup.moshi:moshi-kotlin:1.13.0',
-      'com.squareup.okhttp3:okhttp:4.7.2',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4',
+      "androidx.appcompat:appcompat:$androidx_appcompat_appcompat",
+      "com.google.dagger:dagger:$com_google_dagger_dagger",
+      "com.google.guava:guava:$com_google_guava_guava",
+      "com.google.protobuf:protobuf-javalite:$com_google_protobuf_protobuf_javalite",
+      "com.squareup.moshi:moshi-kotlin:$com_squareup_moshi_moshi_kotlin",
+      "com.squareup.okhttp3:okhttp:$com_squareup_okhttp3_okhttp",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-android:$org_jetbrains_kotlinx_kotlinx_coroutines_android",
   )
   compileOnly(
-      'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
-      'javax.annotation:javax.annotation-api:1.3.2',
-      'org.glassfish.jaxb:jaxb-runtime:2.3.2',
+      "jakarta.xml.bind:jakarta.xml.bind-api:$jakarta_xml_bind_jakarta_xml_bind_api",
+      "javax.annotation:javax.annotation-api:$javax_annotation_javax_annotation_api",
+      "org.glassfish.jaxb:jaxb-runtime:$org_glassfish_jaxb_jaxb_runtime",
   )
   testImplementation(
-      'androidx.test.ext:junit:1.1.1',
-      'androidx.test.ext:truth:1.4.0',
-      'com.google.dagger:dagger:2.41',
-      'com.google.truth:truth:1.1.3',
-      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'com.squareup.okhttp3:mockwebserver:4.7.2',
-      'com.squareup.okhttp3:okhttp:4.7.2',
-      'junit:junit:4.12',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      'org.mockito:mockito-core:2.19.0',
-      'org.robolectric:robolectric:4.5',
+      "androidx.test.ext:junit:$androidx_test_ext_junit",
+      "androidx.test.ext:truth:$androidx_test_ext_truth",
+      "com.google.dagger:dagger:$com_google_dagger_dagger",
+      "com.google.truth:truth:$com_google_truth_truth",
+      "com.google.truth.extensions:truth-liteproto-extension:$com_google_truth_extensions_truth_liteproto_extension",
+      "com.squareup.okhttp3:mockwebserver:$com_squareup_okhttp3_mockwebserver",
+      "com.squareup.okhttp3:okhttp:$com_squareup_okhttp3_okhttp",
+      "junit:junit:$junit_junit",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-test:$org_jetbrains_kotlinx_kotlinx_coroutines_test",
+      "org.mockito:mockito-core:$org_mockito_mockito_core",
+      "org.robolectric:robolectric:$org_robolectric_robolectric",
       project(":testing"),
   )
   // TODO(#59): Remove this once Bazel is introduced
   // TODO(#97): Isolate retrofit-mock dependency from production
   api(
-      'com.squareup.retrofit2:converter-moshi:2.7.2',
-      'com.squareup.retrofit2:retrofit:2.7.2',
-      'com.squareup.retrofit2:retrofit-mock:2.7.2',
+      "com.squareup.retrofit2:converter-moshi:$com_squareup_retrofit2_converter_moshi",
+      "com.squareup.retrofit2:retrofit:$com_squareup_retrofit2_retrofit",
+      "com.squareup.retrofit2:retrofit-mock:$com_squareup_retrofit2_retrofit_mock",
   )
-  androidTestImplementation('androidx.test:runner:1.2.0',
-      'androidx.test.espresso:espresso-core:3.2.0')
+  androidTestImplementation(
+      "androidx.test:runner:$androidx_test_runner",
+      "androidx.test.espresso:espresso-core:$androidx_test_espresso_espresso_core"
+  )
   kapt(
-      'com.google.dagger:dagger-compiler:2.41',
-      'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler",
+      "com.squareup.moshi:moshi-kotlin-codegen:$com_squareup_moshi_moshi_kotlin_codegen"
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.41'
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler"
   )
 
   implementation project(":utility")

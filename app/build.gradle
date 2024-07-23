@@ -5,12 +5,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 33
-  buildToolsVersion "30.0.2"
+  compileSdkVersion target_sdk_version
+  buildToolsVersion build_tools_version
   defaultConfig {
     applicationId "org.oppia.android"
-    minSdkVersion 21
-    targetSdkVersion 33
+    minSdkVersion min_sdk_version
+    targetSdkVersion target_sdk_version
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
@@ -155,90 +155,90 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--list-shards"
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'androidx.appcompat:appcompat:1.0.2',
-      "androidx.compose.foundation:foundation:$compose_version",
-      "androidx.compose.foundation:foundation-layout:$compose_version",
-      "androidx.compose.material:material:$compose_version",
-      "androidx.compose.runtime:runtime:$compose_version",
-      "androidx.compose.runtime:runtime-livedata:$compose_version",
-      "androidx.compose.ui:ui:$compose_version",
-      "androidx.compose.ui:ui-tooling:$compose_version",
-      'androidx.constraintlayout:constraintlayout:1.1.3',
-      'androidx.core:core-ktx:1.0.2',
-      'androidx.legacy:legacy-support-v4:1.0.0',
-      'androidx.lifecycle:lifecycle-extensions:2.0.0',
-      'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
-      'androidx.navigation:navigation-fragment:2.0.0',
-      'androidx.navigation:navigation-fragment-ktx:2.0.0',
-      'androidx.navigation:navigation-ui:2.0.0',
-      'androidx.navigation:navigation-ui-ktx:2.0.0',
-      "androidx.fragment:fragment:$fragment_version",
-      'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
-      'androidx.multidex:multidex:2.0.1',
-      'androidx.recyclerview:recyclerview:1.0.0',
-      'androidx.work:work-runtime-ktx:2.4.0',
-      'com.github.bumptech.glide:glide:4.11.0',
-      'com.google.android.flexbox:flexbox:3.0.0',
-      'com.google.android.material:material:1.3.0',
-      "com.google.android.material:compose-theme-adapter:$compose_version",
-      'com.google.dagger:dagger:2.41',
-      'com.google.firebase:firebase-analytics:17.5.0',
-      'com.google.firebase:firebase-analytics-ktx:17.5.0',
-      'com.google.firebase:firebase-appcheck:16.0.0',
-      'com.google.firebase:firebase-appcheck-debug:16.0.0',
-      'com.google.firebase:firebase-appcheck-playintegrity:16.0.0',
-      'com.google.firebase:firebase-core:17.5.0',
-      'com.google.firebase:firebase-crashlytics:17.0.0',
-      'com.google.firebase:firebase-firestore-ktx:24.2.1',
-      'com.google.firebase:firebase-auth-ktx:19.3.1',
-      'com.google.guava:guava:28.1-android',
-      'com.google.protobuf:protobuf-javalite:3.17.3',
-      'nl.dionsegijn:konfetti:1.2.5',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4',
-      'org.mockito:mockito-core:2.7.22',
-      'com.github.oppia:android-spotlight:cc23499d37dc8533a2876e45b5063e981a4583f4'
+      "androidx.appcompat:appcompat:$androidx_appcompat_appcompat",
+      "androidx.compose.foundation:foundation:$androidx_compose_foundation_foundation",
+      "androidx.compose.foundation:foundation-layout:$androidx_compose_foundation_foundation_layout",
+      "androidx.compose.material:material:$androidx_compose_material_material",
+      "androidx.compose.runtime:runtime:$androidx_compose_runtime_runtime",
+      "androidx.compose.runtime:runtime-livedata:$androidx_compose_runtime_runtime_livedata",
+      "androidx.compose.ui:ui:$androidx_compose_ui_ui",
+      "androidx.compose.ui:ui-tooling:$androidx_compose_ui_ui_tooling",
+      "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout_constraintlayout",
+      "androidx.core:core-ktx:$androidx_core_core_ktx",
+      "androidx.legacy:legacy-support-v4:$androidx_legacy_legacy_support_v4",
+      "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_lifecycle_extensions",
+      "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_lifecycle_runtime_ktx",
+      "androidx.navigation:navigation-fragment:$androidx_navigation_navigation_fragment",
+      "androidx.navigation:navigation-fragment-ktx:$androidx_navigation_navigation_fragment_ktx",
+      "androidx.navigation:navigation-ui:$androidx_navigation_navigation_ui",
+      "androidx.navigation:navigation-ui-ktx:$androidx_navigation_navigation_ui_ktx",
+      "androidx.fragment:fragment:$androidx_fragment_fragment",
+      "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_lifecycle_runtime_ktx",
+      "androidx.multidex:multidex:$androidx_multidex_multidex",
+      "androidx.recyclerview:recyclerview:$androidx_recyclerview_recyclerview",
+      "androidx.work:work-runtime-ktx:$androidx_work_work_runtime_ktx",
+      "com.github.bumptech.glide:glide:$com_github_bumptech_glide_glide",
+      "com.google.android.flexbox:flexbox:$com_google_android_flexbox_flexbox",
+      "com.google.android.material:material:$com_google_android_material_material",
+      "com.google.android.material:compose-theme-adapter:$com_google_android_material_compose_theme_adapter",
+      "com.google.dagger:dagger:$com_google_dagger_dagger",
+      "com.google.firebase:firebase-analytics:$com_google_firebase_firebase_analytics",
+      "com.google.firebase:firebase-analytics-ktx:$com_google_firebase_firebase_analytics_ktx",
+      "com.google.firebase:firebase-appcheck:$com_google_firebase_firebase_appcheck",
+      "com.google.firebase:firebase-appcheck-debug:$com_google_firebase_firebase_appcheck_debug",
+      "com.google.firebase:firebase-appcheck-playintegrity:$com_google_firebase_firebase_appcheck_playintegrity",
+      "com.google.firebase:firebase-core:$com_google_firebase_firebase_core",
+      "com.google.firebase:firebase-crashlytics:$com_google_firebase_firebase_crashlytics",
+      "com.google.firebase:firebase-firestore-ktx:$com_google_firebase_firebase_firestore_ktx",
+      "com.google.firebase:firebase-auth-ktx:$com_google_firebase_firebase_auth_ktx",
+      "com.google.guava:guava:$com_google_guava_guava",
+      "com.google.protobuf:protobuf-javalite:$com_google_protobuf_protobuf_javalite",
+      "nl.dionsegijn:konfetti:$nl_dionsegijn_konfetti",
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$org_jetbrains_kotlin_kotlin_stdlib_jdk7",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-core:$org_jetbrains_kotlinx_kotlinx_coroutines_core",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-android:$org_jetbrains_kotlinx_kotlinx_coroutines_android",
+      "org.mockito:mockito-core:$org_mockito_mockito_core",
+      "com.github.oppia:android-spotlight:$com_github_oppia_android_spotlight"
   )
   compileOnly(
-      'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
-      'javax.annotation:javax.annotation-api:1.3.2',
-      'org.glassfish.jaxb:jaxb-runtime:2.3.2',
+      "jakarta.xml.bind:jakarta.xml.bind-api:$jakarta_xml_bind_jakarta_xml_bind_api",
+      "javax.annotation:javax.annotation-api:$javax_annotation_javax_annotation_api",
+      "org.glassfish.jaxb:jaxb-runtime:$org_glassfish_jaxb_jaxb_runtime",
   )
   testImplementation(
-      "androidx.compose.ui:ui-test-junit4:$compose_version",
-      'androidx.test:core:1.2.0',
-      'androidx.test.espresso:espresso-contrib:3.1.0',
-      'androidx.test.espresso:espresso-core:3.2.0',
-      'androidx.test.espresso:espresso-intents:3.1.0',
-      'androidx.test.ext:junit:1.1.1',
-      'androidx.test.ext:truth:1.4.0',
-      'androidx.work:work-testing:2.4.0',
-      'com.github.bumptech.glide:mocks:4.11.0',
-      'com.google.truth:truth:1.1.3',
-      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'org.robolectric:annotations:4.5',
-      'org.robolectric:robolectric:4.5',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
-      'org.mockito:mockito-core:2.7.22',
+      "androidx.compose.ui:ui-test-junit4:$androidx_compose_ui_ui_test_junit4",
+      "androidx.test:core:$androidx_test_core",
+      "androidx.test.espresso:espresso-contrib:$androidx_test_espresso_espresso_contrib",
+      "androidx.test.espresso:espresso-core:$androidx_test_espresso_espresso_core",
+      "androidx.test.espresso:espresso-intents:$androidx_test_espresso_espresso_intents",
+      "androidx.test.ext:junit:$androidx_test_ext_junit",
+      "androidx.test.ext:truth:$androidx_test_ext_truth",
+      "androidx.work:work-testing:$androidx_work_work_testing",
+      "com.github.bumptech.glide:mocks:$com_github_bumptech_glide_mocks",
+      "com.google.truth:truth:$com_google_truth_truth",
+      "com.google.truth.extensions:truth-liteproto-extension:$com_google_truth_extensions_truth_liteproto_extension",
+      "org.robolectric:annotations:$org_robolectric_annotations",
+      "org.robolectric:robolectric:$org_robolectric_robolectric",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-test:$org_jetbrains_kotlinx_kotlinx_coroutines_test",
+      "org.jetbrains.kotlin:kotlin-test-junit:$org_jetbrains_kotlin_kotlin_test_junit",
+      "org.mockito:mockito-core:$org_mockito_mockito_core",
       project(":testing"),
   )
   androidTestImplementation(
-      "androidx.compose.ui:ui-test-junit4:$compose_version",
-      'androidx.test:core:1.2.0',
-      'androidx.test.espresso:espresso-contrib:3.1.0',
-      'androidx.test.espresso:espresso-core:3.2.0',
-      'androidx.test.espresso:espresso-intents:3.1.0',
-      'androidx.test.ext:junit:1.1.1',
-      'androidx.test.ext:truth:1.4.0',
-      'com.github.bumptech.glide:mocks:4.11.0',
-      'com.google.truth:truth:1.1.3',
-      'androidx.work:work-testing:2.4.0',
-      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      'org.mockito:mockito-android:2.7.22',
-      'org.robolectric:annotations:4.5',
+      "androidx.compose.ui:ui-test-junit4:$androidx_compose_ui_ui_test_junit4",
+      "androidx.test:core:$androidx_test_core",
+      "androidx.test.espresso:espresso-contrib:$androidx_test_espresso_espresso_contrib",
+      "androidx.test.espresso:espresso-core:$androidx_test_espresso_espresso_core",
+      "androidx.test.espresso:espresso-intents:$androidx_test_espresso_espresso_intents",
+      "androidx.test.ext:junit:$androidx_test_ext_junit",
+      "androidx.test.ext:truth:$androidx_test_ext_truth",
+      "com.github.bumptech.glide:mocks:$com_github_bumptech_glide_mocks",
+      "com.google.truth:truth:$com_google_truth_truth",
+      "androidx.work:work-testing:$androidx_work_work_testing",
+      "com.google.truth.extensions:truth-liteproto-extension:$com_google_truth_extensions_truth_liteproto_extension",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-test:$org_jetbrains_kotlinx_kotlinx_coroutines_test",
+      "org.mockito:mockito-android:$org_mockito_mockito_android",
+      "org.robolectric:annotations:$org_robolectric_annotations",
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies
@@ -257,16 +257,16 @@ dependencies {
     exclude group: "org.robolectric"
   }
   androidTestUtil(
-      'androidx.test:orchestrator:1.2.0',
+      "androidx.test:orchestrator:$androidx_test_orchestrator",
   )
   kapt(
-      'com.google.dagger:dagger-compiler:2.41'
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler"
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.41'
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler"
   )
   kaptAndroidTest(
-      'com.google.dagger:dagger-compiler:2.41'
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler"
   )
   // TODO(#59): Remove this once Bazel is introduced
   api project(':data')

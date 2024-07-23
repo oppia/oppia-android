@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 33
-  buildToolsVersion "30.0.2"
+  compileSdkVersion target_sdk_version
+  buildToolsVersion build_tools_version
 
   defaultConfig {
-    minSdkVersion 21
-    targetSdkVersion 33
+    minSdkVersion min_sdk_version
+    targetSdkVersion target_sdk_version
     versionCode 1
     versionName "1.0"
   }
@@ -64,55 +64,55 @@ android.sourceSets.test.kotlin.exclude(filesToExclude)
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'androidx.annotation:annotation:1.1.0',
-      'androidx.appcompat:appcompat:1.1.0',
-      'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
-      'androidx.core:core-ktx:1.0.2',
-      "androidx.test:core:1.0.0",
-      'androidx.test.espresso:espresso-accessibility:3.1.0',
-      'androidx.test.espresso:espresso-core:3.2.0',
-      'androidx.test.ext:truth:1.4.0',
-      'androidx.test:runner:1.2.0',
-      'com.google.android.material:material:1.3.0',
-      'com.google.dagger:dagger:2.41',
-      'com.google.firebase:firebase-auth-ktx:19.3.1',
-      'com.google.protobuf:protobuf-javalite:3.17.3',
-      'com.google.truth:truth:1.1.3',
-      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'nl.dionsegijn:konfetti:1.2.5',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      'org.robolectric:robolectric:4.5',
-      'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
-      'org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4',
-      'org.mockito:mockito-core:2.19.0',
+      "androidx.annotation:annotation:$androidx_annotation_annotation",
+      "androidx.appcompat:appcompat:$androidx_appcompat_appcompat",
+      "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_lifecycle_livedata_ktx",
+      "androidx.core:core-ktx:$androidx_core_core_ktx",
+      "androidx.test:core:$androidx_test_core",
+      "androidx.test.espresso:espresso-accessibility:$androidx_test_espresso_espresso_accessibility",
+      "androidx.test.espresso:espresso-core:$androidx_test_espresso_espresso_core",
+      "androidx.test.ext:truth:$androidx_test_ext_truth",
+      "androidx.test:runner:$androidx_test_runner",
+      "com.google.android.material:material:$com_google_android_material_material",
+      "com.google.dagger:dagger:$com_google_dagger_dagger",
+      "com.google.firebase:firebase-auth-ktx:$com_google_firebase_firebase_auth_ktx",
+      "com.google.protobuf:protobuf-javalite:$com_google_protobuf_protobuf_javalite",
+      "com.google.truth:truth:$com_google_truth_truth",
+      "com.google.truth.extensions:truth-liteproto-extension:$com_google_truth_extensions_truth_liteproto_extension",
+      "nl.dionsegijn:konfetti:$nl_dionsegijn_konfetti",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-test:$org_jetbrains_kotlinx_kotlinx_coroutines_test",
+      "org.robolectric:robolectric:$org_robolectric_robolectric",
+      "org.jetbrains.kotlin:kotlin-reflect:$org_jetbrains_kotlin_kotlin_reflect",
+      "org.jetbrains.kotlin:kotlin-stdlib:$org_jetbrains_kotlin_kotlin_stdlib",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$org_jetbrains_kotlinx_kotlinx_coroutines_guava",
+      "org.mockito:mockito-core:$org_mockito_mockito_core",
       project(":domain"),
       project(":model"),
       project(":utility"),
   )
   compileOnly(
-      'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
-      'javax.annotation:javax.annotation-api:1.3.2',
-      'org.glassfish.jaxb:jaxb-runtime:2.3.2',
+      "jakarta.xml.bind:jakarta.xml.bind-api:$jakarta_xml_bind_jakarta_xml_bind_api",
+      "javax.annotation:javax.annotation-api:$javax_annotation_javax_annotation_api",
+      "org.glassfish.jaxb:jaxb-runtime:$org_glassfish_jaxb_jaxb_runtime",
   )
   testImplementation(
-      'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
-      'androidx.test.ext:junit:1.1.1',
-      'com.google.android.material:material:1.3.0',
-      'com.google.truth:truth:1.1.3',
-      'junit:junit:4.12',
-      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
-      'org.mockito:mockito-core:2.19.0',
+      "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_lifecycle_livedata_ktx",
+      "androidx.test.ext:junit:$androidx_test_ext_junit",
+      "com.google.android.material:material:$com_google_android_material_material",
+      "com.google.truth:truth:$com_google_truth_truth",
+      "junit:junit:$junit_junit",
+      "org.jetbrains.kotlin:kotlin-reflect:$org_jetbrains_kotlin_kotlin_reflect",
+      "org.mockito:mockito-core:$org_mockito_mockito_core",
       project(":domain"),
   )
   kapt(
-      'com.google.dagger:dagger-compiler:2.41',
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler",
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.41',
+      "com.google.dagger:dagger-compiler:$com_google_dagger_dagger_compiler",
   )
   annotationProcessor(
-      'com.google.auto.service:auto-service:1.0-rc4',
+      "com.google.auto.service:auto-service:$com_google_auto_service_auto_service",
   )
   // TODO(#59): Remove this once Bazel is introduced
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be
