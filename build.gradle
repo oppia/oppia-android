@@ -32,7 +32,7 @@ buildscript {
   ext.androidx_navigation_navigation_ui_ktx = "2.0.0"
   ext.androidx_navigation_navigation_ui = "2.0.0"
   ext.androidx_recyclerview_recyclerview = "1.1.0"
-  ext.androidx_test_espresso_espresso_accessibility = "3.1.0"
+  ext.androidx_test_espresso_espresso_accessibility = "3.2.0"
   ext.androidx_test_espresso_espresso_contrib = "3.1.0"
   ext.androidx_test_espresso_espresso_core = "3.3.0"
   ext.androidx_test_espresso_espresso_intents = "3.1.0"
