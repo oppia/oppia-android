@@ -12,6 +12,10 @@ on:
       # Push events on develop branch
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   bazel_compute_affected_targets:
     name: Compute affected tests

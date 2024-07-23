@@ -12,6 +12,10 @@ on:
       # Push events on develop branch
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # This workflow has the following jobs:
 # robolectric_tests: Robolectric tests for all modules except the app module
 # app_tests: Non-flaky Robolectric tests for the app module
