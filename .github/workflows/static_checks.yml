@@ -84,6 +84,10 @@ jobs:
         run: |
           bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
 
+      - name: Feature flag checks
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/feature_flags_check.sh $HOME
+
       - name: Protobuf lint check
         run: |
           bash /home/runner/work/oppia-android/oppia-android/scripts/buf_lint_check.sh $HOME
