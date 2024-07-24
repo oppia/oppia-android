@@ -66,9 +66,9 @@ fun PromotedStoryList(
   ) {
     Text(
       text = promotedStoryListViewModel.getHeader(),
-      color = colorResource(id = R.color.component_color_shared_primary_text_color),
+      color = colorResource(id = R.color.component_color_classroom_shared_header_text_color),
       fontFamily = FontFamily.SansSerif,
-      fontWeight = FontWeight.Medium,
+      fontWeight = FontWeight.Normal,
       fontSize = dimensionResource(id = R.dimen.promoted_story_list_header_text_size).value.sp,
       modifier = Modifier
         .weight(weight = 1f, fill = false),
