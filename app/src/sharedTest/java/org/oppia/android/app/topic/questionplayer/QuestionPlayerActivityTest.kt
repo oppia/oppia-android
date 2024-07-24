@@ -567,6 +567,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
+      testCoroutineDispatchers.runCurrent()
       verifyFontSizeMatches(67F)
     }
   }
@@ -580,6 +581,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
       }
+      testCoroutineDispatchers.runCurrent()
       verifyFontSizeMatches(58F)
     }
   }
@@ -592,6 +594,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
+      testCoroutineDispatchers.runCurrent()
       verifyFontSizeMatches(48F)
     }
   }
@@ -604,6 +607,7 @@ class QuestionPlayerActivityTest {
         activity.questionPlayerActivityPresenter
           .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
       }
+      testCoroutineDispatchers.runCurrent()
       verifyFontSizeMatches(38F)
     }
   }
