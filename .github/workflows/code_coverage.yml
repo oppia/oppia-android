@@ -5,20 +5,26 @@ name: Code Coverage
 # Controls when the action will run. Triggers the workflow on pull request
 # events or push events in the develop branch.
 on:
-  workflow_run:
-    workflows: [Unit Tests (Robolectric - Bazel)]
-    types:
-      - completed
-  workflow_dispatch:
-#  pull_request:
-#  push:
-#    branches:
-#      # Push events on develop branch
-#      - develop
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
 
 jobs:
+  check_unit_tests_completed:
+    name: Check unit test completed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for unit tests to checks
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        with:
+          workflow: unit_tests.yml
+          sha: auto
+
   compute_changed_files:
     name: Compute changed files
+    needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
     #if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
