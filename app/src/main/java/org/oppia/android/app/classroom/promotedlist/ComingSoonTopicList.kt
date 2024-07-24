@@ -147,7 +147,7 @@ fun ComingSoonTopicCard(
   }
 }
 
-/** Displays text section of the coming soon topic card. */
+/** Displays the topic title. */
 @Composable
 fun ComingSoonTopicCardTextSection(comingSoonTopicsViewModel: ComingSoonTopicsViewModel) {
   Column(
