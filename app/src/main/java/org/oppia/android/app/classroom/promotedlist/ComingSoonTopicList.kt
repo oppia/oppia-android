@@ -42,7 +42,7 @@ const val COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG = "TEST_TAG.coming_soon_topic_l
 /** Test tag for the promoted story list. */
 const val COMING_SOON_TOPIC_LIST_TEST_TAG = "TEST_TAG.coming_soon_topic_list"
 
-/** Displays a list of coming soon topics. */
+/** Displays a list of topics to be published soon. */
 @Composable
 fun ComingSoonTopicList(
   comingSoonTopicListViewModel: ComingSoonTopicListViewModel,
