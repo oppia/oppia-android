@@ -131,7 +131,7 @@ fun ClassroomCard(
 }
 
 @Composable
-fun getClassroomCardWidth(): Dp {
+private fun getClassroomCardWidth(): Dp {
   val configuration = LocalConfiguration.current
   val screenWidth = configuration.screenWidthDp.dp
   val horizontalPadding = dimensionResource(id = R.dimen.classrooms_text_margin_start)
