@@ -116,6 +116,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TEST_CLASSROOM_ID = "test_classroom_id_1"
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
 
@@ -181,6 +182,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -192,6 +194,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -213,6 +216,7 @@ class TopicInfoFragmentTest {
       createTopicActivityIntent(
         context = context,
         internalProfileId = internalProfileId,
+        classroomId = TEST_CLASSROOM_ID,
         topicId = TEST_TOPIC_ID
       )
     )
@@ -232,6 +236,7 @@ class TopicInfoFragmentTest {
       createTopicActivityIntent(
         context = context,
         internalProfileId = internalProfileId,
+        classroomId = TEST_CLASSROOM_ID,
         topicId = TEST_TOPIC_ID
       )
     )
@@ -249,6 +254,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -260,6 +266,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -275,6 +282,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -296,6 +304,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -309,6 +318,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -321,6 +331,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view))
@@ -339,6 +350,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -357,6 +369,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -382,6 +395,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -401,6 +415,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -414,6 +429,7 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -425,12 +441,14 @@ class TopicInfoFragmentTest {
 
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
+        classroomId,
         topicId
       )
     return ActivityScenario.launch(intent)

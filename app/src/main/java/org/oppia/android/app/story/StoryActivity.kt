@@ -29,6 +29,7 @@ class StoryActivity :
   @Inject
   lateinit var storyActivityPresenter: StoryActivityPresenter
   private var internalProfileId: Int = -1
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
 
@@ -40,17 +41,21 @@ class StoryActivity :
       StoryActivityParams.getDefaultInstance()
     )
     internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    classroomId = checkNotNull(args.classroomId) {
+      "Expected extra classroom ID to be included for StoryActivity."
+    }
     topicId = checkNotNull(args.topicId) {
       "Expected extra topic ID to be included for StoryActivity."
     }
     storyId = checkNotNull(args.storyId) {
       "Expected extra story ID to be included for StoryActivity."
     }
-    storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
+    storyActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
   }
 
   override fun routeToExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -61,6 +66,7 @@ class StoryActivity :
       ExplorationActivity.createExplorationActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -72,6 +78,7 @@ class StoryActivity :
 
   override fun routeToResumeLesson(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -82,6 +89,7 @@ class StoryActivity :
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -104,11 +112,13 @@ class StoryActivity :
     fun createStoryActivityIntent(
       context: Context,
       internalProfileId: Int,
+      classroomId: String,
       topicId: String,
       storyId: String
     ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryActivityParams.newBuilder().apply {
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
       }.build()
