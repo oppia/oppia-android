@@ -7,6 +7,7 @@ import org.oppia.android.app.model.ProfileId
 interface RouteToExplorationListener {
   fun routeToExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
