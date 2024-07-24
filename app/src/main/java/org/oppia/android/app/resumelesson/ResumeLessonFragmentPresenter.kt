@@ -47,6 +47,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
 
   private lateinit var binding: ResumeLessonFragmentBinding
   private lateinit var profileId: ProfileId
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -69,6 +70,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -82,6 +84,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     )
     this.profileId = profileId
     this.topicId = topicId
+    this.classroomId = classroomId
     this.storyId = storyId
     this.explorationId = explorationId
 
@@ -96,6 +99,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     binding.resumeLessonContinueButton.setOnClickListener {
       playExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -107,6 +111,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     binding.resumeLessonStartOverButton.setOnClickListener {
       playExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -183,6 +188,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
 
   private fun playExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -191,11 +197,11 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   ) {
     val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
       explorationDataController.restartExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.resumeExploration(
-        profileId.internalId, topicId, storyId, explorationId, checkpoint
+        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -207,6 +213,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

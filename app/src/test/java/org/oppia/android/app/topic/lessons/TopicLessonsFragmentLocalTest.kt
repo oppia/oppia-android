@@ -85,6 +85,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TEST_CLASSROOM_ID = "test_classroom_id_1"
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
 
@@ -109,7 +110,9 @@ class TopicLessonsFragmentLocalTest {
 
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID, TEST_STORY_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
@@ -122,6 +125,7 @@ class TopicLessonsFragmentLocalTest {
 
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): ActivityScenario<TopicActivity> {
@@ -129,6 +133,7 @@ class TopicLessonsFragmentLocalTest {
       TopicActivity.createTopicPlayStoryActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )

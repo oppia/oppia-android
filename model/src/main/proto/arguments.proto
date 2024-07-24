@@ -120,6 +120,9 @@ message ExplorationActivityParams {
   // The ID of the profile that wants to start an exploration play session.
   ProfileId profile_id = 1;
 
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 7;
+
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 2;
 
@@ -153,6 +156,9 @@ message ExplorationFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
   ProfileId profile_id = 1;
 
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 6;
+
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 2;
 
@@ -170,6 +176,9 @@ message ExplorationFragmentArguments {
 message ResumeLessonActivityParams {
   // The ID of the profile that wants to start an exploration play session.
   ProfileId profile_id = 1;
+
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 7;
 
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 2;
@@ -192,6 +201,9 @@ message ResumeLessonFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
   ProfileId profile_id = 1;
 
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 7;
+
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 2;
 
@@ -208,7 +220,7 @@ message ResumeLessonFragmentArguments {
   ExplorationCheckpoint checkpoint = 6;
 
   // The text size at which content in the resume lesson should be rendered.
-  ReadingTextSize reading_text_size = 7;
+  ReadingTextSize reading_text_size = 8;
 }
 
 // Params required when creating a new ReadingTextSizeActivity.
@@ -342,6 +354,9 @@ message QuestionPlayerFragmentArguments{
 
 // Represents the parameters needed to create TopicActivity.
 message TopicActivityParams {
+  // The ID of the classroom to which the topic to be loaded belongs.
+  string classroom_id = 3;
+
   // The ID of the topic to be loaded.
   string topic_id = 1;
 
@@ -351,6 +366,9 @@ message TopicActivityParams {
 
 // Arguments required when creating a TopicFragment.
 message TopicFragmentArguments {
+  // The ID of the classroom to which the topic to be loaded belongs.
+  string classroom_id = 3;
+
   // The ID of the topic to be loaded.
   string topic_id = 1;
 
@@ -585,6 +603,9 @@ message StateFragmentTestActivityParams {
   // The ID of the current profile.
   int32 internal_profile_id = 1;
 
+  // The ID of the classroom to which the triggering exploration belongs.
+  string classroom_id = 6;
+
   // The ID of the topic to which the triggering exploration belongs.
   string topic_id = 2;
 
@@ -720,6 +741,9 @@ message ProfileResetPinFragmentArguments {
 
 // Represents the parameters needed to create StoryActivity.
 message StoryActivityParams {
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 3;
+
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 
@@ -729,6 +753,9 @@ message StoryActivityParams {
 
 // Arguments required when creating a StoryFragment.
 message StoryFragmentArguments {
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 3;
+
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 
@@ -750,6 +777,9 @@ message TopicInfoFragmentArguments {
 
 // Arguments required when creating a TopicLessonsFragment.
 message TopicLessonsFragmentArguments {
+  // The ID of the classroom to which the opening exploration belongs.
+  string classroom_id = 3;
+
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 

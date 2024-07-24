@@ -30,7 +30,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var profileId: ProfileId
-
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -40,6 +40,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   /** Handles onCreate() method of the [ResumeLessonActivity]. */
   fun handleOnCreate(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -51,6 +52,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
       R.layout.resume_lesson_activity
     )
     this.profileId = profileId
+    this.classroomId=classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -84,6 +86,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
 
     val resumeLessonFragment = ResumeLessonFragment.newInstance(
       profileId,
+      classroomId,
       topicId,
       storyId,
       explorationId,

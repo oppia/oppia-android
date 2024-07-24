@@ -26,6 +26,7 @@ class ResumeLessonFragment : InjectableFragment() {
     /** Creates new instance of [ResumeLessonFragment] for the provided parameters. */
     fun newInstance(
       profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
@@ -35,6 +36,7 @@ class ResumeLessonFragment : InjectableFragment() {
     ): ResumeLessonFragment {
       val args = ResumeLessonFragmentArguments.newBuilder().apply {
         this.profileId = profileId
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId
@@ -71,6 +73,7 @@ class ResumeLessonFragment : InjectableFragment() {
       inflater,
       container,
       args.profileId,
+      args.classroomId,
       args.topicId,
       args.storyId,
       args.explorationId,
