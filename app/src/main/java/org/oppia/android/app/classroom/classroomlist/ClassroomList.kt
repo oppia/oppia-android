@@ -19,12 +19,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
@@ -73,7 +76,7 @@ fun ClassroomCard(
   val isCardSelected = classroomSummaryViewModel.classroomSummary.classroomId == selectedClassroomId
   Card(
     modifier = Modifier
-      .width(dimensionResource(id = R.dimen.classrooms_card_width))
+      .width(getClassroomCardWidth())
       .padding(
         start = dimensionResource(R.dimen.classrooms_card_margin_start),
         end = dimensionResource(R.dimen.classrooms_card_margin_end),
@@ -125,4 +128,18 @@ fun ClassroomCard(
       )
     }
   }
+}
+
+@Composable
+fun getClassroomCardWidth(): Dp {
+  val configuration = LocalConfiguration.current
+  val screenWidth = configuration.screenWidthDp.dp
+  val horizontalPadding = dimensionResource(id = R.dimen.classrooms_text_margin_start)
+  val topicCardHorizontalMargin = 8.dp
+  val topicListSpanCount = integerResource(id = R.integer.home_span_count)
+
+  val totalTopicCardWidth = screenWidth -
+    (horizontalPadding.times(2) + (topicCardHorizontalMargin * (topicListSpanCount - 1) * 2))
+
+  return totalTopicCardWidth.div(topicListSpanCount)
 }
