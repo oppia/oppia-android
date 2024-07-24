@@ -52,7 +52,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
       R.layout.resume_lesson_activity
     )
     this.profileId = profileId
-    this.classroomId=classroomId
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
