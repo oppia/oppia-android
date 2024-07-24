@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <import type="android.view.Gravity" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.profile.ProfileItemViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/profile_view_already_added_margin">
+
+    <LinearLayout
+      android:id="@+id/profile_chooser_item"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/profile_chooser_profile_view_margin_start_profile_already_added"
+      android:layout_marginTop="@dimen/space_0dp"
+      android:layout_marginEnd="@dimen/profile_chooser_profile_view_margin_end_profile_already_added"
+      android:gravity="@{Gravity.CENTER_HORIZONTAL}"
+      android:orientation="vertical">
+
+      <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_avatar"
+        android:layout_width="@dimen/profile_selection_activity_profile_icon_size"
+        android:layout_height="@dimen/profile_selection_activity_profile_icon_size"
+        android:clickable="true"
+        android:contentDescription="@string/create_profile_activity_current_picture_content_description"
+        android:focusable="true"
+        android:padding="@dimen/onboarding_profile_picture_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/create_profile_picture_guide"
+        app:profileImageSource="@{viewModel.profile.avatar}"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+        app:strokeColor="@color/component_color_profile_icon_stroke_color"
+        app:strokeWidth="@dimen/profile_selection_activity_profile_picture_stroke_width" />
+
+      <TextView
+        android:id="@+id/profile_name_text"
+        style="@style/Caption"
+        android:layout_marginTop="@dimen/profile_chooser_profile_view_name_margin_top_profile_already_added"
+        android:ellipsize="end"
+        android:gravity="@{Gravity.CENTER_HORIZONTAL}"
+        android:maxLines="2"
+        android:singleLine="false"
+        android:text="@{viewModel.profile.name}"
+        android:textColor="@color/component_color_shared_primary_text_color" />
+
+      <TextView
+        android:id="@+id/profile_last_visited"
+        style="@style/Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="@{Gravity.CENTER_HORIZONTAL}"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textStyle="italic"
+        android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
+        app:profileLastVisitedTime="@{viewModel.profile.lastLoggedInTimestampMs}" />
+
+      <TextView
+        android:id="@+id/profile_is_admin_text"
+        style="@style/Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/profile_chooser_profile_view_is_admin_margin_top"
+        android:gravity="@{Gravity.CENTER_HORIZONTAL}"
+        android:text="@string/profile_chooser_admin"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textStyle="italic"
+        android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+    </LinearLayout>
+  </FrameLayout>
+</layout>

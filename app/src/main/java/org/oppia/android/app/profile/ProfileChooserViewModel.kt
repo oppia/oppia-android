@@ -1,5 +1,6 @@
 package org.oppia.android.app.profile
 
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -29,12 +30,62 @@ class ProfileChooserViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
+  private val addProfileListener = fragment as AddProfileListener
+
+  val canAddProfile = ObservableField(true)
 
   val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
     Transformations.map(
       profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
     )
   }
+
+  val profilesList: LiveData<List<ProfileItemViewModel>> by lazy {
+    Transformations.map(
+      profileManagementController.getProfiles().toLiveData(), ::retrieveProfiles
+    )
+  }
+
+  private fun retrieveProfiles(profilesResult: AsyncResult<List<Profile>>):
+    List<ProfileItemViewModel> {
+      val profileList = when (profilesResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ProfileChooserViewModel",
+            "Failed to retrieve the list of profiles", profilesResult.error
+          )
+          emptyList()
+        }
+        is AsyncResult.Pending -> emptyList()
+        is AsyncResult.Success -> profilesResult.value
+      }.map {
+        ProfileItemViewModel(it)
+      }
+
+      profileList.forEach { profileItemViewModel ->
+        if (profileItemViewModel.profile.avatar.avatarTypeCase
+          == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB
+        ) {
+          usedColors.add(profileItemViewModel.profile.avatar.avatarColorRgb)
+        }
+      }
+
+      val sortedProfileList = profileList.sortedBy { profileItemViewModel ->
+        machineLocale.run { profileItemViewModel.profile.name.toMachineLowerCase() }
+      }.toMutableList()
+
+      val adminProfileViewModel = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
+
+      sortedProfileList.remove(adminProfileViewModel)
+      adminPin = adminProfileViewModel.profile.pin
+      adminProfileId = adminProfileViewModel.profile.id
+      sortedProfileList.add(0, adminProfileViewModel)
+
+      if (sortedProfileList.size > 10) { // todo revert to equals
+        canAddProfile.set(false)
+      }
+      return sortedProfileList
+    }
 
   lateinit var adminPin: String
   lateinit var adminProfileId: ProfileId
@@ -84,5 +135,10 @@ class ProfileChooserViewModel @Inject constructor(
 
   fun onAdministratorControlsButtonClicked() {
     routeToAdminPinListener.routeToAdminPin()
+  }
+
+  // todo add kdocs in entire file
+  fun onAddProfileButtonClicked() {
+    addProfileListener.onAddProfileClicked()
   }
 }

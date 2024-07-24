@@ -18,13 +18,11 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.ProfileChooserAddViewBinding
-import org.oppia.android.databinding.ProfileChooserFragmentBinding
-import org.oppia.android.databinding.ProfileChooserProfileViewBinding
+import org.oppia.android.databinding.ProfileItemBinding
+import org.oppia.android.databinding.ProfileSelectionFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -74,10 +72,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
-  private lateinit var binding: ProfileChooserFragmentBinding
+  private lateinit var binding: ProfileSelectionFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField(true)
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
@@ -85,7 +83,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     StatusBarColor.statusBarColorUpdate(
       R.color.component_color_shared_profile_status_bar_color, activity, false
     )
-    binding = ProfileChooserFragmentBinding.inflate(
+    binding = ProfileSelectionFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
@@ -95,10 +93,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
     }
     logProfileChooserEvent()
-    binding.profileRecyclerView.isNestedScrollingEnabled = false
-    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
+    binding.profilesList.isNestedScrollingEnabled = false
+    // binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     subscribeToWasProfileEverBeenAdded()
-    binding.profileRecyclerView.apply {
+    binding.profilesList.apply {
       adapter = createRecyclerViewAdapter()
     }
     return binding.root
@@ -115,7 +113,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           activity.resources.getInteger(R.integer.profile_chooser_first_time_span_count)
         }
         val layoutManager = GridLayoutManager(activity, spanCount)
-        binding.profileRecyclerView.layoutManager = layoutManager
+        binding.profilesList.layoutManager = layoutManager
       }
     )
   }
@@ -151,62 +149,47 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }.minus(chooserViewModel.usedColors).random()
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
-    return multiTypeBuilderFactory.create<ProfileChooserUiModel,
-      ProfileChooserUiModel.ModelTypeCase>(
-      ProfileChooserUiModel::getModelTypeCase
-    )
+  private fun createRecyclerViewAdapter(): BindableAdapter<ProfileItemViewModel> {
+    return singleTypeBuilderFactory.create<ProfileItemViewModel>()
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserUiModel.ModelTypeCase.PROFILE,
-        inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
+        inflateDataBinding = ProfileItemBinding::inflate,
         setViewModel = this::bindProfileView
-      )
-      .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserUiModel.ModelTypeCase.ADD_PROFILE,
-        inflateDataBinding = ProfileChooserAddViewBinding::inflate,
-        setViewModel = this::bindAddView
       )
       .build()
   }
 
   private fun bindProfileView(
-    binding: ProfileChooserProfileViewBinding,
-    model: ProfileChooserUiModel
+    binding: ProfileItemBinding,
+    viewModel: ProfileItemViewModel
   ) {
-    binding.viewModel = model
-    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
+    binding.viewModel = viewModel
     binding.profileChooserItem.setOnClickListener {
-      updateLearnerIdIfAbsent(model.profile)
-      ensureProfileOnboarded(model.profile)
+      updateLearnerIdIfAbsent(viewModel.profile)
+      ensureProfileOnboarded(viewModel.profile)
     }
   }
 
-  private fun bindAddView(
-    binding: ProfileChooserAddViewBinding,
-    @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
-  ) {
-    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
-    binding.addProfileItem.setOnClickListener {
-      if (chooserViewModel.adminPin.isEmpty()) {
-        activity.startActivity(
-          AdminPinActivity.createAdminPinActivityIntent(
-            activity,
-            chooserViewModel.adminProfileId.internalId,
-            selectUniqueRandomColor(),
-            AdminAuthEnum.PROFILE_ADD_PROFILE.value
-          )
+  /** Click listener for the button to add a new profile. */
+  fun addProfileClickListener() {
+    if (chooserViewModel.adminPin.isEmpty()) {
+      activity.startActivity(
+        AdminPinActivity.createAdminPinActivityIntent(
+          activity,
+          chooserViewModel.adminProfileId.internalId,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADD_PROFILE.value
         )
-      } else {
-        activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(
-            activity,
-            chooserViewModel.adminPin,
-            -1,
-            selectUniqueRandomColor(),
-            AdminAuthEnum.PROFILE_ADD_PROFILE.value
-          )
+      )
+    } else {
+      activity.startActivity(
+        AdminAuthActivity.createAdminAuthActivityIntent(
+          activity,
+          chooserViewModel.adminPin,
+          -1,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADD_PROFILE.value
         )
-      }
+      )
     }
   }
 
