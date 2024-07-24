@@ -19,6 +19,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   /** Handles onCreate() method of the [ResumeLessonActivity]. */
   fun handleOnCreate(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -40,6 +41,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
     if (getResumeLessonFragment() == null) {
       val resumeLessonFragment = ResumeLessonFragment.newInstance(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,

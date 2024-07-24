@@ -27,8 +27,10 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
+import org.oppia.android.app.classroom.promotedlist.ComingSoonTopicList
 import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
 import org.oppia.android.app.classroom.topiclist.TopicCard
@@ -37,9 +39,11 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
@@ -48,10 +52,14 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.databinding.ClassroomListFragmentBinding
 import org.oppia.android.domain.classroom.ClassroomController
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
@@ -75,6 +83,8 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
   private val machineLocale: OppiaLocale.MachineLocale,
+  private val appStartupStateController: AppStartupStateController,
+  private val analyticsController: AnalyticsController,
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: ClassroomListFragmentBinding
@@ -91,6 +101,8 @@ class ClassroomListFragmentPresenter @Inject constructor(
     )
 
     internalProfileId = profileId.internalId
+
+    logHomeActivityEvent()
 
     classroomListViewModel = ClassroomListViewModel(
       activity,
@@ -144,6 +156,8 @@ class ClassroomListFragmentPresenter @Inject constructor(
       }
     )
 
+    logAppOnboardedEvent()
+
     return binding.root
   }
 
@@ -151,6 +165,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
       internalProfileId,
+      topicSummary.classroomId,
       topicSummary.topicId,
       topicSummary.firstStoryId
     )
@@ -200,6 +215,14 @@ class ClassroomListFragmentPresenter @Inject constructor(
               )
             }
           }
+          ComingSoonTopicListViewModel::class -> items.forEach { item ->
+            item {
+              ComingSoonTopicList(
+                comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
+                machineLocale = machineLocale,
+              )
+            }
+          }
           ClassroomSummaryViewModel::class -> stickyHeader {
             ClassroomList(
               classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
@@ -224,6 +247,45 @@ class ClassroomListFragmentPresenter @Inject constructor(
         }
       }
     }
+  }
+
+  private fun logAppOnboardedEvent() {
+    val startupStateProvider = appStartupStateController.getAppStartupState()
+    val liveData = startupStateProvider.toLiveData()
+    liveData.observe(
+      activity,
+      object : Observer<AsyncResult<AppStartupState>> {
+        override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
+          when (startUpStateResult) {
+            null, is AsyncResult.Pending -> {
+              // Do nothing.
+            }
+            is AsyncResult.Success -> {
+              liveData.removeObserver(this)
+
+              if (startUpStateResult.value.startupMode ==
+                AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
+              ) {
+                analyticsController.logAppOnboardedEvent(profileId)
+              }
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "ClassroomListFragment",
+                "Failed to retrieve app startup state"
+              )
+            }
+          }
+        }
+      }
+    )
+  }
+
+  private fun logHomeActivityEvent() {
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      profileId
+    )
   }
 }
 

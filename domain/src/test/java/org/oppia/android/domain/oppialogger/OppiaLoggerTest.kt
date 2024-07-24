@@ -62,6 +62,7 @@ import javax.inject.Singleton
 class OppiaLoggerTest {
   private companion object {
     private const val TEST_TIMESTAMP = 1234567898765
+    private const val TEST_CLASSROOM_ID = "test_classroomId"
     private const val TEST_TOPIC_ID = "test_topicId"
     private const val TEST_STORY_ID = "test_storyId"
     private const val TEST_EXPLORATION_ID = "test_explorationId"
@@ -220,6 +221,7 @@ class OppiaLoggerTest {
   @Test
   fun testController_createOpenExplorationActivityContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createOpenExplorationActivityContext(
+      TEST_CLASSROOM_ID,
       TEST_TOPIC_ID,
       TEST_STORY_ID,
       TEST_EXPLORATION_ID

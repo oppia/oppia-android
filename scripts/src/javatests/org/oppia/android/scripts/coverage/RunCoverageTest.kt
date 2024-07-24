@@ -1153,9 +1153,28 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_generatesCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+    val filename = filePathList.get(0).substringAfterLast("/")
 
     testBazelWorkspace.initEmptyWorkspace()
+
+    val addTestContentShared =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
     val addTestContentLocal =
       """
       package com.example
@@ -1169,7 +1188,6 @@ class RunCoverageTest {
           fun testSumNumbers() {
               assertEquals(AddNums.sumNumbers(0, 1), 1)
               assertEquals(AddNums.sumNumbers(3, 4), 7)         
-              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
@@ -1177,7 +1195,7 @@ class RunCoverageTest {
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
       sourceContent = addSourceContent,
-      testContentShared = addTestContent,
+      testContentShared = addTestContentShared,
       testContentLocal = addTestContentLocal,
       subpackage = "app"
     )
@@ -1195,7 +1213,10 @@ class RunCoverageTest {
         "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+    val expectedResult =
+      """
+        |[$filename]($oppiaDevelopGitHubLink/${filePathList.get(0)})|50.00%|2 / 4|:white_check_mark:|
+      """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }

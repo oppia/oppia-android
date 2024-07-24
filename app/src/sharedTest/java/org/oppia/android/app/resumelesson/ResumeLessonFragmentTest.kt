@@ -61,6 +61,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -272,6 +273,7 @@ class ResumeLessonFragmentTest {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
@@ -284,6 +286,7 @@ class ResumeLessonFragmentTest {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      TEST_CLASSROOM_ID_1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
