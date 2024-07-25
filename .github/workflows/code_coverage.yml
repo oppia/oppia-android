@@ -301,8 +301,11 @@ jobs:
         run: |
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
           COVERAGE_REPORT=$(cat ./coverage_reports/CoverageReport.md)
+          COVERAGE_STATUS=$(cat ./coverage_reports/CoverageStatus.log)
           echo "Coverage Report: $COVERAGE_REPORT"
+          echo "Coverage Status: $COVERAGE_STATUS"
           echo "::set-output name=coverage_report:: $COVERAGE_REPORT"
+          echo "::set-output name=coverage_status:: $COVERAGE_STATUS"
 
   upload_coverage_report:
     name: Upload Code Coverage Report
@@ -315,7 +318,7 @@ jobs:
     steps:
       - name: Coverage Report
         run: |
-          COVERAGE_REPORT=$(cat ./coverage_reports/CoverageReport.md)
+          COVERAGE_REPORT=${{ needs.code_coverage_run.coverage_report }}
           echo "Coverage Report: $COVERAGE_REPORT"
 #      - name: Add comment
 #        uses: peter-evans/create-or-update-comment@v4

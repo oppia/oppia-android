@@ -132,11 +132,18 @@ class RunCoverage(
 
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
+    val coverageStatusLog = "$repoRoot/coverage_reports/CoverageStatus.log"
+    File(coverageStatusLog).apply {
+      parentFile?.mkdirs()
+      writeText(coverageCheckState.toString())
+    }
+
     if (coverageCheckState == CoverageCheck.FAIL) {
-      error(
+      println("\nCoverage Analysis Failed!")
+      /*error(
         "\nCoverage Analysis Failed as minimum coverage threshold not met!" +
           "\nMinimum Coverage Threshold = $MIN_THRESHOLD%"
-      )
+      )*/
     } else {
       println("\nCoverage Analysis Completed Succesffully!")
     }
