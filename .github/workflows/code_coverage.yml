@@ -323,7 +323,7 @@ jobs:
     steps:
       - name: Coverage Report
         run: |
-          COVERAGE_REPORT=${{ needs.code_coverage_run.coverage_report }}
+          COVERAGE_REPORT=${{ needs.code_coverage_run.outputs.coverage_report }}
           echo "Coverage Report: $COVERAGE_REPORT"
           COVERAGE_REPORT_ENV=${{ env.COVERAGE_REPORT_ENV }}
           echo "Coverage Report Env: $COVERAGE_REPORT_ENV"
