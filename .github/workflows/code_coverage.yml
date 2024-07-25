@@ -107,6 +107,8 @@ jobs:
     needs: compute_changed_files
     if: ${{ needs.compute_changed_files.outputs.can_skip_tests != 'true' }}
     runs-on: ubuntu-20.04
+    outputs:
+      coverage_report: ${{ steps.run-oppia-coverage-without-caching.coverage_report }}
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -287,6 +289,7 @@ jobs:
           (exit $last_error_code)
 
       - name: Run Oppia Coverage (with caching, non-fork only)
+        id: run-oppia-coverage-with-caching
         if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
@@ -295,6 +298,7 @@ jobs:
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
 
       - name: Run Oppia Coverage (without caching, or on a fork)
+        id: run-oppia-coverage-without-caching
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
