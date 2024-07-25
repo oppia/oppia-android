@@ -300,6 +300,8 @@ jobs:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
+          COVERAGE_REPORT=$(cat ./coverage_reports/CoverageReport.md)
+          echo "Coverage Report: $COVERAGE_REPORT"
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
