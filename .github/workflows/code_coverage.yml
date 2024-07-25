@@ -304,7 +304,9 @@ jobs:
           echo "Coverage Report: $COVERAGE_REPORT"
           echo "::set-output name=coverage_report:: $COVERAGE_REPORT"
 
-  comment-message:
+  upload_coverage_report:
+    name: Upload Code Coverage Report
+    needs: code_coverage_run
     permissions:
       pull-requests: write
 
