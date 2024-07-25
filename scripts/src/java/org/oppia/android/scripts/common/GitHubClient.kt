@@ -108,4 +108,3 @@ class GitHubClient(
     var remoteApiUrl = "https://api.github.com/"
   }
 }
-

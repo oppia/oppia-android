@@ -47,4 +47,3 @@ class IntroActivityPresenter @Inject constructor(
     ) as? IntroFragment
   }
 }
-

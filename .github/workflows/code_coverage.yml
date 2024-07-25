@@ -26,7 +26,6 @@ jobs:
     name: Compute changed files
 #    needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
-    #if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
       can_skip_tests: ${{ steps.compute-file-matrix.outputs.can_skip_tests }}

@@ -195,4 +195,3 @@ private fun loadAccessibilityLabelExemptionsProto(
     }.build() as AccessibilityLabelExemptions
   return protoObj
 }
-

@@ -439,4 +439,3 @@ class MathTokenizer private constructor() {
     }
   }
 }
-

@@ -139,4 +139,3 @@ class FractionParser {
     EMPTY_INPUT
   }
 }
-

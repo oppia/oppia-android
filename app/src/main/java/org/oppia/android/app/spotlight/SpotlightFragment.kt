@@ -394,4 +394,3 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
   }
 }
-

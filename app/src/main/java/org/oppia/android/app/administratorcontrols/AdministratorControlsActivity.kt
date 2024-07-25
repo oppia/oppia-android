@@ -176,4 +176,3 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
   }
 }
-

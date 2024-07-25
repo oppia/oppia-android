@@ -282,4 +282,3 @@ class TodoOpenCheck(
     return protoObj
   }
 }
-
