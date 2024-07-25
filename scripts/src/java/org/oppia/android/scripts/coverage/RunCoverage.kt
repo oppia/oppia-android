@@ -14,7 +14,7 @@ import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-private val MIN_THRESHOLD = 10 // yet to be decided on a value
+private val MIN_THRESHOLD = 101 // yet to be decided on a value
 
 /**
  * Entry point function for running coverage analysis for a source file.

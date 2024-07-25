@@ -193,7 +193,7 @@ class TestFileCheckTest {
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
-      File ${retrieveTestFilesDirectoryPath()}/ProdFile.kt does not have a corresponding test file.
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
 
       $wikiReferenceNote
       """.trimIndent()
