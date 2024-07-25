@@ -310,8 +310,8 @@ jobs:
     permissions:
       pull-requests: write
 
+    if: ${{ always() }}
     runs-on: ubuntu-latest
-    if: true
     steps:
       - name: Coverage Report
         run: |
