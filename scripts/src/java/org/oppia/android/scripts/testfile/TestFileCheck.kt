@@ -106,3 +106,4 @@ private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): Tes
     }.build() as TestFileExemptions
   return protoObj
 }
+
