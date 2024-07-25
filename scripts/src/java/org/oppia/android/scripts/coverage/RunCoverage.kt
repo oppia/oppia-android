@@ -20,17 +20,14 @@ private val MIN_THRESHOLD = 10 // yet to be decided on a value
  * Entry point function for running coverage analysis for a source file.
  *
  * Usage:
- *    bazel run //scripts:run_coverage_for_test_target -- <path_to_root> \\
- *        <list_of_relative_path_to_files> <final_md_report_output_path> \\
- *        <report_format> <process_timeout>
+ *    bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <list_of_relative_path_to_files>
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
- * - list_of_relative_path_to_files: the list of relative path to the files to analyse coverage.
- * - final_md_report_output_path: the path where the final markdown report will be stored.
- * - report_format: the format of the coverage report. Defaults to HTML if not specified.
- *    available options: MARKDOWN, HTML.
- * - process_timeout: The amount of time that should be waited before considering a process as 'hung',
+ * - list_of_relative_path_to_files: the list of relative path to the files to analyse coverage
+ * - reportFormat: the format of the coverage report. Defaults to HTML if not specified.
+ *    Available options: MARKDOWN, HTML.
+ * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
  *    in minutes.
  *
  * Example:
