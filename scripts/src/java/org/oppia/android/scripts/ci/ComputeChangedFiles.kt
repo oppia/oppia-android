@@ -94,6 +94,16 @@ class ComputeChangedFiles(
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
   }
 
+  /**
+   * Computes a list of files to run.
+   *
+   * @param pathToRoot the absolute path to the working root directory
+   * @param pathToOutputFile the absolute path to the file in which the encoded Base64 file bucket
+   *     protos should be printed
+   * @param baseCommit see [GitClient]
+   * @param computeAllFilesSetting whether all files should be outputted versus only the ones which
+   *     are changed by local changes in the repository
+   */
   fun compute(
     pathToRoot: String,
     pathToOutputFile: String,
@@ -112,21 +122,14 @@ class ComputeChangedFiles(
     println("Current branch: ${gitClient.currentBranch}.")
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
-    val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
-    println("Current Branch: $currentBranch")
-
     val changedFiles = computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
-    println("Changed Files: $changedFiles")
-
     val ktFiles = changedFiles.filter { it.endsWith(".kt") }
-    println("Kotlin Files: $ktFiles")
 
     val groupedBuckets = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
       .entries.groupBy(
         keySelector = { checkNotNull(it.key).groupingStrategy },
         valueTransform = { checkNotNull(it.key) to it.value }
       ).mapValues { (_, fileLists) -> fileLists.toMap() }
-    println("Grouped Buckets: $groupedBuckets")
 
     val partitionedBuckets: Map<String, Map<FileBucket, List<String>>> =
       groupedBuckets.entries.flatMap { (strategy, buckets) ->
@@ -139,7 +142,6 @@ class ComputeChangedFiles(
           GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
         }
       }.toMap()
-    println("Partitioned Buckets: $partitionedBuckets")
 
     val shardedBuckets: Map<String, List<List<String>>> =
       partitionedBuckets.mapValues { (_, bucketMap) ->
@@ -168,15 +170,12 @@ class ComputeChangedFiles(
         }.build()
       }
     }
-    println("Final Computed Buckets: $computedBuckets")
 
     val encodedFileBucketEntries = computedBuckets
       .associateBy { it.toCompressedBase64() }
       .entries.shuffled()
-    println("Encoded File Bucket Entries: $encodedFileBucketEntries")
     File(pathToOutputFile).printWriter().use { writer ->
       encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
-        println("Shard index: $index, encoded: $encoded")
         writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
       }
     }
@@ -252,6 +251,7 @@ class ComputeChangedFiles(
     companion object {
       private val EXTRACT_BUCKET_REGEX = "^([^/]+)".toRegex()
 
+      /** Returns the [FileBucket] that corresponds to the specific [changedFiles]. */
       fun retrieveCorrespondingFileBucket(filePath: String): FileBucket {
         return EXTRACT_BUCKET_REGEX.find(filePath)
           ?.groupValues
@@ -260,11 +260,6 @@ class ComputeChangedFiles(
             values().find { it.cacheBucketName == bucket }
               ?: error("Invalid bucket name: $bucket")
           } ?: error("Invalid file path: $filePath")
-      }
-
-      fun retrieveShardingStrategy(filePath: String?): ShardingStrategy {
-        val bucket = filePath?.let { retrieveCorrespondingFileBucket(it) }
-        return bucket?.shardingStrategy ?: ShardingStrategy.LARGE_PARTITIONS
       }
     }
   }
