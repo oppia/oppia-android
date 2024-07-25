@@ -86,9 +86,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -157,6 +155,7 @@ class ProfileChooserFragmentTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -179,19 +178,19 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 0)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 0,
         targetView = R.id.profile_name_text,
         stringToMatch = "Admin"
       )
-      verifyTextOnProfileListItemAtPosition(
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 0,
         targetView = R.id.profile_is_admin_text,
         stringToMatch = context.getString(R.string.profile_chooser_admin)
       )
-      scrollToPosition(position = 1)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 1)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 1,
         targetView = R.id.profile_name_text,
         stringToMatch = "Ben"
@@ -203,8 +202,8 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_is_admin_text
         )
       ).check(matches(not(isDisplayed())))
-      scrollToPosition(position = 3)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 3)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.profile_chooser_add)
@@ -226,7 +225,7 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
-      verifyTextOnProfileListItemAtPosition(
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
         stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
@@ -249,7 +248,7 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
-      verifyTextOnProfileListItemAtPosition(
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
         stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
@@ -263,62 +262,62 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addMoreProfiles(8)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 0)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 0,
         targetView = R.id.profile_name_text,
         stringToMatch = "Admin"
       )
-      scrollToPosition(position = 1)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 1)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 1,
         targetView = R.id.profile_name_text,
         stringToMatch = "A"
       )
-      scrollToPosition(position = 2)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 2)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 2,
         targetView = R.id.profile_name_text,
         stringToMatch = "B"
       )
-      scrollToPosition(position = 3)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 3)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 3,
         targetView = R.id.profile_name_text,
         stringToMatch = "Ben"
       )
-      scrollToPosition(position = 4)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 4)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 4,
         targetView = R.id.profile_name_text,
         stringToMatch = "C"
       )
-      scrollToPosition(position = 5)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 5)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 5,
         targetView = R.id.profile_name_text,
         stringToMatch = "D"
       )
-      scrollToPosition(position = 6)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 6)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 6,
         targetView = R.id.profile_name_text,
         stringToMatch = "E"
       )
-      scrollToPosition(position = 7)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 7)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 7,
         targetView = R.id.profile_name_text,
         stringToMatch = "F"
       )
-      scrollToPosition(position = 8)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 8)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 8,
         targetView = R.id.profile_name_text,
         stringToMatch = "G"
       )
-      scrollToPosition(position = 9)
-      verifyTextOnProfileListItemAtPosition(
+      scrollToPositionV1(position = 9)
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 9,
         targetView = R.id.profile_name_text,
         stringToMatch = "H"
@@ -350,7 +349,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
-          recyclerViewId = R.id.profile_recycler_view,
+          recyclerViewId = R.id.profiles_list,
           position = 0
         )
       ).perform(click())
@@ -367,7 +366,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
-          recyclerViewId = R.id.profile_recycler_view,
+          recyclerViewId = R.id.profiles_list,
           position = 1
         )
       ).perform(click())
@@ -384,7 +383,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
-          recyclerViewId = R.id.profile_recycler_view,
+          recyclerViewId = R.id.profiles_list,
           position = 0
         )
       ).perform(click())
@@ -409,7 +408,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
-          recyclerViewId = R.id.profile_recycler_view,
+          recyclerViewId = R.id.profiles_list,
           position = 1
         )
       ).perform(click())
@@ -484,7 +483,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      verifyTextOnProfileListItemAtPosition(
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 1,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.set_up_multiple_profiles)
@@ -512,7 +511,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles(autoLogIn = false)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      verifyTextOnProfileListItemAtPosition(
+      verifyTextOnProfileListItemAtPositionV1(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.profile_chooser_add)
@@ -563,16 +562,8 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
   fun testProfileChooserFragment_clickProfile_opensHomeActivity() {
-    profileManagementController.addProfile(
-      name = "Admin",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true
-    )
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -582,23 +573,17 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_chooser_item
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       intended(hasComponent(HomeActivity::class.java.name))
       hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
     }
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
   fun testProfileChooserFragment_enableClassrooms_clickProfile_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    profileManagementController.addProfile(
-      name = "Admin",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true
-    )
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -608,18 +593,196 @@ class ProfileChooserFragmentTest {
           targetViewId = R.id.profile_chooser_item
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       intended(hasComponent(ClassroomListActivity::class.java.name))
       hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
     }
   }
 
-  private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity
-      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+  @Test
+  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfileButton_opensAdminAuthActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_button)).perform(click())
+      intended(hasComponent(AdminAuthActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfilePrompt_opensAdminAuthActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_prompt)).perform(click())
+      intended(hasComponent(AdminAuthActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_enableOnboardingV2_initializeProfiles_checkProfilesAreShown() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_is_admin_text,
+        stringToMatch = context.getString(R.string.profile_chooser_admin)
+      )
+      scrollToPosition(position = 1)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 1,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Ben"
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_enableOnboardingV2_afterVisitingHomeActivity_showsJustNowText() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    // Note that the auto-log in here is simulating HomeActivity having been visited before (i.e.
+    // that a profile was previously logged in).
+    profileTestHelper.initializeProfiles(autoLogIn = true)
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profiles_list,
+          position = 0,
+          targetViewId = R.id.profile_last_visited
+        )
+      ).check(matches(isDisplayed()))
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_last_visited,
+        stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_enableOnboardingV2_afterVisitingHomeActivity_configChange_showsJustNowText() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    // Note that the auto-log in here is simulating HomeActivity having been visited before (i.e.
+    // that a profile was previously logged in).
+    profileTestHelper.initializeProfiles(autoLogIn = true)
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profiles_list,
+          position = 0,
+          targetViewId = R.id.profile_last_visited
+        )
+      ).check(matches(isDisplayed()))
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_last_visited,
+        stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_enableOnboardingV2_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    profileTestHelper.addMoreProfiles(8)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
+      scrollToPosition(position = 1)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 1,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "A"
+      )
+      scrollToPosition(position = 2)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 2,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "B"
+      )
+      scrollToPosition(position = 3)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 3,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Ben"
+      )
+      scrollToPosition(position = 4)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 4,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "C"
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 5,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "D"
+      )
+      scrollToPosition(position = 6)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 6,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "E"
+      )
+      scrollToPosition(position = 7)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 7,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "F"
+      )
+      scrollToPosition(position = 8)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 8,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "G"
+      )
+      scrollToPosition(position = 9)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 9,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "H"
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_enableOnboardingV2_clickProfile_checkOpensPinPasswordActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profiles_list,
+          position = 0
+        )
+      ).perform(click())
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+    }
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.profile_recycler_view)).perform(
+    onView(withId(R.id.profiles_list)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
         position
       )
@@ -627,6 +790,33 @@ class ProfileChooserFragmentTest {
   }
 
   private fun verifyTextOnProfileListItemAtPosition(
+    itemPosition: Int,
+    targetView: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.profiles_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun createProfileChooserActivityIntent(): Intent {
+    return ProfileChooserActivity
+      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+  }
+
+  private fun scrollToPositionV1(position: Int) {
+    onView(withId(R.id.profile_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun verifyTextOnProfileListItemAtPositionV1(
     itemPosition: Int,
     targetView: Int,
     stringToMatch: String

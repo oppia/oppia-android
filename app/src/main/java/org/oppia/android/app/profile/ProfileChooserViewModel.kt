@@ -32,14 +32,17 @@ class ProfileChooserViewModel @Inject constructor(
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
   private val addProfileListener = fragment as AddProfileListener
 
+  /** Observable field to track if the add profile button should be shown. */
   val canAddProfile = ObservableField(true)
 
+  /** Livedata representing the list of profiles on the app, and a model for the 'add' view. */
   val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
     Transformations.map(
       profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
     )
   }
 
+  /** Livedata representing the list of profiles on the app, to be bound to the recyclerview. */
   val profilesList: LiveData<List<ProfileItemViewModel>> by lazy {
     Transformations.map(
       profileManagementController.getProfiles().toLiveData(), ::retrieveProfiles
@@ -81,15 +84,19 @@ class ProfileChooserViewModel @Inject constructor(
       adminProfileId = adminProfileViewModel.profile.id
       sortedProfileList.add(0, adminProfileViewModel)
 
-      if (sortedProfileList.size > 10) { // todo revert to equals
+      if (sortedProfileList.size == 10) {
         canAddProfile.set(false)
       }
       return sortedProfileList
     }
 
+  /** The admin profile's PIN. */
   lateinit var adminPin: String
+
+  /** The [ProfileId] of the admin profile. */
   lateinit var adminProfileId: ProfileId
 
+  /** List of RGB colors that have already been assigned to a profile. */
   val usedColors = mutableListOf<Int>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
@@ -133,11 +140,12 @@ class ProfileChooserViewModel @Inject constructor(
     return sortedProfileList
   }
 
+  /** Handles click events for the administrator controls button. */
   fun onAdministratorControlsButtonClicked() {
     routeToAdminPinListener.routeToAdminPin()
   }
 
-  // todo add kdocs in entire file
+  /** Handles click events for the add profile button. */
   fun onAddProfileButtonClicked() {
     addProfileListener.onAddProfileClicked()
   }
