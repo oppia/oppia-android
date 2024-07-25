@@ -311,12 +311,16 @@ jobs:
     runs-on: ubuntu-latest
     if: true
     steps:
-      - name: Add comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Testing sample comment upload :tada:!
+      - name: Coverage Report
+        run: |
+          COVERAGE_REPORT=$(cat ./coverage_reports/CoverageReport.md)
+          echo "Coverage Report: $COVERAGE_REPORT"
+#      - name: Add comment
+#        uses: peter-evans/create-or-update-comment@v4
+#        with:
+#          issue-number: ${{ github.event.pull_request.number }}
+#          body: |
+#            Testing sample comment upload :tada:!
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
