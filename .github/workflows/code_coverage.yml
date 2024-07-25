@@ -108,7 +108,7 @@ jobs:
     if: ${{ needs.compute_changed_files.outputs.can_skip_tests != 'true' }}
     runs-on: ubuntu-20.04
     outputs:
-      coverage_report: ${{ steps.run-oppia-coverage-without-caching.coverage_report }}
+      coverage_report: ${{ steps.run-oppia-coverage-without-caching.outputs.coverage_report }}
     strategy:
       fail-fast: false
       max-parallel: 10
