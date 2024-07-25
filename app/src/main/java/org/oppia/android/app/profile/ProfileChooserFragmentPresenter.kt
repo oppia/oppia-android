@@ -94,7 +94,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
     logProfileChooserEvent()
     binding.profilesList.isNestedScrollingEnabled = false
-    // binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     subscribeToWasProfileEverBeenAdded()
     binding.profilesList.apply {
       adapter = createRecyclerViewAdapter()
@@ -163,7 +162,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     viewModel: ProfileItemViewModel
   ) {
     binding.viewModel = viewModel
-    binding.profileChooserItem.setOnClickListener {
+    binding.profileItemContainer.setOnClickListener {
       updateLearnerIdIfAbsent(viewModel.profile)
       ensureProfileOnboarded(viewModel.profile)
     }
@@ -193,6 +192,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
+  /** Handles navigation to the [AdministratorControlsActivity]. */
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
       val profileId =

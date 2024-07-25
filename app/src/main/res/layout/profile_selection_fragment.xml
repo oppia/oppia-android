@@ -13,14 +13,15 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
+    android:background="@color/component_color_profile_selection_background_color"
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:layout_constraintBottom_toTopOf="@id/profile_chooser_setting_icon"
-      android:paddingBottom="48dp"
-      android:background="@color/component_color_profile_selection_background_color"
+      android:layout_marginBottom="64dp"
+      android:fillViewport="true"
       android:overScrollMode="never"
       android:scrollbars="none">
 
@@ -92,6 +93,7 @@
       android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
       android:paddingStart="4dp"
       android:paddingEnd="4dp"
+      android:fontFamily="sans-serif"
       android:text="@string/profile_chooser_administrator_controls"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="12sp"
@@ -102,31 +104,30 @@
       android:id="@+id/add_profile_button"
       android:layout_width="48dp"
       android:layout_height="48dp"
-      android:layout_marginBottom="12dp"
+      android:layout_marginBottom="4dp"
       android:contentDescription="@string/profile_selection_profile_icon_description"
       android:onClick="@{(v) -> viewModel.onAddProfileButtonClicked()}"
       android:paddingStart="4dp"
       android:paddingEnd="4dp"
+      android:layout_marginEnd="12dp"
       android:src="@drawable/ic_add"
       android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
       app:backgroundTint="@color/component_color_drawer_fragment_admin_controls_selected_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@id/add_profile_prompt" />
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/add_profile_prompt" />
 
     <TextView
       android:id="@+id/add_profile_prompt"
-      android:layout_width="0dp"
+      android:layout_width="48dp"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
-      android:layout_marginStart="12dp"
-      android:layout_marginEnd="8dp"
+      android:layout_marginEnd="12dp"
       android:layout_marginBottom="12dp"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
       android:minHeight="48dp"
       android:onClick="@{(v) -> viewModel.onAddProfileButtonClicked()}"
-      android:paddingStart="4dp"
-      android:paddingEnd="4dp"
       android:text="@string/profile_selection_add_profile_text"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="14sp"
