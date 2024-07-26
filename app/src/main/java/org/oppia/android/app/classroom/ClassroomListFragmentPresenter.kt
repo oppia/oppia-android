@@ -231,6 +231,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
                 machineLocale = machineLocale,
               )
             }
+            classroomListIndex++
           }
           AllClassroomsViewModel::class -> items.forEach { _ ->
             item {
