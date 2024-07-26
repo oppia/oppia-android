@@ -559,7 +559,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h640dp-xxhdpi")
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_extraLargeTextSize_hasCorrectDimension() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -573,7 +572,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h640dp-xxhdpi")
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -586,7 +584,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -599,7 +597,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
     launchForSkillList(SKILL_ID_LIST).use {
