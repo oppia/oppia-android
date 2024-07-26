@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
+import org.oppia.android.app.classroom.promotedlist.ComingSoonTopicList
 import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
 import org.oppia.android.app.classroom.topiclist.TopicCard
@@ -38,6 +39,7 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
@@ -210,6 +212,14 @@ class ClassroomListFragmentPresenter @Inject constructor(
               PromotedStoryList(
                 promotedStoryListViewModel = item as PromotedStoryListViewModel,
                 machineLocale = machineLocale
+              )
+            }
+          }
+          ComingSoonTopicListViewModel::class -> items.forEach { item ->
+            item {
+              ComingSoonTopicList(
+                comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
+                machineLocale = machineLocale,
               )
             }
           }
