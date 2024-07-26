@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -14,6 +16,7 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 /** Tests for [CoverageRunner]. */
@@ -27,11 +30,50 @@ class CoverageRunnerTest {
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var bazelTestTarget: String
 
+  private lateinit var sourceContent: String
+  private lateinit var testContent: String
+
   @Before
   fun setUp() {
     coverageRunner = CoverageRunner(tempFolder.root, scriptBgDispatcher, longCommandExecutor)
     bazelTestTarget = "//:testTarget"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    sourceContent =
+      """
+      package com.example
+      
+      class AddNums {
+      
+          companion object {
+              fun sumNumbers(a: Int, b: Int): Any {
+                  return if (a == 0 && b == 0) {
+                      "Both numbers are zero"
+                  } else {
+                      a + b
+                  }
+              }
+          }
+      }
+      """.trimIndent()
+
+    testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
   }
 
   @After
@@ -65,45 +107,82 @@ class CoverageRunnerTest {
   }
 
   @Test
+  fun testRunWithCoverageAsync_coverageRetrievalFailed_throwsException() {
+    val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
+      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      runBlocking {
+        launch {
+          coverageRunner.runWithCoverageAsync("//coverage/test/java/com/example:AddNumsTest")
+            .await()
+        }
+
+        launch {
+          do {
+            File(coverageFilePath).takeIf { it.exists() }?.apply {
+              writeText("")
+              return@launch
+            }
+            delay(1)
+          } while (true)
+        }
+      }
+    }
+
+    assertThat(exception).hasMessageThat().contains("Failed to retrieve coverage result")
+  }
+
+  @Test
+  fun testRunWithCoverageAsync_coverageDataMissing_throwsException() {
+    val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
+      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalArgumentException>() {
+      runBlocking {
+        launch {
+          coverageRunner.runWithCoverageAsync("//coverage/test/java/com/example:AddNumsTest")
+            .await()
+        }
+
+        launch {
+          do {
+            File(coverageFilePath).takeIf { it.exists() }?.apply {
+              writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
+              return@launch
+            }
+            delay(1)
+          } while (true)
+        }
+      }
+    }
+
+    assertThat(exception).hasMessageThat().contains("Coverage data not found")
+  }
+
+  @Test
   fun testRunWithCoverageAsync_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class AddNums {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class AddNumsTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)         
-              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
