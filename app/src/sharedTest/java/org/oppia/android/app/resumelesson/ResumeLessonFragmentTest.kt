@@ -299,7 +299,7 @@ class ResumeLessonFragmentTest {
     )
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_extraLargeTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
@@ -313,7 +313,7 @@ class ResumeLessonFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_largeTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
@@ -327,7 +327,7 @@ class ResumeLessonFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_mediumTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
@@ -341,7 +341,7 @@ class ResumeLessonFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testResumeLessonFragment_smallTextSize_hasCorrectDimension() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {

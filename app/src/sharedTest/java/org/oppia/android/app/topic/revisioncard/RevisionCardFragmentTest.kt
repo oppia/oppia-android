@@ -231,7 +231,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_extraLargeTextSize_hasCorrectDimension() {
     launch<RevisionCardActivity>(
@@ -253,7 +253,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_largeTextSize_hasCorrectDimension() {
     launch<RevisionCardActivity>(
@@ -275,7 +275,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_mediumTextSize_hasCorrectDimension() {
     launch<RevisionCardActivity>(
@@ -299,7 +299,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @Test @Config(qualifiers = "w360dp-h640dp-xxhdpi")
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_smallTextSize_hasCorrectDimension() {
     launch<RevisionCardActivity>(
