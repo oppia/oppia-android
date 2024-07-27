@@ -159,6 +159,7 @@ class RunCoverage(
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+
       val deferredCoverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
@@ -284,9 +285,7 @@ class RunCoverage(
     }
 
     val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
-
     val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-
     val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
       CoveredLine.newBuilder()
         .setLineNumber(lineNumber)
