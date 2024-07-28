@@ -84,9 +84,7 @@ class CoverageRunnerTest {
   @Test
   fun testRunWithCoverageAsync_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
-      runBlocking {
-        coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
-      }
+        coverageRunner.runWithCoverageAsync(bazelTestTarget)
     }
 
     assertThat(exception).hasMessageThat().contains("not invoked from within a workspace")
@@ -97,9 +95,7 @@ class CoverageRunnerTest {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
-      runBlocking {
-        coverageRunner.runWithCoverageAsync(bazelTestTarget).await()
-      }
+        coverageRunner.runWithCoverageAsync(bazelTestTarget)
     }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -125,7 +121,6 @@ class CoverageRunnerTest {
       runBlocking {
         launch {
           coverageRunner.runWithCoverageAsync("//coverage/test/java/com/example:AddNumsTest")
-            .await()
         }
 
         launch {
@@ -162,7 +157,6 @@ class CoverageRunnerTest {
       runBlocking {
         launch {
           coverageRunner.runWithCoverageAsync("//coverage/test/java/com/example:AddNumsTest")
-            .await()
         }
 
         launch {
@@ -192,11 +186,9 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = runBlocking {
-      coverageRunner.runWithCoverageAsync(
+    val result = coverageRunner.runWithCoverageAsync(
         "//coverage/test/java/com/example:AddNumsTest"
-      ).await()
-    }
+      )
 
     val expectedResult = CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
