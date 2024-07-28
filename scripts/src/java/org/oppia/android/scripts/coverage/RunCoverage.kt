@@ -106,7 +106,7 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute() = runBlocking {
+  fun execute() {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
@@ -122,11 +122,9 @@ class RunCoverage(
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-      val deferredCoverageReports = testTargets.map { testTarget ->
+      val coverageReports = testTargets.map { testTarget ->
         runCoverageForTarget(testTarget)
       }
-
-      val coverageReports = deferredCoverageReports.awaitAll()
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
@@ -146,7 +144,7 @@ class RunCoverage(
     }
   }
 
-  private fun runCoverageForTarget(testTarget: String): Deferred<CoverageReport> {
+  private fun runCoverageForTarget(testTarget: String): CoverageReport {
     return CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
       .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
   }

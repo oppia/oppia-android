@@ -36,13 +36,11 @@ class CoverageRunner(
    */
   fun runWithCoverageAsync(
     bazelTestTarget: String
-  ): Deferred<CoverageReport> {
-    return CoroutineScope(scriptBgDispatcher).async {
+  ): CoverageReport {
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
         ?: error("Failed to retrieve coverage result for $bazelTestTarget")
 
-      coverageDataFileLines(coverageResult, bazelTestTarget)
-    }
+      return coverageDataFileLines(coverageResult, bazelTestTarget)
   }
 
   private fun retrieveCoverageResult(
