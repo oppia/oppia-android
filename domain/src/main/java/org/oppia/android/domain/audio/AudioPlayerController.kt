@@ -125,24 +125,30 @@ class AudioPlayerController @Inject constructor(
 
   private fun setMediaPlayerListeners() {
     mediaPlayer.setOnCompletionListener {
-      completed = true
-      stopUpdatingSeekBar()
-      playProgress?.value =
-        AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+      audioLock.withLock {
+        completed = true
+        stopUpdatingSeekBar()
+        playProgress?.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+      }
     }
     mediaPlayer.setOnPreparedListener {
-      prepared = true
-      duration = it.duration
-      playProgress?.value =
-        AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      audioLock.withLock {
+        prepared = true
+        duration = it.duration
+        playProgress?.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      }
     }
     mediaPlayer.setOnErrorListener { _, what, extra ->
-      playProgress?.value =
-        AsyncResult.Failure(
-          AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
-        )
-      releaseMediaPlayer()
-      initializeMediaPlayer()
+      audioLock.withLock {
+        playProgress?.value =
+          AsyncResult.Failure(
+            AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
+          )
+        releaseMediaPlayer()
+        initializeMediaPlayer()
+      }
       // Indicates that error was handled and to not invoke completion listener.
       return@setOnErrorListener true
     }
@@ -251,11 +257,12 @@ class AudioPlayerController @Inject constructor(
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
-      check(mediaPlayerActive) { "Media player has not been previously initialized" }
+      if(mediaPlayerActive){
+        mediaPlayer.release()
+      }
       mediaPlayerActive = false
       isReleased = true
       prepared = false
-      mediaPlayer.release()
       stopUpdatingSeekBar()
       playProgress = null
     }
