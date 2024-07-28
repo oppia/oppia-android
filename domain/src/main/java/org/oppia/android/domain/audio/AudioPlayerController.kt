@@ -257,7 +257,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
-      if(mediaPlayerActive){
+      if (mediaPlayerActive) {
         mediaPlayer.release()
       }
       mediaPlayerActive = false
