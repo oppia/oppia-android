@@ -1,8 +1,5 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -115,7 +112,7 @@ class RunCoverage(
     if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file; skipping coverage check.")
     } else {
-      val testFilePaths = findTestFile(repoRoot, filePath)
+      val testFilePaths = findTestFiles(repoRoot, filePath)
       if (testFilePaths.isEmpty()) {
         error("No appropriate test file found for $filePath")
       }
@@ -123,7 +120,8 @@ class RunCoverage(
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
       val coverageReports = testTargets.map { testTarget ->
-        runCoverageForTarget(testTarget)
+        CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+          .runCoverageForTestTarget(testTarget.removeSuffix(".kt"))
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
@@ -143,25 +141,17 @@ class RunCoverage(
       println("COVERAGE ANALYSIS COMPLETED.")
     }
   }
-
-  private fun runCoverageForTarget(testTarget: String): CoverageReport {
-    return CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-      .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
-  }
 }
 
 private fun calculateAggregateCoverageReport(
   coverageReports: List<CoverageReport>
 ): CoverageReport {
   fun aggregateCoverage(coverages: List<Coverage>): Coverage {
-    return if (coverages.contains(Coverage.FULL)) Coverage.FULL
-    else Coverage.NONE
+    return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
   }
 
   val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
-
   val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-
   val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
     CoveredLine.newBuilder()
       .setLineNumber(lineNumber)
@@ -184,7 +174,7 @@ private fun calculateAggregateCoverageReport(
     .build()
 }
 
-private fun findTestFile(repoRoot: String, filePath: String): List<String> {
+private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))

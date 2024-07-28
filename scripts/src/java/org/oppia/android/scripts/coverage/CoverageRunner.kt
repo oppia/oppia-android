@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.coverage
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -34,7 +32,7 @@ class CoverageRunner(
    * @param bazelTestTarget Bazel test target to analyze coverage
    * @return a deferred value that contains the coverage data
    */
-  fun runWithCoverageAsync(
+  fun runCoverageForTestTarget(
     bazelTestTarget: String
   ): CoverageReport {
       val coverageResult = retrieveCoverageResult(bazelTestTarget)

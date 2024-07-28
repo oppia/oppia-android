@@ -82,20 +82,20 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunWithCoverageAsync_emptyDirectory_throwsException() {
+  fun testRunCoverageForTestTarget_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
-        coverageRunner.runWithCoverageAsync(bazelTestTarget)
+      coverageRunner.runCoverageForTestTarget(bazelTestTarget)
     }
 
     assertThat(exception).hasMessageThat().contains("not invoked from within a workspace")
   }
 
   @Test
-  fun testRunWithCoverageAsync_invalidTestTarget_throwsException() {
+  fun testRunCoverageForTestTarget_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
-        coverageRunner.runWithCoverageAsync(bazelTestTarget)
+      coverageRunner.runCoverageForTestTarget(bazelTestTarget)
     }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -103,7 +103,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunWithCoverageAsync_coverageRetrievalFailed_throwsException() {
+  fun testRunCoverageForTestTarget_coverageRetrievalFailed_throwsException() {
     val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
       "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
 
@@ -120,8 +120,7 @@ class CoverageRunnerTest {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         launch {
-          coverageRunner.runWithCoverageAsync("//coverage/test/java/com/example:AddNumsTest")
-            .await()
+          coverageRunner.runCoverageForTestTarget("//coverage/test/java/com/example:AddNumsTest")
         }
 
         launch {
@@ -140,7 +139,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunWithCoverageAsync_coverageDataMissing_throwsException() {
+  fun testRunCoverageForTestTarget_coverageDataMissing_throwsException() {
     val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
       "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
 
@@ -157,8 +156,7 @@ class CoverageRunnerTest {
     val exception = assertThrows<IllegalArgumentException>() {
       runBlocking {
         launch {
-          coverageRunner.runWithCoverageAsync("//coverage/test/java/com/example:AddNumsTest")
-            .await()
+          coverageRunner.runCoverageForTestTarget("//coverage/test/java/com/example:AddNumsTest")
         }
 
         launch {
@@ -177,7 +175,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunWithCoverageAsync_validSampleTestTarget_returnsCoverageData() {
+  fun testRunCoverageForTestTarget_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -188,9 +186,9 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = coverageRunner.runWithCoverageAsync(
-        "//coverage/test/java/com/example:AddNumsTest"
-      )
+    val result = coverageRunner.runCoverageForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
 
     val expectedResult = CoverageReport.newBuilder()
       .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
