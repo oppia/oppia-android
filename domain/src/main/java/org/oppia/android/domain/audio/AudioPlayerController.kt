@@ -144,7 +144,10 @@ class AudioPlayerController @Inject constructor(
       audioLock.withLock {
         playProgress?.value =
           AsyncResult.Failure(
-            AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
+            AudioPlayerException(
+              "Audio Player put in error state with what: $what " +
+                "and extra: $extra"
+            )
           )
         releaseMediaPlayer()
         initializeMediaPlayer()
