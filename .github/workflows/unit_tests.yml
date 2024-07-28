@@ -324,7 +324,7 @@ jobs:
   check_test_results:
       name: Check Bazel Test Results
       needs: [bazel_compute_affected_targets, bazel_run_test]
-      if: ${{ always() }}
+      if: ${{ !cancelled() }}
       runs-on: ubuntu-20.04
       steps:
         # This step will be skipped if there are no tests to run, so the overall job should pass.
