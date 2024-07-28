@@ -125,10 +125,11 @@ class RunCoverage(
    */
   fun execute() = runBlocking {
     val coverageResults = filePathList.map { filePath ->
-      async {
+//      async {
         runCoverageForFile(filePath)
-      }
-    }.awaitAll()
+//      }
+    }
+//    }.awaitAll()
 
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
@@ -142,7 +143,8 @@ class RunCoverage(
     }
   }
 
-  private suspend fun runCoverageForFile(filePath: String): String {
+//  private suspend fun runCoverageForFile(filePath: String): String {
+  private fun runCoverageForFile(filePath: String): String {
     val exemption = testFileExemptionList[filePath]
     if (exemption != null && exemption.testFileNotRequired) {
       return "The file: $filePath is exempted from having a test file; skipping coverage check."
@@ -160,12 +162,13 @@ class RunCoverage(
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-      val deferredCoverageReports = testTargets.map { testTarget ->
+      val coverageReports = testTargets.map { testTarget ->
+//      val deferredCoverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
       }
 
-      val coverageReports = deferredCoverageReports.awaitAll()
+//      val coverageReports = deferredCoverageReports.awaitAll()
 
       // Check if the coverage reports are successfully generated else return failure message.
       coverageReports.firstOrNull()?.let {

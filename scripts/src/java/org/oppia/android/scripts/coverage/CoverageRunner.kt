@@ -32,17 +32,20 @@ class CoverageRunner(
    * Runs coverage analysis asynchronously for the Bazel test target.
    *
    * @param bazelTestTarget Bazel test target to analyze coverage
-   * @return a deferred value that contains the coverage data
+   * //@return a deferred value that contains the coverage data
+   * @return a value that contains the coverage data
    */
   fun runWithCoverageAsync(
     bazelTestTarget: String
-  ): Deferred<CoverageReport> {
-    return CoroutineScope(scriptBgDispatcher).async {
+//  ): Deferred<CoverageReport> {
+  ): CoverageReport {
+//    return CoroutineScope(scriptBgDispatcher).async {
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: return@async generateFailedCoverageReport()
+        ?: return generateFailedCoverageReport()
+//        ?: return@async generateFailedCoverageReport()
 
-      coverageDataFileLines(coverageResult, bazelTestTarget)
-    }
+      return coverageDataFileLines(coverageResult, bazelTestTarget)
+//    }
   }
 
   private fun retrieveCoverageResult(
