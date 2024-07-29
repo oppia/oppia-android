@@ -35,7 +35,7 @@ class CoverageRunnerTest {
 
   @Before
   fun setUp() {
-    coverageRunner = CoverageRunner(File(tempFolder.root.absolutePath), scriptBgDispatcher, longCommandExecutor)
+    coverageRunner = CoverageRunner(tempFolder.root, scriptBgDispatcher, longCommandExecutor)
     bazelTestTarget = "//:testTarget"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
@@ -106,7 +106,9 @@ class CoverageRunnerTest {
   fun testRetrieveCoverageDataForTestTarget_coverageRetrievalFailed_throwsException() {
 //    val coverageFilePath = "${tempFolder}/bazel-out/k8-fastbuild/testlogs" +
 //      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
-    val pattern = Regex(".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat")
+    val pattern = Regex(
+      ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
+    )
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -121,7 +123,9 @@ class CoverageRunnerTest {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         launch {
-          coverageRunner.retrieveCoverageDataForTestTarget("//coverage/test/java/com/example:AddNumsTest")
+          coverageRunner.retrieveCoverageDataForTestTarget(
+            "//coverage/test/java/com/example:AddNumsTest"
+          )
         }
 
         launch {
@@ -146,11 +150,11 @@ class CoverageRunnerTest {
               }
             }
 
-//            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
-//              writeText("")*/
+            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
+              writeText("")
               return@launch
-//            }*/
-//            delay(1)
+            }*/
+            delay(1)
           } while (true)
         }
       }
@@ -177,7 +181,9 @@ class CoverageRunnerTest {
     val exception = assertThrows<IllegalArgumentException>() {
       runBlocking {
         launch {
-          coverageRunner.retrieveCoverageDataForTestTarget("//coverage/test/java/com/example:AddNumsTest")
+          coverageRunner.retrieveCoverageDataForTestTarget(
+            "//coverage/test/java/com/example:AddNumsTest"
+          )
         }
 
         launch {
