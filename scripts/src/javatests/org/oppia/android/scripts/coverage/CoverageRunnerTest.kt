@@ -126,20 +126,16 @@ class CoverageRunnerTest {
 
         launch {
           do {
-//            val dir = tempFolder.root.absolutePath.split('/')
             val dir2 = tempFolder.root.absolutePath.substringBeforeLast('/')
-//            val dir2List = File(dir2).listFiles()
 
-            // Traverse the directory top-down
             File(dir2).walkTopDown().forEach { file ->
               if (file.isFile && pattern.matches(file.absolutePath)) {
                 println("Found file: ${file.absolutePath}")
 
-                // Check if the file exists (should always be true if the path matched)
                 if (file.exists()) {
+                  file.delete()
+                  file.createNewFile()
                   println("File exists. Writing to the file...")
-
-                  // Write to the file
                   file.writeText("")
 
                   println("Write operation completed.")
@@ -150,28 +146,10 @@ class CoverageRunnerTest {
               }
             }
 
-/*//            val filer = File(tempFolder.root.absolutePath).absoluteFile
-//            val files = File(tempFolder.root.absolutePath).listFiles() ?: emptyArray()
-//            println("Files: $filer")
-
-//            val matchingFiles = files.filter { file ->
-//              pattern.matches(file.absolutePath)
-//            }
-//
-//            if (matchingFiles.isNotEmpty()) {
-//              for (file in matchingFiles) {
-//                file.writeText("")
-//                println("Processed: ${file.absolutePath}")
-//                return@launch
-//              }
-//            }
-//
 //            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
 //              writeText("")*/
               return@launch
 //            }*/
-//    assertThat(files).isEqualTo("hi")
-//    assertThat(dir2List).isEqualTo("hi")
 //            delay(1)
           } while (true)
         }
