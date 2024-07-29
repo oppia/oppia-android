@@ -104,69 +104,9 @@ class CoverageRunnerTest {
 
   @Test
   fun testRetrieveCoverageDataForTestTarget_coverageRetrievalFailed_throwsException() {
-//    val coverageFilePath = "${tempFolder}/bazel-out/k8-fastbuild/testlogs" +
-//      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
     val pattern = Regex(
       ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
     )
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking {
-        launch {
-          coverageRunner.retrieveCoverageDataForTestTarget(
-            "//coverage/test/java/com/example:AddNumsTest"
-          )
-        }
-
-        launch {
-          do {
-            val dir2 = tempFolder.root.absolutePath.substringBeforeLast('/')
-
-            File(dir2).walkTopDown().forEach { file ->
-              if (file.isFile && pattern.matches(file.absolutePath)) {
-                println("Found file: ${file.absolutePath}")
-
-                if (file.exists()) {
-                  file.delete()
-                  file.createNewFile()
-                  println("File exists. Writing to the file...")
-                  file.writeText("")
-
-                  println("Write operation completed.")
-                  return@launch
-                } else {
-                  delay(1)
-                }
-              }
-            }
-
-            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
-              writeText("")
-              return@launch
-            }*/
-            delay(1)
-          } while (true)
-        }
-      }
-    }
-
-    assertThat(exception).hasMessageThat().contains("Failed to retrieve coverage result")
-  }
-
-  @Test
-  fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
-    val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
-      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -188,11 +128,68 @@ class CoverageRunnerTest {
 
         launch {
           do {
-            File(coverageFilePath).takeIf { it.exists() }?.apply {
-              writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
-              return@launch
+            val dir = tempFolder.root.absolutePath.substringBeforeLast('/')
+            File(dir).walkTopDown().forEach { file ->
+              if (file.isFile && pattern.matches(file.absolutePath)) {
+
+                if (file.exists()) {
+                  file.delete()
+                  file.createNewFile()
+                  file.writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
+                  return@launch
+                } else {
+                  delay(1)
+                }
+              }
             }
-            delay(1)
+          } while (true)
+        }
+      }
+    }
+
+    assertThat(exception).hasMessageThat().contains("Failed to retrieve coverage result")
+  }
+
+  @Test
+  fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
+    val pattern = Regex(
+      ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalArgumentException>() {
+      runBlocking {
+        launch {
+          coverageRunner.retrieveCoverageDataForTestTarget(
+            "//coverage/test/java/com/example:AddNumsTest"
+          )
+        }
+
+        launch {
+          do {
+            val dir = tempFolder.root.absolutePath.substringBeforeLast('/')
+            File(dir).walkTopDown().forEach { file ->
+              if (file.isFile && pattern.matches(file.absolutePath)) {
+
+                if (file.exists()) {
+                  file.delete()
+                  file.createNewFile()
+                  file.writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
+                  return@launch
+                } else {
+                  delay(1)
+                }
+              }
+            }
           } while (true)
         }
       }
