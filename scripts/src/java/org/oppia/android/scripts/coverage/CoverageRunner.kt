@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.CoroutineScope
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -35,10 +34,10 @@ class CoverageRunner(
   fun runCoverageForTestTarget(
     bazelTestTarget: String
   ): CoverageReport {
-      val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: error("Failed to retrieve coverage result for $bazelTestTarget")
+    val coverageResult = retrieveCoverageResult(bazelTestTarget)
+      ?: error("Failed to retrieve coverage result for $bazelTestTarget")
 
-      return coverageDataFileLines(coverageResult, bazelTestTarget)
+    return coverageDataFileLines(coverageResult, bazelTestTarget)
   }
 
   private fun retrieveCoverageResult(

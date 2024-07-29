@@ -104,8 +104,9 @@ class CoverageRunnerTest {
 
   @Test
   fun testRunCoverageForTestTarget_coverageRetrievalFailed_throwsException() {
-    val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
-      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
+//    val coverageFilePath = "${tempFolder.root.absolutePath}/bazel-out/k8-fastbuild/testlogs" +
+//      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
+    val pattern = Regex(".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -125,10 +126,23 @@ class CoverageRunnerTest {
 
         launch {
           do {
-            File(coverageFilePath).takeIf { it.exists() }?.apply {
+            val files = File(tempFolder.root.absolutePath).listFiles() ?: emptyArray()
+            val matchingFiles = files.filter { file ->
+              pattern.matches(file.absolutePath)
+            }
+
+            if (matchingFiles.isNotEmpty()) {
+              for (file in matchingFiles) {
+                file.writeText("")
+                println("Processed: ${file.absolutePath}")
+                return@launch
+              }
+            }
+
+            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
               writeText("")
               return@launch
-            }
+            }*/
             delay(1)
           } while (true)
         }
