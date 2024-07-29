@@ -53,6 +53,10 @@ class RunCoverageTest {
                 a + b
             }
           }
+          
+          fun callSumNumbers(): Any {
+            return sumNumbers(3, 5)
+          }
         }
       }
       """.trimIndent()
@@ -67,8 +71,35 @@ class RunCoverageTest {
       class AddNumsTest {
         @Test
         fun testSumNumbers() {
+          for (i in 1..10) {
+              assertEquals(AddNums.sumNumbers(i, 0), i)
+          }
+          
+          val sum1 = AddNums.sumNumbers(12, 2)
+          assertEquals(sum1, 14)
+          
+          val callSum1 = AddNums.callSumNumbers()
+          assertEquals(callSum1, 8)
+          
+          val callSum2 = AddNums.callSumNumbers()
+          assertEquals(callSum2, 8)
+          
           assertEquals(AddNums.sumNumbers(0, 1), 1)
           assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(10, 4), 14)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+        
+        @Test
+        fun testSumNumbers2() {
+          for (i in 1..10) {
+              assertEquals(AddNums.sumNumbers(i, 0), i)
+          }
+          assertEquals(AddNums.sumNumbers(1, 0), 1)
+          assertEquals(AddNums.sumNumbers(6, 4), 10)         
+          assertEquals(AddNums.sumNumbers(10, 4), 14)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
         }
       }

@@ -50,6 +50,7 @@ class CoverageRunner(
     coverageData: List<String>,
     bazelTestTarget: String
   ): CoverageReport {
+    println("Coverage Data: $coverageData")
     val extractedFileName = "${extractTargetName(bazelTestTarget)}.kt"
 
     val sfStartIdx = coverageData.indexOfFirst {
