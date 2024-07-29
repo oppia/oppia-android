@@ -31,7 +31,7 @@ class CoverageRunner(
    * @param bazelTestTarget Bazel test target to analyze coverage
    * @return a deferred value that contains the coverage data
    */
-  fun runCoverageForTestTarget(
+  fun retrieveCoverageDataForTestTarget(
     bazelTestTarget: String
   ): CoverageReport {
     val coverageResult = retrieveCoverageResult(bazelTestTarget)

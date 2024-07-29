@@ -35,7 +35,7 @@ class CoverageRunnerTest {
 
   @Before
   fun setUp() {
-    coverageRunner = CoverageRunner(tempFolder.root, scriptBgDispatcher, longCommandExecutor)
+    coverageRunner = CoverageRunner(File(tempFolder.root.absolutePath), scriptBgDispatcher, longCommandExecutor)
     bazelTestTarget = "//:testTarget"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
@@ -82,20 +82,20 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverageForTestTarget_emptyDirectory_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_emptyDirectory_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.runCoverageForTestTarget(bazelTestTarget)
+      coverageRunner.retrieveCoverageDataForTestTarget(bazelTestTarget)
     }
 
     assertThat(exception).hasMessageThat().contains("not invoked from within a workspace")
   }
 
   @Test
-  fun testRunCoverageForTestTarget_invalidTestTarget_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_invalidTestTarget_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
 
     val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.runCoverageForTestTarget(bazelTestTarget)
+      coverageRunner.retrieveCoverageDataForTestTarget(bazelTestTarget)
     }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -103,8 +103,8 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverageForTestTarget_coverageRetrievalFailed_throwsException() {
-//    val coverageFilePath = "${tempFolder.root.absolutePath}/bazel-out/k8-fastbuild/testlogs" +
+  fun testRetrieveCoverageDataForTestTarget_coverageRetrievalFailed_throwsException() {
+//    val coverageFilePath = "${tempFolder}/bazel-out/k8-fastbuild/testlogs" +
 //      "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
     val pattern = Regex(".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat")
 
@@ -121,29 +121,58 @@ class CoverageRunnerTest {
     val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         launch {
-          coverageRunner.runCoverageForTestTarget("//coverage/test/java/com/example:AddNumsTest")
+          coverageRunner.retrieveCoverageDataForTestTarget("//coverage/test/java/com/example:AddNumsTest")
         }
 
         launch {
           do {
-            val files = File(tempFolder.root.absolutePath).listFiles() ?: emptyArray()
-            val matchingFiles = files.filter { file ->
-              pattern.matches(file.absolutePath)
-            }
+//            val dir = tempFolder.root.absolutePath.split('/')
+            val dir2 = tempFolder.root.absolutePath.substringBeforeLast('/')
+//            val dir2List = File(dir2).listFiles()
 
-            if (matchingFiles.isNotEmpty()) {
-              for (file in matchingFiles) {
-                file.writeText("")
-                println("Processed: ${file.absolutePath}")
-                return@launch
+            // Traverse the directory top-down
+            File(dir2).walkTopDown().forEach { file ->
+              if (file.isFile && pattern.matches(file.absolutePath)) {
+                println("Found file: ${file.absolutePath}")
+
+                // Check if the file exists (should always be true if the path matched)
+                if (file.exists()) {
+                  println("File exists. Writing to the file...")
+
+                  // Write to the file
+                  file.writeText("")
+
+                  println("Write operation completed.")
+                  return@launch
+                } else {
+                  delay(1)
+                }
               }
             }
 
-            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
-              writeText("")
+/*//            val filer = File(tempFolder.root.absolutePath).absoluteFile
+//            val files = File(tempFolder.root.absolutePath).listFiles() ?: emptyArray()
+//            println("Files: $filer")
+
+//            val matchingFiles = files.filter { file ->
+//              pattern.matches(file.absolutePath)
+//            }
+//
+//            if (matchingFiles.isNotEmpty()) {
+//              for (file in matchingFiles) {
+//                file.writeText("")
+//                println("Processed: ${file.absolutePath}")
+//                return@launch
+//              }
+//            }
+//
+//            /*File(coverageFilePath).takeIf { it.exists() }?.apply {
+//              writeText("")*/
               return@launch
-            }*/
-            delay(1)
+//            }*/
+//    assertThat(files).isEqualTo("hi")
+//    assertThat(dir2List).isEqualTo("hi")
+//            delay(1)
           } while (true)
         }
       }
@@ -153,7 +182,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverageForTestTarget_coverageDataMissing_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
     val coverageFilePath = "${tempFolder.root}/bazel-out/k8-fastbuild/testlogs" +
       "/coverage/test/java/com/example/AddNumsTest/coverage.dat"
 
@@ -170,7 +199,7 @@ class CoverageRunnerTest {
     val exception = assertThrows<IllegalArgumentException>() {
       runBlocking {
         launch {
-          coverageRunner.runCoverageForTestTarget("//coverage/test/java/com/example:AddNumsTest")
+          coverageRunner.retrieveCoverageDataForTestTarget("//coverage/test/java/com/example:AddNumsTest")
         }
 
         launch {
@@ -189,7 +218,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRunCoverageForTestTarget_validSampleTestTarget_returnsCoverageData() {
+  fun testRetrieveCoverageDataForTestTarget_validSampleTestTarget_returnsCoverageData() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -200,7 +229,7 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = coverageRunner.runCoverageForTestTarget(
+    val result = coverageRunner.retrieveCoverageDataForTestTarget(
       "//coverage/test/java/com/example:AddNumsTest"
     )
 

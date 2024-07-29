@@ -121,7 +121,7 @@ class RunCoverage(
 
       val coverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-          .runCoverageForTestTarget(testTarget.removeSuffix(".kt"))
+          .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
