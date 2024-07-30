@@ -47,7 +47,25 @@ fun main(vararg args: String) {
   val filePathList = args.drop(1)
     .takeWhile { !it.startsWith("--") }
     .map { it.trim(',', '[', ']') }
-    .filter { it.endsWith(".kt") && !it.endsWith("Test.kt") }
+    .flatMap { filePath ->
+      if (filePath.endsWith("Test.kt")) {
+        findSourceFile(repoRoot, filePath)
+      } else {
+        listOf(filePath)
+      }
+    }
+
+//    .flatMap {
+//      if (it.endsWith(".kt")) {
+//        if (it.endsWith("Test.kt")) {
+//          processTestFile(it)
+//        } else {
+//          listOf(it)
+//        }
+//      } else {
+//        emptyList()
+//      }
+//    .filter { it.endsWith(".kt") && !it.endsWith("Test.kt") }
 
   println("Running coverage analysis for the files: $filePathList")
 
@@ -329,6 +347,31 @@ private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
   val repoRootFile = File(repoRoot).absoluteFile
 
   return possibleTestFilePaths
+    .map { File(repoRootFile, it) }
+    .filter(File::exists)
+    .map { it.relativeTo(repoRootFile).path }
+}
+
+private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
+  val possibleSourceFilePaths = when {
+    filePath.startsWith("scripts/") -> {
+      listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
+    }
+    filePath.startsWith("app/") -> {
+      listOf(
+        filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"),
+        filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
+        filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
+      )
+    }
+    else -> {
+      listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
+    }
+  }
+
+  val repoRootFile = File(repoRoot).absoluteFile
+
+  return possibleSourceFilePaths
     .map { File(repoRootFile, it) }
     .filter(File::exists)
     .map { it.relativeTo(repoRootFile).path }
