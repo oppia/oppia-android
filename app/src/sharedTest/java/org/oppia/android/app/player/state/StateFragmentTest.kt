@@ -30,10 +30,12 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
@@ -193,6 +195,12 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.mockito.internal.matchers.Not
+import org.oppia.android.app.customview.interaction.FractionInputInteractionView
+import org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+import org.oppia.android.app.customview.interaction.NumericInputInteractionView
+import org.oppia.android.app.customview.interaction.RatioInputInteractionView
+import org.oppia.android.app.customview.interaction.TextInputInteractionView
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -203,7 +211,7 @@ import javax.inject.Singleton
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+//  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
@@ -665,6 +673,8 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_thirdState_selectAnswer_clickSubmit_continueIsVisible() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       rotateToLandscape()
       playThroughPrototypeState1()
@@ -672,11 +682,373 @@ class StateFragmentTest {
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
-
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
         matches(withText(R.string.state_continue_button))
       )
+    }
+  }
+
+  @Test
+  fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      // Entering text in Fraction Input Interaction.
+      typeFractionText("1/2")
+      // Rotating device.
+      rotateToLandscape()
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(withText("1/2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      // Entering text in Numeric Input.
+      typeNumericInput("90")
+      // Rotating device.
+      rotateToLandscape()
+      onView(withId(R.id.numeric_input_interaction_view)).check(matches(withText("90")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      // Entering text in Ratio Input Interaction.
+      typeRatioExpression("3:5")
+      // Rotating device.
+      rotateToLandscape()
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(withText("3:5")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_textInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      // Enter text in Text Input Interaction.
+      typeTextInput("finnish")
+      // Rotate the device.
+      rotateToLandscape()
+      onView(withId(R.id.text_input_interaction_view)).check(matches(withText("finnish")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_selectMultipleChoiceOption_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      // Select answer.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      // Rotating device.
+      rotateToLandscape()
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_selectItemSelectionCheckbox_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      // Select items.
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      // Rotating device.
+      rotateToLandscape()
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      // Enter text in numeric math input interaction.
+      typeNumericExpression("1+2")
+      // Rotating device.
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("1+2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+      typeAlgebraicExpression("x^2-x-2")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(
+        matches(withText("x^2-x-2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+      typeMathEquation("x^2-x-2=2y")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(
+        matches(withText("x^2-x-2=2y")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_differentSelectionInteractions_doesNotShareSavedInputState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+      // Rotate the device.
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      // Ensure all checkboxes are unchecked, indicating no saved input state
+      // from previous interactions.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_sameSelectionInteractions_doesNotShareSavedInputState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      // Ensure all radio buttons are not selected, indicating no saved input state
+      // from previous interactions.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathExpBasedInteractions_doesNotShareSavedInputState(){
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+      typeNumericExpression("1+2")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("1+2")))
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      // Ensure empty input, indicating no saved input state from previous interactions.
+      onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("")))
     }
   }
 
@@ -4832,7 +5204,7 @@ class StateFragmentTest {
 
   private fun rotateToLandscape() {
     onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
+//    testCoroutineDispatchers.runCurrent()
   }
 
   private fun clickContinueInteractionButton() {
