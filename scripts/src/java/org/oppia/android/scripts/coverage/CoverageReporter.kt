@@ -2,6 +2,7 @@ package org.oppia.android.scripts.coverage
 
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoverageReportContainer
 import java.io.File
 
 /**
@@ -14,12 +15,14 @@ import java.io.File
 class CoverageReporter(
   private val repoRoot: String,
   private val coverageReport: CoverageReport,
+  private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
 ) {
   private val computedCoverageRatio = computeCoverageRatio()
   private val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
 
-  private val filePath = coverageReport.filePath
+//  private val filePath = coverageReport.filePath
+  private val filePath = ""
 
   private val totalLinesFound = coverageReport.linesFound
   private val totalLinesHit = coverageReport.linesHit
@@ -49,6 +52,10 @@ class CoverageReporter(
   }
 
   private fun generateHtmlReport(): Pair<Float, String> {
+    println("In generate html report: $coverageReportContainer")
+    println("File path is: ${coverageReportContainer.coverageReportList.firstOrNull()?.filePath}")
+    val filePath = coverageReportContainer.coverageReportList.firstOrNull()?.filePath
+
     var htmlContent =
       """
     <!DOCTYPE html>

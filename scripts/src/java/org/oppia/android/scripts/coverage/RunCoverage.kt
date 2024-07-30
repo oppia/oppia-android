@@ -6,6 +6,7 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
@@ -176,6 +177,7 @@ class RunCoverage(
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
+      println("Aggregated Coverage Report: $aggregatedCoverageReport")
       val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
 
       return reportText
@@ -244,7 +246,12 @@ class RunCoverage(
   }
 
   private fun generateAggregatedCoverageReport(aggregatedCoverageReport: CoverageReport): String {
-    val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(aggregatedCoverageReport)
+      .build()
+    println("Coverage Report Container: $coverageReportContainer")
+
+    val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, coverageReportContainer, reportFormat)
     var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
     val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.filePath]

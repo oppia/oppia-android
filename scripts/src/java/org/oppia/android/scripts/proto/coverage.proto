@@ -5,6 +5,12 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
+// Represents the list of Coverage Report of all analysed files.
+message CoverageReportContainer {
+  // Stores the list of all Coverage Reports.
+  repeated CoverageReport coverage_report = 1;
+}
+
 // Coverage Report that contains the bazel coverage data retrieved from the
 // Bazel coverage execution.
 message CoverageReport {
