@@ -1,8 +1,5 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -123,13 +120,10 @@ class RunCoverage(
    * a Bazel client, finds potential test file paths, retrieves Bazel targets, and initiates
    * coverage analysis for each test target found.
    */
-  fun execute() = runBlocking {
+  fun execute() {
     val coverageResults = filePathList.map { filePath ->
-//      async {
         runCoverageForFile(filePath)
-//      }
     }
-//    }.awaitAll()
 
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
@@ -143,7 +137,6 @@ class RunCoverage(
     }
   }
 
-//  private suspend fun runCoverageForFile(filePath: String): String {
   private fun runCoverageForFile(filePath: String): String {
     val exemption = testFileExemptionList[filePath]
     if (exemption != null && exemption.testFileNotRequired) {
@@ -152,8 +145,7 @@ class RunCoverage(
           println(it)
         }
     } else {
-      val testFilePaths = findTestFile(repoRoot, filePath)
-
+      val testFilePaths = findTestFiles(repoRoot, filePath)
       if (testFilePaths.isEmpty()) {
         return "No appropriate test file found for $filePath".also {
           println(it)
@@ -163,13 +155,9 @@ class RunCoverage(
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
       val coverageReports = testTargets.map { testTarget ->
-//      val deferredCoverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-          .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
+          .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
-
-//      val coverageReports = deferredCoverageReports.awaitAll()
-
       // Check if the coverage reports are successfully generated else return failure message.
       coverageReports.firstOrNull()?.let {
         if (!it.isGenerated) {
@@ -321,7 +309,7 @@ class RunCoverage(
   }
 }
 
-private fun findTestFile(repoRoot: String, filePath: String): List<String> {
+private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))

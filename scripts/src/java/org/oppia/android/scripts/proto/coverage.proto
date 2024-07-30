@@ -35,8 +35,8 @@ message CoveredLine {
 enum Coverage {
   // Coverage status is unspecified.
   UNSPECIFIED = 0;
-  // The line is fully covered, ie. executed atleast once.
+  // The line is fully covered in a test, that is, it was executed at least once.
   FULL = 1;
-  // The line is not covered at all.
+  // The line is not covered at all, that is, it was never executed during a test.
   NONE = 2;
 }
