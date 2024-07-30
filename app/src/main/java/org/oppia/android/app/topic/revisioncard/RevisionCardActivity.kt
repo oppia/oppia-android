@@ -115,6 +115,7 @@ class RevisionCardActivity :
     revisionCardActivityPresenter.dismissConceptCard()
   }
 
+  // Todo(#5404): Migrate to a back pressed dispatcher.
   @Deprecated("Deprecated in Java")
   override fun onBackPressed() {
     revisionCardActivityPresenter.setReadingTextSizeMedium()

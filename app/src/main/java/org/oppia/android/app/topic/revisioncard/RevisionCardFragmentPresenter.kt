@@ -97,24 +97,20 @@ class RevisionCardFragmentPresenter @Inject constructor(
       )
     }
 
-    return binding.root
-  }
-
-  /** Handles the [Fragment.onCreateView] portion of [RevisionCardFragment]'s lifecycle. */
-  fun handleViewCreated() {
-    val profileDataProvider = profileManagementController.getProfile(profileId)
-    profileDataProvider.toLiveData().observe(
-      fragment
-    ) { result ->
-      val readingTextSize = retrieveReadingTextSize()
-      if (result is AsyncResult.Success) {
-        if (result.value.readingTextSize != readingTextSize) {
-          // Since text views are based on sp for sizing, the activity needs to be recreated so that
-          // sp can be correctly recomputed.
-          fragment.requireActivity().recreate()
+    profileManagementController.getProfile(profileId)
+      .toLiveData().observe(
+        fragment
+      ) { result ->
+        val readingTextSize = retrieveReadingTextSize()
+        if (result is AsyncResult.Success) {
+          if (result.value.readingTextSize != readingTextSize) {
+            // Since text views are based on sp for sizing, the activity needs to be recreated so that
+            // sp can be correctly recomputed.
+            fragment.requireActivity().recreate()
+          }
         }
       }
-    }
+    return binding.root
   }
 
   /** Dismisses the concept card fragment if it's currently active in this fragment. */

@@ -844,7 +844,7 @@ message RevisionCardFragmentArguments {
   // The sub topic list size.
   int32 subtopic_list_size = 3;
 
-  // The text size at which content in the resume lesson should be rendered.
+  // The text size at which content in the revision card should be rendered.
   ReadingTextSize reading_text_size = 7;
 }
 

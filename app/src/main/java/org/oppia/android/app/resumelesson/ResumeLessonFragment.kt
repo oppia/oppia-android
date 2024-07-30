@@ -21,7 +21,7 @@ class ResumeLessonFragment : InjectableFragment() {
   companion object {
 
     /** Arguments key for [ResumeLessonFragment]. */
-    const val ARGUMENTS_KEY = "ResumeExplorationFragment.arguments"
+    const val RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY = "ResumeLessonFragment.arguments"
 
     /** Creates new instance of [ResumeLessonFragment] for the provided parameters. */
     fun newInstance(
@@ -46,7 +46,7 @@ class ResumeLessonFragment : InjectableFragment() {
       }.build()
       return ResumeLessonFragment().apply {
         arguments = Bundle().apply {
-          putProto(ARGUMENTS_KEY, args)
+          putProto(RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY, args)
         }
       }
     }
@@ -68,7 +68,10 @@ class ResumeLessonFragment : InjectableFragment() {
   ): View? {
     val args = checkNotNull(arguments) {
       "Expected arguments to be provided for fragment."
-    }.getProto(ARGUMENTS_KEY, ResumeLessonFragmentArguments.getDefaultInstance())
+    }.getProto(
+      RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+      ResumeLessonFragmentArguments.getDefaultInstance()
+    )
     return resumeLessonFragmentPresenter.handleOnCreate(
       inflater,
       container,

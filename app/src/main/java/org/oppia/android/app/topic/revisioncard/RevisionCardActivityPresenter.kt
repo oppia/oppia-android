@@ -30,7 +30,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
-@Suppress("DEPRECATION")
 @ActivityScope
 class RevisionCardActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -84,6 +83,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
       fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
+      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
       activity.onBackPressed()
     }
     if (!accessibilityService.isScreenReaderEnabled()) {

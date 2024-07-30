@@ -282,7 +282,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     ) as? HintsAndSolutionDialogFragment
   }
 
-  /** Set reading text size normal. */
+  /** Set reading text size to normal, which is the default. */
   fun setReadingTextSizeNormal() {
     fontScaleConfigurationUtil.adjustFontScale(
       context = activity,

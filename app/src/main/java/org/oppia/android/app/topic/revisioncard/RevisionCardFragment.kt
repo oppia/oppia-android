@@ -84,11 +84,6 @@ class RevisionCardFragment : InjectableDialogFragment() {
     )
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    revisionCardFragmentPresenter.handleViewCreated()
-  }
-
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
   fun dismissConceptCard() = revisionCardFragmentPresenter.dismissConceptCard()
 }

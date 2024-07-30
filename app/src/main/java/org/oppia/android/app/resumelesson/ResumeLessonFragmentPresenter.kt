@@ -124,7 +124,8 @@ class ResumeLessonFragmentPresenter @Inject constructor(
 
   private fun retrieveArguments(): ResumeLessonFragmentArguments {
     return fragment.requireArguments().getProto(
-      ResumeLessonFragment.ARGUMENTS_KEY, ResumeLessonFragmentArguments.getDefaultInstance()
+      ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+      ResumeLessonFragmentArguments.getDefaultInstance()
     )
   }
 
