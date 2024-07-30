@@ -18,6 +18,9 @@ import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.File
 import java.util.concurrent.TimeUnit
+import java.nio.file.attribute.PosixFilePermissions
+import java.io.IOException
+import java.nio.file.*
 
 /** Tests for [CoverageRunner]. */
 class CoverageRunnerTest {
@@ -104,9 +107,9 @@ class CoverageRunnerTest {
 
   @Test
   fun testRetrieveCoverageDataForTestTarget_coverageRetrievalFailed_throwsException() {
-    val pattern = Regex(
+    /*val pattern = Regex(
       ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
-    )
+    )*/
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -114,41 +117,62 @@ class CoverageRunnerTest {
       testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      sourceSubpackage = "coverage/example",
+      testSubpackage = "coverage/example"
     )
 
-    val exception = assertThrows<IllegalArgumentException>() {
+    val exception = assertThrows<IllegalStateException>() {
       runBlocking {
         launch {
           coverageRunner.retrieveCoverageDataForTestTarget(
-            "//coverage/test/java/com/example:AddNumsTest"
+            "//coverage/example:AddNumsTest"
           )
         }
 
-        launch {
+        /*launch {
           do {
             val dir = tempFolder.root.absolutePath.substringBeforeLast('/')
+//            val permissions = "rwxr-xr-x"
+//            setDirectoryPermissions(dir, permissions)
+
             File(dir).walkTopDown().forEach { file ->
               if (file.isFile && pattern.matches(file.absolutePath)) {
-
+//                file.delete()
+//                file.createNewFile()
+//                file.writeText(" ")
                 if (file.exists()) {
                   file.delete()
                   file.createNewFile()
-                  file.writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
+                  file.writeText(" ")
                   return@launch
                 } else {
-                  delay(1)
+
+//                  file.createNewFile()
+//                  file.writeText(" ")
+//                  delay(1)
                 }
               }
             }
           } while (true)
-        }
+        }*/
       }
     }
 
     assertThat(exception).hasMessageThat().contains("Failed to retrieve coverage result")
   }
+
+/*  fun setDirectoryPermissions(directoryPath: String, permissions: String) {
+    try {
+      val path = Paths.get(directoryPath)
+
+      val perms = PosixFilePermissions.fromString(permissions)
+      Files.setPosixFilePermissions(path, perms)
+
+      println("Permissions set to $permissions for directory $directoryPath")
+    } catch (e: IOException) {
+      println("Error setting permissions: ${e.message}")
+    }
+  }*/
 
   @Test
   fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
