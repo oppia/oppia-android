@@ -688,13 +688,9 @@ class StateFragmentTest {
   fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       clickContinueInteractionButton()
-      // Entering text in Fraction Input Interaction.
       typeFractionText("1/2")
-      // Rotating device.
       rotateToLandscape()
       onView(withId(R.id.fraction_input_interaction_view)).check(matches(withText("1/2")))
     }
@@ -704,17 +700,13 @@ class StateFragmentTest {
   fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
       playThroughPrototypeState3()
       playThroughPrototypeState4()
       playThroughPrototypeState5()
-      // Entering text in Numeric Input.
       typeNumericInput("90")
-      // Rotating device.
       rotateToLandscape()
       onView(withId(R.id.numeric_input_interaction_view)).check(matches(withText("90")))
     }
@@ -724,8 +716,6 @@ class StateFragmentTest {
   fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -733,9 +723,7 @@ class StateFragmentTest {
       playThroughPrototypeState4()
       playThroughPrototypeState5()
       playThroughPrototypeState6()
-      // Entering text in Ratio Input Interaction.
       typeRatioExpression("3:5")
-      // Rotating device.
       rotateToLandscape()
       onView(withId(R.id.ratio_input_interaction_view)).check(matches(withText("3:5")))
     }
@@ -745,8 +733,6 @@ class StateFragmentTest {
   fun testStateFragment_textInput_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -755,9 +741,7 @@ class StateFragmentTest {
       playThroughPrototypeState5()
       playThroughPrototypeState6()
       playThroughPrototypeState7()
-      // Enter text in Text Input Interaction.
       typeTextInput("finnish")
-      // Rotate the device.
       rotateToLandscape()
       onView(withId(R.id.text_input_interaction_view)).check(matches(withText("finnish")))
     }
@@ -767,14 +751,10 @@ class StateFragmentTest {
   fun testStateFragment_selectMultipleChoiceOption_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
-      // Select answer.
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
-      // Rotating device.
       rotateToLandscape()
       scrollToViewType(SELECTION_INTERACTION)
       onView(
@@ -805,18 +785,14 @@ class StateFragmentTest {
   fun testStateFragment_selectItemSelectionCheckbox_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
       playThroughPrototypeState3()
       playThroughPrototypeState4()
-      // Select items.
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
       selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
-      // Rotating device.
       rotateToLandscape()
       scrollToViewType(SELECTION_INTERACTION)
       onView(
@@ -868,12 +844,8 @@ class StateFragmentTest {
   fun testStateFragment_mathInteractions_numericExp_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
-      // Enter text in numeric math input interaction.
       typeNumericExpression("1+2")
-      // Rotating device.
       rotateToLandscape()
       onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("1+2")))
     }
@@ -883,8 +855,6 @@ class StateFragmentTest {
   fun testStateFragment_mathInteractions_algExp_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState3()
       typeAlgebraicExpression("x^2-x-2")
@@ -899,8 +869,6 @@ class StateFragmentTest {
   fun testStateFragment_mathInteractions_mathEq_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       playUpThroughMathInteractionExplorationState6()
       typeMathEquation("x^2-x-2=2y")
@@ -915,16 +883,11 @@ class StateFragmentTest {
   fun testStateFragment_differentSelectionInteractions_doesNotShareSavedInputState() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
-
       playThroughPrototypeState1()
       playThroughPrototypeState2()
       playThroughPrototypeState3()
-
       selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
-      // Rotate the device.
       rotateToLandscape()
       onView(
         atPositionOnView(
@@ -986,13 +949,9 @@ class StateFragmentTest {
   fun testStateFragment_sameSelectionInteractions_doesNotShareSavedInputState() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
-
       playThroughPrototypeState1()
       playThroughPrototypeState2()
-
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       rotateToLandscape()
       onView(
@@ -1031,11 +990,9 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_mathExpBasedInteractions_doesNotShareSavedInputState() {
+  fun testStateFragment_textBasedInteractions_doesNotShareSavedInputState() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       typeNumericExpression("1+2")
       rotateToLandscape()
@@ -1046,6 +1003,7 @@ class StateFragmentTest {
       onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("")))
     }
   }
+
 
   @Test
   fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
@@ -5199,7 +5157,7 @@ class StateFragmentTest {
 
   private fun rotateToLandscape() {
     onView(isRoot()).perform(orientationLandscape())
-//    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun clickContinueInteractionButton() {
