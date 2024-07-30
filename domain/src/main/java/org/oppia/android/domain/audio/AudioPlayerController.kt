@@ -260,6 +260,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
+      check(mediaPlayer != null) { "Media player has not been previously initialized" }
       if (mediaPlayerActive) {
         mediaPlayer.release()
       }
