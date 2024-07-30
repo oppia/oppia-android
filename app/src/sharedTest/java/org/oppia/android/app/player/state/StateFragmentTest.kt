@@ -1004,7 +1004,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
   fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     setUpTestWithLanguageSwitchingFeatureOff()
