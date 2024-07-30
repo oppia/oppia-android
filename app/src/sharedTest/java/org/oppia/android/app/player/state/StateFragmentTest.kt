@@ -204,7 +204,7 @@ import javax.inject.Singleton
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-//  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
@@ -666,8 +666,6 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_thirdState_selectAnswer_clickSubmit_continueIsVisible() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
       rotateToLandscape()
       playThroughPrototypeState1()
@@ -675,8 +673,6 @@ class StateFragmentTest {
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
-      testCoroutineDispatchers.runCurrent()
-      testCoroutineDispatchers.unregisterIdlingResource()
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
         matches(withText(R.string.state_continue_button))
