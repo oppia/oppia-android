@@ -48,12 +48,27 @@ fun main(vararg args: String) {
     .takeWhile { !it.startsWith("--") }
     .map { it.trim(',', '[', ']') }
     .flatMap { filePath ->
-      if (filePath.endsWith("Test.kt")) {
-        findSourceFile(repoRoot, filePath)
-      } else {
-        listOf(filePath)
+      when {
+        filePath.endsWith("Test.kt") -> {
+          println("Finding source file for $filePath")
+          findSourceFile(repoRoot, filePath)
+        }
+        filePath.endsWith(".kt") -> {
+          listOf(filePath)
+        }
+        else -> {
+          emptyList()
+        }
       }
     }
+
+//    .flatMap { filePath ->
+//      if (filePath.endsWith("Test.kt")) {
+//        findSourceFile(repoRoot, filePath)
+//      } else {
+//        listOf(filePath)
+//      }
+//    }
 
 //    .flatMap {
 //      if (it.endsWith(".kt")) {
@@ -353,21 +368,34 @@ private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
 }
 
 private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
+  println("In file finding: $filePath")
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
+      println("In Scripts: $filePath")
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
     }
     filePath.startsWith("app/") -> {
-      listOf(
-        filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"),
-        filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
-        filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
-      )
+      when {
+        filePath.contains("/sharedTest/") -> {
+          listOf(filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"))
+        }
+        filePath.contains("/test/") -> {
+          listOf(
+            filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
+            filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
+          )
+        }
+        else -> {
+          emptyList()
+        }
+      }
     }
     else -> {
+      println("In else: $filePath")
       listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
     }
   }
+  println("poss s fi: $possibleSourceFilePaths")
 
   val repoRootFile = File(repoRoot).absoluteFile
 
