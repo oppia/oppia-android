@@ -50,37 +50,12 @@ fun main(vararg args: String) {
     .flatMap { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
-          println("Finding source file for $filePath")
           findSourceFile(repoRoot, filePath)
         }
-        filePath.endsWith(".kt") -> {
-          listOf(filePath)
-        }
-        else -> {
-          emptyList()
-        }
+        filePath.endsWith(".kt") -> listOf(filePath)
+        else -> emptyList()
       }
     }
-
-//    .flatMap { filePath ->
-//      if (filePath.endsWith("Test.kt")) {
-//        findSourceFile(repoRoot, filePath)
-//      } else {
-//        listOf(filePath)
-//      }
-//    }
-
-//    .flatMap {
-//      if (it.endsWith(".kt")) {
-//        if (it.endsWith("Test.kt")) {
-//          processTestFile(it)
-//        } else {
-//          listOf(it)
-//        }
-//      } else {
-//        emptyList()
-//      }
-//    .filter { it.endsWith(".kt") && !it.endsWith("Test.kt") }
 
   println("Running coverage analysis for the files: $filePathList")
 
@@ -368,10 +343,8 @@ private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
 }
 
 private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
-  println("In file finding: $filePath")
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
-      println("In Scripts: $filePath")
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
     }
     filePath.startsWith("app/") -> {
@@ -391,11 +364,9 @@ private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
       }
     }
     else -> {
-      println("In else: $filePath")
       listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
     }
   }
-  println("poss s fi: $possibleSourceFilePaths")
 
   val repoRootFile = File(repoRoot).absoluteFile
 
