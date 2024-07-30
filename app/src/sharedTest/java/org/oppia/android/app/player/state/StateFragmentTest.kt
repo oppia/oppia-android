@@ -152,7 +152,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -195,12 +194,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.mockito.internal.matchers.Not
-import org.oppia.android.app.customview.interaction.FractionInputInteractionView
-import org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
-import org.oppia.android.app.customview.interaction.NumericInputInteractionView
-import org.oppia.android.app.customview.interaction.RatioInputInteractionView
-import org.oppia.android.app.customview.interaction.TextInputInteractionView
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -897,7 +890,8 @@ class StateFragmentTest {
       typeAlgebraicExpression("x^2-x-2")
       rotateToLandscape()
       onView(withId(R.id.math_expression_input_interaction_view)).check(
-        matches(withText("x^2-x-2")))
+        matches(withText("x^2-x-2"))
+      )
     }
   }
 
@@ -912,7 +906,8 @@ class StateFragmentTest {
       typeMathEquation("x^2-x-2=2y")
       rotateToLandscape()
       onView(withId(R.id.math_expression_input_interaction_view)).check(
-        matches(withText("x^2-x-2=2y")))
+        matches(withText("x^2-x-2=2y"))
+      )
     }
   }
 
@@ -1036,7 +1031,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_mathExpBasedInteractions_doesNotShareSavedInputState(){
+  fun testStateFragment_mathExpBasedInteractions_doesNotShareSavedInputState() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       testCoroutineDispatchers.runCurrent()
