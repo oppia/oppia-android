@@ -103,7 +103,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_coverageRetrievalFailed_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_withIncorrectPackageStructure_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -124,11 +124,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
-    /*val pattern = Regex(
-      ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
-    )*/
-
+  fun testRetrieveCoverageDataForTestTarget_withNoDepsToSourceFile_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -137,43 +133,6 @@ class CoverageRunnerTest {
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
-    )
-
-    assertThat(File(tempFolder.root, "coverage/main/java/com/example/AddNums.kt").exists()).isTrue()
-    assertThat(File(tempFolder.root, "coverage/test/java/com/example/AddNumsTest.kt").exists()).isTrue()
-    assertThat(File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel").exists()).isTrue()
-    assertThat(File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel").exists()).isTrue()
-
-    val subSourceFile = tempFolder.newFile("coverage/main/java/com/example/SubNums.kt")
-    subSourceFile.writeText(
-      """
-      package com.example
-      
-      class SubNums {
-        companion object {
-            fun subNumbers(a: Int, b: Int): Any {
-                return if (a == 0 && b == 0) {
-                    "Both numbers are zero"
-                } else {
-                    a - b
-                }
-            }
-        }
-      }
-      """.trimIndent()
-    )
-    assertThat(File(tempFolder.root, "coverage/main/java/com/example/SubNums.kt").exists()).isTrue()
-
-    val sourceBuildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")
-    sourceBuildFile.appendText(
-      """
-      kt_jvm_library(
-          name = "SubNums",
-          srcs = ["SubNums.kt"],
-          visibility = ["//visibility:public"],
-          deps = [],
-      )
-      """.trimIndent()
     )
 
     val subTestFile = tempFolder.newFile("coverage/test/java/com/example/SubNumsTest.kt")
@@ -213,44 +172,12 @@ class CoverageRunnerTest {
       """.trimIndent()
     )
 
-    /*val read = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel").readText()
-    assertThat(read).contains("hey")*/
-
-//    val readsb = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel").readText()
-
     val exception = assertThrows<IllegalArgumentException>() {
       coverageRunner.retrieveCoverageDataForTestTarget(
         "//coverage/test/java/com/example:SubNumsTest"
       )
     }
 
-    /*val exception = assertThrows<IllegalArgumentException>() {
-      runBlocking {
-        launch {
-          coverageRunner.retrieveCoverageDataForTestTarget(
-            "//coverage/test/java/com/example:AddNumsTest"
-          )
-        }
-
-        launch {
-          while (true) {
-            val dir = File(tempFolder.root.absolutePath.substringBeforeLast('/'))
-            dir.walkTopDown().firstOrNull { file ->
-              file.isFile && pattern.matches(file.absolutePath)
-            }?.apply {
-              if (exists()) {
-                delete()
-                createNewFile()
-              }
-              writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
-            }
-            delay(1)
-          }
-        }
-      }
-    }
-
-    assertThat(exception).hasMessageThat().contains("Coverage data not found")*/
     assertThat(exception).hasMessageThat().contains("Coverage data not found")
   }
 
