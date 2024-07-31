@@ -71,6 +71,7 @@ class CoverageRunner(
         line.substringAfter(":").split(",")
       }
     }
+    println("Coverage Data props: $coverageDataProps")
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
     requireNotNull(filePath) { "File path not found" }
