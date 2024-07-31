@@ -117,77 +117,12 @@ class RunCoverage(
         "No appropriate test file found for $filePath"
       }
 
-      /*val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
       val coverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
-      }*/
-
-      // For reference. (to be removed)
-      val coverageReports = listOf(CoverageReport.newBuilder()
-        .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
-        .setFilePath("coverage/main/java/com/example/AddNums.kt")
-        .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(3)
-            .setCoverage(Coverage.NONE)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(7)
-            .setCoverage(Coverage.NONE)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(8)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(10)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .setLinesFound(4)
-        .setLinesHit(2)
-        .build(),
-        CoverageReport.newBuilder()
-          .setBazelTestTarget("//coverage/test/java/com/example:AddNumsLocalTest")
-          .setFilePath("coverage/main/java/com/example/AddNums.kt")
-          .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(3)
-              .setCoverage(Coverage.FULL)
-              .build()
-          )
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(7)
-              .setCoverage(Coverage.NONE)
-              .build()
-          )
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(8)
-              .setCoverage(Coverage.FULL)
-              .build()
-          )
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(10)
-              .setCoverage(Coverage.NONE)
-              .build()
-          )
-          .setLinesFound(4)
-          .setLinesHit(2)
-          .build()
-      )
+      }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
