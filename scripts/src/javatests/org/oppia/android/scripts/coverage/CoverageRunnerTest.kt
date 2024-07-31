@@ -125,9 +125,9 @@ class CoverageRunnerTest {
 
   @Test
   fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
-    val pattern = Regex(
+    /*val pattern = Regex(
       ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
-    )
+    )*/
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -139,7 +139,92 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
+    assertThat(File(tempFolder.root, "coverage/main/java/com/example/AddNums.kt").exists()).isTrue()
+    assertThat(File(tempFolder.root, "coverage/test/java/com/example/AddNumsTest.kt").exists()).isTrue()
+    assertThat(File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel").exists()).isTrue()
+    assertThat(File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel").exists()).isTrue()
+
+    val subSourceFile = tempFolder.newFile("coverage/main/java/com/example/SubNums.kt")
+    subSourceFile.writeText(
+      """
+      package com.example
+      
+      class SubNums {
+        companion object {
+            fun subNumbers(a: Int, b: Int): Any {
+                return if (a == 0 && b == 0) {
+                    "Both numbers are zero"
+                } else {
+                    a - b
+                }
+            }
+        }
+      }
+      """.trimIndent()
+    )
+    assertThat(File(tempFolder.root, "coverage/main/java/com/example/SubNums.kt").exists()).isTrue()
+
+    val sourceBuildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")
+    sourceBuildFile.appendText(
+      """
+      kt_jvm_library(
+          name = "SubNums",
+          srcs = ["SubNums.kt"],
+          visibility = ["//visibility:public"],
+          deps = [],
+      )
+      """.trimIndent()
+    )
+
+    val subTestFile = tempFolder.newFile("coverage/test/java/com/example/SubNumsTest.kt")
+    subTestFile.writeText(
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      import com.example.AddNums
+      
+      class SubNumsTest {
+      
+          @Test
+          fun testSubNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.appendText(
+      """
+      kt_jvm_test(
+          name = "SubNumsTest",
+          srcs = ["SubNumsTest.kt"],
+          deps = [
+            "//coverage/main/java/com/example:addnums",
+            "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.SubNumsTest",
+      )
+      """.trimIndent()
+    )
+
+    /*val read = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel").readText()
+    assertThat(read).contains("hey")*/
+
+//    val readsb = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel").readText()
+
     val exception = assertThrows<IllegalArgumentException>() {
+      coverageRunner.retrieveCoverageDataForTestTarget(
+        "//coverage/test/java/com/example:SubNumsTest"
+      )
+    }
+
+    /*val exception = assertThrows<IllegalArgumentException>() {
       runBlocking {
         launch {
           coverageRunner.retrieveCoverageDataForTestTarget(
@@ -165,6 +250,7 @@ class CoverageRunnerTest {
       }
     }
 
+    assertThat(exception).hasMessageThat().contains("Coverage data not found")*/
     assertThat(exception).hasMessageThat().contains("Coverage data not found")
   }
 
