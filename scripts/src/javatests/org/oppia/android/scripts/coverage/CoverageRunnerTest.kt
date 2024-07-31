@@ -1,9 +1,6 @@
 package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -103,7 +100,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_coverageRetrievalFailed_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_withIncorrectPackageStructure_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -124,11 +121,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_coverageDataMissing_throwsException() {
-    val pattern = Regex(
-      ".*bazel-out/k8-fastbuild/testlogs/coverage/test/java/com/example/AddNumsTest/coverage.dat"
-    )
-
+  fun testRetrieveCoverageDataForTestTarget_withNoDepsToSourceFile_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -139,30 +132,47 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val exception = assertThrows<IllegalArgumentException>() {
-      runBlocking {
-        launch {
-          coverageRunner.retrieveCoverageDataForTestTarget(
-            "//coverage/test/java/com/example:AddNumsTest"
-          )
-        }
-
-        launch {
-          while (true) {
-            val dir = File(tempFolder.root.absolutePath.substringBeforeLast('/'))
-            dir.walkTopDown().firstOrNull { file ->
-              file.isFile && pattern.matches(file.absolutePath)
-            }?.apply {
-              if (exists()) {
-                delete()
-                createNewFile()
-              }
-              writeText("SF: coverage/test/java/com/example/IncorrectCoverageFile.kt")
-            }
-            delay(1)
+    val subTestFile = tempFolder.newFile("coverage/test/java/com/example/SubNumsTest.kt")
+    subTestFile.writeText(
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      import com.example.AddNums
+      
+      class SubNumsTest {
+      
+          @Test
+          fun testSubNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
-        }
       }
+      """.trimIndent()
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.appendText(
+      """
+      kt_jvm_test(
+          name = "SubNumsTest",
+          srcs = ["SubNumsTest.kt"],
+          deps = [
+            "//coverage/main/java/com/example:addnums",
+            "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.SubNumsTest",
+      )
+      """.trimIndent()
+    )
+
+    val exception = assertThrows<IllegalArgumentException>() {
+      coverageRunner.retrieveCoverageDataForTestTarget(
+        "//coverage/test/java/com/example:SubNumsTest"
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("Coverage data not found")

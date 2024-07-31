@@ -70,9 +70,9 @@ fun main(vararg args: String) {
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
-  for (file in filePathList) {
-    if (!File(repoRoot, file).exists()) {
-      error("File doesn't exist: $file")
+  for (filePath in filePathList) {
+    check(File(repoRoot, filePath).exists()) {
+      "File doesn't exist: $filePath."
     }
   }
 
@@ -360,7 +360,15 @@ class RunCoverage(
       else Coverage.NONE
     }
 
-    val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
+    val groupedCoverageReports = coverageReports.groupBy {
+      Pair(it.filePath, it.fileSha1Hash)
+    }
+
+    val singleCoverageReport = groupedCoverageReports.entries.single()
+    val (key, reports) = singleCoverageReport
+    val (filePath, fileSha1Hash) = key
+
+    val allCoveredLines = reports.flatMap { it.coveredLineList }
     val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
     val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
       CoveredLine.newBuilder()
@@ -371,13 +379,12 @@ class RunCoverage(
 
     val totalLinesFound = aggregatedCoveredLines.size
     val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-
-    val aggregatedTargetList = coverageReports.joinToString(separator = ", ") { it.bazelTestTarget }
+    val aggregatedTargetList = reports.joinToString(separator = ", ") { it.bazelTestTarget }
 
     return CoverageReport.newBuilder()
       .setBazelTestTarget(aggregatedTargetList)
-      .setFilePath(coverageReports.first().filePath)
-      .setFileSha1Hash(coverageReports.first().fileSha1Hash)
+      .setFilePath(filePath)
+      .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(aggregatedCoveredLines)
       .setLinesFound(totalLinesFound)
       .setLinesHit(totalLinesHit)
