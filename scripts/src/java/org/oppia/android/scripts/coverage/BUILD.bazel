@@ -15,6 +15,7 @@ kt_jvm_library(
         ":coverage_reporter",
         ":coverage_runner",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
     ],
 )

@@ -4,6 +4,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
@@ -27,6 +28,7 @@ private val MIN_THRESHOLD = 10 // yet to be decided on a value
  *    Available options: MARKDOWN, HTML.
  * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
  *    in minutes.
+ * - path_to_output_file: path to the file in which the collected coverage reports will be printed.
  *
  * Example:
  *    bazel run //scripts:run_coverage -- $(pwd)
@@ -141,6 +143,33 @@ class RunCoverage(
       val cov = coverageReportContainer2.build()
       println("Type: ${coverageReportContainer2::class}")
       println("Type of cov: ${cov::class}")
+
+      val covDirectoryPath = "${repoRoot}/coverage_reports/"
+      val covFilePath = "${repoRoot}/coverage_reports/coverage_report.proto64"
+
+      val covDirectory = File(covDirectoryPath)
+      if (!covDirectory.exists()) {
+        covDirectory.mkdirs()
+      }
+
+      val covFile = File(covFilePath)
+      if (!covFile.exists()) {
+        covFile.createNewFile()
+      }
+
+      println("File: ${covFile.absolutePath}")
+      println("Exists? -> ${covFile.exists()}")
+
+      val serialized = cov.toCompressedBase64()
+      println("Serialized: $serialized")
+
+      /*File("/coverage_reports/coverage_report.proto64").printWriter().use { writer ->
+        writer.println(serialized)
+      }*/
+
+      covFile.printWriter().use { writer ->
+        writer.println(serialized)
+      }
     }
 
     if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
