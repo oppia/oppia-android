@@ -13,10 +13,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 
-/** Test tag for the all topics section header. */
+/** Test tag for the all classrooms section header. */
 const val ALL_CLASSROOMS_HEADER_TEST_TAG = "TEST_TAG.all_classrooms_header"
 
-/** Displays the header text for the topic list section. */
+/** Displays the header text for the classroom list section. */
 @Composable
 fun AllClassroomsHeaderText() {
   Text(
