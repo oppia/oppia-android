@@ -201,7 +201,10 @@ class ClassroomListFragmentPresenter @Inject constructor(
       ?.groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     val listState = rememberLazyListState()
-    var classroomListIndex = 0
+    val classroomListIndex = groupedItems
+      ?.flatMap { (type, items) -> items.map { type to it } }
+      ?.indexOfFirst { it.first == AllClassroomsViewModel::class }
+      ?: -1
 
     LazyColumn(
       modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
@@ -213,7 +216,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
             item {
               WelcomeText(welcomeViewModel = item as WelcomeViewModel)
             }
-            classroomListIndex++
           }
           PromotedStoryListViewModel::class -> items.forEach { item ->
             item {
@@ -222,7 +224,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
                 machineLocale = machineLocale
               )
             }
-            classroomListIndex++
           }
           ComingSoonTopicListViewModel::class -> items.forEach { item ->
             item {
@@ -231,7 +232,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
                 machineLocale = machineLocale,
               )
             }
-            classroomListIndex++
           }
           AllClassroomsViewModel::class -> items.forEach { _ ->
             item {
