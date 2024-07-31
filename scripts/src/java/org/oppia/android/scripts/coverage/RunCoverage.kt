@@ -47,8 +47,8 @@ fun main(vararg args: String) {
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
-  if (!File(repoRoot, filePath).exists()) {
-    error("File doesn't exist: $filePath.")
+  check(File(repoRoot, filePath).exists()) {
+    "File doesn't exist: $filePath."
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
@@ -113,8 +113,8 @@ class RunCoverage(
       println("This file is exempted from having a test file; skipping coverage check.")
     } else {
       val testFilePaths = findTestFiles(repoRoot, filePath)
-      if (testFilePaths.isEmpty()) {
-        error("No appropriate test file found for $filePath")
+      check(testFilePaths.isNotEmpty()) {
+        "No appropriate test file found for $filePath"
       }
 
       /*val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
@@ -215,47 +215,25 @@ private fun calculateAggregateCoverageReport(
     return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
   }
 
-
-
   val groupedCoverageReports = coverageReports.groupBy {
     Pair(it.filePath, it.fileSha1Hash)
   }
 
-  println("Grouped Coverage Reports: $groupedCoverageReports")
-
   val singleCoverageReport = groupedCoverageReports.entries.single()
-  println("Single Coverage Report: $singleCoverageReport")
-
-//  groupedCoverageReports.forEach { (key, reports) ->
   val (key, reports) = singleCoverageReport
   val (filePath, fileSha1Hash) = key
 
-  println("Type filePath: ${filePath::class}")
-  /*require(reports.map { it.filePath }.toSet().single()) {
-    "Inconsistent file paths detected."
-  }
-
-  require(reports.map { it.fileSha1Hash }.toSet().single()) {
-    "Inconsistent SHA1 hashes for the files detected."
-  }*/
-
   val allCoveredLines = reports.flatMap { it.coveredLineList }
-  println("All covered lines r: $allCoveredLines")
-
   val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-  println("Grouped lines r: $groupedCoverageReports")
-
   val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
     CoveredLine.newBuilder()
       .setLineNumber(lineNumber)
       .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
       .build()
   }
-  println("Aggregated covered lines r: $aggregatedCoveredLines")
 
   val totalLinesFound = aggregatedCoveredLines.size
   val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-
   val aggregatedTargetList = reports.joinToString(separator = ", ") { it.bazelTestTarget }
 
   return CoverageReport.newBuilder()
@@ -266,39 +244,6 @@ private fun calculateAggregateCoverageReport(
     .setLinesFound(totalLinesFound)
     .setLinesHit(totalLinesHit)
     .build()
-//  }
-
-
-
-
-
-
-
-/*  val allCoveredLines = coverageReports.flatMap { it.coveredLineList }
-  println("All covered lines: $allCoveredLines")
-  val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-  println("Grouped lines: $groupedCoveredLines")
-  val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
-    CoveredLine.newBuilder()
-      .setLineNumber(lineNumber)
-      .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
-      .build()
-  }
-  println("Aggregated covered lines: $aggregatedCoveredLines")
-
-  val totalLinesFound = aggregatedCoveredLines.size
-  val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-
-  val aggregatedTargetList = coverageReports.joinToString(separator = ", ") { it.bazelTestTarget }
-
-  return CoverageReport.newBuilder()
-    .setBazelTestTarget(aggregatedTargetList)
-    .setFilePath(coverageReports.first().filePath)
-    .setFileSha1Hash(coverageReports.first().fileSha1Hash)
-    .addAllCoveredLine(aggregatedCoveredLines)
-    .setLinesFound(totalLinesFound)
-    .setLinesHit(totalLinesHit)
-    .build()*/
 }
 
 private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
