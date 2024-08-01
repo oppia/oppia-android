@@ -218,6 +218,9 @@ message ResumeLessonFragmentArguments {
 
   // The checkpoint that may be used to resume the exploration play session.
   ExplorationCheckpoint checkpoint = 6;
+
+  // The text size at which content in the resume lesson should be rendered.
+  ReadingTextSize reading_text_size = 8;
 }
 
 // Params required when creating a new ReadingTextSizeActivity.
@@ -341,6 +344,15 @@ message SurveyActivityParams {
 
   // The ID of the triggering exploration.
   string exploration_id = 3;
+}
+
+// Arguments required when creating a QuestionPlayerFragment.
+message QuestionPlayerFragmentArguments{
+  // The ID of current profile.
+  ProfileId profile_id = 1;
+
+  // The ReadingTextSize previously selected by the user (upon opening the fragment).
+  ReadingTextSize reading_text_size = 2;
 }
 
 // Represents the parameters needed to create TopicActivity.
@@ -834,6 +846,9 @@ message RevisionCardFragmentArguments {
 
   // The sub topic list size.
   int32 subtopic_list_size = 3;
+
+  // The text size at which content in the revision card should be rendered.
+  ReadingTextSize reading_text_size = 7;
 }
 
 // Represents the parameters needed to create TestFontScaleConfigurationUtilActivity.

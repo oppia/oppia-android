@@ -281,6 +281,10 @@
   <dimen name="coming_soon_topic_promoted_list_view_margin_top">16dp</dimen>
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_start">72dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_end">72dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_start">8dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_end">8dp</dimen>
 
   <!-- Completed Story Item -->
   <dimen name="completed_story_item_topic_container_margin_start">16dp</dimen>
