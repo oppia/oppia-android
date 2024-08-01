@@ -8,15 +8,12 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileChooserFragment]. */
