@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
@@ -26,6 +27,7 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -34,6 +36,7 @@ import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
 
@@ -48,7 +51,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val analyticsController: AnalyticsController,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager
+  private val splitScreenManager: SplitScreenManager,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
 ) {
   // TODO(#503): Add tests for the question player.
 
@@ -65,6 +69,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
   private lateinit var profileId: ProfileId
+
+  /** Handles the [Fragment.onAttach] portion of [QuestionPlayerFragment]'s lifecycle. */
+  fun handleAttach(context: Context) {
+    fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
+  }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -115,6 +124,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun dismissConceptCard() {
     ConceptCardFragment.dismissAll(fragment.childFragmentManager)
+  }
+
+  private fun retrieveArguments(): QuestionPlayerFragmentArguments {
+    return fragment.requireArguments().getProto(
+      QuestionPlayerFragment.ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance()
+    )
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
