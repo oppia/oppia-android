@@ -78,6 +78,7 @@ class AudioPlayerController @Inject constructor(
   private var nextUpdateJob: Job? = null
   private val audioLock = ReentrantLock()
 
+  private var isInitalized = false
   private var prepared = false
   private var observerActive = false
   private var mediaPlayerActive = false
@@ -95,6 +96,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
+      isInitalized = true
       mediaPlayerActive = true
       if (isReleased) {
         // Recreation is necessary since media player's resources have been released
@@ -260,7 +262,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
-      check(mediaPlayer != null) { "Media player has not been previously initialized" }
+      check(isInitalized) { "Media player has not been previously initialized" }
       if (mediaPlayerActive) {
         mediaPlayer.release()
       }
