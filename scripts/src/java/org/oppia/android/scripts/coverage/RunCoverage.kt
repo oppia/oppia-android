@@ -127,7 +127,7 @@ class RunCoverage(
       .associateBy { it.exemptedFilePath }
   }
 
-  var coverageReportContainer2 = CoverageReportContainer.newBuilder()
+  var combinedCoverageReportContainer = CoverageReportContainer.newBuilder()
 
   /**
    * Executes coverage analysis for the specified file.
@@ -142,7 +142,15 @@ class RunCoverage(
         runCoverageForFile(filePath)
     }
 
-    println("Coverage Results: $coverageResults")
+    val coverageReportContainer = combineCoverageReports(coverageResults)
+
+    //generator
+    val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
+    reporter.generateRichTextReport()
+
+    // save the above container proto to a provided output path
+    // that proto will be collected in the ci from different matrices
+    // and may be a script to again combine them and pass it to CoverageReporter
 
     /*At this point we will/should be having a container of coverage reports
     * have generate text report() here in one unified space
@@ -164,9 +172,9 @@ class RunCoverage(
 
     //
     if (reportFormat == ReportFormat.MARKDOWN) {
-      val cov = coverageReportContainer2.build()
-      println("Type: ${coverageReportContainer2::class}")
-      println("Type of cov: ${cov::class}")
+      val cov = combinedCoverageReportContainer.build()
+//      println("Type: ${combinedCoverageReportContainer::class}")
+//      println("Type of cov: ${cov::class}")
 
       val covDirectoryPath = "${repoRoot}/coverage_reports/"
       val covFilePath = "${repoRoot}/coverage_reports/coverage_report.proto64"
@@ -181,14 +189,14 @@ class RunCoverage(
         covFile.createNewFile()
       }
 
-      println("File: ${covFile.absolutePath}")
-      println("Exists? -> ${covFile.exists()}")
+//      println("File: ${covFile.absolutePath}")
+//      println("Exists? -> ${covFile.exists()}")
 
       val serialized = cov.toCompressedBase64()
-      println("Serialized: $serialized")
+//      println("Serialized: $serialized")
 
-      val deserialize = CoverageReportContainer.getDefaultInstance().mergeFromCompressedBase64(serialized)
-      println("Deserialized: $deserialize")
+//      val deserialize = CoverageReportContainer.getDefaultInstance().mergeFromCompressedBase64(serialized)
+//      println("Deserialized: $deserialize")
 
       /*File("/coverage_reports/coverage_report.proto64").printWriter().use { writer ->
         writer.println(serialized)
@@ -268,7 +276,7 @@ class RunCoverage(
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
-      println("Aggregated Coverage Report: $aggregatedCoverageReport")
+//      println("Aggregated Coverage Report: $aggregatedCoverageReport")
 
       // may be just combine coverage reports into containers here
       /* container.add(aggregatedCoverageReport)
@@ -277,9 +285,10 @@ class RunCoverage(
       *  combineCoverageReport()
       * */
 
+//      combineCoverageReport(aggregatedCoverageReport)
 
-      val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
-      println("Report Text: $reportText")
+      /*val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
+      println("Report Text: $reportText")*/
 
 //      return reportText
       return aggregatedCoverageReport
@@ -348,7 +357,18 @@ class RunCoverage(
     }
   }*/
 
-  private fun generateAggregatedCoverageReport(aggregatedCoverageReport: CoverageReport): String {
+  private fun combineCoverageReports(coverageResultList: List<CoverageReport>): CoverageReportContainer {
+    val containerBuilder = CoverageReportContainer.newBuilder()
+    coverageResultList.forEach { report ->
+      containerBuilder.addCoverageReport(report)
+    }
+    return containerBuilder.build()
+
+    /*combinedCoverageReportContainer
+      .addCoverageReport(singleCoverageReport)*/
+  }
+
+  /*private fun generateAggregatedCoverageReport(aggregatedCoverageReport: CoverageReport): String {
     var pubReportText = ""
     if (reportFormat == ReportFormat.MARKDOWN) {
 
@@ -361,12 +381,12 @@ class RunCoverage(
 
       println("Type Coverage Reporter Container: ${coverageReportContainer::class}")
 
-      coverageReportContainer2
+      combinedCoverageReportContainer
         .addCoverageReport(aggregatedCoverageReport)
 //        .build()
 
       println("************************")
-      println("Coverage Report Container 2: $coverageReportContainer2")
+      println("Coverage Report Container 2: $combinedCoverageReportContainer")
 
       val reporter =
         CoverageReporter(repoRoot, aggregatedCoverageReport, coverageReportContainer, reportFormat)
@@ -444,7 +464,7 @@ class RunCoverage(
     }
     // temp
     return pubReportText
-  }
+  }*/
 
   private fun calculateAggregateCoverageReport(
     coverageReports: List<CoverageReport>

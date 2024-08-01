@@ -15,9 +15,9 @@ message CoverageReport {
   oneof report_status {
     // Coverage report details when coverage data retrieval succeeds.
     CoverageDetails details = 1;
-    // Failure message when coverage data retrieval fails.
-//    string failure_message = 2;
+    // Coverage report failure when coverage data retrieval fails.
     CoverageFailure failure = 2;
+    // Coverage exemption when the source file is exempted from having a test file.
     CoverageExemption exemption = 3;
   }
 }
@@ -46,7 +46,6 @@ message CoverageFailure {
   // to add if possible: file_path, file_sha1_hash
   string file_path = 1;
   string bazel_test_target = 2;
-  // uhm... (if definable) have a enum for specific failure message
   string failure_message = 3;
 }
 
