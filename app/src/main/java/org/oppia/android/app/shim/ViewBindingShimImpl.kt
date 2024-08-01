@@ -14,6 +14,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.profile.ProfileItemViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
@@ -21,6 +22,7 @@ import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.android.databinding.ProfileItemBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
 import org.oppia.android.databinding.SurveyMultipleChoiceItemBinding
 import org.oppia.android.databinding.SurveyNpsItemBinding
@@ -192,6 +194,24 @@ class ViewBindingShimImpl @Inject constructor(
     val binding =
       DataBindingUtil.findBinding<SurveyNpsItemBinding>(view)!!
     binding.scoreContent = viewModel.optionContent
+    binding.viewModel = viewModel
+  }
+
+  override fun provideProfileItemInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return ProfileItemBinding.inflate(
+      LayoutInflater.from(parent.context),
+      parent,
+      false
+    ).root
+  }
+
+  override fun provideProfileItemViewModel(view: View, viewModel: ProfileItemViewModel) {
+    val binding =
+      DataBindingUtil.findBinding<ProfileItemBinding>(view)!!
     binding.viewModel = viewModel
   }
 

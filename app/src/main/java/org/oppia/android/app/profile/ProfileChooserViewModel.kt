@@ -19,7 +19,7 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-/** The ViewModel for [ProfileChooserFragment]. */
+/** The ViewModel for [ProfileActionChooserFragment]. */
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
@@ -30,7 +30,7 @@ class ProfileChooserViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
-  private val addProfileListener = fragment as AddProfileListener
+  private val profileClickListener = fragment as ProfileClickListener
 
   /** Observable field to track if the add profile button should be shown. */
   val canAddProfile = ObservableField(true)
@@ -62,7 +62,7 @@ class ProfileChooserViewModel @Inject constructor(
         is AsyncResult.Pending -> emptyList()
         is AsyncResult.Success -> profilesResult.value
       }.map {
-        ProfileItemViewModel(it)
+        ProfileItemViewModel(it, profileClickListener::onProfileClicked)
       }
 
       profileList.forEach { profileItemViewModel ->
@@ -143,10 +143,5 @@ class ProfileChooserViewModel @Inject constructor(
   /** Handles click events for the administrator controls button. */
   fun onAdministratorControlsButtonClicked() {
     routeToAdminPinListener.routeToAdminPin()
-  }
-
-  /** Handles click events for the add profile button. */
-  fun onAddProfileButtonClicked() {
-    addProfileListener.onAddProfileClicked()
   }
 }

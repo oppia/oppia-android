@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.Profile
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Fragment that allows user to select a profile or create new ones. */
-class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener, AddProfileListener {
+class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener, ProfileClickListener {
   @Inject
   lateinit var profileChooserFragmentPresenterV1: ProfileChooserFragmentPresenterV1
 
@@ -48,7 +49,7 @@ class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener, Ad
     }
   }
 
-  override fun onAddProfileClicked() {
-    profileChooserFragmentPresenter.addProfileClickListener()
+  override fun onProfileClicked(profile: Profile) {
+    profileChooserFragmentPresenter.onProfileClick(profile)
   }
 }

@@ -216,7 +216,7 @@
     <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
-  <!-- ProfileChooserFragment -->
+  <!-- ProfileActionChooserFragment -->
   <string name="profile_chooser_activity_label">Profile selection page</string>
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>

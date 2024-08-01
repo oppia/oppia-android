@@ -61,7 +61,7 @@ private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_24_color
 )
 
-/** The presenter for [ProfileChooserFragment]. */
+/** The presenter for [ProfileActionChooserFragment]. */
 @FragmentScope
 class ProfileChooserFragmentPresenterV1 @Inject constructor(
   private val fragment: Fragment,
@@ -130,7 +130,7 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
     return when (wasProfileEverBeenAddedResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ProfileChooserFragment",
+          "ProfileActionChooserFragment",
           "Failed to retrieve the information on wasProfileEverBeenAdded",
           wasProfileEverBeenAddedResult.error
         )

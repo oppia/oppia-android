@@ -509,7 +509,7 @@
   <dimen name="topic_fragment_tab_layout_margin_end">64dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
 
-  <!-- ProfileChooserFragment -->
+  <!-- ProfileActionChooserFragment -->
   <dimen name="profile_chooser_profile_select_text_margin_start">64dp</dimen>
   <dimen name="profile_chooser_margin_top_profile_already_added">24dp</dimen>
   <dimen name="profile_chooser_margin_top_profile_not_added">124dp</dimen>

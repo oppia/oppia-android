@@ -140,7 +140,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/player/stopplaying/
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/stopplaying/StopStatePlayingSessionListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileActivityPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminAuthActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminAuthEnum.kt"

@@ -1,6 +1,8 @@
 package org.oppia.android.app.profile
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
@@ -21,6 +25,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.databinding.ProfileItemBinding
 import org.oppia.android.databinding.ProfileSelectionFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -83,22 +88,84 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     StatusBarColor.statusBarColorUpdate(
       R.color.component_color_shared_profile_status_bar_color, activity, false
     )
-    binding = ProfileSelectionFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-    binding.apply {
+
+    binding = ProfileSelectionFragmentBinding.inflate(inflater, container, false).apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
+
     logProfileChooserEvent()
-    binding.profilesList.isNestedScrollingEnabled = false
     subscribeToWasProfileEverBeenAdded()
-    binding.profilesList.apply {
+
+    binding.apply {
+      when (Resources.getSystem().configuration.orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> setupPortraitMode()
+        Configuration.ORIENTATION_LANDSCAPE -> setupLandscapeMode()
+      }
+    }
+
+    binding.addProfileButton.setOnClickListener { addProfileButtonClickListener() }
+    binding.addProfilePrompt.setOnClickListener { addProfileButtonClickListener() }
+
+    return binding.root
+  }
+
+  private fun ProfileSelectionFragmentBinding.setupPortraitMode() {
+    profilesList?.apply {
+      isNestedScrollingEnabled = false
       adapter = createRecyclerViewAdapter()
     }
-    return binding.root
+  }
+
+  private fun ProfileSelectionFragmentBinding.setupLandscapeMode() {
+    val snapHelper = StartSnapHelper()
+    val layoutManager = profilesListLandscape?.layoutManager as LinearLayoutManager?
+
+    profilesListLandscape?.onFlingListener = null
+
+    profilesListLandscape?.viewTreeObserver?.addOnGlobalLayoutListener {
+      if (profilesListLandscape.shouldShowScrollArrows()) {
+        profileScrollLeft?.visibility = View.VISIBLE
+        profileScrollRight?.visibility = View.VISIBLE
+      } else {
+        profileScrollLeft?.visibility = View.GONE
+        profileScrollRight?.visibility = View.GONE
+      }
+    }
+
+    profileScrollLeft?.setOnClickListener {
+      snapRecyclerView(layoutManager, snapHelper, true)
+    }
+
+    profileScrollRight?.setOnClickListener {
+      snapRecyclerView(layoutManager, snapHelper, false)
+    }
+  }
+
+  private fun RecyclerView.shouldShowScrollArrows(): Boolean {
+    val layoutManager = this.layoutManager as? LinearLayoutManager ?: return false
+
+    val visibleItemCount = layoutManager.childCount
+    val totalItemCount = this.adapter?.itemCount
+    return totalItemCount != null && totalItemCount > visibleItemCount
+  }
+
+  private fun snapRecyclerView(
+    layoutManager: LinearLayoutManager?,
+    snapHelper: StartSnapHelper,
+    isLeft: Boolean
+  ) {
+    val newLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+    val targetView = snapHelper.findSnapView(layoutManager ?: newLayoutManager)
+    targetView?.let {
+      val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager ?: newLayoutManager, it)
+      val scrollDistance = distance?.get(0) ?: 0
+      val width = binding.profilesListLandscape?.width ?: 0
+
+      val offset = if (isLeft) scrollDistance - width else width - scrollDistance
+      binding.profilesListLandscape?.smoothScrollBy(offset, 0)
+    }
   }
 
   private fun subscribeToWasProfileEverBeenAdded() {
@@ -112,7 +179,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           activity.resources.getInteger(R.integer.profile_chooser_first_time_span_count)
         }
         val layoutManager = GridLayoutManager(activity, spanCount)
-        binding.profilesList.layoutManager = layoutManager
+        binding.profilesList?.layoutManager = layoutManager
       }
     )
   }
@@ -163,13 +230,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = viewModel
     binding.profileItemContainer.setOnClickListener {
-      updateLearnerIdIfAbsent(viewModel.profile)
-      ensureProfileOnboarded(viewModel.profile)
     }
   }
 
-  /** Click listener for the button to add a new profile. */
-  fun addProfileClickListener() {
+  /** Click listener for handling clicks to login to a profile. */
+  fun onProfileClick(profile: Profile) {
+    updateLearnerIdIfAbsent(profile)
+    ensureProfileOnboarded(profile)
+  }
+
+  private fun addProfileButtonClickListener() {
     if (chooserViewModel.adminPin.isEmpty()) {
       activity.startActivity(
         AdminPinActivity.createAdminPinActivityIntent(

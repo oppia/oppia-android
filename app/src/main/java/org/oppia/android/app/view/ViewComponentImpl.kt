@@ -14,6 +14,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListView
 import org.oppia.android.app.player.state.DragDropSortInteractionView
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.player.state.SelectionInteractionView
+import org.oppia.android.app.profile.ProfileListView
 import org.oppia.android.app.survey.SurveyMultipleChoiceOptionView
 import org.oppia.android.app.survey.SurveyNpsItemOptionView
 
@@ -45,4 +46,5 @@ interface ViewComponentImpl : ViewComponent {
   fun inject(oppiaCurveBackgroundView: OppiaCurveBackgroundView)
   fun inject(surveyMultipleChoiceOptionView: SurveyMultipleChoiceOptionView)
   fun inject(surveyNpsItemOptionView: SurveyNpsItemOptionView)
+  fun inject(profileListView: ProfileListView)
 }
