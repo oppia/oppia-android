@@ -5,6 +5,7 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
+import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
@@ -138,6 +139,24 @@ class RunCoverage(
         runCoverageForFile(filePath)
     }
 
+    /*At this point we will/should be having a container of coverage reports
+    * have generate text report() here in one unified space
+    * generate -> val reporter =
+        CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
+      var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
+      *
+      * generateRichTextReport() ->
+      *   HTML -> container: for each -> generate html report
+      *   MD   -> container: combined -> each ; add md report
+      *
+      *  This could be standard for local -> put in a base cmd -> run cov -> collects protos ->
+      *  gets one proto container -> saves proto to path (both html and md) -> generates report
+      *  for HTML -> generates f1.html, f2.html, f3.html (its own path)
+      *  for MD   -> generates one common cov.md report at coverage_reports/cov.md
+      * (this md report is basically unnecessary for local dev unless for debugging,
+      *  but to keep things consistent in the workflow we us this approach)
+    * */
+
     //
     if (reportFormat == ReportFormat.MARKDOWN) {
       val cov = coverageReportContainer2.build()
@@ -163,6 +182,9 @@ class RunCoverage(
       val serialized = cov.toCompressedBase64()
       println("Serialized: $serialized")
 
+      val deserialize = CoverageReportContainer.getDefaultInstance().mergeFromCompressedBase64(serialized)
+      println("Deserialized: $deserialize")
+
       /*File("/coverage_reports/coverage_report.proto64").printWriter().use { writer ->
         writer.println(serialized)
       }*/
@@ -187,6 +209,7 @@ class RunCoverage(
   private fun runCoverageForFile(filePath: String): String {
     val exemption = testFileExemptionList[filePath]
     if (exemption != null && exemption.testFileNotRequired) {
+      // add as cov rep for cov con
       return "The file: $filePath is exempted from having a test file; skipping coverage check."
         .also {
           println(it)
@@ -194,6 +217,7 @@ class RunCoverage(
     } else {
       val testFilePaths = findTestFiles(repoRoot, filePath)
       if (testFilePaths.isEmpty()) {
+        // add as cov rep for cov con
         return "No appropriate test file found for $filePath".also {
           println(it)
         }
@@ -208,6 +232,7 @@ class RunCoverage(
       // Check if the coverage reports are successfully generated else return failure message.
       coverageReports.firstOrNull()?.let {
         if (!it.isGenerated) {
+          // add the generated (failed) cov rep straight into cov con
           return "Failed to generate coverage report for the file: $filePath.".also {
             println(it)
           }
@@ -216,6 +241,15 @@ class RunCoverage(
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
       println("Aggregated Coverage Report: $aggregatedCoverageReport")
+
+      // may be just combine coverage reports into containers here
+      /* container.add(aggregatedCoverageReport)
+      *  we will have a container of coverage reports or call a combine coverage report to keep things clean
+      *  and keep this just for a single file run
+      *  combineCoverageReport()
+      * */
+
+
       val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
 
       return reportText
