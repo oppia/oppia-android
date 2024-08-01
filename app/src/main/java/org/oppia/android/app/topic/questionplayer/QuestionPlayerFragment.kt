@@ -9,6 +9,8 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.QuestionPlayerFragmentArguments
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -42,6 +44,7 @@ class QuestionPlayerFragment :
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
+    questionPlayerFragmentPresenter.handleAttach(context)
   }
 
   override fun onCreateView(
@@ -52,7 +55,9 @@ class QuestionPlayerFragment :
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to QuestionPlayerFragment"
     }
-    val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    val arguments =
+      args.getProto(ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance())
+    val profileId = arguments.profileId
     return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 
@@ -96,7 +101,9 @@ class QuestionPlayerFragment :
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
 
   companion object {
-    private const val PROFILE_ID_ARGUMENT_KEY = "QuestionPlayerFragment.profile_id"
+
+    /** Arguments key for [QuestionPlayerFragment]. */
+    const val ARGUMENTS_KEY = "QuestionPlayerFragment.arguments"
 
     /**
      * Creates a new fragment to play a question session.
@@ -104,12 +111,17 @@ class QuestionPlayerFragment :
      * @param profileId the profile in which the question play session will be played
      * @return a new [QuestionPlayerFragment] to start a question play session
      */
-    fun newInstance(profileId: ProfileId): QuestionPlayerFragment {
-      return QuestionPlayerFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+    fun newInstance(profileId: ProfileId, readingTextSize: ReadingTextSize):
+      QuestionPlayerFragment {
+        val args = QuestionPlayerFragmentArguments.newBuilder().apply {
+          this.profileId = profileId
+          this.readingTextSize = readingTextSize
+        }.build()
+        return QuestionPlayerFragment().apply {
+          arguments = Bundle().apply {
+            putProto(ARGUMENTS_KEY, args)
+          }
         }
       }
-    }
   }
 }

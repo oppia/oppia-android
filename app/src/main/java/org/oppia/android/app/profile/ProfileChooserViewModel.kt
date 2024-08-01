@@ -24,8 +24,7 @@ class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
 
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener

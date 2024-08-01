@@ -92,7 +92,7 @@ class ProfileTestHelper @Inject constructor(
   }
 
   /** Creates one admin profile with default values for all fields. */
-  fun createDefaultProfile() {
+  fun createDefaultAdminProfile() {
     addProfileAndWait(
       name = "",
       pin = "",

@@ -1418,7 +1418,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_checkUpdateIsSuccessful() {
     setUpTestApplicationComponent()
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_0,
@@ -1443,7 +1443,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_invalidName_checkUpdateFailed() {
     setUpTestApplicationComponent()
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_0,
@@ -1461,7 +1461,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_nullAvatarUri_setsAvatarColorSuccessfully() {
     setUpTestApplicationComponent()
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_0,
@@ -1483,7 +1483,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_invalidProfileId_checkUpdateFailed() {
     setUpTestApplicationComponent()
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_3,
@@ -1526,7 +1526,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateProfileType_newDefaultProfile_checkUpdateSucceeded() {
     setUpTestApplicationComponent()
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateProfileType(
       PROFILE_ID_0,
