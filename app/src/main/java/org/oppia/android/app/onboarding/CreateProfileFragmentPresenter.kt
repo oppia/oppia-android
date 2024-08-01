@@ -206,9 +206,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    return COLORS_LIST.map {
-      ContextCompat.getColor(fragment.requireContext(), it)
-    }.random()
+    return ContextCompat.getColor(fragment.requireContext(), COLORS_LIST.random())
   }
 
   private companion object {

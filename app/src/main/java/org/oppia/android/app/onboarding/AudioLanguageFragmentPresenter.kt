@@ -83,9 +83,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       appLanguageResourceHandler.getStringInLocale(R.string.app_name)
     )
 
-    binding.onboardingNavigationBack.setOnClickListener {
-      activity.finish()
-    }
+    binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
 
     audioLanguageSelectionViewModel.availableAudioLanguages.observe(
       fragment,
@@ -141,6 +139,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
             fragment.startActivity(intent)
+            // Finish this activity as well as all activities immediately below it in the current
+            // task so that the user cannot navigate back to the onboarding flow by pressing the
+            // back button once onboarding is complete
             fragment.activity?.finishAffinity()
           }
           is AsyncResult.Failure ->

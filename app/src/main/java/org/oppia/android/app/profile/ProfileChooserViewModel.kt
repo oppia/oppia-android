@@ -25,8 +25,7 @@ class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
 
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
@@ -70,13 +69,6 @@ class ProfileChooserViewModel @Inject constructor(
     }.toMutableList()
 
     val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
-
-    // TODO(#4938): Remove hacky workaround once proper admin profile creation flow is implemented.
-    if (enableOnboardingFlowV2.value) {
-      adminProfile.let {
-        profileManagementController.updateProfileType(it.profile.id, ProfileType.SUPERVISOR)
-      }
-    }
 
     sortedProfileList.remove(adminProfile)
     adminPin = adminProfile.profile.pin

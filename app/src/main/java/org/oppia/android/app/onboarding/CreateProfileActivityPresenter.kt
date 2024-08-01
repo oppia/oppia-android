@@ -1,7 +1,6 @@
 package org.oppia.android.app.onboarding
 
 import android.os.Bundle
-import android.view.Gravity.apply
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
