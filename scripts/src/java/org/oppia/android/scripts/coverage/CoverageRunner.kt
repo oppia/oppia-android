@@ -5,6 +5,8 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoverageDetails
+import org.oppia.android.scripts.proto.CoverageFailure
 import org.oppia.android.scripts.proto.CoveredLine
 import java.io.File
 import java.nio.file.Files
@@ -36,7 +38,10 @@ class CoverageRunner(
     bazelTestTarget: String
   ): CoverageReport {
       val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: return generateFailedCoverageReport()
+        ?: return generateFailedCoverageReport(
+          bazelTestTarget,
+          "Coverage retrieval failed for the test target: $bazelTestTarget"
+        )
 
       return coverageDataFileLines(coverageResult, bazelTestTarget)
   }
@@ -56,11 +61,17 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) return generateFailedCoverageReport()
+    if (sfStartIdx == -1) return generateFailedCoverageReport(
+      bazelTestTarget,
+      "Source File: $extractedFileName not found in the coverage data"
+    )
     val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
       it.startsWith("end_of_record")
     }
-    if (eofIdx == -1) return generateFailedCoverageReport()
+    if (eofIdx == -1) return generateFailedCoverageReport(
+      bazelTestTarget,
+      "End of record for the test target $bazelTestTarget not found in the coverage report"
+    )
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
 
@@ -87,22 +98,43 @@ class CoverageRunner(
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
 
-    return CoverageReport.newBuilder()
+    val coverageDetails = CoverageDetails.newBuilder()
       .setBazelTestTarget(bazelTestTarget)
       .setFilePath(filePath)
       .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(coveredLines)
       .setLinesFound(linesFound)
       .setLinesHit(linesHit)
-      .setIsGenerated(true)
+//      .setIsGenerated(true)
       .build()
+
+    return CoverageReport.newBuilder()
+      .setDetails(coverageDetails)
+      .build()
+
   }
 }
 
-private fun generateFailedCoverageReport(): CoverageReport {
-  return CoverageReport.newBuilder()
-    .setIsGenerated(false)
+private fun generateFailedCoverageReport(
+  bazelTestTarget: String,
+  failureMessage: String
+): CoverageReport {
+  val coverageFailure = CoverageFailure.newBuilder()
+    .setBazelTestTarget(bazelTestTarget)
+    .setFailureMessage(failureMessage)
     .build()
+
+  return CoverageReport.newBuilder()
+    .setFailure(coverageFailure)
+    .build()
+
+//    .setReportStatus(CoverageReport.ReportStatus.newBuilder()
+      /*.setBazelTestTarget(bazelTestTarget)
+      .setFailureMessage(failureMessage)
+      .build()*/
+//    )
+    /*.setIsGenerated(false)
+    .build()*/
 }
 
 private fun extractTargetName(bazelTestTarget: String): String {

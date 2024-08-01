@@ -24,8 +24,8 @@ class CoverageReporter(
 //  private val filePath = coverageReport.filePath
   private val filePath = ""
 
-  private val totalLinesFound = coverageReport.linesFound
-  private val totalLinesHit = coverageReport.linesHit
+  private val totalLinesFound = coverageReport.details.linesFound
+  private val totalLinesHit = coverageReport.details.linesHit
 
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
@@ -53,8 +53,15 @@ class CoverageReporter(
 
   private fun generateHtmlReport(): Pair<Float, String> {
     println("In generate html report: $coverageReportContainer")
-    println("File path is: ${coverageReportContainer.coverageReportList.firstOrNull()?.filePath}")
-    val filePath = coverageReportContainer.coverageReportList.firstOrNull()?.filePath
+    // update later
+    // for firstOrNull
+    // have a coveragerport = coveragereportcontainer.coveragereportlist.details
+    // but that will need to be handled differently for md
+    // as that will need to include failure cases
+    // wait no in this way even html wouild have one
+    // so that too needs to be handled
+    println("File path is: ${coverageReportContainer.coverageReportList.firstOrNull()?.details?.filePath}")
+    val filePath = coverageReportContainer.coverageReportList.firstOrNull()?.details?.filePath
 
     var htmlContent =
       """
@@ -186,7 +193,9 @@ class CoverageReporter(
       """.trimIndent()
 
     val fileContent = File(repoRoot, filePath).readLines()
-    val coverageMap = coverageReport.coveredLineList.associateBy { it.lineNumber }
+    val coverageMap = coverageReport.details.coveredLineList.associateBy { it.lineNumber }
+//    val coverageMap = coverageReport.coveredLineList.associateBy { it.lineNumber }
+//    val coverageMap = coverageReportContainer.coverageReportList.details.coveredLineList.associateBy {it.lineNumber}
 
     fileContent.forEachIndexed { index, line ->
       val lineNumber = index + 1
@@ -214,8 +223,8 @@ class CoverageReporter(
   }
 
   private fun computeCoverageRatio(): Float {
-    return coverageReport.linesFound.takeIf { it != 0 }?.let {
-      coverageReport.linesHit.toFloat() / it.toFloat()
+    return coverageReport.details.linesFound.takeIf { it != 0 }?.let {
+      coverageReport.details.linesHit.toFloat() / it.toFloat()
     } ?: 0f
   }
 

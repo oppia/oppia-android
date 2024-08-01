@@ -7,6 +7,9 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoverageDetails
+import org.oppia.android.scripts.proto.CoverageExemption
+import org.oppia.android.scripts.proto.CoverageFailure
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.CoveredLine
@@ -139,6 +142,8 @@ class RunCoverage(
         runCoverageForFile(filePath)
     }
 
+    println("Coverage Results: $coverageResults")
+
     /*At this point we will/should be having a container of coverage reports
     * have generate text report() here in one unified space
     * generate -> val reporter =
@@ -194,7 +199,7 @@ class RunCoverage(
       }
     }
 
-    if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
+//    if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
     if (coverageCheckState == CoverageCheck.FAIL) {
       error(
@@ -206,21 +211,35 @@ class RunCoverage(
     }
   }
 
-  private fun runCoverageForFile(filePath: String): String {
+  private fun runCoverageForFile(filePath: String): CoverageReport {
     val exemption = testFileExemptionList[filePath]
     if (exemption != null && exemption.testFileNotRequired) {
       // add as cov rep for cov con
-      return "The file: $filePath is exempted from having a test file; skipping coverage check."
+      /*return "The file: $filePath is exempted from having a test file; skipping coverage check."
         .also {
           println(it)
-        }
+        }*/
+
+      return CoverageReport.newBuilder()
+        .setExemption(
+          CoverageExemption.newBuilder()
+            .setFilePath(filePath)
+            .build()
+        ).build()
     } else {
       val testFilePaths = findTestFiles(repoRoot, filePath)
       if (testFilePaths.isEmpty()) {
         // add as cov rep for cov con
-        return "No appropriate test file found for $filePath".also {
+        /*return "No appropriate test file found for $filePath".also {
           println(it)
-        }
+        }*/
+        return CoverageReport.newBuilder()
+          .setFailure(
+            CoverageFailure.newBuilder()
+              .setFilePath(filePath)
+              .setFailureMessage("No appropriate test file found for $filePath")
+              .build()
+          ).build()
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
@@ -230,12 +249,21 @@ class RunCoverage(
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
       // Check if the coverage reports are successfully generated else return failure message.
-      coverageReports.firstOrNull()?.let {
-        if (!it.isGenerated) {
+//      coverageReports.firstOrNull()?.let {
+        /*if (!it.isGenerated) {
           // add the generated (failed) cov rep straight into cov con
           return "Failed to generate coverage report for the file: $filePath.".also {
             println(it)
           }
+        }*/
+//      }
+
+      coverageReports.forEach { report ->
+        if (report.hasFailure()) {
+          // (may be) add file path here
+          return CoverageReport.newBuilder()
+            .setFailure(report.failure)
+            .build()
         }
       }
 
@@ -251,12 +279,15 @@ class RunCoverage(
 
 
       val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
+      println("Report Text: $reportText")
 
-      return reportText
+//      return reportText
+      return aggregatedCoverageReport
     }
   }
 
-  private fun generateFinalMdReport(coverageResults: List<String>) {
+  // move it to coverage reporter
+  /*private fun generateFinalMdReport(coverageResults: List<String>) {
     val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
 
     val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
@@ -315,7 +346,7 @@ class RunCoverage(
       parentFile?.mkdirs()
       writeText(finalReportText)
     }
-  }
+  }*/
 
   private fun generateAggregatedCoverageReport(aggregatedCoverageReport: CoverageReport): String {
     var pubReportText = ""
@@ -341,7 +372,7 @@ class RunCoverage(
         CoverageReporter(repoRoot, aggregatedCoverageReport, coverageReportContainer, reportFormat)
       var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
-      val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.filePath]
+      val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.details.filePath]
         ?.overrideMinCoveragePercentRequired
         ?: MIN_THRESHOLD
 
@@ -355,7 +386,7 @@ class RunCoverage(
       } else ""
 
       val reportOutputPath = getReportOutputPath(
-        repoRoot, aggregatedCoverageReport.filePath, reportFormat
+        repoRoot, aggregatedCoverageReport.details.filePath, reportFormat
       )
       File(reportOutputPath).apply {
         parentFile?.mkdirs()
@@ -381,7 +412,7 @@ class RunCoverage(
         CoverageReporter(repoRoot, aggregatedCoverageReport, coverageReportContainer, reportFormat)
       var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
-      val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.filePath]
+      val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.details.filePath]
         ?.overrideMinCoveragePercentRequired
         ?: MIN_THRESHOLD
 
@@ -395,7 +426,7 @@ class RunCoverage(
       } else ""
 
       val reportOutputPath = getReportOutputPath(
-        repoRoot, aggregatedCoverageReport.filePath, reportFormat
+        repoRoot, aggregatedCoverageReport.details.filePath, reportFormat
       )
       File(reportOutputPath).apply {
         parentFile?.mkdirs()
@@ -419,19 +450,18 @@ class RunCoverage(
     coverageReports: List<CoverageReport>
   ): CoverageReport {
     fun aggregateCoverage(coverages: List<Coverage>): Coverage {
-      return if (coverages.contains(Coverage.FULL)) Coverage.FULL
-      else Coverage.NONE
+      return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
     }
 
     val groupedCoverageReports = coverageReports.groupBy {
-      Pair(it.filePath, it.fileSha1Hash)
+      Pair(it.details.filePath, it.details.fileSha1Hash)
     }
 
     val singleCoverageReport = groupedCoverageReports.entries.single()
     val (key, reports) = singleCoverageReport
     val (filePath, fileSha1Hash) = key
 
-    val allCoveredLines = reports.flatMap { it.coveredLineList }
+    val allCoveredLines = reports.flatMap { it.details.coveredLineList }
     val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
     val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
       CoveredLine.newBuilder()
@@ -442,17 +472,33 @@ class RunCoverage(
 
     val totalLinesFound = aggregatedCoveredLines.size
     val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-    val aggregatedTargetList = reports.joinToString(separator = ", ") { it.bazelTestTarget }
+    val aggregatedTargetList = reports.joinToString(separator = ", ") { it.details.bazelTestTarget }
 
-    return CoverageReport.newBuilder()
+    val coverageDetails = CoverageDetails.newBuilder()
       .setBazelTestTarget(aggregatedTargetList)
       .setFilePath(filePath)
       .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(aggregatedCoveredLines)
       .setLinesFound(totalLinesFound)
       .setLinesHit(totalLinesHit)
-      .setIsGenerated(true)
       .build()
+
+    return CoverageReport.newBuilder()
+      .setDetails(coverageDetails)
+      .build()
+
+    /*return CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setBazelTestTarget(aggregatedTargetList)
+          .setFilePath(filePath)
+          .setFileSha1Hash(fileSha1Hash)
+          .addAllCoveredLine(aggregatedCoveredLines)
+          .setLinesFound(totalLinesFound)
+          .setLinesHit(totalLinesHit)
+//          .setIsGenerated(true)
+          .build()
+    ).build()*/
   }
 
   /** Corresponds to status of the coverage analysis. */
