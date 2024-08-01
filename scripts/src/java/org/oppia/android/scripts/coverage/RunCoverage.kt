@@ -4,7 +4,6 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
@@ -170,7 +169,6 @@ private fun calculateAggregateCoverageReport(
 
   val totalLinesFound = aggregatedCoveredLines.size
   val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-
 
   return CoverageReport.newBuilder()
     .addAllBazelTestTargets(allBazelTestTargets)
