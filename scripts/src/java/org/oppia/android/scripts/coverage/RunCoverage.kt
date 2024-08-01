@@ -118,86 +118,14 @@ class RunCoverage(
         "No appropriate test file found for $filePath"
       }
 
-      /*val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
       val coverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
-      }*/
-
-      val coverageReports = listOf(
-        CoverageReport.newBuilder()
-        .addBazelTestTargets(
-          BazelTestTarget.newBuilder()
-            .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
-        )
-        .setFilePath("coverage/main/java/com/example/AddNums.kt")
-        .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(3)
-            .setCoverage(Coverage.NONE)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(7)
-            .setCoverage(Coverage.NONE)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(8)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(10)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .setLinesFound(4)
-        .setLinesHit(2)
-        .build(),
-        CoverageReport.newBuilder()
-          .addBazelTestTargets(
-            BazelTestTarget.newBuilder()
-              .setTestTargetName("//coverage/test/java/com/example:AddNumsLocalTest")
-          )
-          .setFilePath("coverage/main/java/com/example/AddNums.kt")
-          .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(3)
-              .setCoverage(Coverage.FULL)
-              .build()
-          )
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(7)
-              .setCoverage(Coverage.NONE)
-              .build()
-          )
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(8)
-              .setCoverage(Coverage.FULL)
-              .build()
-          )
-          .addCoveredLine(
-            CoveredLine.newBuilder()
-              .setLineNumber(10)
-              .setCoverage(Coverage.NONE)
-              .build()
-          )
-          .setLinesFound(4)
-          .setLinesHit(2)
-          .build()
-      )
+      }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
-      println("Aggregated coverage report: $aggregatedCoverageReport")
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
       val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
@@ -227,10 +155,10 @@ private fun calculateAggregateCoverageReport(
     Pair(it.filePath, it.fileSha1Hash)
   }
 
-  val singleCoverageReport = groupedCoverageReports.entries.single()
-  val (key, reports) = singleCoverageReport
+  val (key, reports) = groupedCoverageReports.entries.single()
   val (filePath, fileSha1Hash) = key
 
+  val allBazelTestTargets = reports.flatMap { it.bazelTestTargetsList }
   val allCoveredLines = reports.flatMap { it.coveredLineList }
   val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
   val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
@@ -243,18 +171,6 @@ private fun calculateAggregateCoverageReport(
   val totalLinesFound = aggregatedCoveredLines.size
   val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
 
-  val allBazelTestTargets = reports.flatMap { it.bazelTestTargetsList }
-  println("Reports: $allBazelTestTargets")
-  /*val bazelTestTargetsList = reports.map { target ->
-    BazelTestTarget.newBuilder()
-      .setTestTargetName(target.testTargetNameList)
-      .build()
-  }*/
-
-  /*val bazelTestTargetList = reports.flatMap { report ->
-    BazelTestTarget.newBuilder()
-  }*/
-//  val aggregatedTargetList = reports.joinToString(separator = ", ") { it.bazelTestTarget }
 
   return CoverageReport.newBuilder()
     .addAllBazelTestTargets(allBazelTestTargets)
