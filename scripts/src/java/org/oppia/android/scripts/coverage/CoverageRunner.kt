@@ -82,7 +82,6 @@ class CoverageRunner(
         line.substringAfter(":").split(",")
       }
     }
-//    println("Coverage Data props: $coverageDataProps")
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
     val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
@@ -127,14 +126,6 @@ private fun generateFailedCoverageReport(
   return CoverageReport.newBuilder()
     .setFailure(coverageFailure)
     .build()
-
-//    .setReportStatus(CoverageReport.ReportStatus.newBuilder()
-      /*.setBazelTestTarget(bazelTestTarget)
-      .setFailureMessage(failureMessage)
-      .build()*/
-//    )
-    /*.setIsGenerated(false)
-    .build()*/
 }
 
 private fun extractTargetName(bazelTestTarget: String): String {

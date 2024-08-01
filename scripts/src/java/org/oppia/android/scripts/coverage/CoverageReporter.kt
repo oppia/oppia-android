@@ -3,7 +3,10 @@ package org.oppia.android.scripts.coverage
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
+import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
+
+private const val MIN_THRESHOLD = 99 // to be decided and moved to a better place
 
 /**
  * Class responsible for generating rich text coverage report.
@@ -12,257 +15,6 @@ import java.io.File
  * @param coverageReport the coverage data proto
  * @param reportFormat the format in which the report will be generated
  */
-//class CoverageReporter(
-//  private val repoRoot: String,
-//  private val coverageReport: CoverageReport,
-//  private val coverageReportContainer: CoverageReportContainer,
-//  private val reportFormat: ReportFormat,
-//) {
-//  private val computedCoverageRatio = computeCoverageRatio()
-//  private val formattedCoveragePercentage = "%.2f".format(computedCoverageRatio * 100)
-//
-////  private val filePath = coverageReport.filePath
-//  private val filePath = ""
-//
-//  private val totalLinesFound = coverageReport.details.linesFound
-//  private val totalLinesHit = coverageReport.details.linesHit
-//
-//  /**
-//   * Generates a rich text report for the analysed coverage data based on the specified format.
-//   * It supports Markdown and HTML formats.
-//   *
-//   * @return a pair where the first value is the computed coverage ratio represented in [0, 1]
-//   *     and the second value is the generated report text
-//   */
-//  fun generateRichTextReport(): Pair<Float, String> {
-//    logCoverageReport()
-//
-//    return when (reportFormat) {
-//      ReportFormat.MARKDOWN -> generateMarkdownReport()
-//      ReportFormat.HTML -> generateHtmlReport()
-//    }
-//  }
-//
-//  private fun generateMarkdownReport(): Pair<Float, String> {
-//    val markdownContent = "|${getFilenameAsLink(filePath)}" +
-//      "|$formattedCoveragePercentage%" +
-//      "|$totalLinesHit / $totalLinesFound"
-//
-//    return Pair(computedCoverageRatio, markdownContent)
-//  }
-//
-//  private fun generateHtmlReport(): Pair<Float, String> {
-//    println("In generate html report: $coverageReportContainer")
-//    // update later
-//    // for firstOrNull
-//    // have a coveragerport = coveragereportcontainer.coveragereportlist.details
-//    // but that will need to be handled differently for md
-//    // as that will need to include failure cases
-//    // wait no in this way even html wouild have one
-//    // so that too needs to be handled
-//    println("File path is: ${coverageReportContainer.coverageReportList.firstOrNull()?.details?.filePath}")
-//    val filePath = coverageReportContainer.coverageReportList.firstOrNull()?.details?.filePath
-//
-//    var htmlContent =
-//      """
-//    <!DOCTYPE html>
-//    <html lang="en">
-//    <head>
-//      <meta charset="UTF-8">
-//      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//      <title>Coverage Report</title>
-//      <style>
-//        body {
-//            font-family: Arial, sans-serif;
-//            font-size: 12px;
-//            line-height: 1.6;
-//            padding: 20px;
-//        }
-//        table {
-//            width: 100%;
-//            border-collapse: collapse;
-//            margin-bottom: 20px;
-//        }
-//        th, td {
-//            padding: 8px;
-//            margin-left: 20px;
-//            text-align: left;
-//            white-space: pre-wrap;
-//            border-bottom: 1px solid #e3e3e3;
-//        }
-//        .line-number-col {
-//            width: 4%;
-//        }
-//        .line-number-row {
-//            border-right: 1px solid #ababab
-//        }
-//        .source-code-col {
-//            width: 96%;
-//        }
-//        .covered-line, .not-covered-line, .uncovered-line {
-//            /*white-space: pre-wrap;*/
-//        }
-//        .covered-line {
-//            background-color: #c8e6c9; /* Light green */
-//        }
-//        .not-covered-line {
-//            background-color: #ffcdd2; /* Light red */
-//        }
-//        .uncovered-line {
-//            background-color: #f7f7f7; /* light gray */
-//        }
-//        .coverage-summary {
-//          margin-bottom: 20px;
-//        }
-//        h2 {
-//          text-align: center;
-//        }
-//        ul {
-//          list-style-type: none;
-//          padding: 0;
-//          text-align: center;
-//        }
-//        .summary-box {
-//          border: 1px solid #ccc;
-//          border-radius: 8px;
-//          padding: 10px;
-//          margin-bottom: 20px;
-//          display: flex;
-//          justify-content: space-between;
-//          align-items: flex-start;
-//        }
-//        .summary-left {
-//          text-align: left;
-//        }
-//        .summary-right {
-//          text-align: right;
-//        }
-//        .legend {
-//          display: flex;
-//          align-items: center;
-//        }
-//        .legend-item {
-//          width: 20px;
-//          height: 10px;
-//          margin-right: 5px;
-//          border-radius: 2px;
-//          display: inline-block;
-//        }
-//        .legend .covered {
-//          background-color: #c8e6c9; /* Light green */
-//        }
-//        .legend .not-covered {
-//          margin-left: 4px;
-//          background-color: #ffcdd2; /* Light red */
-//        }
-//        @media screen and (max-width: 768px) {
-//          body {
-//              padding: 10px;
-//          }
-//          table {
-//              width: auto;
-//          }
-//        }
-//      </style>
-//    </head>
-//    <body>
-//      <h2>Coverage Report</h2>
-//      <div class="summary-box">
-//        <div class="summary-left">
-//          <strong>Covered File:</strong> $filePath <br>
-//          <div class="legend">
-//            <div class="legend-item covered"></div>
-//            <span>Covered</span>
-//            <div class="legend-item not-covered"></div>
-//            <span>Uncovered</span>
-//          </div>
-//        </div>
-//        <div class="summary-right">
-//          <div><strong>Coverage percentage:</strong> $formattedCoveragePercentage%</div>
-//          <div><strong>Line coverage:</strong> $totalLinesHit / $totalLinesFound covered</div>
-//        </div>
-//      </div>
-//      <table>
-//        <thead>
-//          <tr>
-//            <th class="line-number-col">Line No</th>
-//            <th class="source-code-col">Source Code</th>
-//          </tr>
-//        </thead>
-//        <tbody>
-//      """.trimIndent()
-//
-//    val fileContent = File(repoRoot, filePath).readLines()
-//    val coverageMap = coverageReport.details.coveredLineList.associateBy { it.lineNumber }
-////    val coverageMap = coverageReport.coveredLineList.associateBy { it.lineNumber }
-////    val coverageMap = coverageReportContainer.coverageReportList.details.coveredLineList.associateBy {it.lineNumber}
-//
-//    fileContent.forEachIndexed { index, line ->
-//      val lineNumber = index + 1
-//      val lineClass = when (coverageMap.get(lineNumber)?.coverage) {
-//        Coverage.FULL -> "covered-line"
-//        Coverage.NONE -> "not-covered-line"
-//        else -> "uncovered-line"
-//      }
-//      htmlContent += """
-//        <tr>
-//            <td class="line-number-row">${lineNumber.toString().padStart(4, ' ')}</td>
-//            <td class="$lineClass">$line</td>
-//        </tr>
-//      """.trimIndent()
-//    }
-//
-//    htmlContent += """
-//        </tbody>
-//      </table>
-//    </body>
-//    </html>
-//    """.trimIndent()
-//
-//    return Pair(computedCoverageRatio, htmlContent)
-//  }
-//
-//  private fun computeCoverageRatio(): Float {
-//    return coverageReport.details.linesFound.takeIf { it != 0 }?.let {
-//      coverageReport.details.linesHit.toFloat() / it.toFloat()
-//    } ?: 0f
-//  }
-//
-//  private fun logCoverageReport() {
-//    val logReportText =
-//      """
-//      Coverage Report:
-//      ---------------
-//      Covered File: $filePath
-//      Coverage percentage: $formattedCoveragePercentage% covered
-//      Line coverage: $totalLinesHit / $totalLinesFound lines covered
-//      """
-//    println("$logReportText")
-//  }
-//}
-//
-//private fun getFilenameAsLink(filePath: String): String {
-//  val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-//  val filename = filePath.substringAfterLast("/").trim()
-//  val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
-//  return filenameAsLink
-//}
-//
-///** Represents the different types of formats available to generate code coverage reports. */
-//enum class ReportFormat {
-//  /** Indicates that the report should be formatted in .md format. */
-//  MARKDOWN,
-//  /** Indicates that the report should be formatted in .html format. */
-//  HTML
-//}
-
-// updated
-// for local dev save them to a default location
-// for ci save them to a specific provided path
-// have main call
-
-// ok may what we can do is have a pass to the path to the saved proto container
-// and retrieve it here and pass to the reporter
 
 /*fun main(vararg args: String) {
   // add later checks
@@ -285,6 +37,13 @@ class CoverageReporter(
   private val reportFormat: ReportFormat,
   private val mdReportOutputPath: String? = null
 ) {
+  private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  private val testFileExemptionList by lazy {
+    loadTestFileExemptionsProto(testFileExemptionTextProto)
+      .testFileExemptionList
+      .associateBy { it.exemptedFilePath }
+  }
+
   fun generateRichTextReport() {
     when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport()
@@ -488,8 +247,108 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport() {
+    val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
+      "|--------------|------------|---------------|--------|\n"
 
+    val (failures, rest) = coverageReportContainer.coverageReportList.partition { it.hasFailure() }
+    val (belowThreshold, successes) = rest.partition { report ->
+      report.hasDetails() && report.details.let {
+        val totalLinesFound = it.linesFound
+        val totalLinesHit = it.linesHit
+        val coveragePercentage = if (totalLinesFound > 0) {
+          (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
+        } else {
+          0
+        }
+        coveragePercentage < MIN_THRESHOLD
+      }
+    }
+
+    val failureTableRows = failures.filter { it.hasFailure() }.joinToString(separator = "\n") { report ->
+      val failure = report.failure
+      "| ${failure.filePath} | ${failure.failureMessage} |"
+    }
+
+    val belowThresholdTableRows = belowThreshold.filter { it.hasDetails() }.joinToString(separator = "\n") { report ->
+      val details = report.details
+      val filePath = details.filePath
+      val totalLinesFound = details.linesFound
+      val totalLinesHit = details.linesHit
+      val coveragePercentage = if (totalLinesFound > 0) {
+        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
+      } else {
+        0
+      }
+      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
+      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :x: |"
+    }
+
+    val successTableRows = successes.filter { it.hasDetails() }.joinToString(separator = "\n") { report ->
+      val details = report.details
+      val filePath = details.filePath
+      val totalLinesFound = details.linesFound
+      val totalLinesHit = details.linesHit
+      val coveragePercentage = if (totalLinesFound > 0) {
+        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
+      } else {
+        0
+      }
+      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
+      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :white_check_mark: |"
+    }
+
+    val anomalyCasesList = coverageReportContainer.coverageReportList
+      .filter { it.hasExemption() }
+      .map { exemption ->
+        val filePath = exemption.exemption.filePath
+        "${getFilenameAsLink(filePath)}"
+      }.joinToString(separator = "\n") { "- $it" }
+
+    val failureMarkdownTable = if (failureTableRows.isNotEmpty()) {
+      "### Failed Cases\n" +
+        "| File | Failure Reason |\n" +
+        "|------|----------------|\n" +
+        failureTableRows
+    } else ""
+
+    val belowThresholdMarkdownTable = if (belowThresholdTableRows.isNotEmpty()) {
+      "### Coverage Below Minimum Threshold\n" +
+        "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
+        coverageTableHeader +
+        belowThresholdTableRows
+    } else ""
+
+    val successMarkdownTable = if (successTableRows.isNotEmpty()) {
+      "<details>\n" +
+        "<summary>Succeeded Coverages</summary><br>\n\n" +
+        coverageTableHeader +
+        successTableRows +
+        "\n</details>"
+    } else ""
+
+    val anomalySection = if (anomalyCasesList.isNotEmpty()) {
+      "\n\n### Exempted Files\n$anomalyCasesList"
+    } else ""
+
+    val finalReportText = "## Coverage Report\n\n" +
+      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
+//      "- Coverage Status: **$coverageCheckState**\n" +
+      failureMarkdownTable +
+      "\n\n" +
+      belowThresholdMarkdownTable +
+      "\n\n" +
+      successMarkdownTable +
+      anomalySection
+
+    println("Final report text: $finalReportText")
+
+    val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
+    File(finalReportOutputPath).apply {
+      parentFile?.mkdirs()
+      writeText(finalReportText)
+    }
   }
+
 
   private fun logCoverageReport(container: CoverageReportContainer) {
     println(
@@ -574,4 +433,19 @@ private fun getReportOutputPath(
     ReportFormat.MARKDOWN -> "coverage.md"
   }
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
+}
+
+private fun getFilenameAsLink(filePath: String): String {
+  val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+  val filename = filePath.substringAfterLast("/").trim()
+  val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
+  return filenameAsLink
+}
+
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions.newBuilder().also { builder ->
+      builder.mergeFrom(stream)
+    }.build()
+  }
 }

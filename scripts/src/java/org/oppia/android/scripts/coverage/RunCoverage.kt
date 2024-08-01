@@ -144,7 +144,6 @@ class RunCoverage(
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
 
-    //generator
     val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
     reporter.generateRichTextReport()
 
@@ -170,11 +169,8 @@ class RunCoverage(
       *  but to keep things consistent in the workflow we us this approach)
     * */
 
-    //
     if (reportFormat == ReportFormat.MARKDOWN) {
       val cov = combinedCoverageReportContainer.build()
-//      println("Type: ${combinedCoverageReportContainer::class}")
-//      println("Type of cov: ${cov::class}")
 
       val covDirectoryPath = "${repoRoot}/coverage_reports/"
       val covFilePath = "${repoRoot}/coverage_reports/coverage_report.proto64"
@@ -188,26 +184,12 @@ class RunCoverage(
       if (!covFile.exists()) {
         covFile.createNewFile()
       }
-
-//      println("File: ${covFile.absolutePath}")
-//      println("Exists? -> ${covFile.exists()}")
-
       val serialized = cov.toCompressedBase64()
-//      println("Serialized: $serialized")
-
-//      val deserialize = CoverageReportContainer.getDefaultInstance().mergeFromCompressedBase64(serialized)
-//      println("Deserialized: $deserialize")
-
-      /*File("/coverage_reports/coverage_report.proto64").printWriter().use { writer ->
-        writer.println(serialized)
-      }*/
 
       covFile.printWriter().use { writer ->
         writer.println(serialized)
       }
     }
-
-//    if (reportFormat == ReportFormat.MARKDOWN) generateFinalMdReport(coverageResults)
 
     if (coverageCheckState == CoverageCheck.FAIL) {
       error(
@@ -222,12 +204,6 @@ class RunCoverage(
   private fun runCoverageForFile(filePath: String): CoverageReport {
     val exemption = testFileExemptionList[filePath]
     if (exemption != null && exemption.testFileNotRequired) {
-      // add as cov rep for cov con
-      /*return "The file: $filePath is exempted from having a test file; skipping coverage check."
-        .also {
-          println(it)
-        }*/
-
       return CoverageReport.newBuilder()
         .setExemption(
           CoverageExemption.newBuilder()
@@ -237,10 +213,6 @@ class RunCoverage(
     } else {
       val testFilePaths = findTestFiles(repoRoot, filePath)
       if (testFilePaths.isEmpty()) {
-        // add as cov rep for cov con
-        /*return "No appropriate test file found for $filePath".also {
-          println(it)
-        }*/
         return CoverageReport.newBuilder()
           .setFailure(
             CoverageFailure.newBuilder()
@@ -256,15 +228,6 @@ class RunCoverage(
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
-      // Check if the coverage reports are successfully generated else return failure message.
-//      coverageReports.firstOrNull()?.let {
-        /*if (!it.isGenerated) {
-          // add the generated (failed) cov rep straight into cov con
-          return "Failed to generate coverage report for the file: $filePath.".also {
-            println(it)
-          }
-        }*/
-//      }
 
       coverageReports.forEach { report ->
         if (report.hasFailure()) {
@@ -276,86 +239,9 @@ class RunCoverage(
       }
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
-//      println("Aggregated Coverage Report: $aggregatedCoverageReport")
-
-      // may be just combine coverage reports into containers here
-      /* container.add(aggregatedCoverageReport)
-      *  we will have a container of coverage reports or call a combine coverage report to keep things clean
-      *  and keep this just for a single file run
-      *  combineCoverageReport()
-      * */
-
-//      combineCoverageReport(aggregatedCoverageReport)
-
-      /*val reportText = generateAggregatedCoverageReport(aggregatedCoverageReport)
-      println("Report Text: $reportText")*/
-
-//      return reportText
       return aggregatedCoverageReport
     }
   }
-
-  // move it to coverage reporter
-  /*private fun generateFinalMdReport(coverageResults: List<String>) {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-
-    val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
-      "|--------------|------------|---------------|--------|\n"
-
-    val coverageFailures = coverageResults.filter { result ->
-      result.contains("|") && result.split("|")[4].trim() == ":x:"
-    }
-
-    val coverageSuccesses = coverageResults.filter { result ->
-      result.contains("|") && result.split("|")[4].trim() == ":white_check_mark:"
-    }
-
-    val anomalyCases = coverageResults
-      .filterNot { it.contains("|") }
-      .map {
-        it.replace(Regex("""([\w/]+\.kt)""")) { matchResult ->
-          "[${matchResult.value.substringAfterLast("/").trim()}]" +
-            "($oppiaDevelopGitHubLink/${matchResult.value})"
-        }
-      }
-
-    println("Anomalycases: $anomalyCases")
-    val coverageFailuresRows = coverageFailures.joinToString(separator = "\n")
-    val coverageSuccessesRows = coverageSuccesses.joinToString(separator = "\n")
-
-    val failureMarkdownTable = coverageFailuresRows.takeIf { it.isNotEmpty() }?.let {
-      "### Failed Coverages\n" +
-        "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
-        coverageTableHeader +
-        it
-    } ?: ""
-
-    val successMarkdownTable = coverageSuccessesRows.takeIf { it.isNotEmpty() }?.let {
-      "<details>\n" +
-        "<summary>Succeeded Coverages</summary><br>\n\n" +
-        coverageTableHeader +
-        it +
-        "\n</details>"
-    } ?: ""
-
-    val anomalyCasesList = anomalyCases.joinToString(separator = "\n") { "- $it" }
-    val anomalySection = anomalyCases.takeIf { it.isNotEmpty() }?.let {
-      "\n\n### Anomaly Cases\n$anomalyCasesList"
-    } ?: ""
-
-    val finalReportText = "## Coverage Report\n\n" +
-      "- No of files assessed: ${coverageResults.size}\n" +
-      "- Coverage Status: **$coverageCheckState**\n" +
-      failureMarkdownTable +
-      "\n\n" + successMarkdownTable +
-      anomalySection
-
-    val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
-    File(finalReportOutputPath).apply {
-      parentFile?.mkdirs()
-      writeText(finalReportText)
-    }
-  }*/
 
   private fun combineCoverageReports(coverageResultList: List<CoverageReport>): CoverageReportContainer {
     val containerBuilder = CoverageReportContainer.newBuilder()
@@ -363,108 +249,7 @@ class RunCoverage(
       containerBuilder.addCoverageReport(report)
     }
     return containerBuilder.build()
-
-    /*combinedCoverageReportContainer
-      .addCoverageReport(singleCoverageReport)*/
   }
-
-  /*private fun generateAggregatedCoverageReport(aggregatedCoverageReport: CoverageReport): String {
-    var pubReportText = ""
-    if (reportFormat == ReportFormat.MARKDOWN) {
-
-//      val coverageReportContainer = CoverageReportContainer.newBuilder()
-
-      val coverageReportContainer = CoverageReportContainer.newBuilder()
-        .addCoverageReport(aggregatedCoverageReport)
-        .build()
-      println("Coverage Report Container: $coverageReportContainer")
-
-      println("Type Coverage Reporter Container: ${coverageReportContainer::class}")
-
-      combinedCoverageReportContainer
-        .addCoverageReport(aggregatedCoverageReport)
-//        .build()
-
-      println("************************")
-      println("Coverage Report Container 2: $combinedCoverageReportContainer")
-
-      val reporter =
-        CoverageReporter(repoRoot, aggregatedCoverageReport, coverageReportContainer, reportFormat)
-      var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
-
-      val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.details.filePath]
-        ?.overrideMinCoveragePercentRequired
-        ?: MIN_THRESHOLD
-
-      if (computedCoverageRatio * 100 < coverageCheckThreshold) {
-        coverageCheckState = CoverageCheck.FAIL
-      }
-
-      reportText += if (reportFormat == ReportFormat.MARKDOWN) {
-        computedCoverageRatio.takeIf { it * 100 < coverageCheckThreshold }
-          ?.let { "|:x:|" } ?: "|:white_check_mark:|"
-      } else ""
-
-      val reportOutputPath = getReportOutputPath(
-        repoRoot, aggregatedCoverageReport.details.filePath, reportFormat
-      )
-      File(reportOutputPath).apply {
-        parentFile?.mkdirs()
-        writeText(reportText)
-      }
-
-      if (File(reportOutputPath).exists()) {
-        println("\nGenerated report at: $reportOutputPath\n")
-      }
-
-      pubReportText = reportText
-
-      return pubReportText
-//      return reportText
-    }
-    if (reportFormat == ReportFormat.HTML) {
-      val coverageReportContainer = CoverageReportContainer.newBuilder()
-        .addCoverageReport(aggregatedCoverageReport)
-        .build()
-      println("Coverage Report Container: $coverageReportContainer")
-
-      val reporter =
-        CoverageReporter(repoRoot, aggregatedCoverageReport, coverageReportContainer, reportFormat)
-      var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
-
-      val coverageCheckThreshold = testFileExemptionList[aggregatedCoverageReport.details.filePath]
-        ?.overrideMinCoveragePercentRequired
-        ?: MIN_THRESHOLD
-
-      if (computedCoverageRatio * 100 < coverageCheckThreshold) {
-        coverageCheckState = CoverageCheck.FAIL
-      }
-
-      reportText += if (reportFormat == ReportFormat.MARKDOWN) {
-        computedCoverageRatio.takeIf { it * 100 < coverageCheckThreshold }
-          ?.let { "|:x:|" } ?: "|:white_check_mark:|"
-      } else ""
-
-      val reportOutputPath = getReportOutputPath(
-        repoRoot, aggregatedCoverageReport.details.filePath, reportFormat
-      )
-      File(reportOutputPath).apply {
-        parentFile?.mkdirs()
-        writeText(reportText)
-      }
-
-      if (File(reportOutputPath).exists()) {
-        println("\nGenerated report at: $reportOutputPath\n")
-      }
-
-      pubReportText = reportText
-
-      return pubReportText
-//      return reportText
-    }
-    // temp
-    return pubReportText
-  }*/
 
   private fun calculateAggregateCoverageReport(
     coverageReports: List<CoverageReport>
@@ -506,19 +291,6 @@ class RunCoverage(
     return CoverageReport.newBuilder()
       .setDetails(coverageDetails)
       .build()
-
-    /*return CoverageReport.newBuilder()
-      .setDetails(
-        CoverageDetails.newBuilder()
-          .setBazelTestTarget(aggregatedTargetList)
-          .setFilePath(filePath)
-          .setFileSha1Hash(fileSha1Hash)
-          .addAllCoveredLine(aggregatedCoveredLines)
-          .setLinesFound(totalLinesFound)
-          .setLinesHit(totalLinesHit)
-//          .setIsGenerated(true)
-          .build()
-    ).build()*/
   }
 
   /** Corresponds to status of the coverage analysis. */
