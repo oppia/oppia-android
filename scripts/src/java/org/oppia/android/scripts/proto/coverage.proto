@@ -9,7 +9,7 @@ option java_multiple_files = true;
 // Bazel coverage execution.
 message CoverageReport {
   // The test target for which the coverage report is generated.
-  string bazel_test_target = 1;
+  repeated BazelTestTarget bazel_test_targets = 1;
   // The relative path of the covered file.
   string file_path = 2;
   // SHA-1 hash of the file content at the time of report (to guard against changes).
@@ -20,6 +20,12 @@ message CoverageReport {
   int32 lines_found = 5;
   // The total number of lines hit in the covered file.
   int32 lines_hit = 6;
+}
+
+// Represents a single bazel test target corresponding to a test file.
+message BazelTestTarget {
+  // The name of the bazel test target.
+  string test_target_name = 1;
 }
 
 // Information about a single line that was covered during the tests.

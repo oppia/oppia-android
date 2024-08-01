@@ -4,6 +4,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
@@ -117,14 +118,86 @@ class RunCoverage(
         "No appropriate test file found for $filePath"
       }
 
-      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+      /*val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
       val coverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
-      }
+      }*/
+
+      val coverageReports = listOf(
+        CoverageReport.newBuilder()
+        .addBazelTestTargets(
+          BazelTestTarget.newBuilder()
+            .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
+        )
+        .setFilePath("coverage/main/java/com/example/AddNums.kt")
+        .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
+        .addCoveredLine(
+          CoveredLine.newBuilder()
+            .setLineNumber(3)
+            .setCoverage(Coverage.NONE)
+            .build()
+        )
+        .addCoveredLine(
+          CoveredLine.newBuilder()
+            .setLineNumber(7)
+            .setCoverage(Coverage.NONE)
+            .build()
+        )
+        .addCoveredLine(
+          CoveredLine.newBuilder()
+            .setLineNumber(8)
+            .setCoverage(Coverage.FULL)
+            .build()
+        )
+        .addCoveredLine(
+          CoveredLine.newBuilder()
+            .setLineNumber(10)
+            .setCoverage(Coverage.FULL)
+            .build()
+        )
+        .setLinesFound(4)
+        .setLinesHit(2)
+        .build(),
+        CoverageReport.newBuilder()
+          .addBazelTestTargets(
+            BazelTestTarget.newBuilder()
+              .setTestTargetName("//coverage/test/java/com/example:AddNumsLocalTest")
+          )
+          .setFilePath("coverage/main/java/com/example/AddNums.kt")
+          .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(3)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(7)
+              .setCoverage(Coverage.NONE)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(8)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(10)
+              .setCoverage(Coverage.NONE)
+              .build()
+          )
+          .setLinesFound(4)
+          .setLinesHit(2)
+          .build()
+      )
 
       val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
+      println("Aggregated coverage report: $aggregatedCoverageReport")
       val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
       val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
@@ -169,10 +242,22 @@ private fun calculateAggregateCoverageReport(
 
   val totalLinesFound = aggregatedCoveredLines.size
   val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
-  val aggregatedTargetList = reports.joinToString(separator = ", ") { it.bazelTestTarget }
+
+  val allBazelTestTargets = reports.flatMap { it.bazelTestTargetsList }
+  println("Reports: $allBazelTestTargets")
+  /*val bazelTestTargetsList = reports.map { target ->
+    BazelTestTarget.newBuilder()
+      .setTestTargetName(target.testTargetNameList)
+      .build()
+  }*/
+
+  /*val bazelTestTargetList = reports.flatMap { report ->
+    BazelTestTarget.newBuilder()
+  }*/
+//  val aggregatedTargetList = reports.joinToString(separator = ", ") { it.bazelTestTarget }
 
   return CoverageReport.newBuilder()
-    .setBazelTestTarget(aggregatedTargetList)
+    .addAllBazelTestTargets(allBazelTestTargets)
     .setFilePath(filePath)
     .setFileSha1Hash(fileSha1Hash)
     .addAllCoveredLine(aggregatedCoveredLines)

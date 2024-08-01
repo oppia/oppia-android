@@ -3,6 +3,7 @@ package org.oppia.android.scripts.coverage
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
@@ -71,7 +72,6 @@ class CoverageRunner(
         line.substringAfter(":").split(",")
       }
     }
-    println("Coverage Data props: $coverageDataProps")
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
     requireNotNull(filePath) { "File path not found" }
@@ -89,8 +89,12 @@ class CoverageRunner(
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
 
+    val bazelTestTargetName = BazelTestTarget.newBuilder()
+      .setTestTargetName(bazelTestTarget)
+      .build()
+
     return CoverageReport.newBuilder()
-      .setBazelTestTarget(bazelTestTarget)
+      .addBazelTestTargets(bazelTestTargetName)
       .setFilePath(filePath)
       .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(coveredLines)
