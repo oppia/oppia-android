@@ -64,7 +64,9 @@ class QuestionPlayerFragment :
     val arguments =
       args.getProto(ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance())
     val profileId = arguments.profileId
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId,userAnswerState)
+    return questionPlayerFragmentPresenter.handleCreateView(
+      inflater, container, profileId, userAnswerState
+    )
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
