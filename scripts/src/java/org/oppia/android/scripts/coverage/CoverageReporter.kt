@@ -19,6 +19,7 @@ class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
+  private val mdReportOutputPath: String? = null
 ) {
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   private val testFileExemptionList by lazy {
@@ -234,7 +235,7 @@ class CoverageReporter(
 
     val failureTableRows = failureCases.mapNotNull { report ->
       report.failure?.let { failure ->
-        "| ${failure.filePath} | ${failure.failureMessage} |"
+        "| ${failure.bazelTestTarget} | ${failure.failureMessage} |"
       }
     }.joinToString(separator = "\n")
 
@@ -355,7 +356,7 @@ class CoverageReporter(
     }
 
     val finalReportText = "## Coverage Report\n\n" +
-      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
+      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}" +
       "\n\n" +
       failureMarkdownTable +
       "\n\n" +
@@ -367,7 +368,10 @@ class CoverageReporter(
 
     println("Final report 2: $finalReportText")
 
-    val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
+    val finalReportOutputPath = mdReportOutputPath?.let {
+      it
+    } ?: "$repoRoot/coverage_reports/CoverageReport.md"
+
     File(finalReportOutputPath).apply {
       parentFile?.mkdirs()
       writeText(finalReportText)
@@ -440,7 +444,6 @@ class CoverageReporter(
             """
             |Coverage Report Failure:
             |------------------------
-            |Covered File: ${failure.filePath}
             |Test Target: ${failure.bazelTestTarget}
             |Failure Message: ${failure.failureMessage} ${"\n"}
             """.trimMargin().prependIndent("  ")
