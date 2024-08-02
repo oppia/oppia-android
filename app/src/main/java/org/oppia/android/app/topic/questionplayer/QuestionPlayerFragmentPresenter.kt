@@ -21,6 +21,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
@@ -78,7 +79,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId
+    profileId: ProfileId,
+    userAnswerState: UserAnswerState
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
@@ -88,7 +90,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     this.profileId = profileId
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
+      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId, userAnswerState),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
@@ -167,6 +169,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(questionViewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()
+  }
+
+  /** Returns the [UserAnswerState] representing the user's current pending answer. */
+  fun getUserAnswerState(): UserAnswerState {
+    return questionViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
   }
 
   /**
@@ -272,6 +279,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>
   ) {
+    if (questionViewModel.getCanSubmitAnswer().get() == true) {
+      recyclerViewAssembler.resetUserAnswerState()
+    }
     val answerOutcomeLiveData =
       Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
     answerOutcomeLiveData.observe(

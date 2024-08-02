@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -57,7 +58,8 @@ class ContinueInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return ContinueInteractionViewModel(
         interactionAnswerReceiver,
