@@ -2,7 +2,6 @@ package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -21,14 +20,6 @@ class CoverageReporterTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
-  private lateinit var filename: String
-  private val emptyCoverageReportList = listOf<CoverageReport>()
-
-  @Before
-  fun setUp() {
-    filename = "SampleFile.kt"
-  }
-
   @After
   fun tearDown() {
     System.setOut(originalOut)
@@ -37,6 +28,7 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withSuccessCoverageReportDetails_generateMarkdownTable() {
     val coverageDir = "/coverage_reports"
+    val filename = "SampleFile.kt"
     val validCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
@@ -163,7 +155,79 @@ class CoverageReporterTest {
   }
 
   @Test
+  fun testGenerateMarkDownReport_withCombinedCoverageReportDetails_generateMarkdownTable() {
+    val filename = "SampleFile.kt"
+    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    val coverageDir = "/coverage_reports"
+    val validCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(filename)
+          .setLinesFound(10)
+          .setLinesHit(8)
+          .build()
+      ).build()
+
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("://bazelTestTarget")
+          .setFailureMessage("Failure Message")
+          .build()
+      ).build()
+
+    val exemptionCoverageReport = CoverageReport.newBuilder()
+      .setExemption(
+        CoverageExemption.newBuilder()
+          .setFilePath(exemptedFilePath)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(validCoverageReport)
+      .addCoverageReport(failureCoverageReport)
+      .addCoverageReport(exemptionCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN
+    ).generateRichTextReport()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedMarkdown = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 3")
+      appendLine()
+      appendLine("### Failure Cases")
+      appendLine("| File | Failure Reason |")
+      appendLine("|------|----------------|")
+      appendLine("| ://bazelTestTarget | Failure Message |")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [SampleFile.kt](https://github.com/oppia/oppia-android/tree/develop/SampleFile.kt) | 80.00% | 8 / 10 | :x: | 99% |")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("### Test File Exempted Cases")
+      appendLine("- [ActivityComponent.kt](https://github.com/oppia/oppia-android/tree/develop/$exemptedFilePath)")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
   fun testGenerateHtmlReport_withCoverageReportDetails_generateHtmlWithCorrectContentAndFormatting() {
+    val filename = "SampleFile.kt"
     val coverageDir = "/coverage_reports"
     val sourceFile = tempFolder.newFile(filename)
     sourceFile.writeText(
