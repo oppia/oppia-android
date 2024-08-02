@@ -247,7 +247,6 @@ class CoverageReporter(
   }
 
   private fun generateMarkdownReport() {
-
     val failureCases = coverageReportContainer.coverageReportList.filter { it.hasFailure() }
     println("Failure case: $failureCases")
 
@@ -256,8 +255,6 @@ class CoverageReporter(
         "| ${failure.filePath} | ${failure.failureMessage} |"
       }
     }.joinToString(separator = "\n")
-
-    println("Failure table rows: $failureTableRows")
 
     var successes = listOf<CoverageReport>()
     var failuresBelowThreshold = listOf<CoverageReport>()
@@ -294,84 +291,25 @@ class CoverageReporter(
       }
     }
 
+    val failureBelowThresholdTableRows = generateTableRows(
+      reports = failuresBelowThreshold,
+      statusSymbol = ":x:"
+    )
 
-    val failureBelowThresholdTableRows = failuresBelowThreshold.mapNotNull { report ->
-      val details = report.details
-      val filePath = details.filePath
-      val totalLinesFound = details.linesFound
-      val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
-      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
-      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :x: |"
-    }.joinToString(separator = "\n")
+    val exemptedFailureTableRows = generateTableRows(
+      reports = exemptedFailures,
+      statusSymbol = ":x:"
+    )
 
-    println("Failure below threshold table rows: $failureBelowThresholdTableRows")
+    val successTableRows = generateTableRows(
+      reports = successes,
+      statusSymbol = ":white_check_mark:"
+    )
 
-
-
-
-    val exemptedFailureTableRows = exemptedFailures.mapNotNull { report ->
-      val details = report.details
-      val filePath = details.filePath
-      val totalLinesFound = details.linesFound
-      val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
-      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
-      val overridePercentage = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: 0
-      " ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :x: | $overridePercentage% |"
-    }.joinToString(separator = "\n")
-
-    println("Exempted Failure: $exemptedFailureTableRows")
-
-
-
-
-    val successTableRows = successes.mapNotNull { report ->
-      val details = report.details
-      val filePath = details.filePath
-      val totalLinesFound = details.linesFound
-      val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
-      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
-      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :white_check_mark: |"
-    }.joinToString(separator = "\n")
-
-    println("Success Table Rows: $successTableRows")
-
-
-
-
-    val exemptedSuccessTableRows = exemptedSuccesses.mapNotNull { report ->
-      val details = report.details
-      val filePath = details.filePath
-      val totalLinesFound = details.linesFound
-      val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
-      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
-      val overridePercentage = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: 0
-      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :white_check_mark: | $overridePercentage% |"
-    }.joinToString(separator = "\n")
-
-    println("Exempted Success Table Rows: $exemptedSuccessTableRows")
-
-
-
+    val exemptedSuccessTableRows = generateTableRows(
+      reports = exemptedSuccesses,
+      statusSymbol = ":white_check_mark:"
+    )
 
     val testFileExemptedCasesList = coverageReportContainer.coverageReportList
       .filter { it.hasExemption() }
@@ -380,179 +318,82 @@ class CoverageReporter(
         "${getFilenameAsLink(filePath)}"
       }.joinToString(separator = "\n") { "- $it" }
 
-    println("Test file exempted cases list: $testFileExemptedCasesList")
+    val tableHeader = buildString {
+      append("| File | Coverage | Lines Hit | Status | Required % |\n")
+      append("|------|----------|-----------|:------:|------------|\n")
+    }
 
+    val failureMarkdownTable = buildString {
+      if (failureTableRows.isNotEmpty()) {
+        append("### Failure Cases\n")
+        append("| File | Failure Reason |\n")
+        append("|------|----------------|\n")
+        append(failureTableRows)
+      }
+    }
 
-    val failureMarkdownTable = if (failureTableRows.isNotEmpty()) {
-      "### Failure Cases\n" +
-        "| File | Failure Reason |\n" +
-        "|------|----------------|\n" +
-        failureTableRows
+    val failureMarkdownEntries = buildString {
+      if (failureBelowThresholdTableRows.isNotEmpty() || exemptedFailureTableRows.isNotEmpty()) {
+        append(tableHeader)
+        append(failureBelowThresholdTableRows)
+        if (exemptedFailureTableRows.isNotEmpty()) {
+          append("\n|Exempted :small_red_triangle_down:|\n")
+          append(exemptedFailureTableRows)
+        }
+      } else if (exemptedFailureTableRows.isNotEmpty()) {
+        append(tableHeader)
+        append("\n|Exempted :small_red_triangle_down:|\n")
+        append(exemptedFailureTableRows)
+      }
+    }
+
+    val successMarkdownEntries = if (successTableRows.isNotEmpty() || exemptedSuccessTableRows.isNotEmpty()) {
+      val detailsContent = buildString {
+        append("<details>\n")
+        append("<summary>Succeeded Coverages</summary><br>\n\n")
+        if (successTableRows.isNotEmpty()) {
+          append(tableHeader)
+          append(successTableRows)
+          if (exemptedSuccessTableRows.isNotEmpty()) {
+            append("\n|Exempted :small_red_triangle_down:|\n")
+            append(exemptedSuccessTableRows)
+          }
+        } else if (exemptedSuccessTableRows.isNotEmpty()) {
+          append(tableHeader)
+          append("\n|Exempted :small_red_triangle_down:|\n")
+          append(exemptedSuccessTableRows)
+        }
+        append("\n</details>")
+      }
+      detailsContent
     } else ""
 
-    val failureBelowThresholdMarkdownTable = if (failureBelowThresholdTableRows.isNotEmpty()) {
-      "### Coverage Below Minimum Threshold\n" +
-        "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
-        "| File | Percentage | Lines Hit | Status |\n" +
-        "|------|------------|-----------|:------:|\n" +
-        failureBelowThresholdTableRows
-    } else ""
-
-    val exemptedFailureMarkdownTable = if (exemptedFailureTableRows.isNotEmpty()) {
-      "### Exempted Failure Cases\n" +
-        "| File | Percentage | Lines Hit | Status | Required Percentage |\n" +
-        "|------|------------|-----------|:------:|---------------------|\n" +
-        exemptedFailureTableRows
-    } else ""
-
-    val successMarkdownTable = if (successTableRows.isNotEmpty()) {
-        "| File | Percentage | Lines Hit | Status |\n" +
-        "|------|------------|-----------|:------:|\n" +
-        successTableRows
-    } else ""
-
-    val exemptedSuccessMarkdownTable = if (exemptedSuccessTableRows.isNotEmpty()) {
-      "### Exempted Success Cases\n" +
-        "| File | Percentage | Lines Hit | Status | Exempted Percentage |\n" +
-        "|------|------------|-----------|:------:|---------------------|\n" +
-        exemptedSuccessTableRows
-    } else ""
-
-
-    val testFileExemptedSection = if (testFileExemptedCasesList.isNotEmpty()) {
-      "\n\n### Test File Exempted Cases\n$testFileExemptedCasesList"
-    } else ""
+    val testFileExemptedSection = buildString {
+      if (testFileExemptedCasesList.isNotEmpty()) {
+        append("\n\n### Test File Exempted Cases\n")
+        append(testFileExemptedCasesList)
+      }
+    }
 
     val finalReportText = "## Coverage Report\n\n" +
       "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
-//      "- Coverage Status: **$coverageCheckState**\n" +
+      "\n\n" +
       failureMarkdownTable +
       "\n\n" +
-      failureBelowThresholdMarkdownTable +
+      failureMarkdownEntries +
       "\n\n" +
-      exemptedFailureMarkdownTable +
+      successMarkdownEntries +
       "\n\n" +
-      "<details>\n" +
-      "<summary>Succeeded Coverages</summary><br>\n\n" +
-      successMarkdownTable +
-      "\n\n" +
-      exemptedSuccessMarkdownTable +
-      "\n</details>" +
       testFileExemptedSection
 
-    println("Final Report Text: $finalReportText")
-
-
-    val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
-    File(finalReportOutputPath).apply {
-      parentFile?.mkdirs()
-      writeText(finalReportText)
-    }
-
-
-
-  /*val coverageTableHeader = "| Covered File | Percentage | Line Coverage | Status |\n" +
-      "|--------------|------------|---------------|--------|\n"
-
-    val (failures, rest) = coverageReportContainer.coverageReportList.partition { it.hasFailure() }
-    val (belowThreshold, successes) = rest.partition { report ->
-      report.hasDetails() && report.details.let {
-        val totalLinesFound = it.linesFound
-        val totalLinesHit = it.linesHit
-        val coveragePercentage = if (totalLinesFound > 0) {
-          (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-        } else {
-          0
-        }
-        coveragePercentage < MIN_THRESHOLD
-      }
-    }
-
-    val failureTableRows = failures.filter { it.hasFailure() }.joinToString(separator = "\n") { report ->
-      val failure = report.failure
-      "| ${failure.filePath} | ${failure.failureMessage} |"
-    }
-
-    val belowThresholdTableRows = belowThreshold.filter { it.hasDetails() }.joinToString(separator = "\n") { report ->
-      val details = report.details
-      val filePath = details.filePath
-      val totalLinesFound = details.linesFound
-      val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
-      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
-      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :x: |"
-    }
-
-    val successTableRows = successes.filter { it.hasDetails() }.joinToString(separator = "\n") { report ->
-      val details = report.details
-      val filePath = details.filePath
-      val totalLinesFound = details.linesFound
-      val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
-      val formattedCoveragePercentage = "%02d".format(coveragePercentage)
-      "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | :white_check_mark: |"
-    }
-
-    val anomalyCasesList = coverageReportContainer.coverageReportList
-      .filter { it.hasExemption() }
-      .map { exemption ->
-        val filePath = exemption.exemption.filePath
-        "${getFilenameAsLink(filePath)}"
-      }.joinToString(separator = "\n") { "- $it" }
-
-    val failureMarkdownTable = if (failureTableRows.isNotEmpty()) {
-      "### Failed Cases\n" +
-        "| File | Failure Reason |\n" +
-        "|------|----------------|\n" +
-        failureTableRows
-    } else ""
-
-    val belowThresholdMarkdownTable = if (belowThresholdTableRows.isNotEmpty()) {
-      "### Coverage Below Minimum Threshold\n" +
-        "Min Coverage Required: $MIN_THRESHOLD%\n\n" +
-        coverageTableHeader +
-        belowThresholdTableRows
-    } else ""
-
-    val successMarkdownTable = if (successTableRows.isNotEmpty()) {
-      "<details>\n" +
-        "<summary>Succeeded Coverages</summary><br>\n\n" +
-        coverageTableHeader +
-        successTableRows +
-        "\n</details>"
-    } else ""
-
-    val anomalySection = if (anomalyCasesList.isNotEmpty()) {
-      "\n\n### Exempted Files\n$anomalyCasesList"
-    } else ""
-
-    val finalReportText = "## Coverage Report\n\n" +
-      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
-//      "- Coverage Status: **$coverageCheckState**\n" +
-      failureMarkdownTable +
-      "\n\n" +
-      belowThresholdMarkdownTable +
-      "\n\n" +
-      successMarkdownTable +
-      anomalySection
-
-    println("Final report text: $finalReportText")
+    println("Final report 2: $finalReportText")
 
     val finalReportOutputPath = "$repoRoot/coverage_reports/CoverageReport.md"
     File(finalReportOutputPath).apply {
       parentFile?.mkdirs()
       writeText(finalReportText)
-    }*/
+    }
   }
-
 
   private fun logCoverageReport(container: CoverageReportContainer) {
     println(
@@ -615,6 +456,29 @@ class CoverageReporter(
         }
       }
     }
+  }
+
+  private fun generateTableRows(
+    reports: List<CoverageReport>,
+    statusSymbol: String
+  ): String {
+    return reports
+      .mapNotNull { report ->
+        val details = report.details
+        val filePath = details.filePath
+        val totalLinesFound = details.linesFound
+        val totalLinesHit = details.linesHit
+        val exemptionPercentage = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
+        val coveragePercentage = if (totalLinesFound > 0) {
+          (totalLinesHit.toDouble() / totalLinesFound * 100)
+        } else {
+          0f
+        }
+        val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
+
+        "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage% |"
+      }
+      .joinToString(separator = "\n")
   }
 }
 
