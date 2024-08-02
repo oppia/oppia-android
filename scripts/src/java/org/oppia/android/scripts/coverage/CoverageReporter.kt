@@ -15,22 +15,6 @@ private const val MIN_THRESHOLD = 99 // to be decided and moved to a better plac
  * @param coverageReport the coverage data proto
  * @param reportFormat the format in which the report will be generated
  */
-
-/*fun main(vararg args: String) {
-  // add later checks
-  val repoRoot = args[0]
-  val coverageReportContainer = args[1]
-  val reportFormat = args[2]
-  val mdReportOutputPath = args[3]
-
-  CoverageReporter(
-    repoRoot,
-    coverageReportContainer,
-    reportFormat,
-    mdReportOutputPath
-  )
-}*/
-
 class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportContainer: CoverageReportContainer,
@@ -49,7 +33,9 @@ class CoverageReporter(
       ReportFormat.MARKDOWN -> generateMarkdownReport()
       ReportFormat.HTML -> generateHtmlReport()
     }
-    logCoverageReport(coverageReportContainer)
+    val coverageStatus = checkCoverageStatus()
+    println("Coverage Status: $coverageStatus")
+    logCoverageReport()
   }
 
   private fun generateHtmlReport() {
@@ -393,14 +379,47 @@ class CoverageReporter(
     }
   }
 
-  private fun logCoverageReport(container: CoverageReportContainer) {
+  private fun checkCoverageStatus(): CoverageCheck {
+    coverageReportContainer.coverageReportList.forEach { report ->
+      if (report.hasFailure()) { return CoverageCheck.FAIL }
+
+      if (report.hasDetails()) {
+        val details = report.details
+        val filePath = details.filePath
+        val totalLinesFound = details.linesFound
+        val totalLinesHit = details.linesHit
+
+        // one helper function to calculate coverage percentages
+        val coveragePercentage = if (totalLinesFound > 0) {
+          (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
+        } else {
+          0
+        }
+
+        val exemption = testFileExemptionList[filePath]
+        if (coveragePercentage < MIN_THRESHOLD) {
+          if (exemption != null) {
+            val ovveriddenMinCoverage = exemption.overrideMinCoveragePercentRequired
+            if (coveragePercentage < ovveriddenMinCoverage) {
+              return CoverageCheck.FAIL
+            }
+          } else {
+            return CoverageCheck.FAIL
+          }
+        }
+      }
+    }
+    return CoverageCheck.PASS
+  }
+
+  private fun logCoverageReport() {
     println(
       """
     |COVERAGE ANALYSIS:
     |---------------- ${"\n"}
     """.trimMargin().prependIndent("  ")
     )
-    container.coverageReportList.forEach { coverageReport ->
+    coverageReportContainer.coverageReportList.forEach { coverageReport ->
       when {
         coverageReport.hasDetails() -> {
           val details = coverageReport.details
@@ -478,6 +497,14 @@ class CoverageReporter(
       }
       .joinToString(separator = "\n")
   }
+}
+
+/** Corresponds to status of the coverage analysis. */
+private enum class CoverageCheck {
+  /** Indicates successful generation of coverage retrieval for a specified file. */
+  PASS,
+  /** Indicates failure or anomaly during coverage retrieval for a specified file. */
+  FAIL
 }
 
 /** Represents the different types of formats available to generate code coverage reports. */

@@ -80,7 +80,6 @@ fun main(vararg args: String) {
 
   val protoOutputPath = args.find { it.startsWith("--protoOutputPath") }
     ?.substringAfter("=")
-  println("proto output path: $protoOutputPath")
 
   for (filePath in filePathList) {
     check(File(repoRoot, filePath).exists()) {
@@ -125,7 +124,6 @@ class RunCoverage(
   private val protoOutputPath: String? = null
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
-  private var coverageCheckState = CoverageCheck.PASS
 
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
@@ -156,14 +154,6 @@ class RunCoverage(
       File(path).printWriter().use { writer ->
         writer.println(coverageReportContainer.toCompressedBase64())
       }
-    }
-
-    if (coverageCheckState == CoverageCheck.FAIL) {
-      error(
-        "\nCoverage Analysis Failed as minimum coverage threshold not met!" +
-      )
-    } else {
-      println("\nCoverage Analysis Completed Succesffully!")
     }
   }
 
@@ -256,14 +246,6 @@ class RunCoverage(
     return CoverageReport.newBuilder()
       .setDetails(coverageDetails)
       .build()
-  }
-
-  /** Corresponds to status of the coverage analysis. */
-  private enum class CoverageCheck {
-    /** Indicates successful generation of coverage retrieval for a specified file. */
-    PASS,
-    /** Indicates failure or anomaly during coverage retrieval for a specified file. */
-    FAIL
   }
 }
 
