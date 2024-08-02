@@ -19,7 +19,6 @@ class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
-  private val mdReportOutputPath: String? = null
 ) {
   private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   private val testFileExemptionList by lazy {
@@ -217,7 +216,7 @@ class CoverageReporter(
         }
         report.hasFailure() -> {
           val failure = report.failure
-          println("-> The coverage analysis for ${failure.filePath} failed - reason: ${failure.failureMessage} \n")
+          println("-> The coverage analysis for ${failure.bazelTestTarget} failed - reason: ${failure.failureMessage} \n")
         }
         report.hasExemption() -> {
           val exemption = report.exemption
