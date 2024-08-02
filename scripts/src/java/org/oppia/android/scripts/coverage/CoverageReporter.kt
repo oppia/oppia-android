@@ -47,12 +47,10 @@ class CoverageReporter(
           val filePath = details.filePath
           val totalLinesFound = details.linesFound
           val totalLinesHit = details.linesHit
-          val coveragePercentage = if (totalLinesFound > 0) {
-            (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-          } else {
-            0
-          }
-          val formattedCoveragePercentage = "%02d".format(coveragePercentage)
+          val coveragePercentage = calculateCoveragePercentage(
+            totalLinesHit, totalLinesFound
+          )
+          val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
 
           val htmlContent = buildString {
             append(
@@ -252,11 +250,9 @@ class CoverageReporter(
       val details = report.details
       val totalLinesFound = details.linesFound
       val totalLinesHit = details.linesHit
-      val coveragePercentage = if (totalLinesFound > 0) {
-        (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-      } else {
-        0
-      }
+      val coveragePercentage = calculateCoveragePercentage(
+        totalLinesHit, totalLinesFound
+      )
 
       val exemptedFile = testFileExemptionList[details.filePath]
       if (exemptedFile != null) {
@@ -389,12 +385,9 @@ class CoverageReporter(
         val totalLinesFound = details.linesFound
         val totalLinesHit = details.linesHit
 
-        // one helper function to calculate coverage percentages
-        val coveragePercentage = if (totalLinesFound > 0) {
-          (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-        } else {
-          0
-        }
+        val coveragePercentage = calculateCoveragePercentage(
+          totalLinesHit, totalLinesFound
+        )
 
         val exemption = testFileExemptionList[filePath]
         if (coveragePercentage < MIN_THRESHOLD) {
@@ -426,12 +419,10 @@ class CoverageReporter(
           val filePath = details.filePath
           val totalLinesFound = details.linesFound
           val totalLinesHit = details.linesHit
-          val coveragePercentage = if (totalLinesFound > 0) {
-            (totalLinesHit.toDouble() / totalLinesFound * 100).toInt()
-          } else {
-            0
-          }
-          val formattedCoveragePercentage = "%02d".format(coveragePercentage)
+          val coveragePercentage = calculateCoveragePercentage(
+            totalLinesHit, totalLinesFound
+          )
+          val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
 
           val logReportText =
             """
@@ -486,11 +477,9 @@ class CoverageReporter(
         val totalLinesFound = details.linesFound
         val totalLinesHit = details.linesHit
         val exemptionPercentage = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
-        val coveragePercentage = if (totalLinesFound > 0) {
-          (totalLinesHit.toDouble() / totalLinesFound * 100)
-        } else {
-          0f
-        }
+        val coveragePercentage = calculateCoveragePercentage(
+          totalLinesHit, totalLinesFound
+        )
         val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
 
         "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage% |"
@@ -513,6 +502,12 @@ enum class ReportFormat {
   MARKDOWN,
   /** Indicates that the report should be formatted in .html format. */
   HTML
+}
+
+private fun calculateCoveragePercentage(linesHit: Int, linesFound: Int): Float {
+  return linesFound.takeIf { it > 0 }
+    ?.let { (linesHit.toFloat() / it * 100).toFloat() }
+    ?: 0f
 }
 
 private fun getReportOutputPath(
