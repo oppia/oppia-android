@@ -17,8 +17,6 @@ import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-private val MIN_THRESHOLD = 10 // yet to be decided on a value
-
 /**
  * Entry point function for running coverage analysis for a source file.
  *
@@ -47,6 +45,10 @@ private val MIN_THRESHOLD = 10 // yet to be decided on a value
  *    bazel run //scripts:run_coverage -- $(pwd)
  *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --processTimeout=15
  *
+ * Example with output path to save the collected coverage proto:
+ *    bazel run //scripts:run_coverage -- $(pwd)
+ *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
+ *    --protoOutputPath=/tmp/coverage_report.proto64
  */
 fun main(vararg args: String) {
   val repoRoot = args[0]
@@ -76,6 +78,10 @@ fun main(vararg args: String) {
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
+  val protoOutputPath = args.find { it.startsWith("--protoOutputPath") }
+    ?.substringAfter("=")
+  println("proto output path: $protoOutputPath")
+
   for (filePath in filePathList) {
     check(File(repoRoot, filePath).exists()) {
       "File doesn't exist: $filePath."
@@ -96,7 +102,8 @@ fun main(vararg args: String) {
       filePathList,
       reportFormat,
       commandExecutor,
-      scriptBgDispatcher
+      scriptBgDispatcher,
+      protoOutputPath
     ).execute()
   }
 }
@@ -114,7 +121,8 @@ class RunCoverage(
   private val filePathList: List<String>,
   private val reportFormat: ReportFormat,
   private val commandExecutor: CommandExecutor,
-  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val protoOutputPath: String? = null
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
   private var coverageCheckState = CoverageCheck.PASS
@@ -126,8 +134,6 @@ class RunCoverage(
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
-
-  var combinedCoverageReportContainer = CoverageReportContainer.newBuilder()
 
   /**
    * Executes coverage analysis for the specified file.
@@ -143,58 +149,18 @@ class RunCoverage(
     }
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
-
     val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
     reporter.generateRichTextReport()
 
-    // save the above container proto to a provided output path
-    // that proto will be collected in the ci from different matrices
-    // and may be a script to again combine them and pass it to CoverageReporter
-
-    /*At this point we will/should be having a container of coverage reports
-    * have generate text report() here in one unified space
-    * generate -> val reporter =
-        CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
-      var (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
-      *
-      * generateRichTextReport() ->
-      *   HTML -> container: for each -> generate html report
-      *   MD   -> container: combined -> each ; add md report
-      *
-      *  This could be standard for local -> put in a base cmd -> run cov -> collects protos ->
-      *  gets one proto container -> saves proto to path (both html and md) -> generates report
-      *  for HTML -> generates f1.html, f2.html, f3.html (its own path)
-      *  for MD   -> generates one common cov.md report at coverage_reports/cov.md
-      * (this md report is basically unnecessary for local dev unless for debugging,
-      *  but to keep things consistent in the workflow we us this approach)
-    * */
-
-    if (reportFormat == ReportFormat.MARKDOWN) {
-      val cov = combinedCoverageReportContainer.build()
-
-      val covDirectoryPath = "${repoRoot}/coverage_reports/"
-      val covFilePath = "${repoRoot}/coverage_reports/coverage_report.proto64"
-
-      val covDirectory = File(covDirectoryPath)
-      if (!covDirectory.exists()) {
-        covDirectory.mkdirs()
-      }
-
-      val covFile = File(covFilePath)
-      if (!covFile.exists()) {
-        covFile.createNewFile()
-      }
-      val serialized = cov.toCompressedBase64()
-
-      covFile.printWriter().use { writer ->
-        writer.println(serialized)
+    protoOutputPath?.let { path ->
+      File(path).printWriter().use { writer ->
+        writer.println(coverageReportContainer.toCompressedBase64())
       }
     }
 
     if (coverageCheckState == CoverageCheck.FAIL) {
       error(
         "\nCoverage Analysis Failed as minimum coverage threshold not met!" +
-          "\nMinimum Coverage Threshold = $MIN_THRESHOLD%"
       )
     } else {
       println("\nCoverage Analysis Completed Succesffully!")
@@ -231,7 +197,6 @@ class RunCoverage(
 
       coverageReports.forEach { report ->
         if (report.hasFailure()) {
-          // (may be) add file path here
           return CoverageReport.newBuilder()
             .setFailure(report.failure)
             .build()

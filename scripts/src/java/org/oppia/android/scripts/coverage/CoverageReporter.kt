@@ -248,7 +248,6 @@ class CoverageReporter(
 
   private fun generateMarkdownReport() {
     val failureCases = coverageReportContainer.coverageReportList.filter { it.hasFailure() }
-    println("Failure case: $failureCases")
 
     val failureTableRows = failureCases.mapNotNull { report ->
       report.failure?.let { failure ->
@@ -262,7 +261,6 @@ class CoverageReporter(
     var exemptedFailures = listOf<CoverageReport>()
 
     val detailsCases = coverageReportContainer.coverageReportList.filter { it.hasDetails() }
-    println("Details Case: $detailsCases")
 
     detailsCases.forEach { report ->
       val details = report.details
