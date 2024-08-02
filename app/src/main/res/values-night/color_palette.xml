@@ -243,8 +243,8 @@
   <color name="color_palette_edittext_stroke_color">@color/color_def_accessible_light_grey_2</color>
   <!-- CLASSROOM -->
   <color name="color_palette_classroom_shared_header_text_color">@color/color_def_white_1</color>
-  <color name="color_palette_classroom_card_color">@color/color_def_greenish_black_2</color>
-  <color name="color_palette_classroom_card_selected_color">@color/color_def_greenish_black_1</color>
+  <color name="color_palette_classroom_card_color">@color/color_def_greenish_black_1</color>
+  <color name="color_palette_classroom_card_selected_color">@color/color_def_greenish_black_2</color>
   <color name="color_palette_classroom_shared_text_color">@color/color_def_white</color>
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_black_3</color>
   <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_2</color>
