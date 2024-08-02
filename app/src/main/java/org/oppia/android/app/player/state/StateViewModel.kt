@@ -8,13 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.viewmodel.ObservableArrayList
@@ -148,6 +149,13 @@ class StateViewModel @Inject constructor(
         }
       }
     )
+  }
+
+  fun getUserAnswerState(
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+  ): UserAnswerState {
+    return retrieveAnswerHandler(getAnswerItemList())?.getUserAnswerState()
+      ?: UserAnswerState.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(
