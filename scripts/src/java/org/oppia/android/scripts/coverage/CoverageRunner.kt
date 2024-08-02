@@ -104,7 +104,6 @@ class CoverageRunner(
       .addAllCoveredLine(coveredLines)
       .setLinesFound(linesFound)
       .setLinesHit(linesHit)
-//      .setIsGenerated(true)
       .build()
 
     return CoverageReport.newBuilder()
