@@ -444,6 +444,18 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_consecutively_releasePlayer_callDoesNot_throwException() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer()
+
+    // Call releaseMediaPlayer() the first time and assert no exception is thrown
+    audioPlayerController.releaseMediaPlayer()
+
+    // Call releaseMediaPlayer() the second time and assert no exception is thrown
+    audioPlayerController.releaseMediaPlayer()
+  }
+
+  @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
     val exception = assertThrows<IllegalStateException>() {
