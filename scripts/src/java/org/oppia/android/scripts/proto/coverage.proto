@@ -26,7 +26,7 @@ message CoverageReport {
 // Bazel coverage execution.
 message CoverageDetails {
   // The test target for which the coverage report is generated.
-  string bazel_test_target = 1;
+  repeated BazelTestTarget bazel_test_targets = 1;
   // The relative path of the covered file.
   string file_path = 2;
   // SHA-1 hash of the file content at the time of report (to guard against changes).
@@ -40,17 +40,23 @@ message CoverageDetails {
 }
 
 message CoverageFailure {
-  // would be nice to have file_path too if possible
-  // but that will require an additional
-  // extract file name and sha hash function replication
-  // to add if possible: file_path, file_sha1_hash
+  // The relative path of the failed file.
   string file_path = 1;
+  // The test target for which the coverage generation failed.
   string bazel_test_target = 2;
+  // The reason for why the coverage analysis failed
   string failure_message = 3;
 }
 
 message CoverageExemption {
+  // The relative path of the exempted file.
   string file_path = 1;
+}
+
+// Represents a single bazel test target corresponding to a test file.
+message BazelTestTarget {
+  // The name of the bazel test target.
+  string test_target_name = 1;
 }
 
 // Information about a single line that was covered during the tests.

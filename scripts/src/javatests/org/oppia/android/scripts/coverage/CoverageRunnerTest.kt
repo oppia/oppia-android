@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageDetails
@@ -214,7 +215,10 @@ class CoverageRunnerTest {
     val expectedResult = CoverageReport.newBuilder()
       .setDetails(
       CoverageDetails.newBuilder()
-        .setBazelTestTarget("//coverage/test/java/com/example:AddNumsTest")
+        .addBazelTestTargets(
+          BazelTestTarget.newBuilder()
+            .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
+        )
         .setFilePath("coverage/main/java/com/example/AddNums.kt")
         .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
         .addCoveredLine(
@@ -244,8 +248,7 @@ class CoverageRunnerTest {
         .setLinesFound(4)
         .setLinesHit(3)
         .build()
-      )
-      .build()
+      ).build()
 
     assertThat(result).isEqualTo(expectedResult)
   }
