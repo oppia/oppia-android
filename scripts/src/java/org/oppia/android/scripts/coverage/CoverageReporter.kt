@@ -12,8 +12,10 @@ private const val MIN_THRESHOLD = 10 // to be decided and moved to a better plac
  * Class responsible for generating rich text coverage report.
  *
  * @param repoRoot the root directory of the repository
- * @param coverageReport the coverage data proto
+ * @param coverageReportContainer the list of coverage data proto
  * @param reportFormat the format in which the report will be generated
+ * @param mdReportOutputPath optional path to save the final markdown report
+ *     default location is $repoRoot/coverage_reports/CoverageReport.md
  */
 class CoverageReporter(
   private val repoRoot: String,
@@ -28,6 +30,13 @@ class CoverageReporter(
       .associateBy { it.exemptedFilePath }
   }
 
+  /**
+   * Generates a rich text report for the analysed coverage data based on the specified format.
+   * It supports Markdown and HTML formats.
+   *
+   * @return a pair where the first value is the computed coverage ratio represented in [0, 1]
+   *     and the second value is the generated report text
+   */
   fun generateRichTextReport() {
     when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport()

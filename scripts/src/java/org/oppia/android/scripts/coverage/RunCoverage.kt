@@ -220,7 +220,7 @@ class RunCoverage(
     val (key, reports) = groupedCoverageReports.entries.single()
     val (filePath, fileSha1Hash) = key
 
-    val allBazelTestTargets = reports.flatMap { it.bazelTestTargetsList }
+    val allBazelTestTargets = reports.flatMap { it.details.bazelTestTargetsList }
     val allCoveredLines = reports.flatMap { it.details.coveredLineList }
     val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
     val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
