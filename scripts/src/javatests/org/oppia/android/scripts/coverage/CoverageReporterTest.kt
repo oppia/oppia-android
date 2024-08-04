@@ -69,8 +69,10 @@ class CoverageReporterTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [$filename]($oppiaDevelopGitHubLink/$filename) " +
-        "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [$filename]($oppiaDevelopGitHubLink/$filename) " +
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
     }.trimEnd()
 
@@ -115,8 +117,10 @@ class CoverageReporterTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [$filename]($oppiaDevelopGitHubLink/$filename) | " +
-        "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [$filename]($oppiaDevelopGitHubLink/$filename) | " +
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
+      )
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
@@ -279,16 +283,20 @@ class CoverageReporterTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [$failureFileName]($oppiaDevelopGitHubLink/$failureFileName) | " +
-        "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [$failureFileName]($oppiaDevelopGitHubLink/$failureFileName) | " +
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
+      )
       appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [$successFileName]($oppiaDevelopGitHubLink/$successFileName) | " +
-        "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [$successFileName]($oppiaDevelopGitHubLink/$successFileName) | " +
+          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
       appendLine()
       appendLine()
