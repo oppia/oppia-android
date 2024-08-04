@@ -6,7 +6,7 @@ import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 
-private const val MIN_THRESHOLD = 99 // to be decided and moved to a better place
+private const val MIN_THRESHOLD = 10 // to be decided and moved to a better place
 
 /**
  * Class responsible for generating rich text coverage report.

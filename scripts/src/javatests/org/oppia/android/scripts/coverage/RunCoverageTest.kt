@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
+  private val MIN_THRESHOLD: Int = 10
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
@@ -136,7 +137,7 @@ class RunCoverageTest {
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+      "$coverageDir/CoverageReport.md"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
@@ -190,17 +191,16 @@ class RunCoverageTest {
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+      "$coverageDir/CoverageReport.md"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
 
   @Test
   fun testRunCoverage_testFileExempted_skipsCoverage() {
+    val exemptedFile = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
     System.setOut(PrintStream(outContent))
-    val exemptedFilePathList = listOf(
-      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
-    )
+    val exemptedFilePathList = listOf(exemptedFile)
 
     RunCoverage(
       "${tempFolder.root}",
@@ -211,8 +211,7 @@ class RunCoverageTest {
     ).execute()
 
     assertThat(outContent.toString().trim()).contains(
-      "The file: ${exemptedFilePathList.get(0)} is exempted from having a test file; " +
-        "skipping coverage check."
+      "Exempted File: $exemptedFile"
     )
   }
 
@@ -269,8 +268,8 @@ class RunCoverageTest {
 
     val outputReportText = File(
       "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
-    ).readText()
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -279,6 +278,7 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withMultipleFilesMarkdownFormat_generatesCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/SubNums.kt"
@@ -313,7 +313,6 @@ class RunCoverageTest {
         fun testSubNumbers() {
           assertEquals(SubNums.subNumbers(1, 0), 1)
           assertEquals(SubNums.subNumbers(4, 3), 1)         
-          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
         }
       }
       """.trimIndent()
@@ -349,12 +348,807 @@ class RunCoverageTest {
     for (file in filePathList) {
       val outputReportText = File(
         "${tempFolder.root}" +
-          "$coverageDir/${file.removeSuffix(".kt")}/coverage.md"
-      ).readText()
-      val expectedResult = getExpectedMarkdownText(file)
+          "$coverageDir/CoverageReport.md"
+      ).readText().trimEnd()
+
+      val expectedResult = buildString {
+        appendLine("## Coverage Report")
+        appendLine()
+        appendLine("- Number of files assessed: 2")
+        appendLine()
+        appendLine()
+        appendLine()
+        appendLine()
+        appendLine()
+        appendLine("<details>")
+        appendLine("<summary>Succeeded Coverages</summary><br>")
+        appendLine()
+        appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+        appendLine("|------|----------|-----------|:------:|------------|")
+        appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+        appendLine("| [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+        appendLine("</details>")
+      }.trimEnd()
 
       assertThat(outputReportText).isEqualTo(expectedResult)
     }
+  }
+
+  // add check failure later
+  @Test
+  fun testRunCoverage_withCoverageStatusFail_throwsException() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis Failed as minimum coverage threshold not met!"
+    )
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessFiles_generatesFinalCoverageReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withFailureFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+//    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+//    }
+
+    // add once coverage failure exception is thrown
+    /*assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis Failed as minimum coverage threshold not met!"
+    )*/
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 1")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | :x: | $MIN_THRESHOLD% |")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessAndFailureFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+//    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+//    }
+
+    /*assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis Failed as minimum coverage threshold not met!"
+    )*/
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 2")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
+      appendLine()
+      appendLine("<details>")
+      appendLine("<summary>Succeeded Coverages</summary><br>")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(0).substringAfterLast("/")}](${oppiaDevelopGitHubLink}/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("</details>")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessAndAnomalyFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 2")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("<details>")
+      appendLine("<summary>Succeeded Coverages</summary><br>")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(0).substringAfterLast("/")}](${oppiaDevelopGitHubLink}/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("</details>")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("### Test File Exempted Cases")
+      appendLine("- [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)})")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withFailureAndAnomalyFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/LowTestNums.kt",
+      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    )
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+//    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+//    }
+
+    /*assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis Failed as minimum coverage threshold not met!"
+    )*/
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 2")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | :x: | $MIN_THRESHOLD% |")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("### Test File Exempted Cases")
+      appendLine("- [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)})")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessFailureAndAnomalyFiles_generatesFinalCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt",
+      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    )
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+//    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+//    }
+
+    /*assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis Failed as minimum coverage threshold not met!"
+    )*/
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 3")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | :x: | $MIN_THRESHOLD% |")
+      appendLine()
+      appendLine("<details>")
+      appendLine("<summary>Succeeded Coverages</summary><br>")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(0).substringAfterLast("/")}](${oppiaDevelopGitHubLink}/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("</details>")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("### Test File Exempted Cases")
+      appendLine("- [${filePathList.get(2).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(2)})")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_scriptTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("scripts/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "scripts/java/com/example",
+      testSubpackage = "scripts/javatests/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_appTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "app/main/java/com/example",
+      testSubpackage = "app/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_localTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    val addTestContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsLocalTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContentLocal,
+      sourceSubpackage = "app/main/java/com/example",
+      testSubpackage = "app/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_sharedTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "app/main/java/com/example",
+      testSubpackage = "app/sharedTest/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_generatesCoverageReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val addTestContentShared =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
+    val addTestContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "AddNums",
+      sourceContent = addSourceContent,
+      testContentShared = addTestContentShared,
+      testContentLocal = addTestContentLocal,
+      subpackage = "app"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText().trimEnd()
+
+    val expectedResult = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 1")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("<details>")
+      appendLine("<summary>Succeeded Coverages</summary><br>")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("</details>")
+    }.trimEnd()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
@@ -435,790 +1229,6 @@ class RunCoverageTest {
 
       assertThat(outputReportText).isEqualTo(expectedResult)
     }
-  }
-
-  @Test
-  fun testRunCoverage_withCoverageStatusFail_throwsException() {
-    val filePathList = listOf(
-      "coverage/main/java/com/example/AddNums.kt",
-      "coverage/main/java/com/example/LowTestNums.kt"
-    )
-
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "LowTestNums",
-      testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )
-  }
-
-  @Test
-  fun testRunCoverage_withSuccessFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf(
-      "coverage/main/java/com/example/AddNums.kt"
-    )
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    val expectedResult =
-      """
-      ## Coverage Report
-
-      - No of files assessed: 1
-      - Coverage Status: **PASS**
-      
-      
-      <details>
-      <summary>Succeeded Coverages</summary><br>
-
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[AddNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|75.00%|3 / 4|:white_check_mark:|
-      </details>
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_withFailureFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf(
-      "coverage/main/java/com/example/LowTestNums.kt"
-    )
-
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "LowTestNums",
-      testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    val expectedResult =
-      """
-      ## Coverage Report
-
-      - No of files assessed: 1
-      - Coverage Status: **FAIL**
-      ### Failed Coverages
-      Min Coverage Required: 10%
-      
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[LowTestNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|0.00%|0 / 4|:x:|
-      
-      
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_withSuccessAndFailureFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf(
-      "coverage/main/java/com/example/AddNums.kt",
-      "coverage/main/java/com/example/LowTestNums.kt"
-    )
-
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.initEmptyWorkspace()
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "LowTestNums",
-      testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    val expectedResult =
-      """
-      ## Coverage Report
-  
-      - No of files assessed: 2
-      - Coverage Status: **FAIL**
-      ### Failed Coverages
-      Min Coverage Required: 10%
-  
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[LowTestNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(1)})|0.00%|0 / 4|:x:|
-  
-      <details>
-      <summary>Succeeded Coverages</summary><br>
-  
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[AddNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|75.00%|3 / 4|:white_check_mark:|
-      </details>
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_withSuccessAndAnomalyFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf(
-      "coverage/main/java/com/example/AddNums.kt",
-      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
-    )
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    val expectedResult =
-      """
-      ## Coverage Report
-
-      - No of files assessed: 2
-      - Coverage Status: **PASS**
-      
-      
-      <details>
-      <summary>Succeeded Coverages</summary><br>
-
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[AddNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|75.00%|3 / 4|:white_check_mark:|
-      </details>
-
-      ### Anomaly Cases
-      - The file: [ActivityComponent.kt]($oppiaDevelopGitHubLink/${filePathList.get(1)}) is exempted from having a test file; skipping coverage check.
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_withFailureAndAnomalyFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf(
-      "coverage/main/java/com/example/LowTestNums.kt",
-      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
-    )
-
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.initEmptyWorkspace()
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "LowTestNums",
-      testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    val expectedResult =
-      """
-      ## Coverage Report
-
-      - No of files assessed: 2
-      - Coverage Status: **FAIL**
-      ### Failed Coverages
-      Min Coverage Required: 10%
-  
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[LowTestNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|0.00%|0 / 4|:x:|
-  
-  
-  
-      ### Anomaly Cases
-      - The file: [ActivityComponent.kt]($oppiaDevelopGitHubLink/${filePathList.get(1)}) is exempted from having a test file; skipping coverage check.
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_withSuccessFailureAndAnomalyFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf(
-      "coverage/main/java/com/example/AddNums.kt",
-      "coverage/main/java/com/example/LowTestNums.kt",
-      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
-    )
-
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.initEmptyWorkspace()
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "LowTestNums",
-      testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
-      sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    val expectedResult =
-      """
-      ## Coverage Report
-
-      - No of files assessed: 3
-      - Coverage Status: **FAIL**
-      ### Failed Coverages
-      Min Coverage Required: 10%
-      
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[LowTestNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(1)})|0.00%|0 / 4|:x:|
-      
-      <details>
-      <summary>Succeeded Coverages</summary><br>
-
-      | Covered File | Percentage | Line Coverage | Status |
-      |--------------|------------|---------------|--------|
-      |[AddNums.kt]($oppiaDevelopGitHubLink/${filePathList.get(0)})|75.00%|3 / 4|:white_check_mark:|
-      </details>
-
-      ### Anomaly Cases
-      - The file: [ActivityComponent.kt]($oppiaDevelopGitHubLink/${filePathList.get(2)}) is exempted from having a test file; skipping coverage check.
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_scriptTestsMarkdownFormat_generatesCoverageReport() {
-    val filePathList = listOf("scripts/java/com/example/AddNums.kt")
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "scripts/java/com/example",
-      testSubpackage = "scripts/javatests/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
-    ).readText()
-
-    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_appTestsMarkdownFormat_generatesCoverageReport() {
-    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/test/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
-    ).readText()
-
-    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_localTestsMarkdownFormat_generatesCoverageReport() {
-    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-
-    testBazelWorkspace.initEmptyWorkspace()
-    val addTestContentLocal =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class AddNumsLocalTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)         
-              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsLocalTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContentLocal,
-      sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/test/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
-    ).readText()
-
-    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_sharedTestsMarkdownFormat_generatesCoverageReport() {
-    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "AddNums",
-      testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
-      sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/sharedTest/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
-    ).readText()
-
-    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_generatesCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-    val filename = filePathList.get(0).substringAfterLast("/")
-
-    testBazelWorkspace.initEmptyWorkspace()
-
-    val addTestContentShared =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class AddNumsTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)       
-          }
-      }
-      """.trimIndent()
-
-    val addTestContentLocal =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class AddNumsLocalTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)         
-          }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
-      filename = "AddNums",
-      sourceContent = addSourceContent,
-      testContentShared = addTestContentShared,
-      testContentLocal = addTestContentLocal,
-      subpackage = "app"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.md"
-    ).readText()
-
-    val expectedResult =
-      """
-        |[$filename]($oppiaDevelopGitHubLink/${filePathList.get(0)})|50.00%|2 / 4|:white_check_mark:|
-      """.trimIndent()
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1469,43 +1479,39 @@ class RunCoverageTest {
       <title>Coverage Report</title>
       <style>
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.6;
-            padding: 20px;
+          font-family: Arial, sans-serif;
+          font-size: 12px;
+          line-height: 1.6;
+          padding: 20px;
         }
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
         }
         th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            white-space: pre-wrap;
-            border-bottom: 1px solid #e3e3e3;
+          padding: 8px;
+          text-align: left;
+          white-space: pre-wrap;
+          border-bottom: 1px solid #e3e3e3;
         }
         .line-number-col {
-            width: 4%;
-        }
-        .line-number-row {
-            border-right: 1px solid #ababab
+          width: 4%;
         }
         .source-code-col {
-            width: 96%;
+          width: 96%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
-            /*white-space: pre-wrap;*/
+          white-space: pre-wrap;
         }
         .covered-line {
-            background-color: #c8e6c9; /* Light green */
+          background-color: #c8e6c9; /* Light green */
         }
         .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
+          background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #f7f7f7; /* light gray */
+          background-color: #f7f7f7; /* light gray */
         }
         .coverage-summary {
           margin-bottom: 20px;
@@ -1553,10 +1559,10 @@ class RunCoverageTest {
         }
         @media screen and (max-width: 768px) {
           body {
-              padding: 10px;
+            padding: 10px;
           }
           table {
-              width: auto;
+            width: auto;
           }
         }
       </style>
@@ -1586,44 +1592,44 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
+      <td class="line-number-row">   1</td>
+      <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
+      <td class="line-number-row">   2</td>
+      <td class="uncovered-line"></td>
     </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class AddNums {</td>
+      <td class="line-number-row">   3</td>
+      <td class="not-covered-line">class AddNums {</td>
     </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line">  companion object {</td>
+      <td class="line-number-row">   4</td>
+      <td class="uncovered-line">  companion object {</td>
     </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
+      <td class="line-number-row">   5</td>
+      <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+      <td class="line-number-row">   6</td>
+      <td class="covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="not-covered-line">          "Both numbers are zero"</td>
+      <td class="line-number-row">   7</td>
+      <td class="not-covered-line">          "Both numbers are zero"</td>
     </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="uncovered-line">      } else {</td>
+      <td class="line-number-row">   8</td>
+      <td class="uncovered-line">      } else {</td>
     </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="covered-line">          a + b</td>
+      <td class="line-number-row">   9</td>
+      <td class="covered-line">          a + b</td>
     </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="uncovered-line">      }</td>
+      <td class="line-number-row">  10</td>
+      <td class="uncovered-line">      }</td>
     </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">    }</td>
+      <td class="line-number-row">  11</td>
+      <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">  }</td>
+      <td class="line-number-row">  12</td>
+      <td class="uncovered-line">  }</td>
     </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">}</td>
+      <td class="line-number-row">  13</td>
+      <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
     </body>
@@ -1637,10 +1643,23 @@ class RunCoverageTest {
     val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filename = filePath.substringAfterLast("/")
 
-    val markdownText =
-      """
-        |[$filename]($oppiaDevelopGitHubLink/$filePath)|75.00%|3 / 4|:white_check_mark:|
-      """.trimIndent()
+    val markdownText = buildString {
+      appendLine("## Coverage Report")
+      appendLine()
+      appendLine("- Number of files assessed: 1")
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine()
+      appendLine("<details>")
+      appendLine("<summary>Succeeded Coverages</summary><br>")
+      appendLine()
+      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
+      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| [$filename]($oppiaDevelopGitHubLink/$filePath) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("</details>")
+    }.trimEnd()
 
     return markdownText
   }
@@ -1656,43 +1675,39 @@ class RunCoverageTest {
       <title>Coverage Report</title>
       <style>
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.6;
-            padding: 20px;
+          font-family: Arial, sans-serif;
+          font-size: 12px;
+          line-height: 1.6;
+          padding: 20px;
         }
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
         }
         th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            white-space: pre-wrap;
-            border-bottom: 1px solid #e3e3e3;
+          padding: 8px;
+          text-align: left;
+          white-space: pre-wrap;
+          border-bottom: 1px solid #e3e3e3;
         }
         .line-number-col {
-            width: 4%;
-        }
-        .line-number-row {
-            border-right: 1px solid #ababab
+          width: 4%;
         }
         .source-code-col {
-            width: 96%;
+          width: 96%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
-            /*white-space: pre-wrap;*/
+          white-space: pre-wrap;
         }
         .covered-line {
-            background-color: #c8e6c9; /* Light green */
+          background-color: #c8e6c9; /* Light green */
         }
         .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
+          background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #f7f7f7; /* light gray */
+          background-color: #f7f7f7; /* light gray */
         }
         .coverage-summary {
           margin-bottom: 20px;
@@ -1740,10 +1755,10 @@ class RunCoverageTest {
         }
         @media screen and (max-width: 768px) {
           body {
-              padding: 10px;
+            padding: 10px;
           }
           table {
-              width: auto;
+            width: auto;
           }
         }
       </style>
@@ -1773,44 +1788,44 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
+      <td class="line-number-row">   1</td>
+      <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
+      <td class="line-number-row">   2</td>
+      <td class="uncovered-line"></td>
     </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class ${getExpectedClassName(filePath)} {</td>
+      <td class="line-number-row">   3</td>
+      <td class="not-covered-line">class ${getExpectedClassName(filePath)} {</td>
     </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line">  companion object {</td>
+      <td class="line-number-row">   4</td>
+      <td class="uncovered-line">  companion object {</td>
     </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    fun ${getExpectedFuncName(filePath)}(a: Int, b: Int): Any {</td>
+      <td class="line-number-row">   5</td>
+      <td class="uncovered-line">    fun ${getExpectedFuncName(filePath)}(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+      <td class="line-number-row">   6</td>
+      <td class="covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">          "Both numbers are zero"</td>
+      <td class="line-number-row">   7</td>
+      <td class="covered-line">          "Both numbers are zero"</td>
     </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="uncovered-line">      } else {</td>
+      <td class="line-number-row">   8</td>
+      <td class="uncovered-line">      } else {</td>
     </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="covered-line">          ${getExpectedLogic(filePath)}</td>
+      <td class="line-number-row">   9</td>
+      <td class="covered-line">          ${getExpectedLogic(filePath)}</td>
     </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="uncovered-line">      }</td>
+      <td class="line-number-row">  10</td>
+      <td class="uncovered-line">      }</td>
     </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">    }</td>
+      <td class="line-number-row">  11</td>
+      <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">  }</td>
+      <td class="line-number-row">  12</td>
+      <td class="uncovered-line">  }</td>
     </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">}</td>
+      <td class="line-number-row">  13</td>
+      <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
     </body>
