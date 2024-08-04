@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
-  private val MIN_THRESHOLD: Int = 10
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()

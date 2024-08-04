@@ -15,7 +15,6 @@ import java.io.File
 import java.io.PrintStream
 
 class CoverageReporterTest {
-  private val MIN_THRESHOLD: Int = 10
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
@@ -151,9 +150,9 @@ class CoverageReporterTest {
       append("\n\n")
       append("- Number of files assessed: 1")
       append("\n\n")
-      append("### Failure Cases")
-      append("| File | Failure Reason |")
-      append("|------|----------------|")
+      append("### Failure Cases\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
       append("| ://bazelTestTarget | Failure Message |")
     }
 
@@ -262,9 +261,9 @@ class CoverageReporterTest {
       append("\n\n")
       append("- Number of files assessed: 4")
       append("\n\n")
-      append("### Failure Cases")
-      append("| File | Failure Reason |")
-      append("|------|----------------|")
+      append("### Failure Cases\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
       append("| ://bazelTestTarget | Failure Message |")
       append("\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
