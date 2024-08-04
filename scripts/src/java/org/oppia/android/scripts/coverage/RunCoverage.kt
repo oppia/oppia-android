@@ -197,14 +197,14 @@ class RunCoverage(
     }
   }
 
-  private fun combineCoverageReports(coverageResultList: List<CoverageReport>)
-  : CoverageReportContainer {
-    val containerBuilder = CoverageReportContainer.newBuilder()
-    coverageResultList.forEach { report ->
-      containerBuilder.addCoverageReport(report)
+  private fun combineCoverageReports(coverageResultList: List<CoverageReport>):
+    CoverageReportContainer {
+      val containerBuilder = CoverageReportContainer.newBuilder()
+      coverageResultList.forEach { report ->
+        containerBuilder.addCoverageReport(report)
+      }
+      return containerBuilder.build()
     }
-    return containerBuilder.build()
-  }
 
   private fun calculateAggregateCoverageReport(
     coverageReports: List<CoverageReport>

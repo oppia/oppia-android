@@ -21,7 +21,6 @@ class CoverageReporterTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
-
   @After
   fun tearDown() {
     System.setOut(originalOut)
@@ -29,6 +28,7 @@ class CoverageReporterTest {
 
   @Test
   fun testGenerateMarkDownReport_withPassCoverageReportDetails_generateMarkdownTable() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val coverageDir = "/coverage_reports"
     val filename = "SampleFile.kt"
     val validCoverageReport = CoverageReport.newBuilder()
@@ -69,7 +69,8 @@ class CoverageReporterTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [SampleFile.kt](https://github.com/oppia/oppia-android/tree/develop/SampleFile.kt) | 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("| [$filename]($oppiaDevelopGitHubLink/$filename) " +
+        "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |")
       appendLine("</details>")
     }.trimEnd()
 
@@ -78,6 +79,7 @@ class CoverageReporterTest {
 
   @Test
   fun testGenerateMarkDownReport_withFailCoverageReportDetails_generateMarkdownTable() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val coverageDir = "/coverage_reports"
     val filename = "SampleFile.kt"
     val validCoverageReport = CoverageReport.newBuilder()
@@ -113,7 +115,8 @@ class CoverageReporterTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [SampleFile.kt](https://github.com/oppia/oppia-android/tree/develop/SampleFile.kt) | 0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
+      appendLine("| [$filename]($oppiaDevelopGitHubLink/$filename) | " +
+        "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
@@ -161,6 +164,7 @@ class CoverageReporterTest {
 
   @Test
   fun testGenerateMarkDownReport_withExemptionCoverageReportDetails_generateMarkdownTable() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
     val coverageDir = "/coverage_reports"
     val exemptionCoverageReport = CoverageReport.newBuilder()
@@ -199,7 +203,7 @@ class CoverageReporterTest {
       appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
-      appendLine("- [ActivityComponent.kt](https://github.com/oppia/oppia-android/tree/develop/$exemptedFilePath)")
+      appendLine("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
@@ -207,13 +211,15 @@ class CoverageReporterTest {
 
   @Test
   fun testGenerateMarkDownReport_withCombinedCoverageReportDetails_generateMarkdownTable() {
-    val filename = "SampleFile.kt"
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val successFileName = "SampleSuccessFile.kt"
+    val failureFileName = "SampleFailureFile.kt"
     val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
     val coverageDir = "/coverage_reports"
     val validPassCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
-          .setFilePath(filename)
+          .setFilePath(successFileName)
           .setLinesFound(10)
           .setLinesHit(10)
           .build()
@@ -222,7 +228,7 @@ class CoverageReporterTest {
     val validFailCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
-          .setFilePath(filename)
+          .setFilePath(failureFileName)
           .setLinesFound(10)
           .setLinesHit(0)
           .build()
@@ -273,27 +279,29 @@ class CoverageReporterTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [SampleFile.kt](https://github.com/oppia/oppia-android/tree/develop/SampleFile.kt) | 0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
+      appendLine("| [$failureFileName]($oppiaDevelopGitHubLink/$failureFileName) | " +
+        "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
       appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [SampleFile.kt](https://github.com/oppia/oppia-android/tree/develop/SampleFile.kt) | 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine("| [$successFileName]($oppiaDevelopGitHubLink/$successFileName) | " +
+        "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |")
       appendLine("</details>")
       appendLine()
       appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
-      appendLine("- [ActivityComponent.kt](https://github.com/oppia/oppia-android/tree/develop/$exemptedFilePath)")
+      appendLine("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
 
   @Test
-  fun testGenerateHtmlReport_withCoverageReportDetails_generateHtmlWithCorrectContentAndFormatting() {
+  fun testGenerateHtmlReport_withCoverageReportDetails_generateCorrectContentAndFormatting() {
     val filename = "SampleFile.kt"
     val coverageDir = "/coverage_reports"
     val sourceFile = tempFolder.newFile(filename)

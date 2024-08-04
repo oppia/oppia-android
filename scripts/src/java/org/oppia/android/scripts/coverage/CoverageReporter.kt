@@ -342,8 +342,8 @@ class CoverageReporter(
       }
     }
 
-    val successMarkdownEntries = if (successTableRows.isNotEmpty()
-      || exemptedSuccessTableRows.isNotEmpty()
+    val successMarkdownEntries = if (successTableRows.isNotEmpty() ||
+      exemptedSuccessTableRows.isNotEmpty()
     ) {
       val detailsContent = buildString {
         append("<details>\n")

@@ -10,9 +10,9 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageDetails
 import org.oppia.android.scripts.proto.CoverageFailure
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
@@ -114,9 +114,9 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/example"
     )
 
-      val result = coverageRunner.retrieveCoverageDataForTestTarget(
-        "//coverage/example:AddNumsTest"
-      )
+    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+      "//coverage/example:AddNumsTest"
+    )
 
     val expectedResult = CoverageReport.newBuilder()
       .setFailure(
@@ -124,7 +124,7 @@ class CoverageRunnerTest {
           .setBazelTestTarget("//coverage/example:AddNumsTest")
           .setFailureMessage(
             "Coverage retrieval failed for the test target: " +
-            "//coverage/example:AddNumsTest"
+              "//coverage/example:AddNumsTest"
           )
           .build()
       ).build()
@@ -181,9 +181,9 @@ class CoverageRunnerTest {
       """.trimIndent()
     )
 
-      val result = coverageRunner.retrieveCoverageDataForTestTarget(
-        "//coverage/test/java/com/example:SubNumsTest"
-      )
+    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+      "//coverage/test/java/com/example:SubNumsTest"
+    )
 
     val expectedResult = CoverageReport.newBuilder()
       .setFailure(
@@ -214,40 +214,40 @@ class CoverageRunnerTest {
 
     val expectedResult = CoverageReport.newBuilder()
       .setDetails(
-      CoverageDetails.newBuilder()
-        .addBazelTestTargets(
-          BazelTestTarget.newBuilder()
-            .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
-        )
-        .setFilePath("coverage/main/java/com/example/AddNums.kt")
-        .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(3)
-            .setCoverage(Coverage.NONE)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(7)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(8)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .addCoveredLine(
-          CoveredLine.newBuilder()
-            .setLineNumber(10)
-            .setCoverage(Coverage.FULL)
-            .build()
-        )
-        .setLinesFound(4)
-        .setLinesHit(3)
-        .build()
+        CoverageDetails.newBuilder()
+          .addBazelTestTargets(
+            BazelTestTarget.newBuilder()
+              .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
+          )
+          .setFilePath("coverage/main/java/com/example/AddNums.kt")
+          .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(3)
+              .setCoverage(Coverage.NONE)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(7)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(8)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(10)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .setLinesFound(4)
+          .setLinesHit(3)
+          .build()
       ).build()
 
     assertThat(result).isEqualTo(expectedResult)
