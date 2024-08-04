@@ -38,14 +38,14 @@ class CoverageReporter(
    * @return a pair where the first value is the computed coverage ratio represented in [0, 1]
    *     and the second value is the generated report text
    */
-  fun generateRichTextReport() {
+  fun generateRichTextReport(): CoverageCheck {
+    val coverageStatus = checkCoverageStatus()
     when (reportFormat) {
-      ReportFormat.MARKDOWN -> generateMarkdownReport()
+      ReportFormat.MARKDOWN -> generateMarkdownReport(coverageStatus)
       ReportFormat.HTML -> generateHtmlReport()
     }
-    val coverageStatus = checkCoverageStatus()
-    println("Coverage Status: $coverageStatus")
     logCoverageReport()
+    return coverageStatus
   }
 
   private fun generateHtmlReport() {
@@ -246,7 +246,12 @@ class CoverageReporter(
     }
   }
 
-  private fun generateMarkdownReport() {
+  private fun generateMarkdownReport(coverageStatus: CoverageCheck) {
+    val status = when (coverageStatus) {
+      CoverageCheck.PASS -> "**PASS** :white_check_mark:"
+      CoverageCheck.FAIL -> "**FAIL** :x:"
+    }
+
     val failureCases = coverageReportContainer.coverageReportList.filter { it.hasFailure() }
 
     val failureTableRows = failureCases.mapNotNull { report ->
@@ -379,7 +384,8 @@ class CoverageReporter(
     }
 
     val finalReportText = "## Coverage Report\n\n" +
-      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}" +
+      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
+      "- Coverage Analysis: $status" +
       failureMarkdownTable +
       failureMarkdownEntries +
       successMarkdownEntries +
@@ -513,7 +519,7 @@ class CoverageReporter(
 }
 
 /** Corresponds to status of the coverage analysis. */
-private enum class CoverageCheck {
+enum class CoverageCheck {
   /** Indicates successful generation of coverage retrieval for a specified file. */
   PASS,
   /** Indicates failure or anomaly during coverage retrieval for a specified file. */

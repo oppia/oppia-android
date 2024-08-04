@@ -16,6 +16,13 @@ import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+// ANSI escape codes for colors
+const val GREEN = "\u001B[32m"   // Green text
+const val RED = "\u001B[31m"     // Red text
+const val YELLOW = "\u001B[33m"  // Yellow text
+const val RESET = "\u001B[0m"    // Default color
+const val BOLD = "\u001B[1m"     // Bold
+
 /**
  * Entry point function for running coverage analysis for a source file.
  *
@@ -146,13 +153,20 @@ class RunCoverage(
     }
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
-    val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
-    reporter.generateRichTextReport()
 
     protoOutputPath?.let { path ->
       File(path).printWriter().use { writer ->
         writer.println(coverageReportContainer.toCompressedBase64())
       }
+    }
+
+    val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
+    val coverageStatus = reporter.generateRichTextReport()
+
+    if (coverageStatus == CoverageCheck.PASS){
+      println("Coverage Analysis ${BOLD}${GREEN}PASSED${RESET}")
+    } else {
+      error("Coverage Analysis ${BOLD}${RED}FAILED${RESET}")
     }
   }
 
