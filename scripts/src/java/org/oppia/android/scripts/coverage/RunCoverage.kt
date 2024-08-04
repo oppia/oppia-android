@@ -3,9 +3,8 @@ package org.oppia.android.scripts.coverage
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
-import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageDetails
 import org.oppia.android.scripts.proto.CoverageExemption
@@ -143,7 +142,7 @@ class RunCoverage(
    */
   fun execute() {
     val coverageResults = filePathList.map { filePath ->
-        runCoverageForFile(filePath)
+      runCoverageForFile(filePath)
     }
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
@@ -198,7 +197,8 @@ class RunCoverage(
     }
   }
 
-  private fun combineCoverageReports(coverageResultList: List<CoverageReport>): CoverageReportContainer {
+  private fun combineCoverageReports(coverageResultList: List<CoverageReport>)
+  : CoverageReportContainer {
     val containerBuilder = CoverageReportContainer.newBuilder()
     coverageResultList.forEach { report ->
       containerBuilder.addCoverageReport(report)

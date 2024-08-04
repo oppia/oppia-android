@@ -365,8 +365,16 @@ class RunCoverageTest {
         appendLine()
         appendLine("| File | Coverage | Lines Hit | Status | Required % |")
         appendLine("|------|----------|-----------|:------:|------------|")
-        appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
-        appendLine("| [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+        appendLine(
+          "| [${filePathList.get(0).substringAfterLast("/")}]" +
+            "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+            ":white_check_mark: | $MIN_THRESHOLD% |"
+        )
+        appendLine(
+          "| [${filePathList.get(1).substringAfterLast("/")}]" +
+            "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | " +
+            ":white_check_mark: | $MIN_THRESHOLD% |"
+        )
         appendLine("</details>")
       }.trimEnd()
 
@@ -532,13 +540,13 @@ class RunCoverageTest {
     )
 
 //    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
 //    }
 
     // add once coverage failure exception is thrown
@@ -560,7 +568,11 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | :x: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |"
+      )
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
@@ -627,13 +639,13 @@ class RunCoverageTest {
     )
 
 //    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
 //    }
 
     /*assertThat(exception).hasMessageThat().contains(
@@ -652,14 +664,22 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(1).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 10 | " +
+          ":x: | $MIN_THRESHOLD% |"
+      )
       appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(0).substringAfterLast("/")}](${oppiaDevelopGitHubLink}/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
     }.trimEnd()
 
@@ -711,13 +731,20 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(0).substringAfterLast("/")}](${oppiaDevelopGitHubLink}/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
       appendLine()
       appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
-      appendLine("- [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)})")
+      appendLine(
+        "- [${filePathList.get(1).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)})"
+      )
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
@@ -775,13 +802,13 @@ class RunCoverageTest {
     )
 
 //    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
 //    }
 
     /*assertThat(exception).hasMessageThat().contains(
@@ -802,14 +829,21 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | :x: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |"
+      )
       appendLine()
       appendLine()
       appendLine()
       appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
-      appendLine("- [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)})")
+      appendLine(
+        "- [${filePathList.get(1).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)})"
+      )
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
@@ -877,13 +911,13 @@ class RunCoverageTest {
     )
 
 //    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher
-      ).execute()
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
 //    }
 
     /*assertThat(exception).hasMessageThat().contains(
@@ -904,20 +938,31 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(1).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | :x: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(1).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |"
+      )
       appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(0).substringAfterLast("/")}](${oppiaDevelopGitHubLink}/${filePathList.get(0)}) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
       appendLine()
       appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
-      appendLine("- [${filePathList.get(2).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(2)})")
+      appendLine(
+        "- [${filePathList.get(2).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(2)})"
+      )
     }.trimEnd()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
@@ -1144,7 +1189,11 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [${filePathList.get(0).substringAfterLast("/")}]($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
     }.trimEnd()
 
@@ -1657,7 +1706,10 @@ class RunCoverageTest {
       appendLine()
       appendLine("| File | Coverage | Lines Hit | Status | Required % |")
       appendLine("|------|----------|-----------|:------:|------------|")
-      appendLine("| [$filename]($oppiaDevelopGitHubLink/$filePath) | 75.00% | 3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |")
+      appendLine(
+        "| [$filename]($oppiaDevelopGitHubLink/$filePath) | 75.00% | " +
+          "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |"
+      )
       appendLine("</details>")
     }.trimEnd()
 

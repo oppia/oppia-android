@@ -5,9 +5,9 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageDetails
 import org.oppia.android.scripts.proto.CoverageFailure
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import java.io.File
 import java.nio.file.Files
@@ -38,13 +38,13 @@ class CoverageRunner(
   fun retrieveCoverageDataForTestTarget(
     bazelTestTarget: String
   ): CoverageReport {
-      val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: return generateFailedCoverageReport(
-          bazelTestTarget,
-          "Coverage retrieval failed for the test target: $bazelTestTarget"
-        )
+    val coverageResult = retrieveCoverageResult(bazelTestTarget)
+      ?: return generateFailedCoverageReport(
+        bazelTestTarget,
+        "Coverage retrieval failed for the test target: $bazelTestTarget"
+      )
 
-      return coverageDataFileLines(coverageResult, bazelTestTarget)
+    return coverageDataFileLines(coverageResult, bazelTestTarget)
   }
 
   private fun retrieveCoverageResult(
@@ -114,7 +114,6 @@ class CoverageRunner(
     return CoverageReport.newBuilder()
       .setDetails(coverageDetails)
       .build()
-
   }
 }
 

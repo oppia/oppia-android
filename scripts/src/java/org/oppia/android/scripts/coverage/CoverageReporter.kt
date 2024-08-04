@@ -176,7 +176,8 @@ class CoverageReporter(
                       </tr>
                     </thead>
                     <tbody>
-            """.trimIndent())
+              """.trimIndent()
+            )
 
             val fileContent = File(repoRoot, filePath).readLines()
             val coverageMap = details.coveredLineList.associateBy { it.lineNumber }
@@ -194,7 +195,8 @@ class CoverageReporter(
                     <td class="line-number-row">${lineNumber.toString().padStart(4, ' ')}</td>
                     <td class="$lineClass">$line</td>
                   </tr>
-              """.trimIndent())
+                """.trimIndent()
+              )
             }
 
             append(
@@ -203,7 +205,8 @@ class CoverageReporter(
                     </table>
                   </body>
                   </html>
-              """.trimIndent())
+              """.trimIndent()
+            )
           }
 
           val reportOutputPath = getReportOutputPath(repoRoot, filePath, ReportFormat.HTML)
@@ -217,7 +220,10 @@ class CoverageReporter(
         }
         report.hasFailure() -> {
           val failure = report.failure
-          println("-> The coverage analysis for ${failure.bazelTestTarget} failed - reason: ${failure.failureMessage} \n")
+          println(
+            "-> The coverage analysis for ${failure.bazelTestTarget} failed " +
+              "- reason: ${failure.failureMessage} \n"
+          )
         }
         report.hasExemption() -> {
           val exemption = report.exemption
@@ -327,7 +333,9 @@ class CoverageReporter(
       }
     }
 
-    val successMarkdownEntries = if (successTableRows.isNotEmpty() || exemptedSuccessTableRows.isNotEmpty()) {
+    val successMarkdownEntries = if (successTableRows.isNotEmpty()
+      || exemptedSuccessTableRows.isNotEmpty()
+    ) {
       val detailsContent = buildString {
         append("<details>\n")
         append("<summary>Succeeded Coverages</summary><br>\n\n")
@@ -478,13 +486,16 @@ class CoverageReporter(
         val filePath = details.filePath
         val totalLinesFound = details.linesFound
         val totalLinesHit = details.linesHit
-        val exemptionPercentage = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
+        val exemptionPercentage = testFileExemptionList[filePath]
+          ?.overrideMinCoveragePercentRequired
+          ?: MIN_THRESHOLD
         val coveragePercentage = calculateCoveragePercentage(
           totalLinesHit, totalLinesFound
         )
         val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
 
-        "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | $totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage% |"
+        "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | " +
+          "$totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage% |"
       }
       .joinToString(separator = "\n")
   }
