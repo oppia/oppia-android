@@ -60,15 +60,11 @@ class CoverageReporterTest {
       appendLine()
       appendLine("- Number of files assessed: 1")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [$filename]($oppiaDevelopGitHubLink/$filename) " +
           "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |"
@@ -113,10 +109,8 @@ class CoverageReporterTest {
       appendLine()
       appendLine("- Number of files assessed: 1")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [$filename]($oppiaDevelopGitHubLink/$filename) | " +
           "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
@@ -198,14 +192,6 @@ class CoverageReporterTest {
       appendLine()
       appendLine("- Number of files assessed: 1")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
       appendLine("### Test File Exempted Cases")
       appendLine("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
     }.trimEnd()
@@ -281,8 +267,8 @@ class CoverageReporterTest {
       appendLine("|------|----------------|")
       appendLine("| ://bazelTestTarget | Failure Message |")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [$failureFileName]($oppiaDevelopGitHubLink/$failureFileName) | " +
           "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
@@ -291,15 +277,13 @@ class CoverageReporterTest {
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [$successFileName]($oppiaDevelopGitHubLink/$successFileName) | " +
           "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |"
       )
       appendLine("</details>")
-      appendLine()
-      appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
       appendLine("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")

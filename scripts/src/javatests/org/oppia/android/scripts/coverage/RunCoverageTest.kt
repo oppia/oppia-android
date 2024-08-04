@@ -356,15 +356,11 @@ class RunCoverageTest {
         appendLine()
         appendLine("- Number of files assessed: 2")
         appendLine()
-        appendLine()
-        appendLine()
-        appendLine()
-        appendLine()
         appendLine("<details>")
         appendLine("<summary>Succeeded Coverages</summary><br>")
         appendLine()
-        appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-        appendLine("|------|----------|-----------|:------:|------------|")
+        appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+        appendLine("|------|:--------:|----------:|:------:|:------------:|")
         appendLine(
           "| [${filePathList.get(0).substringAfterLast("/")}]" +
             "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
@@ -564,10 +560,8 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 1")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
@@ -662,10 +656,8 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 2")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
@@ -675,8 +667,8 @@ class RunCoverageTest {
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
@@ -724,23 +716,17 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 2")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |"
       )
       appendLine("</details>")
-      appendLine()
-      appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
       appendLine(
@@ -827,19 +813,13 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 2")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |"
       )
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
       appendLine(
@@ -936,10 +916,8 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 3")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
@@ -949,16 +927,14 @@ class RunCoverageTest {
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |"
       )
       appendLine("</details>")
-      appendLine()
-      appendLine()
       appendLine()
       appendLine("### Test File Exempted Cases")
       appendLine(
@@ -1182,15 +1158,11 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 1")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | " +
@@ -1699,15 +1671,11 @@ class RunCoverageTest {
       appendLine()
       appendLine("- Number of files assessed: 1")
       appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
-      appendLine()
       appendLine("<details>")
       appendLine("<summary>Succeeded Coverages</summary><br>")
       appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Required % |")
-      appendLine("|------|----------|-----------|:------:|------------|")
+      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
+      appendLine("|------|:--------:|----------:|:------:|:------------:|")
       appendLine(
         "| [$filename]($oppiaDevelopGitHubLink/$filePath) | 75.00% | " +
           "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |"

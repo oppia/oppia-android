@@ -314,12 +314,13 @@ class CoverageReporter(
       }.joinToString(separator = "\n") { "- $it" }
 
     val tableHeader = buildString {
-      append("| File | Coverage | Lines Hit | Status | Required % |\n")
-      append("|------|----------|-----------|:------:|------------|\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
     }
 
     val failureMarkdownTable = buildString {
       if (failureTableRows.isNotEmpty()) {
+        append("\n\n")
         append("### Failure Cases\n")
         append("| File | Failure Reason |\n")
         append("|------|----------------|\n")
@@ -329,6 +330,7 @@ class CoverageReporter(
 
     val failureMarkdownEntries = buildString {
       if (failureBelowThresholdTableRows.isNotEmpty() || exemptedFailureTableRows.isNotEmpty()) {
+        append("\n\n")
         append(tableHeader)
         append(failureBelowThresholdTableRows)
         if (exemptedFailureTableRows.isNotEmpty()) {
@@ -336,6 +338,7 @@ class CoverageReporter(
           append(exemptedFailureTableRows)
         }
       } else if (exemptedFailureTableRows.isNotEmpty()) {
+        append("\n\n")
         append(tableHeader)
         append("\n|Exempted :small_red_triangle_down:|\n")
         append(exemptedFailureTableRows)
@@ -346,6 +349,7 @@ class CoverageReporter(
       exemptedSuccessTableRows.isNotEmpty()
     ) {
       val detailsContent = buildString {
+        append("\n\n")
         append("<details>\n")
         append("<summary>Succeeded Coverages</summary><br>\n\n")
         if (successTableRows.isNotEmpty()) {
@@ -367,20 +371,17 @@ class CoverageReporter(
 
     val testFileExemptedSection = buildString {
       if (testFileExemptedCasesList.isNotEmpty()) {
-        append("\n\n### Test File Exempted Cases\n")
+        append("\n\n")
+        append("### Test File Exempted Cases\n")
         append(testFileExemptedCasesList)
       }
     }
 
     val finalReportText = "## Coverage Report\n\n" +
       "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}" +
-      "\n\n" +
       failureMarkdownTable +
-      "\n\n" +
       failureMarkdownEntries +
-      "\n\n" +
       successMarkdownEntries +
-      "\n\n" +
       testFileExemptedSection
 
     println("Final report 2: $finalReportText")
