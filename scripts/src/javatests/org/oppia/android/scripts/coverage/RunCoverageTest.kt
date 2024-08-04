@@ -351,13 +351,11 @@ class RunCoverageTest {
       ).readText()
 
       val expectedResult = buildString {
-        append("## Coverage Report")
-        append("\n\n")
+        append("## Coverage Report\n\n")
         append("- Number of files assessed: 2")
-        append("\n\n")
+        append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
         append("<details>\n")
-        append("<summary>Succeeded Coverages</summary><br>")
-        append("\n\n")
+        append("<summary>Succeeded Coverages</summary><br>\n\n")
         append("| File | Coverage | Lines Hit | Status | Min Required |\n")
         append("|------|:--------:|----------:|:------:|:------------:|\n")
         append(
@@ -377,8 +375,7 @@ class RunCoverageTest {
     }
   }
 
-  // add check failure later
-  /*@Test
+  @Test
   fun testRunCoverage_withCoverageStatusFail_throwsException() {
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
@@ -447,9 +444,9 @@ class RunCoverageTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
+      "Coverage Analysis FAILED"
     )
-  }*/
+  }
 
   @Test
   fun testRunCoverage_withSuccessFiles_generatesFinalCoverageReport() {
@@ -534,20 +531,19 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-//    val exception = assertThrows<IllegalStateException>() {
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-//    }
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
 
-    // add once coverage failure exception is thrown
-    /*assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )*/
+    assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis FAILED"
+    )
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -555,10 +551,9 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 1")
-      append("\n\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -631,19 +626,19 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-//    val exception = assertThrows<IllegalStateException>() {
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-//    }
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
 
-    /*assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )*/
+    assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis FAILED"
+    )
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -651,21 +646,18 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 2")
-      append("\n\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |"
+          ":x: | $MIN_THRESHOLD% |\n\n"
       )
-      append("\n\n")
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>")
-      append("\n\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -711,13 +703,11 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 2")
-      append("\n\n")
+      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>")
-      append("\n\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -725,8 +715,7 @@ class RunCoverageTest {
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      append("</details>")
-      append("\n\n")
+      append("</details>\n\n")
       append("### Test File Exempted Cases\n")
       append(
         "- [${filePathList.get(1).substringAfterLast("/")}]" +
@@ -788,19 +777,19 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-//    val exception = assertThrows<IllegalStateException>() {
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-//    }
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
 
-    /*assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )*/
+    assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis FAILED"
+    )
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -808,18 +797,16 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 2")
-      append("\n\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |"
+          ":x: | $MIN_THRESHOLD% |\n\n"
       )
-      append("\n\n")
       append("### Test File Exempted Cases\n")
       append(
         "- [${filePathList.get(1).substringAfterLast("/")}]" +
@@ -891,19 +878,19 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-//    val exception = assertThrows<IllegalStateException>() {
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-//    }
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
 
-    /*assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis Failed as minimum coverage threshold not met!"
-    )*/
+    assertThat(exception).hasMessageThat().contains(
+      "Coverage Analysis FAILED"
+    )
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -911,21 +898,18 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 3")
-      append("\n\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |"
+          ":x: | $MIN_THRESHOLD% |\n\n"
       )
-      append("\n\n")
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>")
-      append("\n\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -933,8 +917,7 @@ class RunCoverageTest {
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      append("</details>")
-      append("\n\n")
+      append("</details>\n\n")
       append("### Test File Exempted Cases\n")
       append(
         "- [${filePathList.get(2).substringAfterLast("/")}]" +
@@ -1153,13 +1136,11 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 1")
-      append("\n\n")
+      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>")
-      append("\n\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -1666,13 +1647,11 @@ class RunCoverageTest {
     val filename = filePath.substringAfterLast("/")
 
     val markdownText = buildString {
-      append("## Coverage Report")
-      append("\n\n")
+      append("## Coverage Report\n\n")
       append("- Number of files assessed: 1")
-      append("\n\n")
+      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>")
-      append("\n\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
