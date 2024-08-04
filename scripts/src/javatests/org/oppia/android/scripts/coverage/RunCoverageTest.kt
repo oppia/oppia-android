@@ -269,7 +269,7 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -349,30 +349,30 @@ class RunCoverageTest {
       val outputReportText = File(
         "${tempFolder.root}" +
           "$coverageDir/CoverageReport.md"
-      ).readText().trimEnd()
+      ).readText()
 
       val expectedResult = buildString {
-        appendLine("## Coverage Report")
-        appendLine()
-        appendLine("- Number of files assessed: 2")
-        appendLine()
-        appendLine("<details>")
-        appendLine("<summary>Succeeded Coverages</summary><br>")
-        appendLine()
-        appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-        appendLine("|------|:--------:|----------:|:------:|:------------:|")
-        appendLine(
+        append("## Coverage Report")
+        append("\n\n")
+        append("- Number of files assessed: 2")
+        append("\n\n")
+        append("<details>\n")
+        append("<summary>Succeeded Coverages</summary><br>")
+        append("\n\n")
+        append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+        append("|------|:--------:|----------:|:------:|:------------:|\n")
+        append(
           "| [${filePathList.get(0).substringAfterLast("/")}]" +
             "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
             ":white_check_mark: | $MIN_THRESHOLD% |"
         )
-        appendLine(
+        append(
           "| [${filePathList.get(1).substringAfterLast("/")}]" +
             "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | " +
             ":white_check_mark: | $MIN_THRESHOLD% |"
         )
-        appendLine("</details>")
-      }.trimEnd()
+        append("</details>")
+      }
 
       assertThat(outputReportText).isEqualTo(expectedResult)
     }
@@ -479,7 +479,7 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -553,21 +553,21 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |"
       )
-    }.trimEnd()
+    }
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -649,33 +649,33 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 2")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 2")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |"
       )
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-    }.trimEnd()
+      append("</details>")
+    }
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -712,28 +712,28 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 2")
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 2")
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-      appendLine()
-      appendLine("### Test File Exempted Cases")
-      appendLine(
+      append("</details>")
+      append("\n\n")
+      append("### Test File Exempted Cases\n")
+      append(
         "- [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)})"
       )
-    }.trimEnd()
+    }
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -809,24 +809,24 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 2")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 2")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |"
       )
-      appendLine()
-      appendLine("### Test File Exempted Cases")
-      appendLine(
+      append("\n\n")
+      append("### Test File Exempted Cases\n")
+      append(
         "- [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)})"
       )
-    }.trimEnd()
+    }
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -912,36 +912,36 @@ class RunCoverageTest {
     ).readText()
 
     val expectedResult = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 3")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 3")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |"
       )
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-      appendLine()
-      appendLine("### Test File Exempted Cases")
-      appendLine(
+      append("</details>")
+      append("\n\n")
+      append("### Test File Exempted Cases\n")
+      append(
         "- [${filePathList.get(2).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(2)})"
       )
-    }.trimEnd()
+    }
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -971,7 +971,7 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -1003,7 +1003,7 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -1053,7 +1053,7 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -1085,7 +1085,7 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
@@ -1151,25 +1151,25 @@ class RunCoverageTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedResult = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-    }.trimEnd()
+      append("</details>")
+    }
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
@@ -1667,21 +1667,21 @@ class RunCoverageTest {
     val filename = filePath.substringAfterLast("/")
 
     val markdownText = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [$filename]($oppiaDevelopGitHubLink/$filePath) | 75.00% | " +
-          "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |"
+          "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-    }.trimEnd()
+      append("</details>")
+    }
 
     return markdownText
   }

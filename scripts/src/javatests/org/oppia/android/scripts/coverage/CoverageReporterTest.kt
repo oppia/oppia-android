@@ -53,24 +53,24 @@ class CoverageReporterTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedMarkdown = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [$filename]($oppiaDevelopGitHubLink/$filename) " +
-          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |"
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-    }.trimEnd()
+      append("</details>")
+    }
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
@@ -102,20 +102,20 @@ class CoverageReporterTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedMarkdown = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [$filename]($oppiaDevelopGitHubLink/$filename) | " +
           "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
       )
-    }.trimEnd()
+    }
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
@@ -144,18 +144,18 @@ class CoverageReporterTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedMarkdown = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("### Failure Cases")
-      appendLine("| File | Failure Reason |")
-      appendLine("|------|----------------|")
-      appendLine("| ://bazelTestTarget | Failure Message |")
-    }.trimEnd()
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("### Failure Cases")
+      append("| File | Failure Reason |")
+      append("|------|----------------|")
+      append("| ://bazelTestTarget | Failure Message |")
+    }
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
@@ -185,16 +185,16 @@ class CoverageReporterTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedMarkdown = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 1")
-      appendLine()
-      appendLine("### Test File Exempted Cases")
-      appendLine("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
-    }.trimEnd()
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 1")
+      append("\n\n")
+      append("### Test File Exempted Cases\n")
+      append("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
+    }
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
@@ -255,39 +255,39 @@ class CoverageReporterTest {
     val outputReportText = File(
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
-    ).readText().trimEnd()
+    ).readText()
 
     val expectedMarkdown = buildString {
-      appendLine("## Coverage Report")
-      appendLine()
-      appendLine("- Number of files assessed: 4")
-      appendLine()
-      appendLine("### Failure Cases")
-      appendLine("| File | Failure Reason |")
-      appendLine("|------|----------------|")
-      appendLine("| ://bazelTestTarget | Failure Message |")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("## Coverage Report")
+      append("\n\n")
+      append("- Number of files assessed: 4")
+      append("\n\n")
+      append("### Failure Cases")
+      append("| File | Failure Reason |")
+      append("|------|----------------|")
+      append("| ://bazelTestTarget | Failure Message |")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [$failureFileName]($oppiaDevelopGitHubLink/$failureFileName) | " +
           "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
       )
-      appendLine()
-      appendLine("<details>")
-      appendLine("<summary>Succeeded Coverages</summary><br>")
-      appendLine()
-      appendLine("| File | Coverage | Lines Hit | Status | Min Required |")
-      appendLine("|------|:--------:|----------:|:------:|:------------:|")
-      appendLine(
+      append("\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>")
+      append("\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
         "| [$successFileName]($oppiaDevelopGitHubLink/$successFileName) | " +
-          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |"
+          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
       )
-      appendLine("</details>")
-      appendLine()
-      appendLine("### Test File Exempted Cases")
-      appendLine("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
-    }.trimEnd()
+      append("</details>")
+      append("\n\n")
+      append("### Test File Exempted Cases\n")
+      append("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
+    }
 
     assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
