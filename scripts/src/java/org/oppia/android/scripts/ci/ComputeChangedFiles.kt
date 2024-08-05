@@ -123,15 +123,24 @@ class ComputeChangedFiles(
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
     val changedFiles = computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
+    println("\nChanged Files: $changedFiles")
     val ktFiles = changedFiles.filter { it.endsWith(".kt") }
+    println("\nKt file: $ktFiles")
 
     val groupedBuckets = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
       .entries.groupBy(
         keySelector = { checkNotNull(it.key).groupingStrategy },
         valueTransform = { checkNotNull(it.key) to it.value }
       ).mapValues { (_, fileLists) -> fileLists.toMap() }
+    println("\nGrouped Buckets: $groupedBuckets")
 
-    val partitionedBuckets: Map<String, Map<FileBucket, List<String>>> =
+    /*val groupedBuckets2 = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
+      .entries.groupBy { it.key.groupingStrategy }
+      .mapValues { (_, buckets) -> buckets.associate { it.key to it.value } }
+    println("\n********************")
+    println("\nGrouped Buckets: $groupedBuckets2")*/
+
+    /*val partitionedBuckets: Map<String, Map<FileBucket, List<String>>> =
       groupedBuckets.entries.flatMap { (strategy, buckets) ->
         return@flatMap when (strategy) {
           GroupingStrategy.BUCKET_SEPARATELY -> {
@@ -142,6 +151,17 @@ class ComputeChangedFiles(
           GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
         }
       }.toMap()
+    println("\nPartitioned Buckets: $partitionedBuckets")*/
+
+    val partitionedBuckets = groupedBuckets.flatMap { (strategy, buckets) ->
+      when (strategy) {
+        GroupingStrategy.BUCKET_SEPARATELY -> buckets.map { (fileBucket, targets) ->
+          fileBucket.cacheBucketName to mapOf(fileBucket to targets)
+        }
+        GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
+      }
+    }.toMap()
+    println("\nPartitioned Buckets: $partitionedBuckets")
 
     val shardedBuckets: Map<String, List<List<String>>> =
       partitionedBuckets.mapValues { (_, bucketMap) ->
@@ -160,7 +180,7 @@ class ComputeChangedFiles(
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
         allPartitionFiles.shuffled().chunked(maxTestCountPerShard)
       }
-    println("Sharded Buckets: $shardedBuckets")
+    println("\nSharded Buckets: $shardedBuckets")
 
     val computedBuckets = shardedBuckets.entries.flatMap { (bucketName, shardedFiles) ->
       shardedFiles.map { files ->
@@ -170,10 +190,13 @@ class ComputeChangedFiles(
         }.build()
       }
     }
+    println("\nComputed Buckets: $computedBuckets")
 
     val encodedFileBucketEntries = computedBuckets
       .associateBy { it.toCompressedBase64() }
       .entries.shuffled()
+    println("\nEncoded File Bucket Entries: $encodedFileBucketEntries")
+
     File(pathToOutputFile).printWriter().use { writer ->
       encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
         writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
