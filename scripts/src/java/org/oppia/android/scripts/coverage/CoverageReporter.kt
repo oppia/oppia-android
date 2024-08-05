@@ -395,8 +395,6 @@ class CoverageReporter(
       successMarkdownEntries +
       testFileExemptedSection
 
-    println("Final report 2: $finalReportText")
-
     val finalReportOutputPath = mdReportOutputPath?.let {
       it
     } ?: "$repoRoot/coverage_reports/CoverageReport.md"
@@ -438,64 +436,66 @@ class CoverageReporter(
   }
 
   private fun logCoverageReport() {
-    println(
-      """
-    |COVERAGE ANALYSIS:
-    |---------------- ${"\n"}
-    """.trimMargin().prependIndent("  ")
-    )
-    coverageReportContainer.coverageReportList.forEach { coverageReport ->
+    val failureReports = StringBuilder()
+
+    coverageReportContainer.coverageReportList.forEach { report ->
       when {
-        coverageReport.hasDetails() -> {
-          val details = coverageReport.details
+        report.hasFailure() -> {
+          val failure = report.failure
+          failureReports.appendLine(
+            """
+            |Coverage Report Failure:
+            |------------------------
+            |Test Target: ${failure.bazelTestTarget}
+            |Failure Message: ${failure.failureMessage}
+            """.trimMargin().prependIndent("  ")
+          )
+        }
+        report.hasDetails() -> {
+          val details = report.details
           val filePath = details.filePath
           val totalLinesFound = details.linesFound
           val totalLinesHit = details.linesHit
           val coveragePercentage = calculateCoveragePercentage(
             totalLinesHit, totalLinesFound
           )
+
           val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
 
-          val logReportText =
-            """
-            |Coverage Report:
-            |------------------------
-            |Covered File: $filePath
-            |Coverage percentage: $formattedCoveragePercentage% covered
-            |Line coverage: $totalLinesHit / $totalLinesFound lines covered ${"\n"}
-            """.trimMargin().prependIndent("  ")
+          val exemption = testFileExemptionList[filePath]
+          val minRequiredCoverage = if (exemption != null) {
+            exemption.overrideMinCoveragePercentRequired
+          } else {
+            MIN_THRESHOLD
+          }
 
-          println(logReportText)
-        }
-        coverageReport.hasFailure() -> {
-          val failure = coverageReport.failure
-          val logReportText =
-            """
-            |Coverage Report Failure:
-            |------------------------
-            |Test Target: ${failure.bazelTestTarget}
-            |Failure Message: ${failure.failureMessage} ${"\n"}
-            """.trimMargin().prependIndent("  ")
-
-          println(logReportText)
-        }
-        coverageReport.hasExemption() -> {
-          val exemption = coverageReport.exemption
-          val logReportText =
-            """
-            |Coverage Report Exemption:
-            |--------------------------
-            |Exempted File: ${exemption.filePath} ${"\n"}
-            """.trimMargin().prependIndent("  ")
-
-          println(logReportText)
-        }
-        else -> {
-          println("Unknown Coverage Report Type")
+          if (coveragePercentage < minRequiredCoverage) {
+            failureReports.appendLine(
+              """
+              |Covered File: $filePath
+              |Coverage percentage: $formattedCoveragePercentage% covered
+              |Line coverage: $totalLinesHit / $totalLinesFound lines covered
+              |Minimum Required: ${minRequiredCoverage}% ${if (exemption != null) "(exemption)" else ""}
+              |------------------------
+              """.trimMargin().prependIndent("  ")
+            )
+          }
         }
       }
     }
+
+    if (failureReports.isNotEmpty()) {
+      println(
+        """
+        |
+        |COVERAGE FAILURE REPORT:
+        |-----------------------
+        """.trimMargin().prependIndent("  ")
+      )
+      println(failureReports.toString())
+    }
   }
+
 
   private fun generateTableRows(
     reports: List<CoverageReport>,
