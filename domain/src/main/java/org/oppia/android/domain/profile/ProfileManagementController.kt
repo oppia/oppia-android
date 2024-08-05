@@ -375,8 +375,8 @@ class ProfileManagementController @Inject constructor(
    * Marks that the profile has completed the onboarding flow so that the onboarding flow is not
    * shown after the initial login.
    *
-   * @param profileId The ID of the profile to update.
-   * @return A [DataProvider] that represents the result of the update operation.
+   * @param profileId the ID of the profile to update
+   * @return a [DataProvider] that represents the result of the update operation
    */
   fun markProfileOnboardingEnded(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(

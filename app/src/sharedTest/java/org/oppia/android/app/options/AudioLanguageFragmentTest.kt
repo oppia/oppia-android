@@ -28,7 +28,6 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf.allOf
-import org.hamcrest.core.IsInstanceOf
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -343,7 +342,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testFragment_languageSelectionChanged_languageIsUpdated() {
+  fun testFragment_languageSelectionChanged_selectionIsUpdated() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -353,11 +352,7 @@ class AudioLanguageFragmentTest {
       scenario.onActivity { activity ->
         onView(withId(R.id.audio_language_dropdown_list)).perform(click())
 
-        onData(
-          allOf(
-            `is`(IsInstanceOf.instanceOf(String::class.java)), `is`("Naijá")
-          )
-        )
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`("Naijá")))
           .inRoot(withDecorView(not(`is`(activity.window.decorView))))
           .perform(click())
 
@@ -377,7 +372,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testFragment_languageSelectionChanged_configChange_languageIsUpdated() {
+  fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -396,7 +391,6 @@ class AudioLanguageFragmentTest {
           .perform(click())
 
         onView(isRoot()).perform(orientationLandscape())
-
         testCoroutineDispatchers.runCurrent()
 
         // Verifies that the selected language is still set successfully after configuration change.

@@ -261,9 +261,12 @@ class OnboardingFragmentPresenter @Inject constructor(
         { result ->
           when (result) {
             is AsyncResult.Success -> subscribeToGetProfileList()
-            is AsyncResult.Failure -> oppiaLogger.e(
-              "OnboardingFragment", "Error creating the default profile", result.error
-            )
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "OnboardingFragment", "Error creating the default profile", result.error
+              )
+              activity.finish()
+            }
             is AsyncResult.Pending -> {}
           }
         }
