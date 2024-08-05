@@ -2,19 +2,33 @@ package org.oppia.android.app.databinding
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -27,12 +41,11 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
-import org.oppia.android.app.databinding.ColorBindingAdapters.setCustomBackgroundColor
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.ColorBindingAdaptersTestActivity
+import org.oppia.android.app.testing.TextInputLayoutBindingAdaptersTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -65,7 +78,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -91,20 +103,18 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ColorBindingAdapters]. */
+/** Tests for [TextInputLayoutBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ColorBindingAdaptersTest.TestApplication::class,
+  application = TextInputLayoutBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class ColorBindingAdaptersTest {
-  @Inject lateinit var context: Context
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  private val whiteColor = Color.WHITE
-  private val blackColor = Color.BLACK
+class TextInputLayoutBindingAdaptersTest {
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -118,35 +128,103 @@ class ColorBindingAdaptersTest {
   }
 
   @Test
-  fun testColorBindingAdapters_setWhiteBackground_setsColorCorrectly() {
+  fun testBindingAdapters_setErrorMessage_setsMessageCorrectly() {
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
-        val testView: View = activity.findViewById(R.id.test_view)
-        setCustomBackgroundColor(testView, whiteColor)
-        val bg = testView.background as ColorDrawable
-        assertThat(getColorHexString(bg.color)).isEqualTo(getColorHexString(whiteColor))
+        val testView: TextInputLayout = activity.findViewById(R.id.test_text_input_view)
+        TextInputLayoutBindingAdapters.setErrorMessage(testView, "Some error message.")
+        assertThat(testView.error).isEqualTo("Some error message.")
       }
     }
   }
 
   @Test
-  fun testColorBindingAdapters_setBlackBackground_setsColorCorrectly() {
+  fun testBindingAdapters_setSelection_filterDisabled_setsSelectionCorrectly() {
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
-        val testView: View = activity.findViewById(R.id.test_view)
-        setCustomBackgroundColor(testView, blackColor)
-        val bg = testView.background as ColorDrawable
-        assertThat(getColorHexString(bg.color)).isEqualTo(getColorHexString(blackColor))
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setSelection(testView, "English", false)
+        assertThat(testView.text.toString()).isEqualTo("English")
       }
     }
   }
 
-  private fun getColorHexString(colorId: Int): String = Integer.toHexString(colorId)
+  @Test
+  fun testBindingAdapters_setSelection_filterEnabled_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setSelection(testView, "English", true)
+        assertThat(testView.text.toString()).isEqualTo("English")
+      }
+    }
+  }
+
+  @Test
+  fun testBindingAdapters_setSelection_filterDisabled_doesNotAllowKeyboardInput() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setSelection(testView, "English", false)
+        onView(withId(R.id.test_text_input_view)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.test_autocomplete_view)).perform(KeyboardShownAction())
+        assertThat(KeyboardShownAction().isKeyboardShown).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testBindingAdapters_setSelection_filterEnabled_allowsKeyboardInput() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        onView(withId(R.id.test_autocomplete_view))
+          .perform(click(), replaceText("Port"))
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.test_autocomplete_view)).check(matches(withText("Port")))
+      }
+    }
+  }
+
+  class KeyboardShownAction : ViewAction {
+    var isKeyboardShown = false
+
+    override fun getConstraints(): Matcher<View> {
+      return allOf(isDisplayed(), isAssignableFrom(View::class.java))
+    }
+
+    override fun getDescription(): String {
+      return "Check if the soft keyboard is shown"
+    }
+
+    override fun perform(uiController: UiController?, view: View?) {
+      val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+      isKeyboardShown = imm.isAcceptingText
+    }
+  }
+
+  /**
+   * This function checks if the soft input keyboard is shown.
+   *
+   * @param view the input view
+   * @param context the activity context
+   */
+  fun isKeyboardShown(): Matcher<KeyboardShownAction> {
+    return object : TypeSafeMatcher<KeyboardShownAction>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Checking if soft keyboard is displayed.")
+      }
+
+      override fun matchesSafely(action: KeyboardShownAction): Boolean {
+        return action.isKeyboardShown
+      }
+    }
+  }
 
   private fun launchActivity():
-    ActivityScenario<ColorBindingAdaptersTestActivity>? {
-      val scenario = ActivityScenario.launch<ColorBindingAdaptersTestActivity>(
-        ColorBindingAdaptersTestActivity.createIntent(context)
+    ActivityScenario<TextInputLayoutBindingAdaptersTestActivity>? {
+      val scenario = ActivityScenario.launch<TextInputLayoutBindingAdaptersTestActivity>(
+        TextInputLayoutBindingAdaptersTestActivity.createIntent(context)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
@@ -181,37 +259,31 @@ class ColorBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]
   )
-  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
-    /** Build the TestApplicationComponent. */
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
-    /** Inject [ColorBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(colorBindingAdaptersTest: ColorBindingAdaptersTest)
+    fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest)
   }
 
-  /**
-   * Class to override a dependency throughout the test application, instead of overriding the
-   * dependencies in every test class, we can just do it once by extending the Application class.
-   */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerColorBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerTextInputLayoutBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    /** Inject [ColorBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(colorBindingAdaptersTest: ColorBindingAdaptersTest) {
-      component.inject(colorBindingAdaptersTest)
+    fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest) {
+      component.inject(textInputLayoutBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
