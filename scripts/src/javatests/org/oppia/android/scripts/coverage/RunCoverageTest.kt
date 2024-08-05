@@ -367,7 +367,7 @@ class RunCoverageTest {
         append(
           "| [${filePathList.get(1).substringAfterLast("/")}]" +
             "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | " +
-            ":white_check_mark: | $MIN_THRESHOLD% |"
+            ":white_check_mark: | $MIN_THRESHOLD% |\n"
         )
         append("</details>")
       }
