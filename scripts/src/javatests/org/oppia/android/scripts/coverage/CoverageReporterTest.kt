@@ -56,7 +56,7 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
       append("<summary>Succeeded Coverages</summary><br>\n\n")
@@ -103,7 +103,7 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
@@ -144,7 +144,7 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("### Failure Cases\n")
       append("| File | Failure Reason |\n")
@@ -184,7 +184,7 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("### Test File Exempted Cases\n")
       append("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")

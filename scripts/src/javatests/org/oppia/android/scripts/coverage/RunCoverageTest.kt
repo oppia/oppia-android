@@ -352,7 +352,7 @@ class RunCoverageTest {
 
       val expectedResult = buildString {
         append("## Coverage Report\n\n")
-        append("- Number of files assessed: 2")
+        append("- Number of files assessed: 2\n")
         append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
         append("<details>\n")
         append("<summary>Succeeded Coverages</summary><br>\n\n")
@@ -443,9 +443,8 @@ class RunCoverageTest {
       ).execute()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis FAILED"
-    )
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
   }
 
   @Test
@@ -541,9 +540,8 @@ class RunCoverageTest {
       ).execute()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis FAILED"
-    )
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -552,7 +550,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
@@ -636,9 +634,8 @@ class RunCoverageTest {
       ).execute()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis FAILED"
-    )
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -647,7 +644,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 2")
+      append("- Number of files assessed: 2\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
@@ -704,7 +701,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 2")
+      append("- Number of files assessed: 2\n")
       append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
       append("<summary>Succeeded Coverages</summary><br>\n\n")
@@ -787,9 +784,8 @@ class RunCoverageTest {
       ).execute()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis FAILED"
-    )
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -798,7 +794,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 2")
+      append("- Number of files assessed: 2\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
@@ -888,9 +884,8 @@ class RunCoverageTest {
       ).execute()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      "Coverage Analysis FAILED"
-    )
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val outputReportText = File(
       "${tempFolder.root}" +
@@ -899,7 +894,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 3")
+      append("- Number of files assessed: 3\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
@@ -1137,7 +1132,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
       append("<summary>Succeeded Coverages</summary><br>\n\n")
@@ -1648,7 +1643,7 @@ class RunCoverageTest {
 
     val markdownText = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1")
+      append("- Number of files assessed: 1\n")
       append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
       append("<summary>Succeeded Coverages</summary><br>\n\n")
