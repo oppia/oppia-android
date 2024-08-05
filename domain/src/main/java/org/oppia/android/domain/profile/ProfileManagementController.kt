@@ -365,7 +365,7 @@ class ProfileManagementController @Inject constructor(
    * Updates the name of an existing profile.
    *
    * @param profileId the ID corresponding to the profile being updated.
-   * @param newName New name for the profile being updated.
+   * @param newName new name for the profile being updated.
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateName(profileId: ProfileId, newName: String): DataProvider<Any?> {

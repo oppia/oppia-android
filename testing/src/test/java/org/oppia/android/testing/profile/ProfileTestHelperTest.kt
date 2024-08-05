@@ -111,6 +111,7 @@ class ProfileTestHelperTest {
 
     val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
     assertThat(profiles).hasSize(1)
+    assertThat(profiles.first().isAdmin).isEqualTo(true)
   }
 
   @Test

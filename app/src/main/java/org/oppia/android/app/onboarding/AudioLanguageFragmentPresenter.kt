@@ -68,9 +68,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       viewModel = audioLanguageSelectionViewModel
     }
 
-    audioLanguageSelectionViewModel.setProfileId(profileId)
+    audioLanguageSelectionViewModel.updateProfileId(profileId)
 
-    audioLanguageSelectionViewModel.setAvailableAudioLanguages()
+    audioLanguageSelectionViewModel.initializeAvailableAudioLanguages()
 
     if (!savedSelectedLanguage.isNullOrBlank()) {
       setSelectedLanguage(savedSelectedLanguage)
