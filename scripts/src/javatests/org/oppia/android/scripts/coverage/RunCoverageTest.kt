@@ -19,9 +19,6 @@ import java.util.concurrent.TimeUnit
 class RunCoverageTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
-  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = System.out
-
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
@@ -77,7 +74,6 @@ class RunCoverageTest {
 
   @After
   fun tearDown() {
-    System.setOut(originalOut)
     scriptBgDispatcher.close()
   }
 
@@ -92,17 +88,41 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_missingTestFileNotExempted_throwsException() {
-    System.setOut(PrintStream(outContent))
+  fun testRunCoverage_missingTestFileNotExempted_generatesFailureReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val sampleFile = "file.kt"
     testBazelWorkspace.initEmptyWorkspace()
-    val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
-    sampleFile.createNewFile()
+    tempFolder.newFile(sampleFile)
     val exception = assertThrows<IllegalStateException>() {
-      main(tempFolder.root.absolutePath, "file.kt")
+      main(
+        tempFolder.root.absolutePath,
+        sampleFile,
+        "--format=Markdown"
+      )
     }
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val failureMessage =
+      "No appropriate test file found for $sampleFile"
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("- Number of files assessed: 1\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("### Failure Cases\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| [$sampleFile]($oppiaDevelopGitHubLink/$sampleFile) | $failureMessage |")
+    }
+
+    assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
 
   @Test
@@ -198,8 +218,8 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_testFileExempted_skipsCoverage() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val exemptedFile = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
-    System.setOut(PrintStream(outContent))
     val exemptedFilePathList = listOf(exemptedFile)
 
     RunCoverage(
@@ -210,9 +230,228 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    assertThat(outContent.toString().trim()).contains(
-      "Exempted File: $exemptedFile"
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("- Number of files assessed: 1\n")
+      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
+      append("### Test File Exempted Cases\n")
+      append(
+        "- [${exemptedFilePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${exemptedFilePathList.get(0)})"
+      )
+    }
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withNonKotlinFileInput_analyzeOnlyKotlinFiles() {
+    val kotlinFilePath = "coverage/main/java/com/example/AddNums.kt"
+    val nonKotlinFilePath1 = "screen.xml"
+    val nonKotlinFilePath2 = "coverage.txt"
+    val nonKotlinFilePath3 = "report.md"
+
+    tempFolder.newFile("screen.xml")
+    tempFolder.newFile("coverage.txt")
+    tempFolder.newFile("report.md")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
     )
+
+    main(
+      "${tempFolder.root}",
+      kotlinFilePath,
+      nonKotlinFilePath1,
+      nonKotlinFilePath2,
+      nonKotlinFilePath3
+    )
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${kotlinFilePath.removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(kotlinFilePath)
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withTestFileInput_mapsToSourceFileAndGeneratesCoverageReport() {
+    val testFilePath = "coverage/test/java/com/example/AddNumsTest.kt"
+    val sourceFilePath = testFilePath.replace("/test/", "/main/").replace("Test.kt", ".kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      testFilePath,
+    )
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${sourceFilePath.removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    val expectedResult = getExpectedHtmlText(sourceFilePath)
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withIncorrectPackageStructure_generatesFailureReport() {
+    val filePathList = listOf(
+      "coverage/example/AddNums.kt",
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/example",
+      testSubpackage = "coverage/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val failureMessage = "Coverage retrieval failed for the test target: " +
+      "//coverage/example:AddNumsTest"
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("- Number of files assessed: 1\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("### Failure Cases\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| //coverage/example:AddNumsTest | $failureMessage |")
+    }
+
+    assertThat(outputReportText).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testRunCoverage_withNoDepsToSourceFile_generatesFailureReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/SubNums.kt",
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val subTestFile = tempFolder.newFile("coverage/test/java/com/example/SubNumsTest.kt")
+    subTestFile.writeText(
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      import com.example.AddNums
+      
+      class SubNumsTest {
+      
+          @Test
+          fun testSubNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.appendText(
+      """
+      kt_jvm_test(
+          name = "SubNumsTest",
+          srcs = ["SubNumsTest.kt"],
+          deps = [
+            "//coverage/main/java/com/example:addnums",
+            "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.SubNumsTest",
+      )
+      """.trimIndent()
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val failureMessage = "Source File: SubNums.kt not found in the coverage data"
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("- Number of files assessed: 1\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("### Failure Cases\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| //coverage/test/java/com/example:SubNumsTest | $failureMessage |")
+    }
+
+    assertThat(outputReportText).isEqualTo(expectedMarkdown)
   }
 
   @Test
@@ -670,7 +909,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withSuccessAndAnomalyFiles_generatesFinalCoverageReport() {
+  fun testRunCoverage_withSuccessAndExemptedFiles_generatesFinalCoverageReport() {
     val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
@@ -725,7 +964,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withFailureAndAnomalyFiles_generatesFinalCoverageReport() {
+  fun testRunCoverage_withFailureAndExemptedFiles_generatesFinalCoverageReport() {
     val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/LowTestNums.kt",
@@ -815,7 +1054,7 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withSuccessFailureAndAnomalyFiles_generatesFinalCoverageReport() {
+  fun testRunCoverage_withSuccessFailureAndExemptedFiles_generatesFinalCoverageReport() {
     val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
@@ -897,6 +1136,126 @@ class RunCoverageTest {
       append("## Coverage Report\n\n")
       append("- Number of files assessed: 3\n")
       append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| [${filePathList.get(1).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append("</details>\n\n")
+      append("### Test File Exempted Cases\n")
+      append(
+        "- [${filePathList.get(2).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(2)})"
+      )
+    }
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessFailureMissingTestAndExemptedFiles_generatesFinalReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt",
+      "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt",
+      "file.kt"
+    )
+
+    tempFolder.newFile("file.kt")
+
+    val lowTestSourceContent =
+      """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val lowTestTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = addSourceContent,
+      testContent = addTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = lowTestSourceContent,
+      testContent = lowTestTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val failureMessage =
+      "No appropriate test file found for file.kt"
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("- Number of files assessed: 4\n")
+      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("### Failure Cases\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| [file.kt]($oppiaDevelopGitHubLink/file.kt) | $failureMessage |\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(

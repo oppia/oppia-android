@@ -256,7 +256,11 @@ class CoverageReporter(
 
     val failureTableRows = failureCases.mapNotNull { report ->
       report.failure?.let { failure ->
-        "| ${failure.bazelTestTarget} | ${failure.failureMessage} |"
+        val failurePath = failure.filePath
+          ?.takeIf { it.isNotEmpty() }
+          ?.let { getFilenameAsLink(it) }
+          ?: failure.bazelTestTarget
+        "| $failurePath | ${failure.failureMessage} |"
       }
     }.joinToString(separator = "\n")
 
