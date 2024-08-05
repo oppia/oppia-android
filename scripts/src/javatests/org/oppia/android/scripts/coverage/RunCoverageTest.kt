@@ -10,9 +10,7 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverage]. */
