@@ -5,11 +5,28 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
-// Coverage Report that contains the bazel coverage data retrieved from the
-// Bazel coverage execution.
+// Represents the list of Coverage Report of all analysed files.
+message CoverageReportContainer {
+  // Stores the list of all Coverage Reports.
+  repeated CoverageReport coverage_report = 1;
+}
+
 message CoverageReport {
+  oneof report_status {
+    // Coverage report details when coverage data retrieval succeeds.
+    CoverageDetails details = 1;
+    // Coverage report failure when coverage data retrieval fails.
+    CoverageFailure failure = 2;
+    // Coverage exemption when the source file is exempted from having a test file.
+    CoverageExemption exemption = 3;
+  }
+}
+
+// Coverage Report details that contains the bazel coverage data retrieved from the
+// Bazel coverage execution.
+message CoverageDetails {
   // The test target for which the coverage report is generated.
-  string bazel_test_target = 1;
+  repeated BazelTestTarget bazel_test_targets = 1;
   // The relative path of the covered file.
   string file_path = 2;
   // SHA-1 hash of the file content at the time of report (to guard against changes).
@@ -20,8 +37,26 @@ message CoverageReport {
   int32 lines_found = 5;
   // The total number of lines hit in the covered file.
   int32 lines_hit = 6;
-  // Flag that is true if the coverage retrieval is success.
-  bool is_generated = 7;
+}
+
+message CoverageFailure {
+  // The relative path of the failed file.
+  string file_path = 1;
+  // The test target for which the coverage generation failed.
+  string bazel_test_target = 2;
+  // The reason for why the coverage analysis failed
+  string failure_message = 3;
+}
+
+message CoverageExemption {
+  // The relative path of the exempted file.
+  string file_path = 1;
+}
+
+// Represents a single bazel test target corresponding to a test file.
+message BazelTestTarget {
+  // The name of the bazel test target.
+  string test_target_name = 1;
 }
 
 // Information about a single line that was covered during the tests.
@@ -35,8 +70,8 @@ message CoveredLine {
 enum Coverage {
   // Coverage status is unspecified.
   UNSPECIFIED = 0;
-  // The line is fully covered, ie. executed atleast once.
+  // The line is fully covered in a test, that is, it was executed at least once.
   FULL = 1;
-  // The line is not covered at all.
+  // The line is not covered at all, that is, it was never executed during a test.
   NONE = 2;
 }

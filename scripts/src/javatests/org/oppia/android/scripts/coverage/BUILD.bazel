@@ -35,6 +35,7 @@ kt_jvm_test(
     name = "CoverageReporterTest",
     srcs = ["CoverageReporterTest.kt"],
     deps = [
+        "//scripts:test_file_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/coverage:coverage_reporter",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
