@@ -97,11 +97,12 @@ class RunCoverageTest {
     testBazelWorkspace.initEmptyWorkspace()
     val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
     sampleFile.createNewFile()
-    main(tempFolder.root.absolutePath, "file.kt")
+    val exception = assertThrows<IllegalStateException>() {
+      main(tempFolder.root.absolutePath, "file.kt")
+    }
 
-    assertThat(outContent.toString().trim()).contains(
-      "No appropriate test file found for file.kt"
-    )
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
   }
 
   @Test
