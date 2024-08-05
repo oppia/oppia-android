@@ -12,6 +12,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
@@ -55,10 +56,17 @@ class QuestionPlayerFragment :
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to QuestionPlayerFragment"
     }
+    val userAnswerState = savedInstanceState?.getProto(
+      QUESTION_PLAYER_FRAGMENT_STATE_KEY,
+      UserAnswerState.getDefaultInstance()
+    ) ?: UserAnswerState.getDefaultInstance()
+
     val arguments =
       args.getProto(ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance())
     val profileId = arguments.profileId
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId)
+    return questionPlayerFragmentPresenter.handleCreateView(
+      inflater, container, profileId, userAnswerState
+    )
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -105,6 +113,9 @@ class QuestionPlayerFragment :
     /** Arguments key for [QuestionPlayerFragment]. */
     const val ARGUMENTS_KEY = "QuestionPlayerFragment.arguments"
 
+    /** Arguments key for QuestionPlayerFragment saved state. */
+    const val QUESTION_PLAYER_FRAGMENT_STATE_KEY = "QuestionPlayerFragment.state"
+
     /**
      * Creates a new fragment to play a question session.
      *
@@ -123,5 +134,13 @@ class QuestionPlayerFragment :
           }
         }
       }
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putProto(
+      QUESTION_PLAYER_FRAGMENT_STATE_KEY,
+      questionPlayerFragmentPresenter.getUserAnswerState()
+    )
   }
 }
