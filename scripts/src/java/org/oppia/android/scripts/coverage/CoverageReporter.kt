@@ -475,7 +475,7 @@ class CoverageReporter(
               |Covered File: $filePath
               |Coverage percentage: $formattedCoveragePercentage% covered
               |Line coverage: $totalLinesHit / $totalLinesFound lines covered
-              |Minimum Required: ${minRequiredCoverage}% ${if (exemption != null) "(exemption)" else ""}
+              |Minimum Required: $minRequiredCoverage% ${if (exemption != null) "(exemption)" else ""}
               |------------------------
               """.trimMargin().prependIndent("  ")
             )
@@ -492,10 +492,9 @@ class CoverageReporter(
         |-----------------------
         """.trimMargin().prependIndent("  ")
       )
-      println(failureReports.toString())
+      println(failureReports)
     }
   }
-
 
   private fun generateTableRows(
     reports: List<CoverageReport>,

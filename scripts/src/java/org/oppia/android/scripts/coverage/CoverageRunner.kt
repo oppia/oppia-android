@@ -32,8 +32,7 @@ class CoverageRunner(
    * Runs coverage analysis asynchronously for the Bazel test target.
    *
    * @param bazelTestTarget Bazel test target to analyze coverage
-   * //@return a deferred value that contains the coverage data
-   * @return a value that contains the coverage data
+   * @return the analysed coverage data report
    */
   fun retrieveCoverageDataForTestTarget(
     bazelTestTarget: String
