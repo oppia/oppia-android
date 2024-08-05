@@ -1981,6 +1981,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TextInputLayoutBindingAdaptersTestActivity.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt"
   test_file_not_required: true
 }
@@ -2010,6 +2014,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ColorBindingAdaptersTestFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TextInputLayoutBindingAdaptersTestFragment.kt"
   test_file_not_required: true
 }
 test_file_exemption {
