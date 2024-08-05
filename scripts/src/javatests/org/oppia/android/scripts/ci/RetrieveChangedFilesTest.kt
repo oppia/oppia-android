@@ -82,7 +82,7 @@ class RetrieveChangedFilesTest {
   }
 
   @Test
-  fun testUtility_validBase64_oneTest_writesCacheNameFile() {
+  fun testUtility_validBase64_oneFile_writesCacheNameFile() {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
@@ -99,7 +99,7 @@ class RetrieveChangedFilesTest {
   }
 
   @Test
-  fun testUtility_validBase64_oneTest_writesChangedFilePathWithCorrectFile() {
+  fun testUtility_validBase64_oneFile_writesChangedFilePathWithCorrectFile() {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
@@ -114,6 +114,93 @@ class RetrieveChangedFilesTest {
 
     assertThat(File(changedFilePath).readText().trim()).isEqualTo(
       "//example/to/a/file/Demonstration.kt"
+    )
+  }
+
+  @Test
+  fun testUtility_validBase64_multipleFiles_writesChangedFilePathWithCorrectFile() {
+    val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
+    val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
+    val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
+    val base64String = computeBase64String(
+      ChangedFilesBucket.newBuilder().apply {
+        cacheBucketName = "example"
+        addChangedFiles("//example/to/a/file/FirstDemonstration.kt")
+        addChangedFiles("//example/to/a/file/SecondDemonstration.kt")
+      }.build()
+    )
+
+    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+
+    assertThat(File(changedFilePath).readText().trim()).isEqualTo(
+      "//example/to/a/file/FirstDemonstration.kt //example/to/a/file/SecondDemonstration.kt"
+    )
+  }
+
+  @Test
+  fun testUtility_validBase64_oneFile_writesCorrectTestTargetForFile() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "Source",
+      testFilename = "SourceTest",
+      sourceContent = "class Source()",
+      testContent = "class SourceTest()",
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
+    val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
+    val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
+    val base64String = computeBase64String(
+      ChangedFilesBucket.newBuilder().apply {
+        cacheBucketName = "example"
+        addChangedFiles("coverage/main/java/com/example/Source.kt")
+      }.build()
+    )
+
+    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+
+    assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
+      "//coverage/test/java/com/example:SourceTest"
+    )
+  }
+
+  @Test
+  fun testUtility_validBase64_multipleFiles_writesCorrectTestTargetsForFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "Source1",
+      testFilename = "Source1Test",
+      sourceContent = "class Source1()",
+      testContent = "class Source1Test()",
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "Source2",
+      testFilename = "Source2Test",
+      sourceContent = "class Source2()",
+      testContent = "class Source2Test()",
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
+    val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
+    val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
+    val base64String = computeBase64String(
+      ChangedFilesBucket.newBuilder().apply {
+        cacheBucketName = "example"
+        addChangedFiles("coverage/main/java/com/example/Source1.kt")
+        addChangedFiles("coverage/main/java/com/example/Source2.kt")
+      }.build()
+    )
+
+    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+
+    assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
+      "//coverage/test/java/com/example:Source1Test //coverage/test/java/com/example:Source2Test"
     )
   }
 
