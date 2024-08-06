@@ -142,7 +142,7 @@ class CreateProfileFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
   }
 
   @After
@@ -490,7 +490,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_configChange_inputNameWithNumbers_showsNameOnlyLettersError() {
+  fun testFragment_landscape_inputNameWithNumbers_showsNameOnlyLettersError() {
     launchNewLearnerProfileActivity().use {
       onView(isRoot()).perform(orientationLandscape())
 
@@ -507,6 +507,30 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+    }
+  }
+
+  @Test
+  fun testFragment_inputNameWithNumbers_configChange_errorIsRetained() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_name_only_letters))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
   }
 
@@ -539,10 +563,8 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_configChange_inputNameWithNumbers_thenInputNameWithLetters_errorIsCleared() {
+  fun testFragment_inputNameWithNumbers_configChange_thenInputNameWithLetters_errorIsCleared() {
     launchNewLearnerProfileActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John123"),
@@ -555,6 +577,9 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(

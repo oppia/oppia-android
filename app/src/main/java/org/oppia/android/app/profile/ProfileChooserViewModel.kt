@@ -15,8 +15,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileActionChooserFragment]. */
@@ -25,8 +23,7 @@ class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
 
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener

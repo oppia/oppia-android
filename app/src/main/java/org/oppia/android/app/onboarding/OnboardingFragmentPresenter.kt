@@ -28,8 +28,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableDownloadsSupport
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -44,10 +42,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   private val translationController: TranslationController,
-  private val onboardingAppLanguageViewModel: OnboardingAppLanguageViewModel,
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
+  private val onboardingAppLanguageViewModel: OnboardingAppLanguageViewModel
 ) {
-  private var allowDownloadAccess = enableDownloadsSupport.value
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
   private lateinit var selectedLanguage: String
@@ -69,10 +65,10 @@ class OnboardingFragmentPresenter @Inject constructor(
       selectedLanguage = savedSelectedLanguage
       onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(savedSelectedLanguage)
     } else {
-      getSystemLanguage()
+      initializeSelectedLanguageToSystemLanguage()
     }
 
-    getSupportedLanguages()
+    retrieveSupportedLanguages()
 
     subscribeToGetProfileList()
 
@@ -125,6 +121,21 @@ class OnboardingFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  private val existingProfiles: LiveData<List<Profile>> by lazy {
+    Transformations.map(
+      profileManagementController.getProfiles().toLiveData(),
+      ::processGetProfilesResult
+    )
+  }
+
+  /** Save the current dropdown selection to be retrieved on configuration change. */
+  fun saveToSavedInstanceState(outState: Bundle) {
+    outState.putProto(
+      ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
+      OnboardingFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build()
+    )
+  }
+
   private fun updateSelectedLanguage(selectedLanguage: String) {
     val oppiaLanguage = appLanguageResourceHandler.getOppiaLanguageFromDisplayName(selectedLanguage)
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(oppiaLanguage).build()
@@ -150,7 +161,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       )
   }
 
-  private fun getSystemLanguage() {
+  private fun initializeSelectedLanguageToSystemLanguage() {
     translationController.getSystemLanguageLocale().toLiveData().observe(
       fragment,
       { result ->
@@ -182,7 +193,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getSupportedLanguages() {
+  private fun retrieveSupportedLanguages() {
     translationController.getSupportedAppLanguages().toLiveData().observe(
       fragment,
       { result ->
@@ -212,7 +223,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       fragment,
       { profilesList ->
         if (!profilesList.isNullOrEmpty()) {
-          retrieveProfileId(profilesList)
+          profileId = profilesList.first().id
         } else {
           createDefaultProfile()
         }
@@ -220,18 +231,11 @@ class OnboardingFragmentPresenter @Inject constructor(
     )
   }
 
-  private val existingProfiles: LiveData<List<Profile>> by lazy {
-    Transformations.map(
-      profileManagementController.getProfiles().toLiveData(),
-      ::processGetProfilesResult
-    )
-  }
-
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
     val profileList = when (profilesResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          " OnboardingFragment", "Failed to retrieve the list of profiles", profilesResult.error
+          "OnboardingFragment", "Failed to retrieve the list of profiles", profilesResult.error
         )
         emptyList()
       }
@@ -248,7 +252,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       // is implemented.
       pin = "",
       avatarImagePath = null,
-      allowDownloadAccess = allowDownloadAccess,
+      allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
     ).toLiveData()
@@ -257,24 +261,15 @@ class OnboardingFragmentPresenter @Inject constructor(
         { result ->
           when (result) {
             is AsyncResult.Success -> subscribeToGetProfileList()
-            is AsyncResult.Failure -> oppiaLogger.e(
-              "OnboardingFragment", "Error creating the default profile", result.error
-            )
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "OnboardingFragment", "Error creating the default profile", result.error
+              )
+              activity.finish()
+            }
             is AsyncResult.Pending -> {}
           }
         }
       )
-  }
-
-  private fun retrieveProfileId(profileList: List<Profile>) {
-    profileId = profileList.firstOrNull()?.id ?: ProfileId.getDefaultInstance()
-  }
-
-  /** Save the current dropdown selection to be retrieved on configuration change. */
-  fun saveToSavedInstanceState(outState: Bundle) {
-    outState.putProto(
-      ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
-      OnboardingFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    )
   }
 }

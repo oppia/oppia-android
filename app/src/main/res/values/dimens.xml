@@ -468,6 +468,19 @@
   <dimen name="coming_soon_topic_promoted_list_view_margin_top">4dp</dimen>
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">28dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">28dp</dimen>
+  <dimen name="coming_soon_topic_list_header_text_size">18sp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_start">28dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_top">24dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_end">28dp</dimen>
+  <dimen name="coming_soon_topic_list_padding">12dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_start">8dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_end">8dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_bottom">8dp</dimen>
+  <dimen name="coming_soon_topic_card_width">160dp</dimen>
+  <dimen name="coming_soon_topic_card_text_padding">8dp</dimen>
+  <dimen name="coming_soon_topic_card_text_padding_bottom">30dp</dimen>
+  <dimen name="coming_soon_text_padding_horizontal">6dp</dimen>
+  <dimen name="coming_soon_text_padding_vertical">12dp</dimen>
 
   <!-- Topic Practice -->
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>

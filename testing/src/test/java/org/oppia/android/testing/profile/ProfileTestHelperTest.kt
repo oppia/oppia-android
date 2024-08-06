@@ -104,13 +104,14 @@ class ProfileTestHelperTest {
 
   @Test
   fun testAddDefaultProfile_createDefaultProfile_checkProfileIsAdded() {
-    profileTestHelper.createDefaultProfile()
+    profileTestHelper.createDefaultAdminProfile()
     testCoroutineDispatchers.runCurrent()
     val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()
 
     val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
     assertThat(profiles).hasSize(1)
+    assertThat(profiles.first().isAdmin).isEqualTo(true)
   }
 
   @Test

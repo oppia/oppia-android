@@ -4,8 +4,9 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -90,6 +91,13 @@ class QuestionPlayerViewModel @Inject constructor(
         questionCount.toString()
       )
     }
+  }
+
+  fun getUserAnswerState(
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+  ): UserAnswerState {
+    return retrieveAnswerHandler(getAnswerItemList())?.getUserAnswerState()
+      ?: UserAnswerState.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(

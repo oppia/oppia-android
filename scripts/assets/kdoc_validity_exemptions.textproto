@@ -250,7 +250,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revision/Topi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardFragment.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/view/ViewComponentImpl.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughActivityPresenter.kt"
