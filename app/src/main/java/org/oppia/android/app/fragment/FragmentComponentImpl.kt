@@ -58,7 +58,7 @@ import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
-import org.oppia.android.app.profile.ProfileActionChooserFragment
+import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfilePictureEditDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
@@ -162,7 +162,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(osDeprecationNoticeDialogFragment: OsDeprecationNoticeDialogFragment)
   fun inject(policiesFragment: PoliciesFragment)
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
-  fun inject(profileChooserFragment: ProfileActionChooserFragment)
+  fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)
   fun inject(profileEditFragment: ProfileEditFragment)
   fun inject(profileListFragment: ProfileListFragment)
