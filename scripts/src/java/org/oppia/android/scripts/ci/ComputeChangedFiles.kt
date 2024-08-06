@@ -4,8 +4,10 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
+import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
+import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -64,18 +66,8 @@ fun main(args: Array<String>) {
   println("Compute All Files Setting set to: $computeAllFilesSetting")
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     ComputeChangedFiles(scriptBgDispatcher)
-//      .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
-      .compute(pathToRoot, pathToOutputFile, baseCommit)
-  }
-}
-
-// Update this later
-// Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
-private fun String.toBooleanStrictOrNull(): Boolean? {
-  return when (lowercase(Locale.US)) {
-    "false" -> false
-    "true" -> true
-    else -> null
+      .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
+//      .compute(pathToRoot, pathToOutputFile, baseCommit)
   }
 }
 
@@ -108,7 +100,7 @@ class ComputeChangedFiles(
     pathToRoot: String,
     pathToOutputFile: String,
     baseCommit: String,
-//    computeAllFilesSetting: Boolean
+    computeAllFilesSetting: Boolean
   ) {
     val rootDirectory = File(pathToRoot).absoluteFile
     check(rootDirectory.isDirectory) { "Expected '$pathToRoot' to be a directory" }
@@ -121,6 +113,27 @@ class ComputeChangedFiles(
     val gitClient = GitClient(rootDirectory, baseCommit, commandExecutor)
     println("Current branch: ${gitClient.currentBranch}.")
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
+
+    val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
+    val changedFilesAll: List<File>? = if (computeAllFilesSetting || currentBranch == "develop") {
+//      computeAllFiles()
+      val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
+      val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
+        .testFileExemptionList
+        .filter { it.testFileNotRequired }
+        .map { it.exemptedFilePath }
+
+      val searchFiles = RepositoryFile.collectSearchFiles(
+        repoPath = pathToRoot,
+        expectedExtension = ".kt",
+        exemptionsList = testFileExemptionList
+      )
+
+      // A list of all the prod files present in the repo.
+      searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
+    } else {null}
+
+    println("Changed Files: $changedFilesAll")
 
     val changedFiles = computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
     println("\nChanged Files: $changedFiles")
@@ -331,5 +344,13 @@ class ComputeChangedFiles(
      * faster CI runs.
      */
     SMALL_PARTITIONS
+  }
+}
+
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions.newBuilder().also { builder ->
+      builder.mergeFrom(stream)
+    }.build()
   }
 }

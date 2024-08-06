@@ -201,6 +201,7 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     createAndCommitFile("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
+    changeAndCommitFile("First", subPackage = "app")
 
     val reportedFiles = runScript()
 
