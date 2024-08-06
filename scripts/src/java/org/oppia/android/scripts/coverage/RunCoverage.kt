@@ -157,13 +157,6 @@ class RunCoverage(
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
 
-    /*protoOutputPath?.let { path ->
-      File(path).printWriter().use { writer ->
-        writer.println(coverageReportContainer)
-//        writer.println(coverageReportContainer.toCompressedBase64())
-      }
-    }*/
-
     protoOutputPath?.let { path ->
       File(path).outputStream().use { stream ->
         coverageReportContainer.writeTo(stream)

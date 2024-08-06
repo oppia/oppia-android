@@ -9,6 +9,9 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoveredLine
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
@@ -1594,7 +1597,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withMultipleTestsHittingSameLine_calculatesCoverageReportCorrectly() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-    val protoOutputPath = "${tempFolder.root.absolutePath}/report.proto64"
+    val protoOutputPath = "${tempFolder.root}/report.pb"
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -1609,7 +1612,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")       
           }
       }
       """.trimIndent()
@@ -1625,8 +1628,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")       
           }
       }
       """.trimIndent()
@@ -1648,9 +1650,19 @@ class RunCoverageTest {
       protoOutputPath
     ).execute()
 
-    val outputReportText = File(protoOutputPath).readText()
+    val coverageReportContainer = loadCoverageReportContainerProto(protoOutputPath)
 
-    assertThat(outputReportText).isEqualTo("hey")
+    val expectedCoveredLine = CoveredLine.newBuilder()
+      .setLineNumber(7)
+      .setCoverage(Coverage.FULL)
+      .build()
+
+    val coveredLines = coverageReportContainer.coverageReportList
+      .flatMap { coverageReport ->
+        coverageReport.details.coveredLineList
+      }
+
+    assertThat(coveredLines).contains(expectedCoveredLine)
   }
 
   @Test
@@ -2157,16 +2169,9 @@ class RunCoverageTest {
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
-    val outputFilePath = "${tempFolder.root.absolutePath}/report.pb"
+    val outputFilePath = "${tempFolder.root}/report.pb"
 
     assertThat(File(outputFilePath).exists()).isTrue()
-
-    //testing
-//    val outputReportText = File(outputFilePath).readText()
-//    val container = CoverageReportContainer.getDefaultInstance().mergeFromCompressedBase64(outputReportText)
-
-    val outputReportText = loadCoverageReportContainerProto(outputFilePath)
-    assertThat(outputReportText.coverageReportList).isEqualTo("hey")
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
