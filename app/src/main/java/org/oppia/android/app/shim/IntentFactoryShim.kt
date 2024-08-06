@@ -20,6 +20,7 @@ interface IntentFactoryShim {
   fun createTopicPlayStoryActivityIntent(
     context: Context,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): Intent
@@ -30,6 +31,7 @@ interface IntentFactoryShim {
   fun createTopicActivityIntent(
     context: Context,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): Intent
 }

@@ -10,6 +10,10 @@ on:
       # Push events on develop branch
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   bazel_build_app:
     name: Build Binary with Bazel

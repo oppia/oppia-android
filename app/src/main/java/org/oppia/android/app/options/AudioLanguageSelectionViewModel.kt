@@ -31,6 +31,19 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     )
   }
 
+  // TODO(#4938): Update the pre-selection logic.
+  /** The pre-selected [AudioLanguage] to be shown in the language selection dropdown. */
+  val defaultLanguageSelection = getLanguageDisplayName(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+
+  /** The list of [AudioLanguage]s supported by the app. */
+  val availableAudioLanguages: List<String> by lazy {
+    AudioLanguage.values().filter { it !in IGNORED_AUDIO_LANGUAGES }.map(::getLanguageDisplayName)
+  }
+
+  private fun getLanguageDisplayName(audioLanguage: AudioLanguage): String {
+    return appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
+  }
+
   private companion object {
     private val IGNORED_AUDIO_LANGUAGES =
       listOf(

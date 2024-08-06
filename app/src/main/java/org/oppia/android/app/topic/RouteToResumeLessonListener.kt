@@ -9,6 +9,7 @@ interface RouteToResumeLessonListener {
   /** Called selects an exploration that can be resumed. */
   fun routeToResumeLesson(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,

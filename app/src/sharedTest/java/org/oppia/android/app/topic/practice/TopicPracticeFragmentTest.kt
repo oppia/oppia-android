@@ -1,7 +1,6 @@
 package org.oppia.android.app.topic.practice
 
 import android.app.Application
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -13,7 +12,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -22,13 +20,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.protobuf.MessageLite
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -59,6 +53,7 @@ import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -76,6 +71,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -104,7 +100,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -172,7 +167,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_displaySubtopics_startButtonIsInactive() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       onView(
         atPositionOnView(
@@ -208,7 +203,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_isSuccessful() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
@@ -231,7 +226,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_startButtonIsActive() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       testCoroutineDispatchers.runCurrent()
@@ -248,7 +243,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_thenDeselect_selectsCorrectTopic() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
@@ -264,7 +259,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_thenDeselect_startButtonIsInactive() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
@@ -283,7 +278,7 @@ class TopicPracticeFragmentTest {
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
     testCoroutineDispatchers.unregisterIdlingResource()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       scrollToPosition(position = 5)
@@ -296,7 +291,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       testCoroutineDispatchers.runCurrent()
@@ -313,7 +308,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       scrollToPosition(position = 5)
       testCoroutineDispatchers.runCurrent()
@@ -338,7 +333,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configChange_startButtonRemainsActive() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(isRoot()).perform(orientationLandscape())
@@ -356,7 +351,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_changeOrientation_titleIsCorrect() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       onView(
         atPositionOnView(
@@ -390,12 +385,14 @@ class TopicPracticeFragmentTest {
 
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
+        classroomId,
         topicId
       )
     return ActivityScenario.launch(intent)
@@ -440,20 +437,6 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

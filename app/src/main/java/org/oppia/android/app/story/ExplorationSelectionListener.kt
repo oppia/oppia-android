@@ -9,6 +9,7 @@ interface ExplorationSelectionListener {
   /** Called when an exploration has been selected by the user. */
   fun selectExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,

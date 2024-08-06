@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_onboarding_shared_green_color">
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/audio_language_background_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.55" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/audio_language_background_guide" />
+
+    <TextView
+      android:id="@+id/audio_language_text"
+      style="@style/AudioLanguageTextStyle"
+      android:layout_marginTop="@dimen/phone_shared_margin_xl"
+      android:layout_marginEnd="@dimen/phone_shared_margin_large"
+      android:text="@string/audio_language_fragment_text"
+      android:textColor="@color/component_color_onboarding_shared_white_color"
+      app:layout_constraintBottom_toTopOf="@id/audio_language_subtitle"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/audio_language_subtitle"
+      style="@style/AudioLanguageSubtitleStyle"
+      android:layout_marginStart="@dimen/phone_shared_margin_xl"
+      android:layout_marginTop="@dimen/phone_shared_margin_small"
+      android:layout_marginEnd="@dimen/phone_shared_margin_xl"
+      android:text="@string/audio_language_fragment_subtitle"
+      android:textColor="@color/component_color_onboarding_shared_white_color"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/audio_language_text"
+      app:layout_constraintWidth_percent="0.50" />
+
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/audio_language_dropdown_background"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/phone_shared_margin_xl"
+      android:layout_marginTop="@dimen/phone_shared_margin_large"
+      android:layout_marginEnd="@dimen/phone_shared_margin_xl"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/audio_language_subtitle"
+      app:layout_constraintWidth_percent="0.50"
+      card_view:cardCornerRadius="@dimen/onboarding_shared_corner_radius"
+      card_view:cardElevation="@dimen/onboarding_shared_elevation"
+      card_view:cardUseCompatPadding="false">
+
+      <com.google.android.material.textfield.TextInputLayout style="@style/LanguageDropdownStyle">
+
+        <AutoCompleteTextView
+          android:id="@+id/audio_language_dropdown_list"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="none"
+          android:padding="@dimen/onboarding_shared_padding_small" />
+      </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <Button
+      android:id="@+id/onboarding_navigation_back"
+      style="@style/OnboardingNavigationSecondaryButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/phone_shared_margin_large"
+      android:text="@string/onboarding_navigation_back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+      android:id="@+id/onboarding_navigation_continue"
+      style="@style/OnboardingNavigationPrimaryButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/phone_shared_margin_large"
+      android:text="@string/onboarding_navigation_continue"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

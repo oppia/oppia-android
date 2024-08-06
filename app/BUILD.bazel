@@ -844,6 +844,7 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/FontSizeMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/OrientationChangeAction.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
+        "src/sharedTest/java/org/oppia/android/app/utility/ProtoExtraMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
     visibility = [

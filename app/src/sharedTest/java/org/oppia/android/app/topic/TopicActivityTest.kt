@@ -2,7 +2,6 @@ package org.oppia.android.app.topic
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -14,17 +13,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.protobuf.MessageLite
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,6 +45,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -67,6 +62,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -98,7 +94,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -161,11 +156,11 @@ class TopicActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID
+      context, 1, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).extractCurrentAppScreenName()
 
     val currentScreenNameWithIntentTwo = TopicActivity.createTopicPlayStoryActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+      context, 1, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntentOne).isEqualTo(ScreenName.TOPIC_ACTIVITY)
@@ -175,7 +170,9 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+    launchTopicActivity(
+      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+    ).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
 
@@ -189,7 +186,7 @@ class TopicActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivity(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -210,26 +207,13 @@ class TopicActivityTest {
     }
   }
 
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
-  }
-
   private fun launchTopicActivity(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val scenario = ActivityScenario.launch<TopicActivity>(
-      TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(context, internalProfileId, classroomId, topicId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))

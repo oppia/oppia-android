@@ -108,6 +108,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
                 profileId,
+                promotedStory.classroomId,
                 promotedStory.topicId,
                 promotedStory.storyId,
                 promotedStory.explorationId,
@@ -117,6 +118,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               playExploration(
+                promotedStory.classroomId,
                 promotedStory.topicId,
                 promotedStory.storyId,
                 promotedStory.explorationId,
@@ -128,6 +130,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     } else {
       playExploration(
+        promotedStory.classroomId,
         promotedStory.topicId,
         promotedStory.storyId,
         promotedStory.explorationId,
@@ -162,6 +165,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -174,13 +178,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       // cases, lessons played from this fragment are known to be in progress, and that progress
       // can't be resumed here (hence the restart).
       explorationDataController.restartExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     } else {
       // The only lessons that can't have their progress saved are those that were already
       // completed.
       explorationDataController.replayExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -192,6 +196,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

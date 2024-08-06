@@ -902,6 +902,7 @@ class ExplorationCheckpointControllerTest {
     )
     explorationDataController.startPlayingNewExploration(
       internalProfileId = profileId.internalId,
+      classroomId = "<none>",
       topicId = "<none>",
       storyId = "<none>",
       explorationId = TEST_CHECKPOINTING_FAKE_EXP_ID

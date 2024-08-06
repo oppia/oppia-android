@@ -1,5 +1,6 @@
 package org.oppia.android.app.resumelesson
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,9 @@ import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -20,6 +23,7 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
@@ -31,6 +35,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val resumeLessonViewModel: ResumeLessonViewModel,
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val htmlParserFactory: HtmlParser.Factory,
   private val translationController: TranslationController,
   @DefaultResourceBucketName private val resourceBucketName: String,
@@ -42,6 +47,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
 
   private lateinit var binding: ResumeLessonFragmentBinding
   private lateinit var profileId: ProfileId
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -54,11 +60,17 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     getChapterSummary()
   }
 
+  /** Handles the [Fragment.onAttach] portion of [ResumeLessonFragment]'s lifecycle. */
+  fun handleAttach(context: Context) {
+    fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
+  }
+
   /** Handles onCreateView() method of the [ResumeLessonFragment]. */
   fun handleOnCreate(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -70,9 +82,9 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-
     this.profileId = profileId
     this.topicId = topicId
+    this.classroomId = classroomId
     this.storyId = storyId
     this.explorationId = explorationId
 
@@ -87,6 +99,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     binding.resumeLessonContinueButton.setOnClickListener {
       playExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -98,6 +111,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     binding.resumeLessonStartOverButton.setOnClickListener {
       playExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -105,8 +119,14 @@ class ResumeLessonFragmentPresenter @Inject constructor(
         parentScreen
       )
     }
-
     return binding.root
+  }
+
+  private fun retrieveArguments(): ResumeLessonFragmentArguments {
+    return fragment.requireArguments().getProto(
+      ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+      ResumeLessonFragmentArguments.getDefaultInstance()
+    )
   }
 
   private fun subscribeToChapterSummary() {
@@ -169,6 +189,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
 
   private fun playExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -177,11 +198,11 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   ) {
     val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
       explorationDataController.restartExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.resumeExploration(
-        profileId.internalId, topicId, storyId, explorationId, checkpoint
+        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -193,6 +214,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

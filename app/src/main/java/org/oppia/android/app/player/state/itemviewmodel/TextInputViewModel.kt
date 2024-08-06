@@ -6,11 +6,12 @@ import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -26,9 +27,11 @@ class TextInputViewModel private constructor(
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = ""
+  var answerText: CharSequence = userAnswerState.textInputAnswer
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
   val hintText: CharSequence = deriveHintText(interaction)
   private var pendingAnswerError: String? = null
 
@@ -53,9 +56,11 @@ class TextInputViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     return when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME -> {
@@ -63,6 +68,7 @@ class TextInputViewModel private constructor(
           answerText.toString()
         ).createForText(resourceHandler)
       }
+      else -> null
     }.also {
       pendingAnswerError = it
       errorMessage.set(it)
@@ -99,6 +105,13 @@ class TextInputViewModel private constructor(
     }
   }.build()
 
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.textInputAnswer = answerText.toString()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
+  }
+
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
     val placeholderUnicodeOption1 =
@@ -134,7 +147,8 @@ class TextInputViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return TextInputViewModel(
         interaction,
@@ -143,7 +157,8 @@ class TextInputViewModel private constructor(
         isSplitView,
         writtenTranslationContext,
         resourceHandler,
-        translationController
+        translationController,
+        userAnswerState
       )
     }
   }

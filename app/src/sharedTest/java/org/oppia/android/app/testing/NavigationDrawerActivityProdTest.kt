@@ -39,7 +39,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.navigation.NavigationView
-import com.google.protobuf.MessageLite
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -73,6 +72,7 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -121,7 +121,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -992,20 +991,6 @@ class NavigationDrawerActivityProdTest {
         return (view as NavigationView).menu.getItem(item.ordinal).isChecked
       }
     }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
  *
  * Example:
  *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt HTML
+ *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt format=HTML
  * Example with custom process timeout:
  *     bazel run //scripts:run_coverage -- $(pwd)
  *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=10
@@ -33,10 +33,14 @@ import java.util.concurrent.TimeUnit
 fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePath = args[1]
-  val format = args.getOrNull(2)
-  val reportFormat = when {
-    format.equals("HTML", ignoreCase = true) -> ReportFormat.HTML
-    format.equals("MARKDOWN", ignoreCase = true) || format == null -> ReportFormat.MARKDOWN
+
+  val format = args.find { it.startsWith("format=", ignoreCase = true) }
+    ?.substringAfter("=")
+    ?.uppercase() ?: "MARKDOWN"
+
+  val reportFormat = when (format) {
+    "HTML" -> ReportFormat.HTML
+    "MARKDOWN" -> ReportFormat.MARKDOWN
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
 
@@ -98,14 +102,15 @@ class RunCoverage(
    * @return a list of lists containing coverage data for each requested test target, if
    *     the file is exempted from having a test file, an empty list is returned
    */
-  fun execute(): String {
+  fun execute() {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .filter { it.testFileNotRequired }
       .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList) {
-      return "This file is exempted from having a test file; skipping coverage check."
+      println("This file is exempted from having a test file; skipping coverage check.")
+      return
     }
 
     val testFilePaths = findTestFile(repoRoot, filePath)
@@ -133,8 +138,6 @@ class RunCoverage(
         println("\nGenerated report at: $reportOutputPath\n")
       }
     } ?: println("No coverage reports generated.")
-
-    return reportOutputPath
   }
 
   private fun runCoverageForTarget(testTarget: String): CoverageReport {

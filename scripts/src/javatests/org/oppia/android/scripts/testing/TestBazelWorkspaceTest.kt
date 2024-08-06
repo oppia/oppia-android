@@ -67,7 +67,12 @@ class TestBazelWorkspaceTest {
     // A .bazelversion file should now exist with the correct flags.
     val bazelRcFile = File(tempFolder.root, ".bazelrc")
     assertThat(bazelRcFile.exists()).isTrue()
-    assertThat(bazelRcFile.readText().trim()).isEqualTo("--noenable_bzlmod")
+    assertThat(bazelRcFile.readText().trim()).isEqualTo(
+      """
+        --noenable_bzlmod
+        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent()
+    )
   }
 
   @Test
@@ -132,7 +137,12 @@ class TestBazelWorkspaceTest {
     )
 
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
-    assertThat(bazelRcContent).isEqualTo("--noenable_bzlmod")
+    assertThat(bazelRcContent).isEqualTo(
+      """
+        --noenable_bzlmod
+        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent()
+    )
   }
 
   @Test
@@ -636,7 +646,12 @@ class TestBazelWorkspaceTest {
     )
 
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
-    assertThat(bazelRcContent).isEqualTo("--noenable_bzlmod")
+    assertThat(bazelRcContent).isEqualTo(
+      """
+        --noenable_bzlmod
+        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent()
+    )
   }
 
   @Test
@@ -911,7 +926,12 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.createTest(testName = "FirstTest")
 
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
-    assertThat(bazelRcContent).isEqualTo("--noenable_bzlmod")
+    assertThat(bazelRcContent).isEqualTo(
+      """
+        --noenable_bzlmod
+        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent()
+    )
   }
 
   @Test
@@ -1131,7 +1151,12 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.createLibrary(dependencyName = "ExampleDep")
 
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
-    assertThat(bazelRcContent).isEqualTo("--noenable_bzlmod")
+    assertThat(bazelRcContent).isEqualTo(
+      """
+        --noenable_bzlmod
+        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent()
+    )
   }
 
   @Test

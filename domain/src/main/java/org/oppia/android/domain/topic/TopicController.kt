@@ -30,6 +30,7 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
+import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -105,7 +106,8 @@ class TopicController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val classroomController: ClassroomController,
 ) {
 
   /**
@@ -392,6 +394,7 @@ class TopicController @Inject constructor(
           .setStoryWrittenTranslationContext(storyTranslationContext)
           .setTopicWrittenTranslationContext(topicTranslationContext)
           .setStoryTitle(storySummary.storyTitle)
+          .setClassroomId(topic.classroomId)
           .setTopicId(topic.topicId)
           .setTopicTitle(topic.title)
           .setLessonThumbnail(storySummary.storyThumbnail)
@@ -558,11 +561,13 @@ class TopicController @Inject constructor(
       contentId = "description"
       html = topicData.getStringFromObject("topic_description")
     }.build()
+    val classroomId = classroomController.getClassroomIdByTopicId(topicId)
     // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
       .setDescription(topicDescription)
+      .setClassroomId(classroomId)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())

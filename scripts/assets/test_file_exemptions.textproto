@@ -263,7 +263,11 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/promotedlist/PromotedList.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/promotedlist/ComingSoonTopicList.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/promotedlist/PromotedStoryList.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1090,6 +1094,29 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileViewModel.kt"
+  test_file_not_required: true
+}test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/IntroActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/IntroFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/AudioLanguageFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt"
   test_file_not_required: true
 }
@@ -1134,7 +1161,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageFragmentPresenter.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageFragmentPresenterV1.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -2507,6 +2534,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/ProtoExtraMatcher.kt"
   test_file_not_required: true
 }
 test_file_exemption {

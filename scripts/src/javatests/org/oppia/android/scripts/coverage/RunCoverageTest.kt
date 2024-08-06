@@ -23,21 +23,56 @@ class RunCoverageTest {
   private val originalOut: PrintStream = System.out
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
-  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
   private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-  private lateinit var sampleFilePath: String
-  private lateinit var sampleMDOutputPath: String
-  private lateinit var sampleHTMLOutputPath: String
+  private lateinit var coverageDir: String
+  private lateinit var markdownOutputPath: String
+  private lateinit var htmlOutputPath: String
+
+  private lateinit var sourceContent: String
+  private lateinit var testContent: String
 
   @Before
   fun setUp() {
-    sampleFilePath = "/path/to/Sample.kt"
-    sampleMDOutputPath = "${tempFolder.root}/coverage_reports/report.md"
-    sampleHTMLOutputPath = "${tempFolder.root}/coverage_reports/report.html"
+    coverageDir = "/coverage_reports"
+    markdownOutputPath = "${tempFolder.root}/coverage_reports/report.md"
+    htmlOutputPath = "${tempFolder.root}/coverage_reports/report.html"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    System.setOut(PrintStream(outContent))
+
+    sourceContent =
+      """
+      package com.example
+      
+      class TwoSum {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class TwoSumTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(TwoSum.sumNumbers(0, 1), 1)
+          assertEquals(TwoSum.sumNumbers(3, 4), 7)         
+          assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
   }
 
   @After
@@ -69,63 +104,20 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_testFileExempted_noCoverage() {
-    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+  fun testRunCoverage_invalidFormat_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val exception = assertThrows<IllegalArgumentException>() {
+      main(tempFolder.root.absolutePath, "file.kt", "format=PDF")
+    }
 
-    val result = RunCoverage(
-      "${tempFolder.root}",
-      exemptedFilePath,
-      ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
-      commandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    assertThat(result).isEqualTo(
-      "This file is exempted from having a test file; skipping coverage check."
-    )
+    assertThat(exception).hasMessageThat().contains("Unsupported report format")
   }
 
   @Test
-  fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
+  fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
+    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -137,65 +129,124 @@ class RunCoverageTest {
 
     main(
       "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
+      filePath,
+      "format=Markdown",
+      "processTimeout=10"
+    )
+
+    val outputFilePath = "${tempFolder.root}" +
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+
+    assertThat(File(outputFilePath).exists()).isTrue()
+  }
+
+  @Test
+  fun testRunCoverage_ignoreCaseHtmlArgument_returnsCoverageData() {
+    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      testFilename = "TwoSumTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      filePath,
+      "format=Html",
+      "processTimeout=10"
+    )
+
+    val outputFilePath = "${tempFolder.root}" +
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.html"
+
+    assertThat(File(outputFilePath).exists()).isTrue()
+  }
+
+  @Test
+  fun testRunCoverage_reorderedArguments_returnsCoverageData() {
+    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      testFilename = "TwoSumTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      filePath,
+      "processTimeout=10",
+      "format=MARKDOWN"
+    )
+
+    val outputFilePath = "${tempFolder.root}" +
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+
+    assertThat(File(outputFilePath).exists()).isTrue()
+  }
+
+  @Test
+  fun testRunCoverage_testFileExempted_noCoverage() {
+    System.setOut(PrintStream(outContent))
+    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+
+    RunCoverage(
+      "${tempFolder.root}",
+      exemptedFilePath,
+      ReportFormat.MARKDOWN,
+      markdownOutputPath,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    assertThat(outContent.toString().trim()).isEqualTo(
+      "This file is exempted from having a test file; skipping coverage check."
+    )
+  }
+
+  @Test
+  fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
+    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "TwoSum",
+      testFilename = "TwoSumTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      filePath,
     )
 
     val outputReportText = File(
-      "${tempFolder.root}/coverage_reports/coverage/main/java/com/example/TwoSum/coverage.md"
+      "${tempFolder.root}" +
+        "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
     ).readText()
 
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** coverage/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
+    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -207,67 +258,24 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
+      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
-
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** coverage/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
+    val filePath = "scripts/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -279,67 +287,24 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "scripts/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
+      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
-
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** scripts/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_appTestsMarkdownFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -351,50 +316,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
+      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
-
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** app/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_localTestsMarkdownFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
+    val testContentLocal =
       """
       package com.example
       
@@ -416,74 +356,31 @@ class RunCoverageTest {
       filename = "TwoSum",
       testFilename = "TwoSumLocalTest",
       sourceContent = sourceContent,
-      testContent = testContent,
+      testContent = testContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
+      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
-
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** app/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sharedTestsMarkdownFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -495,67 +392,24 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
+      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
-
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** app/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContentShared =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     val testContentLocal =
       """
       package com.example
@@ -577,74 +431,31 @@ class RunCoverageTest {
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "TwoSum",
       sourceContent = sourceContent,
-      testContentShared = testContentShared,
+      testContentShared = testContent,
       testContentLocal = testContentLocal,
       subpackage = "app"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.MARKDOWN,
-      sampleMDOutputPath,
+      markdownOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleMDOutputPath).readText()
-
-    val expectedResult =
-      """
-        ## Coverage Report
-        
-        - **Covered File:** app/main/java/com/example/TwoSum.kt
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
-      """.trimIndent()
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult = getExpectedMarkdownText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sampleTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_sampleTestsHtmlFormat_returnsCoverageData() {
+    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -656,236 +467,24 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "coverage/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.HTML,
-      sampleHTMLOutputPath,
+      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleHTMLOutputPath).readText()
-
-    val expectedResult =
-      """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Coverage Report</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            border-bottom: 1px solid #fdfdfd;
-        }
-        .line-number-col {
-            width: 2%;
-        }
-        .line-number-row {
-            border-right: 1px dashed #000000
-        }
-        .source-code-col {
-            width: 98%;
-        }
-        .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
-        }
-        .covered-line {
-            background-color: #c8e6c9; /* Light green */
-        }
-        .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
-        }
-        .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
-        }
-        .coverage-summary {
-          margin-bottom: 20px;
-        }
-        h2 {
-          text-align: center;
-        }
-        ul {
-          list-style-type: none;
-          padding: 0;
-          text-align: center;
-        }
-        .summary-box {
-          background-color: #f0f0f0;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 10px;
-          margin-bottom: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
-        .summary-left {
-          text-align: left;
-        }
-        .summary-right {
-          text-align: right;
-        }
-        .legend {
-          display: flex;
-          align-items: center;
-        }
-        .legend-item {
-          width: 20px;
-          height: 10px;
-          margin-right: 5px;
-          border-radius: 2px;
-          display: inline-block;
-        }
-        .legend .covered {
-          background-color: #c8e6c9; /* Light green */
-        }
-        .legend .not-covered {
-          margin-left: 4px;
-          background-color: #ffcdd2; /* Light red */
-        }
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Coverage Report</h2>
-      <div class="summary-box">
-        <div class="summary-left">
-          <strong>Covered File:</strong> coverage/main/java/com/example/TwoSum.kt <br>
-          <div class="legend">
-            <div class="legend-item covered"></div>
-            <span>Covered</span>
-            <div class="legend-item not-covered"></div>
-            <span>Uncovered</span>
-          </div>
-        </div>
-        <div class="summary-right">
-          <div><strong>Coverage percentage:</strong> 75.00%</div>
-          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="line-number-col">Line No</th>
-            <th class="source-code-col">Source Code</th>
-          </tr>
-        </thead>
-        <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
-    </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
-    </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    companion object {</td>
-    </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
-    </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
-    </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="covered-line">                "Both numbers are zero"</td>
-    </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="uncovered-line">            } else {</td>
-    </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="covered-line">                a + b</td>
-    </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">            }</td>
-    </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">        }</td>
-    </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">    }</td>
-    </tr><tr>
-        <td class="line-number-row">  14</td>
-        <td class="uncovered-line">}</td>
-    </tr>    </tbody>
-      </table>
-    </body>
-    </html>
-      """.trimIndent()
+    val outputReportText = File(htmlOutputPath).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_scriptTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_scriptTestsHtmlFormat_returnsCoverageData() {
+    val filePath = "scripts/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -897,236 +496,24 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "scripts/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.HTML,
-      sampleHTMLOutputPath,
+      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleHTMLOutputPath).readText()
-
-    val expectedResult =
-      """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Coverage Report</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            border-bottom: 1px solid #fdfdfd;
-        }
-        .line-number-col {
-            width: 2%;
-        }
-        .line-number-row {
-            border-right: 1px dashed #000000
-        }
-        .source-code-col {
-            width: 98%;
-        }
-        .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
-        }
-        .covered-line {
-            background-color: #c8e6c9; /* Light green */
-        }
-        .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
-        }
-        .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
-        }
-        .coverage-summary {
-          margin-bottom: 20px;
-        }
-        h2 {
-          text-align: center;
-        }
-        ul {
-          list-style-type: none;
-          padding: 0;
-          text-align: center;
-        }
-        .summary-box {
-          background-color: #f0f0f0;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 10px;
-          margin-bottom: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
-        .summary-left {
-          text-align: left;
-        }
-        .summary-right {
-          text-align: right;
-        }
-        .legend {
-          display: flex;
-          align-items: center;
-        }
-        .legend-item {
-          width: 20px;
-          height: 10px;
-          margin-right: 5px;
-          border-radius: 2px;
-          display: inline-block;
-        }
-        .legend .covered {
-          background-color: #c8e6c9; /* Light green */
-        }
-        .legend .not-covered {
-          margin-left: 4px;
-          background-color: #ffcdd2; /* Light red */
-        }
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Coverage Report</h2>
-      <div class="summary-box">
-        <div class="summary-left">
-          <strong>Covered File:</strong> scripts/java/com/example/TwoSum.kt <br>
-          <div class="legend">
-            <div class="legend-item covered"></div>
-            <span>Covered</span>
-            <div class="legend-item not-covered"></div>
-            <span>Uncovered</span>
-          </div>
-        </div>
-        <div class="summary-right">
-          <div><strong>Coverage percentage:</strong> 75.00%</div>
-          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="line-number-col">Line No</th>
-            <th class="source-code-col">Source Code</th>
-          </tr>
-        </thead>
-        <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
-    </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
-    </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    companion object {</td>
-    </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
-    </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
-    </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="covered-line">                "Both numbers are zero"</td>
-    </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="uncovered-line">            } else {</td>
-    </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="covered-line">                a + b</td>
-    </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">            }</td>
-    </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">        }</td>
-    </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">    }</td>
-    </tr><tr>
-        <td class="line-number-row">  14</td>
-        <td class="uncovered-line">}</td>
-    </tr>    </tbody>
-      </table>
-    </body>
-    </html>
-      """.trimIndent()
+    val outputReportText = File(htmlOutputPath).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_appTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_appTestsHtmlFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -1138,219 +525,25 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.HTML,
-      sampleHTMLOutputPath,
+      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleHTMLOutputPath).readText()
-
-    val expectedResult =
-      """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Coverage Report</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            border-bottom: 1px solid #fdfdfd;
-        }
-        .line-number-col {
-            width: 2%;
-        }
-        .line-number-row {
-            border-right: 1px dashed #000000
-        }
-        .source-code-col {
-            width: 98%;
-        }
-        .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
-        }
-        .covered-line {
-            background-color: #c8e6c9; /* Light green */
-        }
-        .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
-        }
-        .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
-        }
-        .coverage-summary {
-          margin-bottom: 20px;
-        }
-        h2 {
-          text-align: center;
-        }
-        ul {
-          list-style-type: none;
-          padding: 0;
-          text-align: center;
-        }
-        .summary-box {
-          background-color: #f0f0f0;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 10px;
-          margin-bottom: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
-        .summary-left {
-          text-align: left;
-        }
-        .summary-right {
-          text-align: right;
-        }
-        .legend {
-          display: flex;
-          align-items: center;
-        }
-        .legend-item {
-          width: 20px;
-          height: 10px;
-          margin-right: 5px;
-          border-radius: 2px;
-          display: inline-block;
-        }
-        .legend .covered {
-          background-color: #c8e6c9; /* Light green */
-        }
-        .legend .not-covered {
-          margin-left: 4px;
-          background-color: #ffcdd2; /* Light red */
-        }
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Coverage Report</h2>
-      <div class="summary-box">
-        <div class="summary-left">
-          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
-          <div class="legend">
-            <div class="legend-item covered"></div>
-            <span>Covered</span>
-            <div class="legend-item not-covered"></div>
-            <span>Uncovered</span>
-          </div>
-        </div>
-        <div class="summary-right">
-          <div><strong>Coverage percentage:</strong> 75.00%</div>
-          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="line-number-col">Line No</th>
-            <th class="source-code-col">Source Code</th>
-          </tr>
-        </thead>
-        <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
-    </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
-    </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    companion object {</td>
-    </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
-    </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
-    </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="covered-line">                "Both numbers are zero"</td>
-    </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="uncovered-line">            } else {</td>
-    </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="covered-line">                a + b</td>
-    </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">            }</td>
-    </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">        }</td>
-    </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">    }</td>
-    </tr><tr>
-        <td class="line-number-row">  14</td>
-        <td class="uncovered-line">}</td>
-    </tr>    </tbody>
-      </table>
-    </body>
-    </html>
-      """.trimIndent()
+    val outputReportText = File(htmlOutputPath).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_localTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_localTestsHtmlFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
+    val testContentLocal =
       """
       package com.example
       
@@ -1372,243 +565,31 @@ class RunCoverageTest {
       filename = "TwoSum",
       testFilename = "TwoSumLocalTest",
       sourceContent = sourceContent,
-      testContent = testContent,
+      testContent = testContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.HTML,
-      sampleHTMLOutputPath,
+      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleHTMLOutputPath).readText()
-
-    val expectedResult =
-      """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Coverage Report</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            border-bottom: 1px solid #fdfdfd;
-        }
-        .line-number-col {
-            width: 2%;
-        }
-        .line-number-row {
-            border-right: 1px dashed #000000
-        }
-        .source-code-col {
-            width: 98%;
-        }
-        .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
-        }
-        .covered-line {
-            background-color: #c8e6c9; /* Light green */
-        }
-        .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
-        }
-        .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
-        }
-        .coverage-summary {
-          margin-bottom: 20px;
-        }
-        h2 {
-          text-align: center;
-        }
-        ul {
-          list-style-type: none;
-          padding: 0;
-          text-align: center;
-        }
-        .summary-box {
-          background-color: #f0f0f0;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 10px;
-          margin-bottom: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
-        .summary-left {
-          text-align: left;
-        }
-        .summary-right {
-          text-align: right;
-        }
-        .legend {
-          display: flex;
-          align-items: center;
-        }
-        .legend-item {
-          width: 20px;
-          height: 10px;
-          margin-right: 5px;
-          border-radius: 2px;
-          display: inline-block;
-        }
-        .legend .covered {
-          background-color: #c8e6c9; /* Light green */
-        }
-        .legend .not-covered {
-          margin-left: 4px;
-          background-color: #ffcdd2; /* Light red */
-        }
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Coverage Report</h2>
-      <div class="summary-box">
-        <div class="summary-left">
-          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
-          <div class="legend">
-            <div class="legend-item covered"></div>
-            <span>Covered</span>
-            <div class="legend-item not-covered"></div>
-            <span>Uncovered</span>
-          </div>
-        </div>
-        <div class="summary-right">
-          <div><strong>Coverage percentage:</strong> 75.00%</div>
-          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="line-number-col">Line No</th>
-            <th class="source-code-col">Source Code</th>
-          </tr>
-        </thead>
-        <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
-    </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
-    </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    companion object {</td>
-    </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
-    </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
-    </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="covered-line">                "Both numbers are zero"</td>
-    </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="uncovered-line">            } else {</td>
-    </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="covered-line">                a + b</td>
-    </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">            }</td>
-    </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">        }</td>
-    </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">    }</td>
-    </tr><tr>
-        <td class="line-number-row">  14</td>
-        <td class="uncovered-line">}</td>
-    </tr>    </tbody>
-      </table>
-    </body>
-    </html>
-      """.trimIndent()
+    val outputReportText = File(htmlOutputPath).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedTestsHtmlFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "TwoSum",
       testFilename = "TwoSumTest",
@@ -1620,236 +601,24 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
+      filePath,
       ReportFormat.HTML,
-      sampleHTMLOutputPath,
+      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleHTMLOutputPath).readText()
-
-    val expectedResult =
-      """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Coverage Report</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            border-bottom: 1px solid #fdfdfd;
-        }
-        .line-number-col {
-            width: 2%;
-        }
-        .line-number-row {
-            border-right: 1px dashed #000000
-        }
-        .source-code-col {
-            width: 98%;
-        }
-        .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
-        }
-        .covered-line {
-            background-color: #c8e6c9; /* Light green */
-        }
-        .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
-        }
-        .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
-        }
-        .coverage-summary {
-          margin-bottom: 20px;
-        }
-        h2 {
-          text-align: center;
-        }
-        ul {
-          list-style-type: none;
-          padding: 0;
-          text-align: center;
-        }
-        .summary-box {
-          background-color: #f0f0f0;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 10px;
-          margin-bottom: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
-        .summary-left {
-          text-align: left;
-        }
-        .summary-right {
-          text-align: right;
-        }
-        .legend {
-          display: flex;
-          align-items: center;
-        }
-        .legend-item {
-          width: 20px;
-          height: 10px;
-          margin-right: 5px;
-          border-radius: 2px;
-          display: inline-block;
-        }
-        .legend .covered {
-          background-color: #c8e6c9; /* Light green */
-        }
-        .legend .not-covered {
-          margin-left: 4px;
-          background-color: #ffcdd2; /* Light red */
-        }
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Coverage Report</h2>
-      <div class="summary-box">
-        <div class="summary-left">
-          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
-          <div class="legend">
-            <div class="legend-item covered"></div>
-            <span>Covered</span>
-            <div class="legend-item not-covered"></div>
-            <span>Uncovered</span>
-          </div>
-        </div>
-        <div class="summary-right">
-          <div><strong>Coverage percentage:</strong> 75.00%</div>
-          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="line-number-col">Line No</th>
-            <th class="source-code-col">Source Code</th>
-          </tr>
-        </thead>
-        <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
-    </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
-    </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line"></td>
-    </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    companion object {</td>
-    </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
-    </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
-    </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="covered-line">                "Both numbers are zero"</td>
-    </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="uncovered-line">            } else {</td>
-    </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="covered-line">                a + b</td>
-    </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">            }</td>
-    </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">        }</td>
-    </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">    }</td>
-    </tr><tr>
-        <td class="line-number-row">  14</td>
-        <td class="uncovered-line">}</td>
-    </tr>    </tbody>
-      </table>
-    </body>
-    </html>
-      """.trimIndent()
+    val outputReportText = File(htmlOutputPath).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedAndLocalTestsHTMLFormat_returnsCoverageData() {
+  fun testRunCoverage_sharedAndLocalTestsHtmlFormat_returnsCoverageData() {
+    val filePath = "app/main/java/com/example/TwoSum.kt"
+
     testBazelWorkspace.initEmptyWorkspace()
-
-    val sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-      
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
-          }
-      }
-      """.trimIndent()
-
-    val testContentShared =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
     val testContentLocal =
       """
       package com.example
@@ -1871,7 +640,7 @@ class RunCoverageTest {
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "TwoSum",
       sourceContent = sourceContent,
-      testContentShared = testContentShared,
+      testContentShared = testContent,
       testContentLocal = testContentLocal,
       subpackage = "app"
     )
@@ -1880,14 +649,32 @@ class RunCoverageTest {
       "${tempFolder.root}",
       "app/main/java/com/example/TwoSum.kt",
       ReportFormat.HTML,
-      sampleHTMLOutputPath,
+      htmlOutputPath,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(sampleHTMLOutputPath).readText()
+    val outputReportText = File(htmlOutputPath).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
-    val expectedResult =
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  private fun getExpectedMarkdownText(filePath: String): String {
+    val markdownText =
+      """
+        ## Coverage Report
+        
+        - **Covered File:** $filePath
+        - **Coverage percentage:** 75.00% covered
+        - **Line coverage:** 3 / 4 lines covered
+      """.trimIndent()
+
+    return markdownText
+  }
+
+  private fun getExpectedHtmlText(filePath: String): String {
+    val htmlText =
       """
     <!DOCTYPE html>
     <html lang="en">
@@ -1997,7 +784,7 @@ class RunCoverageTest {
       <h2>Coverage Report</h2>
       <div class="summary-box">
         <div class="summary-left">
-          <strong>Covered File:</strong> app/main/java/com/example/TwoSum.kt <br>
+          <strong>Covered File:</strong> $filePath <br>
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>
@@ -2028,36 +815,33 @@ class RunCoverageTest {
         <td class="not-covered-line">class TwoSum {</td>
     </tr><tr>
         <td class="line-number-row">   4</td>
-        <td class="uncovered-line"></td>
+        <td class="uncovered-line">  companion object {</td>
     </tr><tr>
         <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    companion object {</td>
+        <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
         <td class="line-number-row">   6</td>
-        <td class="uncovered-line">        fun sumNumbers(a: Int, b: Int): Any {</td>
+        <td class="covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
         <td class="line-number-row">   7</td>
-        <td class="covered-line">            return if (a == 0 && b == 0) {</td>
+        <td class="covered-line">          "Both numbers are zero"</td>
     </tr><tr>
         <td class="line-number-row">   8</td>
-        <td class="covered-line">                "Both numbers are zero"</td>
+        <td class="uncovered-line">      } else {</td>
     </tr><tr>
         <td class="line-number-row">   9</td>
-        <td class="uncovered-line">            } else {</td>
+        <td class="covered-line">          a + b</td>
     </tr><tr>
         <td class="line-number-row">  10</td>
-        <td class="covered-line">                a + b</td>
+        <td class="uncovered-line">      }</td>
     </tr><tr>
         <td class="line-number-row">  11</td>
-        <td class="uncovered-line">            }</td>
-    </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">        }</td>
-    </tr><tr>
-        <td class="line-number-row">  13</td>
         <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td class="line-number-row">  14</td>
+        <td class="line-number-row">  12</td>
+        <td class="uncovered-line">  }</td>
+    </tr><tr>
+        <td class="line-number-row">  13</td>
         <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
@@ -2065,7 +849,7 @@ class RunCoverageTest {
     </html>
       """.trimIndent()
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    return htmlText
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
