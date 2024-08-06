@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 private const val COMPUTE_ALL_FILES_PREFIX = "compute_all_files="
-private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
-private const val MAX_TEST_COUNT_PER_MEDIUM_SHARD = 25
-private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
+private const val MAX_FILE_COUNT_PER_LARGE_SHARD = 50
+private const val MAX_FILE_COUNT_PER_MEDIUM_SHARD = 25
+private const val MAX_FILE_COUNT_PER_SMALL_SHARD = 15
 
 /**
  * The main entrypoint for computing the list of changed files based on changes in the local
@@ -29,9 +29,9 @@ private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
  * - path_to_output_file: path to the file in which the changed files will be printed.
  * - merge_base_commit: the base commit against which the local changes will be compared when
- *     determining which tests to run. When running outside of CI you can use the result of running:
+ *     determining which files to run. When running outside of CI you can use the result of running:
  *     'git merge-base develop HEAD'
- * - compute_all_tests: whether to compute a list of all files to run.
+ * - compute_all_files: whether to compute a list of all files to run.
  *
  * Example:
  *   bazel run //scripts:compute_changed_files -- $(pwd) /tmp/changed_file_buckets.proto64 \\
@@ -82,16 +82,16 @@ private fun String.toBooleanStrictOrNull(): Boolean? {
 /** Utility used to compute changed files. */
 class ComputeChangedFiles(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
-  val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
-  val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
+  val maxFileCountPerLargeShard: Int = MAX_FILE_COUNT_PER_LARGE_SHARD,
+  val maxFileCountPerMediumShard: Int = MAX_FILE_COUNT_PER_MEDIUM_SHARD,
+  val maxFileCountPerSmallShard: Int = MAX_FILE_COUNT_PER_SMALL_SHARD,
   val commandExecutor: CommandExecutor =
     CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
 ) {
   private companion object {
-    private const val GENERIC_TEST_BUCKET_NAME = "generic"
+    private const val GENERIC_FILE_BUCKET_NAME = "generic"
   }
 
   /**
@@ -127,7 +127,11 @@ class ComputeChangedFiles(
     val ktFiles = changedFiles.filter { it.endsWith(".kt") }
     println("\nKt file: $ktFiles")
 
-    val groupedBuckets = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
+    val filteredFiles = filterFiles(ktFiles)
+    println("\nFilter: Files: $filteredFiles")
+
+    // create and move this to bucketFiles()
+    val groupedBuckets = filteredFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
       .entries.groupBy(
         keySelector = { checkNotNull(it.key).groupingStrategy },
         valueTransform = { checkNotNull(it.key) to it.value }
@@ -148,7 +152,7 @@ class ComputeChangedFiles(
               .mapKeys { (fileBucket, _) -> fileBucket.cacheBucketName }
               .entries.map { (cacheName, bucket) -> cacheName to bucket }
           }
-          GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
+          GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_FILE_BUCKET_NAME to buckets)
         }
       }.toMap()
     println("\nPartitioned Buckets: $partitionedBuckets")*/
@@ -158,7 +162,7 @@ class ComputeChangedFiles(
         GroupingStrategy.BUCKET_SEPARATELY -> buckets.map { (fileBucket, targets) ->
           fileBucket.cacheBucketName to mapOf(fileBucket to targets)
         }
-        GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
+        GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_FILE_BUCKET_NAME to buckets)
       }
     }.toMap()
     println("\nPartitioned Buckets: $partitionedBuckets")
@@ -170,15 +174,15 @@ class ComputeChangedFiles(
           "Error: expected all buckets in the same partition to share a sharding strategy:" +
             " ${bucketMap.keys} (strategies: $shardingStrategies)"
         }
-        val maxTestCountPerShard = when (shardingStrategies.first()) {
-          ShardingStrategy.LARGE_PARTITIONS -> maxTestCountPerLargeShard
-          ShardingStrategy.MEDIUM_PARTITIONS -> maxTestCountPerMediumShard
-          ShardingStrategy.SMALL_PARTITIONS -> maxTestCountPerSmallShard
+        val maxFileCountPerShard = when (shardingStrategies.first()) {
+          ShardingStrategy.LARGE_PARTITIONS -> maxFileCountPerLargeShard
+          ShardingStrategy.MEDIUM_PARTITIONS -> maxFileCountPerMediumShard
+          ShardingStrategy.SMALL_PARTITIONS -> maxFileCountPerSmallShard
         }
         val allPartitionFiles = bucketMap.values.flatten()
 
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
-        allPartitionFiles.shuffled().chunked(maxTestCountPerShard)
+        allPartitionFiles.shuffled().chunked(maxFileCountPerShard)
       }
     println("\nSharded Buckets: $shardedBuckets")
 
@@ -215,6 +219,17 @@ class ComputeChangedFiles(
     println("Changed files (per Git, ${changedFiles.size} total): $changedFiles")
 
     return changedFiles.toList()
+  }
+
+  private fun filterFiles(files: List<String>) : List<String> {
+    // Filtering out files that need to be ignored.
+    return files.filter { file ->
+      !file
+        .startsWith(
+          "instrumentation/src/javatests/org/oppia/android/instrumentation/player",
+          ignoreCase = true
+        )
+    }
   }
 
   private enum class FileBucket(

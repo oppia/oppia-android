@@ -22,7 +22,7 @@ import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /**
- * Tests for the compute_affected_tests utility.
+ * Tests for the compute_changed_files utility.
  */
 class ComputeChangedFilesTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -132,21 +132,494 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_bazelWorkspace_developBranch_returnsAllFiles() {
+  fun testUtility_developBranch_returnsAllFiles() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
     createEmptyWorkspace()
-    tempFolder.newFolder("app")
+    /*tempFolder.newFolder("app")
     val file = tempFolder.newFile("app/First.kt")
 
-    val changedFiles = listOf(file)
-    testGitRepository.stageFilesForCommit(changedFiles)
-    testGitRepository.commit(message = "Introduce files.")
+    val changedFiles = listOf(file)*/
 
-    val reportFiles = runScript()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
 
-    assertThat(reportFiles.first().changedFilesList).contains("app/First.kt")
-//    assertThat(reportFiles).exists()
+
+    val reportedFiles = runScript()
+
+    // Since the develop branch is checked out, all files should be returned.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
+//    assertThat(reportedFiles).exists()
+  }
+
+  @Test
+  fun testUtility_featureBranch_noChanges_returnsNoFiles() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).isEmpty()
+  }
+
+  // Update later
+  // Add test here for computeAllFiles flag
+
+
+  @Test
+  fun testUtility_featureBranch_fileChange_committed_returnsChangedFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+    changeAndCommitFile("First", subPackage = "app")
+
+    val reportedFiles = runScript()
+
+    // Only the first file should be reported since the file itself was changed & committed.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_fileChange_staged_returnsChangedFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+    changeAndStageFile("First", subPackage = "app")
+
+    val reportedFiles = runScript()
+
+    // Only the first file should be reported since the file itself was changed & staged.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt")
+  }
+
+
+  @Test
+  fun testUtility_featureBranch_fileChange_unstaged_returnsChangedFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+
+    val reportedFiles = runScript()
+
+    // Only the first file should be reported since the file itself was changed & staged.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_newFile_untracked_returnsChangedFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+    createFiles("NewUntrackedFile", subPackage = "data")
+
+    val reportedFiles = runScript()
+
+    // Only the first file should be reported since the file itself was changed & staged.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("data/NewUntrackedFile.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_deletedFile_committed_returnsNoFiles() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", subPackage = "app")
+    switchToFeatureBranch()
+    removeAndCommitFile("First", subPackage = "app")
+
+    val reportedFiles = runScript()
+
+    // Removing the file should result in no files being returned (since the file is gone).
+    assertThat(reportedFiles).isEmpty()
+  }
+
+  @Test
+  fun testUtility_featureBranch_movedFile_staged_returnsNewFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", subPackage = "app")
+    switchToFeatureBranch()
+    moveFile(oldFileName = "First", oldSubPackage = "app", newFileName = "RenamedFile", newSubPackage = "domain")
+
+    val reportedFiles = runScript()
+
+    // The file should show up under its new name since moving it is the same as changing it.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("domain/RenamedFile.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_multipleFilesChanged_committed_returnsChangedFiles() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+    changeAndCommitFile("First", subPackage = "app")
+    changeAndCommitFile("Third", subPackage = "app")
+
+    val reportedFiles = runScript()
+
+    // Changing multiple files independently should be reflected in the script's results.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt", "app/Third.kt")
+  }
+
+  @Test
+  fun testUtility_developBranch_instrumentationModuleChanged_instrumentationFilesAreIgnored() {
+    initializeEmptyGitRepository()
+//    createAndCommitFile("First", "Second", subPackage = "app")
+//    switchToFeatureBranch()
+    createFiles("InstrumentationFile", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player")
+    createFiles("Robolectric", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app")
+    createFiles("Third", subPackage = "instrumentation")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).doesNotContain(
+      "instrumentation/src/javatests/org/oppia/android/instrumentation/player/InstrumentationFile.kt"
+    )
+    assertThat(reportedFiles.first().changedFilesList).contains(
+      "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
+    )
+    assertThat(reportedFiles.first().changedFilesList).contains(
+      "instrumentation/Third.kt"
+    )
+  }
+
+  @Test
+  fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationFilesAreIgnored() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", subPackage = "app")
+    switchToFeatureBranch()
+    createFiles("InstrumentationFile", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player")
+    createFiles("Robolectric", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app")
+    createFiles("Third", subPackage = "instrumentation")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList).doesNotContain(
+      "instrumentation/src/javatests/org/oppia/android/instrumentation/player/InstrumentationFile.kt"
+    )
+    assertThat(reportedFiles.first().changedFilesList).contains(
+      "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
+    )
+    assertThat(reportedFiles.first().changedFilesList).contains(
+      "instrumentation/Third.kt"
+    )
+  }
+
+
+  @Test
+  fun testUtility_appFile_usesAppCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "app")
+
+    val reportedTargets = runScript()
+
+    assertThat(reportedTargets).hasSize(1)
+    assertThat(reportedTargets.first().cacheBucketName).isEqualTo("app")
+  }
+
+  @Test
+  fun testUtility_dataFile_usesGenericCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "data")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().cacheBucketName).isEqualTo("generic")
+  }
+
+  @Test
+  fun testUtility_domainFile_usesDomainCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "domain")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().cacheBucketName).isEqualTo("domain")
+  }
+
+  @Test
+  fun testUtility_instrumentationFile_usesGenericCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "instrumentation")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().cacheBucketName).isEqualTo("generic")
+  }
+
+  @Test
+  fun testUtility_scriptsFile_usesScriptsCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "scripts")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().cacheBucketName).isEqualTo("scripts")
+  }
+
+  @Test
+  fun testUtility_testingFile_usesGenericCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "testing")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().cacheBucketName).isEqualTo("generic")
+  }
+
+  @Test
+  fun testUtility_utilityFile_usesGenericCacheName() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("Example", subPackage = "utility")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().cacheBucketName).isEqualTo("generic")
+  }
+
+  @Test
+  fun testUtility_testsForMultipleBuckets_correctlyGroupTogether() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("AppFile", subPackage = "app")
+    createFiles("DataFile", subPackage = "data")
+    createFiles("DomainFile", subPackage = "domain")
+    createFiles("InstrumentationFile", subPackage = "instrumentation")
+    createFiles("ScriptsFile", subPackage = "scripts")
+    createFiles("TestingFile", subPackage = "testing")
+    createFiles("UtilityFile", subPackage = "utility")
+
+    val reportedFiles = runScript()
+
+    // Turn the files into a map by cache name in order to guard against potential randomness from
+    // the script.
+    val fileMap = reportedFiles.associateBy { it.cacheBucketName }
+    assertThat(reportedFiles).hasSize(4)
+    assertThat(fileMap).hasSize(4)
+    assertThat(fileMap).containsKey("app")
+    assertThat(fileMap).containsKey("domain")
+    assertThat(fileMap).containsKey("generic")
+    assertThat(fileMap).containsKey("scripts")
+    // Verify that dedicated groups only have their relevant files & the generic group includes all
+    // other files.
+    assertThat(fileMap["app"]?.changedFilesList).containsExactly("app/AppFile.kt")
+    assertThat(fileMap["domain"]?.changedFilesList).containsExactly("domain/DomainFile.kt")
+    assertThat(fileMap["generic"]?.changedFilesList)
+      .containsExactly(
+        "data/DataFile.kt", "instrumentation/InstrumentationFile.kt", "testing/TestingFile.kt",
+        "utility/UtilityFile.kt"
+      )
+    assertThat(fileMap["scripts"]?.changedFilesList)
+      .containsExactly("scripts/ScriptsFile.kt")
+  }
+
+  @Test
+  fun testUtility_appFiles_shardWithSmallPartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // App module files partition eagerly, so there should be 3 groups. Also, the code below
+    // verifies duplicates by ensuring no shards are empty and there are no duplicate files. Note
+    // that it's done in this way to be resilient against potential randomness from the script.
+    val allFiles = reportedFiles.flatMap { it.changedFilesList }
+    assertThat(reportedFiles).hasSize(3)
+    assertThat(reportedFiles[0].changedFilesList).isNotEmpty()
+    assertThat(reportedFiles[1].changedFilesList).isNotEmpty()
+    assertThat(reportedFiles[2].changedFilesList).isNotEmpty()
+    assertThat(allFiles).containsExactly("app/AppFile1.kt", "app/AppFile2.kt", "app/AppFile3.kt")
+  }
+
+  @Test
+  fun testUtility_dataFiles_shardWithLargePartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("DataFile1", "DataFile2", "DataFile3", subPackage = "data")
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // Data files are partitioned such that they are combined into one partition.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("data/DataFile1.kt", "data/DataFile2.kt", "data/DataFile3.kt")
+  }
+
+  @Test
+  fun testUtility_domainFiles_shardWithLargePartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("DomainFile1", "DomainFile2", "DomainFile3", subPackage = "domain")
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // Domain files are partitioned such that they are combined into one partition.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("domain/DomainFile1.kt", "domain/DomainFile2.kt", "domain/DomainFile3.kt")
+  }
+
+  @Test
+  fun testUtility_instrumentationFiles_shardWithLargePartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles(
+      "InstrumentationFile1", "InstrumentationFile2", "InstrumentationFile3",
+      subPackage = "instrumentation"
+    )
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // Instrumentation files are partitioned such that they are combined into one partition.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly(
+        "instrumentation/InstrumentationFile1.kt", "instrumentation/InstrumentationFile2.kt",
+        "instrumentation/InstrumentationFile3.kt"
+      )
+  }
+
+  @Test
+  fun testUtility_scriptsFiles_shardWithMediumPartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("ScriptsFile1", "ScriptsFile2", "ScriptsFile3", subPackage = "scripts")
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // See app module file above for specifics. Scripts files are medium partitioned which means 3
+    // files will be split into two partitions.
+    val allFiles = reportedFiles.flatMap { it.changedFilesList }
+    assertThat(reportedFiles).hasSize(2)
+    assertThat(reportedFiles[0].changedFilesList).isNotEmpty()
+    assertThat(reportedFiles[1].changedFilesList).isNotEmpty()
+    assertThat(allFiles)
+      .containsExactly("scripts/ScriptsFile1.kt", "scripts/ScriptsFile2.kt", "scripts/ScriptsFile3.kt")
+  }
+
+  @Test
+  fun testUtility_testingFiles_shardWithLargePartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("TestingFile1", "TestingFile2", "TestingFile3", subPackage = "testing")
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // Testing files are partitioned such that they are combined into one partition.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("testing/TestingFile1.kt", "testing/TestingFile2.kt", "testing/TestingFile3.kt")
+  }
+
+  @Test
+  fun testUtility_utilityFiles_shardWithLargePartitions() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("UtilityFile1", "UtilityFile2", "UtilityFile3", subPackage = "utility")
+
+    val reportedFiles = runScriptWithShardLimits(
+      maxFileCountPerLargeShard = 3,
+      maxFileCountPerMediumShard = 2,
+      maxFileCountPerSmallShard = 1
+    )
+
+    // Utility tests are partitioned such that they are combined into one partition.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("utility/UtilityFile1.kt", "utility/UtilityFile2.kt", "utility/UtilityFile3.kt")
+  }
+
+  @Test
+  fun testUtility_singleShard_fileOutputIncludesHumanReadablePrefix() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("ExampleFile", subPackage = "app")
+
+    val generatedLines = runScriptWithTextOutput()
+
+    assertThat(generatedLines).hasSize(1)
+    assertThat(generatedLines.first()).startsWith("app-shard0")
+  }
+
+  @Test
+  fun testUtility_twoShards_computesFilesForBothShards() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
+    createFiles("ScriptsFile1", "ScriptsFile2", subPackage = "scripts")
+
+    val reportedFiles = runScript()
+
+    // Turn the files into a map by cache name in order to guard against potential randomness from
+    // the script.
+    val filetMap = reportedFiles.associateBy { it.cacheBucketName }
+    assertThat(reportedFiles).hasSize(2)
+    assertThat(filetMap).hasSize(2)
+    assertThat(filetMap).containsKey("app")
+    assertThat(filetMap).containsKey("scripts")
+    assertThat(filetMap["app"]?.changedFilesList)
+      .containsExactly("app/AppFile1.kt", "app/AppFile2.kt", "app/AppFile3.kt")
+    assertThat(filetMap["scripts"]?.changedFilesList)
+      .containsExactly("scripts/ScriptsFile1.kt", "scripts/ScriptsFile2.kt")
+  }
+
+  @Test
+  fun testUtility_multipleShards_fileOutputIncludesHumanReadablePrefixForEachShard() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createFiles("AppFile", subPackage = "app")
+    createFiles("ScriptsFile", subPackage = "scripts")
+
+    // The sorting here counteracts the intentional randomness from the script.
+    val generatedLines = runScriptWithTextOutput().sorted()
+
+    assertThat(generatedLines).hasSize(2)
+    assertThat(generatedLines[0]).matches("^app-shard[0-3];.+?$")
+    assertThat(generatedLines[1]).matches("^scripts-shard[0-3];.+?\$")
   }
 
   private fun runScriptWithTextOutput(
@@ -177,6 +650,33 @@ class ComputeChangedFilesTest {
     return parseOutputLogLines(runScriptWithTextOutput(currentHeadHash, computeAllFiles))
   }
 
+  private fun runScriptWithShardLimits(
+    baseBranch: String = "develop",
+    maxFileCountPerLargeShard: Int,
+    maxFileCountPerMediumShard: Int,
+    maxFileCountPerSmallShard: Int
+  ): List<ChangedFilesBucket> {
+    val outputLog = tempFolder.newFile("output.log")
+    val currentHeadHash = computeMergeBase(baseBranch)
+
+    // Note that main() can't be used since the shard counts need to be overwritten. Dagger would
+    // be a nicer means to do this, but it's not set up currently for scripts.
+    ComputeChangedFiles(
+      scriptBgDispatcher,
+      maxFileCountPerLargeShard = maxFileCountPerLargeShard,
+      maxFileCountPerMediumShard = maxFileCountPerMediumShard,
+      maxFileCountPerSmallShard = maxFileCountPerSmallShard,
+      commandExecutor = commandExecutor
+    ).compute(
+      pathToRoot = tempFolder.root.absolutePath,
+      pathToOutputFile = outputLog.absolutePath,
+      baseCommit = currentHeadHash,
+//      computeAllFilesSetting = false
+    )
+
+    return parseOutputLogLines(outputLog.readLines())
+  }
+
   private fun parseOutputLogLines(outputLogLines: List<String>): List<ChangedFilesBucket> {
     return outputLogLines.map {
       ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(it.split(";")[1])
@@ -194,6 +694,78 @@ class ComputeChangedFilesTest {
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     testGitRepository.checkoutNewBranch("develop")
     testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
+  }
+
+  private fun createFiles(vararg fileNames: String, subPackage: String): List<File> {
+    createEmptyWorkspace()
+    if (!File(tempFolder.root, subPackage).exists()) {
+      tempFolder.newFolder(subPackage)
+    }
+    return fileNames.map { fileName ->
+      tempFolder.newFile("$subPackage/$fileName.kt")
+    }
+  }
+
+  private fun createAndCommitFile(vararg fileNames: String, subPackage: String) {
+    /*tempFolder.newFolder(subPackage)
+    val changedFiles = fileNames.map { fileName ->
+      tempFolder.newFile("$subPackage/$fileName.kt")
+    }*/
+    val createdFiles = createFiles(fileNames = fileNames, subPackage = subPackage)
+
+    testGitRepository.stageFilesForCommit(createdFiles)
+    testGitRepository.commit(message = "Introduce files.")
+  }
+
+  private fun changeFile(fileName: String, subPackage: String): File {
+    val file = File(tempFolder.root, "$subPackage/$fileName.kt")
+    file.appendText(";") // Add a character to change the file.
+    return file
+  }
+
+  private fun changeAndStageFile(fileName: String, subPackage: String) {
+    val file = changeFile(fileName, subPackage)
+    testGitRepository.stageFileForCommit(file)
+  }
+
+  private fun changeAndCommitFile(fileName: String, subPackage: String) {
+    changeAndStageFile(fileName, subPackage)
+    testGitRepository.commit(message = "Modified file $fileName")
+  }
+
+  private fun moveFile(oldFileName: String, oldSubPackage: String, newFileName: String, newSubPackage: String) {
+    val oldFilePath = File(tempFolder.root, "$oldSubPackage/$oldFileName.kt")
+    val newFilePath = File(tempFolder.root, "$newSubPackage/$newFileName.kt")
+
+//    oldFilePath.renameTo(newFilePath)
+
+    // Ensure the new directory exists
+//    newFilePath.parentFile?.mkdirs()
+
+    // Move the file
+    /*if (oldFilePath.exists()) {
+      oldFilePath.renameTo(newFilePath)
+    } else {
+
+    }*/
+
+//    oldFilePath.renameTo(newFilePath)
+    oldFilePath.copyTo(newFilePath)
+//    newFilePath.exists()
+    oldFilePath.delete()
+
+    testGitRepository.stageFileForCommit(newFilePath)
+//    testGitRepository.stageFileForCommit(File(tempFolder.root, "$newSubPackage/$newFileName.kt")) // Ensure staging of removal
+//    testGitRepository.stageFileForCommit(oldFilePath) // Stage the old file path for removal
+//    testGitRepository.stageFileForCommit(File(tempFolder.root, "$oldSubPackage/$oldFileName.kt")) // Ensure staging of removal
+
+    testGitRepository.commit(message = "Move file from $oldFilePath to $newFilePath")
+  }
+
+  private fun removeAndCommitFile(fileName: String, subPackage: String) {
+    val file = File(tempFolder.root, "$subPackage/$fileName.kt")
+    testGitRepository.removeFileForCommit(file)
+    testGitRepository.commit(message = "Remove file $fileName")
   }
 
   private fun switchToFeatureBranch() {
