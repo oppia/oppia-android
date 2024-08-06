@@ -11,9 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
@@ -85,6 +82,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [AudioPlayerControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
