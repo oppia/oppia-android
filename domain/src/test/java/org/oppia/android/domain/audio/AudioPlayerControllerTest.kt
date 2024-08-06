@@ -11,6 +11,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,9 +85,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [AudioPlayerControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -94,18 +95,41 @@ import javax.inject.Singleton
 @Config(application = AudioPlayerControllerTest.TestApplication::class)
 class AudioPlayerControllerTest {
 
-  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
-  @Mock lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
-  @Captor lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
-  @Inject lateinit var context: Context
-  @Inject lateinit var audioPlayerController: AudioPlayerController
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var explorationProgressController: ExplorationProgressController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Mock
+  lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
+
+  @Captor
+  lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var audioPlayerController: AudioPlayerController
+
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var explorationDataController: ExplorationDataController
+
+  @Inject
+  lateinit var explorationProgressController: ExplorationProgressController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
 
@@ -444,15 +468,14 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  fun testController_consecutively_releasePlayer_callDoesNot_throwException() {
+  fun testController_releasePlayerMultipleTimes_doesNoThrowException() {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer()
 
-    // Call releaseMediaPlayer() the first time and assert no exception is thrown
-    audioPlayerController.releaseMediaPlayer()
-
-    // Call releaseMediaPlayer() the second time and assert no exception is thrown
-    audioPlayerController.releaseMediaPlayer()
+    assertNoExceptionIsThrown {
+      audioPlayerController.releaseMediaPlayer()
+      audioPlayerController.releaseMediaPlayer()
+    }
   }
 
   @Test
@@ -970,5 +993,18 @@ class AudioPlayerControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  fun interface Executable {
+    @Throws(Exception::class)
+    fun execute()
+  }
+
+  private fun assertNoExceptionIsThrown(executable: Executable) {
+    try {
+      executable.execute()
+    } catch (e: Exception) {
+      fail("${e::class.simpleName} was thrown")
+    }
   }
 }
