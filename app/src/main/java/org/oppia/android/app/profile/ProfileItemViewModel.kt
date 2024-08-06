@@ -10,7 +10,6 @@ class ProfileItemViewModel(
 ) : ObservableViewModel() {
 
   /** Called when a profile is clicked. */
-  // todo maybe remove
   fun profileClicked() {
     onProfileClicked(profile)
   }
