@@ -36,7 +36,7 @@ kt_jvm_test(
     name = "ComputeChangedFilesTest",
     size = "large",
     srcs = ["ComputeChangedFilesTest.kt"],
-    shard_count = 24,
+#    shard_count = 24,
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",

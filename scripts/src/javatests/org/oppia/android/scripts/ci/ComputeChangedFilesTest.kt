@@ -70,6 +70,139 @@ class ComputeChangedFilesTest {
     assertThat(pendingOutputStream.toString()).contains("Usage:")
   }
 
+  @Test
+  fun testUtility_invalidArguments_printsUsageStringAndExits() {
+    for (argCount in 0..3) {
+      val args = Array(argCount) { "arg${it + 1}" }
+      val exception = assertThrows<SecurityException> { main(arrayOf(*args)) }
+
+      // Bazel catches the System.exit() call and throws a SecurityException.
+      assertThat(exception).hasMessageThat().contains("System.exit()")
+      assertThat(pendingOutputStream.toString()).contains("Usage:")
+    }
+  }
+
+  @Test
+  fun testUtility_directoryRootDoesNotExist_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_files=false"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected 'fake' to be a directory")
+  }
+
+  @Test
+  fun testUtility_invalid_lastArgument_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_filess=false"))
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Expected last argument to start with 'compute_all_files='")
+  }
+
+  @Test
+  fun testUtility_invalid_lastArgumentValue_throwsException() {
+    val exception = assertThrows<IllegalStateException>() {
+      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_files=blah"))
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Expected last argument to have 'true' or 'false' passed to it, not: 'blah'")
+  }
+
+  @Test
+  fun testUtility_emptyDirectory_throwsException() {
+    val exception = assertThrows<IllegalStateException>() { runScript(currentHeadHash = "ad") }
+
+    assertThat(exception).hasMessageThat().contains("run from the workspace's root directory")
+  }
+
+  @Test
+  fun testUtility_emptyWorkspace_returnsNoTargets() {
+    // Need to be on a feature branch since the develop branch expects there to be files.
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createEmptyWorkspace()
+
+    val reportedFiles = runScript()
+
+    // An empty workspace should yield no files.
+    assertThat(reportedFiles).isEmpty()
+  }
+
+  @Test
+  fun testUtility_bazelWorkspace_developBranch_returnsAllFiles() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createEmptyWorkspace()
+    tempFolder.newFolder("app")
+    val file = tempFolder.newFile("app/First.kt")
+
+    val changedFiles = listOf(file)
+    testGitRepository.stageFilesForCommit(changedFiles)
+    testGitRepository.commit(message = "Introduce files.")
+
+    val reportFiles = runScript()
+
+    assertThat(reportFiles.first().changedFilesList).contains("app/First.kt")
+//    assertThat(reportFiles).exists()
+  }
+
+  private fun runScriptWithTextOutput(
+    currentHeadHash: String = computeMergeBase("develop"),
+    computeAllFiles: Boolean = false
+  ): List<String> {
+    val outputLog = tempFolder.newFile("output.log")
+    main(
+      arrayOf(
+        tempFolder.root.absolutePath,
+        outputLog.absolutePath,
+        currentHeadHash,
+        "compute_all_files=$computeAllFiles"
+      )
+    )
+    return outputLog.readLines()
+  }
+
+  /**
+   * Runs the compute_affected_files utility & returns all of the output lines. Note that the output
+   * here is that which is saved directly to the output file, not debug lines printed to the
+   * console.
+   */
+  private fun runScript(
+    currentHeadHash: String = computeMergeBase("develop"),
+    computeAllFiles: Boolean = false
+  ): List<ChangedFilesBucket> {
+    return parseOutputLogLines(runScriptWithTextOutput(currentHeadHash, computeAllFiles))
+  }
+
+  private fun parseOutputLogLines(outputLogLines: List<String>): List<ChangedFilesBucket> {
+    return outputLogLines.map {
+      ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(it.split(";")[1])
+    }
+  }
+
+  private fun createEmptyWorkspace() {
+    testBazelWorkspace.initEmptyWorkspace()
+  }
+
+  private fun initializeEmptyGitRepository() {
+    // Initialize the git repository with a base 'develop' branch & an initial empty commit (so that
+    // there's a HEAD commit).
+    testGitRepository.init()
+    testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+    testGitRepository.checkoutNewBranch("develop")
+    testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
+  }
+
+  private fun switchToFeatureBranch() {
+    testGitRepository.checkoutNewBranch("introduce-feature")
+  }
+
+  private fun computeMergeBase(referenceBranch: String): String =
+    GitClient(tempFolder.root, referenceBranch, commandExecutor).branchMergeBase
+
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
