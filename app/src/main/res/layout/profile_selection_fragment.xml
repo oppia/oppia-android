@@ -108,7 +108,7 @@
       android:paddingStart="4dp"
       android:paddingEnd="4dp"
       android:layout_marginEnd="12dp"
-      android:srcCompat="@drawable/ic_add"
+      app:srcCompat="@drawable/ic_add"
       android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
       app:backgroundTint="@color/component_color_drawer_fragment_admin_controls_selected_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
