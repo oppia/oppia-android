@@ -475,6 +475,77 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_withMultipleTestsForFile_analysingSameFile() {
+    val filePath = "app/main/java/com/example/AddNums.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val testContent1 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
+    val testContent2 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "AddNums",
+      sourceContent = sourceContent,
+      testContentShared = testContent1,
+      testContentLocal = testContent2,
+      subpackage = "app"
+    )
+
+    // Both the test files will correspond to one single source file
+    // therefore no error would be thrown while aggregating the coverage reports.
+    RunCoverage(
+      "${tempFolder.root}",
+      filePath,
+      ReportFormat.MARKDOWN,
+      markdownOutputPath,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val outputReportText = File(markdownOutputPath).readText()
+    val expectedResult =
+      """
+        ## Coverage Report
+        
+        - **Covered File:** $filePath
+        - **Coverage percentage:** 50.00% covered
+        - **Line coverage:** 2 / 4 lines covered
+      """.trimIndent()
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
   fun testRunCoverage_sampleTestsHtmlFormat_returnsCoverageData() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
