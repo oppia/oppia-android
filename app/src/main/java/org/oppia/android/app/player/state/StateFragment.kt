@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -41,6 +42,9 @@ class StateFragment :
 
     /** Arguments key for StateFragment. */
     const val STATE_FRAGMENT_ARGUMENTS_KEY = "StateFragment.arguments"
+
+    /** Arguments key for StateFragment saved state. */
+    const val STATE_FRAGMENT_STATE_KEY = "StateFragment.state"
 
     /**
      * Creates a new instance of a StateFragment.
@@ -86,6 +90,12 @@ class StateFragment :
   ): View? {
     val args =
       arguments?.getProto(STATE_FRAGMENT_ARGUMENTS_KEY, StateFragmentArguments.getDefaultInstance())
+
+    val userAnswerState = savedInstanceState?.getProto(
+      STATE_FRAGMENT_STATE_KEY,
+      UserAnswerState.getDefaultInstance()
+    ) ?: UserAnswerState.getDefaultInstance()
+
     val internalProfileId = args?.internalProfileId ?: -1
     val topicId = args?.topicId!!
     val storyId = args.storyId!!
@@ -97,7 +107,8 @@ class StateFragment :
       internalProfileId,
       topicId,
       storyId,
-      explorationId
+      explorationId,
+      userAnswerState
     )
   }
 
@@ -154,4 +165,12 @@ class StateFragment :
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putProto(
+      STATE_FRAGMENT_STATE_KEY,
+      stateFragmentPresenter.getUserAnswerState()
+    )
+  }
 }
