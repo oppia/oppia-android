@@ -444,7 +444,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  fun testController_consecutively_releasePlayer_callDoesNot_throwException() {
+  fun testController_releasePlayerMultipleTimes_doesNoThrowException() {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer()
 
