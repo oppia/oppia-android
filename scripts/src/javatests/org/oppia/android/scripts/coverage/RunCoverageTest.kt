@@ -1589,6 +1589,89 @@ class RunCoverageTest {
     assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
+  /*@Test
+  fun testRunCoverage_withMultipleTestsHittingSameLine_calculatesCoverageReportCorrectly() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val testContent1 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
+    val testContent2 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "AddNums",
+      sourceContent = addSourceContent,
+      testContentShared = testContent1,
+      testContentLocal = testContent2,
+      subpackage = "app"
+    )
+
+    // Both the test files will correspond to one single source file
+    // therefore no error would be thrown while aggregating the coverage reports.
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher,
+      protoOutputPath
+    ).execute()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("- Number of files assessed: 1\n")
+      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
+      append("<details>\n")
+      append("<summary>Succeeded Coverages</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
+  }*/
+
   @Test
   fun testRunCoverage_withMultipleFilesHtmlFormat_generatesCoverageReport() {
     val filePathList = listOf(
@@ -2075,6 +2158,27 @@ class RunCoverageTest {
       """.trimIndent()
 
     assertThat(outputReportText).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_outputProtoPathProvided_savesCoverageContainerProto() {
+    val sampleFile = "file.kt"
+    testBazelWorkspace.initEmptyWorkspace()
+    tempFolder.newFile(sampleFile)
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        tempFolder.root.absolutePath,
+        sampleFile,
+        "--format=Markdown",
+        "--protoOutputPath=${tempFolder.root}/report.proto64"
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+    val outputFilePath = "${tempFolder.root.absolutePath}/report.proto64"
+
+    assertThat(File(outputFilePath).exists()).isTrue()
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
