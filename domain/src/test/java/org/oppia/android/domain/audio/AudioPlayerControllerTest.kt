@@ -95,41 +95,18 @@ import javax.inject.Singleton
 @Config(application = AudioPlayerControllerTest.TestApplication::class)
 class AudioPlayerControllerTest {
 
-  @field:[Rule JvmField]
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Mock
-  lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
-
-  @Captor
-  lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var audioPlayerController: AudioPlayerController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
-
-  @Inject
-  lateinit var explorationProgressController: ExplorationProgressController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @Mock lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
+  @Captor lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var audioPlayerController: AudioPlayerController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationProgressController: ExplorationProgressController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
 
