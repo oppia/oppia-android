@@ -907,6 +907,14 @@ class AudioPlayerControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun assertNoExceptionIsThrown(block: () -> Unit) {
+    try {
+      block()
+    } catch (e: Exception) {
+      fail("Expected no exception, but got: $e")
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -993,18 +1001,5 @@ class AudioPlayerControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
-  }
-
-  fun interface Executable {
-    @Throws(Exception::class)
-    fun execute()
-  }
-
-  private fun assertNoExceptionIsThrown(executable: Executable) {
-    try {
-      executable.execute()
-    } catch (e: Exception) {
-      fail("${e::class.simpleName} was thrown")
-    }
   }
 }
