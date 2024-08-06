@@ -30,10 +30,12 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
@@ -672,11 +674,330 @@ class StateFragmentTest {
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
-
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
         matches(withText(R.string.state_continue_button))
       )
+    }
+  }
+
+  @Test
+  fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      typeFractionText("1/2")
+      rotateToLandscape()
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(withText("1/2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      typeNumericInput("90")
+      rotateToLandscape()
+      onView(withId(R.id.numeric_input_interaction_view)).check(matches(withText("90")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      typeRatioExpression("3:5")
+      rotateToLandscape()
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(withText("3:5")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_textInput_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      typeTextInput("finnish")
+      rotateToLandscape()
+      onView(withId(R.id.text_input_interaction_view)).check(matches(withText("finnish")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_selectMultipleChoiceOption_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      rotateToLandscape()
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_selectItemSelectionCheckbox_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      rotateToLandscape()
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      typeNumericExpression("1+2")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("1+2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+      typeAlgebraicExpression("x^2-x-2")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(
+        matches(withText("x^2-x-2"))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+      typeMathEquation("x^2-x-2=2y")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(
+        matches(withText("x^2-x-2=2y"))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_differentSelectionInteractions_doesNotShareSavedInputState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      // Ensure all checkboxes are unchecked, indicating no saved input state
+      // from previous interactions.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 4,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 5,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_sameSelectionInteractions_doesNotShareSavedInputState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      // Ensure all radio buttons are not selected, indicating no saved input state
+      // from previous interactions.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isNotChecked()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_textBasedInteractions_doesNotShareSavedInputState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      typeNumericExpression("1+2")
+      rotateToLandscape()
+      onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("1+2")))
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      // Ensure empty input, indicating no saved input state from previous interactions.
+      onView(withId(R.id.math_expression_input_interaction_view)).check(matches(withText("")))
     }
   }
 
