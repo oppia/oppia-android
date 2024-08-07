@@ -52,8 +52,7 @@ fun ClassroomList(
       .testTag(CLASSROOM_LIST_TEST_TAG)
       .background(
         color = colorResource(id = R.color.component_color_shared_screen_primary_background_color)
-      )
-      .fillMaxWidth(),
+      ),
     contentPadding = PaddingValues(
       start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
       top = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
