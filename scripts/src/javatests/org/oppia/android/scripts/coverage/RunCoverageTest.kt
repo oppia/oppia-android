@@ -609,37 +609,37 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    for (file in filePathList) {
-      val outputReportText = File(
-        "${tempFolder.root}" +
-          "$coverageDir/CoverageReport.md"
-      ).readText()
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
 
-      val expectedResult = buildString {
-        append("## Coverage Report\n\n")
-      append("### Results\n")
-        append("Number of files assessed: 2\n")
-        append("Overall Coverage: 62.50%\n")
-        append("Coverage Analysis: **PASS** :white_check_mark:\n\n")
-        append("<details>\n")
-        append("<summary>Files with passing code coverage</summary><br>\n\n")
-        append("| File | Coverage | Lines Hit | Status | Min Required |\n")
-        append("|------|:--------:|----------:|:------:|:------------:|\n")
-        append(
-          "| [${filePathList.get(0).substringAfterLast("/")}]" +
-            "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
-            ":white_check_mark: | $MIN_THRESHOLD% |\n"
-        )
-        append(
-          "| [${filePathList.get(1).substringAfterLast("/")}]" +
-            "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | " +
-            ":white_check_mark: | $MIN_THRESHOLD% |\n"
-        )
-        append("</details>")
-      }
-
-      assertThat(outputReportText).isEqualTo(expectedResult)
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+    append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **62.50%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| [${filePathList.get(0).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append(
+        "| [${filePathList.get(1).substringAfterLast("/")}]" +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append("</details>")
     }
+
+    assertThat(outputReportText).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2057,15 +2057,17 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    for (file in filePathList) {
-      val outputReportText = File(
-        "${tempFolder.root}" +
-          "$coverageDir/${file.removeSuffix(".kt")}/coverage.html"
-      ).readText()
-      val expectedResult = getExpectedHtmlText(file)
+    val outputReportText1 = File("${tempFolder.root}" +
+      "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
+    ).readText()
+    val expectedResult1 = getExpectedHtmlText(filePathList.get(0))
+    assertThat(outputReportText1).isEqualTo(expectedResult1)
 
-      assertThat(outputReportText).isEqualTo(expectedResult)
-    }
+    val outputReportText2 = File("${tempFolder.root}" +
+      "$coverageDir/${filePathList.get(1).removeSuffix(".kt")}/coverage.html"
+    ).readText()
+    val expectedResult2 = getExpectedHtmlText(filePathList.get(1))
+    assertThat(outputReportText2).isEqualTo(expectedResult2)
   }
 
   @Test

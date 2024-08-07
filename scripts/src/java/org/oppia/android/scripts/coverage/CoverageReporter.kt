@@ -411,9 +411,7 @@ class CoverageReporter(
 
   private fun checkCoverageStatus(): CoverageCheck {
     coverageReportContainer.coverageReportList.forEach { report ->
-      if (report.hasFailure()) {
-        return CoverageCheck.FAIL
-      }
+      if (report.hasFailure()) return CoverageCheck.FAIL
 
       if (report.hasDetails()) {
         val details = report.details
@@ -425,18 +423,8 @@ class CoverageReporter(
           totalLinesHit, totalLinesFound
         )
 
-        val exemption = testFileExemptionList[filePath]
-
-        if (exemption != null) {
-          val overriddenMinCoverage = exemption.overrideMinCoveragePercentRequired
-          if (coveragePercentage < overriddenMinCoverage) {
-            return CoverageCheck.FAIL
-          }
-        } else {
-          if (coveragePercentage < MIN_THRESHOLD) {
-            return CoverageCheck.FAIL
-          }
-        }
+        val threshold = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
+        if (coveragePercentage < threshold) return CoverageCheck.FAIL
       }
     }
     return CoverageCheck.PASS
