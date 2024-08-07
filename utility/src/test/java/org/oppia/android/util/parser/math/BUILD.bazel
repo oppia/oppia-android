@@ -7,7 +7,6 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "MathModelTest",
     srcs = ["MathModelTest.kt"],
-    shard_count = 4,
     custom_package = "org.oppia.android.util.parser.math",
     test_class = "org.oppia.android.util.parser.math.MathModelTest",
     test_manifest = "//utility:test_manifest",
