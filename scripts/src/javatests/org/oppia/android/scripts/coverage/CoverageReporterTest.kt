@@ -56,10 +56,10 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1\n")
-      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
+      append("Number of files assessed: 1\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>\n\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -103,8 +103,8 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1\n")
-      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("Number of files assessed: 1\n")
+      append("Coverage Analysis: **FAIL** :x:\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -144,8 +144,8 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1\n")
-      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("Number of files assessed: 1\n")
+      append("Coverage Analysis: **FAIL** :x:\n\n")
       append("### Failure Cases\n")
       append("| File | Failure Reason |\n")
       append("|------|----------------|\n")
@@ -184,8 +184,8 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 1\n")
-      append("- Coverage Analysis: **PASS** :white_check_mark:\n\n")
+      append("Number of files assessed: 1\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n\n")
       append("### Test File Exempted Cases\n")
       append("- [ActivityComponent.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
     }
@@ -253,8 +253,8 @@ class CoverageReporterTest {
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
-      append("- Number of files assessed: 4\n")
-      append("- Coverage Analysis: **FAIL** :x:\n\n")
+      append("Number of files assessed: 4\n")
+      append("Coverage Analysis: **FAIL** :x:\n\n")
       append("### Failure Cases\n")
       append("| File | Failure Reason |\n")
       append("|------|----------------|\n")
@@ -266,7 +266,7 @@ class CoverageReporterTest {
           "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n\n"
       )
       append("<details>\n")
-      append("<summary>Succeeded Coverages</summary><br>\n\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(

@@ -22,14 +22,15 @@ class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
+  private val testFileExemptionList: Map<String, TestFileExemptions.TestFileExemption>,
   private val mdReportOutputPath: String? = null
 ) {
-  private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  /*private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   private val testFileExemptionList by lazy {
     loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
-  }
+  }*/
 
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
@@ -39,6 +40,9 @@ class CoverageReporter(
    *     and the second value is the generated report text
    */
   fun generateRichTextReport(): CoverageCheck {
+//    println("TEst2: $testFileExemptionList2")
+//    println("TEst: $testFileExemptionList")
+
     val coverageStatus = checkCoverageStatus()
     when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport(coverageStatus)
@@ -60,7 +64,7 @@ class CoverageReporter(
           val coveragePercentage = calculateCoveragePercentage(
             totalLinesHit, totalLinesFound
           )
-          val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
+          val formattedCoveragePercentage = "%.2f".format(coveragePercentage)
 
           val htmlContent = buildString {
             append(
@@ -341,17 +345,23 @@ class CoverageReporter(
     val failureMarkdownEntries = buildString {
       if (failureBelowThresholdTableRows.isNotEmpty() || exemptedFailureTableRows.isNotEmpty()) {
         append("\n\n")
+        append("### Failing coverage")
+        append("\n\n")
         append(tableHeader)
         append(failureBelowThresholdTableRows)
         if (exemptedFailureTableRows.isNotEmpty()) {
-          append("\n|Exempted :small_red_triangle_down:|\n")
+//          append("\n|Exempted :small_red_triangle_down:|\n")
           append(exemptedFailureTableRows)
+          append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
         }
       } else if (exemptedFailureTableRows.isNotEmpty()) {
         append("\n\n")
+        append("### Failing coverage")
+        append("\n\n")
         append(tableHeader)
-        append("\n|Exempted :small_red_triangle_down:|\n")
+//        append("\n|Exempted :small_red_triangle_down:|\n")
         append(exemptedFailureTableRows)
+        append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
       }
     }
 
@@ -359,20 +369,23 @@ class CoverageReporter(
       exemptedSuccessTableRows.isNotEmpty()
     ) {
       val detailsContent = buildString {
+        append("\n### Passing coverage")
         append("\n\n")
         append("<details>\n")
-        append("<summary>Succeeded Coverages</summary><br>\n\n")
+        append("<summary>Files with passing code coverage</summary><br>\n\n")
         if (successTableRows.isNotEmpty()) {
           append(tableHeader)
           append(successTableRows)
           if (exemptedSuccessTableRows.isNotEmpty()) {
-            append("\n|Exempted :small_red_triangle_down:|\n")
+//            append("\n|Exempted :small_red_triangle_down:|\n")
             append(exemptedSuccessTableRows)
+            append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
           }
         } else if (exemptedSuccessTableRows.isNotEmpty()) {
           append(tableHeader)
-          append("\n|Exempted :small_red_triangle_down:|\n")
+//          append("\n|Exempted :small_red_triangle_down:|\n")
           append(exemptedSuccessTableRows)
+          append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
         }
         append("\n</details>")
       }
@@ -382,14 +395,18 @@ class CoverageReporter(
     val testFileExemptedSection = buildString {
       if (testFileExemptedCasesList.isNotEmpty()) {
         append("\n\n")
-        append("### Test File Exempted Cases\n")
+        append("### Files Exempted from Coverage\n")
         append(testFileExemptedCasesList)
       }
     }
 
     val finalReportText = "## Coverage Report\n\n" +
-      "- Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
-      "- Coverage Analysis: $status" +
+      "### Results\n" +
+      "|Number of files assessed:| ${coverageReportContainer.coverageReportList.size}|\n" +
+      "|---|---|\n"+
+      "|Overall Coverage: | **${"%.2f".format(calculateOverallCoveragePercentage())}%**|\n" +
+      "|Coverage Analysis: | $status|\n" +
+      "##" +
       failureMarkdownTable +
       failureMarkdownEntries +
       successMarkdownEntries +
@@ -405,7 +422,9 @@ class CoverageReporter(
     }
   }
 
-  private fun checkCoverageStatus(): CoverageCheck {
+  // This condition fails with exempted percentage being higher than min threshold
+  // so need to first check with exempted list rather min threshold
+/*  private fun checkCoverageStatus(): CoverageCheck {
     coverageReportContainer.coverageReportList.forEach { report ->
       if (report.hasFailure()) { return CoverageCheck.FAIL }
 
@@ -433,6 +452,57 @@ class CoverageReporter(
       }
     }
     return CoverageCheck.PASS
+  }*/
+
+  private fun checkCoverageStatus(): CoverageCheck {
+    coverageReportContainer.coverageReportList.forEach { report ->
+      if (report.hasFailure()) {
+        return CoverageCheck.FAIL
+      }
+
+      if (report.hasDetails()) {
+        val details = report.details
+        val filePath = details.filePath
+        val totalLinesFound = details.linesFound
+        val totalLinesHit = details.linesHit
+
+        val coveragePercentage = calculateCoveragePercentage(
+          totalLinesHit, totalLinesFound
+        )
+
+        val exemption = testFileExemptionList[filePath]
+
+        if (exemption != null) {
+          // File is in the exemption list; check against the overridden minimum coverage percentage
+          val overriddenMinCoverage = exemption.overrideMinCoveragePercentRequired
+          if (coveragePercentage < overriddenMinCoverage) {
+            return CoverageCheck.FAIL
+          }
+        } else {
+          // File is not in the exemption list; check against the standard minimum threshold
+          if (coveragePercentage < MIN_THRESHOLD) {
+            return CoverageCheck.FAIL
+          }
+        }
+      }
+    }
+    return CoverageCheck.PASS
+  }
+
+  private fun calculateOverallCoveragePercentage(): Float {
+    var totalLinesFound = 0
+    var totalLinesHit = 0
+
+    coverageReportContainer.coverageReportList.forEach { report ->
+      report.details?.let {
+        totalLinesFound += it.linesFound
+        totalLinesHit += it.linesHit
+      }
+    }
+
+    return totalLinesFound.takeIf { it > 0 }
+      ?.let { totalLinesHit.toFloat() / it * 100 }
+      ?: 0.0f
   }
 
   private fun logCoverageReport() {
@@ -460,7 +530,7 @@ class CoverageReporter(
             totalLinesHit, totalLinesFound
           )
 
-          val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
+          val formattedCoveragePercentage = "%.2f".format(coveragePercentage)
 
           val exemption = testFileExemptionList[filePath]
           val minRequiredCoverage = if (exemption != null) {
@@ -508,14 +578,15 @@ class CoverageReporter(
         val totalLinesHit = details.linesHit
         val exemptionPercentage = testFileExemptionList[filePath]
           ?.overrideMinCoveragePercentRequired
-          ?: MIN_THRESHOLD
+          ?.let { "$it% _*_" }
+          ?: "$MIN_THRESHOLD%"
         val coveragePercentage = calculateCoveragePercentage(
           totalLinesHit, totalLinesFound
         )
-        val formattedCoveragePercentage = "%2.2f".format(coveragePercentage)
+        val formattedCoveragePercentage = "%.2f".format(coveragePercentage)
 
         "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | " +
-          "$totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage% |"
+          "$totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage |"
       }
       .joinToString(separator = "\n")
   }
@@ -563,10 +634,10 @@ private fun getFilenameAsLink(filePath: String): String {
   return filenameAsLink
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+/*private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
   return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
     TestFileExemptions.newBuilder().also { builder ->
       builder.mergeFrom(stream)
     }.build()
   }
-}
+}*/
