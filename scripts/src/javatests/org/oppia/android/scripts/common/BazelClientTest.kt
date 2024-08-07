@@ -388,7 +388,7 @@ class BazelClientTest {
       """
       package com.example
       
-      class TwoSum {
+      class AddNums {
       
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
@@ -409,33 +409,35 @@ class BazelClientTest {
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumTest {
+      class AddNumsTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:TwoSumTest")
+    val result = bazelClient.runCoverageForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
     val expectedResult = listOf(
-      "SF:coverage/main/java/com/example/TwoSum.kt",
-      "FN:7,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FN:3,com/example/TwoSum::<init> ()V",
-      "FNDA:1,com/example/TwoSum${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FNDA:0,com/example/TwoSum::<init> ()V",
+      "SF:coverage/main/java/com/example/AddNums.kt",
+      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/AddNums::<init> ()V",
+      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/AddNums::<init> ()V",
       "FNF:2",
       "FNH:1",
       "BRDA:7,0,0,1",

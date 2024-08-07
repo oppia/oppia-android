@@ -1,11 +1,9 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
@@ -34,15 +32,13 @@ class CoverageRunner(
    * @param bazelTestTarget Bazel test target to analyze coverage
    * @return a deferred value that contains the coverage data
    */
-  fun runWithCoverageAsync(
+  fun retrieveCoverageDataForTestTarget(
     bazelTestTarget: String
-  ): Deferred<CoverageReport> {
-    return CoroutineScope(scriptBgDispatcher).async {
-      val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: error("Failed to retrieve coverage result for $bazelTestTarget")
+  ): CoverageReport {
+    val coverageResult = retrieveCoverageResult(bazelTestTarget)
+      ?: error("Failed to retrieve coverage result for $bazelTestTarget")
 
-      coverageDataFileLines(coverageResult, bazelTestTarget)
-    }
+    return coverageDataFileLines(coverageResult, bazelTestTarget)
   }
 
   private fun retrieveCoverageResult(
@@ -93,8 +89,12 @@ class CoverageRunner(
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
 
+    val bazelTestTargetName = BazelTestTarget.newBuilder()
+      .setTestTargetName(bazelTestTarget)
+      .build()
+
     return CoverageReport.newBuilder()
-      .setBazelTestTarget(bazelTestTarget)
+      .addBazelTestTargets(bazelTestTargetName)
       .setFilePath(filePath)
       .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(coveredLines)
