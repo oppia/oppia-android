@@ -144,15 +144,6 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun runCoverageForTestTarget(bazelTestTarget: String): List<String>? {
     val instrumentation = bazelTestTarget.split(":")[0]
     val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
-    /*val coverageCommandOutputLines = executeBazelCommand(
-//    executeBazelCommand(
-      "test",
-      "--collect_code_coverage",
-      "--combined_report=lcov",
-      bazelTestTarget,
-      "--instrumentation_filter=$computeInstrumentation"
-    )*/
-
     val targetParts = bazelTestTarget.split(":")
     val targetPath = "${targetParts[0]}:*"
     val targetName = targetParts[1]
@@ -162,20 +153,9 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       "attr(name, $targetName, $targetPath)",
       "--output=build",
     )
-//    println("BUILD: $buildRule")
-//    println("BUILD has shard count: ${buildRule.any { "shard_count" in it }}")
-
-//    println("Printing for the bazel test target: $bazelTestTarget")
-//    println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").exists())
-//    println(File(rootDirectory,"/bazel-out/_coverage/_coverage_report.dat").readText())
-    /*return parseCoverageDataFilePath(coverageCommandOutputLines)?.let { path ->
-      File(path).readLines()
-    }*/
 
     val hasShardCount = buildRule.any { "shard_count" in it }
     if (hasShardCount) {
-//      println("In has Shard count")
-//      val coverageCommandOutputLines = executeBazelCommand(
     executeBazelCommand(
         "test",
         "--collect_code_coverage",
@@ -183,18 +163,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
         bazelTestTarget,
         "--instrumentation_filter=$computeInstrumentation"
       )
-      /*println(
-        "Coverage command output lines " +
-        "with bazel tests --collect coverage: $coverageCommandOutputLines"
-      )*/
-
       return File(rootDirectory, "/bazel-out/_coverage/_coverage_report.dat")
         .takeIf { it.exists() && it.isFile }
         ?.readLines()
     } else {
-//      println("In does not have Shard count")
       val coverageCommandOutputLines = executeBazelCommand(
-//    executeBazelCommand(
         "coverage",
         bazelTestTarget,
         "--instrumentation_filter=$computeInstrumentation"
