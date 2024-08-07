@@ -438,6 +438,8 @@ message UserAnswerState {
     ItemSelectionAnswerState item_selection = 2;
     // Raw answer entered by the user in text-based interactions.
     string text_input_answer = 3;
+    // A user's selected list of set of html content ids in drag and drop interaction.
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
   }
 }
 
