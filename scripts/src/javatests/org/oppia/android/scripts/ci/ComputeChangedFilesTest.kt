@@ -136,8 +136,6 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
     createEmptyWorkspace()
-    /*tempFolder.newFolder("app")
-    val file = tempFolder.newFile("app/First.kt")
 
     val changedFiles = listOf(file)*/
 
@@ -149,7 +147,6 @@ class ComputeChangedFilesTest {
     // Since the develop branch is checked out, all files should be returned.
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
-//    assertThat(reportedFiles).exists()
   }
 
   @Test
@@ -194,7 +191,6 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt")
   }
-
 
   @Test
   fun testUtility_featureBranch_fileChange_unstaged_returnsChangedFile() {
@@ -269,8 +265,6 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_developBranch_instrumentationModuleChanged_instrumentationFilesAreIgnored() {
     initializeEmptyGitRepository()
-//    createAndCommitFile("First", "Second", subPackage = "app")
-//    switchToFeatureBranch()
     createFiles("InstrumentationFile", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player")
     createFiles("Robolectric", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app")
     createFiles("Third", subPackage = "instrumentation")
@@ -311,7 +305,6 @@ class ComputeChangedFilesTest {
       "instrumentation/Third.kt"
     )
   }
-
 
   @Test
   fun testUtility_appFile_usesAppCacheName() {
@@ -672,7 +665,7 @@ class ComputeChangedFilesTest {
       pathToRoot = tempFolder.root.absolutePath,
       pathToOutputFile = outputLog.absolutePath,
       baseCommit = currentHeadHash,
-//      computeAllFilesSetting = false
+      computeAllFilesSetting = false
     )
 
     return parseOutputLogLines(outputLog.readLines())
@@ -708,10 +701,6 @@ class ComputeChangedFilesTest {
   }
 
   private fun createAndCommitFile(vararg fileNames: String, subPackage: String) {
-    /*tempFolder.newFolder(subPackage)
-    val changedFiles = fileNames.map { fileName ->
-      tempFolder.newFile("$subPackage/$fileName.kt")
-    }*/
     val createdFiles = createFiles(fileNames = fileNames, subPackage = subPackage)
 
     testGitRepository.stageFilesForCommit(createdFiles)
@@ -738,27 +727,10 @@ class ComputeChangedFilesTest {
     val oldFilePath = File(tempFolder.root, "$oldSubPackage/$oldFileName.kt")
     val newFilePath = File(tempFolder.root, "$newSubPackage/$newFileName.kt")
 
-//    oldFilePath.renameTo(newFilePath)
-
-    // Ensure the new directory exists
-//    newFilePath.parentFile?.mkdirs()
-
-    // Move the file
-    /*if (oldFilePath.exists()) {
-      oldFilePath.renameTo(newFilePath)
-    } else {
-
-    }*/
-
-//    oldFilePath.renameTo(newFilePath)
     oldFilePath.copyTo(newFilePath)
-//    newFilePath.exists()
     oldFilePath.delete()
 
     testGitRepository.stageFileForCommit(newFilePath)
-//    testGitRepository.stageFileForCommit(File(tempFolder.root, "$newSubPackage/$newFileName.kt")) // Ensure staging of removal
-//    testGitRepository.stageFileForCommit(oldFilePath) // Stage the old file path for removal
-//    testGitRepository.stageFileForCommit(File(tempFolder.root, "$oldSubPackage/$oldFileName.kt")) // Ensure staging of removal
 
     testGitRepository.commit(message = "Move file from $oldFilePath to $newFilePath")
   }

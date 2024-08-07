@@ -127,6 +127,8 @@ class ComputeAffectedTests(
     } else computeAffectedTargetsForNonDevelopBranch(gitClient, bazelClient, rootDirectory)
 
     val filteredTestTargets = filterTargets(affectedTestTargets)
+    println()
+    println("Affected test targets:")
     println(filteredTestTargets.joinToString(separator = "\n") { "- $it" })
 
     // Bucket the targets & then shuffle them so that shards are run in different orders each time

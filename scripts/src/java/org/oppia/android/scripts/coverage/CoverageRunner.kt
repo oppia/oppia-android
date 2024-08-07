@@ -74,7 +74,6 @@ class CoverageRunner(
     )
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
-    println("File specific Coverage data line for $bazelTestTarget: $fileSpecificCovDatLines")
 
     val coverageDataProps = fileSpecificCovDatLines.groupBy { line ->
       line.substringBefore(":")
