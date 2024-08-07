@@ -67,7 +67,6 @@ fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     ComputeChangedFiles(scriptBgDispatcher)
       .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
-//      .compute(pathToRoot, pathToOutputFile, baseCommit)
   }
 }
 
@@ -115,60 +114,73 @@ class ComputeChangedFiles(
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
     val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
-    val changedFilesAll: List<File>? = if (computeAllFilesSetting || currentBranch == "develop") {
-//      computeAllFiles()
-      val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
-      val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-        .testFileExemptionList
-        .filter { it.testFileNotRequired }
-        .map { it.exemptedFilePath }
+    val changedFiles = if (computeAllFilesSetting || currentBranch == "develop") {
+      computeAllFiles(rootDirectory, pathToRoot)
+    } else computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
 
-      val searchFiles = RepositoryFile.collectSearchFiles(
-        repoPath = pathToRoot,
-        expectedExtension = ".kt",
-        exemptionsList = testFileExemptionList
-      )
-
-      // A list of all the prod files present in the repo.
-      searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
-    } else {null}
-
-    println("Changed Files: $changedFilesAll")
-
-    val changedFiles = computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
-    println("\nChanged Files: $changedFiles")
     val ktFiles = changedFiles.filter { it.endsWith(".kt") }
-    println("\nKt file: $ktFiles")
-
     val filteredFiles = filterFiles(ktFiles)
-    println("\nFilter: Files: $filteredFiles")
 
-    // create and move this to bucketFiles()
+    val changedFileBuckets = bucketFiles(filteredFiles)
+    val encodedFileBucketEntries = changedFileBuckets
+      .associateBy { it.toCompressedBase64() }
+      .entries.shuffled()
+
+    File(pathToOutputFile).printWriter().use { writer ->
+      encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
+        writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
+      }
+    }
+  }
+
+  private fun computeAllFiles(
+    rootDirectory: File,
+    pathToRoot: String
+  ): List<String> {
+    val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
+    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
+      .testFileExemptionList
+      .filter { it.testFileNotRequired }
+      .map { it.exemptedFilePath }
+
+    val searchFiles = RepositoryFile.collectSearchFiles(
+      repoPath = pathToRoot,
+      expectedExtension = ".kt",
+      exemptionsList = testFileExemptionList
+    )
+
+    return searchFiles
+      .filter { it.name.endsWith(".kt") && !it.name.endsWith("Test.kt") }
+      .map { rootDirectory.toPath().relativize(it.toPath()).toString() }
+  }
+
+  private fun computeChangedFilesForNonDevelopBranch(
+    gitClient: GitClient,
+    rootDirectory: File
+  ): List<String> {
+    return gitClient.changedFiles
+      .map { File(rootDirectory, it) }
+      .filter { it.exists() }
+      .map { rootDirectory.toPath().relativize(it.toPath()).toString() }
+  }
+
+  private fun filterFiles(files: List<String>) : List<String> {
+    // Filtering out files that need to be ignored.
+    return files.filter { file ->
+      !file
+        .startsWith(
+          "instrumentation/src/javatests/org/oppia/android/instrumentation/player",
+          ignoreCase = true
+        )
+    }
+  }
+
+  private fun bucketFiles(filteredFiles: List<String>): List<ChangedFilesBucket> {
     val groupedBuckets = filteredFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
       .entries.groupBy(
         keySelector = { checkNotNull(it.key).groupingStrategy },
         valueTransform = { checkNotNull(it.key) to it.value }
       ).mapValues { (_, fileLists) -> fileLists.toMap() }
-    println("\nGrouped Buckets: $groupedBuckets")
-
-    /*val groupedBuckets2 = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
-      .entries.groupBy { it.key.groupingStrategy }
-      .mapValues { (_, buckets) -> buckets.associate { it.key to it.value } }
-    println("\n********************")
-    println("\nGrouped Buckets: $groupedBuckets2")*/
-
-    /*val partitionedBuckets: Map<String, Map<FileBucket, List<String>>> =
-      groupedBuckets.entries.flatMap { (strategy, buckets) ->
-        return@flatMap when (strategy) {
-          GroupingStrategy.BUCKET_SEPARATELY -> {
-            buckets.mapValues { (fileBucket, targets) -> mapOf(fileBucket to targets) }
-              .mapKeys { (fileBucket, _) -> fileBucket.cacheBucketName }
-              .entries.map { (cacheName, bucket) -> cacheName to bucket }
-          }
-          GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_FILE_BUCKET_NAME to buckets)
-        }
-      }.toMap()
-    println("\nPartitioned Buckets: $partitionedBuckets")*/
 
     val partitionedBuckets = groupedBuckets.flatMap { (strategy, buckets) ->
       when (strategy) {
@@ -178,7 +190,6 @@ class ComputeChangedFiles(
         GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_FILE_BUCKET_NAME to buckets)
       }
     }.toMap()
-    println("\nPartitioned Buckets: $partitionedBuckets")
 
     val shardedBuckets: Map<String, List<List<String>>> =
       partitionedBuckets.mapValues { (_, bucketMap) ->
@@ -197,51 +208,14 @@ class ComputeChangedFiles(
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
         allPartitionFiles.shuffled().chunked(maxFileCountPerShard)
       }
-    println("\nSharded Buckets: $shardedBuckets")
 
-    val computedBuckets = shardedBuckets.entries.flatMap { (bucketName, shardedFiles) ->
+    return shardedBuckets.entries.flatMap { (bucketName, shardedFiles) ->
       shardedFiles.map { files ->
         ChangedFilesBucket.newBuilder().apply {
           cacheBucketName = bucketName
           addAllChangedFiles(files)
         }.build()
       }
-    }
-    println("\nComputed Buckets: $computedBuckets")
-
-    val encodedFileBucketEntries = computedBuckets
-      .associateBy { it.toCompressedBase64() }
-      .entries.shuffled()
-    println("\nEncoded File Bucket Entries: $encodedFileBucketEntries")
-
-    File(pathToOutputFile).printWriter().use { writer ->
-      encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
-        writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
-      }
-    }
-  }
-
-  private fun computeChangedFilesForNonDevelopBranch(
-    gitClient: GitClient,
-    rootDirectory: File
-  ): List<String> {
-    // Update later
-    val changedFiles = gitClient.changedFiles.filter { filepath ->
-      File(rootDirectory, filepath).exists()
-    }.toSet()
-    println("Changed files (per Git, ${changedFiles.size} total): $changedFiles")
-
-    return changedFiles.toList()
-  }
-
-  private fun filterFiles(files: List<String>) : List<String> {
-    // Filtering out files that need to be ignored.
-    return files.filter { file ->
-      !file
-        .startsWith(
-          "instrumentation/src/javatests/org/oppia/android/instrumentation/player",
-          ignoreCase = true
-        )
     }
   }
 

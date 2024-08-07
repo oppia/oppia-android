@@ -12,19 +12,19 @@ on:
       - develop
 
 jobs:
-#  check_unit_tests_completed:
-#    name: Check unit test completed
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Wait for unit tests to checks
-#        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
-#        with:
-#          workflow: unit_tests.yml
-#          sha: auto
+  check_unit_tests_completed:
+    name: Check unit test completed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for unit tests to checks
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        with:
+          workflow: unit_tests.yml
+          sha: auto
 
   compute_changed_files:
     name: Compute changed files
-#    needs: check_unit_tests_completed
+    needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
