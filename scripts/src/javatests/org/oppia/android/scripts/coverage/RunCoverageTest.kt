@@ -30,9 +30,6 @@ class RunCoverageTest {
   private lateinit var markdownOutputPath: String
   private lateinit var htmlOutputPath: String
 
-  private lateinit var addSourceContent: String
-  private lateinit var addTestContent: String
-
   private lateinit var testExemptions: String
 
   @Before
@@ -43,40 +40,6 @@ class RunCoverageTest {
 
     testExemptions = createTestFileExemptionTextProto()
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-
-    addSourceContent =
-      """
-      package com.example
-      
-      class AddNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    addTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class AddNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(AddNums.sumNumbers(0, 1), 1)
-          assertEquals(AddNums.sumNumbers(3, 4), 7)         
-          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
-        }
-      }
-      """.trimIndent()
   }
 
   @After
@@ -111,11 +74,6 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val failureMessage =
       "No appropriate test file found for $sampleFile"
 
@@ -132,7 +90,7 @@ class RunCoverageTest {
       append("| [$sampleFile]($oppiaDevelopGitHubLink/$sampleFile) | $failureMessage |")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedMarkdown)
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
@@ -153,8 +111,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -180,8 +138,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -207,8 +165,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -241,11 +199,6 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
@@ -261,7 +214,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -279,8 +232,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -293,14 +246,9 @@ class RunCoverageTest {
       nonKotlinFilePath3
     )
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${kotlinFilePath.removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(kotlinFilePath)
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(kotlinFilePath)).isEqualTo(expectedResult)
   }
 
   @Test
@@ -312,8 +260,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -323,14 +271,9 @@ class RunCoverageTest {
       testFilePath,
     )
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${sourceFilePath.removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(sourceFilePath)
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(sourceFilePath)).isEqualTo(expectedResult)
   }
 
   @Test
@@ -343,8 +286,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/example",
       testSubpackage = "coverage/example"
     )
@@ -363,11 +306,6 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val failureMessage = "Coverage retrieval failed for the test target: " +
       "//coverage/example:AddNumsTest"
 
@@ -384,7 +322,7 @@ class RunCoverageTest {
       append("| //coverage/example:AddNumsTest | $failureMessage |")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedMarkdown)
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
@@ -397,8 +335,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -454,11 +392,6 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val failureMessage = "Source File: SubNums.kt not found in the coverage data"
 
     val expectedMarkdown = buildString {
@@ -474,7 +407,7 @@ class RunCoverageTest {
       append("| //coverage/test/java/com/example:SubNumsTest | $failureMessage |")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedMarkdown)
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
@@ -485,8 +418,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -496,14 +429,9 @@ class RunCoverageTest {
       filePath,
     )
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(filePath)
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePath)).isEqualTo(expectedResult)
   }
 
   @Test
@@ -514,8 +442,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -529,14 +457,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -585,8 +508,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -608,11 +531,6 @@ class RunCoverageTest {
       scriptBgDispatcher,
       testExemptions
     ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -639,7 +557,7 @@ class RunCoverageTest {
       append("</details>")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -687,8 +605,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -711,12 +629,7 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
-    assertThat(outputReportText).contains("Overall Coverage: **62.50%**")
+    assertThat(readFinalMdReport()).contains("Overall Coverage: **62.50%**")
   }
 
   @Test
@@ -726,44 +639,12 @@ class RunCoverageTest {
       "coverage/main/java/com/example/LowTestNums.kt"
     )
 
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -771,8 +652,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "LowTestNums",
       testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -802,8 +683,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -817,14 +698,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -834,44 +710,12 @@ class RunCoverageTest {
       "coverage/main/java/com/example/LowTestNums.kt"
     )
 
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "LowTestNums",
       testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -890,11 +734,6 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
@@ -912,7 +751,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -980,11 +819,6 @@ class RunCoverageTest {
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
@@ -1003,7 +837,7 @@ class RunCoverageTest {
       append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1064,11 +898,6 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
@@ -1088,7 +917,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1099,45 +928,13 @@ class RunCoverageTest {
       "coverage/main/java/com/example/LowTestNums.kt"
     )
 
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.initEmptyWorkspace()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1145,8 +942,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "LowTestNums",
       testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1159,11 +956,6 @@ class RunCoverageTest {
       scriptBgDispatcher,
       testExemptions
     ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1193,7 +985,7 @@ class RunCoverageTest {
       append("</details>")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1208,8 +1000,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1222,11 +1014,6 @@ class RunCoverageTest {
       scriptBgDispatcher,
       testExemptions
     ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1253,7 +1040,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1264,45 +1051,13 @@ class RunCoverageTest {
       "TestExempted.kt"
     )
 
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.initEmptyWorkspace()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "LowTestNums",
       testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1320,11 +1075,6 @@ class RunCoverageTest {
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1348,7 +1098,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1360,45 +1110,13 @@ class RunCoverageTest {
       "TestExempted.kt"
     )
 
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.initEmptyWorkspace()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1406,8 +1124,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "LowTestNums",
       testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1425,11 +1143,6 @@ class RunCoverageTest {
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1464,7 +1177,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1479,45 +1192,13 @@ class RunCoverageTest {
 
     tempFolder.newFile("file.kt")
 
-    val lowTestSourceContent =
-      """
-      package com.example
-      
-      class LowTestNums {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    val lowTestTestContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class LowTestNumsTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(1, 1)
-        }
-      }
-      """.trimIndent()
-
     testBazelWorkspace.initEmptyWorkspace()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1525,8 +1206,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "LowTestNums",
       testFilename = "LowTestNumsTest",
-      sourceContent = lowTestSourceContent,
-      testContent = lowTestTestContent,
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -1544,11 +1225,6 @@ class RunCoverageTest {
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val failureMessage =
       "No appropriate test file found for file.kt"
@@ -1590,7 +1266,7 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1601,8 +1277,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
     )
@@ -1616,14 +1292,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1634,8 +1305,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
@@ -1649,14 +1320,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1685,7 +1351,7 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsLocalTest",
-      sourceContent = addSourceContent,
+      sourceContent = getAddNumsSourceContent(),
       testContent = addTestContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
@@ -1700,14 +1366,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1718,8 +1379,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/sharedTest/java/com/example"
     )
@@ -1733,14 +1394,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
-
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1785,7 +1441,7 @@ class RunCoverageTest {
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
-      sourceContent = addSourceContent,
+      sourceContent = getAddNumsSourceContent(),
       testContentShared = addTestContentShared,
       testContentLocal = addTestContentLocal,
       subpackage = "app"
@@ -1799,11 +1455,6 @@ class RunCoverageTest {
       scriptBgDispatcher,
       testExemptions
     ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1825,7 +1476,7 @@ class RunCoverageTest {
       append("</details>")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1870,7 +1521,7 @@ class RunCoverageTest {
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
-      sourceContent = addSourceContent,
+      sourceContent = getAddNumsSourceContent(),
       testContentShared = testContent1,
       testContentLocal = testContent2,
       subpackage = "app"
@@ -1886,11 +1537,6 @@ class RunCoverageTest {
       scriptBgDispatcher,
       testExemptions
     ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/CoverageReport.md"
-    ).readText()
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1912,7 +1558,7 @@ class RunCoverageTest {
       append("</details>")
     }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1956,7 +1602,7 @@ class RunCoverageTest {
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
-      sourceContent = addSourceContent,
+      sourceContent = getAddNumsSourceContent(),
       testContentShared = testContent1,
       testContentLocal = testContent2,
       subpackage = "app"
@@ -2033,8 +1679,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -2057,17 +1703,11 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText1 = File("${tempFolder.root}" +
-      "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
     val expectedResult1 = getExpectedHtmlText(filePathList.get(0))
-    assertThat(outputReportText1).isEqualTo(expectedResult1)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult1)
 
-    val outputReportText2 = File("${tempFolder.root}" +
-      "$coverageDir/${filePathList.get(1).removeSuffix(".kt")}/coverage.html"
-    ).readText()
     val expectedResult2 = getExpectedHtmlText(filePathList.get(1))
-    assertThat(outputReportText2).isEqualTo(expectedResult2)
+    assertThat(readHtmlReport(filePathList.get(1))).isEqualTo(expectedResult2)
   }
 
   @Test
@@ -2078,8 +1718,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -2093,14 +1733,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2111,8 +1746,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
     )
@@ -2126,14 +1761,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2144,8 +1774,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
@@ -2159,14 +1789,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(filePathList.get(0)).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2195,7 +1820,7 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsLocalTest",
-      sourceContent = addSourceContent,
+      sourceContent = getAddNumsSourceContent(),
       testContent = addTestContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
@@ -2210,14 +1835,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2228,8 +1848,8 @@ class RunCoverageTest {
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
       testFilename = "AddNumsTest",
-      sourceContent = addSourceContent,
-      testContent = addTestContent,
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/sharedTest/java/com/example"
     )
@@ -2243,14 +1863,9 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
-
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2294,7 +1909,7 @@ class RunCoverageTest {
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
       filename = "AddNums",
-      sourceContent = addSourceContent,
+      sourceContent = getAddNumsSourceContent(),
       testContentShared = addTestContentShared,
       testContentLocal = addTestContentLocal,
       subpackage = "app"
@@ -2308,11 +1923,6 @@ class RunCoverageTest {
       scriptBgDispatcher,
       testExemptions
     ).execute()
-
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePathList.get(0).removeSuffix(".kt")}/coverage.html"
-    ).readText()
 
     val expectedResult =
       """
@@ -2481,7 +2091,7 @@ class RunCoverageTest {
     </html>
       """.trimIndent()
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2759,6 +2369,89 @@ class RunCoverageTest {
       filePath.endsWith("SubNums.kt") -> return "a - b"
       else -> return ""
     }
+  }
+
+  private fun readFinalMdReport(): String {
+    return File("${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+  }
+
+  private fun readHtmlReport(file: String): String {
+    return File(
+      "${tempFolder.root}" +
+        "$coverageDir/${file.removeSuffix(".kt")}/coverage.html"
+    ).readText()
+  }
+
+  private fun getAddNumsSourceContent(): String {
+    return """
+      package com.example
+      
+      class AddNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+  }
+
+  private fun getAddNumsTestContent(): String {
+    return """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+  }
+
+  private fun getLowTestSourceContent(): String {
+    return """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+  }
+
+  private fun getLowTestTestContent(): String {
+    return """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
