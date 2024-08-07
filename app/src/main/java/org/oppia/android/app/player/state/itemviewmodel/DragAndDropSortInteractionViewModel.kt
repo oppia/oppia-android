@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
@@ -282,9 +281,9 @@ class DragAndDropSortInteractionViewModel private constructor(
   }
 
   override fun getUserAnswerState(): UserAnswerState {
-    if (_choiceItems==_originalChoiceItems) {
+    if (_choiceItems == _originalChoiceItems) {
       return UserAnswerState.newBuilder().apply {
-        this.answerErrorCategory= answerErrorCetegory
+        this.answerErrorCategory = answerErrorCetegory
       }.build()
     }
     return UserAnswerState.newBuilder().apply {
@@ -330,19 +329,20 @@ class DragAndDropSortInteractionViewModel private constructor(
     resourceHandler: AppLanguageResourceHandler,
     userAnswerState: UserAnswerState
   ): MutableList<DragDropInteractionContentViewModel> {
-    return if (userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount==0 ) {
+    return if (userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount == 0) {
       _originalChoiceItems.toMutableList()
     } else {
-      userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList.mapIndexed { index, contentId ->
-        DragDropInteractionContentViewModel(
-          contentIdHtmlMap = contentIdHtmlMap,
-          htmlContent = contentId,
-          itemIndex = index,
-          listSize = choiceStrings.size,
-          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-          resourceHandler = resourceHandler
-        )
-      }.toMutableList()
+      userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+        .mapIndexed { index, contentId ->
+          DragDropInteractionContentViewModel(
+            contentIdHtmlMap = contentIdHtmlMap,
+            htmlContent = contentId,
+            itemIndex = index,
+            listSize = choiceStrings.size,
+            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+            resourceHandler = resourceHandler
+          )
+        }.toMutableList()
     }
   }
 }
