@@ -185,6 +185,25 @@ class CoverageRunnerTest {
       "//coverage/test/java/com/example:SubNumsTest"
     )
 
+    assertThat(exception).hasMessageThat().contains("Coverage data not found")
+  }
+
+  @Test
+  fun testRetrieveCoverageDataForTestTarget_validSampleTestTarget_returnsCoverageData() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+
     val expectedResult = CoverageReport.newBuilder()
       .setFailure(
         CoverageFailure.newBuilder()

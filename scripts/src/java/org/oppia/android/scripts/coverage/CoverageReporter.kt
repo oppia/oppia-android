@@ -25,7 +25,6 @@ class CoverageReporter(
   private val testFileExemptionList: Map<String, TestFileExemptions.TestFileExemption>,
   private val mdReportOutputPath: String? = null
 ) {
-
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
    * It supports Markdown and HTML formats.
