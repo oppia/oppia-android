@@ -124,7 +124,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     profilesListLandscape?.onFlingListener = null
 
     profilesListLandscape?.viewTreeObserver?.addOnGlobalLayoutListener {
-      if (profilesListLandscape.shouldShowScrollArrows()) {
+      val lv = profilesListLandscape as RecyclerView
+      if (lv.shouldShowScrollArrows()) {
         profileScrollLeft?.visibility = View.VISIBLE
         profileScrollRight?.visibility = View.VISIBLE
       } else {

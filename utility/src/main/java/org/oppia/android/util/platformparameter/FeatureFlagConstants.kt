@@ -168,7 +168,7 @@ annotation class EnableOnboardingFlowV2
 const val ENABLE_ONBOARDING_FLOW_V2 = "android_enable_onboarding_flow_v2"
 
 /** Default value of the feature flag corresponding to [EnableOnboardingFlowV2]. */
-const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = false
+const val ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE = true
 
 /** Qualifier for the feature flag that toggles the new multiple classrooms. */
 @Qualifier

@@ -234,6 +234,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/TextInputViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt",
+    "src/main/java/org/oppia/android/app/profile/ProfileItemViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/ResetPinViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/RecentlyPlayedStorySummaryViewModel.kt",

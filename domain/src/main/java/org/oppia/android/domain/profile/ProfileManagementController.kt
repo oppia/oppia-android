@@ -1172,7 +1172,7 @@ class ProfileManagementController @Inject constructor(
     // TODO(#3616): Migrate to the proper SDK 29+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
-    val fileName = avatarImagePath.path?.substringAfterLast("/")
+    val fileName = avatarImagePath.path?.substringAfterLast("/") ?: ""
     val imageFile = File(profileDir, fileName)
     try {
       FileOutputStream(imageFile).use { fos ->
