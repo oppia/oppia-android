@@ -25,12 +25,6 @@ class CoverageReporter(
   private val testFileExemptionList: Map<String, TestFileExemptions.TestFileExemption>,
   private val mdReportOutputPath: String? = null
 ) {
-  /*private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
-  private val testFileExemptionList by lazy {
-    loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .testFileExemptionList
-      .associateBy { it.exemptedFilePath }
-  }*/
 
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
@@ -40,13 +34,11 @@ class CoverageReporter(
    *     and the second value is the generated report text
    */
   fun generateRichTextReport(): CoverageCheck {
-//    println("TEst2: $testFileExemptionList2")
-//    println("TEst: $testFileExemptionList")
-
     val coverageStatus = checkCoverageStatus()
     when (reportFormat) {
       ReportFormat.MARKDOWN -> generateMarkdownReport(coverageStatus)
       ReportFormat.HTML -> generateHtmlReport()
+      else -> error("Invalid report format to generate report.")
     }
     logCoverageReport()
     return coverageStatus
@@ -350,7 +342,6 @@ class CoverageReporter(
         append(tableHeader)
         append(failureBelowThresholdTableRows)
         if (exemptedFailureTableRows.isNotEmpty()) {
-//          append("\n|Exempted :small_red_triangle_down:|\n")
           append(exemptedFailureTableRows)
           append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
         }
@@ -359,7 +350,6 @@ class CoverageReporter(
         append("### Failing coverage")
         append("\n\n")
         append(tableHeader)
-//        append("\n|Exempted :small_red_triangle_down:|\n")
         append(exemptedFailureTableRows)
         append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
       }
@@ -377,13 +367,11 @@ class CoverageReporter(
           append(tableHeader)
           append(successTableRows)
           if (exemptedSuccessTableRows.isNotEmpty()) {
-//            append("\n|Exempted :small_red_triangle_down:|\n")
             append(exemptedSuccessTableRows)
             append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
           }
         } else if (exemptedSuccessTableRows.isNotEmpty()) {
           append(tableHeader)
-//          append("\n|Exempted :small_red_triangle_down:|\n")
           append(exemptedSuccessTableRows)
           append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
         }
@@ -402,57 +390,24 @@ class CoverageReporter(
 
     val finalReportText = "## Coverage Report\n\n" +
       "### Results\n" +
-      "|Number of files assessed:| ${coverageReportContainer.coverageReportList.size}|\n" +
-      "|---|---|\n"+
-      "|Overall Coverage: | **${"%.2f".format(calculateOverallCoveragePercentage())}%**|\n" +
-      "|Coverage Analysis: | $status|\n" +
+      "Number of files assessed: ${coverageReportContainer.coverageReportList.size}\n" +
+      "Overall Coverage: **${"%.2f".format(calculateOverallCoveragePercentage())}%**\n" +
+      "Coverage Analysis: $status\n" +
       "##" +
       failureMarkdownTable +
       failureMarkdownEntries +
       successMarkdownEntries +
       testFileExemptedSection
 
-    val finalReportOutputPath = mdReportOutputPath?.let {
-      it
-    } ?: "$repoRoot/coverage_reports/CoverageReport.md"
+    val finalReportOutputPath = mdReportOutputPath
+      ?.let { it }
+      ?: "$repoRoot/coverage_reports/CoverageReport.md"
 
     File(finalReportOutputPath).apply {
       parentFile?.mkdirs()
       writeText(finalReportText)
     }
   }
-
-  // This condition fails with exempted percentage being higher than min threshold
-  // so need to first check with exempted list rather min threshold
-/*  private fun checkCoverageStatus(): CoverageCheck {
-    coverageReportContainer.coverageReportList.forEach { report ->
-      if (report.hasFailure()) { return CoverageCheck.FAIL }
-
-      if (report.hasDetails()) {
-        val details = report.details
-        val filePath = details.filePath
-        val totalLinesFound = details.linesFound
-        val totalLinesHit = details.linesHit
-
-        val coveragePercentage = calculateCoveragePercentage(
-          totalLinesHit, totalLinesFound
-        )
-
-        val exemption = testFileExemptionList[filePath]
-        if (coveragePercentage < MIN_THRESHOLD) {
-          if (exemption != null) {
-            val ovveriddenMinCoverage = exemption.overrideMinCoveragePercentRequired
-            if (coveragePercentage < ovveriddenMinCoverage) {
-              return CoverageCheck.FAIL
-            }
-          } else {
-            return CoverageCheck.FAIL
-          }
-        }
-      }
-    }
-    return CoverageCheck.PASS
-  }*/
 
   private fun checkCoverageStatus(): CoverageCheck {
     coverageReportContainer.coverageReportList.forEach { report ->
@@ -473,13 +428,11 @@ class CoverageReporter(
         val exemption = testFileExemptionList[filePath]
 
         if (exemption != null) {
-          // File is in the exemption list; check against the overridden minimum coverage percentage
           val overriddenMinCoverage = exemption.overrideMinCoveragePercentRequired
           if (coveragePercentage < overriddenMinCoverage) {
             return CoverageCheck.FAIL
           }
         } else {
-          // File is not in the exemption list; check against the standard minimum threshold
           if (coveragePercentage < MIN_THRESHOLD) {
             return CoverageCheck.FAIL
           }
@@ -605,7 +558,9 @@ enum class ReportFormat {
   /** Indicates that the report should be formatted in .md format. */
   MARKDOWN,
   /** Indicates that the report should be formatted in .html format. */
-  HTML
+  HTML,
+  /** Indicates to store the collected coverage data as protos. */
+  PROTO
 }
 
 private fun calculateCoveragePercentage(linesHit: Int, linesFound: Int): Float {
@@ -622,7 +577,7 @@ private fun getReportOutputPath(
   val fileWithoutExtension = filePath.substringBeforeLast(".")
   val defaultFilename = when (reportFormat) {
     ReportFormat.HTML -> "coverage.html"
-    ReportFormat.MARKDOWN -> "coverage.md"
+    else -> error("Invalid report format to get report output path.")
   }
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
@@ -633,11 +588,3 @@ private fun getFilenameAsLink(filePath: String): String {
   val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
   return filenameAsLink
 }
-
-/*private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
-  }
-}*/

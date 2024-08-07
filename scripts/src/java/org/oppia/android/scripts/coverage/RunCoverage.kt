@@ -57,7 +57,7 @@ const val BOLD = "\u001B[1m"
  * Example with output path to save the collected coverage proto:
  *    bazel run //scripts:run_coverage -- $(pwd)
  *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
- *    --protoOutputPath=/tmp/coverage_report.proto64
+ *    --protoOutputPath=/tmp/coverage_report.pb
  */
 fun main(vararg args: String) {
   val repoRoot = args[0]
@@ -84,8 +84,10 @@ fun main(vararg args: String) {
   val reportFormat = when (format) {
     "HTML" -> ReportFormat.HTML
     "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
+    "PROTO" -> ReportFormat.PROTO
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
+  println("format: $reportFormat")
 
   val protoOutputPath = args.find { it.startsWith("--protoOutputPath") }
     ?.substringAfter("=")
@@ -160,10 +162,19 @@ class RunCoverage(
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
 
-    protoOutputPath?.let { path ->
-      File(path).outputStream().use { stream ->
-        coverageReportContainer.writeTo(stream)
-      }
+    if (reportFormat == ReportFormat.PROTO) {
+      protoOutputPath?.let { path ->
+
+        val file = File(path)
+        file.parentFile?.mkdirs()
+        file.outputStream().use { stream ->
+          coverageReportContainer.writeTo(stream)
+        }
+
+      } ?: throw IllegalArgumentException("No output path provided to save the proto")
+
+      // Exit without generating text reports if the format is PROTO
+      return
     }
 
     val reporter = CoverageReporter(
@@ -221,8 +232,9 @@ class RunCoverage(
     }
   }
 
-  private fun combineCoverageReports(coverageResultList: List<CoverageReport>):
-    CoverageReportContainer {
+  private fun combineCoverageReports(
+    coverageResultList: List<CoverageReport>
+  ): CoverageReportContainer {
       val containerBuilder = CoverageReportContainer.newBuilder()
       coverageResultList.forEach { report ->
         containerBuilder.addCoverageReport(report)
@@ -329,19 +341,6 @@ private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
     .map { File(repoRootFile, it) }
     .filter(File::exists)
     .map { it.relativeTo(repoRootFile).path }
-}
-
-private fun getReportOutputPath(
-  repoRoot: String,
-  filePath: String,
-  reportFormat: ReportFormat
-): String {
-  val fileWithoutExtension = filePath.substringBeforeLast(".")
-  val defaultFilename = when (reportFormat) {
-    ReportFormat.HTML -> "coverage.html"
-    ReportFormat.MARKDOWN -> "coverage.md"
-  }
-  return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
