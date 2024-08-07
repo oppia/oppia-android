@@ -83,7 +83,9 @@ fun PromotedStoryList(
           color = colorResource(id = R.color.component_color_home_activity_view_all_text_color),
           fontFamily = FontFamily.SansSerif,
           fontWeight = FontWeight.Medium,
-          fontSize = dimensionResource(id = R.dimen.promoted_story_list_view_all_text_size).value.sp,
+          fontSize = dimensionResource(
+            id = R.dimen.promoted_story_list_view_all_text_size
+          ).value.sp,
           modifier = Modifier
             .padding(
               start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start)
