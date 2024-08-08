@@ -1463,7 +1463,6 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
