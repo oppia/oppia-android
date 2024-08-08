@@ -71,15 +71,33 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_invalidArguments_printsUsageStringAndExits() {
-    for (argCount in 0..3) {
-      val args = Array(argCount) { "arg${it + 1}" }
-      val exception = assertThrows<SecurityException> { main(arrayOf(*args)) }
+  fun testUtility_oneArgument_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { main(arrayOf("first")) }
 
-      // Bazel catches the System.exit() call and throws a SecurityException.
-      assertThat(exception).hasMessageThat().contains("System.exit()")
-      assertThat(pendingOutputStream.toString()).contains("Usage:")
-    }
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_twoArguments_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { main(arrayOf("first", "second")) }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_threeArguments_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { main(arrayOf("first", "second", "three")) }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
   }
 
   @Test

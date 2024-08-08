@@ -65,15 +65,43 @@ class RetrieveChangedFilesTest {
   }
 
   @Test
-  fun testUtility_invalidArguments_printsUsageStringAndExits() {
-    for (argCount in 0..4) {
-      val args = Array(argCount) { "arg${it + 1}" }
-      val exception = assertThrows<SecurityException> { runScript(*args) }
+  fun testUtility_oneArgument_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { runScript("arg1") }
 
-      // Bazel catches the System.exit() call and throws a SecurityException.
-      assertThat(exception).hasMessageThat().contains("System.exit()")
-      assertThat(pendingOutputStream.toString()).contains("Usage:")
-    }
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_twoArguments_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2") }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_threeArguments_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2", "arg3") }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_fourArguments_printsUsageStringAndExits() {
+    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2", "arg3", "arg4") }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
   }
 
   @Test
