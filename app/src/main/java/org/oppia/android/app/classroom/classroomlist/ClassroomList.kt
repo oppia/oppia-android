@@ -1,6 +1,6 @@
 package org.oppia.android.app.classroom.classroomlist
 
-import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,60 +23,45 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 
-/** Test tag for the header of the classroom section. */
-const val CLASSROOM_HEADER_TEST_TAG = "TEST_TAG.classroom_header"
-
 /** Test tag for the classroom list. */
 const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"
+
+/** Test tag for the classroom card icon. */
+const val CLASSROOM_CARD_ICON_TEST_TAG = "TEST_TAG.classroom_card_icon"
 
 /** Displays a list of classroom summaries with a header. */
 @Composable
 fun ClassroomList(
   classroomSummaryList: List<ClassroomSummaryViewModel>,
-  selectedClassroomId: String
+  selectedClassroomId: String,
+  isSticky: Boolean,
 ) {
-  Column(
+  LazyRow(
     modifier = Modifier
+      .testTag(CLASSROOM_LIST_TEST_TAG)
       .background(
         color = colorResource(id = R.color.component_color_shared_screen_primary_background_color)
       )
       .fillMaxWidth(),
+    contentPadding = PaddingValues(
+      start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+      top = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+      end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+    ),
   ) {
-    Text(
-      text = stringResource(id = R.string.classrooms_list_activity_section_header),
-      color = colorResource(id = R.color.component_color_shared_primary_text_color),
-      fontFamily = FontFamily.SansSerif,
-      fontWeight = FontWeight.Medium,
-      fontSize = dimensionResource(id = R.dimen.classrooms_list_header_text_size).value.sp,
-      modifier = Modifier
-        .testTag(CLASSROOM_HEADER_TEST_TAG)
-        .padding(
-          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
-          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-          bottom = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
-        ),
-    )
-    LazyRow(
-      modifier = Modifier.testTag(CLASSROOM_LIST_TEST_TAG),
-      contentPadding = PaddingValues(
-        start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-        end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-      ),
-    ) {
-      items(classroomSummaryList) {
-        ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId)
-      }
+    items(classroomSummaryList) {
+      ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId, isSticky)
     }
   }
 }
@@ -86,37 +70,41 @@ fun ClassroomList(
 @Composable
 fun ClassroomCard(
   classroomSummaryViewModel: ClassroomSummaryViewModel,
-  selectedClassroomId: String
+  selectedClassroomId: String,
+  isSticky: Boolean,
 ) {
-  val screenWidth = LocalConfiguration.current.screenWidthDp
-  val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-  val isTablet = if (isPortrait) screenWidth > 600 else screenWidth > 840
   val isCardSelected = classroomSummaryViewModel.classroomSummary.classroomId == selectedClassroomId
   Card(
     modifier = Modifier
-      .height(dimensionResource(id = R.dimen.classrooms_card_height))
-      .width(dimensionResource(id = R.dimen.classrooms_card_width))
+      .width(getClassroomCardWidth())
       .padding(
-        start = dimensionResource(R.dimen.promoted_story_card_layout_margin_start),
-        end = dimensionResource(R.dimen.promoted_story_card_layout_margin_end),
+        start = dimensionResource(R.dimen.classrooms_card_margin_start),
+        end = dimensionResource(R.dimen.classrooms_card_margin_end),
       )
       .clickable {
         classroomSummaryViewModel.handleClassroomClick()
       },
     backgroundColor = if (isCardSelected) {
-      colorResource(id = R.color.component_color_classroom_card_color)
+      colorResource(id = R.color.component_color_classroom_card_selected_color)
     } else {
-      colorResource(id = R.color.component_color_shared_screen_primary_background_color)
+      colorResource(id = R.color.component_color_classroom_card_color)
     },
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = dimensionResource(id = R.dimen.classrooms_card_elevation),
   ) {
     Column(
-      modifier = Modifier.padding(all = dimensionResource(id = R.dimen.classrooms_card_padding)),
+      modifier = Modifier.padding(
+        horizontal = dimensionResource(id = R.dimen.classrooms_card_padding_horizontal),
+        vertical = if (isSticky) {
+          dimensionResource(id = R.dimen.classrooms_card_collapsed_padding_vertical)
+        } else {
+          dimensionResource(id = R.dimen.classrooms_card_padding_vertical)
+        },
+      ),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      if (isPortrait || isTablet) { // Hides the classroom icon for landscape phone layouts.
+      AnimatedVisibility(visible = !isSticky) {
         Image(
           painter = painterResource(
             id = classroomSummaryViewModel
@@ -126,6 +114,7 @@ fun ClassroomCard(
           ),
           contentDescription = classroomSummaryViewModel.title,
           modifier = Modifier
+            .testTag("${CLASSROOM_CARD_ICON_TEST_TAG}_${classroomSummaryViewModel.title}")
             .padding(bottom = dimensionResource(id = R.dimen.classrooms_card_icon_padding_bottom))
             .size(size = dimensionResource(id = R.dimen.classrooms_card_icon_size)),
         )
@@ -139,4 +128,18 @@ fun ClassroomCard(
       )
     }
   }
+}
+
+@Composable
+private fun getClassroomCardWidth(): Dp {
+  val configuration = LocalConfiguration.current
+  val screenWidth = configuration.screenWidthDp.dp
+  val horizontalPadding = dimensionResource(id = R.dimen.classrooms_text_margin_start)
+  val topicCardHorizontalMargin = 8.dp
+  val topicListSpanCount = integerResource(id = R.integer.home_span_count)
+
+  val totalTopicCardWidth = screenWidth -
+    (horizontalPadding.times(2) + (topicCardHorizontalMargin * (topicListSpanCount - 1) * 2))
+
+  return totalTopicCardWidth.div(topicListSpanCount)
 }

@@ -132,7 +132,7 @@
   <color name="color_palette_revision_card_toolbar_color">@color/color_def_forest_green</color>
   <color name="color_palette_hints_and_solutions_fragment_toolbar_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_turquoise</color>
-  <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue</color>
+  <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue_1</color>
   <color name="color_palette_underline_view_color">@color/color_def_bright_green</color>
   <color name="color_palette_menu_text_color">@color/color_def_white</color>
   <color name="color_palette_secondary_container_background_color">@color/color_def_oppia_metallic_blue</color>
@@ -242,7 +242,12 @@
   <color name="color_palette_text_error_color">@color/color_def_oppia_reddish_brown</color>
   <color name="color_palette_edittext_stroke_color">@color/color_def_accessible_light_grey_2</color>
   <!-- CLASSROOM -->
-  <color name="color_palette_classroom_card_color">@color/color_def_greenish_black</color>
+  <color name="color_palette_classroom_shared_header_text_color">@color/color_def_white_1</color>
+  <color name="color_palette_classroom_card_color">@color/color_def_greenish_black_1</color>
+  <color name="color_palette_classroom_card_selected_color">@color/color_def_greenish_black_2</color>
+  <color name="color_palette_classroom_card_icon_stroke_color">@color/color_def_pale_green_1</color>
   <color name="color_palette_classroom_shared_text_color">@color/color_def_white</color>
-  <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_black</color>
+  <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_black_3</color>
+  <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_2</color>
+  <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_greenish_black_2</color>
 </resources>
