@@ -1153,7 +1153,7 @@ class RunCoverageTest {
       append("### Results\n")
       append("Number of files assessed: 3\n")
       append("Overall Coverage: **37.50%**\n")
-      append("Coverage Analysis: **FAIL** :x:\n\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
       append("##\n\n")
       append("### Failing coverage\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -1161,7 +1161,7 @@ class RunCoverageTest {
       append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |\n\n"
+          ":x: | $MIN_THRESHOLD% |\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
