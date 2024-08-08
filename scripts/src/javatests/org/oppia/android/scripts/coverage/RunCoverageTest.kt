@@ -75,7 +75,7 @@ class RunCoverageTest {
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val failureMessage =
-      "No appropriate test file found for $sampleFile"
+      "No appropriate test file found for $sampleFile."
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")
@@ -1233,7 +1233,7 @@ class RunCoverageTest {
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val failureMessage =
-      "No appropriate test file found for file.kt"
+      "No appropriate test file found for file.kt."
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")

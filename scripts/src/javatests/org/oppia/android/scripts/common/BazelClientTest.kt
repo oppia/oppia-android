@@ -432,29 +432,30 @@ class BazelClientTest {
     val result = bazelClient.runCoverageForTestTarget(
       "//coverage/test/java/com/example:AddNumsTest"
     )
-    val expectedResult = listOf(
-      "SF:coverage/main/java/com/example/AddNums.kt",
-      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FN:3,com/example/AddNums::<init> ()V",
-      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FNDA:0,com/example/AddNums::<init> ()V",
-      "FNF:2",
-      "FNH:1",
-      "BRDA:7,0,0,1",
-      "BRDA:7,0,1,1",
-      "BRDA:7,0,2,1",
-      "BRDA:7,0,3,1",
-      "BRF:4",
-      "BRH:4",
-      "DA:3,0",
-      "DA:7,1",
-      "DA:8,1",
-      "DA:10,1",
-      "LH:3",
-      "LF:4",
-      "end_of_record"
+    val expectedResult =listOf(
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:4",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,1",
+        "LH:3",
+        "LF:4",
+        "end_of_record"
+      )
     )
-
     assertThat(result).isEqualTo(expectedResult)
   }
 

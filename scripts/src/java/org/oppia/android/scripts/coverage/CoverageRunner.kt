@@ -36,14 +36,14 @@ class CoverageRunner(
    */
   fun retrieveCoverageDataForTestTarget(
     bazelTestTarget: String
-  ): CoverageReport {
-    val coverageResult = retrieveCoverageResult(bazelTestTarget)
-      ?: return generateFailedCoverageReport(
-        bazelTestTarget,
-        "Coverage retrieval failed for the test target: $bazelTestTarget"
-      )
-
-    return coverageDataFileLines(coverageResult, bazelTestTarget)
+  ): List<CoverageReport> {
+    val coverageResults = bazelClient.runCoverageForTestTarget(bazelTestTarget)
+    check(coverageResults.isNotEmpty()) {
+      "Failed to retrieve coverage results for $bazelTestTarget."
+    }
+    return coverageResults.map { singleCoverageDatFileLines ->
+      parseCoverageDataFileLines(singleCoverageDatFileLines, bazelTestTarget)
+    }
   }
 
   private fun retrieveCoverageResult(
@@ -52,7 +52,7 @@ class CoverageRunner(
     return bazelClient.runCoverageForTestTarget(bazelTestTarget)
   }
 
-  private fun coverageDataFileLines(
+  private fun parseCoverageDataFileLines(
     coverageData: List<String>,
     bazelTestTarget: String
   ): CoverageReport {
