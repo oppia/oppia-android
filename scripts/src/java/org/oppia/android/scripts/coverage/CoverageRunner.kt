@@ -46,12 +46,6 @@ class CoverageRunner(
     }
   }
 
-  private fun retrieveCoverageResult(
-    bazelTestTarget: String
-  ): List<String>? {
-    return bazelClient.runCoverageForTestTarget(bazelTestTarget)
-  }
-
   private fun parseCoverageDataFileLines(
     coverageData: List<String>,
     bazelTestTarget: String
