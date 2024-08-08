@@ -54,7 +54,8 @@ class TopicInfoFragment : InjectableFragment() {
       TopicInfoFragmentArguments.getDefaultInstance()
     )
 
-    val internalProfileId = arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    val internalProfileId =
+      arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }

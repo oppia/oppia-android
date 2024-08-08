@@ -202,7 +202,12 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       )
     } else {
       explorationDataController.resumeExploration(
-        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId, checkpoint
+        profileId.loggedInInternalProfileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->

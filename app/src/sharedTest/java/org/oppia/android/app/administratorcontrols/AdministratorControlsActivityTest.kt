@@ -150,7 +150,8 @@ class AdministratorControlsActivityTest {
 
   private val internalProfileId = 0
 
-  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+  private val profileId =
+    ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper

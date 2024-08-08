@@ -26,7 +26,8 @@ class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     fun createAudioFragmentTestActivity(context: Context, internalProfileId: Int?): Intent {
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
+      val profileId =
+        internalProfileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)

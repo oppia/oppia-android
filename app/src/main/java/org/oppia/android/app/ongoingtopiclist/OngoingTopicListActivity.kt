@@ -20,7 +20,8 @@ class OngoingTopicListActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val internalProfileId: Int = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    val internalProfileId: Int =
+      intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     ongoingTopicListActivityPresenter.handleOnCreate(internalProfileId)
   }
 

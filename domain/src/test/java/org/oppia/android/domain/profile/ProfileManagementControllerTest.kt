@@ -794,7 +794,11 @@ class ProfileManagementControllerTest {
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(2)
+    assertThat(
+      profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId
+    ).isEqualTo(
+      2
+    )
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
     assertThat(profile.numberOfLogins).isEqualTo(1)
   }

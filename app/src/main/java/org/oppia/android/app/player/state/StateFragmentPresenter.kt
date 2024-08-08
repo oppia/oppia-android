@@ -288,7 +288,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getAudioUiManager(): AudioUiManager? {
     if (getAudioFragment() == null) {
-      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.loggedInInternalProfileId)
+      val audioFragment: AudioFragment =
+        AudioFragment.newInstance(profileId.loggedInInternalProfileId)
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
     }

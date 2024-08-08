@@ -234,7 +234,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
       val profileId =
-        ProfileId.newBuilder().setLoggedInInternalProfileId(chooserViewModel.adminProfileId.loggedInInternalProfileId).build()
+        ProfileId.newBuilder()
+          .setLoggedInInternalProfileId(chooserViewModel.adminProfileId.loggedInInternalProfileId)
+          .build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,

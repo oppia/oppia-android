@@ -62,7 +62,8 @@ class AdministratorControlsFragmentTestActivity :
       context: Context,
       profileId: Int?
     ): Intent {
-      val profileIdBuilder = profileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
+      val profileIdBuilder =
+        profileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
       val intent = Intent(context, AdministratorControlsFragmentTestActivity::class.java)
       if (profileIdBuilder != null) {
         intent.decorateWithUserProfileId(profileIdBuilder)

@@ -3320,7 +3320,12 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.resumeExploration(
-        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId, explorationCheckpoint
+        profileId.loggedInInternalProfileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        explorationCheckpoint
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }

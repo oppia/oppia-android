@@ -70,7 +70,9 @@ class SurveyEventsLoggerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build() }
+  private val profileId by lazy {
+    ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build()
+  }
 
   @Before
   fun setUp() {

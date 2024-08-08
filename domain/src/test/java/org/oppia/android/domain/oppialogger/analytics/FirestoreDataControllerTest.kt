@@ -84,7 +84,9 @@ class FirestoreDataControllerTest {
   @Inject
   lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build() }
+  private val profileId by lazy {
+    ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build()
+  }
 
   private val dataController by lazy { dataControllerProvider.get() }
 

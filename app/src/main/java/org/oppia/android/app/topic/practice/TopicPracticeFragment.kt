@@ -70,7 +70,8 @@ class TopicPracticeFragment : InjectableFragment() {
       TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
       TopicPracticeFragmentArguments.getDefaultInstance()
     )
-    val internalProfileId = arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    val internalProfileId =
+      arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }

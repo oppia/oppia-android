@@ -40,7 +40,8 @@ class NavigationDrawerTestActivity :
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
+      val profileId =
+        internalProfileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)
       }
@@ -88,7 +89,9 @@ class NavigationDrawerTestActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build())
+        .setProfileId(
+          ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+        )
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 

@@ -74,7 +74,11 @@ class ProfileTestHelperTest {
     assertThat(profiles[0].isAdmin).isTrue()
     assertThat(profiles[1].name).isEqualTo("Ben")
     assertThat(profiles[1].isAdmin).isFalse()
-    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(0)
+    assertThat(
+      profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId
+    ).isEqualTo(
+      0
+    )
   }
 
   @Test
@@ -88,7 +92,11 @@ class ProfileTestHelperTest {
     assertThat(profiles.size).isEqualTo(1)
     assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
-    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(0)
+    assertThat(
+      profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId
+    ).isEqualTo(
+      0
+    )
   }
 
   @Test
@@ -107,7 +115,11 @@ class ProfileTestHelperTest {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoAdmin()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(0)
+    assertThat(
+      profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId
+    ).isEqualTo(
+      0
+    )
   }
 
   @Test
@@ -115,7 +127,11 @@ class ProfileTestHelperTest {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoUser()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(1)
+    assertThat(
+      profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId
+    ).isEqualTo(
+      1
+    )
   }
 
   @Test
@@ -123,7 +139,11 @@ class ProfileTestHelperTest {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoNewUser()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(2)
+    assertThat(
+      profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId
+    ).isEqualTo(
+      2
+    )
   }
 
   // TODO(#89): Move this to a common test application component.

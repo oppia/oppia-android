@@ -45,7 +45,8 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
       oppiaLanguage: OppiaLanguage,
       internalProfileId: Int?
     ): Intent {
-      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId!!).build()
+      val profileId =
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId!!).build()
       return Intent(context, AppLanguageActivity::class.java).apply {
         val arguments = AppLanguageActivityParams.newBuilder().apply {
           this.oppiaLanguage = oppiaLanguage

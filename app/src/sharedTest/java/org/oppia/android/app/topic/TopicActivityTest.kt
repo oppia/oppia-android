@@ -201,7 +201,8 @@ class TopicActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the question activity is started with the correct profile ID.
-      val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
+      val profileId =
+        ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }

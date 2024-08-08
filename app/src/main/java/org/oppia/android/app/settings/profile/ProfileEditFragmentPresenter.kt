@@ -146,7 +146,8 @@ class ProfileEditFragmentPresenter @Inject constructor(
    */
   fun deleteProfile(internalProfileId: Int) {
     profileManagementController
-      .deleteProfile(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()).toLiveData()
+      .deleteProfile(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build())
+      .toLiveData()
       .observe(
         fragment,
         Observer {

@@ -36,7 +36,9 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     fun createMyDownloadsActivityIntent(context: Context, internalProfileId: Int?): Intent {
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
+      val profileId = internalProfileId?.let {
+        ProfileId.newBuilder().setLoggedInInternalProfileId(it).build()
+      }
       val intent = Intent(context, MyDownloadsActivity::class.java)
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)
