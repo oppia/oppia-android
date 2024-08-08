@@ -1,11 +1,12 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.runBlocking
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit
  *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt format=HTML
  * Example with custom process timeout:
  *     bazel run //scripts:run_coverage -- $(pwd)
- *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=10
+ *     utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt processTimeout=15
  *
  */
 fun main(vararg args: String) {
@@ -46,8 +47,8 @@ fun main(vararg args: String) {
 
   val reportOutputPath = getReportOutputPath(repoRoot, filePath, reportFormat)
 
-  if (!File(repoRoot, filePath).exists()) {
-    error("File doesn't exist: $filePath.")
+  check(File(repoRoot, filePath).exists()) {
+    "File doesn't exist: $filePath."
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
@@ -110,22 +111,21 @@ class RunCoverage(
 
     if (filePath in testFileExemptionList) {
       println("This file is exempted from having a test file; skipping coverage check.")
-      return
-    }
+    } else {
+      val testFilePaths = findTestFiles(repoRoot, filePath)
+      check(testFilePaths.isNotEmpty()) {
+        "No appropriate test file found for $filePath"
+      }
 
-    val testFilePaths = findTestFile(repoRoot, filePath)
-    if (testFilePaths.isEmpty()) {
-      error("No appropriate test file found for $filePath")
-    }
+      val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-    val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
+      val coverageReports = testTargets.map { testTarget ->
+        CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+          .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
+      }
 
-    val coverageReports = testTargets.mapNotNull { testTarget ->
-      runCoverageForTarget(testTarget)
-    }
-
-    coverageReports.takeIf { it.isNotEmpty() }?.run {
-      val reporter = CoverageReporter(repoRoot, this, reportFormat)
+      val aggregatedCoverageReport = calculateAggregateCoverageReport(coverageReports)
+      val reporter = CoverageReporter(repoRoot, aggregatedCoverageReport, reportFormat)
       val (computedCoverageRatio, reportText) = reporter.generateRichTextReport()
 
       File(reportOutputPath).apply {
@@ -137,19 +137,50 @@ class RunCoverage(
         println("\nComputed Coverage Ratio is: $computedCoverageRatio")
         println("\nGenerated report at: $reportOutputPath\n")
       }
-    } ?: println("No coverage reports generated.")
-  }
 
-  private fun runCoverageForTarget(testTarget: String): CoverageReport {
-    return runBlocking {
-      CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-        .runWithCoverageAsync(testTarget.removeSuffix(".kt"))
-        .await()
+      println("COVERAGE ANALYSIS COMPLETED.")
     }
   }
 }
 
-private fun findTestFile(repoRoot: String, filePath: String): List<String> {
+private fun calculateAggregateCoverageReport(
+  coverageReports: List<CoverageReport>
+): CoverageReport {
+  fun aggregateCoverage(coverages: List<Coverage>): Coverage {
+    return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
+  }
+
+  val groupedCoverageReports = coverageReports.groupBy {
+    Pair(it.filePath, it.fileSha1Hash)
+  }
+
+  val (key, reports) = groupedCoverageReports.entries.single()
+  val (filePath, fileSha1Hash) = key
+
+  val allBazelTestTargets = reports.flatMap { it.bazelTestTargetsList }
+  val allCoveredLines = reports.flatMap { it.coveredLineList }
+  val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
+  val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
+    CoveredLine.newBuilder()
+      .setLineNumber(lineNumber)
+      .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
+      .build()
+  }
+
+  val totalLinesFound = aggregatedCoveredLines.size
+  val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
+
+  return CoverageReport.newBuilder()
+    .addAllBazelTestTargets(allBazelTestTargets)
+    .setFilePath(filePath)
+    .setFileSha1Hash(fileSha1Hash)
+    .addAllCoveredLine(aggregatedCoveredLines)
+    .setLinesFound(totalLinesFound)
+    .setLinesHit(totalLinesHit)
+    .build()
+}
+
+private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
