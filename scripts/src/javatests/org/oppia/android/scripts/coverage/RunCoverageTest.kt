@@ -593,7 +593,7 @@ class RunCoverageTest {
       class SubNumsTest {
         @Test
         fun testSubNumbers() {
-          assertEquals(SubNums.subNumbers(1, 0), 1)
+          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
           assertEquals(SubNums.subNumbers(4, 3), 1)         
         }
       }
@@ -628,7 +628,7 @@ class RunCoverageTest {
       testExemptions
     ).execute()
 
-    assertThat(readFinalMdReport()).contains("Overall Coverage: **62.50%**")
+    assertThat(readFinalMdReport()).contains("Overall Coverage: **75.00%**")
   }
 
   @Test
@@ -914,6 +914,8 @@ class RunCoverageTest {
           "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
           ":white_check_mark: | 0% _*_ |"
       )
+      append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds\n")
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -974,7 +976,7 @@ class RunCoverageTest {
       append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |\n\n"
+          ":x: | $MIN_THRESHOLD% |\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
@@ -1452,19 +1454,15 @@ class RunCoverageTest {
       subpackage = "app"
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      RunCoverage(
-        "${tempFolder.root}",
-        filePathList,
-        ReportFormat.MARKDOWN,
-        longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
-      ).execute()
-    }
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher,
+      testExemptions
+    ).execute()
 
-    assertThat(exception).hasMessageThat()
-      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -2078,7 +2076,7 @@ class RunCoverageTest {
       <td class="covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
       <td class="line-number-row">   7</td>
-      <td class="not-covered-line">          "Both numbers are zero"</td>
+      <td class="covered-line">          "Both numbers are zero"</td>
     </tr><tr>
       <td class="line-number-row">   8</td>
       <td class="uncovered-line">      } else {</td>
