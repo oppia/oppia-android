@@ -326,7 +326,7 @@ class CoverageReporter(
     val failureMarkdownTable = buildString {
       if (failureTableRows.isNotEmpty()) {
         append("\n\n")
-        append("### Failure Cases\n")
+        append("### Failure Cases\n\n")
         append("| File | Failure Reason |\n")
         append("|------|----------------|\n")
         append(failureTableRows)

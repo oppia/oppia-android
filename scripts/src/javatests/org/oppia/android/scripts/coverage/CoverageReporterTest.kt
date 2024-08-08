@@ -2,6 +2,7 @@ package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -17,7 +18,8 @@ import java.io.File
 import java.io.PrintStream
 
 class CoverageReporterTest {
-  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+  @field:[Rule JvmField]
+  val tempFolder = TemporaryFolder()
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
@@ -25,11 +27,14 @@ class CoverageReporterTest {
   private lateinit var coverageDir: String
   private lateinit var testExemptions: Map<String, TestFileExemptions.TestFileExemption>
 
-  @After
-  fun tearDown() {
+  @Before
+  fun setUp() {
     coverageDir = "/coverage_reports"
     testExemptions = createTestFileExemptionTextProto()
+  }
 
+  @After
+  fun tearDown() {
     System.setOut(originalOut)
   }
 
@@ -61,7 +66,10 @@ class CoverageReporterTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Coverage Analysis: **PASS** :white_check_mark:\n\n")
+      append("Overall Coverage: **100.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -104,7 +112,10 @@ class CoverageReporterTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Coverage Analysis: **FAIL** :x:\n\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
@@ -141,8 +152,10 @@ class CoverageReporterTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Coverage Analysis: **FAIL** :x:\n\n")
-      append("### Failure Cases\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
       append("| File | Failure Reason |\n")
       append("|------|----------------|\n")
       append("| ://bazelTestTarget | Failure Message |")
@@ -177,9 +190,102 @@ class CoverageReporterTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Coverage Analysis: **PASS** :white_check_mark:\n\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n\n")
       append("### Files Exempted from Coverage\n")
       append("- [TestExempted.kt]($oppiaDevelopGitHubLink/$exemptedFilePath)")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withOverriddenHighCoverage_generatesFailStatusMarkdownTable() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val highCoverageRequiredFilePath = "coverage/main/java/com/example/HighCoverageExempted.kt"
+    val highCoverageRequiredCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(highCoverageRequiredFilePath)
+          .setLinesFound(10)
+          .setLinesHit(2)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(highCoverageRequiredCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **20.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| [HighCoverageExempted.kt]($oppiaDevelopGitHubLink/$highCoverageRequiredFilePath) | " +
+          "20.00% | 2 / 10 | :x: | 101% _*_ |\n"
+      )
+      append("\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withOverriddenLowCoverage_generatesPassStatusMarkdownTable() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val lowCoverageRequiredFilePath = "coverage/main/java/com/example/LowCoverageExempted.kt"
+    val lowCoverageRequiredCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(lowCoverageRequiredFilePath)
+          .setLinesFound(10)
+          .setLinesHit(4)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(lowCoverageRequiredCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **40.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| [LowCoverageExempted.kt]($oppiaDevelopGitHubLink/$lowCoverageRequiredFilePath) | " +
+          "40.00% | 4 / 10 | :white_check_mark: | 0% _*_ |\n"
+      )
+      append("\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds\n")
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
@@ -242,17 +348,21 @@ class CoverageReporterTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 4\n")
-      append("Coverage Analysis: **FAIL** :x:\n\n")
-      append("### Failure Cases\n")
+      append("Overall Coverage: **50.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
       append("| File | Failure Reason |\n")
       append("|------|----------------|\n")
       append("| ://bazelTestTarget | Failure Message |\n\n")
+      append("### Failing coverage\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [$failureFileName]($oppiaDevelopGitHubLink/$failureFileName) | " +
-          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n\n"
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n"
       )
+      append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -530,8 +640,9 @@ class CoverageReporterTest {
   }
 
   private fun readFinalMdReport(): String {
-    return File("${tempFolder.root}" +
-      "$coverageDir/CoverageReport.md"
+    return File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
     ).readText()
   }
 
@@ -541,27 +652,32 @@ class CoverageReporterTest {
         TestFileExemption.newBuilder()
           .setExemptedFilePath("TestExempted.kt")
           .setTestFileNotRequired(true)
+          .build()
       )
       .addTestFileExemption(
         TestFileExemption.newBuilder()
           .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
           .setOverrideMinCoveragePercentRequired(101)
+          .build()
       )
       .addTestFileExemption(
         TestFileExemption.newBuilder()
           .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
           .setOverrideMinCoveragePercentRequired(0)
+          .build()
       )
       .build()
 
     val testExemptionPb = "test_exemption.pb"
-    val coverageTestExemptiontextProto = tempFolder.newFile(testExemptionPb)
-    coverageTestExemptiontextProto.outputStream().use {
-      (testFileExemptions.writeTo(it))
+    val coverageTestExemptionTextProto = tempFolder.newFile(testExemptionPb)
+    coverageTestExemptionTextProto.outputStream().use { outputStream ->
+      testFileExemptions.writeTo(outputStream)
     }
 
-    return coverageTestExemptiontextProto
-      .testFileExemptionList
+    val testFileExemptionsFromFile =
+      TestFileExemptions.parseFrom(coverageTestExemptionTextProto.inputStream())
+
+    return testFileExemptionsFromFile.testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
 }
