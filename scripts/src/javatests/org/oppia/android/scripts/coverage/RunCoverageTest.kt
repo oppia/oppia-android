@@ -496,7 +496,7 @@ class RunCoverageTest {
       class SubNumsTest {
         @Test
         fun testSubNumbers() {
-          assertEquals(SubNums.subNumbers(1, 0), 1)
+          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
           assertEquals(SubNums.subNumbers(4, 3), 1)         
         }
       }
@@ -535,7 +535,7 @@ class RunCoverageTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 2\n")
-      append("Overall Coverage: **62.50%**\n")
+      append("Overall Coverage: **75.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n")
       append("### Passing coverage\n\n")
@@ -550,7 +550,7 @@ class RunCoverageTest {
       )
       append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 50.00% | 2 / 4 | " +
+          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -1421,6 +1421,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
               assertEquals(AddNums.sumNumbers(0, 1), 1)       
           }
       }
@@ -1437,7 +1438,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
               assertEquals(AddNums.sumNumbers(3, 4), 7)         
           }
       }
@@ -1451,20 +1452,25 @@ class RunCoverageTest {
       subpackage = "app"
     )
 
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
-    ).execute()
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testExemptions
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Overall Coverage: **50.00%**\n")
+      append("Overall Coverage: **75.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n")
       append("### Passing coverage\n\n")
@@ -1474,7 +1480,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | " +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -1501,6 +1507,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
               assertEquals(AddNums.sumNumbers(0, 1), 1)       
           }
       }
@@ -1517,7 +1524,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
               assertEquals(AddNums.sumNumbers(3, 4), 7)         
           }
       }
@@ -1546,7 +1553,7 @@ class RunCoverageTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Overall Coverage: **50.00%**\n")
+      append("Overall Coverage: **75.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n")
       append("### Passing coverage\n\n")
@@ -1556,7 +1563,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 50.00% | 2 / 4 | " +
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -1889,6 +1896,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
               assertEquals(AddNums.sumNumbers(0, 1), 1)       
           }
       }
@@ -1905,7 +1913,7 @@ class RunCoverageTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
               assertEquals(AddNums.sumNumbers(3, 4), 7)         
           }
       }
@@ -2039,8 +2047,8 @@ class RunCoverageTest {
           </div>
         </div>
         <div class="summary-right">
-          <div><strong>Coverage percentage:</strong> 50.00%</div>
-          <div><strong>Line coverage:</strong> 2 / 4 covered</div>
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
         </div>
       </div>
       <table>
