@@ -137,21 +137,14 @@ class ComputeChangedFiles(
     rootDirectory: File,
     pathToRoot: String
   ): List<String> {
-    val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
-    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-      .testFileExemptionList
-      .filter { it.testFileNotRequired }
-      .map { it.exemptedFilePath }
-
     val searchFiles = RepositoryFile.collectSearchFiles(
       repoPath = pathToRoot,
       expectedExtension = ".kt",
-      exemptionsList = testFileExemptionList
     )
 
     return searchFiles
-      .filter { it.name.endsWith(".kt") && !it.name.endsWith("Test.kt") }
-      .map { rootDirectory.toPath().relativize(it.toPath()).toString() }
+      .filter { it.extension == "kt" && !it.nameWithoutExtension.endsWith("Test") }
+      .map { it.toRelativeString(rootDirectory) }
   }
 
   private fun computeChangedFilesForNonDevelopBranch(
@@ -161,7 +154,7 @@ class ComputeChangedFiles(
     return gitClient.changedFiles
       .map { File(rootDirectory, it) }
       .filter { it.exists() }
-      .map { rootDirectory.toPath().relativize(it.toPath()).toString() }
+      .map { it.toRelativeString(rootDirectory) }
   }
 
   private fun filterFiles(files: List<String>) : List<String> {

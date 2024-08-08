@@ -137,10 +137,7 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createEmptyWorkspace()
 
-    val changedFiles = listOf(file)*/
-
     createAndCommitFile("First", "Second", "Third", subPackage = "app")
-
 
     val reportedFiles = runScript()
 
@@ -160,8 +157,20 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles).isEmpty()
   }
 
-  // Update later
-  // Add test here for computeAllFiles flag
+  @Test
+  fun testUtility_featureBranch_noChanges_computeAllFiles_returnsAllFiles() {
+    initializeEmptyGitRepository()
+    createFiles("First", "Second", "Third", subPackage = "app")
+    switchToFeatureBranch()
+
+    val reportedFiles = runScript(computeAllFiles = true)
+
+    // Even though there are no changes, all files should be returned since that was requested via
+    // a command argument.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
+  }
 
 
   @Test

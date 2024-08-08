@@ -68,7 +68,7 @@ fun main(vararg args: String) {
     .flatMap { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
-          findSourceFile(repoRoot, filePath)
+          findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
         }
         filePath.endsWith(".kt") -> listOf(filePath)
         else -> emptyList()
@@ -182,7 +182,7 @@ class RunCoverage(
             .build()
         ).build()
     } else {
-      val testFilePaths = findTestFiles(repoRoot, filePath)
+      val testFilePaths = findTestFiles(rootDirectory, repoRoot, filePath)
       if (testFilePaths.isEmpty()) {
         return CoverageReport.newBuilder()
           .setFailure(
@@ -264,7 +264,11 @@ class RunCoverage(
   }
 }
 
-private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
+private fun findTestFiles(
+  rootDirectory: File,
+  repoRoot: String,
+  filePath: String
+): List<String> {
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
@@ -286,10 +290,14 @@ private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
   return possibleTestFilePaths
     .map { File(repoRootFile, it) }
     .filter(File::exists)
-    .map { it.relativeTo(repoRootFile).path }
+    .map { it.toRelativeString(rootDirectory) }
 }
 
-private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
+private fun findSourceFile(
+  rootDirectory: File,
+  repoRoot: String,
+  filePath: String
+): List<String> {
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
@@ -320,7 +328,7 @@ private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
   return possibleSourceFilePaths
     .map { File(repoRootFile, it) }
     .filter(File::exists)
-    .map { it.relativeTo(repoRootFile).path }
+    .map { it.toRelativeString(rootDirectory) }
 }
 
 private fun getReportOutputPath(

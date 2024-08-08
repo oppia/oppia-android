@@ -115,7 +115,7 @@ private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
   return possibleTestFilePaths
     .map { File(rootDirectory, it) }
     .filter(File::exists)
-    .map { it.relativeTo(rootDirectory).path }
+    .map { it.toRelativeString(rootDirectory) }
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
