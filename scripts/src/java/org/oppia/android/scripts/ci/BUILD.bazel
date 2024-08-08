@@ -44,7 +44,6 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/proto:changed_files_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
     ],
 )
 

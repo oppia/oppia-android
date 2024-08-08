@@ -258,7 +258,6 @@ kt_jvm_binary(
 kt_jvm_binary(
     name = "compute_changed_files",
     testonly = True,
-    data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.ci.ComputeChangedFilesKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib"],
 )
