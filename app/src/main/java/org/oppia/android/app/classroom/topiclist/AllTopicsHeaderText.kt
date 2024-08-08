@@ -30,7 +30,9 @@ fun AllTopicsHeaderText() {
     modifier = Modifier
       .testTag(ALL_TOPICS_HEADER_TEST_TAG)
       .fillMaxWidth()
-      .background(colorResource(id = R.color.color_palette_classroom_topic_list_background_color))
+      .background(colorResource(
+        id = R.color.component_color_classroom_topic_list_background_color)
+      )
       .padding(
         start = dimensionResource(id = R.dimen.all_topics_text_margin_start),
         top = dimensionResource(id = R.dimen.all_topics_text_margin_top),
