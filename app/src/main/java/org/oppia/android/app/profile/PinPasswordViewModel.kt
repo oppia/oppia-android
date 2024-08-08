@@ -44,7 +44,7 @@ class PinPasswordViewModel @Inject constructor(
   }
 
   fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(id).build()
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {

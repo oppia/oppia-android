@@ -20,7 +20,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
 
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return RecentlyPlayedFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)
@@ -47,7 +47,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     val profileId =
       arguments.extractCurrentUserProfileId()
 
-    val internalProfileId = profileId.internalId
+    val internalProfileId = profileId.loggedInInternalProfileId
     return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

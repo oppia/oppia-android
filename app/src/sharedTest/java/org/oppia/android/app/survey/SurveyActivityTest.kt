@@ -107,7 +107,7 @@ class SurveyActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

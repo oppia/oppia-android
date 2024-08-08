@@ -170,7 +170,7 @@ class RevisionCardFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
 
   private val SUBTOPIC_ID_EXTRA_KEY = "RevisionCardActivity.subtopic_id"
 
@@ -192,7 +192,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -214,7 +214,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -237,7 +237,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -259,7 +259,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -281,7 +281,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -305,7 +305,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -326,7 +326,7 @@ class RevisionCardFragmentTest {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -347,7 +347,7 @@ class RevisionCardFragmentTest {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         TEST_TOPIC_ID_0,
         SUBTOPIC_TOPIC_ID,
         1
@@ -363,7 +363,7 @@ class RevisionCardFragmentTest {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -380,7 +380,7 @@ class RevisionCardFragmentTest {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -410,7 +410,7 @@ class RevisionCardFragmentTest {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -440,7 +440,7 @@ class RevisionCardFragmentTest {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -463,7 +463,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -481,7 +481,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -501,7 +501,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_0,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -521,7 +521,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -541,7 +541,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_3,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -562,7 +562,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -588,7 +588,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -614,7 +614,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -635,7 +635,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -656,7 +656,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -675,7 +675,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -697,7 +697,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -722,7 +722,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -751,7 +751,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         "test_topic_id_0",
         subtopicId = 1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -772,7 +772,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         "test_topic_id_0",
         subtopicId = 1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -797,7 +797,7 @@ class RevisionCardFragmentTest {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         "test_topic_id_0",
         subtopicId = 1,
         FRACTIONS_SUBTOPIC_LIST_SIZE

@@ -33,7 +33,7 @@ class OngoingTopicListViewModel @Inject constructor(
 
   private val ongoingTopicListResultLiveData: LiveData<AsyncResult<OngoingTopicList>> by lazy {
     topicController.getOngoingTopicList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     ).toLiveData()
   }
 

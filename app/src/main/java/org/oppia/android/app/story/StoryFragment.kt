@@ -31,7 +31,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       storyId: String
     ): StoryFragment {
 
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val args = StoryFragmentArguments.newBuilder().apply {
         this.classroomId = classroomId
         this.topicId = topicId
@@ -65,7 +65,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     val args =
       arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
 
-    val internalProfileId = arguments.extractCurrentUserProfileId().internalId
+    val internalProfileId = arguments.extractCurrentUserProfileId().loggedInInternalProfileId
     val classroomId =
       checkNotNull(args.classroomId) {
         "Expected classroomId to be passed to StoryFragment."

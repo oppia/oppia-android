@@ -101,7 +101,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       val enableDownloads = !binding.profileEditAllowDownloadSwitch.isChecked
       binding.profileEditAllowDownloadSwitch.isChecked = enableDownloads
       profileManagementController.updateAllowDownloadAccess(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build(),
         enableDownloads
       ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
@@ -115,7 +115,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       val enableLangSwitching = !binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked
       binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked = enableLangSwitching
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build(),
         enableLangSwitching
       ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
@@ -146,7 +146,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
    */
   fun deleteProfile(internalProfileId: Int) {
     profileManagementController
-      .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
+      .deleteProfile(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()).toLiveData()
       .observe(
         fragment,
         Observer {

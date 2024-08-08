@@ -21,7 +21,7 @@ class ProfileRenameActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     /** Returns an [Intent] for opening [ProfileRenameActivity]. */
     fun createProfileRenameActivity(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, ProfileRenameActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_RENAME_ACTIVITY)
@@ -34,7 +34,7 @@ class ProfileRenameActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     (activityComponent as ActivityComponentImpl).inject(this)
     profileRenameActivityPresenter.handleOnCreate(
-      intent?.extractCurrentUserProfileId()?.internalId ?: 0
+      intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: 0
     )
   }
 

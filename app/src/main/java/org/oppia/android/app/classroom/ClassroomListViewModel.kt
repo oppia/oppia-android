@@ -62,7 +62,7 @@ class ClassroomListViewModel(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController
 ) : ObservableViewModel() {
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: ProfileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
   private val promotedStoryListLimit = activity.resources.getInteger(
     R.integer.promoted_story_list_limit
   )

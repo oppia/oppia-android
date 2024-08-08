@@ -59,7 +59,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
       }
       profileManagementController
         .updateName(
-          ProfileId.newBuilder().setInternalId(profileId).build(),
+          ProfileId.newBuilder().setLoggedInInternalProfileId(profileId).build(),
           binding.profileRenameInputEditText.text.toString()
         ).toLiveData()
         .observe(

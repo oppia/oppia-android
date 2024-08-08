@@ -109,7 +109,10 @@ message ProfileId {
    * Unique ID used to identify a single profile.
    * Should not be used directory outside of the profile system.
    */
-  int32 internal_id = 1;
+  oneof type {
+    int32 logged_in_internal_profile_id = 1;
+    bool logged_out = 2; // Can be true or false; presence is sufficient.
+  }
 }
 
 // Used in BindableAdapter for ProfileChooserFragment.

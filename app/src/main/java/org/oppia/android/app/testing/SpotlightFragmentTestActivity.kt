@@ -21,7 +21,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     spotlightFragmentTestActivityPresenter.handleOnCreate(
-      intent?.extractCurrentUserProfileId()?.internalId ?: -1
+      intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     )
   }
 
@@ -34,7 +34,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
   companion object {
     /** Returns the [Intent] for opening [SpotlightFragmentTestActivity]. */
     fun createSpotlightFragmentTestActivity(context: Context): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
       return Intent(context, SpotlightFragmentTestActivity::class.java).also {
         it.decorateWithUserProfileId(profileId)
       }

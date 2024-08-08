@@ -40,7 +40,7 @@ class StoryActivity :
       STORY_ACTIVITY_PARAMS_KEY,
       StoryActivityParams.getDefaultInstance()
     )
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     classroomId = checkNotNull(args.classroomId) {
       "Expected extra classroom ID to be included for StoryActivity."
     }
@@ -116,7 +116,7 @@ class StoryActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val args = StoryActivityParams.newBuilder().apply {
         this.classroomId = classroomId
         this.topicId = topicId

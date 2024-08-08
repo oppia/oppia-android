@@ -126,7 +126,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         return@setOnClickListener
       }
       profileManagementController
-        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
+        .updatePin(ProfileId.newBuilder().setLoggedInInternalProfileId(profileId).build(), pin).toLiveData()
         .observe(
           activity,
           Observer {

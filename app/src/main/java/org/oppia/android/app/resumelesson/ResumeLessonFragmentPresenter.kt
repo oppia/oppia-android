@@ -198,11 +198,11 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   ) {
     val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId, checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->

@@ -91,7 +91,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
         }
         if (input.length == 3) {
           profileManagementController
-            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input).toLiveData()
+            .updatePin(ProfileId.newBuilder().setLoggedInInternalProfileId(profileId).build(), input).toLiveData()
             .observe(
               fragment,
               Observer {

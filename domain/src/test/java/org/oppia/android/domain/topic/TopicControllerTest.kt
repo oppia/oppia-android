@@ -90,8 +90,8 @@ class TopicControllerTest {
 
   @Before
   fun setUp() {
-    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
-    profileId2 = ProfileId.newBuilder().setInternalId(2).build()
+    profileId1 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
+    profileId2 = ProfileId.newBuilder().setLoggedInInternalProfileId(2).build()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }

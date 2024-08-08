@@ -223,7 +223,7 @@ class ExplorationDataController @Inject constructor(
     isRestart: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build(),
       classroomId,
       topicId,
       storyId,

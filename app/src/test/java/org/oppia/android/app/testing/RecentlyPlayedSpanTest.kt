@@ -120,7 +120,7 @@ class RecentlyPlayedSpanTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
@@ -285,7 +285,7 @@ class RecentlyPlayedSpanTest {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(profileId).build())
+        .setProfileId(ProfileId.newBuilder().setLoggedInInternalProfileId(profileId).build())
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,

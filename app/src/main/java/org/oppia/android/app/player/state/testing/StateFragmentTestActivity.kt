@@ -50,7 +50,7 @@ class StateFragmentTestActivity :
     )
 
     profileId = ProfileId.newBuilder().apply {
-      internalId = args?.internalProfileId ?: -1
+      loggedInInternalProfileId = args?.internalProfileId ?: -1
     }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()
   }

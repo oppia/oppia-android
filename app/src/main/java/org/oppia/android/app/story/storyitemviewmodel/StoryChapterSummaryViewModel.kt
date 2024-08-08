@@ -48,7 +48,7 @@ class StoryChapterSummaryViewModel(
   }
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
   private val profileId by lazy {
-    ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
   }
 
   fun onExplorationClicked() {
@@ -64,7 +64,7 @@ class StoryChapterSummaryViewModel(
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.newBuilder().apply {
-            internalId = internalProfileId
+            loggedInInternalProfileId = internalProfileId
           }.build(),
           explorationId
         ).toLiveData()

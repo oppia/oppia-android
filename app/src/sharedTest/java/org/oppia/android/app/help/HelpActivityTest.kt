@@ -133,7 +133,7 @@ class HelpActivityTest {
   }
 
   private fun createHelpActivityIntent(): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       isFromNavigationDrawer = false,

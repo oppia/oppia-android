@@ -84,7 +84,7 @@ class FirestoreDataControllerTest {
   @Inject
   lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val profileId by lazy { ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build() }
 
   private val dataController by lazy { dataControllerProvider.get() }
 
@@ -401,7 +401,7 @@ class FirestoreDataControllerTest {
     profileId: ProfileId?
   ): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
-      .setProfileId(profileId?.internalId.toString())
+      .setProfileId(profileId?.loggedInInternalProfileId.toString())
       .setSurveyId(surveyId)
       .build()
   }

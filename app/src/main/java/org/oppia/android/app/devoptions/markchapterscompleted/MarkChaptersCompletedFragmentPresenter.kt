@@ -68,7 +68,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     this.selectedExplorationIds += selectedExplorationIds
     this.selectedExplorationTitles += selectedExplorationTitles
 
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

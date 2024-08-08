@@ -117,7 +117,7 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       val profileId =
         ProfileId.newBuilder()
-          .setInternalId(args?.internalProfileId ?: -1)
+          .setLoggedInInternalProfileId(args?.internalProfileId ?: -1)
           .build()
 
       profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(

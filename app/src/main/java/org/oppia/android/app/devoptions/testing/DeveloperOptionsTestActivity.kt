@@ -38,7 +38,7 @@ class DeveloperOptionsTestActivity :
     setContentView(R.layout.developer_options_activity)
 
     val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.internalId ?: -1
+    internalProfileId = profileId?.loggedInInternalProfileId ?: -1
 
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
@@ -87,7 +87,7 @@ class DeveloperOptionsTestActivity :
   companion object {
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
       intent.decorateWithUserProfileId(profileId)
       return intent

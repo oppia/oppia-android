@@ -23,7 +23,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
     val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.internalId ?: -1
+    internalProfileId = profileId?.loggedInInternalProfileId ?: -1
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(
@@ -41,7 +41,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
   companion object {
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
     fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
       }

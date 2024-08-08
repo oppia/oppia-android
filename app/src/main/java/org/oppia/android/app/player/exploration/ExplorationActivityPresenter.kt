@@ -150,7 +150,7 @@ class ExplorationActivityPresenter @Inject constructor(
     if (getSpotlightManager() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_spotlight_fragment_placeholder,
-        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightFragment.newInstance(profileId.loggedInInternalProfileId),
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
@@ -392,7 +392,7 @@ class ExplorationActivityPresenter @Inject constructor(
         activity.startActivity(
           TopicActivity.createTopicActivityIntent(
             context,
-            profileId.internalId,
+            profileId.loggedInInternalProfileId,
             classroomId,
             topicId
           )

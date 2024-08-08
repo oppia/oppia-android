@@ -52,7 +52,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     this.selectedStoryIdList = selectedStoryIdList
 
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

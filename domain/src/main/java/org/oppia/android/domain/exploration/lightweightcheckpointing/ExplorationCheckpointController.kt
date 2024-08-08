@@ -178,7 +178,7 @@ class ExplorationCheckpointController @Inject constructor(
             AsyncResult.Failure(
               ExplorationCheckpointNotFoundException(
                 "Checkpoint with the explorationId $explorationId was not found " +
-                  "for profileId ${profileId.internalId}."
+                  "for profileId ${profileId.loggedInInternalProfileId}."
               )
             )
           }
@@ -259,7 +259,7 @@ class ExplorationCheckpointController @Inject constructor(
         AsyncResult.Failure(
           ExplorationCheckpointNotFoundException(
             "No saved checkpoint with explorationId ${explorationId!!} found for " +
-              "the profileId ${profileId!!.internalId}."
+              "the profileId ${profileId!!.loggedInInternalProfileId}."
           )
         )
       ExplorationCheckpointActionStatus.SUCCESS -> AsyncResult.Success(null)

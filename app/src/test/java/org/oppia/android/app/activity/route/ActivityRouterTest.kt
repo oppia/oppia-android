@@ -130,7 +130,7 @@ class ActivityRouterTest {
       val recentlyPlayedActivityParams =
         RecentlyPlayedActivityParams
           .newBuilder()
-          .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+          .setProfileId(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build())
           .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES).build()
       activityRouter.routeToScreen(
         DestinationScreen

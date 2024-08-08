@@ -115,7 +115,7 @@ class LearnerAnalyticsLoggerTest {
   private val expectedLearnerIdParameter: String get() = elid
   private val expectedInstallIdParameter: String get() = eid
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val profileId by lazy { ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build() }
 
   @Before
   fun setUp() {

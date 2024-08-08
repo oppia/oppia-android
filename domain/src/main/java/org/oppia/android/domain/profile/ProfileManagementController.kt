@@ -194,13 +194,13 @@ class ProfileManagementController @Inject constructor(
   /** Returns a single profile, specified by profiledId. */
   fun getProfile(profileId: ProfileId): DataProvider<Profile> {
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
-      val profile = it.profilesMap[profileId.internalId]
+      val profile = it.profilesMap[profileId.loggedInInternalProfileId]
       if (profile != null) {
         AsyncResult.Success(profile)
       } else {
         AsyncResult.Failure(
           ProfileNotFoundException(
-            "ProfileId ${profileId.internalId} does" +
+            "ProfileId ${profileId.loggedInInternalProfileId} does" +
               " not match an existing Profile"
           )
         )
@@ -271,7 +271,7 @@ class ProfileManagementController @Inject constructor(
         this.pin = pin
         this.allowDownloadAccess = allowDownloadAccess
         this.allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
-        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        this.id = ProfileId.newBuilder().setLoggedInInternalProfileId(nextProfileId).build()
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -326,7 +326,7 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
@@ -348,7 +348,7 @@ class ProfileManagementController @Inject constructor(
       }
 
       val profileDatabaseBuilder =
-        it.toBuilder().putProfiles(profileId.internalId, updatedProfileBuilder.build())
+        it.toBuilder().putProfiles(profileId.loggedInInternalProfileId, updatedProfileBuilder.build())
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(
@@ -376,13 +376,13 @@ class ProfileManagementController @Inject constructor(
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().setName(newName).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -404,13 +404,13 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().setPin(newPin).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -435,7 +435,7 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
@@ -471,7 +471,7 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
@@ -507,14 +507,14 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().setAllowDownloadAccess(allowDownloadAccess)
         .build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -542,12 +542,12 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfileDatabase = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         profile.toBuilder().apply {
           this.allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
         }.build()
@@ -576,13 +576,13 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().setReadingTextSize(readingTextSize).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -603,7 +603,7 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
@@ -616,7 +616,7 @@ class ProfileManagementController @Inject constructor(
         }
       }.build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -640,13 +640,13 @@ class ProfileManagementController @Inject constructor(
       updateInMemoryCache = true
     ) {
       val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it.profilesMap[profileId.loggedInInternalProfileId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().setAudioLanguage(audioLanguage).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -683,13 +683,13 @@ class ProfileManagementController @Inject constructor(
   private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
     return dataProviders.createInMemoryDataProviderAsync(SET_CURRENT_PROFILE_ID_PROVIDER_ID) {
       val profileDatabase = profileDataStore.readDataAsync().await()
-      if (profileDatabase.profilesMap.containsKey(profileId.internalId)) {
-        currentProfileId = profileId.internalId
+      if (profileDatabase.profilesMap.containsKey(profileId.loggedInInternalProfileId)) {
+        currentProfileId = profileId.loggedInInternalProfileId
         return@createInMemoryDataProviderAsync AsyncResult.Success(0)
       }
       AsyncResult.Failure(
         ProfileNotFoundException(
-          "ProfileId ${profileId.internalId} is" +
+          "ProfileId ${profileId.loggedInInternalProfileId} is" +
             " not associated with an existing profile"
         )
       )
@@ -699,14 +699,14 @@ class ProfileManagementController @Inject constructor(
   private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
     Deferred<ProfileActionStatus> {
       return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val profile = it.profilesMap[profileId.internalId]
+        val profile = it.profilesMap[profileId.loggedInInternalProfileId]
           ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
         val updatedProfile = profile.toBuilder()
           .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
           .setNumberOfLogins(profile.numberOfLogins + 1)
           .build()
         val profileDatabaseBuilder = it.toBuilder().putProfiles(
-          profileId.internalId,
+          profileId.loggedInInternalProfileId,
           updatedProfile
         )
         Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -721,16 +721,16 @@ class ProfileManagementController @Inject constructor(
    */
   fun deleteProfile(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      if (!it.profilesMap.containsKey(profileId.internalId)) {
+      if (!it.profilesMap.containsKey(profileId.loggedInInternalProfileId)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       }
-      if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
+      if (!directoryManagementUtil.deleteDir(profileId.loggedInInternalProfileId.toString())) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_DELETE_DIR)
       }
       val installationId = loggingIdentifierController.fetchInstallationId()
-      val learnerId = it.profilesMap.getValue(profileId.internalId).learnerId
+      val learnerId = it.profilesMap.getValue(profileId.loggedInInternalProfileId).learnerId
       learnerAnalyticsLogger.logDeleteProfile(installationId, profileId = null, learnerId)
-      Pair(it.toBuilder().removeProfiles(profileId.internalId).build(), ProfileActionStatus.SUCCESS)
+      Pair(it.toBuilder().removeProfiles(profileId.loggedInInternalProfileId).build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
@@ -764,7 +764,7 @@ class ProfileManagementController @Inject constructor(
   /** Returns the [ProfileId] of the current profile, or null if one hasn't yet been logged into. */
   fun getCurrentProfileId(): ProfileId? {
     return currentProfileId.takeIf { it != DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID }?.let {
-      ProfileId.newBuilder().setInternalId(it).build()
+      ProfileId.newBuilder().setLoggedInInternalProfileId(it).build()
     }
   }
 
@@ -791,7 +791,7 @@ class ProfileManagementController @Inject constructor(
    */
   suspend fun fetchLearnerId(profileId: ProfileId): String? {
     val profileDatabase = profileDataStore.readDataAsync().await()
-    return profileDatabase.profilesMap[profileId.internalId]?.learnerId
+    return profileDatabase.profilesMap[profileId.loggedInInternalProfileId]?.learnerId
   }
 
   /**
@@ -800,17 +800,17 @@ class ProfileManagementController @Inject constructor(
    */
   suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
     val profileDatabase = profileDataStore.readDataAsync().await()
-    return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
+    return profileDatabase.profilesMap[profileId.loggedInInternalProfileId]?.isContinueButtonAnimationSeen
   }
 
   /** Marks that the continue button animation has been seen for the specified profile. */
   suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
     val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
-      val profile = it.profilesMap[profileId.internalId]
+      val profile = it.profilesMap[profileId.loggedInInternalProfileId]
       if (profile != null) {
         val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
         val profileDatabaseBuilder = it.toBuilder().putProfiles(
-          profileId.internalId,
+          profileId.loggedInInternalProfileId,
           updatedProfile
         )
         return@storeDataAsync profileDatabaseBuilder.build()
@@ -827,12 +827,12 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) { profileDatabase ->
-      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val profile = profileDatabase.profilesMap[profileId.loggedInInternalProfileId]
       val updatedProfile = profile?.toBuilder()?.setSurveyLastShownTimestampMs(
         oppiaClock.getCurrentTimeMs()
       )?.build()
       val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -850,7 +850,7 @@ class ProfileManagementController @Inject constructor(
   ): DataProvider<Long> {
     return profileDataStore.transformAsync(RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID) {
       val surveyLastShownTimestampMs =
-        it.profilesMap[profileId.internalId]?.surveyLastShownTimestampMs ?: 0L
+        it.profilesMap[profileId.loggedInInternalProfileId]?.surveyLastShownTimestampMs ?: 0L
       AsyncResult.Success(surveyLastShownTimestampMs)
     }
   }
@@ -866,12 +866,12 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) { profileDatabase ->
-      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val profile = profileDatabase.profilesMap[profileId.loggedInInternalProfileId]
       val updatedProfile = profile?.toBuilder()?.setLastSelectedClassroomId(
         classroomId
       )?.build()
       val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         updatedProfile
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -891,7 +891,7 @@ class ProfileManagementController @Inject constructor(
     profileId: ProfileId
   ): DataProvider<String?> {
     return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
-      val lastSelectedClassroomId = it.profilesMap[profileId.internalId]?.lastSelectedClassroomId
+      val lastSelectedClassroomId = it.profilesMap[profileId.loggedInInternalProfileId]?.lastSelectedClassroomId
       AsyncResult.Success(lastSelectedClassroomId)
     }
   }
@@ -920,19 +920,19 @@ class ProfileManagementController @Inject constructor(
       ProfileActionStatus.FAILED_TO_DELETE_DIR ->
         AsyncResult.Failure(
           FailedToDeleteDirException(
-            "Failed to delete directory with ${profileId?.internalId}"
+            "Failed to delete directory with ${profileId?.loggedInInternalProfileId}"
           )
         )
       ProfileActionStatus.PROFILE_NOT_FOUND ->
         AsyncResult.Failure(
           ProfileNotFoundException(
-            "ProfileId ${profileId?.internalId} does not match an existing Profile"
+            "ProfileId ${profileId?.loggedInInternalProfileId} does not match an existing Profile"
           )
         )
       ProfileActionStatus.PROFILE_NOT_ADMIN ->
         AsyncResult.Failure(
           ProfileNotAdminException(
-            "ProfileId ${profileId?.internalId} does not match an existing admin"
+            "ProfileId ${profileId?.loggedInInternalProfileId} does not match an existing admin"
           )
         )
       ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN ->

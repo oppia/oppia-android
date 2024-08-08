@@ -208,7 +208,7 @@ class StateFragmentLocalTest {
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
@@ -2231,7 +2231,7 @@ class StateFragmentLocalTest {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,

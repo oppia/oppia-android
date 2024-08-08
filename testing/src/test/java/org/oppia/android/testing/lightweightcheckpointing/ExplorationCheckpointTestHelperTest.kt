@@ -76,7 +76,7 @@ class ExplorationCheckpointTestHelperTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
 
   @Before
   fun setUp() {

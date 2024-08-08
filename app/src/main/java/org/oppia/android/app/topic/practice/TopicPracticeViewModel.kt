@@ -30,7 +30,7 @@ class TopicPracticeViewModel @Inject constructor(
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build(),
       topicId
     ).toLiveData()
   }

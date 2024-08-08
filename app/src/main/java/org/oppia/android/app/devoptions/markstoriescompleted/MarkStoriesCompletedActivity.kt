@@ -31,7 +31,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.internalId ?: -1
+    internalProfileId = profileId?.loggedInInternalProfileId ?: -1
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
   }
@@ -48,7 +48,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)

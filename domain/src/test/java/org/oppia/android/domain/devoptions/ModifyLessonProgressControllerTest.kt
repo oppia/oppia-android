@@ -82,7 +82,7 @@ class ModifyLessonProgressControllerTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(1).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }

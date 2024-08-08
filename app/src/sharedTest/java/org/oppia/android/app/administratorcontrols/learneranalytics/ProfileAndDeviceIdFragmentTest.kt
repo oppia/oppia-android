@@ -1182,7 +1182,7 @@ class ProfileAndDeviceIdFragmentTest {
     private val LEARNER_PROFILE_ID_1 = createProfileId(internalProfileId = 2)
 
     private fun createProfileId(internalProfileId: Int) = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
+      loggedInInternalProfileId = internalProfileId
     }.build()
   }
 }

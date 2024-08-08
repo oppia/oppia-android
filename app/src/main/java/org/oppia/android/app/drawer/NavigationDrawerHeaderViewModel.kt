@@ -28,7 +28,7 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
     ObservableField(computeProfileStoryProgressText())
 
   fun onHeaderClicked() {
-    routeToProfileProgressListener.routeToProfileProgress(profile.get()!!.id.internalId)
+    routeToProfileProgressListener.routeToProfileProgress(profile.get()!!.id.loggedInInternalProfileId)
   }
 
   fun setOngoingTopicProgress(ongoingTopicCount: Int) {

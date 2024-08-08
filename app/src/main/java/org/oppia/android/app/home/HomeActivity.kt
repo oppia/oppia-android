@@ -57,7 +57,7 @@ class HomeActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    internalProfileId = intent.extractCurrentUserProfileId().internalId
+    internalProfileId = intent.extractCurrentUserProfileId().loggedInInternalProfileId
     homeActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
@@ -110,7 +110,7 @@ class HomeActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

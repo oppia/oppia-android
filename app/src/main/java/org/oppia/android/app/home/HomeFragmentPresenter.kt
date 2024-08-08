@@ -64,7 +64,7 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
+    internalProfileId = activity.intent.extractCurrentUserProfileId().loggedInInternalProfileId
 
     logHomeActivityEvent()
 
@@ -126,7 +126,7 @@ class HomeFragmentPresenter @Inject constructor(
                 AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
               ) {
                 analyticsController.logAppOnboardedEvent(
-                  ProfileId.newBuilder().setInternalId(internalProfileId).build()
+                  ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
                 )
               }
             }
@@ -206,7 +206,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun logHomeActivityEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
     )
   }
 }

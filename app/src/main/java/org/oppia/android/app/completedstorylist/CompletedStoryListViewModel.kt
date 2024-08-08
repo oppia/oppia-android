@@ -31,7 +31,7 @@ class CompletedStoryListViewModel @Inject constructor(
 
   private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
     topicController.getCompletedStoryList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     ).toLiveData()
   }
 

@@ -44,7 +44,7 @@ class TopicLessonsFragment :
       storyId: String
     ): TopicLessonsFragment {
 
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val args = TopicLessonsFragmentArguments.newBuilder().apply {
         this.classroomId = classroomId
         this.topicId = topicId
@@ -88,7 +88,7 @@ class TopicLessonsFragment :
       }
       isDefaultStoryExpanded = stateArgs?.isDefaultStoryExpanded ?: false
     }
-    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    val internalProfileId = arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     val args = arguments?.getProto(
       TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
       TopicLessonsFragmentArguments.getDefaultInstance()

@@ -22,7 +22,7 @@ class ProfileRenameFragment : InjectableFragment() {
 
     /** Returns the instance of [ProfileRenameFragment]. */
     fun newInstance(internalProfileId: Int): ProfileRenameFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return ProfileRenameFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)
@@ -43,7 +43,7 @@ class ProfileRenameFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileRenameFragment" }
-    val profileId = args.extractCurrentUserProfileId().internalId
+    val profileId = args.extractCurrentUserProfileId().loggedInInternalProfileId
 
     return profileRenameFragmentPresenter.handleCreateView(
       inflater,

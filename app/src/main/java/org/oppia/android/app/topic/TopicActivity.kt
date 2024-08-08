@@ -45,7 +45,7 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
@@ -65,7 +65,7 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       )
     )
   }
@@ -158,7 +158,7 @@ class TopicActivity :
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
     override fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, classroomId, topicId)
+      createTopicActivityIntent(activity, profileId.loggedInInternalProfileId, classroomId, topicId)
 
     override fun createIntent(
       profileId: ProfileId,
@@ -168,7 +168,7 @@ class TopicActivity :
     ): Intent =
       createTopicPlayStoryActivityIntent(
         activity,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         classroomId,
         topicId,
         storyId
@@ -190,7 +190,7 @@ class TopicActivity :
         this.topicId = topicId
         this.classroomId = classroomId
       }.build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
         putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)

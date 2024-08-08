@@ -118,8 +118,8 @@ class ExplorationCheckpointControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
-  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
+  private val secondTestProfile = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
   @Before
   fun setUp() {
@@ -901,7 +901,7 @@ class ExplorationCheckpointControllerTest {
       expIdToLoadInstead = "test_checkpointing_base_exploration"
     )
     explorationDataController.startPlayingNewExploration(
-      internalProfileId = profileId.internalId,
+      internalProfileId = profileId.loggedInInternalProfileId,
       classroomId = "<none>",
       topicId = "<none>",
       storyId = "<none>",

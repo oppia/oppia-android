@@ -80,8 +80,8 @@ class SpotlightStateControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val profileId0 = ProfileId.newBuilder().setInternalId(0).build()
-  private val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId0 = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
+  private val profileId1 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
   @Before
   fun setUp() {

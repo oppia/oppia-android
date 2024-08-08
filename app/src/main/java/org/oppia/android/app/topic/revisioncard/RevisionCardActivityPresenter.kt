@@ -60,7 +60,7 @@ class RevisionCardActivityPresenter @Inject constructor(
       activity,
       R.layout.revision_card_activity
     )
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     this.topicId = topicId
     this.subtopicId = subtopicId
     this.subtopicListSize = subtopicListSize

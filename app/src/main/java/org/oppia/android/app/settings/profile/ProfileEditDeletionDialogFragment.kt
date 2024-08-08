@@ -23,7 +23,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
     /** Creates new instance of the fragment [ProfileEditFragment]. */
     fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)
@@ -46,7 +46,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
         "Expected arguments to be pass to ProfileEditDeletionDialogFragment"
       }
 
-    val internalProfileId = args.extractCurrentUserProfileId().internalId
+    val internalProfileId = args.extractCurrentUserProfileId().loggedInInternalProfileId
     profileEditDialogInterface =
       parentFragment as ProfileEditFragment
 

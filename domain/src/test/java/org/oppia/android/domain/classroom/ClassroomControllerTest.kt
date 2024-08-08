@@ -71,7 +71,7 @@ class ClassroomControllerTest {
 
   @Before
   fun setUp() {
-    profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    profileId0 = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     setUpTestApplicationComponent()
   }

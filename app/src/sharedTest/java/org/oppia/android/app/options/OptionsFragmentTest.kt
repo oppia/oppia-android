@@ -168,7 +168,7 @@ class OptionsFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     return OptionsActivity.createOptionsActivity(
       context = ApplicationProvider.getApplicationContext(),
       profileId = profileId,

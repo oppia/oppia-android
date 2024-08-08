@@ -59,7 +59,7 @@ class StoryProgressControllerTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
     setUpTestApplicationComponent()
   }
 

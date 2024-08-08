@@ -185,7 +185,7 @@ class ClassroomListFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
   }

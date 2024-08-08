@@ -286,7 +286,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     chapterPlayState: ChapterPlayState
   ) {
     val profileId = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
+      loggedInInternalProfileId = internalProfileId
     }.build()
     val canHavePartialProgressSaved =
       when (chapterPlayState) {

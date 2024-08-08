@@ -52,7 +52,7 @@ class ProfileProgressViewModel @Inject constructor(
   )
 
   fun setProfileId(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     this.internalProfileId = internalProfileId
 
     subscribeToProfileLiveData()

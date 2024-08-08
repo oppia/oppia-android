@@ -40,7 +40,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
-    this.profileId = ProfileId.newBuilder().apply { internalId = profileId }.build()
+    this.profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = profileId }.build()
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.viewModel = appLanguageSelectionViewModel
     binding.lifecycleOwner = fragment

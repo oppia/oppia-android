@@ -94,13 +94,13 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-    private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
-    private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
-    private val PROFILE_ID_3 = ProfileId.newBuilder().setInternalId(3).build()
-    private val PROFILE_ID_4 = ProfileId.newBuilder().setInternalId(4).build()
-    private val PROFILE_ID_6 = ProfileId.newBuilder().setInternalId(6).build()
+    private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
+    private val PROFILE_ID_0 = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
+    private val PROFILE_ID_1 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
+    private val PROFILE_ID_2 = ProfileId.newBuilder().setLoggedInInternalProfileId(2).build()
+    private val PROFILE_ID_3 = ProfileId.newBuilder().setLoggedInInternalProfileId(3).build()
+    private val PROFILE_ID_4 = ProfileId.newBuilder().setLoggedInInternalProfileId(4).build()
+    private val PROFILE_ID_6 = ProfileId.newBuilder().setLoggedInInternalProfileId(6).build()
 
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
@@ -127,7 +127,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.name).isEqualTo("James")
     assertThat(profile.pin).isEqualTo("123")
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
-    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.id.loggedInInternalProfileId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(profile.numberOfLogins).isEqualTo(0)
@@ -195,7 +195,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.name).isEqualTo("Rajat")
     assertThat(profile.pin).isEqualTo("456")
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
-    assertThat(profile.id.internalId).isEqualTo(3)
+    assertThat(profile.id.loggedInInternalProfileId).isEqualTo(3)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
   }
@@ -208,7 +208,7 @@ class ProfileManagementControllerTest {
     val dataProvider = profileManagementController.getProfiles()
 
     val profiles = monitorFactory.waitForNextSuccessfulResult(dataProvider).sortedBy {
-      it.id.internalId
+      it.id.loggedInInternalProfileId
     }
     assertThat(profiles.size).isEqualTo(PROFILES_LIST.size)
     checkTestProfilesArePresent(profiles)
@@ -224,7 +224,7 @@ class ProfileManagementControllerTest {
     val dataProvider = profileManagementController.getProfiles()
 
     val profiles = monitorFactory.waitForNextSuccessfulResult(dataProvider).sortedBy {
-      it.id.internalId
+      it.id.loggedInInternalProfileId
     }
     assertThat(profiles.size).isEqualTo(PROFILES_LIST.size + 1)
     checkTestProfilesArePresent(profiles)
@@ -236,7 +236,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -252,7 +252,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -753,12 +753,12 @@ class ProfileManagementControllerTest {
 
     val profilesProvider = profileManagementController.getProfiles()
     val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider).sortedBy {
-      it.id.internalId
+      it.id.loggedInInternalProfileId
     }
     assertThat(profiles.size).isEqualTo(4)
     assertThat(profiles[profiles.size - 2].name).isEqualTo("Ben")
     assertThat(profiles.last().name).isEqualTo("John")
-    assertThat(profiles.last().id.internalId).isEqualTo(5)
+    assertThat(profiles.last().id.loggedInInternalProfileId).isEqualTo(5)
     assertThat(File(getAbsoluteDirPath("3")).isDirectory).isFalse()
     assertThat(File(getAbsoluteDirPath("4")).isDirectory).isFalse()
   }
@@ -794,7 +794,7 @@ class ProfileManagementControllerTest {
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(2)
+    assertThat(profileManagementController.getCurrentProfileId()?.loggedInInternalProfileId).isEqualTo(2)
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
     assertThat(profile.numberOfLogins).isEqualTo(1)
   }
@@ -1290,7 +1290,7 @@ class ProfileManagementControllerTest {
       assertThat(resultList[idx].name).isEqualTo(profile.name)
       assertThat(resultList[idx].pin).isEqualTo(profile.pin)
       assertThat(resultList[idx].allowDownloadAccess).isEqualTo(profile.allowDownloadAccess)
-      assertThat(resultList[idx].id.internalId).isEqualTo(idx)
+      assertThat(resultList[idx].id.loggedInInternalProfileId).isEqualTo(idx)
       assertThat(File(getAbsoluteDirPath(idx.toString())).isDirectory).isTrue()
     }
   }

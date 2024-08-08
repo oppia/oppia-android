@@ -42,7 +42,7 @@ class DeveloperOptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.extractCurrentUserProfileId().internalId
+    internalProfileId = intent.extractCurrentUserProfileId().loggedInInternalProfileId
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }

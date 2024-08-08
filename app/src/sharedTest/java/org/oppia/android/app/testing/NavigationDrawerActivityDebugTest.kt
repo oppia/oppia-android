@@ -330,7 +330,7 @@ class NavigationDrawerActivityDebugTest {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       intended(hasComponent(DeveloperOptionsActivity::class.java.name))
       intended(
         hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId)

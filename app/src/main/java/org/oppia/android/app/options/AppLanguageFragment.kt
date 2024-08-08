@@ -30,7 +30,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
 
     /** Returns a new [AppLanguageFragment] instance. */
     fun newInstance(oppiaLanguage: OppiaLanguage, internalProfileId: Int): AppLanguageFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return AppLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AppLanguageFragmentArguments.newBuilder().apply {
@@ -70,7 +70,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AppLanguageFragment" }
-    profileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    profileId = arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
 
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,

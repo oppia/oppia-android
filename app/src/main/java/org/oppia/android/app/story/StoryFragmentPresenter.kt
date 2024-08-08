@@ -82,7 +82,7 @@ class StoryFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
     storyViewModel.setInternalProfileId(internalProfileId)
     storyViewModel.setClassroomId(classroomId)
     storyViewModel.setTopicId(topicId)
@@ -282,7 +282,7 @@ class StoryFragmentPresenter @Inject constructor(
     // one.
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         classroomId,
         topicId,
         storyId,
@@ -290,7 +290,7 @@ class StoryFragmentPresenter @Inject constructor(
       )
     } else {
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         classroomId,
         topicId,
         storyId,

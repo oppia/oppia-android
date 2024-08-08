@@ -28,7 +28,7 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    profileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     appLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
       profileId!!
@@ -45,7 +45,7 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
       oppiaLanguage: OppiaLanguage,
       internalProfileId: Int?
     ): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId!!).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId!!).build()
       return Intent(context, AppLanguageActivity::class.java).apply {
         val arguments = AppLanguageActivityParams.newBuilder().apply {
           this.oppiaLanguage = oppiaLanguage

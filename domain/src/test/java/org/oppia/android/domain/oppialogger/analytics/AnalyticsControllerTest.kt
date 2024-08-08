@@ -1240,7 +1240,7 @@ class AnalyticsControllerTest {
     )
     monitorFactory.ensureDataProviderExecutes(addProfileProvider)
 
-    return ProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
+    return ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build().also { expectedProfileId ->
       val logInProvider = profileManagementController.loginToProfile(expectedProfileId)
       monitorFactory.waitForNextSuccessfulResult(logInProvider) // Ensure that the login succeeds.
     }

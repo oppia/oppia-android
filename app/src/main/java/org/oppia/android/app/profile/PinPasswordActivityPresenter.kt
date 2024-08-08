@@ -52,7 +52,7 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     val adminPin = args?.adminPin
     internalProfileId = args?.internalProfileId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,

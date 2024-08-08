@@ -58,7 +58,7 @@ class ClassroomListActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    internalProfileId = intent.extractCurrentUserProfileId().internalId
+    internalProfileId = intent.extractCurrentUserProfileId().loggedInInternalProfileId
     classroomListActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
   }
@@ -88,7 +88,7 @@ class ClassroomListActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

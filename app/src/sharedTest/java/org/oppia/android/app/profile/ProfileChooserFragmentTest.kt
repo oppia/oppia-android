@@ -380,7 +380,7 @@ class ProfileChooserFragmentTest {
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       it.onActivity { activity ->
         assertThat(
-          activity.intent.extractCurrentUserProfileId().internalId
+          activity.intent.extractCurrentUserProfileId().loggedInInternalProfileId
         ).isEqualTo(0)
       }
     }

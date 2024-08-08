@@ -24,7 +24,7 @@ class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivit
     setContentView(R.layout.mark_stories_completed_activity)
 
     val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.internalId ?: -1
+    internalProfileId = profileId?.loggedInInternalProfileId ?: -1
 
     if (getMarkStoriesCompletedFragment() == null) {
       val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(internalProfileId)
@@ -44,7 +44,7 @@ class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivit
 
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkStoriesCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val intent = Intent(context, MarkStoriesCompletedTestActivity::class.java)
       intent.decorateWithUserProfileId(profileId)
       return intent

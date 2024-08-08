@@ -73,7 +73,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    internalProfileId = arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     calculateScreenSize()
   }
 
@@ -100,7 +100,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // potentially make the app experience difficult for a non-sighted user.
     if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
     val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
+      .setLoggedInInternalProfileId(internalProfileId)
       .build()
 
     val featureViewStateLiveData =
@@ -140,7 +140,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         override fun onEnded() {
           if (targetList.isNotEmpty()) targetList.removeFirst()
           val profileId = ProfileId.newBuilder()
-            .setInternalId(internalProfileId)
+            .setLoggedInInternalProfileId(internalProfileId)
             .build()
           spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
         }
@@ -385,7 +385,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   companion object {
     /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return SpotlightFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)

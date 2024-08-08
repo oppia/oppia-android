@@ -31,7 +31,7 @@ class TopicViewModel @Inject constructor(
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build(),
       topicId
     ).toLiveData()
   }
@@ -39,7 +39,7 @@ class TopicViewModel @Inject constructor(
   private val topicListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
     // TODO(#4754): Replace with a mechanism that properly accounts for fully completed stories.
     topicListController.getPromotedActivityList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     ).toLiveData()
   }
 

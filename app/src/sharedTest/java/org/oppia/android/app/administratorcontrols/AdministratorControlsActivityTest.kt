@@ -150,7 +150,7 @@ class AdministratorControlsActivityTest {
 
   private val internalProfileId = 0
 
-  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -700,7 +700,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -726,7 +726,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -753,7 +753,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -780,7 +780,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
     val screenName = createAdministratorControlsActivityIntent(profileId)
       .extractCurrentAppScreenName()

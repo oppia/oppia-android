@@ -107,7 +107,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Before
   fun setUp() {
-    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    profileId1 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
   }
 
   @Test
@@ -1316,7 +1316,7 @@ class QuestionAssessmentProgressControllerTest {
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
     setUpTestApplicationWithSeed(questionSeed = 1)
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
 
@@ -1333,7 +1333,7 @@ class QuestionAssessmentProgressControllerTest {
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
     val monitor =
@@ -1353,8 +1353,8 @@ class QuestionAssessmentProgressControllerTest {
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
-    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 3 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 2 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 3 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startSuccessfulTrainingSession(arabicProfileId, TEST_SKILL_ID_LIST_01)

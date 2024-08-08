@@ -101,7 +101,7 @@ class SurveyEventsLogger @Inject constructor(
     profileId: ProfileId?
   ): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
-      .setProfileId(profileId?.internalId.toString())
+      .setProfileId(profileId?.loggedInInternalProfileId.toString())
       .setSurveyId(surveyId)
       .build()
   }

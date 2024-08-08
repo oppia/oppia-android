@@ -170,7 +170,7 @@ class TopicFragmentPresenter @Inject constructor(
     }
     analyticsController.logImportantEvent(
       eventContext,
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
     )
   }
 }

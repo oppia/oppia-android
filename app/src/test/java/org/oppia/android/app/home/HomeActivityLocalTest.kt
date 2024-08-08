@@ -116,7 +116,7 @@ class HomeActivityLocalTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId: ProfileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
   @Before
   fun setUp() {

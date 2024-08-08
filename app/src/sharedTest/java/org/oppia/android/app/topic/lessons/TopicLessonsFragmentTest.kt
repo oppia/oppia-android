@@ -189,7 +189,7 @@ class TopicLessonsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     markAllSpotlightsSeen()
   }
@@ -731,7 +731,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
@@ -787,7 +787,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -825,7 +825,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -868,7 +868,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -910,7 +910,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = false
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()

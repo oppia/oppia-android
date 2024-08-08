@@ -69,7 +69,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
           is AsyncResult.Success -> {
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
-              ProfileId.newBuilder().apply { internalId = INTERNAL_PROFILE_ID }.build(),
+              ProfileId.newBuilder().apply { loggedInInternalProfileId = INTERNAL_PROFILE_ID }.build(),
               CLASSROOM_ID,
               TOPIC_ID,
               STORY_ID,

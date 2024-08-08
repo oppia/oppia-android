@@ -230,7 +230,7 @@ class DeveloperOptionsActivityTest {
   }
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, profileId)
   }
 

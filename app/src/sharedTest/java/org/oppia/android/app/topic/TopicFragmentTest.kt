@@ -294,7 +294,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(false)
     markSpotlightSeen(FIRST_CHAPTER)
     markSpotlightSeen(TOPIC_LESSON_TAB)
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
@@ -330,7 +330,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(false)
     markSpotlightSeen(TOPIC_LESSON_TAB)
     markSpotlightSeen(FIRST_CHAPTER)
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
@@ -1026,7 +1026,7 @@ class TopicFragmentTest {
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
     val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
+      .setloggedInInternalProfileId(internalProfileId)
       .build()
     spotlightStateController.markSpotlightViewed(profileId, feature)
     testCoroutineDispatchers.runCurrent()

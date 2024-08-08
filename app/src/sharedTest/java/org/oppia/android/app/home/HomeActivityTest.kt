@@ -227,8 +227,8 @@ class HomeActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+    profileId1 = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId1).build()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
   }
@@ -1916,7 +1916,7 @@ class HomeActivityTest {
   }
 
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
@@ -2023,7 +2023,7 @@ class HomeActivityTest {
   }
 
   private fun createProfileId(internalProfileId: Int): ProfileId {
-    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    return ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
   }
 
   private fun logIntoAdminTwice() {

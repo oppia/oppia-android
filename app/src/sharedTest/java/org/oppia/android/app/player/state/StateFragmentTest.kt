@@ -220,7 +220,7 @@ class StateFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var oppiaClock: FakeOppiaClock
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
 
   @After
   fun tearDown() {
@@ -4924,7 +4924,7 @@ class StateFragmentTest {
     return launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,

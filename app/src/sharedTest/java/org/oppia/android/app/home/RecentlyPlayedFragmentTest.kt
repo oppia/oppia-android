@@ -178,7 +178,7 @@ class RecentlyPlayedFragmentTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
@@ -200,7 +200,7 @@ class RecentlyPlayedFragmentTest {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
@@ -471,7 +471,7 @@ class RecentlyPlayedFragmentTest {
     )
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
+        internalProfileId = profileId.loggedInInternalProfileId
       )
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
@@ -512,7 +512,7 @@ class RecentlyPlayedFragmentTest {
     )
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
+        internalProfileId = profileId.loggedInInternalProfileId
       )
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
@@ -560,7 +560,7 @@ class RecentlyPlayedFragmentTest {
     )
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
+        internalProfileId = profileId.loggedInInternalProfileId
       )
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
@@ -614,7 +614,7 @@ class RecentlyPlayedFragmentTest {
     )
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
+        internalProfileId = profileId.loggedInInternalProfileId
       )
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
@@ -665,7 +665,7 @@ class RecentlyPlayedFragmentTest {
     )
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
+        internalProfileId = profileId.loggedInInternalProfileId
       )
     )
     testCoroutineDispatchers.runCurrent()
@@ -691,7 +691,7 @@ class RecentlyPlayedFragmentTest {
 
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
+        internalProfileId = profileId.loggedInInternalProfileId
       )
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
@@ -844,7 +844,7 @@ class RecentlyPlayedFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
@@ -902,7 +902,7 @@ class RecentlyPlayedFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -942,7 +942,7 @@ class RecentlyPlayedFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -987,7 +987,7 @@ class RecentlyPlayedFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()

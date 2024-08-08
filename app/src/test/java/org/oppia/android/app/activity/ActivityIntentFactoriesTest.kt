@@ -125,7 +125,7 @@ class ActivityIntentFactoriesTest {
     )
 
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+    assertThat(intent.extractCurrentUserProfileId().loggedInInternalProfileId).isEqualTo(0)
     assertThat(args.topicId).isEqualTo("test_topic_id")
     assertThat(args.storyId).isEmpty()
   }
@@ -144,7 +144,7 @@ class ActivityIntentFactoriesTest {
       TopicActivityParams.getDefaultInstance()
     )
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+    assertThat(intent.extractCurrentUserProfileId().loggedInInternalProfileId).isEqualTo(0)
     assertThat(args.topicId).isEqualTo("test_topic_id")
     assertThat(args.storyId).isEqualTo("test_story_id")
   }

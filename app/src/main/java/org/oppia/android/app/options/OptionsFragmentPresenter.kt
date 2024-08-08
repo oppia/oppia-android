@@ -70,8 +70,8 @@ class OptionsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    internalProfileId = activity.intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     optionControlsViewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)

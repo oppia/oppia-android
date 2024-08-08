@@ -28,7 +28,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
     /** Returns a new [MarkStoriesCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return MarkStoriesCompletedFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)
@@ -51,7 +51,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
 
     val profileId = arguments.extractCurrentUserProfileId()
-    val internalProfileId = profileId.internalId
+    val internalProfileId = profileId.loggedInInternalProfileId
 
     var selectedStoryIdList = ArrayList<String>()
     if (savedInstanceState != null) {

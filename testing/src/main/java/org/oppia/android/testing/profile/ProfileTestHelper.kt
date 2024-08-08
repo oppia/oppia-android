@@ -90,7 +90,7 @@ class ProfileTestHelper @Inject constructor(
 
   private fun logIntoProfile(internalProfileId: Int): DataProvider<Any?> {
     return profileManagementController.loginToProfile(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     )
   }
 
