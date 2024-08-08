@@ -648,37 +648,37 @@ class CoverageReporterTest {
 
   private fun createTestFileExemptionTextProto():
     Map<String, TestFileExemptions.TestFileExemption> {
-    val testFileExemptions = TestFileExemptions.newBuilder()
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("TestExempted.kt")
-          .setTestFileNotRequired(true)
-          .build()
-      )
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
-          .setOverrideMinCoveragePercentRequired(101)
-          .build()
-      )
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
-          .setOverrideMinCoveragePercentRequired(0)
-          .build()
-      )
-      .build()
+      val testFileExemptions = TestFileExemptions.newBuilder()
+        .addTestFileExemption(
+          TestFileExemption.newBuilder()
+            .setExemptedFilePath("TestExempted.kt")
+            .setTestFileNotRequired(true)
+            .build()
+        )
+        .addTestFileExemption(
+          TestFileExemption.newBuilder()
+            .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
+            .setOverrideMinCoveragePercentRequired(101)
+            .build()
+        )
+        .addTestFileExemption(
+          TestFileExemption.newBuilder()
+            .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
+            .setOverrideMinCoveragePercentRequired(0)
+            .build()
+        )
+        .build()
 
-    val testExemptionPb = "test_exemption.pb"
-    val coverageTestExemptionTextProto = tempFolder.newFile(testExemptionPb)
-    coverageTestExemptionTextProto.outputStream().use { outputStream ->
-      testFileExemptions.writeTo(outputStream)
+      val testExemptionPb = "test_exemption.pb"
+      val coverageTestExemptionTextProto = tempFolder.newFile(testExemptionPb)
+      coverageTestExemptionTextProto.outputStream().use { outputStream ->
+        testFileExemptions.writeTo(outputStream)
+      }
+
+      val testFileExemptionsFromFile =
+        TestFileExemptions.parseFrom(coverageTestExemptionTextProto.inputStream())
+
+      return testFileExemptionsFromFile.testFileExemptionList
+        .associateBy { it.exemptedFilePath }
     }
-
-    val testFileExemptionsFromFile =
-      TestFileExemptions.parseFrom(coverageTestExemptionTextProto.inputStream())
-
-    return testFileExemptionsFromFile.testFileExemptionList
-      .associateBy { it.exemptedFilePath }
-  }
 }

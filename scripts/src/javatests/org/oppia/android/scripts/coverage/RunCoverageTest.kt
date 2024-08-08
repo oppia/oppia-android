@@ -901,7 +901,7 @@ class RunCoverageTest {
       append("## Coverage Report\n\n")
       append("### Results\n")
       append("Number of files assessed: 1\n")
-      append("Overall Coverage: **75.00%**\n")
+      append("Overall Coverage: **0.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n")
       append("### Passing coverage\n\n")
@@ -911,8 +911,8 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
-          ":x: | 0% _*_ |"
+          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
+          ":white_check_mark: | 0% _*_ |"
       )
     }
 
@@ -947,14 +947,19 @@ class RunCoverageTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    RunCoverage(
-      "${tempFolder.root}",
-      filePathList,
-      ReportFormat.MARKDOWN,
-      longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
-    ).execute()
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testExemptions
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
@@ -1233,7 +1238,7 @@ class RunCoverageTest {
       append("### Results\n")
       append("Number of files assessed: 4\n")
       append("Overall Coverage: **37.50%**\n")
-      append("Coverage Analysis: **FAIL** :x:\n\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
       append("##\n\n")
       append("### Failure Cases\n\n")
       append("| File | Failure Reason |\n")
@@ -1245,7 +1250,7 @@ class RunCoverageTest {
       append(
         "| [${filePathList.get(1).substringAfterLast("/")}]" +
           "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |\n\n"
+          ":x: | $MIN_THRESHOLD% |\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
