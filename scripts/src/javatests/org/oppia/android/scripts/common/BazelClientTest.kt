@@ -387,9 +387,9 @@ class BazelClientTest {
     val sourceContent =
       """
       package com.example
-      
+
       class AddNums {
-      
+
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
                   return if (a == 0 && b == 0) {
@@ -405,16 +405,16 @@ class BazelClientTest {
     val testContent =
       """
       package com.example
-      
+
       import org.junit.Assert.assertEquals
       import org.junit.Test
-      
+
       class AddNumsTest {
-      
+
           @Test
           fun testSumNumbers() {
               assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(3, 4), 7)
               assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
@@ -433,26 +433,28 @@ class BazelClientTest {
       "//coverage/test/java/com/example:AddNumsTest"
     )
     val expectedResult = listOf(
-      "SF:coverage/main/java/com/example/AddNums.kt",
-      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FN:3,com/example/AddNums::<init> ()V",
-      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FNDA:0,com/example/AddNums::<init> ()V",
-      "FNF:2",
-      "FNH:1",
-      "BRDA:7,0,0,1",
-      "BRDA:7,0,1,1",
-      "BRDA:7,0,2,1",
-      "BRDA:7,0,3,1",
-      "BRF:4",
-      "BRH:4",
-      "DA:3,0",
-      "DA:7,1",
-      "DA:8,1",
-      "DA:10,1",
-      "LH:3",
-      "LF:4",
-      "end_of_record"
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:4",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,1",
+        "LH:3",
+        "LF:4",
+        "end_of_record"
+      )
     )
 
     assertThat(result).isEqualTo(expectedResult)

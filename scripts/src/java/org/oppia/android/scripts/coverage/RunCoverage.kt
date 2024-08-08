@@ -106,7 +106,7 @@ class RunCoverage(
   fun execute() {
     val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
-      .filter { it.testFileNotRequired }
+      .filter { it.testFileNotRequired || it.sourceFileIsIncompatibleWithCodeCoverage }
       .map { it.exemptedFilePath }
 
     if (filePath in testFileExemptionList) {
@@ -114,12 +114,17 @@ class RunCoverage(
     } else {
       val testFilePaths = findTestFiles(repoRoot, filePath)
       check(testFilePaths.isNotEmpty()) {
-        "No appropriate test file found for $filePath"
+        "No appropriate test file found for $filePath."
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-      val coverageReports = testTargets.map { testTarget ->
+      // TODO: RD to add this check in an upstream PR & add a test for it.
+      check(testTargets.isNotEmpty()) {
+        "Missing test declaration(s) for existing test file(s): $testFilePaths."
+      }
+
+      val coverageReports = testTargets.flatMap { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
