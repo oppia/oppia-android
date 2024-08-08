@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -446,6 +447,17 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_releasePlayerMultipleTimes_doesNoThrowException() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer()
+
+    assertNoExceptionIsThrown {
+      audioPlayerController.releaseMediaPlayer()
+      audioPlayerController.releaseMediaPlayer()
+    }
+  }
+
+  @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
     val exception = assertThrows<IllegalStateException>() {
@@ -872,6 +884,14 @@ class AudioPlayerControllerTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun assertNoExceptionIsThrown(block: () -> Unit) {
+    try {
+      block()
+    } catch (e: Exception) {
+      fail("Expected no exception, but got: $e")
+    }
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -2,7 +2,6 @@ package org.oppia.android.app.classroom
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
@@ -21,11 +20,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.protobuf.MessageLite
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,7 +36,8 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
-import org.oppia.android.app.classroom.classroomlist.CLASSROOM_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.classroomlist.ALL_CLASSROOMS_HEADER_TEST_TAG
+import org.oppia.android.app.classroom.classroomlist.CLASSROOM_CARD_ICON_TEST_TAG
 import org.oppia.android.app.classroom.classroomlist.CLASSROOM_LIST_TEST_TAG
 import org.oppia.android.app.classroom.promotedlist.COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.promotedlist.COMING_SOON_TOPIC_LIST_TEST_TAG
@@ -58,6 +54,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -112,7 +109,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaLocale
@@ -199,7 +195,7 @@ class ClassroomListFragmentTest {
   @Test
   fun testFragment_allComponentsAreDisplayed() {
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(ALL_CLASSROOMS_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
   }
@@ -210,7 +206,7 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_HEADER_TEST_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(ALL_CLASSROOMS_HEADER_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
 
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToNode(
@@ -750,6 +746,21 @@ class ClassroomListFragmentTest {
   }
 
   @Test
+  fun testFragment_scrollToBottom_classroomListCollapsesAndSticks_classroomListIsVisible() {
+    composeRule.onNodeWithTag(
+      CLASSROOM_CARD_ICON_TEST_TAG + "_Science",
+      useUnmergedTree = true
+    ).assertIsDisplayed()
+
+    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToIndex(3)
+
+    composeRule.onNodeWithTag(
+      CLASSROOM_CARD_ICON_TEST_TAG + "_Science",
+      useUnmergedTree = true
+    ).assertDoesNotExist()
+  }
+
+  @Test
   fun testFragment_switchClassroom_topicListUpdatesCorrectly() {
     // Click on Science classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
@@ -862,20 +873,6 @@ class ClassroomListFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
