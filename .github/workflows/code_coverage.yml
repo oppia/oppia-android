@@ -292,14 +292,14 @@ jobs:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
-          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
+          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
       - name: Run Oppia Coverage (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
-          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
+          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:

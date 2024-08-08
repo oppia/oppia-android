@@ -168,7 +168,7 @@ class RunCoverage(
         file.outputStream().use { stream ->
           coverageReportContainer.writeTo(stream)
         }
-      } ?: throw IllegalArgumentException("No output path provided to save the proto")
+      }
 
       // Exit without generating text reports if the format is PROTO
       return
