@@ -202,7 +202,6 @@ class RunCoverageTest {
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
-      append("### Results\n")
       append("Number of files assessed: 1\n")
       append("Overall Coverage: **0.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
@@ -824,7 +823,7 @@ class RunCoverageTest {
       append("### Results\n")
       append("Number of files assessed: 1\n")
       append("Overall Coverage: **75.00%**\n")
-      append("Coverage Analysis: **FAIL** :x:\n\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
       append("##\n\n")
       append("### Failing coverage\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -904,7 +903,7 @@ class RunCoverageTest {
       append("Number of files assessed: 1\n")
       append("Overall Coverage: **75.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
-      append("##\n\n")
+      append("##\n")
       append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
@@ -1021,7 +1020,7 @@ class RunCoverageTest {
       append("Number of files assessed: 2\n")
       append("Overall Coverage: **75.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
-      append("##\n\n")
+      append("##\n")
       append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
@@ -1462,8 +1461,8 @@ class RunCoverageTest {
       append("Number of files assessed: 1\n")
       append("Overall Coverage: **50.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
-      append("##\n\n")
-      append("### Passing Cases\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -1544,8 +1543,8 @@ class RunCoverageTest {
       append("Number of files assessed: 1\n")
       append("Overall Coverage: **50.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
-      append("##\n\n")
-      append("### Passing Cases\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -1611,7 +1610,7 @@ class RunCoverageTest {
     RunCoverage(
       "${tempFolder.root}",
       filePathList,
-      ReportFormat.MARKDOWN,
+      ReportFormat.PROTO,
       longCommandExecutor,
       scriptBgDispatcher,
       testExemptions,
@@ -1791,7 +1790,7 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(filePathList.get(0)).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2138,7 +2137,8 @@ class RunCoverageTest {
       append("Number of files assessed: 1\n")
       append("Overall Coverage: **75.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
-      append("##\n\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
       append("<details>\n")
       append("<summary>Files with passing code coverage</summary><br>\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")

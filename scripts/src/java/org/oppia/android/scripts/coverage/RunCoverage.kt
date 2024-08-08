@@ -36,7 +36,7 @@ const val BOLD = "\u001B[1m"
  * - path_to_root: directory path to the root of the Oppia Android repository.
  * - list_of_relative_path_to_files: the list of relative path to the files to analyse coverage
  * - reportFormat: the format of the coverage report. Defaults to HTML if not specified.
- *    Available options: MARKDOWN, HTML.
+ *    Available options: MARKDOWN, HTML, PROTO.
  * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
  *    in minutes.
  * - path_to_output_file: path to the file in which the collected coverage reports will be printed.
@@ -56,7 +56,7 @@ const val BOLD = "\u001B[1m"
  *
  * Example with output path to save the collected coverage proto:
  *    bazel run //scripts:run_coverage -- $(pwd)
- *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
+ *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --format=PROTO
  *    --protoOutputPath=/tmp/coverage_report.pb
  */
 fun main(vararg args: String) {
