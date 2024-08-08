@@ -156,7 +156,7 @@ class ComputeChangedFiles(
       .map { it.toRelativeString(rootDirectory) }
   }
 
-  private fun filterFiles(files: List<String>) : List<String> {
+  private fun filterFiles(files: List<String>): List<String> {
     // Filtering out files that need to be ignored.
     return files.filter { file ->
       !file
@@ -176,9 +176,10 @@ class ComputeChangedFiles(
 
     val partitionedBuckets = groupedBuckets.flatMap { (strategy, buckets) ->
       when (strategy) {
-        GroupingStrategy.BUCKET_SEPARATELY -> buckets.map { (fileBucket, targets) ->
-          fileBucket.cacheBucketName to mapOf(fileBucket to targets)
-        }
+        GroupingStrategy.BUCKET_SEPARATELY ->
+          buckets.map { (fileBucket, targets) ->
+            fileBucket.cacheBucketName to mapOf(fileBucket to targets)
+          }
         GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_FILE_BUCKET_NAME to buckets)
       }
     }.toMap()

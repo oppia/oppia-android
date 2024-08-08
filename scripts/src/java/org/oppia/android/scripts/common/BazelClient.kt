@@ -156,7 +156,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
 
     val hasShardCount = buildRule.any { "shard_count" in it }
     if (hasShardCount) {
-    executeBazelCommand(
+      executeBazelCommand(
         "test",
         "--collect_code_coverage",
         "--combined_report=lcov",

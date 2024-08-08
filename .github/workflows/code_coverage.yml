@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
-      can_skip_tests: ${{ steps.compute-file-matrix.outputs.can_skip_tests }}
+      can_skip_files: ${{ steps.compute-file-matrix.outputs.can_skip_files }}
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -96,16 +96,16 @@ jobs:
           echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
           echo "::set-output name=matrix::{\"changed-files-bucket-base64-encoded-shard\":[$FILE_BUCKET_LIST]}"
           if [[ ! -z "$FILE_BUCKET_LIST" ]]; then
-            echo "::set-output name=can_skip_tests::false"
+            echo "::set-output name=can_skip_files::false"
           else
-            echo "::set-output name=can_skip_tests::true"
+            echo "::set-output name=can_skip_files::true"
             echo "No files are affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
           fi
 
   code_coverage_run:
     name: Run Code Coverage
     needs: compute_changed_files
-    if: ${{ needs.compute_changed_files.outputs.can_skip_tests != 'true' }}
+    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -311,5 +311,5 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Check coverages passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_tests != 'true' && needs.code_coverage_run.result != 'success' }}
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' }}
         run: exit 1

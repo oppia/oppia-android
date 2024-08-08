@@ -161,7 +161,8 @@ class ComputeChangedFilesTest {
 
     // Since the develop branch is checked out, all files should be returned.
     assertThat(reportedFiles).hasSize(1)
-    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
   }
 
   @Test
@@ -189,7 +190,6 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles.first().changedFilesList)
       .containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
   }
-
 
   @Test
   fun testUtility_featureBranch_fileChange_committed_returnsChangedFile() {
@@ -265,7 +265,12 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     createAndCommitFile("First", subPackage = "app")
     switchToFeatureBranch()
-    moveFile(oldFileName = "First", oldSubPackage = "app", newFileName = "RenamedFile", newSubPackage = "domain")
+    moveFile(
+      oldFileName = "First",
+      oldSubPackage = "app",
+      newFileName = "RenamedFile",
+      newSubPackage = "domain"
+    )
 
     val reportedFiles = runScript()
 
@@ -286,21 +291,32 @@ class ComputeChangedFilesTest {
 
     // Changing multiple files independently should be reflected in the script's results.
     assertThat(reportedFiles).hasSize(1)
-    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt", "app/Third.kt")
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt", "app/Third.kt")
   }
 
   @Test
   fun testUtility_developBranch_instrumentationModuleChanged_instrumentationFilesAreIgnored() {
     initializeEmptyGitRepository()
-    createFiles("InstrumentationFile", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player")
-    createFiles("Robolectric", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app")
-    createFiles("Third", subPackage = "instrumentation")
+    createFiles(
+      "InstrumentationFile",
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
+    )
+    createFiles(
+      "Robolectric",
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
+    )
+    createFiles(
+      "Third",
+      subPackage = "instrumentation"
+    )
 
     val reportedFiles = runScript()
 
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).doesNotContain(
-      "instrumentation/src/javatests/org/oppia/android/instrumentation/player/InstrumentationFile.kt"
+      "instrumentation/src/javatests/org/oppia/android/" +
+        "instrumentation/player/InstrumentationFile.kt"
     )
     assertThat(reportedFiles.first().changedFilesList).contains(
       "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
@@ -315,15 +331,25 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     createAndCommitFile("First", "Second", subPackage = "app")
     switchToFeatureBranch()
-    createFiles("InstrumentationFile", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player")
-    createFiles("Robolectric", subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app")
-    createFiles("Third", subPackage = "instrumentation")
+    createFiles(
+      "InstrumentationFile",
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
+    )
+    createFiles(
+      "Robolectric",
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
+    )
+    createFiles(
+      "Third",
+      subPackage = "instrumentation"
+    )
 
     val reportedFiles = runScript()
 
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).doesNotContain(
-      "instrumentation/src/javatests/org/oppia/android/instrumentation/player/InstrumentationFile.kt"
+      "instrumentation/src/javatests/org/oppia/android/" +
+        "instrumentation/player/InstrumentationFile.kt"
     )
     assertThat(reportedFiles.first().changedFilesList).contains(
       "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
@@ -555,7 +581,11 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles[0].changedFilesList).isNotEmpty()
     assertThat(reportedFiles[1].changedFilesList).isNotEmpty()
     assertThat(allFiles)
-      .containsExactly("scripts/ScriptsFile1.kt", "scripts/ScriptsFile2.kt", "scripts/ScriptsFile3.kt")
+      .containsExactly(
+        "scripts/ScriptsFile1.kt",
+        "scripts/ScriptsFile2.kt",
+        "scripts/ScriptsFile3.kt"
+      )
   }
 
   @Test
@@ -573,7 +603,11 @@ class ComputeChangedFilesTest {
     // Testing files are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList)
-      .containsExactly("testing/TestingFile1.kt", "testing/TestingFile2.kt", "testing/TestingFile3.kt")
+      .containsExactly(
+        "testing/TestingFile1.kt",
+        "testing/TestingFile2.kt",
+        "testing/TestingFile3.kt"
+      )
   }
 
   @Test
@@ -591,7 +625,11 @@ class ComputeChangedFilesTest {
     // Utility tests are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList)
-      .containsExactly("utility/UtilityFile1.kt", "utility/UtilityFile2.kt", "utility/UtilityFile3.kt")
+      .containsExactly(
+        "utility/UtilityFile1.kt",
+        "utility/UtilityFile2.kt",
+        "utility/UtilityFile3.kt"
+      )
   }
 
   @Test
@@ -660,9 +698,9 @@ class ComputeChangedFilesTest {
   }
 
   /**
-   * Runs the compute_affected_files utility & returns all of the output lines. Note that the output
-   * here is that which is saved directly to the output file, not debug lines printed to the
-   * console.
+   * Runs the compute_affected_files utility & returns all of the output lines.
+   * Note that the output here is that which is saved directly to the output file,
+   * not debug lines printed to the console.
    */
   private fun runScript(
     currentHeadHash: String = computeMergeBase("develop"),
@@ -709,8 +747,8 @@ class ComputeChangedFilesTest {
   }
 
   private fun initializeEmptyGitRepository() {
-    // Initialize the git repository with a base 'develop' branch & an initial empty commit (so that
-    // there's a HEAD commit).
+    // Initialize the git repository with a base 'develop' branch & an initial empty commit
+    // (so that there's a HEAD commit).
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     testGitRepository.checkoutNewBranch("develop")
@@ -750,7 +788,12 @@ class ComputeChangedFilesTest {
     testGitRepository.commit(message = "Modified file $fileName")
   }
 
-  private fun moveFile(oldFileName: String, oldSubPackage: String, newFileName: String, newSubPackage: String) {
+  private fun moveFile(
+    oldFileName: String,
+    oldSubPackage: String,
+    newFileName: String,
+    newSubPackage: String
+  ) {
     val oldFilePath = File(tempFolder.root, "$oldSubPackage/$oldFileName.kt")
     val newFilePath = File(tempFolder.root, "$newSubPackage/$newFileName.kt")
 

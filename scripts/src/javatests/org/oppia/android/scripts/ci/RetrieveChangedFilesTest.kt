@@ -106,7 +106,15 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_invalidBase64_throwsException() {
-    assertThrows<IllegalArgumentException>() { runScript("${tempFolder.root}", "badbase64", "file1", "file2", "file3") }
+    assertThrows<IllegalArgumentException>() {
+      runScript(
+        "${tempFolder.root}",
+        "badbase64",
+        "file1",
+        "file2",
+        "file3"
+      )
+    }
   }
 
   @Test
@@ -121,7 +129,13 @@ class RetrieveChangedFilesTest {
       }.build()
     )
 
-    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+    runScript(
+      tempFolder.root.absolutePath,
+      base64String,
+      cacheNameFilePath,
+      changedFilePath,
+      testTargetFilePath
+    )
 
     assertThat(File(cacheNameFilePath).readText().trim()).isEqualTo("example")
   }
@@ -138,7 +152,13 @@ class RetrieveChangedFilesTest {
       }.build()
     )
 
-    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+    runScript(
+      tempFolder.root.absolutePath,
+      base64String,
+      cacheNameFilePath,
+      changedFilePath,
+      testTargetFilePath
+    )
 
     assertThat(File(changedFilePath).readText().trim()).isEqualTo(
       "//example/to/a/file/Demonstration.kt"
@@ -158,7 +178,13 @@ class RetrieveChangedFilesTest {
       }.build()
     )
 
-    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+    runScript(
+      tempFolder.root.absolutePath,
+      base64String,
+      cacheNameFilePath,
+      changedFilePath,
+      testTargetFilePath
+    )
 
     assertThat(File(changedFilePath).readText().trim()).isEqualTo(
       "//example/to/a/file/FirstDemonstration.kt //example/to/a/file/SecondDemonstration.kt"
@@ -187,7 +213,13 @@ class RetrieveChangedFilesTest {
       }.build()
     )
 
-    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+    runScript(
+      tempFolder.root.absolutePath,
+      base64String,
+      cacheNameFilePath,
+      changedFilePath,
+      testTargetFilePath
+    )
 
     assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
       "//coverage/test/java/com/example:SourceTest"
@@ -225,7 +257,13 @@ class RetrieveChangedFilesTest {
       }.build()
     )
 
-    runScript(tempFolder.root.absolutePath, base64String, cacheNameFilePath, changedFilePath, testTargetFilePath)
+    runScript(
+      tempFolder.root.absolutePath,
+      base64String,
+      cacheNameFilePath,
+      changedFilePath,
+      testTargetFilePath
+    )
 
     assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
       "//coverage/test/java/com/example:Source1Test //coverage/test/java/com/example:Source2Test"
