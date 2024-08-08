@@ -114,7 +114,7 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/example"
     )
 
-    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
       "//coverage/example:AddNumsTest"
     )
 
@@ -129,7 +129,8 @@ class CoverageRunnerTest {
           .build()
       ).build()
 
-    assertThat(result).isEqualTo(expectedResult)
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
   }
 
   @Test
@@ -181,7 +182,7 @@ class CoverageRunnerTest {
       """.trimIndent()
     )
 
-    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
       "//coverage/test/java/com/example:SubNumsTest"
     )
 
@@ -193,7 +194,8 @@ class CoverageRunnerTest {
           .build()
       ).build()
 
-    assertThat(result).isEqualTo(expectedResult)
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
   }
 
   @Test
@@ -208,7 +210,7 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
       "//coverage/test/java/com/example:AddNumsTest"
     )
 
@@ -250,7 +252,8 @@ class CoverageRunnerTest {
           .build()
       ).build()
 
-    assertThat(result).isEqualTo(expectedResult)
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {

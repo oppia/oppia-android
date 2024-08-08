@@ -204,14 +204,18 @@ class RunCoverage(
           .setFailure(
             CoverageFailure.newBuilder()
               .setFilePath(filePath)
-              .setFailureMessage("No appropriate test file found for $filePath")
+              .setFailureMessage("No appropriate test file found for $filePath.")
               .build()
           ).build()
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-      val coverageReports = testTargets.map { testTarget ->
+      check(testTargets.isNotEmpty()) {
+        "Missing test declaration(s) for existing test file(s): $testFilePaths."
+      }
+
+      val coverageReports = testTargets.flatMap { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
