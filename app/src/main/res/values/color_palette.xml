@@ -287,7 +287,8 @@
   <!-- CLASSROOM -->
   <color name="color_palette_classroom_shared_header_text_color">@color/color_def_black</color>
   <color name="color_palette_classroom_card_color">@color/color_def_white</color>
-  <color name="color_palette_classroom_card_selected_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_card_selected_color">@color/color_def_pale_green_2</color>
+  <color name="color_palette_classroom_card_icon_stroke_color">@color/color_def_oppia_green</color>
   <color name="color_palette_classroom_shared_text_color">@color/color_def_green</color>
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_white</color>
   <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_1</color>
