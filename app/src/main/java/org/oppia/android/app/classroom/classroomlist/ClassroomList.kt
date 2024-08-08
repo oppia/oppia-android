@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,8 +51,7 @@ fun ClassroomList(
       .testTag(CLASSROOM_LIST_TEST_TAG)
       .background(
         color = colorResource(id = R.color.component_color_shared_screen_primary_background_color)
-      )
-      .fillMaxWidth(),
+      ),
     contentPadding = PaddingValues(
       start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
       top = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
