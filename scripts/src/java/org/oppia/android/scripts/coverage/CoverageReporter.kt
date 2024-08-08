@@ -342,7 +342,10 @@ class CoverageReporter(
         append(failureBelowThresholdTableRows)
         if (exemptedFailureTableRows.isNotEmpty()) {
           append(exemptedFailureTableRows)
-          append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+          append(
+            "\n\n>**_*_** represents tests with custom overridden " +
+              "pass/fail coverage thresholds"
+          )
         }
       } else if (exemptedFailureTableRows.isNotEmpty()) {
         append("\n\n")
@@ -350,7 +353,10 @@ class CoverageReporter(
         append("\n\n")
         append(tableHeader)
         append(exemptedFailureTableRows)
-        append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+        append(
+          "\n\n>**_*_** represents tests with custom overridden " +
+            "pass/fail coverage thresholds"
+        )
       }
     }
 
@@ -367,12 +373,18 @@ class CoverageReporter(
           append(successTableRows)
           if (exemptedSuccessTableRows.isNotEmpty()) {
             append(exemptedSuccessTableRows)
-            append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+            append(
+              "\n\n>**_*_** represents tests with custom overridden " +
+                "pass/fail coverage thresholds"
+            )
           }
         } else if (exemptedSuccessTableRows.isNotEmpty()) {
           append(tableHeader)
           append(exemptedSuccessTableRows)
-          append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+          append(
+            "\n\n>**_*_** represents tests with custom overridden " +
+              "pass/fail coverage thresholds"
+          )
         }
         append("\n</details>")
       }
@@ -422,7 +434,9 @@ class CoverageReporter(
           totalLinesHit, totalLinesFound
         )
 
-        val threshold = testFileExemptionList[filePath]?.overrideMinCoveragePercentRequired ?: MIN_THRESHOLD
+        val threshold = testFileExemptionList[filePath]
+          ?.overrideMinCoveragePercentRequired
+          ?: MIN_THRESHOLD
         if (coveragePercentage < threshold) return CoverageCheck.FAIL
       }
     }
@@ -485,7 +499,7 @@ class CoverageReporter(
               |Covered File: $filePath
               |Coverage percentage: $formattedCoveragePercentage% covered
               |Line coverage: $totalLinesHit / $totalLinesFound lines covered
-              |Minimum Required: $minRequiredCoverage% ${if (exemption != null) "(exemption)" else ""}
+              |Minimum Required: $minRequiredCoverage% "${exemption?.let { "(exemption)" } ?: ""}"
               |------------------------
               """.trimMargin().prependIndent("  ")
             )

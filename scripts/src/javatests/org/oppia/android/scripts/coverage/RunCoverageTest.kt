@@ -9,8 +9,8 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.CoverageReportContainer
+import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.oppia.android.scripts.testing.TestBazelWorkspace
@@ -533,7 +533,7 @@ class RunCoverageTest {
 
     val expectedResult = buildString {
       append("## Coverage Report\n\n")
-    append("### Results\n")
+      append("### Results\n")
       append("Number of files assessed: 2\n")
       append("Overall Coverage: **62.50%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
@@ -2372,7 +2372,8 @@ class RunCoverageTest {
   }
 
   private fun readFinalMdReport(): String {
-    return File("${tempFolder.root}" +
+    return File(
+      "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
     ).readText()
   }
@@ -2399,7 +2400,7 @@ class RunCoverageTest {
           }
         }
       }
-      """.trimIndent()
+    """.trimIndent()
   }
 
   private fun getAddNumsTestContent(): String {
@@ -2417,7 +2418,7 @@ class RunCoverageTest {
           assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
         }
       }
-      """.trimIndent()
+    """.trimIndent()
   }
 
   private fun getLowTestSourceContent(): String {
@@ -2435,7 +2436,7 @@ class RunCoverageTest {
           }
         }
       }
-      """.trimIndent()
+    """.trimIndent()
   }
 
   private fun getLowTestTestContent(): String {
@@ -2451,7 +2452,7 @@ class RunCoverageTest {
           assertEquals(1, 1)
         }
       }
-      """.trimIndent()
+    """.trimIndent()
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {

@@ -646,7 +646,8 @@ class CoverageReporterTest {
     ).readText()
   }
 
-  private fun createTestFileExemptionTextProto(): Map<String, TestFileExemptions.TestFileExemption> {
+  private fun createTestFileExemptionTextProto():
+    Map<String, TestFileExemptions.TestFileExemption> {
     val testFileExemptions = TestFileExemptions.newBuilder()
       .addTestFileExemption(
         TestFileExemption.newBuilder()

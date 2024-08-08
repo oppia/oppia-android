@@ -3,7 +3,6 @@ package org.oppia.android.scripts.coverage
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageDetails
@@ -164,13 +163,11 @@ class RunCoverage(
 
     if (reportFormat == ReportFormat.PROTO) {
       protoOutputPath?.let { path ->
-
         val file = File(path)
         file.parentFile?.mkdirs()
         file.outputStream().use { stream ->
           coverageReportContainer.writeTo(stream)
         }
-
       } ?: throw IllegalArgumentException("No output path provided to save the proto")
 
       // Exit without generating text reports if the format is PROTO
@@ -235,12 +232,12 @@ class RunCoverage(
   private fun combineCoverageReports(
     coverageResultList: List<CoverageReport>
   ): CoverageReportContainer {
-      val containerBuilder = CoverageReportContainer.newBuilder()
-      coverageResultList.forEach { report ->
-        containerBuilder.addCoverageReport(report)
-      }
-      return containerBuilder.build()
+    val containerBuilder = CoverageReportContainer.newBuilder()
+    coverageResultList.forEach { report ->
+      containerBuilder.addCoverageReport(report)
     }
+    return containerBuilder.build()
+  }
 
   private fun calculateAggregateCoverageReport(
     coverageReports: List<CoverageReport>
