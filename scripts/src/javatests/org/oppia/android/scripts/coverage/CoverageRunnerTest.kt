@@ -103,7 +103,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_withIncorrectPackageStructure_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_withIncorrectPackageStructure_generatesFailureReport() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -133,7 +133,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_withNoDepsToSourceFile_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_withNoDepsToSourceFile_generatesFailureReport() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",

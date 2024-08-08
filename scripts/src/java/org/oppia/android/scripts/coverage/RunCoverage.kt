@@ -3,7 +3,6 @@ package org.oppia.android.scripts.coverage
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageDetails
@@ -36,7 +35,7 @@ const val BOLD = "\u001B[1m"
  * - path_to_root: directory path to the root of the Oppia Android repository.
  * - list_of_relative_path_to_files: the list of relative path to the files to analyse coverage
  * - reportFormat: the format of the coverage report. Defaults to HTML if not specified.
- *    Available options: MARKDOWN, HTML.
+ *    Available options: MARKDOWN, HTML, PROTO.
  * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
  *    in minutes.
  * - path_to_output_file: path to the file in which the collected coverage reports will be printed.
@@ -56,8 +55,8 @@ const val BOLD = "\u001B[1m"
  *
  * Example with output path to save the collected coverage proto:
  *    bazel run //scripts:run_coverage -- $(pwd)
- *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
- *    --protoOutputPath=/tmp/coverage_report.proto64
+ *    utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --format=PROTO
+ *    --protoOutputPath=/tmp/coverage_report.pb
  */
 fun main(vararg args: String) {
   val repoRoot = args[0]
@@ -84,8 +83,10 @@ fun main(vararg args: String) {
   val reportFormat = when (format) {
     "HTML" -> ReportFormat.HTML
     "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
+    "PROTO" -> ReportFormat.PROTO
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
+  println("format: $reportFormat")
 
   val protoOutputPath = args.find { it.startsWith("--protoOutputPath") }
     ?.substringAfter("=")
@@ -95,6 +96,8 @@ fun main(vararg args: String) {
       "File doesn't exist: $filePath."
     }
   }
+
+  val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
@@ -111,6 +114,7 @@ fun main(vararg args: String) {
       reportFormat,
       commandExecutor,
       scriptBgDispatcher,
+      testFileExemptionTextProto,
       protoOutputPath
     ).execute()
   }
@@ -130,12 +134,12 @@ class RunCoverage(
   private val reportFormat: ReportFormat,
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val testFileExemptionTextProto: String,
   private val protoOutputPath: String? = null
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
 
   private val rootDirectory = File(repoRoot).absoluteFile
-  private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   private val testFileExemptionList by lazy {
     loadTestFileExemptionsProto(testFileExemptionTextProto)
       .testFileExemptionList
@@ -157,13 +161,25 @@ class RunCoverage(
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
 
-    protoOutputPath?.let { path ->
-      File(path).printWriter().use { writer ->
-        writer.println(coverageReportContainer.toCompressedBase64())
-      }
+    if (reportFormat == ReportFormat.PROTO) {
+      protoOutputPath?.let { path ->
+        val file = File(path)
+        file.parentFile?.mkdirs()
+        file.outputStream().use { stream ->
+          coverageReportContainer.writeTo(stream)
+        }
+      } ?: throw IllegalArgumentException("No output path provided to save the proto")
+
+      // Exit without generating text reports if the format is PROTO
+      return
     }
 
-    val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
+    val reporter = CoverageReporter(
+      repoRoot,
+      coverageReportContainer,
+      reportFormat,
+      testFileExemptionList
+    )
     val coverageStatus = reporter.generateRichTextReport()
 
     when (coverageStatus) {
@@ -213,14 +229,15 @@ class RunCoverage(
     }
   }
 
-  private fun combineCoverageReports(coverageResultList: List<CoverageReport>):
-    CoverageReportContainer {
-      val containerBuilder = CoverageReportContainer.newBuilder()
-      coverageResultList.forEach { report ->
-        containerBuilder.addCoverageReport(report)
-      }
-      return containerBuilder.build()
+  private fun combineCoverageReports(
+    coverageResultList: List<CoverageReport>
+  ): CoverageReportContainer {
+    val containerBuilder = CoverageReportContainer.newBuilder()
+    coverageResultList.forEach { report ->
+      containerBuilder.addCoverageReport(report)
     }
+    return containerBuilder.build()
+  }
 
   private fun calculateAggregateCoverageReport(
     coverageReports: List<CoverageReport>
@@ -329,19 +346,6 @@ private fun findSourceFile(
     .map { File(repoRootFile, it) }
     .filter(File::exists)
     .map { it.toRelativeString(rootDirectory) }
-}
-
-private fun getReportOutputPath(
-  repoRoot: String,
-  filePath: String,
-  reportFormat: ReportFormat
-): String {
-  val fileWithoutExtension = filePath.substringBeforeLast(".")
-  val defaultFilename = when (reportFormat) {
-    ReportFormat.HTML -> "coverage.html"
-    ReportFormat.MARKDOWN -> "coverage.md"
-  }
-  return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {

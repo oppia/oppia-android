@@ -61,17 +61,23 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) return generateFailedCoverageReport(
-      bazelTestTarget,
-      "Source File: $extractedFileName not found in the coverage data"
-    )
-    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
-      it.startsWith("end_of_record")
+    if (sfStartIdx == -1) {
+      return generateFailedCoverageReport(
+        bazelTestTarget,
+        "Source File: $extractedFileName not found in the coverage data"
+      )
     }
-    if (eofIdx == -1) return generateFailedCoverageReport(
-      bazelTestTarget,
-      "End of record for the test target $bazelTestTarget not found in the coverage report"
-    )
+    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size)
+      .indexOfFirst {
+        it.startsWith("end_of_record")
+      }
+
+    if (eofIdx == -1) {
+      return generateFailedCoverageReport(
+        bazelTestTarget,
+        "End of record for the test target $bazelTestTarget not found in the coverage report"
+      )
+    }
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
 
