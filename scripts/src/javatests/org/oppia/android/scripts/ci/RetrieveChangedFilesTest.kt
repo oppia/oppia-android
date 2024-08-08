@@ -20,8 +20,6 @@ import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /** Tests for the retrieve_changed_files utility. */
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
 class RetrieveChangedFilesTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
