@@ -4,6 +4,7 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
+import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
 import java.io.File
@@ -12,9 +13,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 private const val COMPUTE_ALL_FILES_PREFIX = "compute_all_files="
-private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
-private const val MAX_TEST_COUNT_PER_MEDIUM_SHARD = 25
-private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
+private const val MAX_FILE_COUNT_PER_LARGE_SHARD = 50
+private const val MAX_FILE_COUNT_PER_MEDIUM_SHARD = 25
+private const val MAX_FILE_COUNT_PER_SMALL_SHARD = 15
 
 /**
  * The main entrypoint for computing the list of changed files based on changes in the local
@@ -29,9 +30,9 @@ private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
  * - path_to_output_file: path to the file in which the changed files will be printed.
  * - merge_base_commit: the base commit against which the local changes will be compared when
- *     determining which tests to run. When running outside of CI you can use the result of running:
+ *     determining which files to run. When running outside of CI you can use the result of running:
  *     'git merge-base develop HEAD'
- * - compute_all_tests: whether to compute a list of all files to run.
+ * - compute_all_files: whether to compute a list of all files to run.
  *
  * Example:
  *   bazel run //scripts:compute_changed_files -- $(pwd) /tmp/changed_file_buckets.proto64 \\
@@ -64,34 +65,23 @@ fun main(args: Array<String>) {
   println("Compute All Files Setting set to: $computeAllFilesSetting")
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     ComputeChangedFiles(scriptBgDispatcher)
-//      .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
-      .compute(pathToRoot, pathToOutputFile, baseCommit)
-  }
-}
-
-// Update this later
-// Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
-private fun String.toBooleanStrictOrNull(): Boolean? {
-  return when (lowercase(Locale.US)) {
-    "false" -> false
-    "true" -> true
-    else -> null
+      .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
   }
 }
 
 /** Utility used to compute changed files. */
 class ComputeChangedFiles(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
-  val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
-  val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
+  val maxFileCountPerLargeShard: Int = MAX_FILE_COUNT_PER_LARGE_SHARD,
+  val maxFileCountPerMediumShard: Int = MAX_FILE_COUNT_PER_MEDIUM_SHARD,
+  val maxFileCountPerSmallShard: Int = MAX_FILE_COUNT_PER_SMALL_SHARD,
   val commandExecutor: CommandExecutor =
     CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
 ) {
   private companion object {
-    private const val GENERIC_TEST_BUCKET_NAME = "generic"
+    private const val GENERIC_FILE_BUCKET_NAME = "generic"
   }
 
   /**
@@ -108,7 +98,7 @@ class ComputeChangedFiles(
     pathToRoot: String,
     pathToOutputFile: String,
     baseCommit: String,
-//    computeAllFilesSetting: Boolean
+    computeAllFilesSetting: Boolean
   ) {
     val rootDirectory = File(pathToRoot).absoluteFile
     check(rootDirectory.isDirectory) { "Expected '$pathToRoot' to be a directory" }
@@ -122,26 +112,132 @@ class ComputeChangedFiles(
     println("Current branch: ${gitClient.currentBranch}.")
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
-    val changedFiles = computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
-    val ktFiles = changedFiles.filter { it.endsWith(".kt") }
+    val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
+    val changedFiles = if (computeAllFilesSetting || currentBranch == "develop") {
+      computeAllFiles(rootDirectory, pathToRoot)
+    } else computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory, pathToRoot)
 
-    val groupedBuckets = ktFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
+    val filteredFiles = filterFiles(changedFiles)
+    println()
+    println("Changed Files:")
+    println(filteredFiles.joinToString(separator = "\n") { "- $it" })
+
+    val changedFileBuckets = bucketFiles(filteredFiles)
+    val encodedFileBucketEntries = changedFileBuckets
+      .associateBy { it.toCompressedBase64() }
+      .entries.shuffled()
+
+    File(pathToOutputFile).printWriter().use { writer ->
+      encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
+        writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
+      }
+    }
+  }
+
+  private fun computeAllFiles(
+    rootDirectory: File,
+    pathToRoot: String
+  ): List<String> {
+    val searchFiles = RepositoryFile.collectSearchFiles(
+      repoPath = pathToRoot,
+      expectedExtension = ".kt",
+    )
+
+    return searchFiles
+      .filter { it.extension == "kt" && !it.nameWithoutExtension.endsWith("Test") }
+      .map { it.toRelativeString(rootDirectory) }
+  }
+
+  private fun computeChangedFilesForNonDevelopBranch(
+    gitClient: GitClient,
+    rootDirectory: File,
+    pathToRoot: String
+  ): List<String> {
+    val changedKtFiles = gitClient.committedFiles
+      .map { File(rootDirectory, it) }
+      .filter { it.exists() }
+      .map { it.toRelativeString(rootDirectory) }
+      .filter { it.endsWith(".kt") }
+
+    return changedKtFiles
+      .map { changedKtFile ->
+        when {
+          changedKtFile.endsWith("Test.kt") -> {
+            mapTestFileToSourceFile(rootDirectory, pathToRoot, changedKtFile)
+          }
+          changedKtFile.endsWith(".kt") -> changedKtFile
+          else -> null
+        }
+      }
+      .filterNotNull()
+      .distinct()
+  }
+
+  private fun filterFiles(files: List<String>): List<String> {
+    // Filter out instrumentation files since code coverage only runs on unit tests.
+    return files.filter { file ->
+      !file
+        .startsWith(
+          "instrumentation/src/javatests/org/oppia/android/instrumentation/player",
+          ignoreCase = true
+        )
+    }
+  }
+
+  private fun mapTestFileToSourceFile(
+    rootDirectory: File,
+    repoRoot: String,
+    filePath: String
+  ): String? {
+    val repoRootFile = File(repoRoot).absoluteFile
+
+    val possibleSourceFilePaths = when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
+      }
+      filePath.startsWith("app/") -> {
+        when {
+          filePath.contains("/sharedTest/") -> {
+            listOf(filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"))
+          }
+          filePath.contains("/test/") -> {
+            listOf(
+              filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
+              filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
+            )
+          }
+          else -> emptyList()
+        }
+      }
+      else -> {
+        listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
+      }
+    }
+
+    return possibleSourceFilePaths
+      .mapNotNull { path ->
+        val file = File(repoRootFile, path)
+        file.takeIf { it.exists() }?.toRelativeString(rootDirectory)
+      }
+      .firstOrNull()
+  }
+
+  private fun bucketFiles(filteredFiles: List<String>): List<ChangedFilesBucket> {
+    val groupedBuckets = filteredFiles.groupBy { FileBucket.retrieveCorrespondingFileBucket(it) }
       .entries.groupBy(
         keySelector = { checkNotNull(it.key).groupingStrategy },
         valueTransform = { checkNotNull(it.key) to it.value }
       ).mapValues { (_, fileLists) -> fileLists.toMap() }
 
-    val partitionedBuckets: Map<String, Map<FileBucket, List<String>>> =
-      groupedBuckets.entries.flatMap { (strategy, buckets) ->
-        return@flatMap when (strategy) {
-          GroupingStrategy.BUCKET_SEPARATELY -> {
-            buckets.mapValues { (fileBucket, targets) -> mapOf(fileBucket to targets) }
-              .mapKeys { (fileBucket, _) -> fileBucket.cacheBucketName }
-              .entries.map { (cacheName, bucket) -> cacheName to bucket }
+    val partitionedBuckets = groupedBuckets.flatMap { (strategy, buckets) ->
+      when (strategy) {
+        GroupingStrategy.BUCKET_SEPARATELY ->
+          buckets.map { (fileBucket, targets) ->
+            fileBucket.cacheBucketName to mapOf(fileBucket to targets)
           }
-          GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
-        }
-      }.toMap()
+        GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_FILE_BUCKET_NAME to buckets)
+      }
+    }.toMap()
 
     val shardedBuckets: Map<String, List<List<String>>> =
       partitionedBuckets.mapValues { (_, bucketMap) ->
@@ -150,19 +246,18 @@ class ComputeChangedFiles(
           "Error: expected all buckets in the same partition to share a sharding strategy:" +
             " ${bucketMap.keys} (strategies: $shardingStrategies)"
         }
-        val maxTestCountPerShard = when (shardingStrategies.first()) {
-          ShardingStrategy.LARGE_PARTITIONS -> maxTestCountPerLargeShard
-          ShardingStrategy.MEDIUM_PARTITIONS -> maxTestCountPerMediumShard
-          ShardingStrategy.SMALL_PARTITIONS -> maxTestCountPerSmallShard
+        val maxFileCountPerShard = when (shardingStrategies.first()) {
+          ShardingStrategy.LARGE_PARTITIONS -> maxFileCountPerLargeShard
+          ShardingStrategy.MEDIUM_PARTITIONS -> maxFileCountPerMediumShard
+          ShardingStrategy.SMALL_PARTITIONS -> maxFileCountPerSmallShard
         }
         val allPartitionFiles = bucketMap.values.flatten()
 
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
-        allPartitionFiles.shuffled().chunked(maxTestCountPerShard)
+        allPartitionFiles.shuffled().chunked(maxFileCountPerShard)
       }
-    println("Sharded Buckets: $shardedBuckets")
 
-    val computedBuckets = shardedBuckets.entries.flatMap { (bucketName, shardedFiles) ->
+    return shardedBuckets.entries.flatMap { (bucketName, shardedFiles) ->
       shardedFiles.map { files ->
         ChangedFilesBucket.newBuilder().apply {
           cacheBucketName = bucketName
@@ -170,28 +265,6 @@ class ComputeChangedFiles(
         }.build()
       }
     }
-
-    val encodedFileBucketEntries = computedBuckets
-      .associateBy { it.toCompressedBase64() }
-      .entries.shuffled()
-    File(pathToOutputFile).printWriter().use { writer ->
-      encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
-        writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
-      }
-    }
-  }
-
-  private fun computeChangedFilesForNonDevelopBranch(
-    gitClient: GitClient,
-    rootDirectory: File
-  ): List<String> {
-    // Update later
-    val changedFiles = gitClient.changedFiles.filter { filepath ->
-      File(rootDirectory, filepath).exists()
-    }.toSet()
-    println("Changed files (per Git, ${changedFiles.size} total): $changedFiles")
-
-    return changedFiles.toList()
   }
 
   private enum class FileBucket(

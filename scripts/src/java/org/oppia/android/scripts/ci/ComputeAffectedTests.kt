@@ -134,13 +134,10 @@ class ComputeAffectedTests(
     // Bucket the targets & then shuffle them so that shards are run in different orders each time
     // (to avoid situations where the longest/most expensive tests are run last).
     val affectedTestBuckets = bucketTargets(filteredTestTargets)
-    println("Affected Test Buckets: $affectedTestBuckets")
     val encodedTestBucketEntries =
       affectedTestBuckets.associateBy { it.toCompressedBase64() }.entries.shuffled()
-    println("Encoded Test Buckets: $encodedTestBucketEntries")
     File(pathToOutputFile).printWriter().use { writer ->
       encodedTestBucketEntries.forEachIndexed { index, (encoded, bucket) ->
-        println("Shard index: $index, encoded: $encoded")
         writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
       }
     }
@@ -225,7 +222,6 @@ class ComputeAffectedTests(
           keySelector = { checkNotNull(it.key).groupingStrategy },
           valueTransform = { checkNotNull(it.key) to it.value }
         ).mapValues { (_, bucketLists) -> bucketLists.toMap() }
-    println("Grouped Buckets: $groupedBuckets")
 
     // Next, properly segment buckets by splitting out individual ones and collecting like one:
     // 5. Convert to: Map<String, Map<TestBucket, List<String>>>
@@ -245,7 +241,6 @@ class ComputeAffectedTests(
           GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
         }
       }.toMap()
-    println("Partitioned Buckets: $partitionedBuckets")
 
     // Next, collapse the test bucket lists & partition them based on the common sharding strategy
     // for each group:
@@ -267,7 +262,6 @@ class ComputeAffectedTests(
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
         allPartitionTargets.shuffled().chunked(maxTestCountPerShard)
       }
-    println("Sharded Buckets: $shardedBuckets")
 
     // Finally, compile into a list of protos:
     // 7. Convert to List<AffectedTestsBucket>

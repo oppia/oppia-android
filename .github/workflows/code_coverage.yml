@@ -12,23 +12,23 @@ on:
       - develop
 
 jobs:
-#  check_unit_tests_completed:
-#    name: Check unit test completed
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Wait for unit tests to checks
-#        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
-#        with:
-#          workflow: unit_tests.yml
-#          sha: auto
+  check_unit_tests_completed:
+    name: Check unit test completed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for unit tests to checks
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        with:
+          workflow: unit_tests.yml
+          sha: auto
 
   compute_changed_files:
     name: Compute changed files
-#    needs: check_unit_tests_completed
+    needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
-      can_skip_tests: ${{ steps.compute-file-matrix.outputs.can_skip_tests }}
+      can_skip_files: ${{ steps.compute-file-matrix.outputs.can_skip_files }}
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -96,16 +96,16 @@ jobs:
           echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
           echo "::set-output name=matrix::{\"changed-files-bucket-base64-encoded-shard\":[$FILE_BUCKET_LIST]}"
           if [[ ! -z "$FILE_BUCKET_LIST" ]]; then
-            echo "::set-output name=can_skip_tests::false"
+            echo "::set-output name=can_skip_files::false"
           else
-            echo "::set-output name=can_skip_tests::true"
+            echo "::set-output name=can_skip_files::true"
             echo "No files are affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
           fi
 
   code_coverage_run:
     name: Run Code Coverage
     needs: compute_changed_files
-    if: ${{ needs.compute_changed_files.outputs.can_skip_tests != 'true' }}
+    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
     runs-on: ubuntu-20.04
     outputs:
       coverage_report: ${{ steps.run-oppia-coverage-without-caching.outputs.coverage_report }}
@@ -217,55 +217,6 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      # See explanation in bazel_build_app for how this is installed.
-      - name: Install git-secret (non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        shell: bash
-        run: |
-          cd $HOME
-          mkdir -p $HOME/gitsecret
-          git clone https://github.com/sobolevn/git-secret.git git-secret
-          cd git-secret && make build
-          PREFIX="$HOME/gitsecret" make install
-          echo "$HOME/gitsecret" >> $GITHUB_PATH
-          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
-
-      - name: Decrypt secrets (non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        env:
-          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
-        run: |
-          cd $HOME
-          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
-          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
-          gpg --import ./git_secret_private_key.gpg
-          cd $GITHUB_WORKSPACE
-          git secret reveal
-
-      # See https://www.cyberciti.biz/faq/unix-for-loop-1-to-10/ for for-loop reference.
-      - name: Build Oppia Tests (with caching, non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
-        run: |
-          # Attempt to build 5 times in case there are flaky builds.
-          # TODO(#3759): Remove this once there are no longer app test build failures.
-          i=0
-          # Disable exit-on-first-failure.
-          set +e
-          while [ $i -ne 5 ]; do
-            i=$(( $i+1 ))
-            echo "Attempt $i/5 to build test targets"
-            bazel build --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
-          done
-          # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
-          last_error_code=$?
-          # Reenable exit-on-first-failure.
-          set -e
-          # Exit only if the most recent exit was a failure (by using a subshell).
-          (exit $last_error_code)
-
       - name: Build Oppia Tests (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
@@ -288,29 +239,13 @@ jobs:
           # Exit only if the most recent exit was a failure (by using a subshell).
           (exit $last_error_code)
 
-      - name: Run Oppia Coverage (with caching, non-fork only)
-        id: run-oppia-coverage-with-caching
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-          CHANGED_FILES: ${{ env.CHANGED_FILES }}
-        run: |
-          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
-
       - name: Run Oppia Coverage (without caching, or on a fork)
         id: run-oppia-coverage-without-caching
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
-          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=MARKDOWN
-          COVERAGE_REPORT=$(cat ./coverage_reports/CoverageReport.md)
-          COVERAGE_STATUS=$(cat ./coverage_reports/CoverageStatus.log)
-          echo "Coverage Report: $COVERAGE_REPORT"
-          echo "Coverage Status: $COVERAGE_STATUS"
-          echo "COVERAGE_REPORT_ENV=$COVERAGE_REPORT_ENV" >> $GITHUB_ENV
-          echo "::set-output name=coverage_report:: $COVERAGE_REPORT"
-          echo "::set-output name=coverage_status:: $COVERAGE_STATUS"
+          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
   upload_coverage_report:
     name: Upload Code Coverage Report
@@ -338,9 +273,11 @@ jobs:
   check_coverage_results:
     name: Check Code Coverage Results
     needs: [ compute_changed_files, code_coverage_run ]
-    if: ${{ always() }}
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-20.04
     steps:
       - name: Check coverages passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_tests != 'true' && needs.code_coverage_run.result != 'success' }}
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' }}
         run: exit 1

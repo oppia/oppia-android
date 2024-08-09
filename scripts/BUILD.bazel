@@ -66,13 +66,6 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:retrieve_affected_tests_lib"],
 )
 
-kt_jvm_binary(
-    name = "compute_changed_files",
-    testonly = True,
-    main_class = "org.oppia.android.scripts.ci.ComputeChangedFilesKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib"],
-)
-
 # TODO(#3428): Refactor textproto assets to subpackage level.
 REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
     name = "regex_asset_files",
@@ -260,6 +253,13 @@ kt_jvm_binary(
     data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.ci.RetrieveChangedFilesKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:retrieve_changed_files_lib"],
+)
+
+kt_jvm_binary(
+    name = "compute_changed_files",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ci.ComputeChangedFilesKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib"],
 )
 
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,

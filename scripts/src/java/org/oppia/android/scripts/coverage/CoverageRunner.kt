@@ -1,12 +1,12 @@
 package org.oppia.android.scripts.coverage
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoverageDetails
+import org.oppia.android.scripts.proto.CoverageFailure
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import java.io.File
@@ -32,26 +32,25 @@ class CoverageRunner(
    * Runs coverage analysis asynchronously for the Bazel test target.
    *
    * @param bazelTestTarget Bazel test target to analyze coverage
-   * @return a deferred value that contains the coverage data
+   * @return the analysed coverage data report
    */
-  fun runWithCoverageAsync(
+  fun retrieveCoverageDataForTestTarget(
     bazelTestTarget: String
-  ): Deferred<CoverageReport> {
-    return CoroutineScope(scriptBgDispatcher).async {
-      val coverageResult = retrieveCoverageResult(bazelTestTarget)
-        ?: return@async generateFailedCoverageReport()
+  ): List<CoverageReport> {
+    val coverageResults = bazelClient.runCoverageForTestTarget(bazelTestTarget)
 
-      coverageDataFileLines(coverageResult, bazelTestTarget)
-    }
+    return coverageResults
+      .map { singleCoverageDatFileLines ->
+        parseCoverageDataFileLines(singleCoverageDatFileLines, bazelTestTarget)
+      }.takeIf { it.isNotEmpty() } ?: listOf(
+      generateFailedCoverageReport(
+        bazelTestTarget,
+        "Coverage retrieval failed for the test target: $bazelTestTarget"
+      )
+    )
   }
 
-  private fun retrieveCoverageResult(
-    bazelTestTarget: String
-  ): List<String>? {
-    return bazelClient.runCoverageForTestTarget(bazelTestTarget)
-  }
-
-  private fun coverageDataFileLines(
+  private fun parseCoverageDataFileLines(
     coverageData: List<String>,
     bazelTestTarget: String
   ): CoverageReport {
@@ -60,14 +59,25 @@ class CoverageRunner(
     val sfStartIdx = coverageData.indexOfFirst {
       it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
     }
-    if (sfStartIdx == -1) return generateFailedCoverageReport()
-    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size).indexOfFirst {
-      it.startsWith("end_of_record")
+    if (sfStartIdx == -1) {
+      return generateFailedCoverageReport(
+        bazelTestTarget,
+        "Source File: $extractedFileName not found in the coverage data"
+      )
     }
-    if (eofIdx == -1) return generateFailedCoverageReport()
+    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size)
+      .indexOfFirst {
+        it.startsWith("end_of_record")
+      }
+
+    if (eofIdx == -1) {
+      return generateFailedCoverageReport(
+        bazelTestTarget,
+        "End of record for the test target $bazelTestTarget not found in the coverage report"
+      )
+    }
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
-    println("File specific Coverage data line for $bazelTestTarget: $fileSpecificCovDatLines")
 
     val coverageDataProps = fileSpecificCovDatLines.groupBy { line ->
       line.substringBefore(":")
@@ -91,21 +101,36 @@ class CoverageRunner(
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
 
-    return CoverageReport.newBuilder()
-      .setBazelTestTarget(bazelTestTarget)
+    val bazelTestTargetName = BazelTestTarget.newBuilder()
+      .setTestTargetName(bazelTestTarget)
+      .build()
+
+    val coverageDetails = CoverageDetails.newBuilder()
+      .addBazelTestTargets(bazelTestTargetName)
       .setFilePath(filePath)
       .setFileSha1Hash(fileSha1Hash)
       .addAllCoveredLine(coveredLines)
       .setLinesFound(linesFound)
       .setLinesHit(linesHit)
-      .setIsGenerated(true)
+      .build()
+
+    return CoverageReport.newBuilder()
+      .setDetails(coverageDetails)
       .build()
   }
 }
 
-private fun generateFailedCoverageReport(): CoverageReport {
+private fun generateFailedCoverageReport(
+  bazelTestTarget: String,
+  failureMessage: String
+): CoverageReport {
+  val coverageFailure = CoverageFailure.newBuilder()
+    .setBazelTestTarget(bazelTestTarget)
+    .setFailureMessage(failureMessage)
+    .build()
+
   return CoverageReport.newBuilder()
-    .setIsGenerated(false)
+    .setFailure(coverageFailure)
     .build()
 }
 

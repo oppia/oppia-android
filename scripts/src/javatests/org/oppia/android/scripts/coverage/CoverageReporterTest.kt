@@ -1,77 +1,386 @@
 package org.oppia.android.scripts.coverage
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.proto.CoverageDetails
+import org.oppia.android.scripts.proto.CoverageExemption
+import org.oppia.android.scripts.proto.CoverageFailure
 import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoverageReportContainer
+import org.oppia.android.scripts.proto.TestFileExemptions
+import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
 
 class CoverageReporterTest {
-  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+  @field:[Rule JvmField]
+  val tempFolder = TemporaryFolder()
 
-  private lateinit var filename: String
-  private lateinit var reporter: CoverageReporter
-  private lateinit var validCoverageReport: CoverageReport
-  private val emptyCoverageReportList = listOf<CoverageReport>()
+  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
+  private val originalOut: PrintStream = System.out
+
+  private lateinit var coverageDir: String
+  private lateinit var testExemptions: Map<String, TestFileExemptions.TestFileExemption>
 
   @Before
   fun setUp() {
-    filename = "SampleFile.kt"
-    validCoverageReport = CoverageReport.newBuilder()
-      .setFilePath(filename)
-      .setLinesFound(10)
-      .setLinesHit(8)
+    coverageDir = "/coverage_reports"
+    testExemptions = createTestFileExemptionTextProto()
+  }
+
+  @After
+  fun tearDown() {
+    System.setOut(originalOut)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withPassCoverageReportDetails_generatesMarkdownTable() {
+    val filename = "SampleFile.kt"
+    val validCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(filename)
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(validCoverageReport)
       .build()
-  }
 
-  @Test
-  fun testCoverageReporter_validData_generatesCorrectCoverageRatio() {
-    reporter = CoverageReporter(
+    CoverageReporter(
       tempFolder.root.absolutePath,
-      validCoverageReport,
-      ReportFormat.MARKDOWN
-    )
-    val expectedCoverageRatio = 0.8F
-    val (coverageRatio, _) = reporter.generateRichTextReport()
-    assertThat(expectedCoverageRatio).isEqualTo(coverageRatio)
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **100.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filename)} " +
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
-  fun testCoverageReporter_noLinesFound_generatesZeroCoverageRatio() {
-    val expectedZeroCoverageRatio = 0F
-    // to check divided by zero error doesn't occur
-    val report = validCoverageReport.toBuilder().setLinesFound(0).build()
-    reporter = CoverageReporter(
+  fun testGenerateMarkDownReport_withFailCoverageReportDetails_generatesMarkdownTable() {
+    val filename = "SampleFile.kt"
+    val validCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(filename)
+          .setLinesFound(10)
+          .setLinesHit(0)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(validCoverageReport)
+      .build()
+
+    CoverageReporter(
       tempFolder.root.absolutePath,
-      report,
-      ReportFormat.MARKDOWN
-    )
-    val (coverageRatio, _) = reporter.generateRichTextReport()
-    assertThat(expectedZeroCoverageRatio).isEqualTo(coverageRatio)
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filename)} | " +
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
+      )
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
-  fun testCoverageReporter_generateMarkdownReport_hasCorrectContentAndFormatting() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+  fun testGenerateMarkDownReport_withFailureCoverageReportDetails_generatesMarkdownTable() {
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("://bazelTestTarget")
+          .setFailureMessage("Failure Message")
+          .build()
+      ).build()
 
-    reporter = CoverageReporter(
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(failureCoverageReport)
+      .build()
+
+    CoverageReporter(
       tempFolder.root.absolutePath,
-      validCoverageReport,
-      ReportFormat.MARKDOWN
-    )
-    val (_, reportText) = reporter.generateRichTextReport()
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
 
-    val expectedMarkdown =
-      """
-        |[$filename]($oppiaDevelopGitHubLink/$filename)|80.00%|8 / 10
-      """.trimIndent()
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| ://bazelTestTarget | Failure Message |")
+    }
 
-    assertThat(reportText).isEqualTo(expectedMarkdown)
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
-  fun testCoverageReporter_generateHtmlReport_hasCorrectContentAndFormatting() {
+  fun testGenerateMarkDownReport_withExemptionCoverageReportDetails_generatesMarkdownTable() {
+    val exemptedFilePath = "TestExempted.kt"
+    val exemptionCoverageReport = CoverageReport.newBuilder()
+      .setExemption(
+        CoverageExemption.newBuilder()
+          .setFilePath(exemptedFilePath)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(exemptionCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(exemptedFilePath)}")
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withOverriddenHighCoverage_generatesFailStatusMarkdownTable() {
+    val highCoverageRequiredFilePath = "coverage/main/java/com/example/HighCoverageExempted.kt"
+    val highCoverageRequiredCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(highCoverageRequiredFilePath)
+          .setLinesFound(10)
+          .setLinesHit(2)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(highCoverageRequiredCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **20.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(highCoverageRequiredFilePath)} | " +
+          "20.00% | 2 / 10 | :x: | 101% _*_ |\n"
+      )
+      append("\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withOverriddenLowCoverage_generatesPassStatusMarkdownTable() {
+    val lowCoverageRequiredFilePath = "coverage/main/java/com/example/LowCoverageExempted.kt"
+    val lowCoverageRequiredCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(lowCoverageRequiredFilePath)
+          .setLinesFound(10)
+          .setLinesHit(4)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(lowCoverageRequiredCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **40.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(lowCoverageRequiredFilePath)} | " +
+          "40.00% | 4 / 10 | :white_check_mark: | 0% _*_ |\n"
+      )
+      append("\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds\n")
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withCombinedCoverageReportDetails_generatesMarkdownTable() {
+    val successFileName = "SampleSuccessFile.kt"
+    val failureFileName = "SampleFailureFile.kt"
+    val exemptedFilePath = "TestExempted.kt"
+    val validPassCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(successFileName)
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    val validFailCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(failureFileName)
+          .setLinesFound(10)
+          .setLinesHit(0)
+          .build()
+      ).build()
+
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("://bazelTestTarget")
+          .setFailureMessage("Failure Message")
+          .build()
+      ).build()
+
+    val exemptionCoverageReport = CoverageReport.newBuilder()
+      .setExemption(
+        CoverageExemption.newBuilder()
+          .setFilePath(exemptedFilePath)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(validPassCoverageReport)
+      .addCoverageReport(validFailCoverageReport)
+      .addCoverageReport(failureCoverageReport)
+      .addCoverageReport(exemptionCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testExemptions
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 4\n")
+      append("Overall Coverage: **50.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| ://bazelTestTarget | Failure Message |\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(failureFileName)} | " +
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n"
+      )
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(successFileName)} | " +
+          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append("</details>\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(exemptedFilePath)}")
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateHtmlReport_withCoverageReportDetails_generatesCorrectContentAndFormatting() {
+    val filename = "SampleFile.kt"
+    val coverageDir = "/coverage_reports"
     val sourceFile = tempFolder.newFile(filename)
     sourceFile.writeText(
       """
@@ -88,12 +397,30 @@ class CoverageReporterTest {
       """.trimIndent()
     )
 
-    reporter = CoverageReporter(
+    val validCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(filename)
+          .setLinesFound(10)
+          .setLinesHit(8)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(validCoverageReport)
+      .build()
+
+    CoverageReporter(
       tempFolder.root.absolutePath,
-      validCoverageReport,
-      ReportFormat.HTML
-    )
-    val (_, reportText) = reporter.generateRichTextReport()
+      coverageReportContainer,
+      ReportFormat.HTML,
+      testExemptions
+    ).generateRichTextReport()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filename.removeSuffix(".kt")}/coverage.html"
+    ).readText()
 
     val expectedHtml =
       """
@@ -105,43 +432,39 @@ class CoverageReporterTest {
       <title>Coverage Report</title>
       <style>
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.6;
-            padding: 20px;
+          font-family: Arial, sans-serif;
+          font-size: 12px;
+          line-height: 1.6;
+          padding: 20px;
         }
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
         }
         th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            white-space: pre-wrap;
-            border-bottom: 1px solid #e3e3e3;
+          padding: 8px;
+          text-align: left;
+          white-space: pre-wrap;
+          border-bottom: 1px solid #e3e3e3;
         }
         .line-number-col {
-            width: 4%;
-        }
-        .line-number-row {
-            border-right: 1px solid #ababab
+          width: 4%;
         }
         .source-code-col {
-            width: 96%;
+          width: 96%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
-            /*white-space: pre-wrap;*/
+          white-space: pre-wrap;
         }
         .covered-line {
-            background-color: #c8e6c9; /* Light green */
+          background-color: #c8e6c9; /* Light green */
         }
         .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
+          background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #f7f7f7; /* light gray */
+          background-color: #f7f7f7; /* light gray */
         }
         .coverage-summary {
           margin-bottom: 20px;
@@ -189,10 +512,10 @@ class CoverageReporterTest {
         }
         @media screen and (max-width: 768px) {
           body {
-              padding: 10px;
+            padding: 10px;
           }
           table {
-              width: auto;
+            width: auto;
           }
         }
       </style>
@@ -222,41 +545,133 @@ class CoverageReporterTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">  fun main() {</td>
+      <td class="line-number-row">   1</td>
+      <td class="uncovered-line">  fun main() {</td>
     </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line">    println("Hello, World!")</td>
+      <td class="line-number-row">   2</td>
+      <td class="uncovered-line">    println("Hello, World!")</td>
     </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="uncovered-line">    val x = 10</td>
+      <td class="line-number-row">   3</td>
+      <td class="uncovered-line">    val x = 10</td>
     </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line">    val y = 20</td>
+      <td class="line-number-row">   4</td>
+      <td class="uncovered-line">    val y = 20</td>
     </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    val sum = x + y</td>
+      <td class="line-number-row">   5</td>
+      <td class="uncovered-line">    val sum = x + y</td>
     </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="uncovered-line">    println("Sum: 30")</td>
+      <td class="line-number-row">   6</td>
+      <td class="uncovered-line">    println("Sum: 30")</td>
     </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="uncovered-line">    for (i in 1..10) {</td>
+      <td class="line-number-row">   7</td>
+      <td class="uncovered-line">    for (i in 1..10) {</td>
     </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="uncovered-line">        println(i)</td>
+      <td class="line-number-row">   8</td>
+      <td class="uncovered-line">        println(i)</td>
     </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="uncovered-line">    }</td>
+      <td class="line-number-row">   9</td>
+      <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="uncovered-line">}</td>
+      <td class="line-number-row">  10</td>
+      <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
     </body>
     </html>
       """.trimIndent()
 
-    assertThat(reportText).isEqualTo(expectedHtml)
+    assertThat(outputReportText).isEqualTo(expectedHtml)
   }
+
+  @Test
+  fun testGenerateHtmlReport_withCoverageReportFailures_logsFailureDetails() {
+    System.setOut(PrintStream(outContent))
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:bazelTestTarget")
+          .setFailureMessage("Failure Message")
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(failureCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.HTML,
+      testExemptions
+    ).generateRichTextReport()
+
+    assertThat(outContent.toString().trim()).contains(
+      "The coverage analysis for //:bazelTestTarget failed - reason: Failure Message"
+    )
+  }
+
+  @Test
+  fun testGenerateHtmlReport_withCoverageReportExemptions_logsExemptionDetails() {
+    System.setOut(PrintStream(outContent))
+    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    val exemptionCoverageReport = CoverageReport.newBuilder()
+      .setExemption(
+        CoverageExemption.newBuilder()
+          .setFilePath(exemptedFilePath)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(exemptionCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.HTML,
+      testExemptions
+    ).generateRichTextReport()
+
+    assertThat(outContent.toString().trim()).contains(
+      "The file $exemptedFilePath is exempted from coverage analysis"
+    )
+  }
+
+  private fun readFinalMdReport(): String {
+    return File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+  }
+
+  private fun getFilenameAsDetailsSummary(filePath: String): String {
+    return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+  }
+
+  private fun createTestFileExemptionTextProto():
+    Map<String, TestFileExemptions.TestFileExemption> {
+      val testFileExemptions = TestFileExemptions.newBuilder()
+        .addTestFileExemption(
+          TestFileExemption.newBuilder()
+            .setExemptedFilePath("TestExempted.kt")
+            .setTestFileNotRequired(true)
+            .build()
+        )
+        .addTestFileExemption(
+          TestFileExemption.newBuilder()
+            .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
+            .setOverrideMinCoveragePercentRequired(101)
+            .build()
+        )
+        .addTestFileExemption(
+          TestFileExemption.newBuilder()
+            .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
+            .setOverrideMinCoveragePercentRequired(0)
+            .build()
+        )
+        .build()
+
+      return testFileExemptions.testFileExemptionList
+        .associateBy { it.exemptedFilePath }
+    }
 }
