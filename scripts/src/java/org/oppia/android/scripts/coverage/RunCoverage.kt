@@ -85,12 +85,12 @@ class RunCoverage(
   private val reportFormat: ReportFormat,
   private val reportOutputPath: String,
   private val commandExecutor: CommandExecutor,
-  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb"
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
 
   private val rootDirectory = File(repoRoot).absoluteFile
-  private val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
 
   /**
    * Executes coverage analysis for the specified file.
@@ -104,13 +104,20 @@ class RunCoverage(
    *     the file is exempted from having a test file, an empty list is returned
    */
   fun execute() {
-    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .testFileExemptionList
-      .filter { it.testFileNotRequired || it.sourceFileIsIncompatibleWithCodeCoverage }
-      .map { it.exemptedFilePath }
+    val testFileExemptions = loadTestFileExemptionsProto(testFileExemptionTextProtoPath)
+    val filesNotNeedingTests =
+      testFileExemptions
+        .testFileExemptionList.filter { it.testFileNotRequired }.map { it.exemptedFilePath }
+    val filesIncompatibleWithCodeCoverage =
+      testFileExemptions
+        .testFileExemptionList
+        .filter { it.sourceFileIsIncompatibleWithCodeCoverage }
+        .map { it.exemptedFilePath }
 
-    if (filePath in testFileExemptionList) {
-      println("This file is exempted from having a test file; skipping coverage check.")
+    if (filePath in filesNotNeedingTests || filePath in filesIncompatibleWithCodeCoverage) {
+      if (filePath in filesIncompatibleWithCodeCoverage) {
+        println("This file is incompatible with code coverage tooling; skipping coverage check.")
+      } else println("This file is exempted from having a test file; skipping coverage check.")
     } else {
       val testFilePaths = findTestFiles(repoRoot, filePath)
       check(testFilePaths.isNotEmpty()) {
@@ -119,12 +126,7 @@ class RunCoverage(
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
 
-      // TODO: RD to add this check in an upstream PR & add a test for it.
-      check(testTargets.isNotEmpty()) {
-        "Missing test declaration(s) for existing test file(s): $testFilePaths."
-      }
-
-      val coverageReports = testTargets.flatMap { testTarget ->
+      val coverageReports = testTargets.map { testTarget ->
         CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
           .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
       }
@@ -223,8 +225,8 @@ private fun getReportOutputPath(
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+private fun loadTestFileExemptionsProto(testFileExemptionProtoPath: String): TestFileExemptions {
+  return File(testFileExemptionProtoPath).inputStream().use { stream ->
     TestFileExemptions.newBuilder().also { builder ->
       builder.mergeFrom(stream)
     }.build()

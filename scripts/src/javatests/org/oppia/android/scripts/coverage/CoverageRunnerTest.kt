@@ -40,9 +40,9 @@ class CoverageRunnerTest {
     sourceContent =
       """
       package com.example
-
+      
       class AddNums {
-
+      
           companion object {
               fun sumNumbers(a: Int, b: Int): Any {
                   return if (a == 0 && b == 0) {
@@ -58,16 +58,16 @@ class CoverageRunnerTest {
     testContent =
       """
       package com.example
-
+      
       import org.junit.Assert.assertEquals
       import org.junit.Test
-
+      
       class AddNumsTest {
-
+      
           @Test
           fun testSumNumbers() {
               assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
               assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
@@ -137,17 +137,17 @@ class CoverageRunnerTest {
     subTestFile.writeText(
       """
       package com.example
-
+      
       import org.junit.Assert.assertEquals
       import org.junit.Test
       import com.example.AddNums
-
+      
       class SubNumsTest {
-
+      
           @Test
           fun testSubNumbers() {
               assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
               assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
@@ -191,7 +191,7 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val results = coverageRunner.retrieveCoverageDataForTestTarget(
+    val result = coverageRunner.retrieveCoverageDataForTestTarget(
       "//coverage/test/java/com/example:AddNumsTest"
     )
 
@@ -230,8 +230,7 @@ class CoverageRunnerTest {
       .setLinesHit(3)
       .build()
 
-    assertThat(results).hasSize(1)
-    assertThat(results[0]).isEqualTo(expectedResult)
+    assertThat(result).isEqualTo(expectedResult)
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
