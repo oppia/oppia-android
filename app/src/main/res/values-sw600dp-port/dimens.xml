@@ -282,7 +282,7 @@
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">60dp</dimen>
-  <dimen name="all_topics_text_margin_top">52dp</dimen>
+  <dimen name="all_topics_text_margin_top">32dp</dimen>
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">16dp</dimen>
 
@@ -538,6 +538,9 @@
   <dimen name="classrooms_text_margin_top">20dp</dimen>
   <dimen name="classrooms_text_margin_end">60dp</dimen>
   <dimen name="classrooms_text_margin_bottom">12dp</dimen>
-  <dimen name="classrooms_card_width">150dp</dimen>
-  <dimen name="classrooms_card_height">182dp</dimen>
+  <dimen name="classrooms_card_padding_vertical">40dp</dimen>
+  <dimen name="classrooms_card_icon_padding_bottom">28dp</dimen>
+  <dimen name="classrooms_card_icon_size">100dp</dimen>
+  <dimen name="classrooms_card_margin_start">8dp</dimen>
+  <dimen name="classrooms_card_margin_end">8dp</dimen>
 </resources>

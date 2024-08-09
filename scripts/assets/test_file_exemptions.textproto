@@ -271,6 +271,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/classroomlist/AllClassroomsHeaderText.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/classroomlist/ClassroomList.kt"
   test_file_not_required: true
 }
@@ -900,6 +904,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/ClassroomSummaryClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/AllClassroomsViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
