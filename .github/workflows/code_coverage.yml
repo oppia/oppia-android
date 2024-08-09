@@ -215,55 +215,6 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      # See explanation in bazel_build_app for how this is installed.
-      - name: Install git-secret (non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        shell: bash
-        run: |
-          cd $HOME
-          mkdir -p $HOME/gitsecret
-          git clone https://github.com/sobolevn/git-secret.git git-secret
-          cd git-secret && make build
-          PREFIX="$HOME/gitsecret" make install
-          echo "$HOME/gitsecret" >> $GITHUB_PATH
-          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
-
-      - name: Decrypt secrets (non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        env:
-          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
-        run: |
-          cd $HOME
-          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
-          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
-          gpg --import ./git_secret_private_key.gpg
-          cd $GITHUB_WORKSPACE
-          git secret reveal
-
-      # See https://www.cyberciti.biz/faq/unix-for-loop-1-to-10/ for for-loop reference.
-      - name: Build Oppia Tests (with caching, non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
-        run: |
-          # Attempt to build 5 times in case there are flaky builds.
-          # TODO(#3759): Remove this once there are no longer app test build failures.
-          i=0
-          # Disable exit-on-first-failure.
-          set +e
-          while [ $i -ne 5 ]; do
-            i=$(( $i+1 ))
-            echo "Attempt $i/5 to build test targets"
-            bazel build --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
-          done
-          # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
-          last_error_code=$?
-          # Reenable exit-on-first-failure.
-          set -e
-          # Exit only if the most recent exit was a failure (by using a subshell).
-          (exit $last_error_code)
-
       - name: Build Oppia Tests (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
@@ -285,14 +236,6 @@ jobs:
           set -e
           # Exit only if the most recent exit was a failure (by using a subshell).
           (exit $last_error_code)
-
-      - name: Run Oppia Coverage (with caching, non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-          CHANGED_FILES: ${{ env.CHANGED_FILES }}
-        run: |
-          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
       - name: Run Oppia Coverage (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}

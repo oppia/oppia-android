@@ -118,6 +118,9 @@ class ComputeChangedFiles(
     } else computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory, pathToRoot)
 
     val filteredFiles = filterFiles(changedFiles)
+    println()
+    println("Changed Files:")
+    println(filteredFiles.joinToString(separator = "\n") { "- $it" })
 
     val changedFileBuckets = bucketFiles(filteredFiles)
     val encodedFileBucketEntries = changedFileBuckets
@@ -157,7 +160,7 @@ class ComputeChangedFiles(
       .filter { it.endsWith(".kt") }
 
     return changedKtFiles
-      .map {changedKtFile ->
+      .map { changedKtFile ->
         when {
           changedKtFile.endsWith("Test.kt") -> {
             mapTestFileToSourceFile(rootDirectory, pathToRoot, changedKtFile)
