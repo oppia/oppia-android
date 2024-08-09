@@ -1,6 +1,7 @@
 package org.oppia.android.app.utility
 
 import android.graphics.RectF
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -8,11 +9,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
+import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
+import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.UserAnswerState
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */
 class ClickableAreasImage(
@@ -21,11 +25,28 @@ class ClickableAreasImage(
   private val listener: OnClickableAreaClickedListener,
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
-  private val clickableAreas: List<LabeledRegion>
+  private val clickableAreas: List<LabeledRegion>,
+  userAnswerState: ObservableField<UserAnswerState>
 ) {
+  private var label: String? = null
+  private var coordinates: Point2d? = null
+
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
 
-  init { imageView.initializeShowRegionTouchListener() }
+  init {
+    imageView.initializeShowRegionTouchListener()
+
+    if (userAnswerState.get()!!.hasImageInteractionState()) {
+      if (userAnswerState.get()!!.imageInteractionState.imageLabel.isNotBlank()) {
+        label = userAnswerState.get()!!.imageInteractionState.imageLabel
+      } else {
+        coordinates = userAnswerState.get()!!.imageInteractionState.defaultRegionCoordinates
+      }
+    } else {
+      label = null
+      coordinates = null
+    }
+  }
 
   /**
    * Called when an image is clicked.
@@ -41,7 +62,7 @@ class ClickableAreasImage(
       defaultRegionView.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegionView.x = x
       defaultRegionView.y = y
-      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent(x, y))
     }
   }
 
@@ -71,6 +92,13 @@ class ClickableAreasImage(
 
   private fun getImageViewContentHeight(): Int {
     return imageView.height - imageView.paddingTop - imageView.paddingBottom
+  }
+
+  fun addDefaultImageSelection() {
+    if (coordinates != null) {
+      onPhotoTap(coordinates!!.x, coordinates!!.y)
+      coordinates = null
+    }
   }
 
   /** Add selectable regions to [FrameLayout]. */
@@ -152,6 +180,9 @@ class ClickableAreasImage(
   }
 
   private fun View.initializeToggleRegionTouchListener(clickableArea: LabeledRegion) {
+    if (clickableArea.label.equals(label)) {
+      showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)
+    }
     setOnTouchListener { view, event ->
       if (event.action == MotionEvent.ACTION_DOWN) {
         showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)

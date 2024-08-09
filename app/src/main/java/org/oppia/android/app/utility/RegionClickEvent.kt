@@ -17,4 +17,4 @@ data class NamedRegionClickedEvent(val regionLabel: String, val contentDescripti
  * Class to be used in case when [OnClickableAreaClickedListener] is called with an unspecified
  * region that is when any other is tapped on which wasn't defined by creator.
  */
-class DefaultRegionClickedEvent : RegionClickedEvent()
+class DefaultRegionClickedEvent(val x:Float, val y:Float) : RegionClickedEvent()

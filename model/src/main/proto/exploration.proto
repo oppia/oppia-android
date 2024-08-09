@@ -440,8 +440,16 @@ message UserAnswerState {
     string text_input_answer = 3;
     // A user's selected list of set of html content ids in drag and drop interaction.
     ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
+
+    ImageInteractionState image_interaction_state=5;
   }
 }
+
+message ImageInteractionState{
+    string image_label=2;
+    Point2d default_region_coordinates=3;
+  }
+
 
 // Represents categories of errors that can be inferred from a pending answer.
 enum AnswerErrorCategory {
