@@ -99,7 +99,7 @@ fun main(vararg args: String) {
     }
   }
 
-  val testFileExemptionTextProtoPath = "scripts/assets/test_file_exemptions"
+  val testFileExemptionTextProtoPath = "scripts/assets/test_file_exemptions.pb"
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
@@ -360,7 +360,7 @@ private fun findSourceFile(
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+  return File("$testFileExemptiontextProto").inputStream().use { stream ->
     TestFileExemptions.newBuilder().also { builder ->
       builder.mergeFrom(stream)
     }.build()

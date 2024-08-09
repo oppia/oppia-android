@@ -12,7 +12,7 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":coverage_reporter",
+        ":coverage_reporter_lib",
         ":coverage_runner",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
@@ -34,7 +34,7 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "coverage_reporter",
+    name = "coverage_reporter_lib",
     testonly = True,
     srcs = [
         "CoverageReporter.kt",

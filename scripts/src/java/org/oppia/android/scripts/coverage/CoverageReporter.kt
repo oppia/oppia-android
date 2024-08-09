@@ -9,6 +9,32 @@ import java.io.File
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
 
+// main call idea
+/* The general idea is to get pwd, get container.pb file path -> parse it into container
+and pass it to report, report format is md/markdown
+lets start with a dummy container pb file
+* */
+
+fun main(vararg args: String) {
+  val repoRoot = args[0]
+  val protoContainerPath = args[1]
+
+  val format = args.find { it.startsWith("--format=", ignoreCase = true) }
+    ?.substringAfter("=")
+    ?.uppercase() ?: "HTML"
+
+  val reportFormat = when (format) {
+    "HTML" -> ReportFormat.HTML
+    "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
+    "PROTO" -> ReportFormat.PROTO
+    else -> throw IllegalArgumentException("Unsupported report format: $format")
+  }
+  println("Using format: $reportFormat")
+
+  println("repo root: $repoRoot")
+  println("proto container path: $protoContainerPath")
+}
+
 /**
  * Class responsible for generating rich text coverage report.
  *
