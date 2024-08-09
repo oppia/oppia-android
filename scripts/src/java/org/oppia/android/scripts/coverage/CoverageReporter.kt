@@ -496,12 +496,13 @@ class CoverageReporter(
           }
 
           if (coveragePercentage < minRequiredCoverage) {
+            val exemptionText = exemption?.let { "(exemption)" } ?: ""
             failureReports.appendLine(
               """
               |Covered File: $filePath
               |Coverage percentage: $formattedCoveragePercentage% covered
               |Line coverage: $totalLinesHit / $totalLinesFound lines covered
-              |Minimum Required: $minRequiredCoverage% "${exemption?.let { "(exemption)" } ?: ""}"
+              |Minimum Required: $minRequiredCoverage% $exemptionText
               |------------------------
               """.trimMargin().prependIndent("  ")
             )
