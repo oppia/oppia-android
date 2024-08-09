@@ -10,6 +10,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.home.classroomlist.AllClassroomsViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryClickListener
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
@@ -264,13 +265,14 @@ class ClassroomListViewModel(
   private fun computeClassroomItemViewModelList(
     classroomList: ClassroomList
   ): List<HomeItemViewModel> {
-    return classroomList.classroomSummaryList.map { ephemeralClassroomSummary ->
-      ClassroomSummaryViewModel(
-        fragment as ClassroomSummaryClickListener,
-        ephemeralClassroomSummary,
-        translationController
-      )
-    }
+    return listOf(AllClassroomsViewModel) +
+      classroomList.classroomSummaryList.map { ephemeralClassroomSummary ->
+        ClassroomSummaryViewModel(
+          fragment as ClassroomSummaryClickListener,
+          ephemeralClassroomSummary,
+          translationController
+        )
+      }
   }
 
   /**
