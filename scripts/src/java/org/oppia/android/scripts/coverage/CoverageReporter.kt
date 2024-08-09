@@ -316,7 +316,7 @@ class CoverageReporter(
       .map { exemption ->
         val filePath = exemption.exemption.filePath
         "${getFilenameAsDetailsSummary(filePath)}"
-      }.joinToString(separator = "\n") { "- $it" }
+      }.joinToString(separator = "\n") { "$it" }
 
     val tableHeader = buildString {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -394,8 +394,10 @@ class CoverageReporter(
     val testFileExemptedSection = buildString {
       if (testFileExemptedCasesList.isNotEmpty()) {
         append("\n\n")
-        append("### Files Exempted from Coverage\n")
+        append("### Exempted coverage\n")
+        append("<details><summary>Files exempted from coverage</summary> <br>")
         append(testFileExemptedCasesList)
+        append("</details>")
       }
     }
 
@@ -585,8 +587,4 @@ private fun getReportOutputPath(
 
 private fun getFilenameAsDetailsSummary(filePath: String): String {
   return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
-  /*val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-  val filename = filePath.substringAfterLast("/").trim()
-  val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
-  return filenameAsLink*/
 }

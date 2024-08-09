@@ -75,7 +75,7 @@ class CoverageReporterTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [$filename]($oppiaDevelopGitHubLink/$filename) " +
+        "| ${getFilenameAsDetailsSummary(filename)} " +
           "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -119,7 +119,7 @@ class CoverageReporterTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [$filename]($oppiaDevelopGitHubLink/$filename) | " +
+        "| ${getFilenameAsDetailsSummary(filename)} | " +
           "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
       )
     }
@@ -644,6 +644,10 @@ class CoverageReporterTest {
       "${tempFolder.root}" +
         "$coverageDir/CoverageReport.md"
     ).readText()
+  }
+
+  private fun getFilenameAsDetailsSummary(filePath: String): String {
+    return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
   }
 
   private fun createTestFileExemptionTextProto():
