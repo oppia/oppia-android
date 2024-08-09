@@ -210,9 +210,16 @@ class RunCoverage(
       }
 
       val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
-
-      check(testTargets.isNotEmpty()) {
-        "Missing test declaration(s) for existing test file(s): $testFilePaths."
+      if (testTargets.isEmpty()) {
+        return CoverageReport.newBuilder()
+          .setFailure(
+            CoverageFailure.newBuilder()
+              .setFilePath(filePath)
+              .setFailureMessage(
+                "Missing test declaration(s) for existing test file(s): $testFilePaths."
+              )
+              .build()
+          ).build()
       }
 
       val coverageReports = testTargets.flatMap { testTarget ->
