@@ -297,6 +297,8 @@ private fun findTestFiles(
   repoRoot: String,
   filePath: String
 ): List<String> {
+  val repoRootFile = File(repoRoot).absoluteFile
+
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
@@ -313,8 +315,6 @@ private fun findTestFiles(
     }
   }
 
-  val repoRootFile = File(repoRoot).absoluteFile
-
   return possibleTestFilePaths
     .map { File(repoRootFile, it) }
     .filter(File::exists)
@@ -326,6 +326,8 @@ private fun findSourceFile(
   repoRoot: String,
   filePath: String
 ): String? {
+  val repoRootFile = File(repoRoot).absoluteFile
+
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
@@ -341,9 +343,7 @@ private fun findSourceFile(
             filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
           )
         }
-        else -> {
-          emptyList()
-        }
+        else -> emptyList()
       }
     }
     else -> {
@@ -351,15 +351,12 @@ private fun findSourceFile(
     }
   }
 
-  val repoRootFile = File(repoRoot).absoluteFile
-
-  val sourceFilePath = possibleSourceFilePaths
-    .map { File(repoRootFile, it) }
-    .filter(File::exists)
-    .map { it.toRelativeString(rootDirectory) }
-
-//  return sourceFilePath.single()
-  return sourceFilePath.firstOrNull()
+  return possibleSourceFilePaths
+    .mapNotNull { path ->
+      val file = File(repoRootFile, path)
+      file.takeIf { it.exists() }?.toRelativeString(rootDirectory)
+    }
+    .firstOrNull()
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
