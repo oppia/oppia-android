@@ -147,7 +147,7 @@ class ComputeChangedFilesTest {
   fun testUtility_developBranch_returnsAllFiles() {
     initializeEmptyGitRepository()
     createEmptyWorkspace()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
 
     val reportedFiles = runScript()
 
@@ -160,7 +160,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_noChanges_returnsNoFiles() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
 
     val reportedFiles = runScript()
@@ -171,7 +171,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_noChanges_computeAllFiles_returnsAllFiles() {
     initializeEmptyGitRepository()
-    createFiles("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
 
     val reportedFiles = runScript(computeAllFiles = true)
@@ -186,7 +186,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_fileChange_committed_returnsChangedFile() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
     changeAndCommitFile("First", subPackage = "app")
 
@@ -200,7 +200,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_fileChange_staged_returnsChangedFile() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
     changeAndStageFile("First", subPackage = "app")
 
@@ -214,7 +214,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_fileChange_unstaged_returnsChangedFile() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
     changeAndCommitFile("First", subPackage = "app")
 
@@ -228,7 +228,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_newFile_untracked_returnsChangedFile() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
     createFiles("NewUntrackedFile", subPackage = "data")
 
@@ -242,7 +242,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_deletedFile_committed_returnsNoFiles() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", subPackage = "app")
+    createAndCommitFiles("First", subPackage = "app")
     switchToFeatureBranch()
     removeAndCommitFile("First", subPackage = "app")
 
@@ -255,7 +255,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_movedFile_staged_returnsNewFile() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", subPackage = "app")
+    createAndCommitFiles("First", subPackage = "app")
     switchToFeatureBranch()
     moveFile(
       oldFileName = "First",
@@ -274,7 +274,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_multipleFilesChanged_committed_returnsChangedFiles() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
     changeAndCommitFile("First", subPackage = "app")
     changeAndCommitFile("Third", subPackage = "app")
@@ -290,7 +290,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_developBranch_instrumentationModuleChanged_filteredFilesAreIgnored() {
     initializeEmptyGitRepository()
-    createFiles(
+    createAndCommitFiles(
       "InstrumentationFile",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
     )
@@ -303,11 +303,11 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_developBranch_instrumentationModuleChanged_unfilteredFilesAreComputed() {
     initializeEmptyGitRepository()
-    createFiles(
+    createAndCommitFiles(
       "Robolectric",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
     )
-    createFiles(
+    createAndCommitFiles(
       "Third",
       subPackage = "instrumentation"
     )
@@ -327,7 +327,7 @@ class ComputeChangedFilesTest {
   fun testUtility_featureBranch_instrumentationModuleChanged_filteredFilesAreIgnored() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles(
+    createAndCommitFiles(
       "InstrumentationFile",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
     )
@@ -340,13 +340,13 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_instrumentationModuleChanged_unfilteredFilesAreComputed() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", subPackage = "app")
+    createAndCommitFiles("First", "Second", subPackage = "app")
     switchToFeatureBranch()
-    createFiles(
+    createAndCommitFiles(
       "Robolectric",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
     )
-    createFiles(
+    createAndCommitFiles(
       "Third",
       subPackage = "instrumentation"
     )
@@ -366,7 +366,7 @@ class ComputeChangedFilesTest {
   fun testUtility_appFile_usesAppCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "app")
+    createAndCommitFiles("Example", subPackage = "app")
 
     val reportedTargets = runScript()
 
@@ -378,7 +378,7 @@ class ComputeChangedFilesTest {
   fun testUtility_dataFile_usesGenericCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "data")
+    createAndCommitFiles("Example", subPackage = "data")
 
     val reportedFiles = runScript()
 
@@ -390,7 +390,7 @@ class ComputeChangedFilesTest {
   fun testUtility_domainFile_usesDomainCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "domain")
+    createAndCommitFiles("Example", subPackage = "domain")
 
     val reportedFiles = runScript()
 
@@ -402,7 +402,7 @@ class ComputeChangedFilesTest {
   fun testUtility_instrumentationFile_usesGenericCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "instrumentation")
+    createAndCommitFiles("Example", subPackage = "instrumentation")
 
     val reportedFiles = runScript()
 
@@ -414,7 +414,7 @@ class ComputeChangedFilesTest {
   fun testUtility_scriptsFile_usesScriptsCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "scripts")
+    createAndCommitFiles("Example", subPackage = "scripts")
 
     val reportedFiles = runScript()
 
@@ -426,7 +426,7 @@ class ComputeChangedFilesTest {
   fun testUtility_testingFile_usesGenericCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "testing")
+    createAndCommitFiles("Example", subPackage = "testing")
 
     val reportedFiles = runScript()
 
@@ -438,7 +438,7 @@ class ComputeChangedFilesTest {
   fun testUtility_utilityFile_usesGenericCacheName() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("Example", subPackage = "utility")
+    createAndCommitFiles("Example", subPackage = "utility")
 
     val reportedFiles = runScript()
 
@@ -450,13 +450,13 @@ class ComputeChangedFilesTest {
   fun testUtility_testsForMultipleBuckets_correctlyGroupTogether() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("AppFile", subPackage = "app")
-    createFiles("DataFile", subPackage = "data")
-    createFiles("DomainFile", subPackage = "domain")
-    createFiles("InstrumentationFile", subPackage = "instrumentation")
-    createFiles("ScriptsFile", subPackage = "scripts")
-    createFiles("TestingFile", subPackage = "testing")
-    createFiles("UtilityFile", subPackage = "utility")
+    createAndCommitFiles("AppFile", subPackage = "app")
+    createAndCommitFiles("DataFile", subPackage = "data")
+    createAndCommitFiles("DomainFile", subPackage = "domain")
+    createAndCommitFiles("InstrumentationFile", subPackage = "instrumentation")
+    createAndCommitFiles("ScriptsFile", subPackage = "scripts")
+    createAndCommitFiles("TestingFile", subPackage = "testing")
+    createAndCommitFiles("UtilityFile", subPackage = "utility")
 
     val reportedFiles = runScript()
 
@@ -486,7 +486,7 @@ class ComputeChangedFilesTest {
   fun testUtility_appFiles_shardWithSmallPartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
+    createAndCommitFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
 
     val reportedFiles = runScriptWithShardLimits(
       maxFileCountPerLargeShard = 3,
@@ -509,7 +509,7 @@ class ComputeChangedFilesTest {
   fun testUtility_dataFiles_shardWithLargePartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("DataFile1", "DataFile2", "DataFile3", subPackage = "data")
+    createAndCommitFiles("DataFile1", "DataFile2", "DataFile3", subPackage = "data")
 
     val reportedFiles = runScriptWithShardLimits(
       maxFileCountPerLargeShard = 3,
@@ -527,7 +527,7 @@ class ComputeChangedFilesTest {
   fun testUtility_domainFiles_shardWithLargePartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("DomainFile1", "DomainFile2", "DomainFile3", subPackage = "domain")
+    createAndCommitFiles("DomainFile1", "DomainFile2", "DomainFile3", subPackage = "domain")
 
     val reportedFiles = runScriptWithShardLimits(
       maxFileCountPerLargeShard = 3,
@@ -545,7 +545,7 @@ class ComputeChangedFilesTest {
   fun testUtility_instrumentationFiles_shardWithLargePartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles(
+    createAndCommitFiles(
       "InstrumentationFile1", "InstrumentationFile2", "InstrumentationFile3",
       subPackage = "instrumentation"
     )
@@ -569,7 +569,7 @@ class ComputeChangedFilesTest {
   fun testUtility_scriptsFiles_shardWithMediumPartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("ScriptsFile1", "ScriptsFile2", "ScriptsFile3", subPackage = "scripts")
+    createAndCommitFiles("ScriptsFile1", "ScriptsFile2", "ScriptsFile3", subPackage = "scripts")
 
     val reportedFiles = runScriptWithShardLimits(
       maxFileCountPerLargeShard = 3,
@@ -595,7 +595,7 @@ class ComputeChangedFilesTest {
   fun testUtility_testingFiles_shardWithLargePartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("TestingFile1", "TestingFile2", "TestingFile3", subPackage = "testing")
+    createAndCommitFiles("TestingFile1", "TestingFile2", "TestingFile3", subPackage = "testing")
 
     val reportedFiles = runScriptWithShardLimits(
       maxFileCountPerLargeShard = 3,
@@ -617,7 +617,7 @@ class ComputeChangedFilesTest {
   fun testUtility_utilityFiles_shardWithLargePartitions() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("UtilityFile1", "UtilityFile2", "UtilityFile3", subPackage = "utility")
+    createAndCommitFiles("UtilityFile1", "UtilityFile2", "UtilityFile3", subPackage = "utility")
 
     val reportedFiles = runScriptWithShardLimits(
       maxFileCountPerLargeShard = 3,
@@ -639,7 +639,7 @@ class ComputeChangedFilesTest {
   fun testUtility_singleShard_fileOutputIncludesHumanReadablePrefix() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("ExampleFile", subPackage = "app")
+    createAndCommitFiles("ExampleFile", subPackage = "app")
 
     val generatedLines = runScriptWithTextOutput()
 
@@ -651,8 +651,8 @@ class ComputeChangedFilesTest {
   fun testUtility_twoShards_computesFilesForBothShards() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
-    createFiles("ScriptsFile1", "ScriptsFile2", subPackage = "scripts")
+    createAndCommitFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
+    createAndCommitFiles("ScriptsFile1", "ScriptsFile2", subPackage = "scripts")
 
     val reportedFiles = runScript()
 
@@ -673,8 +673,8 @@ class ComputeChangedFilesTest {
   fun testUtility_multipleShards_fileOutputIncludesHumanReadablePrefixForEachShard() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
-    createFiles("AppFile", subPackage = "app")
-    createFiles("ScriptsFile", subPackage = "scripts")
+    createAndCommitFiles("AppFile", subPackage = "app")
+    createAndCommitFiles("ScriptsFile", subPackage = "scripts")
 
     // The sorting here counteracts the intentional randomness from the script.
     val generatedLines = runScriptWithTextOutput().sorted()
@@ -687,7 +687,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_computeAllFiles_filtersOutNonKotlinFiles() {
     initializeEmptyGitRepository()
-    createFiles("First", "Second", "Third", subPackage = "app")
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     createNonKotlinFiles("Fourth", subPackage = "app")
     switchToFeatureBranch()
 
@@ -704,7 +704,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_featureBranch_computeAllFiles_filtersOutTestFiles() {
     initializeEmptyGitRepository()
-    createFiles("First", "SecondTest", "Third", subPackage = "app")
+    createAndCommitFiles("First", "SecondTest", "Third", subPackage = "app")
     switchToFeatureBranch()
 
     val reportedFiles = runScript(computeAllFiles = true)
@@ -714,6 +714,37 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList)
       .containsExactly("app/First.kt", "app/Third.kt")
+    assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/SecondTest.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_filtersOutNonKotlinFiles() {
+    initializeEmptyGitRepository()
+    switchToFeatureBranch()
+    createAndCommitFiles("First", "Second", "Third", subPackage = "app")
+    createNonKotlinFiles("Fourth", subPackage = "app")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
+    assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/Fourth.xml")
+  }
+
+  @Test
+  fun testUtility_featureBranch_filtersOutTestFiles() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", "SecondTest", "Third", subPackage = "app")
+    switchToFeatureBranch()
+    changeAndCommitFile("First", subPackage = "app")
+    changeAndCommitFile("SecondTest", subPackage = "app")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt")
     assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/SecondTest.kt")
   }
 
@@ -811,7 +842,7 @@ class ComputeChangedFilesTest {
     }
   }
 
-  private fun createAndCommitFile(vararg fileNames: String, subPackage: String) {
+  private fun createAndCommitFiles(vararg fileNames: String, subPackage: String) {
     val createdFiles = createFiles(fileNames = fileNames, subPackage = subPackage)
 
     testGitRepository.stageFilesForCommit(createdFiles)
