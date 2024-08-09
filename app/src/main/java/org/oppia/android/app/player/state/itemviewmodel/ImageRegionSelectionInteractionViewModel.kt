@@ -1,15 +1,16 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ClickOnImage
+import org.oppia.android.app.model.ImageInteractionState
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -22,8 +23,6 @@ import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
 import javax.inject.Inject
-import org.oppia.android.app.model.ImageInteractionState
-import org.oppia.android.app.model.Point2d
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel private constructor(
@@ -103,7 +102,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   /** It checks the pending error for the current image region input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    answerErrorCetegory=category
+    answerErrorCetegory = category
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
         pendingAnswerError = null
@@ -137,7 +136,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
           }
         }.build()
       }
-      this.answerErrorCategory= answerErrorCetegory
+      this.answerErrorCategory = answerErrorCetegory
     }.build()
   }
 

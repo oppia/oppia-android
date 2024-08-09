@@ -1,7 +1,6 @@
 package org.oppia.android.app.utility
 
 import android.graphics.RectF
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -12,11 +11,11 @@ import androidx.core.view.isVisible
 import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
-import org.oppia.android.app.model.Point2d
-import org.oppia.android.app.model.UserAnswerState
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */
 class ClickableAreasImage(

@@ -1,9 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.database.Observable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -11,8 +9,8 @@ import androidx.core.view.forEachIndexed
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.google.firebase.firestore.GeoPoint
 import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
@@ -27,8 +25,6 @@ import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
-import org.oppia.android.app.model.Point2d
-import org.oppia.android.app.model.UserAnswerState
 
 /**
  * A custom [AppCompatImageView] with a list of [ImageWithRegions.LabeledRegion]s to work with
@@ -60,8 +56,6 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   private lateinit var userAnswerState: ObservableField <UserAnswerState>
 
-
-
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
    * data-binding.
@@ -72,15 +66,13 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   }
 
   fun setUserAnswerState(userAnswerrState: ObservableField <UserAnswerState>) {
-   userAnswerState= userAnswerrState
+    userAnswerState = userAnswerrState
   }
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
     maybeInitializeClickableAreas()
   }
-
-
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
