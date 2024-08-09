@@ -253,7 +253,7 @@ class CoverageReporter(
       report.failure?.let { failure ->
         val failurePath = failure.filePath
           ?.takeIf { it.isNotEmpty() }
-          ?.let { getFilenameAsLink(it) }
+          ?.let { getFilenameAsDetailsSummary(it) }
           ?: failure.bazelTestTarget
         "| $failurePath | ${failure.failureMessage} |"
       }
@@ -315,7 +315,7 @@ class CoverageReporter(
       .filter { it.hasExemption() }
       .map { exemption ->
         val filePath = exemption.exemption.filePath
-        "${getFilenameAsLink(filePath)}"
+        "${getFilenameAsDetailsSummary(filePath)}"
       }.joinToString(separator = "\n") { "- $it" }
 
     val tableHeader = buildString {
@@ -539,7 +539,7 @@ class CoverageReporter(
         )
         val formattedCoveragePercentage = "%.2f".format(coveragePercentage)
 
-        "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | " +
+        "| ${getFilenameAsDetailsSummary(filePath)} | $formattedCoveragePercentage% | " +
           "$totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage |"
       }
       .joinToString(separator = "\n")
@@ -583,9 +583,10 @@ private fun getReportOutputPath(
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
-private fun getFilenameAsLink(filePath: String): String {
-  val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+private fun getFilenameAsDetailsSummary(filePath: String): String {
+  return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+  /*val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
   val filename = filePath.substringAfterLast("/").trim()
   val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
-  return filenameAsLink
+  return filenameAsLink*/
 }
