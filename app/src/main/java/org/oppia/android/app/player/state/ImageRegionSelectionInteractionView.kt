@@ -54,7 +54,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
 
-  private lateinit var userAnswerState: ObservableField <UserAnswerState>
+  private lateinit var observableUserAnswerState: ObservableField <UserAnswerState>
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -66,7 +66,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   }
 
   fun setUserAnswerState(userAnswerrState: ObservableField <UserAnswerState>) {
-    userAnswerState = userAnswerrState
+    observableUserAnswerState = userAnswerrState
   }
 
   fun setEntityId(entityId: String) {
@@ -130,10 +130,10 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         bindingInterface,
         isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled(),
         clickableAreas,
-        userAnswerState
+        observableUserAnswerState
       )
       areasImage.addRegionViews()
-      areasImage.addDefaultImageSelection()
+      areasImage.maybeSelectDefaultRegion()
       performAttachment(areasImage)
     }
   }

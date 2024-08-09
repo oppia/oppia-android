@@ -47,7 +47,9 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     schemaObject?.customSchemaValue?.imageWithRegions?.labelRegionsList ?: listOf()
   }
 
-  val observableUserAnswrerState = ObservableField(userAnswerState)
+  val observableUserAnswrerState by lazy {
+    ObservableField(userAnswerState)
+  }
 
   private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
 
@@ -127,9 +129,9 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
-      if (answerText != "" || dafaultRegionCoordinates != null) {
+      if (answerText.isNotEmpty() || dafaultRegionCoordinates != null) {
         this.imageInteractionState = ImageInteractionState.newBuilder().apply {
-          if (answerText != "") {
+          if (answerText.isNotEmpty()) {
             this.imageLabel = answerText.toString()
           } else {
             this.defaultRegionCoordinates = dafaultRegionCoordinates

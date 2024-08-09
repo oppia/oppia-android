@@ -25,25 +25,23 @@ class ClickableAreasImage(
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
   private val clickableAreas: List<LabeledRegion>,
-  userAnswerState: ObservableField<UserAnswerState>
+  observableUserAnswerState: ObservableField<UserAnswerState>
 ) {
-  private var label: String? = null
-  private var coordinates: Point2d? = null
+  private var imageLabel: String? = null
+  private var defaultRegionCoordinates: Point2d? = null
 
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
 
   init {
     imageView.initializeShowRegionTouchListener()
 
-    if (userAnswerState.get()!!.hasImageInteractionState()) {
-      if (userAnswerState.get()!!.imageInteractionState.imageLabel.isNotBlank()) {
-        label = userAnswerState.get()!!.imageInteractionState.imageLabel
+    if (observableUserAnswerState.get()!!.hasImageInteractionState()) {
+      if (observableUserAnswerState.get()!!.imageInteractionState.imageLabel.isNotBlank()) {
+        imageLabel = observableUserAnswerState.get()!!.imageInteractionState.imageLabel
       } else {
-        coordinates = userAnswerState.get()!!.imageInteractionState.defaultRegionCoordinates
+        defaultRegionCoordinates =
+          observableUserAnswerState.get()!!.imageInteractionState.defaultRegionCoordinates
       }
-    } else {
-      label = null
-      coordinates = null
     }
   }
 
@@ -93,10 +91,10 @@ class ClickableAreasImage(
     return imageView.height - imageView.paddingTop - imageView.paddingBottom
   }
 
-  fun addDefaultImageSelection() {
-    if (coordinates != null) {
-      onPhotoTap(coordinates!!.x, coordinates!!.y)
-      coordinates = null
+  /** Selects default region. **/
+  fun maybeSelectDefaultRegion() {
+    if (defaultRegionCoordinates != null) {
+      onPhotoTap(defaultRegionCoordinates!!.x, defaultRegionCoordinates!!.y)
     }
   }
 
@@ -179,7 +177,7 @@ class ClickableAreasImage(
   }
 
   private fun View.initializeToggleRegionTouchListener(clickableArea: LabeledRegion) {
-    if (clickableArea.label.equals(label)) {
+    if (clickableArea.label.equals(imageLabel)) {
       showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)
     }
     setOnTouchListener { view, event ->
