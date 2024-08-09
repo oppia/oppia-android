@@ -43,11 +43,11 @@ class CoverageRunner(
       .map { singleCoverageDatFileLines ->
         parseCoverageDataFileLines(singleCoverageDatFileLines, bazelTestTarget)
       }.takeIf { it.isNotEmpty() } ?: listOf(
-        generateFailedCoverageReport(
-          bazelTestTarget,
-          "Coverage retrieval failed for the test target: $bazelTestTarget"
-        )
+      generateFailedCoverageReport(
+        bazelTestTarget,
+        "Coverage retrieval failed for the test target: $bazelTestTarget"
       )
+    )
   }
 
   private fun parseCoverageDataFileLines(

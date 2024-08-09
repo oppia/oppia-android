@@ -2149,8 +2149,6 @@ class RunCoverageTest {
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
-    val filename = filePath.substringAfterLast("/")
-
     val markdownText = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
@@ -2164,7 +2162,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| ${getFilenameAsDetailsSummary(filename)} | 75.00% | " +
+        "| ${getFilenameAsDetailsSummary(filePath)} | 75.00% | " +
           "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
