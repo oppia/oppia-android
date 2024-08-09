@@ -451,7 +451,7 @@ message ImageInteractionState{
     string image_label=1;
     // Selected default region coordinates.
     Point2d default_region_coordinates=2;
-  }
+}
 
 // Represents categories of errors that can be inferred from a pending answer.
 enum AnswerErrorCategory {
