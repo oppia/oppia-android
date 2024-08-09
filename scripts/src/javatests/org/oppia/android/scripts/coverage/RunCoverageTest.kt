@@ -410,6 +410,49 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_withMissingTestDeclarations_generatesFailureReport() {
+    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.writeText("")
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testExemptions
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val failureMessage = "Missing test declaration(s) for existing test file(s): " +
+      "${listOf("coverage/test/java/com/example/AddNumsTest.kt")}."
+
+    val expectedFailureReport = "| [${filePathList.get(0).substringAfterLast('/')}]" +
+        "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | $failureMessage |"
+
+    assertThat(readFinalMdReport()).contains(expectedFailureReport)
+  }
+
+  @Test
   fun testRunCoverage_sampleTestsDefaultFormat_generatesCoverageReport() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 

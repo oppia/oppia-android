@@ -380,7 +380,7 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRunCodeCoverage_forSampleTestTarget_returnsCoverageResult() {
+  fun testRunCoverageForTestTarget_forSampleTestTarget_returnsCoverageResult() {
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -390,15 +390,15 @@ class BazelClientTest {
       
       class AddNums {
       
-          companion object {
-              fun sumNumbers(a: Int, b: Int): Any {
-                  return if (a == 0 && b == 0) {
-                      "Both numbers are zero"
-                  } else {
-                      a + b
-                  }
-              }
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+              "Both numbers are zero"
+            } else {
+              a + b
+            }
           }
+        }
       }
       """.trimIndent()
 
@@ -411,12 +411,12 @@ class BazelClientTest {
       
       class AddNumsTest {
       
-          @Test
-          fun testSumNumbers() {
-              assertEquals(AddNums.sumNumbers(0, 1), 1)
-              assertEquals(AddNums.sumNumbers(3, 4), 7)         
-              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
-          }
+        @Test
+        fun testSumNumbers() {
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
       }
       """.trimIndent()
 
@@ -460,7 +460,133 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRunCodeCoverage_forNonTestTarget_fails() {
+  fun testRunCoverageForTestTarget_forShardConfiguredTestTarget_returnsCoverageResult() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class AddNums {
+      
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+              "Both numbers are zero"
+            } else {
+              a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+        @Test
+        fun testSumNumbers() {
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)
+        }
+        
+        @Test
+        fun testBothNumbersAreZero() {        
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.writeText(
+      """
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+      
+      kt_jvm_test(
+          name = "AddNumsTest",
+          srcs = ["AddNumsTest.kt"],
+          size = "large",
+          shard_count = 2,
+          deps = [
+            "//coverage/main/java/com/example:addnums",
+            "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.AddNumsTest",
+      )
+      """.trimIndent()
+    )
+
+    val result = bazelClient.runCoverageForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+    val expectedResult = listOf(
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:2",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,0",
+        "LH:2",
+        "LF:4",
+        "end_of_record"
+      ),
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,0",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,0",
+        "BRDA:7,0,3,0",
+        "BRF:4",
+        "BRH:3",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,0",
+        "DA:10,0",
+        "LH:2",
+        "LF:4",
+        "end_of_record"
+      )
+    )
+    assertThat(result).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverageForTestTarget_forNonTestTarget_fails() {
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
