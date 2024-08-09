@@ -446,19 +446,10 @@ class CoverageReporter(
   }
 
   private fun calculateOverallCoveragePercentage(): Float {
-    var totalLinesFound = 0
-    var totalLinesHit = 0
-
-    coverageReportContainer.coverageReportList.forEach { report ->
-      report.details?.let {
-        totalLinesFound += it.linesFound
-        totalLinesHit += it.linesHit
-      }
-    }
-
-    return totalLinesFound.takeIf { it > 0 }
-      ?.let { totalLinesHit.toFloat() / it * 100 }
-      ?: 0.0f
+    val reports = coverageReportContainer.coverageReportList
+    val totalLinesFound = reports.sumOf { it.details?.linesFound ?: 0 }.toFloat()
+    val totalLinesHit = reports.sumOf { it.details?.linesHit ?: 0 }.toFloat()
+    return if (totalLinesFound > 0) (totalLinesHit * 100.0f) / totalLinesFound else 0.0f
   }
 
   private fun logCoverageReport() {

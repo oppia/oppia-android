@@ -1064,8 +1064,8 @@ class RunCoverageTest {
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>\n\n")
-        append("### Exempted coverage\n")
-        append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
       append(
         "${getFilenameAsDetailsSummary(filePathList.get(1))}"
       )
