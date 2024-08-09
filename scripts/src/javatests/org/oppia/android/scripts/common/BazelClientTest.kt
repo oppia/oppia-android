@@ -554,7 +554,7 @@ class BazelClientTest {
         "DA:3,0",
         "DA:7,1",
         "DA:8,0",
-        "DA:10,0",
+        "DA:10,1",
         "LH:2",
         "LF:4",
         "end_of_record"
@@ -570,7 +570,7 @@ class BazelClientTest {
         "BRDA:7,0,0,0",
         "BRDA:7,0,1,1",
         "BRDA:7,0,2,0",
-        "BRDA:7,0,3,0",
+        "BRDA:7,0,3,1",
         "BRF:4",
         "BRH:2",
         "DA:3,0",
