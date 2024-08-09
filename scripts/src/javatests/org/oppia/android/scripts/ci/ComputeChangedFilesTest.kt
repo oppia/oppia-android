@@ -288,7 +288,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_developBranch_instrumentationModuleChanged_filteredInstrumentationFilesAreIgnored() {
+  fun testUtility_developBranch_instrumentationModuleChanged_filteredFilesAreIgnored() {
     initializeEmptyGitRepository()
     createFiles(
       "InstrumentationFile",
@@ -301,7 +301,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_developBranch_instrumentationModuleChanged_unfilteredInstrumentationFilesAreComputed() {
+  fun testUtility_developBranch_instrumentationModuleChanged_unfilteredFilesAreComputed() {
     initializeEmptyGitRepository()
     createFiles(
       "Robolectric",
@@ -324,7 +324,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_featureBranch_instrumentationModuleChanged_filteredInstrumentationFilesAreIgnored() {
+  fun testUtility_featureBranch_instrumentationModuleChanged_filteredFilesAreIgnored() {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
     createFiles(
@@ -338,7 +338,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_featureBranch_instrumentationModuleChanged_unfilteredInstrumentationFilesAreComputed() {
+  fun testUtility_featureBranch_instrumentationModuleChanged_unfilteredFilesAreComputed() {
     initializeEmptyGitRepository()
     createAndCommitFile("First", "Second", subPackage = "app")
     switchToFeatureBranch()
@@ -685,7 +685,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_featureBranch_computeAllFiles_filtersNonKotlinFiles() {
+  fun testUtility_featureBranch_computeAllFiles_filtersOutNonKotlinFiles() {
     initializeEmptyGitRepository()
     createFiles("First", "Second", "Third", subPackage = "app")
     createNonKotlinFiles("Fourth", subPackage = "app")
@@ -699,6 +699,22 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles.first().changedFilesList)
       .containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
     assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/Fourth.xml")
+  }
+
+  @Test
+  fun testUtility_featureBranch_computeAllFiles_filtersOutTestFiles() {
+    initializeEmptyGitRepository()
+    createFiles("First", "SecondTest", "Third", subPackage = "app")
+    switchToFeatureBranch()
+
+    val reportedFiles = runScript(computeAllFiles = true)
+
+    // Even though there are no changes, all files should be returned since that was requested
+    // via a command argument.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt", "app/Third.kt")
+    assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/SecondTest.kt")
   }
 
   private fun runScriptWithTextOutput(

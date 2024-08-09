@@ -104,7 +104,7 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_invalidBase64_throwsException() {
-    assertThrows<IllegalArgumentException>() {
+    val exception = assertThrows<IllegalArgumentException>() {
       runScript(
         "${tempFolder.root}",
         "badbase64",
@@ -113,6 +113,11 @@ class RetrieveChangedFilesTest {
         "file3"
       )
     }
+
+    // Indicates the Proto data is improperly formatted or corrupted.
+    assertThat(exception).hasMessageThat().contains(
+      "Last unit does not have enough valid bits"
+    )
   }
 
   @Test
