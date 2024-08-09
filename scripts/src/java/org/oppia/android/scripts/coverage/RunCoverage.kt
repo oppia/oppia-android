@@ -215,7 +215,9 @@ class RunCoverage(
           .setFailure(
             CoverageFailure.newBuilder()
               .setFilePath(filePath)
-              .setFailureMessage("Missing test declaration(s) for existing test file(s): $testFilePaths.")
+              .setFailureMessage(
+                "Missing test declaration(s) for existing test file(s): $testFilePaths."
+              )
               .build()
           ).build()
       }

@@ -447,7 +447,7 @@ class RunCoverageTest {
       "${listOf("coverage/test/java/com/example/AddNumsTest.kt")}."
 
     val expectedFailureReport = "| [${filePathList.get(0).substringAfterLast('/')}]" +
-        "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | $failureMessage |"
+      "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | $failureMessage |"
 
     assertThat(readFinalMdReport()).contains(expectedFailureReport)
   }
