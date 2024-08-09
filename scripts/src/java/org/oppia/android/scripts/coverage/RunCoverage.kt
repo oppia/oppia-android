@@ -64,15 +64,17 @@ fun main(vararg args: String) {
   val filePathList = args.drop(1)
     .takeWhile { !it.startsWith("--") }
     .map { it.trim(',', '[', ']') }
-    .flatMap { filePath ->
+    .map { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
           findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
         }
-        filePath.endsWith(".kt") -> listOf(filePath)
-        else -> emptyList()
+        filePath.endsWith(".kt") -> filePath
+        else -> null
       }
     }
+    .filterNotNull()
+    .distinct()
 
   println("Running coverage analysis for the files: $filePathList")
 
@@ -323,7 +325,7 @@ private fun findSourceFile(
   rootDirectory: File,
   repoRoot: String,
   filePath: String
-): List<String> {
+): String? {
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
@@ -351,10 +353,13 @@ private fun findSourceFile(
 
   val repoRootFile = File(repoRoot).absoluteFile
 
-  return possibleSourceFilePaths
+  val sourceFilePath = possibleSourceFilePaths
     .map { File(repoRootFile, it) }
     .filter(File::exists)
     .map { it.toRelativeString(rootDirectory) }
+
+//  return sourceFilePath.single()
+  return sourceFilePath.firstOrNull()
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {

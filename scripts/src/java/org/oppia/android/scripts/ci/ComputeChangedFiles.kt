@@ -115,9 +115,10 @@ class ComputeChangedFiles(
     val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
     val changedFiles = if (computeAllFilesSetting || currentBranch == "develop") {
       computeAllFiles(rootDirectory, pathToRoot)
-    } else computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory)
+    } else computeChangedFilesForNonDevelopBranch(gitClient, rootDirectory, pathToRoot)
 
     val ktFiles = changedFiles.filter { it.endsWith(".kt") }
+    println("kt files: $ktFiles")
     val filteredFiles = filterFiles(ktFiles)
 
     val changedFileBuckets = bucketFiles(filteredFiles)
@@ -148,16 +149,47 @@ class ComputeChangedFiles(
 
   private fun computeChangedFilesForNonDevelopBranch(
     gitClient: GitClient,
-    rootDirectory: File
+    rootDirectory: File,
+    pathToRoot: String
   ): List<String> {
-    return gitClient.changedFiles
+    val changedFiles = gitClient.changedFiles
       .map { File(rootDirectory, it) }
       .filter { it.exists() }
       .map { it.toRelativeString(rootDirectory) }
+
+    println("@@@@@@@@@@")
+    println("changed files: $changedFiles")
+
+    val changedKtFiles = changedFiles.filter {it.endsWith(".kt")}.map{it}
+
+    println("************")
+    println("changedKtFiles = $changedKtFiles")
+
+    val changedSourceFiles = changedKtFiles
+      .map {changedKtFile ->
+        when {
+          changedKtFile.endsWith("Test.kt") -> {
+            mapTestFileToSourceFile(rootDirectory, pathToRoot, changedKtFile)
+          }
+          changedKtFile.endsWith(".kt") -> changedKtFile
+          else -> null
+        }
+      }
+      .filterNotNull()
+      .distinct()
+    println("****************")
+    println("changed source files: $changedSourceFiles")
+
+    return changedSourceFiles
+
+    /*return gitClient.changedFiles
+      .map { File(rootDirectory, it) }
+      .filter { it.exists() }
+      .map { it.toRelativeString(rootDirectory) }*/
   }
 
   private fun filterFiles(files: List<String>): List<String> {
-    // Filtering out files that need to be ignored.
+    // Filter out instrumentation files since code coverage only runs on unit tests.
     return files.filter { file ->
       !file
         .startsWith(
@@ -165,6 +197,48 @@ class ComputeChangedFiles(
           ignoreCase = true
         )
     }
+  }
+
+  private fun mapTestFileToSourceFile(
+    rootDirectory: File,
+    repoRoot: String,
+    filePath: String
+  ): String? {
+    val possibleSourceFilePaths = when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
+      }
+      filePath.startsWith("app/") -> {
+        when {
+          filePath.contains("/sharedTest/") -> {
+            listOf(filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"))
+          }
+          filePath.contains("/test/") -> {
+            listOf(
+              filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
+              filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
+            )
+          }
+          else -> {
+            emptyList()
+          }
+        }
+      }
+      else -> {
+        listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
+      }
+    }
+    println("possible paths: $possibleSourceFilePaths")
+
+    val repoRootFile = File(repoRoot).absoluteFile
+
+    val sourceFilePath =  possibleSourceFilePaths
+      .map { File(repoRootFile, it) }
+      .filter(File::exists)
+      .map { it.toRelativeString(rootDirectory) }
+
+    println("Source file path: $sourceFilePath for file: $filePath")
+    return sourceFilePath.firstOrNull()
   }
 
   private fun bucketFiles(filteredFiles: List<String>): List<ChangedFilesBucket> {

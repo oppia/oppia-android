@@ -34,7 +34,6 @@ kt_jvm_test(
 
 kt_jvm_test(
     name = "ComputeChangedFilesTest",
-    size = "large",
     srcs = ["ComputeChangedFilesTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib",
