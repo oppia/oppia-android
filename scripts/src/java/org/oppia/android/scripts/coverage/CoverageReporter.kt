@@ -253,7 +253,7 @@ class CoverageReporter(
       report.failure?.let { failure ->
         val failurePath = failure.filePath
           ?.takeIf { it.isNotEmpty() }
-          ?.let { getFilenameAsLink(it) }
+          ?.let { getFilenameAsDetailsSummary(it) }
           ?: failure.bazelTestTarget
         "| $failurePath | ${failure.failureMessage} |"
       }
@@ -315,8 +315,8 @@ class CoverageReporter(
       .filter { it.hasExemption() }
       .map { exemption ->
         val filePath = exemption.exemption.filePath
-        "${getFilenameAsLink(filePath)}"
-      }.joinToString(separator = "\n") { "- $it" }
+        "${getFilenameAsDetailsSummary(filePath)}"
+      }.joinToString(separator = "\n") { "$it" }
 
     val tableHeader = buildString {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
@@ -394,8 +394,10 @@ class CoverageReporter(
     val testFileExemptedSection = buildString {
       if (testFileExemptedCasesList.isNotEmpty()) {
         append("\n\n")
-        append("### Files Exempted from Coverage\n")
+        append("### Exempted coverage\n")
+        append("<details><summary>Files exempted from coverage</summary> <br>")
         append(testFileExemptedCasesList)
+        append("</details>")
       }
     }
 
@@ -444,19 +446,10 @@ class CoverageReporter(
   }
 
   private fun calculateOverallCoveragePercentage(): Float {
-    var totalLinesFound = 0
-    var totalLinesHit = 0
-
-    coverageReportContainer.coverageReportList.forEach { report ->
-      report.details?.let {
-        totalLinesFound += it.linesFound
-        totalLinesHit += it.linesHit
-      }
-    }
-
-    return totalLinesFound.takeIf { it > 0 }
-      ?.let { totalLinesHit.toFloat() / it * 100 }
-      ?: 0.0f
+    val reports = coverageReportContainer.coverageReportList
+    val totalLinesFound = reports.sumOf { it.details?.linesFound ?: 0 }.toFloat()
+    val totalLinesHit = reports.sumOf { it.details?.linesHit ?: 0 }.toFloat()
+    return if (totalLinesFound > 0) (totalLinesHit * 100.0f) / totalLinesFound else 0.0f
   }
 
   private fun logCoverageReport() {
@@ -494,12 +487,13 @@ class CoverageReporter(
           }
 
           if (coveragePercentage < minRequiredCoverage) {
+            val exemptionText = exemption?.let { "(exemption)" } ?: ""
             failureReports.appendLine(
               """
               |Covered File: $filePath
               |Coverage percentage: $formattedCoveragePercentage% covered
               |Line coverage: $totalLinesHit / $totalLinesFound lines covered
-              |Minimum Required: $minRequiredCoverage% "${exemption?.let { "(exemption)" } ?: ""}"
+              |Minimum Required: $minRequiredCoverage% $exemptionText
               |------------------------
               """.trimMargin().prependIndent("  ")
             )
@@ -539,7 +533,7 @@ class CoverageReporter(
         )
         val formattedCoveragePercentage = "%.2f".format(coveragePercentage)
 
-        "| ${getFilenameAsLink(filePath)} | $formattedCoveragePercentage% | " +
+        "| ${getFilenameAsDetailsSummary(filePath)} | $formattedCoveragePercentage% | " +
           "$totalLinesHit / $totalLinesFound | $statusSymbol | $exemptionPercentage |"
       }
       .joinToString(separator = "\n")
@@ -583,9 +577,6 @@ private fun getReportOutputPath(
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
-private fun getFilenameAsLink(filePath: String): String {
-  val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-  val filename = filePath.substringAfterLast("/").trim()
-  val filenameAsLink = "[$filename]($oppiaDevelopGitHubLink/$filePath)"
-  return filenameAsLink
+private fun getFilenameAsDetailsSummary(filePath: String): String {
+  return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
 }

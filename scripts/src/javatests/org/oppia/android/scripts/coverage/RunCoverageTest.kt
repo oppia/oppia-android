@@ -59,7 +59,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_missingTestFileNotExempted_generatesFailureReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val sampleFile = "file.kt"
     testBazelWorkspace.initEmptyWorkspace()
     tempFolder.newFile(sampleFile)
@@ -87,7 +86,7 @@ class RunCoverageTest {
       append("### Failure Cases\n\n")
       append("| File | Failure Reason |\n")
       append("|------|----------------|\n")
-      append("| [$sampleFile]($oppiaDevelopGitHubLink/$sampleFile) | $failureMessage |")
+      append("| ${getFilenameAsDetailsSummary(sampleFile)} | $failureMessage |")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
@@ -186,7 +185,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_testFileExempted_skipsCoverage() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val exemptedFile = "TestExempted.kt"
     val exemptedFilePathList = listOf(exemptedFile)
 
@@ -206,11 +204,10 @@ class RunCoverageTest {
       append("Overall Coverage: **0.00%**\n")
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
-      append("### Files Exempted from Coverage\n")
-      append(
-        "- [${exemptedFilePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${exemptedFilePathList.get(0)})"
-      )
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(exemptedFile)}")
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -411,7 +408,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withMissingTestDeclarations_generatesFailureReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
     )
@@ -446,8 +442,8 @@ class RunCoverageTest {
     val failureMessage = "Missing test declaration(s) for existing test file(s): " +
       "${listOf("coverage/test/java/com/example/AddNumsTest.kt")}."
 
-    val expectedFailureReport = "| [${filePathList.get(0).substringAfterLast('/')}]" +
-      "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | $failureMessage |"
+    val expectedFailureReport = "| ${getFilenameAsDetailsSummary(filePathList.get(0))} " +
+      "| $failureMessage |"
 
     assertThat(readFinalMdReport()).contains(expectedFailureReport)
   }
@@ -506,7 +502,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withMultipleFilesMarkdownFormat_generatesCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/SubNums.kt"
@@ -587,13 +582,11 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append(
-        "| [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -747,7 +740,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withFailureFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/LowTestNums.kt"
     )
@@ -787,8 +779,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |"
       )
     }
@@ -798,7 +789,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_highCoverageExemptionFailFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/HighCoverageExempted.kt"
     )
@@ -872,8 +862,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":x: | 101% _*_ |"
       )
       append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
@@ -884,7 +873,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_lowCoverageExemptionFailFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/LowCoverageExempted.kt"
     )
@@ -953,8 +941,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
           ":white_check_mark: | 0% _*_ |"
       )
       append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds\n")
@@ -966,7 +953,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessAndFailureFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt"
@@ -1017,8 +1003,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |\n"
       )
       append("### Passing coverage\n\n")
@@ -1027,8 +1012,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -1039,7 +1023,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessAndExemptedFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "TestExempted.kt"
@@ -1077,16 +1060,16 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>\n\n")
-      append("### Files Exempted from Coverage\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
       append(
-        "- [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)})"
+        "${getFilenameAsDetailsSummary(filePathList.get(1))}"
       )
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1094,7 +1077,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withFailureAndExemptedFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/LowTestNums.kt",
       "TestExempted.kt"
@@ -1136,15 +1118,13 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 0.00% | 0 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |\n\n"
       )
-      append("### Files Exempted from Coverage\n")
-      append(
-        "- [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)})"
-      )
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(filePathList.get(1))}")
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1152,7 +1132,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessFailureAndExemptedFiles_generatesFinalCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt",
@@ -1204,8 +1183,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |\n"
       )
       append("### Passing coverage\n\n")
@@ -1214,16 +1192,14 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>\n\n")
-      append("### Files Exempted from Coverage\n")
-      append(
-        "- [${filePathList.get(2).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(2)})"
-      )
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(filePathList.get(2))}")
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1231,7 +1207,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessFailureMissingTestAndExemptedFiles_generatesFinalReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt",
@@ -1288,13 +1263,12 @@ class RunCoverageTest {
       append("### Failure Cases\n\n")
       append("| File | Failure Reason |\n")
       append("|------|----------------|\n")
-      append("| [file.kt]($oppiaDevelopGitHubLink/file.kt) | $failureMessage |\n\n")
+      append("| ${getFilenameAsDetailsSummary("file.kt")} | $failureMessage |\n\n")
       append("### Failing coverage\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(1).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(1)}) | 0.00% | 0 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |\n"
       )
       append("### Passing coverage\n\n")
@@ -1303,16 +1277,14 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>\n\n")
-      append("### Files Exempted from Coverage\n")
-      append(
-        "- [${filePathList.get(2).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(2)})"
-      )
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(filePathList.get(2))}")
+      append("</details>")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1450,7 +1422,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_generatesCoverageReport() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -1519,8 +1490,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -1531,7 +1501,6 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withMultipleTestsForFile_analysingSameFile() {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
@@ -1602,8 +1571,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [${filePathList.get(0).substringAfterLast("/")}]" +
-          "($oppiaDevelopGitHubLink/${filePathList.get(0)}) | 75.00% | 3 / 4 | " +
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
           ":white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -2181,9 +2149,6 @@ class RunCoverageTest {
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
-    val oppiaDevelopGitHubLink = "https://github.com/oppia/oppia-android/tree/develop"
-    val filename = filePath.substringAfterLast("/")
-
     val markdownText = buildString {
       append("## Coverage Report\n\n")
       append("### Results\n")
@@ -2197,7 +2162,7 @@ class RunCoverageTest {
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
-        "| [$filename]($oppiaDevelopGitHubLink/$filePath) | 75.00% | " +
+        "| ${getFilenameAsDetailsSummary(filePath)} | 75.00% | " +
           "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n"
       )
       append("</details>")
@@ -2512,6 +2477,10 @@ class RunCoverageTest {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
+  }
+
+  private fun getFilenameAsDetailsSummary(filePath: String): String {
+    return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
   }
 
   private fun loadCoverageReportContainerProto(

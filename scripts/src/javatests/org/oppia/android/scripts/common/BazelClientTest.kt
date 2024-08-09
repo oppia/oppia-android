@@ -536,53 +536,53 @@ class BazelClientTest {
     val result = bazelClient.runCoverageForTestTarget(
       "//coverage/test/java/com/example:AddNumsTest"
     )
-    val expectedResult = listOf(
-      listOf(
-        "SF:coverage/main/java/com/example/AddNums.kt",
-        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-        "FN:3,com/example/AddNums::<init> ()V",
-        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-        "FNDA:0,com/example/AddNums::<init> ()V",
-        "FNF:2",
-        "FNH:1",
-        "BRDA:7,0,0,1",
-        "BRDA:7,0,1,1",
-        "BRDA:7,0,2,1",
-        "BRDA:7,0,3,0",
-        "BRF:4",
-        "BRH:3",
-        "DA:3,0",
-        "DA:7,1",
-        "DA:8,0",
-        "DA:10,1",
-        "LH:2",
-        "LF:4",
-        "end_of_record"
-      ),
-      listOf(
-        "SF:coverage/main/java/com/example/AddNums.kt",
-        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-        "FN:3,com/example/AddNums::<init> ()V",
-        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-        "FNDA:0,com/example/AddNums::<init> ()V",
-        "FNF:2",
-        "FNH:1",
-        "BRDA:7,0,0,0",
-        "BRDA:7,0,1,1",
-        "BRDA:7,0,2,0",
-        "BRDA:7,0,3,1",
-        "BRF:4",
-        "BRH:2",
-        "DA:3,0",
-        "DA:7,1",
-        "DA:8,1",
-        "DA:10,0",
-        "LH:2",
-        "LF:4",
-        "end_of_record"
-      )
+    val expectedShardResult1 = listOf(
+      "SF:coverage/main/java/com/example/AddNums.kt",
+      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/AddNums::<init> ()V",
+      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/AddNums::<init> ()V",
+      "FNF:2",
+      "FNH:1",
+      "BRDA:7,0,0,1",
+      "BRDA:7,0,1,1",
+      "BRDA:7,0,2,1",
+      "BRDA:7,0,3,0",
+      "BRF:4",
+      "BRH:3",
+      "DA:3,0",
+      "DA:7,1",
+      "DA:8,0",
+      "DA:10,1",
+      "LH:2",
+      "LF:4",
+      "end_of_record"
     )
-    assertThat(result).isEqualTo(expectedResult)
+
+    val expectedShardResult2 = listOf(
+      "SF:coverage/main/java/com/example/AddNums.kt",
+      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/AddNums::<init> ()V",
+      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/AddNums::<init> ()V",
+      "FNF:2",
+      "FNH:1",
+      "BRDA:7,0,0,0",
+      "BRDA:7,0,1,1",
+      "BRDA:7,0,2,0",
+      "BRDA:7,0,3,1",
+      "BRF:4",
+      "BRH:2",
+      "DA:3,0",
+      "DA:7,1",
+      "DA:8,1",
+      "DA:10,0",
+      "LH:2",
+      "LF:4",
+      "end_of_record"
+    )
+    assertThat(result).contains(expectedShardResult1)
+    assertThat(result).contains(expectedShardResult2)
   }
 
   @Test

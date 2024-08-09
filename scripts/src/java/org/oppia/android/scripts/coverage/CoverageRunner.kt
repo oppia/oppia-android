@@ -40,16 +40,14 @@ class CoverageRunner(
     val coverageResults = bazelClient.runCoverageForTestTarget(bazelTestTarget)
 
     return coverageResults
-      .takeIf { it.isNotEmpty() }
-      ?.map { singleCoverageDatFileLines ->
+      .map { singleCoverageDatFileLines ->
         parseCoverageDataFileLines(singleCoverageDatFileLines, bazelTestTarget)
-      }
-      ?: listOf(
-        generateFailedCoverageReport(
-          bazelTestTarget,
-          "Coverage retrieval failed for the test target: $bazelTestTarget"
-        )
+      }.takeIf { it.isNotEmpty() } ?: listOf(
+      generateFailedCoverageReport(
+        bazelTestTarget,
+        "Coverage retrieval failed for the test target: $bazelTestTarget"
       )
+    )
   }
 
   private fun parseCoverageDataFileLines(

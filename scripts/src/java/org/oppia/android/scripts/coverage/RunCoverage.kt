@@ -86,7 +86,7 @@ fun main(vararg args: String) {
     "PROTO" -> ReportFormat.PROTO
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
-  println("format: $reportFormat")
+  println("Using format: $reportFormat")
 
   val protoOutputPath = args.find { it.startsWith("--protoOutputPath") }
     ?.substringAfter("=")
@@ -243,11 +243,9 @@ class RunCoverage(
   private fun combineCoverageReports(
     coverageResultList: List<CoverageReport>
   ): CoverageReportContainer {
-    val containerBuilder = CoverageReportContainer.newBuilder()
-    coverageResultList.forEach { report ->
-      containerBuilder.addCoverageReport(report)
-    }
-    return containerBuilder.build()
+    return CoverageReportContainer.newBuilder().apply {
+      addAllCoverageReport(coverageResultList)
+    }.build()
   }
 
   private fun calculateAggregateCoverageReport(
