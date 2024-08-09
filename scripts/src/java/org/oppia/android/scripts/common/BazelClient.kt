@@ -145,10 +145,6 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun runCoverageForTestTarget(bazelTestTarget: String): List<List<String>> {
     val instrumentation = bazelTestTarget.split(":")[0]
     val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
-    val targetParts = bazelTestTarget.split(":")
-    val targetPath = "${targetParts[0]}:*"
-    val targetName = targetParts[1]
-
     val coverageCommandOutputLines = executeBazelCommand(
       "coverage",
       bazelTestTarget,
