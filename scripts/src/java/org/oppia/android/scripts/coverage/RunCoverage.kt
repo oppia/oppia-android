@@ -99,7 +99,7 @@ fun main(vararg args: String) {
     }
   }
 
-  val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+  val testFileExemptionTextProtoPath = "scripts/assets/test_file_exemptions"
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
@@ -116,7 +116,7 @@ fun main(vararg args: String) {
       reportFormat,
       commandExecutor,
       scriptBgDispatcher,
-      testFileExemptionTextProto,
+      testFileExemptionTextProtoPath,
       protoOutputPath
     ).execute()
   }
@@ -136,14 +136,14 @@ class RunCoverage(
   private val reportFormat: ReportFormat,
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val testFileExemptionTextProto: String,
+  private val testFileExemptionTextProtoPath: String,
   private val protoOutputPath: String? = null
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
 
   private val rootDirectory = File(repoRoot).absoluteFile
   private val testFileExemptionList by lazy {
-    loadTestFileExemptionsProto(testFileExemptionTextProto)
+    loadTestFileExemptionsProto(testFileExemptionTextProtoPath)
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
@@ -180,7 +180,7 @@ class RunCoverage(
       repoRoot,
       coverageReportContainer,
       reportFormat,
-      testFileExemptionList
+      testFileExemptionTextProtoPath
     )
     val coverageStatus = reporter.generateRichTextReport()
 

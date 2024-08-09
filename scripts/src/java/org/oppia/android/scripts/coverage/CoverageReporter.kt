@@ -22,9 +22,16 @@ class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
-  private val testFileExemptionList: Map<String, TestFileExemptions.TestFileExemption>,
+  private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb",
+//  private val testFileExemptionList: Map<String, TestFileExemptions.TestFileExemption>,
   private val mdReportOutputPath: String? = null
 ) {
+  private val testFileExemptionList by lazy {
+    loadTestFileExemptionsProto(testFileExemptionTextProtoPath)
+      .testFileExemptionList
+      .associateBy { it.exemptedFilePath }
+  }
+
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
    * It supports Markdown and HTML formats.
@@ -580,3 +587,20 @@ private fun getReportOutputPath(
 private fun getFilenameAsDetailsSummary(filePath: String): String {
   return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
 }
+
+/*private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions.newBuilder().also { builder ->
+      builder.mergeFrom(stream)
+    }.build()
+  }
+}*/
+
+private fun loadTestFileExemptionsProto(testFileExemptionTextProtoPath: String): TestFileExemptions {
+  return File(testFileExemptionTextProtoPath).inputStream().use { stream ->
+    TestFileExemptions.newBuilder().apply {
+      mergeFrom(stream)
+    }.build()
+  }
+}
+

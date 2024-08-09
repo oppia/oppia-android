@@ -25,12 +25,12 @@ class CoverageReporterTest {
   private val originalOut: PrintStream = System.out
 
   private lateinit var coverageDir: String
-  private lateinit var testExemptions: Map<String, TestFileExemptions.TestFileExemption>
+//  private lateinit var testExemptions: Map<String, TestFileExemptions.TestFileExemption>
 
   @Before
   fun setUp() {
     coverageDir = "/coverage_reports"
-    testExemptions = createTestFileExemptionTextProto()
+//    testExemptions = createTestFileExemptionTextProto()
   }
 
   @After
@@ -57,8 +57,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.MARKDOWN,
-      testExemptions
+      ReportFormat.MARKDOWN
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -102,8 +101,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.MARKDOWN,
-      testExemptions
+      ReportFormat.MARKDOWN
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -142,8 +140,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.MARKDOWN,
-      testExemptions
+      ReportFormat.MARKDOWN
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -164,11 +161,20 @@ class CoverageReporterTest {
 
   @Test
   fun testGenerateMarkDownReport_withExemptionCoverageReportDetails_generatesMarkdownTable() {
-    val exemptedFilePath = "TestExempted.kt"
+//    val exemptedFilePath = "TestExempted.kt"
+    val testExemptedFilePath = "TestExempted.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = testExemptedFilePath
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
     val exemptionCoverageReport = CoverageReport.newBuilder()
       .setExemption(
         CoverageExemption.newBuilder()
-          .setFilePath(exemptedFilePath)
+          .setFilePath(testExemptedFilePath)
           .build()
       ).build()
 
@@ -180,7 +186,7 @@ class CoverageReporterTest {
       tempFolder.root.absolutePath,
       coverageReportContainer,
       ReportFormat.MARKDOWN,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -192,7 +198,7 @@ class CoverageReporterTest {
       append("##\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(exemptedFilePath)}")
+      append("${getFilenameAsDetailsSummary(testExemptedFilePath)}")
       append("</details>")
     }
 
@@ -202,6 +208,15 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withOverriddenHighCoverage_generatesFailStatusMarkdownTable() {
     val highCoverageRequiredFilePath = "coverage/main/java/com/example/HighCoverageExempted.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = highCoverageRequiredFilePath
+      this.overrideMinCoveragePercentRequired = 101
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+//    val highCoverageRequiredFilePath = "coverage/main/java/com/example/HighCoverageExempted.kt"
     val highCoverageRequiredCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
@@ -219,7 +234,7 @@ class CoverageReporterTest {
       tempFolder.root.absolutePath,
       coverageReportContainer,
       ReportFormat.MARKDOWN,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -245,6 +260,14 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withOverriddenLowCoverage_generatesPassStatusMarkdownTable() {
     val lowCoverageRequiredFilePath = "coverage/main/java/com/example/LowCoverageExempted.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = lowCoverageRequiredFilePath
+      this.overrideMinCoveragePercentRequired = 0
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
     val lowCoverageRequiredCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
@@ -262,7 +285,7 @@ class CoverageReporterTest {
       tempFolder.root.absolutePath,
       coverageReportContainer,
       ReportFormat.MARKDOWN,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -336,8 +359,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.MARKDOWN,
-      testExemptions
+      ReportFormat.MARKDOWN
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -413,8 +435,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.HTML,
-      testExemptions
+      ReportFormat.HTML
     ).generateRichTextReport()
 
     val outputReportText = File(
@@ -601,8 +622,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.HTML,
-      testExemptions
+      ReportFormat.HTML
     ).generateRichTextReport()
 
     assertThat(outContent.toString().trim()).contains(
@@ -628,8 +648,7 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.HTML,
-      testExemptions
+      ReportFormat.HTML
     ).generateRichTextReport()
 
     assertThat(outContent.toString().trim()).contains(
@@ -648,7 +667,15 @@ class CoverageReporterTest {
     return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
   }
 
-  private fun createTestFileExemptionTextProto():
+  private fun createTestFileExemptionsProtoFile(
+    testFileExemptions: TestFileExemptions = TestFileExemptions.getDefaultInstance()
+  ): String {
+    return tempFolder.newFile("test_file_exemptions2").also {
+      it.outputStream().use(testFileExemptions::writeTo)
+    }.path
+  }
+
+  /*private fun createTestFileExemptionTextProto():
     Map<String, TestFileExemptions.TestFileExemption> {
       val testFileExemptions = TestFileExemptions.newBuilder()
         .addTestFileExemption(
@@ -673,5 +700,5 @@ class CoverageReporterTest {
 
       return testFileExemptions.testFileExemptionList
         .associateBy { it.exemptedFilePath }
-    }
+    }*/
 }
