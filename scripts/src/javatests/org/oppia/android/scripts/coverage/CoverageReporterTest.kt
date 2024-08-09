@@ -671,16 +671,7 @@ class CoverageReporterTest {
         )
         .build()
 
-      val testExemptionPb = "test_exemption.pb"
-      val coverageTestExemptionTextProto = tempFolder.newFile(testExemptionPb)
-      coverageTestExemptionTextProto.outputStream().use { outputStream ->
-        testFileExemptions.writeTo(outputStream)
-      }
-
-      val testFileExemptionsFromFile =
-        TestFileExemptions.parseFrom(coverageTestExemptionTextProto.inputStream())
-
-      return testFileExemptionsFromFile.testFileExemptionList
+      return testFileExemptions.testFileExemptionList
         .associateBy { it.exemptedFilePath }
     }
 }
