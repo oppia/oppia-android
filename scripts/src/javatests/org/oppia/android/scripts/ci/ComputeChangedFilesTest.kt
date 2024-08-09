@@ -51,12 +51,6 @@ class ComputeChangedFilesTest {
   fun tearDown() {
     // Reinstate test output redirection.
     System.setOut(PrintStream(pendingOutputStream))
-
-    // Print the status of the git repository to help with debugging in the cases of test failures
-    // and to help manually verify the expect git state at the end of each test.
-    println("git status (at end of test):")
-    println(testGitRepository.status(checkForGitRepository = false))
-
     scriptBgDispatcher.close()
   }
 
@@ -152,9 +146,7 @@ class ComputeChangedFilesTest {
   @Test
   fun testUtility_developBranch_returnsAllFiles() {
     initializeEmptyGitRepository()
-    switchToFeatureBranch()
     createEmptyWorkspace()
-
     createAndCommitFile("First", "Second", "Third", subPackage = "app")
 
     val reportedFiles = runScript()
@@ -296,12 +288,21 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_developBranch_instrumentationModuleChanged_instrumentationFilesAreIgnored() {
+  fun testUtility_developBranch_instrumentationModuleChanged_filteredInstrumentationFilesAreIgnored() {
     initializeEmptyGitRepository()
     createFiles(
       "InstrumentationFile",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
     )
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(0)
+  }
+
+  @Test
+  fun testUtility_developBranch_instrumentationModuleChanged_unfilteredInstrumentationFilesAreComputed() {
+    initializeEmptyGitRepository()
     createFiles(
       "Robolectric",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
@@ -314,10 +315,6 @@ class ComputeChangedFilesTest {
     val reportedFiles = runScript()
 
     assertThat(reportedFiles).hasSize(1)
-    assertThat(reportedFiles.first().changedFilesList).doesNotContain(
-      "instrumentation/src/javatests/org/oppia/android/" +
-        "instrumentation/player/InstrumentationFile.kt"
-    )
     assertThat(reportedFiles.first().changedFilesList).contains(
       "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
     )
@@ -327,14 +324,24 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationFilesAreIgnored() {
+  fun testUtility_featureBranch_instrumentationModuleChanged_filteredInstrumentationFilesAreIgnored() {
     initializeEmptyGitRepository()
-    createAndCommitFile("First", "Second", subPackage = "app")
     switchToFeatureBranch()
     createFiles(
       "InstrumentationFile",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
     )
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(0)
+  }
+
+  @Test
+  fun testUtility_featureBranch_instrumentationModuleChanged_unfilteredInstrumentationFilesAreComputed() {
+    initializeEmptyGitRepository()
+    createAndCommitFile("First", "Second", subPackage = "app")
+    switchToFeatureBranch()
     createFiles(
       "Robolectric",
       subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
@@ -347,10 +354,6 @@ class ComputeChangedFilesTest {
     val reportedFiles = runScript()
 
     assertThat(reportedFiles).hasSize(1)
-    assertThat(reportedFiles.first().changedFilesList).doesNotContain(
-      "instrumentation/src/javatests/org/oppia/android/" +
-        "instrumentation/player/InstrumentationFile.kt"
-    )
     assertThat(reportedFiles.first().changedFilesList).contains(
       "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
     )
@@ -681,6 +684,23 @@ class ComputeChangedFilesTest {
     assertThat(generatedLines[1]).matches("^scripts-shard[0-3];.+?\$")
   }
 
+  @Test
+  fun testUtility_featureBranch_computeAllFiles_filtersNonKotlinFiles() {
+    initializeEmptyGitRepository()
+    createFiles("First", "Second", "Third", subPackage = "app")
+    createNonKotlinFiles("Fourth", subPackage = "app")
+    switchToFeatureBranch()
+
+    val reportedFiles = runScript(computeAllFiles = true)
+
+    // Even though there are no changes, all files should be returned since that was requested
+    // via a command argument.
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/First.kt", "app/Second.kt", "app/Third.kt")
+    assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/Fourth.xml")
+  }
+
   private fun runScriptWithTextOutput(
     currentHeadHash: String = computeMergeBase("develop"),
     computeAllFiles: Boolean = false
@@ -762,6 +782,16 @@ class ComputeChangedFilesTest {
     }
     return fileNames.map { fileName ->
       tempFolder.newFile("$subPackage/$fileName.kt")
+    }
+  }
+
+  private fun createNonKotlinFiles(vararg fileNames: String, subPackage: String): List<File> {
+    createEmptyWorkspace()
+    if (!File(tempFolder.root, subPackage).exists()) {
+      tempFolder.newFolder(subPackage)
+    }
+    return fileNames.map { fileName ->
+      tempFolder.newFile("$subPackage/$fileName.xml")
     }
   }
 
