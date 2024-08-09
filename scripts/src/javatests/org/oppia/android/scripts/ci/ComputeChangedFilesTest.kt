@@ -198,7 +198,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_featureBranch_fileChange_staged_returnsChangedFile() {
+  fun testUtility_featureBranch_fileChangeStaged_shouldNotBeComputed() {
     initializeEmptyGitRepository()
     createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
@@ -206,13 +206,13 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    // Only the first file should be reported since the file itself was changed & staged.
-    assertThat(reportedFiles).hasSize(1)
-    assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt")
+    // No files should be reported since the file was only staged and
+    // not fully committed in the feature branch.
+    assertThat(reportedFiles).hasSize(0)
   }
 
   @Test
-  fun testUtility_featureBranch_fileChange_unstaged_returnsChangedFile() {
+  fun testUtility_featureBranch_fileChangeUnstaged_shouldNotBeComputed() {
     initializeEmptyGitRepository()
     createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
@@ -220,13 +220,14 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    // Only the first file should be reported since the file itself was changed & staged.
+    // Only the first file should be reported because it is the only one
+    // that was changed and committed in the feature branch.
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).containsExactly("app/First.kt")
   }
 
   @Test
-  fun testUtility_featureBranch_newFile_untracked_returnsChangedFile() {
+  fun testUtility_featureBranch_newFile_untracked_shouldNotBeComputed() {
     initializeEmptyGitRepository()
     createAndCommitFiles("First", "Second", "Third", subPackage = "app")
     switchToFeatureBranch()
@@ -234,9 +235,9 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    // Only the first file should be reported since the file itself was changed & staged.
-    assertThat(reportedFiles).hasSize(1)
-    assertThat(reportedFiles.first().changedFilesList).containsExactly("data/NewUntrackedFile.kt")
+    // No files should be reported since the file was untracked and
+    // not fully committed in the feature branch.
+    assertThat(reportedFiles).hasSize(0)
   }
 
   @Test
@@ -253,7 +254,7 @@ class ComputeChangedFilesTest {
   }
 
   @Test
-  fun testUtility_featureBranch_movedFile_staged_returnsNewFile() {
+  fun testUtility_featureBranch_movedFile_stagedAndCommitted_returnsNewFile() {
     initializeEmptyGitRepository()
     createAndCommitFiles("First", subPackage = "app")
     switchToFeatureBranch()
@@ -748,6 +749,37 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles.first().changedFilesList).doesNotContain("app/SecondTest.kt")
   }
 
+  @Test
+  fun testUtility_featureBranch_withChangesToTestFile_mapsTestFileToSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "app/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "app/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "app/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_withChangesToSourceAndTestFile_computesSingleSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "app/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "app/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("First", subPackage = "app/main/java/com/src")
+    changeAndCommitFile("FirstTest", subPackage = "app/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/main/java/com/src/First.kt")
+  }
+
   private fun runScriptWithTextOutput(
     currentHeadHash: String = computeMergeBase("develop"),
     computeAllFiles: Boolean = false
@@ -878,7 +910,6 @@ class ComputeChangedFilesTest {
     oldFilePath.delete()
 
     testGitRepository.stageFileForCommit(newFilePath)
-
     testGitRepository.commit(message = "Move file from $oldFilePath to $newFilePath")
   }
 

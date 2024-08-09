@@ -153,7 +153,7 @@ class ComputeChangedFiles(
     rootDirectory: File,
     pathToRoot: String
   ): List<String> {
-    val changedKtFiles = gitClient.changedFiles
+    val changedKtFiles = gitClient.committedFiles
       .map { File(rootDirectory, it) }
       .filter { it.exists() }
       .map { it.toRelativeString(rootDirectory) }
