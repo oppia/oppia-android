@@ -557,7 +557,7 @@ class BazelClientTest {
       "LH:2",
       "LF:4",
       "end_of_record"
-      )
+    )
 
     val expectedShardResult2 = listOf(
       "SF:coverage/main/java/com/example/AddNums.kt",
