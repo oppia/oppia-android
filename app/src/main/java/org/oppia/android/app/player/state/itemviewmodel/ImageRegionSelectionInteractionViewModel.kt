@@ -78,7 +78,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
-
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 

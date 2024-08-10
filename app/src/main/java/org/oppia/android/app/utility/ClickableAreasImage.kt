@@ -25,7 +25,7 @@ class ClickableAreasImage(
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
   private val clickableAreas: List<LabeledRegion>,
-  observableUserAnswerState: ObservableField<UserAnswerState>
+  userAnswerState: UserAnswerState
 ) {
   private var imageLabel: String? = null
   private var defaultRegionCoordinates: Point2d? = null
@@ -35,12 +35,12 @@ class ClickableAreasImage(
   init {
     imageView.initializeShowRegionTouchListener()
 
-    if (observableUserAnswerState.get()!!.hasImageInteractionState()) {
-      if (observableUserAnswerState.get()!!.imageInteractionState.imageLabel.isNotBlank()) {
-        imageLabel = observableUserAnswerState.get()!!.imageInteractionState.imageLabel
+    if (userAnswerState.hasImageInteractionState()) {
+      if (userAnswerState.imageInteractionState.imageLabel.isNotBlank()) {
+        imageLabel = userAnswerState.imageInteractionState.imageLabel
       } else {
         defaultRegionCoordinates =
-          observableUserAnswerState.get()!!.imageInteractionState.defaultRegionCoordinates
+          userAnswerState.imageInteractionState.defaultRegionCoordinates
       }
     }
   }

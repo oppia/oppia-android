@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.model.ImageWithRegions
@@ -54,7 +53,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
 
-  private lateinit var observableUserAnswerState: ObservableField <UserAnswerState>
+  private lateinit var userAnswerState:  UserAnswerState
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -65,8 +64,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     maybeInitializeClickableAreas()
   }
 
-  fun setUserAnswerState(userAnswerrState: ObservableField <UserAnswerState>) {
-    observableUserAnswerState = userAnswerrState
+  fun setUserAnswerState(userAnswerrState: UserAnswerState) {
+   this.userAnswerState = userAnswerrState
   }
 
   fun setEntityId(entityId: String) {
@@ -130,7 +129,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         bindingInterface,
         isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled(),
         clickableAreas,
-        observableUserAnswerState
+        userAnswerState
       )
       areasImage.addRegionViews()
       areasImage.maybeSelectDefaultRegion()
