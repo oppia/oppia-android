@@ -17,26 +17,25 @@ lets start with a dummy container pb file
 
 fun main(vararg args: String) {
   val repoRoot = args[0]
-  val protoContainerPath = args[1]
+  val protoReportPaths = args[1]
+  println("Proto report paths: $protoReportPaths")
 
-  val format = args.find { it.startsWith("--format=", ignoreCase = true) }
+  /*val format = args.find { it.startsWith("--format=", ignoreCase = true) }
     ?.substringAfter("=")
-    ?.uppercase() ?: "HTML"
+    ?.uppercase() ?: "MARKDOWN"
 
   val reportFormat = when (format) {
-    "HTML" -> ReportFormat.HTML
     "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
-    "PROTO" -> ReportFormat.PROTO
     else -> throw IllegalArgumentException("Unsupported report format: $format")
-  }
+  }*/
 
-  val mdReportOutputPath = args.find { it.startsWith("--mdReportOutputPath") }
-    ?.substringAfter("=")
+  /*val mdReportOutputPath = args.find { it.startsWith("--mdReportOutputPath") }
+    ?.substringAfter("=")*/
 
-  println("Using format: $reportFormat")
+  /*println("Using format: $reportFormat")
   println("repo root: $repoRoot")
   println("proto container path: $protoContainerPath")
-  println("md report output path: $mdReportOutputPath")
+  println("md report output path: $mdReportOutputPath")*/
 }
 
 /**
