@@ -339,7 +339,6 @@ private fun findSourceFile(
   filePath: String
 ): String? {
   val repoRootFile = File(repoRoot).absoluteFile
-
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
