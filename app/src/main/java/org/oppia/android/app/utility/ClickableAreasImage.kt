@@ -8,7 +8,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Point2d

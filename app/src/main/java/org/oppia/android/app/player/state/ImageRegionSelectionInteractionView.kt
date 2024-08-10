@@ -53,7 +53,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
 
-  private lateinit var userAnswerState:  UserAnswerState
+  private lateinit var userAnswerState: UserAnswerState
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -65,7 +65,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   }
 
   fun setUserAnswerState(userAnswerrState: UserAnswerState) {
-   this.userAnswerState = userAnswerrState
+    this.userAnswerState = userAnswerrState
   }
 
   fun setEntityId(entityId: String) {
