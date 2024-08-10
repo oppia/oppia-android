@@ -271,6 +271,18 @@ jobs:
         with:
           version: 6.5.0
 
+      - uses: actions/cache@v2
+        id: scripts_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
       - name: Generate Markdown Coverage Report
         run: |
           bazel run //scripts:coverage_reporter -- $(pwd) $PB_FILES_LIST
