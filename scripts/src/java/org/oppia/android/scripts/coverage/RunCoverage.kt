@@ -63,15 +63,17 @@ fun main(vararg args: String) {
   val filePathList = args.drop(1)
     .takeWhile { !it.startsWith("--") }
     .map { it.trim(',', '[', ']') }
-    .flatMap { filePath ->
+    .map { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
-          findSourceFile(repoRoot, filePath)
+          findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
         }
-        filePath.endsWith(".kt") -> listOf(filePath)
-        else -> emptyList()
+        filePath.endsWith(".kt") -> filePath
+        else -> null
       }
     }
+    .filterNotNull()
+    .distinct()
 
   println("Running coverage analysis for the files: $filePathList")
 
@@ -181,7 +183,6 @@ class RunCoverage(
   }
 
   private fun runCoverageForFile(filePath: String): CoverageReport {
-
     val exemption = testFileExemptionList[filePath]
     return when {
       exemption?.testFileNotRequired == true -> {
@@ -209,7 +210,7 @@ class RunCoverage(
           ).build()
       }
       else -> {
-        val testFilePaths = findTestFiles(repoRoot, filePath)
+        val testFilePaths = findTestFiles(rootDirectory, repoRoot, filePath)
         when {
           testFilePaths.isEmpty() -> {
             return CoverageReport.newBuilder()
@@ -303,7 +304,13 @@ class RunCoverage(
   }
 }
 
-private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
+private fun findTestFiles(
+  rootDirectory: File,
+  repoRoot: String,
+  filePath: String
+): List<String> {
+  val repoRootFile = File(repoRoot).absoluteFile
+
   val possibleTestFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
@@ -320,15 +327,18 @@ private fun findTestFiles(repoRoot: String, filePath: String): List<String> {
     }
   }
 
-  val repoRootFile = File(repoRoot).absoluteFile
-
   return possibleTestFilePaths
     .map { File(repoRootFile, it) }
     .filter(File::exists)
-    .map { it.relativeTo(repoRootFile).path }
+    .map { it.toRelativeString(rootDirectory) }
 }
 
-private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
+private fun findSourceFile(
+  rootDirectory: File,
+  repoRoot: String,
+  filePath: String
+): String? {
+  val repoRootFile = File(repoRoot).absoluteFile
   val possibleSourceFilePaths = when {
     filePath.startsWith("scripts/") -> {
       listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
@@ -344,9 +354,7 @@ private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
             filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
           )
         }
-        else -> {
-          emptyList()
-        }
+        else -> emptyList()
       }
     }
     else -> {
@@ -354,12 +362,12 @@ private fun findSourceFile(repoRoot: String, filePath: String): List<String> {
     }
   }
 
-  val repoRootFile = File(repoRoot).absoluteFile
-
   return possibleSourceFilePaths
-    .map { File(repoRootFile, it) }
-    .filter(File::exists)
-    .map { it.relativeTo(repoRootFile).path }
+    .mapNotNull { path ->
+      val file = File(repoRootFile, path)
+      file.takeIf { it.exists() }?.toRelativeString(rootDirectory)
+    }
+    .firstOrNull()
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptionProtoPath: String): TestFileExemptions {

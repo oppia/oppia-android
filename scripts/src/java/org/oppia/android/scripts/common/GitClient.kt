@@ -27,6 +27,9 @@ class GitClient(
    */
   val changedFiles: Set<String> by lazy { retrieveChangedFilesWithPotentialDuplicates().toSet() }
 
+  /** The list of files that have been committed in the local branch. */
+  val committedFiles: List<String> by lazy { retrieveChangedCommittedFiles() }
+
   private fun retrieveCurrentCommit(): String {
     return executeGitCommandWithOneLineOutput("rev-parse HEAD")
   }
