@@ -17,6 +17,7 @@ lets start with a dummy container pb file
 
 fun main(vararg args: String) {
   val repoRoot = args[0]
+  println("repo root: $repoRoot")
   val protoReportPaths = args[1]
   println("Proto report paths: $protoReportPaths")
 
