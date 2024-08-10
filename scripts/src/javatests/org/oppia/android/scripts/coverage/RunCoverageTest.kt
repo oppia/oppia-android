@@ -296,8 +296,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -326,8 +325,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -356,8 +354,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -404,8 +401,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -434,8 +430,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -497,8 +492,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -569,8 +563,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(markdownOutputPath).readText()
@@ -606,8 +599,7 @@ class RunCoverageTest {
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
@@ -636,8 +628,7 @@ class RunCoverageTest {
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
@@ -666,8 +657,7 @@ class RunCoverageTest {
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
@@ -714,8 +704,7 @@ class RunCoverageTest {
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
@@ -744,8 +733,7 @@ class RunCoverageTest {
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
@@ -807,8 +795,7 @@ class RunCoverageTest {
       ReportFormat.HTML,
       htmlOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile()
+      scriptBgDispatcher
     ).execute()
 
     val outputReportText = File(htmlOutputPath).readText()
@@ -1174,9 +1161,7 @@ class RunCoverageTest {
     return htmlText
   }
 
-  private fun createTestFileExemptionsProtoFile(
-    testFileExemptions: TestFileExemptions = TestFileExemptions.getDefaultInstance()
-  ): String {
+  private fun createTestFileExemptionsProtoFile(testFileExemptions: TestFileExemptions): String {
     return tempFolder.newFile("test_file_exemptions.pb").also {
       it.outputStream().use(testFileExemptions::writeTo)
     }.path
