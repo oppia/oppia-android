@@ -93,6 +93,7 @@ class CoverageReporter(
       .associateBy { it.exemptedFilePath }
   }
 
+
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.
    * It supports Markdown and HTML formats.
