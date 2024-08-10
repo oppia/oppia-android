@@ -210,7 +210,7 @@ class RunCoverage(
           ).build()
       }
       else -> {
-        val testFilePaths = findTestFiles(repoRoot, filePath)
+        val testFilePaths = findTestFiles(rootDirectory, repoRoot, filePath)
         when {
           testFilePaths.isEmpty() -> {
             return CoverageReport.newBuilder()
