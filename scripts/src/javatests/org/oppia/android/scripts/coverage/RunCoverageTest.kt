@@ -832,7 +832,7 @@ class RunCoverageTest {
 
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = exemptedFile
-      this.overrideMinCoveragePercentRequired = 0
+      this.overrideMinCoveragePercentRequired = 101
     }.build()
     val testFileExemptions = TestFileExemptions.newBuilder().apply {
       addTestFileExemption(testFileExemption)
