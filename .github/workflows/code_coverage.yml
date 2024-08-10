@@ -287,6 +287,15 @@ jobs:
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
+      - name: Configure Bazel to use a local cache (for scripts)
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
       - name: Generate Markdown Coverage Report
         run: |
           bazel run //scripts:coverage_reporter -- $(pwd) $PB_FILES_LIST
