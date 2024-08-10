@@ -208,7 +208,7 @@ class ComputeChangedFilesTest {
 
     // No files should be reported since the file was only staged and
     // not fully committed in the feature branch.
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -237,7 +237,7 @@ class ComputeChangedFilesTest {
 
     // No files should be reported since the file was untracked and
     // not fully committed in the feature branch.
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -298,7 +298,7 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -335,7 +335,7 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -762,6 +762,126 @@ class ComputeChangedFilesTest {
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList)
       .containsExactly("app/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_appTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "app/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "app/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "app/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_appLocalTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "app/main/java/com/src")
+    createAndCommitFiles("FirstLocalTest", subPackage = "app/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstLocalTest", subPackage = "app/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_appSharedTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "app/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "app/sharedTest/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "app/sharedTest/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("app/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_scriptTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "scripts/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "scripts/javatests/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "scripts/javatests/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("scripts/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_domainModuleTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "domain/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "domain/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "domain/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("domain/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_dataModuleTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "data/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "data/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "data/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("data/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_utilityModuleTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "utility/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "utility/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "utility/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("utility/main/java/com/src/First.kt")
+  }
+
+  @Test
+  fun testUtility_featureBranch_testingModuleTestChanges_mapsToRespectiveSourceFile() {
+    initializeEmptyGitRepository()
+    createAndCommitFiles("First", subPackage = "testing/main/java/com/src")
+    createAndCommitFiles("FirstTest", subPackage = "testing/test/java/com/src")
+    switchToFeatureBranch()
+    changeAndCommitFile("FirstTest", subPackage = "testing/test/java/com/src")
+
+    val reportedFiles = runScript()
+
+    assertThat(reportedFiles).hasSize(1)
+    assertThat(reportedFiles.first().changedFilesList)
+      .containsExactly("testing/main/java/com/src/First.kt")
   }
 
   @Test

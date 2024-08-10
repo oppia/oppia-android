@@ -218,8 +218,7 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      - name: Build Oppia Tests (without caching, or on a fork)
-        if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
+      - name: Build Oppia Tests
         env:
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
@@ -240,9 +239,7 @@ jobs:
           # Exit only if the most recent exit was a failure (by using a subshell).
           (exit $last_error_code)
 
-      - name: Run Oppia Coverage (without caching, or on a fork)
-        id: run-oppia-coverage-without-caching
-        if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
+      - name: Run Oppia Coverage
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |

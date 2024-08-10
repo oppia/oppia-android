@@ -23,14 +23,11 @@ class CoverageReporterTest {
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
-
   private lateinit var coverageDir: String
-//  private lateinit var testExemptions: Map<String, TestFileExemptions.TestFileExemption>
 
   @Before
   fun setUp() {
     coverageDir = "/coverage_reports"
-//    testExemptions = createTestFileExemptionTextProto()
   }
 
   @After
@@ -160,9 +157,9 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testGenerateMarkDownReport_withExemptionCoverageReportDetails_generatesMarkdownTable() {
-//    val exemptedFilePath = "TestExempted.kt"
+  fun testGenerateMarkDownReport_withTestFileExemptionCoverageReport_generatesMarkdownTable() {
     val testExemptedFilePath = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = testExemptedFilePath
       this.testFileNotRequired = true
@@ -175,6 +172,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
+          .setExemptionReason(additionalData)
           .build()
       ).build()
 
@@ -198,7 +196,55 @@ class CoverageReporterTest {
       append("##\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath)}")
+      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testGenerateMarkDownReport_withSourceIncompatibilityExemption_generatesMarkdownTable() {
+    val testExemptedFilePath = "TestExempted.kt"
+    val additionalData = "This file is incompatible with code coverage tooling; " +
+      "skipping coverage check."
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = testExemptedFilePath
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    val exemptionCoverageReport = CoverageReport.newBuilder()
+      .setExemption(
+        CoverageExemption.newBuilder()
+          .setFilePath(testExemptedFilePath)
+          .setExemptionReason(additionalData)
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(exemptionCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+    ).generateRichTextReport()
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
       append("</details>")
     }
 
@@ -208,6 +254,7 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withOverriddenHighCoverage_generatesFailStatusMarkdownTable() {
     val highCoverageRequiredFilePath = "coverage/main/java/com/example/HighCoverageExempted.kt"
+
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = highCoverageRequiredFilePath
       this.overrideMinCoveragePercentRequired = 101
@@ -216,7 +263,6 @@ class CoverageReporterTest {
       addTestFileExemption(testFileExemption)
     }.build()
 
-//    val highCoverageRequiredFilePath = "coverage/main/java/com/example/HighCoverageExempted.kt"
     val highCoverageRequiredCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
@@ -260,6 +306,7 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withOverriddenLowCoverage_generatesPassStatusMarkdownTable() {
     val lowCoverageRequiredFilePath = "coverage/main/java/com/example/LowCoverageExempted.kt"
+
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = lowCoverageRequiredFilePath
       this.overrideMinCoveragePercentRequired = 0
@@ -315,7 +362,25 @@ class CoverageReporterTest {
   fun testGenerateMarkDownReport_withCombinedCoverageReportDetails_generatesMarkdownTable() {
     val successFileName = "SampleSuccessFile.kt"
     val failureFileName = "SampleFailureFile.kt"
-    val exemptedFilePath = "TestExempted.kt"
+    val testExemptedFilePath = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = testExemptedFilePath
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    val exemptionCoverageReport = CoverageReport.newBuilder()
+      .setExemption(
+        CoverageExemption.newBuilder()
+          .setFilePath(testExemptedFilePath)
+          .setExemptionReason(additionalData)
+          .build()
+      ).build()
+
     val validPassCoverageReport = CoverageReport.newBuilder()
       .setDetails(
         CoverageDetails.newBuilder()
@@ -342,13 +407,6 @@ class CoverageReporterTest {
           .build()
       ).build()
 
-    val exemptionCoverageReport = CoverageReport.newBuilder()
-      .setExemption(
-        CoverageExemption.newBuilder()
-          .setFilePath(exemptedFilePath)
-          .build()
-      ).build()
-
     val coverageReportContainer = CoverageReportContainer.newBuilder()
       .addCoverageReport(validPassCoverageReport)
       .addCoverageReport(validFailCoverageReport)
@@ -359,7 +417,8 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.MARKDOWN
+      ReportFormat.MARKDOWN,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).generateRichTextReport()
 
     val expectedMarkdown = buildString {
@@ -392,7 +451,7 @@ class CoverageReporterTest {
       append("</details>\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(exemptedFilePath)}")
+      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
       append("</details>")
     }
 
@@ -402,7 +461,6 @@ class CoverageReporterTest {
   @Test
   fun testGenerateHtmlReport_withCoverageReportDetails_generatesCorrectContentAndFormatting() {
     val filename = "SampleFile.kt"
-    val coverageDir = "/coverage_reports"
     val sourceFile = tempFolder.newFile(filename)
     sourceFile.writeText(
       """
@@ -633,11 +691,21 @@ class CoverageReporterTest {
   @Test
   fun testGenerateHtmlReport_withCoverageReportExemptions_logsExemptionDetails() {
     System.setOut(PrintStream(outContent))
-    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    val testExemptedFilePath = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = testExemptedFilePath
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
     val exemptionCoverageReport = CoverageReport.newBuilder()
       .setExemption(
         CoverageExemption.newBuilder()
-          .setFilePath(exemptedFilePath)
+          .setFilePath(testExemptedFilePath)
+          .setExemptionReason(additionalData)
           .build()
       ).build()
 
@@ -648,12 +716,11 @@ class CoverageReporterTest {
     CoverageReporter(
       tempFolder.root.absolutePath,
       coverageReportContainer,
-      ReportFormat.HTML
+      ReportFormat.HTML,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).generateRichTextReport()
 
-    assertThat(outContent.toString().trim()).contains(
-      "The file $exemptedFilePath is exempted from coverage analysis"
-    )
+    assertThat(outContent.toString().trim()).isEqualTo("-> $testExemptedFilePath - $additionalData")
   }
 
   private fun readFinalMdReport(): String {
@@ -663,42 +730,19 @@ class CoverageReporterTest {
     ).readText()
   }
 
-  private fun getFilenameAsDetailsSummary(filePath: String): String {
-    return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+  private fun getFilenameAsDetailsSummary(
+    filePath: String,
+    additionalData: String? = null
+  ): String {
+    val fileName = filePath.substringAfterLast("/")
+    val additionalDataPart = additionalData?.let { " - $it" } ?: ""
+
+    return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
   }
 
-  private fun createTestFileExemptionsProtoFile(
-    testFileExemptions: TestFileExemptions = TestFileExemptions.getDefaultInstance()
-  ): String {
-    return tempFolder.newFile("test_file_exemptions2").also {
+  private fun createTestFileExemptionsProtoFile(testFileExemptions: TestFileExemptions): String {
+    return tempFolder.newFile("test_file_exemptions.pb").also {
       it.outputStream().use(testFileExemptions::writeTo)
     }.path
   }
-
-  /*private fun createTestFileExemptionTextProto():
-    Map<String, TestFileExemptions.TestFileExemption> {
-      val testFileExemptions = TestFileExemptions.newBuilder()
-        .addTestFileExemption(
-          TestFileExemption.newBuilder()
-            .setExemptedFilePath("TestExempted.kt")
-            .setTestFileNotRequired(true)
-            .build()
-        )
-        .addTestFileExemption(
-          TestFileExemption.newBuilder()
-            .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
-            .setOverrideMinCoveragePercentRequired(101)
-            .build()
-        )
-        .addTestFileExemption(
-          TestFileExemption.newBuilder()
-            .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
-            .setOverrideMinCoveragePercentRequired(0)
-            .build()
-        )
-        .build()
-
-      return testFileExemptions.testFileExemptionList
-        .associateBy { it.exemptedFilePath }
-    }*/
 }

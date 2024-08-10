@@ -51,6 +51,8 @@ message CoverageFailure {
 message CoverageExemption {
   // The relative path of the exempted file.
   string file_path = 1;
+  // The reason for why the file is exempted from coverage analysis.
+  string exemption_reason = 2;
 }
 
 // Represents a single bazel test target corresponding to a test file.

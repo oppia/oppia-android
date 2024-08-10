@@ -53,7 +53,6 @@ class CoverageReporter(
   private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
   private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb",
-//  private val testFileExemptionList: Map<String, TestFileExemptions.TestFileExemption>,
   private val mdReportOutputPath: String? = null
 ) {
   private val testFileExemptionList by lazy {
@@ -269,7 +268,7 @@ class CoverageReporter(
         }
         report.hasExemption() -> {
           val exemption = report.exemption
-          println("-> The file ${exemption.filePath} is exempted from coverage analysis \n")
+          println("-> ${exemption.filePath} - ${exemption.exemptionReason} \n")
         }
         else -> {
           println("Unknown Coverage Report Type")
@@ -352,7 +351,8 @@ class CoverageReporter(
       .filter { it.hasExemption() }
       .map { exemption ->
         val filePath = exemption.exemption.filePath
-        "${getFilenameAsDetailsSummary(filePath)}"
+        val exemptionReason = exemption.exemption.exemptionReason
+        "${getFilenameAsDetailsSummary(filePath, exemptionReason)}"
       }.joinToString(separator = "\n") { "$it" }
 
     val tableHeader = buildString {
@@ -457,6 +457,8 @@ class CoverageReporter(
       parentFile?.mkdirs()
       writeText(finalReportText)
     }
+
+    println("MARKDOWN report for the coverage analysis is generated at: $finalReportOutputPath")
   }
 
   private fun checkCoverageStatus(): CoverageCheck {
@@ -614,8 +616,21 @@ private fun getReportOutputPath(
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
-private fun getFilenameAsDetailsSummary(filePath: String): String {
-  return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String? = null): String {
+  val fileName = filePath.substringAfterLast("/")
+  val additionalDataPart = additionalData?.let { " - $it" } ?: ""
+
+  return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
+}
+
+private fun loadTestFileExemptionsProto(
+  testFileExemptionTextProtoPath: String
+): TestFileExemptions {
+  return File(testFileExemptionTextProtoPath).inputStream().use { stream ->
+    TestFileExemptions.newBuilder().apply {
+      mergeFrom(stream)
+    }.build()
+  }
 }
 
 /*private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {

@@ -9,7 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoverageReportContainer
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
@@ -37,8 +37,6 @@ class RunCoverageTest {
     coverageDir = "/coverage_reports"
     markdownOutputPath = "${tempFolder.root}/coverage_reports/report.md"
     htmlOutputPath = "${tempFolder.root}/coverage_reports/report.html"
-
-    testExemptions = createTestFileExemptionTextProto()
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
   }
 
@@ -184,9 +182,18 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_testFileExempted_skipsCoverage() {
+  fun testRunCoverage_testFileExempted_exemptedFromCoverageAnalysis() {
     val exemptedFile = "TestExempted.kt"
     val exemptedFilePathList = listOf(exemptedFile)
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     RunCoverage(
       "${tempFolder.root}",
@@ -194,7 +201,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
     val expectedResult = buildString {
@@ -206,7 +213,47 @@ class RunCoverageTest {
       append("##\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(exemptedFile)}")
+      append("${getFilenameAsDetailsSummary(exemptedFile, additionalData)}")
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_sourceFileIncompatibleWithCodeCoverage_exemptedFromCoverageAnalysis() {
+    val exemptedFile = "SourceIncompatibleWithCoverage.kt"
+    val exemptedFilePathList = listOf(exemptedFile)
+    val additionalData = "This file is incompatible with code coverage tooling; " +
+      "skipping coverage check."
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.sourceFileIsIncompatibleWithCodeCoverage = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    RunCoverage(
+      "${tempFolder.root}",
+      exemptedFilePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+    ).execute()
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary> <br>")
+      append("${getFilenameAsDetailsSummary(exemptedFile, additionalData)}")
       append("</details>")
     }
 
@@ -294,8 +341,7 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
+        scriptBgDispatcher
       ).execute()
     }
 
@@ -380,8 +426,7 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
+        scriptBgDispatcher
       ).execute()
     }
 
@@ -431,8 +476,7 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
+        scriptBgDispatcher
       ).execute()
     }
 
@@ -491,8 +535,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
@@ -565,8 +608,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = buildString {
@@ -660,8 +702,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     assertThat(readFinalMdReport()).contains("Overall Coverage: **75.00%**")
@@ -699,8 +740,7 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
+        scriptBgDispatcher
       ).execute()
     }
 
@@ -729,8 +769,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
@@ -760,8 +799,7 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
+        scriptBgDispatcher
       ).execute()
     }
 
@@ -789,9 +827,16 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_highCoverageExemptionFailFiles_generatesFinalCoverageReport() {
-    val filePathList = listOf(
-      "coverage/main/java/com/example/HighCoverageExempted.kt"
-    )
+    val exemptedFile = "coverage/main/java/com/example/HighCoverageExempted.kt"
+    val filePathList = listOf(exemptedFile)
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.overrideMinCoveragePercentRequired = 101
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     val sourceContent =
       """
@@ -844,7 +889,7 @@ class RunCoverageTest {
         ReportFormat.MARKDOWN,
         longCommandExecutor,
         scriptBgDispatcher,
-        testExemptions
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
       ).execute()
     }
 
@@ -873,9 +918,16 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_lowCoverageExemptionFailFiles_generatesFinalCoverageReport() {
-    val filePathList = listOf(
-      "coverage/main/java/com/example/LowCoverageExempted.kt"
-    )
+    val exemptedFile = "coverage/main/java/com/example/LowCoverageExempted.kt"
+    val filePathList = listOf(exemptedFile)
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.overrideMinCoveragePercentRequired = 0
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     val sourceContent =
       """
@@ -925,7 +977,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
     val expectedResult = buildString {
@@ -984,8 +1036,7 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher,
-        testExemptions
+        scriptBgDispatcher
       ).execute()
     }
 
@@ -1023,10 +1074,20 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
-      "TestExempted.kt"
+      exemptedFile
     )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -1044,7 +1105,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
     val expectedResult = buildString {
@@ -1067,7 +1128,7 @@ class RunCoverageTest {
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
       append(
-        "${getFilenameAsDetailsSummary(filePathList.get(1))}"
+        "${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}"
       )
       append("</details>")
     }
@@ -1077,10 +1138,20 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withFailureAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/LowTestNums.kt",
-      "TestExempted.kt"
+      exemptedFile
     )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -1100,7 +1171,7 @@ class RunCoverageTest {
         ReportFormat.MARKDOWN,
         longCommandExecutor,
         scriptBgDispatcher,
-        testExemptions
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
       ).execute()
     }
 
@@ -1123,7 +1194,7 @@ class RunCoverageTest {
       )
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(1))}")
+      append("${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}")
       append("</details>")
     }
 
@@ -1132,11 +1203,21 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessFailureAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt",
-      "TestExempted.kt"
+      exemptedFile
     )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -1165,7 +1246,7 @@ class RunCoverageTest {
         ReportFormat.MARKDOWN,
         longCommandExecutor,
         scriptBgDispatcher,
-        testExemptions
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
       ).execute()
     }
 
@@ -1198,7 +1279,7 @@ class RunCoverageTest {
       append("</details>\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(2))}")
+      append("${getFilenameAsDetailsSummary(filePathList.get(2), additionalData)}")
       append("</details>")
     }
 
@@ -1207,14 +1288,24 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessFailureMissingTestAndExemptedFiles_generatesFinalReport() {
+    val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt",
-      "TestExempted.kt",
+      exemptedFile,
       "file.kt"
     )
 
     tempFolder.newFile("file.kt")
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -1243,7 +1334,7 @@ class RunCoverageTest {
         ReportFormat.MARKDOWN,
         longCommandExecutor,
         scriptBgDispatcher,
-        testExemptions
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
       ).execute()
     }
 
@@ -1283,7 +1374,7 @@ class RunCoverageTest {
       append("</details>\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(2))}")
+      append("${getFilenameAsDetailsSummary(filePathList.get(2), additionalData)}")
       append("</details>")
     }
 
@@ -1309,8 +1400,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
@@ -1337,8 +1427,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
@@ -1383,8 +1472,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
@@ -1411,8 +1499,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedMarkdownText(filePathList.get(0))
@@ -1473,8 +1560,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = buildString {
@@ -1554,8 +1640,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = buildString {
@@ -1583,7 +1668,8 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withMultipleTestsHittingSameLine_calculatesCoverageReportCorrectly() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-    val protoOutputPath = "${tempFolder.root}/report.pb"
+    val protoOutputPath = "${tempFolder.root}/coverage_reports/" +
+      "${filePathList.get(0).substringBeforeLast(".")}/coverage_report.pb"
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -1632,22 +1718,16 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.PROTO,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions,
-      protoOutputPath
+      scriptBgDispatcher
     ).execute()
 
-    val coverageReportContainer = loadCoverageReportContainerProto(protoOutputPath)
+    val coverageReport = loadCoverageReportProto(protoOutputPath)
+    val coveredLines = coverageReport.details.coveredLineList
 
     val expectedCoveredLine = CoveredLine.newBuilder()
       .setLineNumber(7)
       .setCoverage(Coverage.FULL)
       .build()
-
-    val coveredLines = coverageReportContainer.coverageReportList
-      .flatMap { coverageReport ->
-        coverageReport.details.coveredLineList
-      }
 
     assertThat(coveredLines).contains(expectedCoveredLine)
   }
@@ -1718,8 +1798,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult1 = getExpectedHtmlText(filePathList.get(0))
@@ -1748,8 +1827,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
@@ -1776,8 +1854,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
@@ -1804,8 +1881,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
@@ -1850,8 +1926,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
@@ -1878,8 +1953,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
@@ -1940,8 +2014,7 @@ class RunCoverageTest {
       filePathList,
       ReportFormat.HTML,
       longCommandExecutor,
-      scriptBgDispatcher,
-      testExemptions
+      scriptBgDispatcher
     ).execute()
 
     val expectedResult =
@@ -2115,37 +2188,18 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withProtoReportFormat_savesCoverageContainerProto() {
+  fun testRunCoverage_withProtoReportFormat_savesCoverageReportProto() {
     val sampleFile = "file.kt"
-    val outputFilePath = "${tempFolder.root}/report.pb"
+    val outputFilePath = "${tempFolder.root}/coverage_reports/file/coverage_report.pb"
     testBazelWorkspace.initEmptyWorkspace()
     tempFolder.newFile(sampleFile)
     main(
       tempFolder.root.absolutePath,
       sampleFile,
-      "--format=Proto",
-      "--protoOutputPath=$outputFilePath"
+      "--format=Proto"
     )
 
     assertThat(File(outputFilePath).exists()).isTrue()
-  }
-
-  @Test
-  fun testRunCoverage_withProtoReportFormat_skipsCoverageGeneration() {
-    val sampleFile = "file.kt"
-    val directory = File(coverageDir)
-    testBazelWorkspace.initEmptyWorkspace()
-    tempFolder.newFile(sampleFile)
-    main(
-      tempFolder.root.absolutePath,
-      sampleFile,
-      "--format=Proto",
-      "--protoOutputPath=${tempFolder.root}/report.pb"
-    )
-
-    // Since report Format is PROTO no report generation would have been initiated
-    // resulting in no coverage report directory or files being created.
-    assertThat(directory.isDirectory).isFalse()
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
@@ -2342,31 +2396,10 @@ class RunCoverageTest {
     return htmlText
   }
 
-  private fun createTestFileExemptionTextProto(): String {
-    val testFileExemptions = TestFileExemptions.newBuilder()
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("TestExempted.kt")
-          .setTestFileNotRequired(true)
-      )
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
-          .setOverrideMinCoveragePercentRequired(101)
-      )
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
-          .setOverrideMinCoveragePercentRequired(0)
-      )
-      .build()
-
-    val testExemptionPb = "test_exemption.pb"
-    val coverageTestExemptiontextProto = tempFolder.newFile(testExemptionPb)
-    coverageTestExemptiontextProto.outputStream().use {
-      (testFileExemptions.writeTo(it))
-    }
-    return "${tempFolder.root}/${testExemptionPb.removeSuffix(".pb")}"
+  private fun createTestFileExemptionsProtoFile(testFileExemptions: TestFileExemptions): String {
+    return tempFolder.newFile("test_file_exemptions.pb").also {
+      it.outputStream().use(testFileExemptions::writeTo)
+    }.path
   }
 
   private fun getExpectedClassName(filePath: String): String {
@@ -2479,15 +2512,21 @@ class RunCoverageTest {
     )
   }
 
-  private fun getFilenameAsDetailsSummary(filePath: String): String {
-    return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+  private fun getFilenameAsDetailsSummary(
+    filePath: String,
+    additionalData: String? = null
+  ): String {
+    val fileName = filePath.substringAfterLast("/")
+    val additionalDataPart = additionalData?.let { " - $it" } ?: ""
+
+    return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
   }
 
-  private fun loadCoverageReportContainerProto(
-    coverageReportContainerProto: String
-  ): CoverageReportContainer {
-    return File("$coverageReportContainerProto").inputStream().use { stream ->
-      CoverageReportContainer.newBuilder().also { builder ->
+  private fun loadCoverageReportProto(
+    coverageReportProto: String
+  ): CoverageReport {
+    return File("$coverageReportProto").inputStream().use { stream ->
+      CoverageReport.newBuilder().also { builder ->
         builder.mergeFrom(stream)
       }.build()
     }
