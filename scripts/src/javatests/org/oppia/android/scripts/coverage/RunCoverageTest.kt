@@ -37,8 +37,6 @@ class RunCoverageTest {
     coverageDir = "/coverage_reports"
     markdownOutputPath = "${tempFolder.root}/coverage_reports/report.md"
     htmlOutputPath = "${tempFolder.root}/coverage_reports/report.html"
-
-//    testExemptions = createTestFileExemptionTextProto()
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
   }
 
@@ -2411,33 +2409,6 @@ class RunCoverageTest {
     }.path
   }
 
-  /*private fun createTestFileExemptionTextProto(): String {
-    val testFileExemptions = TestFileExemptions.newBuilder()
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("TestExempted.kt")
-          .setTestFileNotRequired(true)
-      )
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("coverage/main/java/com/example/HighCoverageExempted.kt")
-          .setOverrideMinCoveragePercentRequired(101)
-      )
-      .addTestFileExemption(
-        TestFileExemption.newBuilder()
-          .setExemptedFilePath("coverage/main/java/com/example/LowCoverageExempted.kt")
-          .setOverrideMinCoveragePercentRequired(0)
-      )
-      .build()
-
-    val testExemptionPb = "test_exemption.pb"
-    val coverageTestExemptiontextProto = tempFolder.newFile(testExemptionPb)
-    coverageTestExemptiontextProto.outputStream().use {
-      (testFileExemptions.writeTo(it))
-    }
-    return "${tempFolder.root}/${testExemptionPb.removeSuffix(".pb")}"
-  }*/
-
   private fun getExpectedClassName(filePath: String): String {
     return filePath.substringAfterLast("/").removeSuffix(".kt")
   }
@@ -2547,10 +2518,6 @@ class RunCoverageTest {
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
-
-  /*private fun getFilenameAsDetailsSummary(filePath: String): String {
-    return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
-  }*/
 
   private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String? = null): String {
     val fileName = filePath.substringAfterLast("/")

@@ -202,7 +202,7 @@ class RunCoverage(
       repoRoot,
       coverageReportContainer,
       reportFormat,
-      testFileExemptionList
+      testFileExemptionTextProtoPath
     )
     val coverageStatus = reporter.generateRichTextReport()
 
