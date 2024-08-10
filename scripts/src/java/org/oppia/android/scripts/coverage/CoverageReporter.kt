@@ -61,7 +61,7 @@ fun main(vararg args: String) {
     addAllCoverageReport(coverageResultList)
   }.build()
 
-  println(coverageReportContainer)
+  println("Coverage Report Container: $coverageReportContainer")
 
   val coverageStatus = CoverageReporter(repoRoot, coverageReportContainer, ReportFormat.MARKDOWN)
     .generateRichTextReport()
