@@ -142,6 +142,10 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   }
 
   override fun getPendingAnswer(): UserAnswer {
+    // Resetting Observable UserAnswerState to its default instance to ensure that
+    // the ImageRegionSelectionInteractionView is updated with the correct state.
+    // This is necessary because ImageRegionSelectionInteractionView is not recreated every time
+    // the user submits an answer, leading it to retain the old UserAnswerState.
     observableUserAnswrerState.set(UserAnswerState.getDefaultInstance())
     return UserAnswer.newBuilder().apply {
       val answerTextString = answerText.toString()
