@@ -9,7 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.Coverage
-import org.oppia.android.scripts.proto.CoverageReportContainer
+import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
@@ -1707,17 +1707,13 @@ class RunCoverageTest {
       scriptBgDispatcher
     ).execute()
 
-    val coverageReportContainer = loadCoverageReportContainerProto(protoOutputPath)
+    val coverageReport = loadCoverageReportProto(protoOutputPath)
+    val coveredLines = coverageReport.details.coveredLineList
 
     val expectedCoveredLine = CoveredLine.newBuilder()
       .setLineNumber(7)
       .setCoverage(Coverage.FULL)
       .build()
-
-    val coveredLines = coverageReportContainer.coverageReportList
-      .flatMap { coverageReport ->
-        coverageReport.details.coveredLineList
-      }
 
     assertThat(coveredLines).contains(expectedCoveredLine)
   }
@@ -2512,11 +2508,11 @@ class RunCoverageTest {
     return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
   }
 
-  private fun loadCoverageReportContainerProto(
-    coverageReportContainerProto: String
-  ): CoverageReportContainer {
-    return File("$coverageReportContainerProto").inputStream().use { stream ->
-      CoverageReportContainer.newBuilder().also { builder ->
+  private fun loadCoverageReportProto(
+    coverageReportProto: String
+  ): CoverageReport {
+    return File("$coverageReportProto").inputStream().use { stream ->
+      CoverageReport.newBuilder().also { builder ->
         builder.mergeFrom(stream)
       }.build()
     }
