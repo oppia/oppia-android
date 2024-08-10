@@ -248,9 +248,9 @@ jobs:
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
-          with:
-            name: coverage-report-${{ matrix.changed-files-bucket-base64-encoded-shard }}
-            path: coverage_reports
+        with:
+          name: coverage-report-${{ matrix.changed-files-bucket-base64-encoded-shard }}
+          path: coverage_reports
 
   upload_coverage_report:
     name: Upload Code Coverage Report
