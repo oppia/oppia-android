@@ -128,7 +128,7 @@ class DirectoryManagementUtilTest {
 
     assertThat(success).isTrue()
     assertThat(dir.exists()).isTrue()
-    assertThat(dir.listFiles().isEmpty()).isTrue()
+    assertThat(dir.listFiles()?.isEmpty()).isTrue()
   }
 
   private fun getAbsoluteDirPath(path: String): String {

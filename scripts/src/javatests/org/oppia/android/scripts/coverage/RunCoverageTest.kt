@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
@@ -197,7 +198,14 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_testFileExempted_noCoverage() {
     System.setOut(PrintStream(outContent))
-    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    val exemptedFilePath = "SourceExemptedFromHavingTestFile.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFilePath
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     RunCoverage(
       "${tempFolder.root}",
@@ -205,12 +213,38 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
-    assertThat(outContent.toString().trim()).isEqualTo(
-      "This file is exempted from having a test file; skipping coverage check."
-    )
+    assertThat(outContent.toString().trim())
+      .isEqualTo("This file is exempted from having a test file; skipping coverage check.")
+  }
+
+  @Test
+  fun testRunCoverage_sourceFileIncompatibleWithCodeCoverage_exemptedFromCoverageAnalysis() {
+    System.setOut(PrintStream(outContent))
+    val incompatibleFilePath = "SourceIncompatibleWithCoverage.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = incompatibleFilePath
+      this.sourceFileIsIncompatibleWithCodeCoverage = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    RunCoverage(
+      "${tempFolder.root}",
+      incompatibleFilePath,
+      ReportFormat.MARKDOWN,
+      markdownOutputPath,
+      longCommandExecutor,
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+    ).execute()
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo("This file is incompatible with code coverage tooling; skipping coverage check.")
   }
 
   @Test
@@ -1125,6 +1159,12 @@ class RunCoverageTest {
       """.trimIndent()
 
     return htmlText
+  }
+
+  private fun createTestFileExemptionsProtoFile(testFileExemptions: TestFileExemptions): String {
+    return tempFolder.newFile("test_file_exemptions.pb").also {
+      it.outputStream().use(testFileExemptions::writeTo)
+    }.path
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
