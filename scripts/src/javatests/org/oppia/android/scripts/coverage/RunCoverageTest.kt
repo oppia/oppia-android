@@ -1075,6 +1075,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withSuccessAndExemptedFiles_generatesFinalCoverageReport() {
     val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       exemptedFile
@@ -1127,7 +1128,7 @@ class RunCoverageTest {
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
       append(
-        "${getFilenameAsDetailsSummary(filePathList.get(1))}"
+        "${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}"
       )
       append("</details>")
     }
@@ -1138,6 +1139,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withFailureAndExemptedFiles_generatesFinalCoverageReport() {
     val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/LowTestNums.kt",
       exemptedFile
@@ -1192,7 +1194,7 @@ class RunCoverageTest {
       )
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(1))}")
+      append("${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}")
       append("</details>")
     }
 
@@ -1201,11 +1203,21 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_withSuccessFailureAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt",
-      "TestExempted.kt"
+      exemptedFile
     )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -1233,7 +1245,8 @@ class RunCoverageTest {
         filePathList,
         ReportFormat.MARKDOWN,
         longCommandExecutor,
-        scriptBgDispatcher
+        scriptBgDispatcher,
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
       ).execute()
     }
 
@@ -1266,7 +1279,7 @@ class RunCoverageTest {
       append("</details>\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(2))}")
+      append("${getFilenameAsDetailsSummary(filePathList.get(2), additionalData)}")
       append("</details>")
     }
 
@@ -1276,6 +1289,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withSuccessFailureMissingTestAndExemptedFiles_generatesFinalReport() {
     val exemptedFile = "TestExempted.kt"
+    val additionalData = "This file is exempted from having a test file; skipping coverage check."
     val filePathList = listOf(
       "coverage/main/java/com/example/AddNums.kt",
       "coverage/main/java/com/example/LowTestNums.kt",
@@ -1360,7 +1374,7 @@ class RunCoverageTest {
       append("</details>\n\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(2))}")
+      append("${getFilenameAsDetailsSummary(filePathList.get(2), additionalData)}")
       append("</details>")
     }
 
