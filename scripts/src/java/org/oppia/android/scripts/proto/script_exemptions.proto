@@ -49,6 +49,13 @@ message TestFileExemptions {
 
       // Overrides the minimum coverage percent required for the given file.
       int32 override_min_coverage_percent_required = 3;
+
+      // TODO(#5481): Remove this property & all corresponding exemptions once all test
+      // configurations are compatible with code coverage tooling.
+      // A medium-term state to indicate that something about this source file's build config, or
+      // that of its test(s), are not compatible with the current code coverage tooling and thus
+      // should be ignored.
+      bool source_file_is_incompatible_with_code_coverage = 4;
     }
   }
 }

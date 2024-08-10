@@ -8,7 +8,11 @@ kt_jvm_test(
     name = "RunCoverageTest",
     size = "large",
     srcs = ["RunCoverageTest.kt"],
+<<<<<<< HEAD
     shard_count = 24,
+=======
+    shard_count = 8,
+>>>>>>> d0d1839d0dbb90d35fcaaf449ab7f168ce0f4640
     deps = [
         "//scripts:test_file_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",

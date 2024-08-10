@@ -232,7 +232,7 @@ class CoverageReporter(
         }
         report.hasExemption() -> {
           val exemption = report.exemption
-          println("-> The file ${exemption.filePath} is exempted from coverage analysis \n")
+          println("-> ${exemption.filePath} - ${exemption.exemptionReason} \n")
         }
         else -> {
           println("Unknown Coverage Report Type")
@@ -315,7 +315,8 @@ class CoverageReporter(
       .filter { it.hasExemption() }
       .map { exemption ->
         val filePath = exemption.exemption.filePath
-        "${getFilenameAsDetailsSummary(filePath)}"
+        val exemptionReason = exemption.exemption.exemptionReason
+        "${getFilenameAsDetailsSummary(filePath, exemptionReason)}"
       }.joinToString(separator = "\n") { "$it" }
 
     val tableHeader = buildString {
@@ -577,6 +578,9 @@ private fun getReportOutputPath(
   return "$repoRoot/coverage_reports/$fileWithoutExtension/$defaultFilename"
 }
 
-private fun getFilenameAsDetailsSummary(filePath: String): String {
-  return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String? = null): String {
+  val fileName = filePath.substringAfterLast("/")
+  val additionalDataPart = additionalData?.let { " - $it" } ?: ""
+
+  return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
 }

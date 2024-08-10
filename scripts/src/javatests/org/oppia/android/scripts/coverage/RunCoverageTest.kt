@@ -185,6 +185,17 @@ class RunCoverageTest {
 
   @Test
   fun testRunCoverage_testFileExempted_skipsCoverage() {
+
+    val exemptedFilePath = "TestExempted.kt"
+    val testExemptedFilePath = "TestExempted.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = testExemptedFilePath
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
     val exemptedFile = "TestExempted.kt"
     val exemptedFilePathList = listOf(exemptedFile)
 
@@ -194,7 +205,7 @@ class RunCoverageTest {
       ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher,
-      testExemptions
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
     val expectedResult = buildString {
@@ -211,7 +222,43 @@ class RunCoverageTest {
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+    }
+/*
+=======
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+    ).execute()
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo("This file is exempted from having a test file; skipping coverage check.")
   }
+
+  @Test
+  fun testRunCoverage_sourceFileIncompatibleWithCodeCoverage_exemptedFromCoverageAnalysis() {
+    System.setOut(PrintStream(outContent))
+    val incompatibleFilePath = "SourceIncompatibleWithCoverage.kt"
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = incompatibleFilePath
+      this.sourceFileIsIncompatibleWithCodeCoverage = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    RunCoverage(
+      "${tempFolder.root}",
+      incompatibleFilePath,
+      ReportFormat.MARKDOWN,
+      markdownOutputPath,
+      longCommandExecutor,
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+    ).execute()
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo("This file is incompatible with code coverage tooling; skipping coverage check.")
+>>>>>>> d0d1839d0dbb90d35fcaaf449ab7f168ce0f4640
+  }
+*/
 
   @Test
   fun testRunCoverage_withNonKotlinFileInput_analyzeOnlyKotlinFiles() {
@@ -2342,7 +2389,13 @@ class RunCoverageTest {
     return htmlText
   }
 
-  private fun createTestFileExemptionTextProto(): String {
+  private fun createTestFileExemptionsProtoFile(testFileExemptions: TestFileExemptions): String {
+    return tempFolder.newFile("test_file_exemptions.pb").also {
+      it.outputStream().use(testFileExemptions::writeTo)
+    }.path
+  }
+
+  /*private fun createTestFileExemptionTextProto(): String {
     val testFileExemptions = TestFileExemptions.newBuilder()
       .addTestFileExemption(
         TestFileExemption.newBuilder()
@@ -2367,7 +2420,7 @@ class RunCoverageTest {
       (testFileExemptions.writeTo(it))
     }
     return "${tempFolder.root}/${testExemptionPb.removeSuffix(".pb")}"
-  }
+  }*/
 
   private fun getExpectedClassName(filePath: String): String {
     return filePath.substringAfterLast("/").removeSuffix(".kt")
@@ -2479,8 +2532,15 @@ class RunCoverageTest {
     )
   }
 
-  private fun getFilenameAsDetailsSummary(filePath: String): String {
+  /*private fun getFilenameAsDetailsSummary(filePath: String): String {
     return "<details><summary>${filePath.substringAfterLast("/")}</summary>$filePath</details>"
+  }*/
+
+  private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String? = null): String {
+    val fileName = filePath.substringAfterLast("/")
+    val additionalDataPart = additionalData?.let { " - $it" } ?: ""
+
+    return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
   }
 
   private fun loadCoverageReportContainerProto(
