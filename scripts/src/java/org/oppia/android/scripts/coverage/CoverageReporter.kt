@@ -37,9 +37,11 @@ fun main(vararg args: String) {
   println("repo root: $repoRoot")
 
   val filePathList = args.drop(1).takeWhile { !it.startsWith("--") }
+  println("Passed in path list: $filePathList")
 
   // Process coverage report files
   val coverageResultList = filePathList.mapNotNull { filePath ->
+    println("Single Path: $filePath")
     try {
       val path = Paths.get(repoRoot, filePath)
       Files.newInputStream(path).use { stream ->

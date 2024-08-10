@@ -243,8 +243,6 @@ jobs:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
           echo "CHANGED FILES: $CHANGED_FILES"
-          echo "SHA256 hash of files in coverage_reports before script call:"
-          find coverage_reports -type f -exec sha256sum {} \;
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=proto --processTimeout=15
           echo "Contents of coverage_reports after script call:"
           ls -al coverage_reports
