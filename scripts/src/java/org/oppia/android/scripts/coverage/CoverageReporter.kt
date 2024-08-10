@@ -29,10 +29,14 @@ fun main(vararg args: String) {
     "PROTO" -> ReportFormat.PROTO
     else -> throw IllegalArgumentException("Unsupported report format: $format")
   }
-  println("Using format: $reportFormat")
 
+  val mdReportOutputPath = args.find { it.startsWith("--mdReportOutputPath") }
+    ?.substringAfter("=")
+
+  println("Using format: $reportFormat")
   println("repo root: $repoRoot")
   println("proto container path: $protoContainerPath")
+  println("md report output path: $mdReportOutputPath")
 }
 
 /**

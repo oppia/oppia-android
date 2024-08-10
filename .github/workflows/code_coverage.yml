@@ -12,19 +12,19 @@ on:
       - develop
 
 jobs:
-  check_unit_tests_completed:
-    name: Check unit test completed
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for unit tests to checks
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
-        with:
-          workflow: unit_tests.yml
-          sha: auto
+#  check_unit_tests_completed:
+#    name: Check unit test completed
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Wait for unit tests to checks
+#        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+#        with:
+#          workflow: unit_tests.yml
+#          sha: auto
 
   compute_changed_files:
     name: Compute changed files
-    needs: check_unit_tests_completed
+#    needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
@@ -107,6 +107,7 @@ jobs:
     needs: compute_changed_files
     if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
     runs-on: ubuntu-20.04
+#    update later accordingly
     outputs:
       coverage_report: ${{ steps.run-oppia-coverage-without-caching.outputs.coverage_report }}
     strategy:
@@ -245,6 +246,7 @@ jobs:
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
+          echo ${{ matrix.changed-files-bucket-base64-encoded-shard }}
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
   upload_coverage_report:
