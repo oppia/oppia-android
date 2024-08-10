@@ -308,7 +308,7 @@ jobs:
 
   upload_coverage_report:
     name: Upload Code Coverage Report
-    needs: code_coverage_run
+    needs: collect-coverage-reports
     permissions:
       pull-requests: write
 
