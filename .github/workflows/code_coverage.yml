@@ -266,9 +266,9 @@ jobs:
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
           echo "PB FILES: $PB_FILES_LIST"
 
-      -name: Generate Markdown Coverage Report
-       run: |
-         bazel run //scripts:coverage_reporter -- $(pwd) $PB_FILES_LIST
+      - name: Generate Markdown Coverage Report
+        run: |
+          bazel run //scripts:coverage_reporter -- $(pwd) $PB_FILES_LIST
 
   upload_coverage_report:
     name: Upload Code Coverage Report
