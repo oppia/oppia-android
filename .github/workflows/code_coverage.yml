@@ -330,8 +330,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            'coverage_reports/CoverageReport.md'
+          body-path: 'coverage_reports/CoverageReport.md'
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
