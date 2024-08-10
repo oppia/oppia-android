@@ -206,7 +206,8 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withSourceIncompatibilityExemption_generatesMarkdownTable() {
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is incompatible with code coverage tooling; skipping coverage check."
+    val additionalData = "This file is incompatible with code coverage tooling; " +
+      "skipping coverage check."
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = testExemptedFilePath
       this.testFileNotRequired = true
@@ -460,7 +461,6 @@ class CoverageReporterTest {
   @Test
   fun testGenerateHtmlReport_withCoverageReportDetails_generatesCorrectContentAndFormatting() {
     val filename = "SampleFile.kt"
-    val coverageDir = "/coverage_reports"
     val sourceFile = tempFolder.newFile(filename)
     sourceFile.writeText(
       """
@@ -730,7 +730,10 @@ class CoverageReporterTest {
     ).readText()
   }
 
-  private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String? = null): String {
+  private fun getFilenameAsDetailsSummary(
+    filePath: String,
+    additionalData: String? = null
+  ): String {
     val fileName = filePath.substringAfterLast("/")
     val additionalDataPart = additionalData?.let { " - $it" } ?: ""
 

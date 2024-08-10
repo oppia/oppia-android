@@ -218,13 +218,14 @@ class RunCoverageTest {
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
-    }
+  }
 
   @Test
   fun testRunCoverage_sourceFileIncompatibleWithCodeCoverage_exemptedFromCoverageAnalysis() {
     val exemptedFile = "SourceIncompatibleWithCoverage.kt"
     val exemptedFilePathList = listOf(exemptedFile)
-    val additionalData = "This file is incompatible with code coverage tooling; skipping coverage check."
+    val additionalData = "This file is incompatible with code coverage tooling; " +
+      "skipping coverage check."
 
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = exemptedFile
@@ -1653,7 +1654,8 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withMultipleTestsHittingSameLine_calculatesCoverageReportCorrectly() {
     val filePathList = listOf("app/main/java/com/example/AddNums.kt")
-    val protoOutputPath = "${tempFolder.root}/report.pb"
+    val protoOutputPath = "${tempFolder.root}/coverage_reports/" +
+      "${filePathList.get(0).substringBeforeLast(".")}/coverage_report.pb"
 
     testBazelWorkspace.initEmptyWorkspace()
 
@@ -2176,37 +2178,18 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withProtoReportFormat_savesCoverageContainerProto() {
+  fun testRunCoverage_withProtoReportFormat_savesCoverageReportProto() {
     val sampleFile = "file.kt"
-    val outputFilePath = "${tempFolder.root}/report.pb"
+    val outputFilePath = "${tempFolder.root}/coverage_reports/file/coverage_report.pb"
     testBazelWorkspace.initEmptyWorkspace()
     tempFolder.newFile(sampleFile)
     main(
       tempFolder.root.absolutePath,
       sampleFile,
-      "--format=Proto",
-      "--protoOutputPath=$outputFilePath"
+      "--format=Proto"
     )
 
     assertThat(File(outputFilePath).exists()).isTrue()
-  }
-
-  @Test
-  fun testRunCoverage_withProtoReportFormat_skipsCoverageGeneration() {
-    val sampleFile = "file.kt"
-    val directory = File(coverageDir)
-    testBazelWorkspace.initEmptyWorkspace()
-    tempFolder.newFile(sampleFile)
-    main(
-      tempFolder.root.absolutePath,
-      sampleFile,
-      "--format=Proto",
-      "--protoOutputPath=${tempFolder.root}/report.pb"
-    )
-
-    // Since report Format is PROTO no report generation would have been initiated
-    // resulting in no coverage report directory or files being created.
-    assertThat(directory.isDirectory).isFalse()
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
@@ -2519,7 +2502,10 @@ class RunCoverageTest {
     )
   }
 
-  private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String? = null): String {
+  private fun getFilenameAsDetailsSummary(
+    filePath: String,
+    additionalData: String? = null
+  ): String {
     val fileName = filePath.substringAfterLast("/")
     val additionalDataPart = additionalData?.let { " - $it" } ?: ""
 

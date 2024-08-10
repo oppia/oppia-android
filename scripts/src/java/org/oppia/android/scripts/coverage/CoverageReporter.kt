@@ -591,7 +591,9 @@ private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String
   return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptionTextProtoPath: String): TestFileExemptions {
+private fun loadTestFileExemptionsProto(
+  testFileExemptionTextProtoPath: String
+): TestFileExemptions {
   return File(testFileExemptionTextProtoPath).inputStream().use { stream ->
     TestFileExemptions.newBuilder().apply {
       mergeFrom(stream)
