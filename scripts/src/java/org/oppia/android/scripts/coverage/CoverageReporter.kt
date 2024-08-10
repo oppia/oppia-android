@@ -632,20 +632,3 @@ private fun loadTestFileExemptionsProto(
     }.build()
   }
 }
-
-/*private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
-  }
-}*/
-
-private fun loadTestFileExemptionsProto(testFileExemptionTextProtoPath: String): TestFileExemptions {
-  return File(testFileExemptionTextProtoPath).inputStream().use { stream ->
-    TestFileExemptions.newBuilder().apply {
-      mergeFrom(stream)
-    }.build()
-  }
-}
-
