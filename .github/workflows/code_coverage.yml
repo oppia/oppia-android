@@ -310,7 +310,15 @@ jobs:
 
       - name: Generate Markdown Coverage Report
         run: |
+          echo "PB FILES: ${PB_FILES_LIST[@]}"
           bazel run //scripts:coverage_reporter -- $(pwd) ${PB_FILES_LIST[@]}
+
+      - name: Generate Markdown Coverage Report2
+        run: |
+          FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
+          echo "File Paths: $FILE_PATHS"
+          bazel run //scripts:coverage_reporter -- $(pwd) $FILE_PATHS
+
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
