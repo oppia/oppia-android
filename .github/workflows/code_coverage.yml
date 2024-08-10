@@ -115,7 +115,6 @@ jobs:
       max-parallel: 10
       matrix: ${{ fromJson(needs.compute_changed_files.outputs.matrix) }}
     env:
-      ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2

@@ -91,6 +91,9 @@ fun main(vararg args: String) {
   println("md report output path: $mdReportOutputPath")*/
 }
 
+/** Minimum coverage percentage required. */
+const val MIN_THRESHOLD = 70
+
 /**
  * Class responsible for generating rich text coverage report.
  *
@@ -112,7 +115,6 @@ class CoverageReporter(
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
-
 
   /**
    * Generates a rich text report for the analysed coverage data based on the specified format.

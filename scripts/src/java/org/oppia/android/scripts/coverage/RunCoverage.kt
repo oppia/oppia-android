@@ -15,6 +15,16 @@ import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+/** ANSI escape codes for colors. */
+/** Green text. */
+const val GREEN = "\u001B[32m"
+/** Red text. */
+const val RED = "\u001B[31m"
+/** Default text. */
+const val RESET = "\u001B[0m"
+/** Bold text. */
+const val BOLD = "\u001B[1m"
+
 /**
  * Entry point function for running coverage analysis for a source file.
  *
