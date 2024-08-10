@@ -16,10 +16,42 @@ lets start with a dummy container pb file
 * */
 
 fun main(vararg args: String) {
-  val repoRoot = args[0]
+  /*val repoRoot = args[0]
   println("repo root: $repoRoot")
   val protoReportPaths = args[1]
-  println("Proto report paths: $protoReportPaths")
+  println("Proto report paths: $protoReportPaths")*/
+
+  val repoRoot = args[0]
+  println("repo root: $repoRoot")
+
+  val filePathList = args.drop(1).takeWhile { !it.startsWith("--") }
+
+  // Process coverage report files
+  val coverageResultList = filePathList.mapNotNull { filePath ->
+    try {
+      /*val file = File(filePath)
+      file.inputStream().use { stream ->
+        CoverageReport.newBuilder().apply { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+      }*/
+      File(repoRoot, filePath).inputStream().use { stream ->
+        CoverageReport.newBuilder().also { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+      }
+    } catch (e: Exception) {
+      println("Error processing file $filePath: ${e.message}")
+      null
+    }
+  }
+
+  // Create CoverageReportContainer and print it
+  val coverageReportContainer = CoverageReportContainer.newBuilder().apply {
+    addAllCoverageReport(coverageResultList)
+  }.build()
+
+  println(coverageReportContainer)
 
   /*val format = args.find { it.startsWith("--format=", ignoreCase = true) }
     ?.substringAfter("=")
