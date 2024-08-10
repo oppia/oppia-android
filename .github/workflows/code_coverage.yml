@@ -248,7 +248,7 @@ jobs:
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ matrix.changed-files-bucket_base64_encoded_shard }}
+          name: coverage-report-artifact
           path: coverage_reports
 
   collect-coverage-reports:
@@ -321,9 +321,8 @@ jobs:
 
       - name: Read Coverage Report
         run: |
-          COVERAGE_REPORT_CONTENT=$(cat final-coverage-report)
-          echo "COVERAGE_REPORT_CONTENT=$COVERAGE_REPORT_CONTENT" >> $GITHUB_ENV
-
+          COVERAGE_REPORT_PATH=$(find . -name 'CoverageReport.md')
+          echo "Coverage Report Path: $COVERAGE_REPORT_PATH"
 #      - name: Add comment
 #        uses: peter-evans/create-or-update-comment@v4
 #        with:
@@ -334,9 +333,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            **Coverage Report:**
-            ${{ env.COVERAGE_REPORT_CONTENT }}
+          body-path: $COVERAGE_REPORT_PATH
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:

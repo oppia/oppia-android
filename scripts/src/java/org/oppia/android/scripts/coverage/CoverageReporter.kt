@@ -5,6 +5,8 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
@@ -39,17 +41,17 @@ fun main(vararg args: String) {
   // Process coverage report files
   val coverageResultList = filePathList.mapNotNull { filePath ->
     try {
-      /*val file = File(filePath)
-      file.inputStream().use { stream ->
-        CoverageReport.newBuilder().apply { builder ->
-          builder.mergeFrom(stream)
-        }.build()
-      }*/
-      File(repoRoot, filePath).inputStream().use { stream ->
+      val path = Paths.get(repoRoot, filePath)
+      Files.newInputStream(path).use { stream ->
         CoverageReport.newBuilder().also { builder ->
           builder.mergeFrom(stream)
         }.build()
       }
+      /*File(repoRoot, filePath).inputStream().use { stream ->
+        CoverageReport.newBuilder().also { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+      }*/
     } catch (e: Exception) {
       println("Error processing file $filePath: ${e.message}")
       null
