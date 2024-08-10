@@ -129,7 +129,7 @@ class ComputeChangedFiles(
 
     File(pathToOutputFile).printWriter().use { writer ->
       encodedFileBucketEntries.forEachIndexed { index, (encoded, bucket) ->
-        writer.println("${bucket.cacheBucketName}-shard$index$encoded")
+        writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
       }
     }
   }
