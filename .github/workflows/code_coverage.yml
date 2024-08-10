@@ -246,6 +246,12 @@ jobs:
           echo ${{ matrix.changed-files-bucket-base64-encoded-shard }}
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+          with:
+            name: coverage-report-${{ matrix.changed-files-bucket-base64-encoded-shard }}
+            path: coverage_reports
+
   upload_coverage_report:
     name: Upload Code Coverage Report
     needs: code_coverage_run
