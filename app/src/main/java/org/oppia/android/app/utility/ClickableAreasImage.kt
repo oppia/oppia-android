@@ -90,7 +90,7 @@ class ClickableAreasImage(
     return imageView.height - imageView.paddingTop - imageView.paddingBottom
   }
 
-  /** Selects default region. **/
+  /** Selects default region. */
   fun maybeSelectDefaultRegion() {
     if (defaultRegionCoordinates != null) {
       onPhotoTap(defaultRegionCoordinates!!.x, defaultRegionCoordinates!!.y)
