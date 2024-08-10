@@ -109,7 +109,7 @@ fun main(vararg args: String) {
       filePathList,
       reportFormat,
       commandExecutor,
-      scriptBgDispatcher
+      scriptBgDispatcher,
     ).execute()
   }
 }
