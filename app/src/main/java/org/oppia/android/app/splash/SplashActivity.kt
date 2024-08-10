@@ -66,4 +66,3 @@ class SplashActivity :
   override fun onActionButtonClicked(noticeActionResponse: DeprecationNoticeActionResponse) =
     splashActivityPresenter.handleOnDeprecationNoticeActionClicked(noticeActionResponse)
 }
-
