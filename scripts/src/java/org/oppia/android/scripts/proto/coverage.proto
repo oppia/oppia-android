@@ -5,9 +5,26 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
-// Coverage Report that contains the bazel coverage data retrieved from the
-// Bazel coverage execution.
+// Represents the complete execution of a series of code coverage runs.
+message CoverageReportContainer {
+  // The list of all CoverageReports detailing the coverage results.
+  repeated CoverageReport coverage_report = 1;
+}
+
 message CoverageReport {
+  oneof report_status {
+    // Coverage report details when coverage data retrieval succeeds.
+    CoverageDetails details = 1;
+    // Coverage report failure when coverage data retrieval fails.
+    CoverageFailure failure = 2;
+    // Coverage exemption when the source file is exempted from having a test file.
+    CoverageExemption exemption = 3;
+  }
+}
+
+// Coverage Report details that contains the bazel coverage data retrieved from the
+// Bazel coverage execution.
+message CoverageDetails {
   // The test target for which the coverage report is generated.
   repeated BazelTestTarget bazel_test_targets = 1;
   // The relative path of the covered file.
@@ -20,6 +37,22 @@ message CoverageReport {
   int32 lines_found = 5;
   // The total number of lines hit in the covered file.
   int32 lines_hit = 6;
+}
+
+message CoverageFailure {
+  // The relative path of the failed file.
+  string file_path = 1;
+  // The test target for which the coverage generation failed.
+  string bazel_test_target = 2;
+  // The reason for why the coverage analysis failed
+  string failure_message = 3;
+}
+
+message CoverageExemption {
+  // The relative path of the exempted file.
+  string file_path = 1;
+  // The reason for why the file is exempted from coverage analysis.
+  string exemption_reason = 2;
 }
 
 // Represents a single bazel test target corresponding to a test file.
