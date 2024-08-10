@@ -208,7 +208,7 @@ class ComputeChangedFilesTest {
 
     // No files should be reported since the file was only staged and
     // not fully committed in the feature branch.
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -237,7 +237,7 @@ class ComputeChangedFilesTest {
 
     // No files should be reported since the file was untracked and
     // not fully committed in the feature branch.
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -298,7 +298,7 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
@@ -335,7 +335,7 @@ class ComputeChangedFilesTest {
 
     val reportedFiles = runScript()
 
-    assertThat(reportedFiles).hasSize(0)
+    assertThat(reportedFiles).isEmpty()
   }
 
   @Test
