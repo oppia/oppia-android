@@ -251,6 +251,15 @@ jobs:
           name: coverage-report-${{ matrix.changed-files-bucket-base64-encoded-shard }}
           path: coverage_reports
 
+  collect-coverage-reports:
+    name: Collect Code Coverage Reports
+    runs-on: ubuntu-20.04
+    needs: code_coverage_run
+    steps:
+      - uses: actions/download-artifact@v4
+      - name: Display structure of downloaded files
+        run: ls -R
+
   upload_coverage_report:
     name: Upload Code Coverage Report
     needs: code_coverage_run
