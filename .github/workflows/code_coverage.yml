@@ -300,6 +300,12 @@ jobs:
         run: |
           bazel run //scripts:coverage_reporter -- $(pwd) $PB_FILES_LIST
 
+      - name: Upload Generated Markdown Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-coverage-report
+          path: coverage_reports/CoverageReport.md
+
   upload_coverage_report:
     name: Upload Code Coverage Report
     needs: code_coverage_run
@@ -309,18 +315,23 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Coverage Report
-        run: |
-          COVERAGE_REPORT=${{ needs.code_coverage_run.outputs.coverage_report }}
-          echo "Coverage Report: $COVERAGE_REPORT"
-          COVERAGE_REPORT_ENV=${{ env.COVERAGE_REPORT_ENV }}
-          echo "Coverage Report Env: $COVERAGE_REPORT_ENV"
-#      - name: Add comment
-#        uses: peter-evans/create-or-update-comment@v4
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          body: |
-#            Testing sample comment upload :tada:!
+      - uses: actions/download-artifact@v4
+        with:
+          name: final-coverage-report
+
+#      - name: Coverage Report
+#        run: |
+#          COVERAGE_REPORT=${{ needs.code_coverage_run.outputs.coverage_report }}
+#          echo "Coverage Report: $COVERAGE_REPORT"
+#          COVERAGE_REPORT_ENV=${{ env.COVERAGE_REPORT_ENV }}
+#          echo "Coverage Report Env: $COVERAGE_REPORT_ENV"
+
+      - name: Add comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            'coverage_reports/CoverageReport.md'
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
