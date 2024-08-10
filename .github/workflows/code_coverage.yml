@@ -255,7 +255,11 @@ jobs:
     name: Collect Code Coverage Reports
     runs-on: ubuntu-20.04
     needs: code_coverage_run
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/download-artifact@v4
       - name: Display structure of downloaded files
         run: ls -R

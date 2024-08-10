@@ -9,6 +9,16 @@ import java.io.File
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
 
+/** ANSI escape codes for colors. */
+/** Green text. */
+const val GREEN = "\u001B[32m"
+/** Red text. */
+const val RED = "\u001B[31m"
+/** Default text. */
+const val RESET = "\u001B[0m"
+/** Bold text. */
+const val BOLD = "\u001B[1m"
+
 // main call idea
 /* The general idea is to get pwd, get container.pb file path -> parse it into container
 and pass it to report, report format is md/markdown
@@ -52,6 +62,14 @@ fun main(vararg args: String) {
   }.build()
 
   println(coverageReportContainer)
+
+  val coverageStatus = CoverageReporter(repoRoot, coverageReportContainer, ReportFormat.MARKDOWN)
+    .generateRichTextReport()
+
+  when (coverageStatus) {
+    CoverageCheck.PASS -> println("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+    CoverageCheck.FAIL -> error("Coverage Analysis$BOLD$RED FAILED$RESET")
+  }
 
   /*val format = args.find { it.startsWith("--format=", ignoreCase = true) }
     ?.substringAfter("=")
