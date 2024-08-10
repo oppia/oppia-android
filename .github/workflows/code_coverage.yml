@@ -242,7 +242,16 @@ jobs:
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
+          echo "CHANGED FILES: $CHANGED_FILES"
+          echo "Contents of coverage_reports before script call:"
+          ls -al coverage_reports
+          echo "SHA256 hash of files in coverage_reports before script call:"
+          find coverage_reports -type f -exec sha256sum {} \;
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=proto --processTimeout=15
+          echo "Contents of coverage_reports after script call:"
+          ls -al coverage_reports
+          echo "SHA256 hash of files in coverage_reports after script call:"
+          find coverage_reports -type f -exec sha256sum {} \;
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
@@ -261,7 +270,10 @@ jobs:
 
       - uses: actions/download-artifact@v4
       - name: coverage-report-artifact
-        run: ls -R
+        run: |
+          ls -R
+          echo "SHA256 hash of downloaded files:"
+          find . -type f -exec sha256sum {} \;
 
       - name: Filter Coverage Reports
         run: |
@@ -317,6 +329,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: final-coverage-report
+
+      - name: List all files
+        run: |
+          echo "Listing everything in uploading coverage report"
+          ls -R
 
       - name: Read Coverage Report
         run: |

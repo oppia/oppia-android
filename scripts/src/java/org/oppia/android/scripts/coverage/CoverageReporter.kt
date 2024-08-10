@@ -91,9 +91,6 @@ fun main(vararg args: String) {
   println("md report output path: $mdReportOutputPath")*/
 }
 
-/** Minimum coverage percentage required. */
-const val MIN_THRESHOLD = 70
-
 /**
  * Class responsible for generating rich text coverage report.
  *
