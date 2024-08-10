@@ -65,7 +65,100 @@ fun main(vararg args: String) {
     addAllCoverageReport(coverageResultList)
   }.build()
 
-  println("Coverage Report Container: $coverageReportContainer")
+  println("Coverage Report Container1: $coverageReportContainer")
+
+
+
+
+
+  // Process coverage report files
+  val coverageResultList2 = filePathList.mapNotNull { filePath ->
+    println("Single Path: $filePath")
+    val filePathNew = filePath.removePrefix("./")
+    println("Single Path After removing prefix: $filePathNew")
+
+    try {
+      val path = Paths.get(repoRoot, filePathNew)
+      Files.newInputStream(path).use { stream ->
+        CoverageReport.newBuilder().also { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+      }
+      /*File(repoRoot, filePath).inputStream().use { stream ->
+        CoverageReport.newBuilder().also { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+      }*/
+    } catch (e: Exception) {
+      println("Error processing file $filePath: ${e.message}")
+      null
+    }
+  }
+
+  // Create CoverageReportContainer and print it
+  val coverageReportContainer2 = CoverageReportContainer.newBuilder().apply {
+    addAllCoverageReport(coverageResultList2)
+  }.build()
+
+  println("Coverage Report Container2: $coverageReportContainer2")
+
+
+
+
+
+  val coverageResultList3 = mutableListOf<CoverageReport>()
+
+  filePathList.forEach { filePath ->
+    val file = File(filePath)
+    if (file.exists()) {
+      file.inputStream().use { stream ->
+        val coverageReport = CoverageReport.newBuilder().also { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+        coverageResultList3.add(coverageReport)
+      }
+    } else {
+      println("File does not exist: $filePath")
+    }
+  }
+
+  val coverageReportContainer3 = CoverageReportContainer.newBuilder().apply {
+    addAllCoverageReport(coverageResultList3)
+  }.build()
+
+  println("Coverage Report Container3: $coverageReportContainer3")
+
+
+
+  val coverageResultList4 = mutableListOf<CoverageReport>()
+
+  filePathList.forEach { filePath ->
+    println("Single Path: $filePath")
+    val filePathNew = filePath.removePrefix("./")
+    println("Single Path After removing prefix: $filePathNew")
+    val file = File(filePathNew)
+    if (file.exists()) {
+      File(filePathNew).inputStream().use { stream ->
+       val cvr = CoverageReport.newBuilder().also { builder ->
+          builder.mergeFrom(stream)
+        }.build()
+        coverageResultList4.add(cvr)
+      }
+    } else {
+      println("File does not exist: $filePathNew")
+    }
+  }
+
+  // Create CoverageReportContainer and print it
+  val coverageReportContainer4 = CoverageReportContainer.newBuilder().apply {
+    addAllCoverageReport(coverageResultList3)
+  }.build()
+
+  println("Coverage Report Container3: $coverageReportContainer4")
+
+
+
+
 
   val coverageStatus = CoverageReporter(repoRoot, coverageReportContainer, ReportFormat.MARKDOWN)
     .generateRichTextReport()

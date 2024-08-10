@@ -186,6 +186,7 @@ class RunCoverage(
     val exemption = testFileExemptionList[filePath]
     return when {
       exemption?.testFileNotRequired == true -> {
+        println("here")
         CoverageReport.newBuilder()
           .setExemption(
             CoverageExemption.newBuilder()
