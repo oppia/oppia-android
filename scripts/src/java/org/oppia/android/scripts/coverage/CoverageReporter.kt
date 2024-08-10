@@ -427,6 +427,8 @@ class CoverageReporter(
       parentFile?.mkdirs()
       writeText(finalReportText)
     }
+
+    println("MARKDOWN report for the coverage analysis is generated at: $finalReportOutputPath")
   }
 
   private fun checkCoverageStatus(): CoverageCheck {
