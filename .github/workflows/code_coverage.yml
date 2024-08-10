@@ -243,7 +243,7 @@ jobs:
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
-          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
+          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=proto --processTimeout=15
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
