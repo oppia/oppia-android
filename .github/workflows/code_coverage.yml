@@ -252,7 +252,7 @@ jobs:
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-
+          name: coverage-report-artifact
           path: coverage_reports
 
   collect-coverage-reports:
@@ -265,7 +265,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: actions/download-artifact@v4
-      - name: coverage-report-
+      - name: coverage-report-artifact
         run: |
           ls -R
           echo "SHA256 hash of downloaded files:"
@@ -281,6 +281,10 @@ jobs:
           echo "As separately:"
           echo "PB FILES: ${PB_FILES_LIST[@]}"
           echo "PB FILES2: ${PB_FILES_LIST2[@]}"
+          echo "PROTO_FILE_PATHS=${PB_FILES_LIST[@]}" >> $GITHUB_ENV
+          echo "PROTO_FILE_PATHS: $PROTO_FILE_PATHS"
+          PFILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
+          echo "PFILE_PATHS=$PFILE_PATHS" >> $GITHUB_ENV
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -319,6 +323,17 @@ jobs:
           echo "File Paths: $FILE_PATHS"
           bazel run //scripts:coverage_reporter -- $(pwd) $FILE_PATHS
 
+      - name: Generate Markdown Coverage Report3
+        run: |
+          FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
+          echo "PROTO_FILE_PATHS: $ {{ env.PROTO_FILE_PATHS }}"
+          bazel run //scripts:coverage_reporter -- $(pwd) ${{ env.PROTO_FILE_PATHS }}
+
+      - name: Generate Markdown Coverage Report3
+        run: |
+          PFILE_PATHS=${{ env.PFILE_PATHS }}
+          echo "PFILE_PATHS: $PFILE_PATHS"
+          bazel run //scripts:coverage_reporter -- $(pwd) $PFILE_PATHS
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
@@ -346,7 +361,7 @@ jobs:
 
       - name: Read Coverage Report
         run: |
-          COVERAGE_REPORT_PATH=$(find . -name 'CoverageReport.md')
+          COVERAGE_REPORT_PATH=$(find . -name "CoverageReport.md" -type f)
           echo "Coverage Report Path: $COVERAGE_REPORT_PATH"
 #      - name: Add comment
 #        uses: peter-evans/create-or-update-comment@v4
