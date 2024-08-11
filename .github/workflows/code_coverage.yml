@@ -266,20 +266,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download Coverage Report Artifacts
-      - uses: actions/download-artifact@v4
-        with:
-          path: coverage-report-artifact
-          pattern: coverage-report-*
-          merge-multiple: true
-      - run: ls -R
-
-      - name: List Downloaded Artifacts
-        run: |
-          echo "Listing everything with pattern of artifact"
-          ls -R
-          echo "Listing everything with pattern of artifact in collected dir"
-          ls -R coverage-report-artifact
+#      - name: Download Coverage Report Artifacts
+#      - uses: actions/download-artifact@v4
+#        with:
+#          path: coverage-report-artifact
+#          pattern: coverage-report-*
+#          merge-multiple: true
+#      - run: ls -R
+#
+#      - name: List Downloaded Artifacts
+#        run: |
+#          echo "Listing everything with pattern of artifact"
+#          ls -R
+#          echo "Listing everything with pattern of artifact in collected dir"
+#          ls -R coverage-report-artifact
 
       - name: Filter Coverage Reports
         run: |
