@@ -327,8 +327,7 @@ jobs:
           ls -R
           FILE_PATH=$(find . -name "CoverageReport.md")
           echo "Coverage Report Path: $FILE_PATH"
-          echo "COVERAGE_REPORT_PATH=$FILE_PATH" >> $GITHUB_ENV
-          COVERAGE_REPORT_CONTENT=$(cat "$COVERAGE_REPORT_PATH")
+          COVERAGE_REPORT_CONTENT=$(cat $FILE_PATH)
           echo "COVERAGE_REPORT_CONTENT=$COVERAGE_REPORT_CONTENT" >> $GITHUB_ENV
 
       - name: Add comment

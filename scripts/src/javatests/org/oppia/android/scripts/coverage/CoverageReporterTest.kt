@@ -848,6 +848,77 @@ class CoverageReporterTest {
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
   }
 
+  @Test
+  fun testCoverageReporter_listOfCoverageProtoPath_generatesMarkdownReport() {
+    val successProtoPath = "successCoverageReport.pb"
+    val successProtoFile = tempFolder.newFile(successProtoPath)
+
+    val successCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath("file.kt")
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    successProtoFile.outputStream().use { outputStream ->
+      successCoverageReport.writeTo(outputStream)
+    }
+
+    val failureProtoPath = "failureCoverageReport.pb"
+    val failureProtoFile = tempFolder.newFile(failureProtoPath)
+
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:coverageReport")
+          .setFailureMessage("Failure Message")
+          .build()
+      )
+      .build()
+
+    failureProtoFile.outputStream().use { outputStream ->
+      failureCoverageReport.writeTo(outputStream)
+    }
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        successProtoPath,
+        failureProtoPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **100.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason |\n")
+      append("|------|----------------|\n")
+      append("| //:coverageReport | Failure Message |\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary("file.kt")} " +
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
   private fun readFinalMdReport(): String {
     return File(
       "${tempFolder.root}" +

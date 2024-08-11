@@ -5,8 +5,6 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
