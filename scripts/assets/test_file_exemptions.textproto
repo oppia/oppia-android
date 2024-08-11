@@ -1,4 +1,8 @@
 test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/testfile/TestFileCheck.kt"
+  override_min_coverage_percent_required: 101
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
   test_file_not_required: true
 }

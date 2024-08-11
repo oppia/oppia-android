@@ -11,6 +11,10 @@ on:
       # Push events on develop branch
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 #  check_unit_tests_completed:
 #    name: Check unit test completed
@@ -245,16 +249,16 @@ jobs:
           echo "CHANGED FILES: $CHANGED_FILES"
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=proto --processTimeout=15
 
-      - name: Upload Coverage Report
+      - name: Upload Coverage Report Artifact
         uses: actions/upload-artifact@v4
-        env:
-          SHARD_NAME : ${{ env.SHARD_NAME }}
+#        env:
+#          SHARD_NAME : ${{ env.SHARD_NAME }}
         with:
           name: coverage-report-${{ env.SHARD_NAME }}
           path: coverage_reports
 
-  collect-coverage-reports:
-    name: Collect Code Coverage Reports
+  evaluate-code-coverage-reports:
+    name: Evaluate Code Coverage Reports
     runs-on: ubuntu-20.04
     needs: code_coverage_run
     env:
@@ -262,19 +266,26 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Download Coverage Report Artifacts
       - uses: actions/download-artifact@v4
-      - name: coverage-report-artifact
+        with:
+          path: coverage-report-artifact
+          pattern: coverage-report-*
+          merge-multiple: true
         run: |
+          echo "Listing everything with pattern of artifact"
           ls -R
+          echo "Listing everything with pattern of artifact in collected dir"
+          ls -R coverage-report-artifact
 
       - name: Filter Coverage Reports
         run: |
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
-          echo "PB FILES: $PB_FILES_LIST"
-          PB_FILES_LIST2=$(find . -name "coverage_report.pb" -type f)
+#          echo "PB FILES: $PB_FILES_LIST"
+#          PB_FILES_LIST2=$(find . -name "coverage_report.pb" -type f)
           echo "PROTO_FILE_PATHS=${PB_FILES_LIST[@]}" >> $GITHUB_ENV
-          echo "PROTO_FILE_PATHS: $PROTO_FILE_PATHS"
+#          echo "PROTO_FILE_PATHS: $PROTO_FILE_PATHS"
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -293,14 +304,14 @@ jobs:
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
-      - name: Configure Bazel to use a local cache (for scripts)
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
-        shell: bash
+#      - name: Configure Bazel to use a local cache (for scripts)
+#        env:
+#          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+#        run: |
+#          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+#          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+#          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+#        shell: bash
 
       - name: Generate Markdown Coverage Report
         run: |
@@ -316,62 +327,56 @@ jobs:
 
   publish_coverage_report:
     name: Publish Code Coverage Report
-    needs: collect-coverage-reports
+    needs: evaluate-code-coverage-reports
     permissions:
       pull-requests: write
 
-    if: ${{ always() }}
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download Generated Markdown Report
+        uses: actions/download-artifact@v4
         with:
           name: final-coverage-report
 
       - name: Read Coverage Report
         run: |
-          echo "Listing everything in uploading coverage report"
-          ls -R
           FILE_PATH=$(find . -name "CoverageReport.md")
-          echo "Coverage Report Path: $FILE_PATH"
           COVERAGE_REPORT_CONTENT=$(cat $FILE_PATH)
           echo "$COVERAGE_REPORT_CONTENT" > coverage_report.txt
-          echo "$(cat coverage_report.txt)"
 
-      - name: Upload Coverage Report Content as Artifact
+      - name: Upload Coverage Report Text Content as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report-content
           path: coverage_report.txt
 
-      - name: Download Coverage Report Content Artifact
+      - name: Download Coverage Report Text Content Artifact
         uses: actions/download-artifact@v4
         with:
           name: coverage-report-content
 
-      - name: Add comment2
+      - name: Upload Coverage Report as PR Comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: 'coverage_report.txt'
 
-#      - name: Add comment
-#        uses: peter-evans/create-or-update-comment@v4
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          body: |
-#            $(cat coverage_report.txt)
-
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
     name: Check Code Coverage Results
-    needs: [ compute_changed_files, code_coverage_run, collect-coverage-reports ]
+    needs: [ compute_changed_files, code_coverage_run, evaluate-code-coverage-reports ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
     if: ${{ !cancelled() }}
     runs-on: ubuntu-20.04
     steps:
       - name: Check coverages passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' && needs.collect-coverage-reports.result != 'success' }}
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' }}
         run: exit 1
 
-  # later to add concurrency
+      - name: Coverage Status pased
+        if: ${{ needs.evaluate-code-coverage-reports.result != 'success' }}
+        run: exit 1
