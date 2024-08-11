@@ -724,7 +724,7 @@ class CoverageReporterTest {
     assertThat(outContent.toString().trim()).isEqualTo("-> $testExemptedFilePath - $additionalData")
   }
 
-/*  @Test
+  @Test
   fun testCoverageReporter_passingInvalidProtoPath_throwsException() {
     val invalidProtoPath = "invalid.pb"
 
@@ -917,7 +917,7 @@ class CoverageReporterTest {
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
-  }*/
+  }
 
   private fun readFinalMdReport(): String {
     return File(

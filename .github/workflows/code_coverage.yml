@@ -348,12 +348,12 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: 'coverage_report.txt'
 
-      - name: Add comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            $(cat coverage_report.txt)
+#      - name: Add comment
+#        uses: peter-evans/create-or-update-comment@v4
+#        with:
+#          issue-number: ${{ github.event.pull_request.number }}
+#          body: |
+#            $(cat coverage_report.txt)
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
@@ -367,3 +367,5 @@ jobs:
       - name: Check coverages passed
         if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' && needs.publish_coverage_report.result != 'success' }}
         run: exit 1
+
+  # later to add concurrency
