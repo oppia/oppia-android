@@ -149,7 +149,7 @@ jobs:
 
       - name: Extract caching bucket
         env:
-          CHANGED_FILESS_BUCKET_BASE64_ENCODED_SHARD: ${{ matrix.changed-files-bucket-base64-encoded-shard }}
+          CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD: ${{ matrix.changed-files-bucket-base64-encoded-shard }}
         run: |
           # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
           # user-friendly shard prefix from the matrix value.
