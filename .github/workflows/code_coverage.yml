@@ -272,6 +272,7 @@ jobs:
           path: coverage-report-artifact
           pattern: coverage-report-*
           merge-multiple: true
+      - run: ls -R
 
       - name: List Downloaded Artifacts
         run: |
@@ -303,14 +304,14 @@ jobs:
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
-      - name: Configure Bazel to use a local cache (for scripts)
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
-        shell: bash
+#      - name: Configure Bazel to use a local cache (for scripts)
+#        env:
+#          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+#        run: |
+#          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+#          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+#          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+#        shell: bash
 
       - name: Generate Markdown Coverage Report
         run: |
