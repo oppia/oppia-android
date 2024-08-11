@@ -282,10 +282,7 @@ jobs:
         run: |
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
-#          echo "PB FILES: $PB_FILES_LIST"
-#          PB_FILES_LIST2=$(find . -name "coverage_report.pb" -type f)
           echo "PROTO_FILE_PATHS=${PB_FILES_LIST[@]}" >> $GITHUB_ENV
-#          echo "PROTO_FILE_PATHS: $PROTO_FILE_PATHS"
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
