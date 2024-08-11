@@ -52,9 +52,6 @@ fun main(args: Array<String>) {
   val fileListOutputFile = File(args[3])
   val fileTestTargetsListOutputFile = File(args[4])
 
-  println("Proto: $protoBase64")
-  println("Bucket name output file: $bucketNameOutputFile")
-
   val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   val testFileExemptionList by lazy {
     loadTestFileExemptionsProto(testFileExemptionTextProto)
@@ -70,12 +67,9 @@ fun main(args: Array<String>) {
 
     val bazelClient = BazelClient(rootDirectory, commandExecutor)
 
-    println("Before changed files bucket collection")
     val changedFilesBucket =
       ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(protoBase64)
 
-    println("Changed Files Bucket: $changedFilesBucket")
-    println("Before changed test files")
     val changedFilesTestFiles = changedFilesBucket.changedFilesList.flatMap { changedFile ->
       val exemption = testFileExemptionList[changedFile]
       if (exemption != null && exemption.testFileNotRequired) {
@@ -84,20 +78,16 @@ fun main(args: Array<String>) {
         findTestFile(rootDirectory, changedFile)
       }
     }
-    println("Changed Files Test Bucket: $changedFilesTestFiles")
-    println("Before changed files test targets")
     val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesTestFiles)
     val changedFilesTestTargetWithoutSuffix = changedFilesTestTargets.map { it.removeSuffix(".kt") }
 
     bucketNameOutputFile.printWriter().use { writer ->
       writer.println(changedFilesBucket.cacheBucketName)
     }
-    println("Changed file bucket: ${changedFilesBucket.cacheBucketName}")
 
     fileListOutputFile.printWriter().use { writer ->
       writer.println(changedFilesBucket.changedFilesList.joinToString(separator = " "))
     }
-    println("Changed file bucket: ${changedFilesBucket.changedFilesList}")
 
     fileTestTargetsListOutputFile.printWriter().use { writer ->
       writer.println(changedFilesTestTargetWithoutSuffix.joinToString(separator = " "))

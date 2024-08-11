@@ -251,8 +251,6 @@ jobs:
 
       - name: Upload Coverage Report Artifact
         uses: actions/upload-artifact@v4
-#        env:
-#          SHARD_NAME : ${{ env.SHARD_NAME }}
         with:
           name: coverage-report-${{ env.SHARD_NAME }}
           path: coverage_reports
@@ -272,11 +270,6 @@ jobs:
           path: coverage-report-artifact
           pattern: coverage-report-*
           merge-multiple: true
-      - run: |
-          echo "Listing everything with pattern of artifact"
-          ls -R
-          echo "Listing everything with pattern of artifact in collected dir"
-          ls -R coverage-report-artifact
 
       - name: Filter Coverage Reports
         run: |
@@ -300,15 +293,6 @@ jobs:
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
-
-#      - name: Configure Bazel to use a local cache (for scripts)
-#        env:
-#          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-#        run: |
-#          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-#          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-#          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
-#        shell: bash
 
       - name: Generate Markdown Coverage Report
         run: |
@@ -338,30 +322,7 @@ jobs:
         with:
           name: final-coverage-report
 
-      - name: Read Coverage Report
-        run: |
-          FILE_PATH=$(find . -name "CoverageReport.md")
-          COVERAGE_REPORT_CONTENT=$(cat $FILE_PATH)
-          echo "$COVERAGE_REPORT_CONTENT" > coverage_report.txt
-
-      - name: Upload Coverage Report Text Content as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-content
-          path: coverage_report.txt
-
-      - name: Download Coverage Report Text Content Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report-content
-
       - name: Upload Coverage Report as PR Comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: 'coverage_report.txt'
-
-      - name: Upload Coverage Report as PR Comment MD Test
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
