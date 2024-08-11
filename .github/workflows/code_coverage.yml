@@ -153,7 +153,8 @@ jobs:
         run: |
           # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
           # user-friendly shard prefix from the matrix value.
-          CHANGED_FILES_BUCKET_BASE64=$(echo "$CHANGED_FILESS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
+          CHANGED_FILES_BUCKET_BASE64=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d "-" -f 2)
+          SHARD_NAME=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d "-" -f 1)
           bazel run //scripts:retrieve_changed_files -- $(pwd) $CHANGED_FILES_BUCKET_BASE64 $(pwd)/file_bucket_name $(pwd)/changed_files $(pwd)/bazel_test_targets
           FILE_CATEGORY=$(cat ./file_bucket_name)
           CHANGED_FILES=$(cat ./changed_files)
@@ -161,6 +162,7 @@ jobs:
           echo "File category: $FILE_CATEGORY"
           echo "Changed Files: $CHANGED_FILES"
           echo "Bazel test targets: $BAZEL_TEST_TARGETS"
+          echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
           echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
           echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
@@ -244,7 +246,10 @@ jobs:
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
+        env:
+          SHARD_NAME : ${{ env.SHARD_NAME }}
         with:
+          name: coverage-report-$SHARD_NAME
           path: coverage_reports
 
   collect-coverage-reports:
