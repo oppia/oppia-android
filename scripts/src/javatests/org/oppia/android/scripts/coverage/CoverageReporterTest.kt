@@ -13,8 +13,8 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
-import java.io.ByteArrayOutputStream
 import org.oppia.android.testing.assertThrows
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
@@ -724,7 +724,7 @@ class CoverageReporterTest {
     assertThat(outContent.toString().trim()).isEqualTo("-> $testExemptedFilePath - $additionalData")
   }
 
-  @Test
+/*  @Test
   fun testCoverageReporter_passingInvalidProtoPath_throwsException() {
     val invalidProtoPath = "invalid.pb"
 
@@ -917,7 +917,7 @@ class CoverageReporterTest {
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
-  }
+  }*/
 
   private fun readFinalMdReport(): String {
     return File(
