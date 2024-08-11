@@ -725,7 +725,7 @@ class CoverageReporterTest {
   }
 
   @Test
-  fun testCoverageReporter_passingInvalidProtoPaths_throwsException() {
+  fun testCoverageReporter_passingInvalidProtoPath_throwsException() {
     val invalidProtoPath = "invalid.pb"
 
     val exception = assertThrows<IllegalStateException>() {
@@ -737,6 +737,115 @@ class CoverageReporterTest {
 
     assertThat(exception).hasMessageThat()
       .contains("Error processing file $invalidProtoPath")
+  }
+
+  @Test
+  fun testCoverageReporter_successCoverageProtoPath_checksCoverageStatus() {
+    System.setOut(PrintStream(outContent))
+    val validProtoPath = "coverageReport.pb"
+    val protoFile = tempFolder.newFile(validProtoPath)
+
+    val coverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath("file.kt")
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    protoFile.outputStream().use { outputStream ->
+      coverageReport.writeTo(outputStream)
+    }
+
+    main(
+      "${tempFolder.root}",
+      validProtoPath
+    )
+
+    assertThat(outContent.toString().trim())
+      .contains("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+  }
+
+  @Test
+  fun testCoverageReporter_failureCoverageProtoPath_checksCoverageStatus() {
+    val validProtoPath = "coverageReport.pb"
+    val protoFile = tempFolder.newFile(validProtoPath)
+
+    val coverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:coverageReport")
+          .setFailureMessage(
+            "Coverage retrieval failed for the test target: " +
+              "//:coverageReport"
+          )
+          .build()
+      )
+      .build()
+
+    protoFile.outputStream().use { outputStream ->
+      coverageReport.writeTo(outputStream)
+    }
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        validProtoPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+  }
+
+  @Test
+  fun testCoverageReporter_listOfCoverageProtoPath_checksCoverageStatus() {
+    val successProtoPath = "successCoverageReport.pb"
+    val successProtoFile = tempFolder.newFile(successProtoPath)
+
+    val successCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath("file.kt")
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    successProtoFile.outputStream().use { outputStream ->
+      successCoverageReport.writeTo(outputStream)
+    }
+
+    val failureProtoPath = "failureCoverageReport.pb"
+    val failureProtoFile = tempFolder.newFile(failureProtoPath)
+
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:coverageReport")
+          .setFailureMessage(
+            "Coverage retrieval failed for the test target: " +
+              "//:coverageReport"
+          )
+          .build()
+      )
+      .build()
+
+    failureProtoFile.outputStream().use { outputStream ->
+      failureCoverageReport.writeTo(outputStream)
+    }
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        successProtoPath,
+        failureProtoPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
   }
 
   private fun readFinalMdReport(): String {
