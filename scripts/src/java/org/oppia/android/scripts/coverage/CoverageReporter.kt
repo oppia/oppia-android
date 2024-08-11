@@ -22,16 +22,10 @@ const val RESET = "\u001B[0m"
 const val BOLD = "\u001B[1m"
 
 fun main(vararg args: String) {
-
   val repoRoot = args[0]
-  println("repo root: $repoRoot")
-
   val filePathList = args.drop(1).takeWhile { !it.startsWith("--") }
-  println("Passed in path list: $filePathList")
-
 
   val coverageResultList = filePathList.mapNotNull { filePath ->
-    println("Single Path: $filePath")
     try {
       File(repoRoot, filePath).inputStream().use { stream ->
         CoverageReport.newBuilder().also { builder ->
@@ -40,7 +34,6 @@ fun main(vararg args: String) {
       }
     } catch (e: Exception) {
       error("Error processing file $filePath: ${e.message}")
-      null
     }
   }
 
@@ -48,8 +41,11 @@ fun main(vararg args: String) {
     addAllCoverageReport(coverageResultList)
   }.build()
 
-  val coverageStatus = CoverageReporter(repoRoot, coverageReportContainer, ReportFormat.MARKDOWN)
-    .generateRichTextReport()
+  val coverageStatus = CoverageReporter(
+    repoRoot,
+    coverageReportContainer,
+    ReportFormat.MARKDOWN
+  ).generateRichTextReport()
 
   when (coverageStatus) {
     CoverageCheck.PASS -> println("Coverage Analysis$BOLD$GREEN PASSED$RESET")
