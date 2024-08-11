@@ -245,7 +245,6 @@ jobs:
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-artifact
           path: coverage_reports
 
   collect-coverage-reports:
@@ -309,7 +308,7 @@ jobs:
           path: coverage_reports/CoverageReport.md
 
   publish_coverage_report:
-    name: Upload Code Coverage Report
+    name: Publish Code Coverage Report
     needs: collect-coverage-reports
     permissions:
       pull-requests: write
