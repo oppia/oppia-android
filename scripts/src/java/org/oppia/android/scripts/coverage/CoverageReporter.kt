@@ -25,6 +25,14 @@ const val BOLD = "\u001B[1m"
  * Usage:
  *    bazel run //scripts:coverage_runner -- <path_to_root> <list_of_relative_path_to_proto_files>
  *
+ * Arguments:
+ * - path_to_root: directory path to the root of the Oppia Android repository.
+ * - list_of_relative_path_to_proto_files: the list of relative path to the proto files
+ *     with coverage report data to analyse coverage.
+ *
+ * Example:
+ *     bazel run //scripts:coverage_reporter -- $(pwd) coverage_reports/utility/src/main/java \\
+ *     /org/oppia/android/util/parser/math/MathModel/coverage_report.pb
  */
 fun main(vararg args: String) {
   val repoRoot = args[0]

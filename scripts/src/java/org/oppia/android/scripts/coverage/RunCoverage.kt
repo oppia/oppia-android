@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
  * Entry point function for running coverage analysis for a source file.
  *
  * Usage:
- *    bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <list_of_relative_path_to_files>
+ *    bazel run //scripts:run_coverage -- <path_to_root> <list_of_relative_path_to_files>
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
