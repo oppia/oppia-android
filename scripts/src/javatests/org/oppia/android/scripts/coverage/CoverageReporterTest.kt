@@ -764,7 +764,7 @@ class CoverageReporterTest {
     )
 
     assertThat(outContent.toString().trim())
-      .contains("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+      .contains("Coverage Analysis$BOLD2$GREEN2 PASSED$RESET2")
   }
 
   @Test
@@ -796,7 +796,7 @@ class CoverageReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+      .contains("Coverage Analysis$BOLD2$RED2 FAILED$RESET2")
   }
 
   @Test
@@ -845,7 +845,7 @@ class CoverageReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+      .contains("Coverage Analysis$BOLD2$RED2 FAILED$RESET2")
   }
 
   @Test
@@ -891,7 +891,7 @@ class CoverageReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+      .contains("Coverage Analysis$BOLD2$RED2 FAILED$RESET2")
 
     val expectedMarkdown = buildString {
       append("## Coverage Report\n\n")

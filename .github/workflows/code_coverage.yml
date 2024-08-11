@@ -162,6 +162,7 @@ jobs:
           echo "File category: $FILE_CATEGORY"
           echo "Changed Files: $CHANGED_FILES"
           echo "Bazel test targets: $BAZEL_TEST_TARGETS"
+          echo "Shard name: $SHARD_NAME"
           echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
           echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
