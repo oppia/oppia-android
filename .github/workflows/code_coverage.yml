@@ -263,10 +263,10 @@ jobs:
 
       - uses: actions/download-artifact@v4
       - name: coverage-report-artifact
-        run: |
-          ls -R
-          echo "SHA256 hash of downloaded files:"
-          find . -type f -exec sha256sum {} \;
+#        run: |
+#          ls -R
+#          echo "SHA256 hash of downloaded files:"
+#          find . -type f -exec sha256sum {} \;
 
       - name: Filter Coverage Reports
         run: |
