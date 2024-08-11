@@ -72,7 +72,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filename)} " +
-          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
@@ -114,7 +114,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filename)} | " +
-          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n"
       )
     }
 
@@ -438,7 +438,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(failureFileName)} | " +
-          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n"
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
@@ -447,7 +447,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(successFileName)} | " +
-          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
@@ -911,7 +911,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary("file.kt")} " +
-          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
