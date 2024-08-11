@@ -328,13 +328,24 @@ jobs:
           FILE_PATH=$(find . -name "CoverageReport.md")
           echo "Coverage Report Path: $FILE_PATH"
           COVERAGE_REPORT_CONTENT=$(cat $FILE_PATH)
-          echo "COVERAGE_REPORT_CONTENT=$COVERAGE_REPORT_CONTENT" >> $GITHUB_ENV
+          echo "$COVERAGE_REPORT_CONTENT" > coverage_report.txt
+
+      - name: Upload Coverage Report Content as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-content
+          path: coverage_report.txt
+
+      - name: Download Coverage Report Content Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report-content
 
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: ${{ env.COVERAGE_REPORT_CONTENT }}
+          body: $(cat coverage_report.txt)
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:

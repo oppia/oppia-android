@@ -19,6 +19,13 @@ const val RESET2 = "\u001B[0m"
 /** Bold text. */
 const val BOLD2 = "\u001B[1m"
 
+/**
+ * Function for generating coverage report for a list of proto files.
+ *
+ * Usage:
+ *    bazel run //scripts:coverage_runner -- <path_to_root> <list_of_relative_path_to_proto_files>
+ *
+ */
 fun main(vararg args: String) {
   val repoRoot = args[0]
   val filePathList = args.drop(1).takeWhile { !it.startsWith("--") }
