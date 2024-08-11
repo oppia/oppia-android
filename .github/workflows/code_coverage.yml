@@ -342,6 +342,12 @@ jobs:
         with:
           name: coverage-report-content
 
+      - name: Add comment2
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: 'coverage_report.txt'
+
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v4
         with:
