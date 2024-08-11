@@ -250,7 +250,7 @@ jobs:
         env:
           SHARD_NAME : ${{ env.SHARD_NAME }}
         with:
-          name: coverage-report-$SHARD_NAME
+          name: coverage-report-${{ env.SHARD_NAME }}
           path: coverage_reports
 
   collect-coverage-reports:
