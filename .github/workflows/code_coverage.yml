@@ -323,7 +323,7 @@ jobs:
       - name: Generate Markdown Coverage Report 3
         run: |
           FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
-          echo "PROTO_FILE_PATHS: $ {{ env.PROTO_FILE_PATHS }}"
+          echo "PROTO_FILE_PATHS: ${{ env.PROTO_FILE_PATHS }}"
           bazel run //scripts:coverage_reporter -- $(pwd) ${{ env.PROTO_FILE_PATHS }}
 
 #      - name: Generate Markdown Coverage Report3
@@ -355,11 +355,14 @@ jobs:
         run: |
           echo "Listing everything in uploading coverage report"
           ls -R
+          FILE_PATH=$(find . -name "CoverageReport.md")
+          echo "Coverage Report Path: $FILE_PATH"
+          echo "COVERAGE_REPORT_PATH=$FILE_PATH" >> $GITHUB_ENV
 
-      - name: Read Coverage Report
-        run: |
-          COVERAGE_REPORT_PATH=$(find . -name "CoverageReport.md" -type f)
-          echo "Coverage Report Path: $COVERAGE_REPORT_PATH"
+#      - name: Read Coverage Report
+#        run: |
+#          COVERAGE_REPORT_PATH=$(find . -name "CoverageReport.md" -type f)
+#          echo "Coverage Report Path: $COVERAGE_REPORT_PATH"
 #      - name: Add comment
 #        uses: peter-evans/create-or-update-comment@v4
 #        with:

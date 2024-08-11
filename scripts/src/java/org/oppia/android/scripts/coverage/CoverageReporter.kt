@@ -21,17 +21,7 @@ const val RESET = "\u001B[0m"
 /** Bold text. */
 const val BOLD = "\u001B[1m"
 
-// main call idea
-/* The general idea is to get pwd, get container.pb file path -> parse it into container
-and pass it to report, report format is md/markdown
-lets start with a dummy container pb file
-* */
-
 fun main(vararg args: String) {
-  /*val repoRoot = args[0]
-  println("repo root: $repoRoot")
-  val protoReportPaths = args[1]
-  println("Proto report paths: $protoReportPaths")*/
 
   val repoRoot = args[0]
   println("repo root: $repoRoot")
@@ -39,126 +29,24 @@ fun main(vararg args: String) {
   val filePathList = args.drop(1).takeWhile { !it.startsWith("--") }
   println("Passed in path list: $filePathList")
 
-  // Process coverage report files
+
   val coverageResultList = filePathList.mapNotNull { filePath ->
     println("Single Path: $filePath")
     try {
-      val path = Paths.get(repoRoot, filePath)
-      Files.newInputStream(path).use { stream ->
+      File(repoRoot, filePath).inputStream().use { stream ->
         CoverageReport.newBuilder().also { builder ->
           builder.mergeFrom(stream)
         }.build()
       }
-      /*File(repoRoot, filePath).inputStream().use { stream ->
-        CoverageReport.newBuilder().also { builder ->
-          builder.mergeFrom(stream)
-        }.build()
-      }*/
     } catch (e: Exception) {
-      println("Error processing file $filePath: ${e.message}")
+      error("Error processing file $filePath: ${e.message}")
       null
     }
   }
 
-  // Create CoverageReportContainer and print it
   val coverageReportContainer = CoverageReportContainer.newBuilder().apply {
     addAllCoverageReport(coverageResultList)
   }.build()
-
-  println("Coverage Report Container1: $coverageReportContainer")
-
-
-//
-//
-//
-//  // Process coverage report files
-//  val coverageResultList2 = filePathList.mapNotNull { filePath ->
-//    println("Single Path: $filePath")
-//    val filePathNew = filePath.removePrefix("./")
-//    println("Single Path After removing prefix: $filePathNew")
-//
-//    try {
-//      val path = Paths.get(repoRoot, filePathNew)
-//      Files.newInputStream(path).use { stream ->
-//        CoverageReport.newBuilder().also { builder ->
-//          builder.mergeFrom(stream)
-//        }.build()
-//      }
-//      /*File(repoRoot, filePath).inputStream().use { stream ->
-//        CoverageReport.newBuilder().also { builder ->
-//          builder.mergeFrom(stream)
-//        }.build()
-//      }*/
-//    } catch (e: Exception) {
-//      println("Error processing file $filePath: ${e.message}")
-//      null
-//    }
-//  }
-//
-//  // Create CoverageReportContainer and print it
-//  val coverageReportContainer2 = CoverageReportContainer.newBuilder().apply {
-//    addAllCoverageReport(coverageResultList2)
-//  }.build()
-//
-//  println("Coverage Report Container2: $coverageReportContainer2")
-//
-//
-//
-//
-//
-//  val coverageResultList3 = mutableListOf<CoverageReport>()
-//
-//  filePathList.forEach { filePath ->
-//    val file = File(filePath)
-//    if (file.exists()) {
-//      file.inputStream().use { stream ->
-//        val coverageReport = CoverageReport.newBuilder().also { builder ->
-//          builder.mergeFrom(stream)
-//        }.build()
-//        coverageResultList3.add(coverageReport)
-//      }
-//    } else {
-//      println("File does not exist: $filePath")
-//    }
-//  }
-//
-//  val coverageReportContainer3 = CoverageReportContainer.newBuilder().apply {
-//    addAllCoverageReport(coverageResultList3)
-//  }.build()
-//
-//  println("Coverage Report Container3: $coverageReportContainer3")
-//
-//
-//
-//  val coverageResultList4 = mutableListOf<CoverageReport>()
-//
-//  filePathList.forEach { filePath ->
-//    println("Single Path: $filePath")
-//    val filePathNew = filePath.removePrefix("./")
-//    println("Single Path After removing prefix: $filePathNew")
-//    val file = File(filePathNew)
-//    if (file.exists()) {
-//      File(filePathNew).inputStream().use { stream ->
-//       val cvr = CoverageReport.newBuilder().also { builder ->
-//          builder.mergeFrom(stream)
-//        }.build()
-//        coverageResultList4.add(cvr)
-//      }
-//    } else {
-//      println("File does not exist: $filePathNew")
-//    }
-//  }
-//
-//  // Create CoverageReportContainer and print it
-//  val coverageReportContainer4 = CoverageReportContainer.newBuilder().apply {
-//    addAllCoverageReport(coverageResultList3)
-//  }.build()
-//
-//  println("Coverage Report Container3: $coverageReportContainer4")
-//
-//
-
-
 
   val coverageStatus = CoverageReporter(repoRoot, coverageReportContainer, ReportFormat.MARKDOWN)
     .generateRichTextReport()
@@ -167,23 +55,6 @@ fun main(vararg args: String) {
     CoverageCheck.PASS -> println("Coverage Analysis$BOLD$GREEN PASSED$RESET")
     CoverageCheck.FAIL -> error("Coverage Analysis$BOLD$RED FAILED$RESET")
   }
-
-  /*val format = args.find { it.startsWith("--format=", ignoreCase = true) }
-    ?.substringAfter("=")
-    ?.uppercase() ?: "MARKDOWN"
-
-  val reportFormat = when (format) {
-    "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
-    else -> throw IllegalArgumentException("Unsupported report format: $format")
-  }*/
-
-  /*val mdReportOutputPath = args.find { it.startsWith("--mdReportOutputPath") }
-    ?.substringAfter("=")*/
-
-  /*println("Using format: $reportFormat")
-  println("repo root: $repoRoot")
-  println("proto container path: $protoContainerPath")
-  println("md report output path: $mdReportOutputPath")*/
 }
 
 /**
