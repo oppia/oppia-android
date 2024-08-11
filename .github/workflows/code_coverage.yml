@@ -263,12 +263,25 @@ jobs:
 
       - uses: actions/download-artifact@v4
       - name: coverage-report-artifact
+        run: |
+          ls -R
+          echo "SHA256 hash of downloaded files:"
+          find . -type f -exec sha256sum {} \;
 
       - name: Filter Coverage Reports
         run: |
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
+          echo "PB FILES: $PB_FILES_LIST"
+          PB_FILES_LIST2=$(find . -name "coverage_report.pb" -type f)
+          echo "PB FILES2: $PB_FILES_LIST2"
+          echo "As separately:"
+          echo "PB FILES: ${PB_FILES_LIST[@]}"
+          echo "PB FILES2: ${PB_FILES_LIST2[@]}"
           echo "PROTO_FILE_PATHS=${PB_FILES_LIST[@]}" >> $GITHUB_ENV
+          echo "PROTO_FILE_PATHS: $PROTO_FILE_PATHS"
+          PFILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
+          echo "PFILE_PATHS=$PFILE_PATHS" >> $GITHUB_ENV
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -296,9 +309,28 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      - name: Generate Markdown Coverage Report3
+#      - name: Generate Markdown Coverage Report
+#        run: |
+#          echo "PB FILES: ${PB_FILES_LIST[@]}"
+#          bazel run //scripts:coverage_reporter -- $(pwd) ${PB_FILES_LIST[@]}
+
+#      - name: Generate Markdown Coverage Report2
+#        run: |
+#          FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
+#          echo "File Paths: $FILE_PATHS"
+#          bazel run //scripts:coverage_reporter -- $(pwd) $FILE_PATHS
+
+      - name: Generate Markdown Coverage Report 3
         run: |
+          FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
+          echo "PROTO_FILE_PATHS: $ {{ env.PROTO_FILE_PATHS }}"
           bazel run //scripts:coverage_reporter -- $(pwd) ${{ env.PROTO_FILE_PATHS }}
+
+#      - name: Generate Markdown Coverage Report3
+#        run: |
+#          PFILE_PATHS=${{ env.PFILE_PATHS }}
+#          echo "PFILE_PATHS: $PFILE_PATHS"
+#          bazel run //scripts:coverage_reporter -- $(pwd) $PFILE_PATHS
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
@@ -319,10 +351,20 @@ jobs:
         with:
           name: final-coverage-report
 
+      - name: List all files
+        run: |
+          echo "Listing everything in uploading coverage report"
+          ls -R
+
       - name: Read Coverage Report
         run: |
           COVERAGE_REPORT_PATH=$(find . -name "CoverageReport.md" -type f)
           echo "Coverage Report Path: $COVERAGE_REPORT_PATH"
+#      - name: Add comment
+#        uses: peter-evans/create-or-update-comment@v4
+#        with:
+#          issue-number: ${{ github.event.pull_request.number }}
+#          body-path: 'coverage_reports/CoverageReport.md'
 
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v4
@@ -333,12 +375,12 @@ jobs:
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
     name: Check Code Coverage Results
-    needs: [ compute_changed_files, code_coverage_run, upload_coverage_report ]
+    needs: [ compute_changed_files, code_coverage_run ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
     if: ${{ !cancelled() }}
     runs-on: ubuntu-20.04
     steps:
       - name: Check coverages passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' && needs.upload_coverage_report.result != 'success' }}
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' }}
         run: exit 1
