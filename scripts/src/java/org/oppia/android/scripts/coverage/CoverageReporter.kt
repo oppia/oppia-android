@@ -395,7 +395,10 @@ class CoverageReporter(
         append("### Failing coverage")
         append("\n\n")
         append(tableHeader)
-        append(failureBelowThresholdTableRows)
+        if (failureBelowThresholdTableRows.isNotEmpty()) {
+          append(failureBelowThresholdTableRows)
+          append('\n')
+        }
         if (exemptedFailureTableRows.isNotEmpty()) {
           append(exemptedFailureTableRows)
           append(
@@ -426,7 +429,10 @@ class CoverageReporter(
         append("<summary>Files with passing code coverage</summary><br>\n\n")
         if (successTableRows.isNotEmpty()) {
           append(tableHeader)
-          append(successTableRows)
+          if (successTableRows.isNotEmpty()) {
+            append(successTableRows)
+            append('\n')
+          }
           if (exemptedSuccessTableRows.isNotEmpty()) {
             append(exemptedSuccessTableRows)
             append(

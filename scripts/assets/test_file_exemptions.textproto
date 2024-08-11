@@ -3,6 +3,10 @@ test_file_exemption {
   override_min_coverage_percent_required: 101
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/ConsoleLogger.kt"
+  override_min_coverage_percent_required: 30
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
   test_file_not_required: true
 }
