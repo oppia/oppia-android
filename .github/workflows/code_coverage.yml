@@ -153,8 +153,8 @@ jobs:
         run: |
           # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
           # user-friendly shard prefix from the matrix value.
-          CHANGED_FILES_BUCKET_BASE64=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d "-" -f 2)
-          SHARD_NAME=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d "-" -f 1)
+          CHANGED_FILES_BUCKET_BASE64=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
+          SHARD_NAME=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 1)
           bazel run //scripts:retrieve_changed_files -- $(pwd) $CHANGED_FILES_BUCKET_BASE64 $(pwd)/file_bucket_name $(pwd)/changed_files $(pwd)/bazel_test_targets
           FILE_CATEGORY=$(cat ./file_bucket_name)
           CHANGED_FILES=$(cat ./changed_files)
