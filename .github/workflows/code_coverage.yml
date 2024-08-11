@@ -309,6 +309,7 @@ jobs:
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report
           path: coverage_reports/CoverageReport.md
