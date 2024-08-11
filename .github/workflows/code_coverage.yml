@@ -363,14 +363,14 @@ jobs:
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
     name: Check Code Coverage Results
-    needs: [ compute_changed_files, code_coverage_run, publish_coverage_report ]
+    needs: [ compute_changed_files, code_coverage_run, collect-coverage-reports ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
     if: ${{ !cancelled() }}
     runs-on: ubuntu-20.04
     steps:
       - name: Check coverages passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' && needs.publish_coverage_report.result != 'success' }}
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' && needs.collect-coverage-reports.result != 'success' }}
         run: exit 1
 
   # later to add concurrency
