@@ -8,7 +8,7 @@ on:
   pull_request:
   push:
     branches:
-       Push events on develop branch
+      # Push events on develop branch
       - develop
 
 concurrency:
