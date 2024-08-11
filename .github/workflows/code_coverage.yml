@@ -272,6 +272,8 @@ jobs:
           path: coverage-report-artifact
           pattern: coverage-report-*
           merge-multiple: true
+
+      - name: List Downloaded Artifacts
         run: |
           echo "Listing everything with pattern of artifact"
           ls -R
