@@ -296,28 +296,9 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-#      - name: Generate Markdown Coverage Report
-#        run: |
-#          echo "PB FILES: ${PB_FILES_LIST[@]}"
-#          bazel run //scripts:coverage_reporter -- $(pwd) ${PB_FILES_LIST[@]}
-
-#      - name: Generate Markdown Coverage Report2
-#        run: |
-#          FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
-#          echo "File Paths: $FILE_PATHS"
-#          bazel run //scripts:coverage_reporter -- $(pwd) $FILE_PATHS
-
       - name: Generate Markdown Coverage Report3
         run: |
-#          FILE_PATHS=$(printf "%s " "${PB_FILES_LIST[@]}")
-#          echo "PROTO_FILE_PATHS: $ {{ env.PROTO_FILE_PATHS }}"
           bazel run //scripts:coverage_reporter -- $(pwd) ${{ env.PROTO_FILE_PATHS }}
-
-#      - name: Generate Markdown Coverage Report3
-#        run: |
-#          PFILE_PATHS=${{ env.PFILE_PATHS }}
-#          echo "PFILE_PATHS: $PFILE_PATHS"
-#          bazel run //scripts:coverage_reporter -- $(pwd) $PFILE_PATHS
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
@@ -338,20 +319,10 @@ jobs:
         with:
           name: final-coverage-report
 
-#      - name: List all files
-#        run: |
-#          echo "Listing everything in uploading coverage report"
-#          ls -R
-
       - name: Read Coverage Report
         run: |
           COVERAGE_REPORT_PATH=$(find . -name "CoverageReport.md" -type f)
           echo "Coverage Report Path: $COVERAGE_REPORT_PATH"
-#      - name: Add comment
-#        uses: peter-evans/create-or-update-comment@v4
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          body-path: 'coverage_reports/CoverageReport.md'
 
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v4
