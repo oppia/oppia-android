@@ -68,29 +68,25 @@ class checkSignTest {
 }
 ```
 
-#
->The ultimate Goal is to reach 100% Code Coverage.
-#
-
 # Why is code coverage important?
-### 1. Minimizes the Risk of Bugs
-High code coverage means your code is thoroughly tested. This helps find and fix bugs early.
+- **Minimizes the Risk of Bugs:**
+  High code coverage means your code is thoroughly tested. This helps find and fix bugs early.
 
-### 2. Maintains Code Stability
-When you make changes to your code, high coverage helps ensure that those changes don’t break existing functionality.
+- **Maintains Code Stability:**
+  When you make changes to your code, high coverage helps ensure that those changes don’t break existing functionality.
 
-### 3. Facilitates Continuous Integration and Deployment
-With high code coverage, you can confidently integrate and deploy code changes more frequently. Automated tests act as a safety check, allowing you to release updates automatically with reduced risk.
+- **Facilitates Continuous Integration and Deployment:**
+  With high code coverage, you can confidently integrate and deploy code changes more frequently. Automated tests act as a safety check, allowing you to release updates automatically with reduced risk.
 
-### 4. Encourages Comprehensive Testing
-Striving for high code coverage encourages to write tests for all parts of the code, including edge cases and less common scenarios, while preparing the application to handle unexpected conditions gracefully.
+- **Encourages Comprehensive Testing:**
+  Striving for high code coverage encourages to write tests for all parts of the code, including edge cases and less common scenarios, while preparing the application to handle unexpected conditions gracefully.
 
-### 5. Provides Confidence in Code Quality
-Achieving a high percentage of code coverage gives confidence in the quality of the code. It also helps in maintaining a high standard of code quality over time.
+- **Provides Confidence in Code Quality:**
+  Achieving a high percentage of code coverage gives confidence in the quality of the code. It also helps in maintaining a high standard of code quality over time.
 
 # How to use the code coverage tool?
 
-Oppia supports code coverage analysis through two primary methods:
+Oppia Android supports code coverage analysis through two primary methods:
 1. Continuous Integration (CI) Checks on Pull Requests (PRs)
 2. Local Command-Line Interface (CLI) Tools
 
@@ -292,11 +288,8 @@ This section appears at the bottom of the report, as a drop-down. It includes a 
 1. **File:** Displays the file name that is exempted (Clicking the drop-down reveals the file's path in the codebase).
 2. **Failure Reason:** Describes the specific reason for its exemption.
 
-#
-
 With this report, you can review the coverage percentages for various files and identify which files pass or fail the coverage check.
 
-#
 
 ## 2. Local Command-Line Interface (CLI) Tools
 
@@ -377,4 +370,6 @@ By identifying and adding appropriate test scenarios to cover previously uncover
 
 ## Limitations of the code coverage tool
 
+1. **Incompatibility with Code Coverage Analysis:** Certain test targets in the Oppia-Android codebase fail to execute and collect coverage using the Bazel coverage command. The underlying issues are still being investigated ([see tracking issue #5481](https://github.com/oppia/oppia-android/issues/5481)), and these files are currently exempt from coverage checks.
 
+2. **Function and Branch Coverage:** The Oppia-Android code coverage tool currently provides only line coverage data. It does not include information on function or branch coverage.
