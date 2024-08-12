@@ -131,4 +131,3 @@ class ConsoleLogger @Inject constructor(
     blockingScope.launch { logDirectory.printWriter().use { out -> out.println(text) } }
   }
 }
-
