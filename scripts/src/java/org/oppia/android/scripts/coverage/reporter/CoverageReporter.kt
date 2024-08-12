@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.coverage
+package org.oppia.android.scripts.coverage.reporter
 
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport

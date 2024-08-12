@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.coverage
+package org.oppia.android.scripts.coverage.reporter
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After

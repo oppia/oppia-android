@@ -8,6 +8,14 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.coverage.reporter.CoverageReporter
+import org.oppia.android.scripts.coverage.reporter.MIN_THRESHOLD
+import org.oppia.android.scripts.coverage.reporter.ReportFormat
+import org.oppia.android.scripts.coverage.reporter.CoverageCheck
+import org.oppia.android.scripts.coverage.reporter.GREEN
+import org.oppia.android.scripts.coverage.reporter.RED
+import org.oppia.android.scripts.coverage.reporter.RESET
+import org.oppia.android.scripts.coverage.reporter.BOLD
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
