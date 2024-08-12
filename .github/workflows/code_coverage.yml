@@ -95,7 +95,7 @@ jobs:
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_files
+          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=false
           FILE_BUCKET_LIST=$(cat ./changed_files.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
           echo "::set-output name=matrix::{\"changed-files-bucket-base64-encoded-shard\":[$FILE_BUCKET_LIST]}"
@@ -275,7 +275,7 @@ jobs:
         run: |
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
-          echo "PROTO_FILE_PATHS=${PB_FILES_LIST[@]}" >> $GITHUB_ENV
+          echo "${PB_FILES_LIST[@]}" > pb_files.txt
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -296,8 +296,7 @@ jobs:
 
       - name: Generate Markdown Coverage Report
         run: |
-          echo "PROTO_FILE_PATHS: ${{ env.PROTO_FILE_PATHS }}"
-          bazel run //scripts:coverage_reporter -- $(pwd) ${{ env.PROTO_FILE_PATHS }}
+          bazel run //scripts:coverage_reporter -- $(pwd) ${cat pb_files.txt}
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
