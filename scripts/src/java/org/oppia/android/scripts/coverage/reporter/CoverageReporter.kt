@@ -319,7 +319,7 @@ class CoverageReporter(
           ?.takeIf { it.isNotEmpty() }
           ?.let { getFilenameAsDetailsSummary(it) }
           ?: failure.bazelTestTarget
-        "| $failurePath | ${failure.failureMessage} |"
+        "| $failurePath | ${failure.failureMessage} | :x: |"
       }
     }.joinToString(separator = "\n")
 
@@ -392,8 +392,8 @@ class CoverageReporter(
       if (failureTableRows.isNotEmpty()) {
         append("\n\n")
         append("### Failure Cases\n\n")
-        append("| File | Failure Reason |\n")
-        append("|------|----------------|\n")
+        append("| File | Failure Reason | Status |\n")
+        append("|------|----------------|--------|\n")
         append(failureTableRows)
       }
     }
@@ -463,11 +463,17 @@ class CoverageReporter(
     } else ""
 
     val testFileExemptedSection = buildString {
+      val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+        "(https://github.com/oppia/oppia-android/blob/develop/" +
+        "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+        "list of file exemptions and their required coverage percentages."
       if (testFileExemptedCasesList.isNotEmpty()) {
         append("\n\n")
         append("### Exempted coverage\n")
         append("<details><summary>Files exempted from coverage</summary> <br>")
         append(testFileExemptedCasesList)
+        append("\n\n")
+        append(exemptionsReferenceNote)
         append("</details>")
       }
     }
