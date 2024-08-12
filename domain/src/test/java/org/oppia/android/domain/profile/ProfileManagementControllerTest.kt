@@ -135,7 +135,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
-    assertThat(profile.lastSelectedClassroomId).isEqualTo("")
+    assertThat(profile.lastSelectedClassroomId).isEmpty()
   }
 
   @Test
@@ -1300,7 +1300,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.name).isEqualTo("John")
     assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
     assertThat(profile.isAdmin).isEqualTo(true)
-    assertThat(profile.avatar.avatarImageUri).isEqualTo("")
+    assertThat(profile.avatar.avatarImageUri).isEmpty()
     assertThat(profile.avatar.avatarColorRgb).isEqualTo(-1)
   }
 
@@ -1340,7 +1340,7 @@ class ProfileManagementControllerTest {
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
 
-    assertThat(profile.avatar.avatarImageUri).isEqualTo("")
+    assertThat(profile.avatar.avatarImageUri).isEmpty()
     assertThat(profile.avatar.avatarColorRgb).isEqualTo(-11235672)
   }
 
