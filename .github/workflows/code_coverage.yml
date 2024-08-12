@@ -296,7 +296,7 @@ jobs:
 
       - name: Generate Markdown Coverage Report
         run: |
-          bazel run //scripts:coverage_reporter -- $(pwd) ${cat pb_files.txt}
+          bazel run //scripts:coverage_reporter -- $(pwd) $(cat pb_files.txt)
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
