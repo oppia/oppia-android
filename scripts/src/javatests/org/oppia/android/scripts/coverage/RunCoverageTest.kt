@@ -1127,7 +1127,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
@@ -1197,6 +1197,7 @@ class RunCoverageTest {
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |\n\n"
       )
+      append("\n")
       append("### Exempted coverage\n")
       append("<details><summary>Files exempted from coverage</summary> <br>")
       append("${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}")
@@ -1365,7 +1366,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |\n"
+          ":x: | $MIN_THRESHOLD% |\n\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
@@ -1374,7 +1375,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
@@ -1662,7 +1663,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
