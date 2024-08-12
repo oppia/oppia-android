@@ -8,14 +8,11 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.coverage.reporter.CoverageReporter
+import org.oppia.android.scripts.coverage.reporter.BOLD
 import org.oppia.android.scripts.coverage.reporter.MIN_THRESHOLD
-import org.oppia.android.scripts.coverage.reporter.ReportFormat
-import org.oppia.android.scripts.coverage.reporter.CoverageCheck
-import org.oppia.android.scripts.coverage.reporter.GREEN
 import org.oppia.android.scripts.coverage.reporter.RED
 import org.oppia.android.scripts.coverage.reporter.RESET
-import org.oppia.android.scripts.coverage.reporter.BOLD
+import org.oppia.android.scripts.coverage.reporter.ReportFormat
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
@@ -637,7 +634,7 @@ class RunCoverageTest {
       )
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
@@ -826,7 +823,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |"
+          ":x: | $MIN_THRESHOLD% |\n"
       )
     }
 
@@ -1063,7 +1060,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |\n"
+          ":x: | $MIN_THRESHOLD% |\n\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
@@ -1072,7 +1069,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
@@ -1273,7 +1270,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
-          ":x: | $MIN_THRESHOLD% |\n"
+          ":x: | $MIN_THRESHOLD% |\n\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
@@ -1282,7 +1279,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
@@ -1585,7 +1582,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
-          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
@@ -2225,7 +2222,7 @@ class RunCoverageTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filePath)} | 75.00% | " +
-          "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+          "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
