@@ -13,9 +13,9 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":coverage_runner",
-        "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
     ],
 )
