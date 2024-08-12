@@ -26,4 +26,3 @@ class FirebaseAuthWrapperImpl @Inject constructor(
       }
   }
 }
-

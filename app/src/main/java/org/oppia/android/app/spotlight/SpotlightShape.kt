@@ -8,4 +8,3 @@ sealed class SpotlightShape {
   /** Represents a rounded rectangular spotlight highlight region. */
   object RoundedRectangle : SpotlightShape()
 }
-

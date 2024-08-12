@@ -55,4 +55,3 @@ class FakeLogUploader @Inject constructor() : LogUploader {
   /** Returns the most recent work request id that's stored in the [firestoreRequestIdList]. */
   fun getMostRecentFirestoreRequestId() = firestoreRequestIdList.last()
 }
-

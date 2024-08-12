@@ -1709,4 +1709,3 @@ class QuestionAssessmentProgressControllerTest {
     private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
   }
 }
-

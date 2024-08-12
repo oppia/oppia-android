@@ -61,4 +61,3 @@ data class MathModel(
     }
   }
 }
-

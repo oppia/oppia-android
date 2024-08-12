@@ -402,4 +402,3 @@ class SpotlightFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
-
