@@ -128,6 +128,9 @@ class ClickableAreasImage(
       newView.isFocusableInTouchMode = true
       newView.tag = clickableArea.label
       newView.initializeToggleRegionTouchListener(clickableArea)
+      if (clickableArea.label.equals(imageLabel)) {
+        showOrHideRegion(newView = newView, clickableArea = clickableArea)
+      }
       if (isAccessibilityEnabled) {
         // Make default region visibility gone when talkback enabled to avoid any accidental touch.
         defaultRegionView.isVisible = false
@@ -176,9 +179,6 @@ class ClickableAreasImage(
   }
 
   private fun View.initializeToggleRegionTouchListener(clickableArea: LabeledRegion) {
-    if (clickableArea.label.equals(imageLabel)) {
-      showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)
-    }
     setOnTouchListener { view, event ->
       if (event.action == MotionEvent.ACTION_DOWN) {
         showOrHideRegion(this@initializeToggleRegionTouchListener, clickableArea)
