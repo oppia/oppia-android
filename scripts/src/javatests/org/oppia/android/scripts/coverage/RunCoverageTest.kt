@@ -190,7 +190,7 @@ class RunCoverageTest {
   fun testRunCoverage_testFileExempted_exemptedFromCoverageAnalysis() {
     val exemptedFile = "TestExempted.kt"
     val exemptedFilePathList = listOf(exemptedFile)
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -221,8 +221,11 @@ class RunCoverageTest {
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(exemptedFile, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(exemptedFile)} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -235,7 +238,7 @@ class RunCoverageTest {
   fun testRunCoverage_sourceFileIncompatibleWithCodeCoverage_exemptedFromCoverageAnalysis() {
     val exemptedFile = "SourceIncompatibleWithCoverage.kt"
     val exemptedFilePathList = listOf(exemptedFile)
-    val additionalData = "This file is incompatible with code coverage tooling; " +
+    val exemptionReason = "This file is incompatible with code coverage tooling; " +
       "skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
@@ -267,8 +270,11 @@ class RunCoverageTest {
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(exemptedFile, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(exemptedFile)} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -1092,7 +1098,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withSuccessAndExemptedFiles_generatesFinalCoverageReport() {
     val exemptedFile = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -1148,10 +1154,11 @@ class RunCoverageTest {
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append(
-        "${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}"
-      )
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(1))} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -1163,7 +1170,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withFailureAndExemptedFiles_generatesFinalCoverageReport() {
     val exemptedFile = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -1223,8 +1230,11 @@ class RunCoverageTest {
       )
       append("\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(1), additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(1))} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -1236,7 +1246,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withSuccessFailureAndExemptedFiles_generatesFinalCoverageReport() {
     val exemptedFile = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -1315,8 +1325,11 @@ class RunCoverageTest {
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(2), additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(2))} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -1328,7 +1341,7 @@ class RunCoverageTest {
   @Test
   fun testRunCoverage_withSuccessFailureMissingTestAndExemptedFiles_generatesFinalReport() {
     val exemptedFile = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -1417,8 +1430,11 @@ class RunCoverageTest {
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(filePathList.get(2), additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(2))} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")

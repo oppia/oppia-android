@@ -216,3 +216,4 @@ class ClassroomListActivityTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
+

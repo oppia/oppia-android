@@ -380,7 +380,7 @@ class CoverageReporter(
       .map { exemption ->
         val filePath = exemption.exemption.filePath
         val exemptionReason = exemption.exemption.exemptionReason
-        "${getFilenameAsDetailsSummary(filePath, exemptionReason)}"
+        "| ${getFilenameAsDetailsSummary(filePath)} | $exemptionReason |"
       }.joinToString(separator = "\n") { "$it" }
 
     val tableHeader = buildString {
@@ -470,7 +470,10 @@ class CoverageReporter(
       if (testFileExemptedCasesList.isNotEmpty()) {
         append("\n\n")
         append("### Exempted coverage\n")
-        append("<details><summary>Files exempted from coverage</summary> <br>")
+        append("<details><summary>Files exempted from coverage</summary><br>")
+        append("\n\n")
+        append("| File | Exemption Reason |\n")
+        append("|------|------------------|\n")
         append(testFileExemptedCasesList)
         append("\n\n")
         append(exemptionsReferenceNote)

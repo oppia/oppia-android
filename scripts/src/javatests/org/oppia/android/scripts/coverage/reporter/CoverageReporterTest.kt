@@ -160,7 +160,7 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withTestFileExemptionCoverageReport_generatesMarkdownTable() {
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -178,7 +178,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
-          .setExemptionReason(additionalData)
+          .setExemptionReason(exemptionReason)
           .build()
       ).build()
 
@@ -201,8 +201,11 @@ class CoverageReporterTest {
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(testExemptedFilePath)} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -214,7 +217,7 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withSourceIncompatibilityExemption_generatesMarkdownTable() {
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is incompatible with code coverage tooling; " +
+    val exemptionReason = "This file is incompatible with code coverage tooling; " +
       "skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
@@ -233,7 +236,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
-          .setExemptionReason(additionalData)
+          .setExemptionReason(exemptionReason)
           .build()
       ).build()
 
@@ -256,8 +259,11 @@ class CoverageReporterTest {
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(testExemptedFilePath)} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
@@ -378,7 +384,7 @@ class CoverageReporterTest {
     val successFileName = "SampleSuccessFile.kt"
     val failureFileName = "SampleFailureFile.kt"
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
     val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
       "(https://github.com/oppia/oppia-android/blob/develop/" +
       "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
@@ -396,7 +402,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
-          .setExemptionReason(additionalData)
+          .setExemptionReason(exemptionReason)
           .build()
       ).build()
 
@@ -469,8 +475,11 @@ class CoverageReporterTest {
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(testExemptedFilePath)} | $exemptionReason |")
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")

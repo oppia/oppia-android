@@ -156,3 +156,4 @@ class SpotlightStateController @Inject constructor(
     return cacheStore
   }
 }
+
