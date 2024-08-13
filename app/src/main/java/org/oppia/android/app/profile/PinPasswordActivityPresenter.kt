@@ -39,7 +39,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val accessibilityService: AccessibilityService,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) {
-  private var internalProfileId = ProfileId.newBuilder().setLoggedOut(true).build().loggedInInternalProfileId
+  private var internalProfileId =
+    ProfileId.newBuilder().setLoggedOut(true).build().loggedInInternalProfileId
   private var profileId = ProfileId.getDefaultInstance()
   private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
@@ -51,7 +52,8 @@ class PinPasswordActivityPresenter @Inject constructor(
     )
 
     val adminPin = args?.adminPin
-    internalProfileId = args?.internalProfileId ?: ProfileId.newBuilder().setLoggedOut(true).build().loggedInInternalProfileId
+    internalProfileId = args?.internalProfileId ?: ProfileId.newBuilder().setLoggedOut(true)
+      .build().loggedInInternalProfileId
     profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(

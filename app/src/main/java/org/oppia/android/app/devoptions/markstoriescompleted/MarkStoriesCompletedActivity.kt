@@ -32,7 +32,9 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
 
     val profileId = intent?.extractCurrentUserProfileId()
     internalProfileId = profileId ?: ProfileId.newBuilder().setLoggedOut(true).build()
-    markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId.loggedInInternalProfileId)
+    markStoriesCompletedActivityPresenter.handleOnCreate(
+      internalProfileId.loggedInInternalProfileId
+    )
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
   }
 

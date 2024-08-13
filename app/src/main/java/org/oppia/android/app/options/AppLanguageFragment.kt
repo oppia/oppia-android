@@ -70,7 +70,8 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AppLanguageFragment" }
-    profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    profileId =
+      arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
 
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,

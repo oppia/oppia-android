@@ -5,11 +5,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
@@ -17,7 +15,6 @@ import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.ProfileChooserActivity
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 

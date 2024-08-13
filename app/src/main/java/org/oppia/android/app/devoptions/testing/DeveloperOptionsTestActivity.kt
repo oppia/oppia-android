@@ -37,7 +37,8 @@ class DeveloperOptionsTestActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
 
-    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    profileId =
+      intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
 
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(

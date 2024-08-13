@@ -41,7 +41,8 @@ class StoryViewModel @Inject constructor(
 
   private val storyResultLiveData: LiveData<AsyncResult<EphemeralStorySummary>> by lazy {
     topicController.getStory(
-      ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build(),
+      ProfileId.newBuilder()
+        .setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build(),
       topicId,
       storyId
     ).toLiveData()

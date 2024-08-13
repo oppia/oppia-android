@@ -89,7 +89,8 @@ class ClassroomListActivity :
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(
-          ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
+          ProfileId.newBuilder()
+            .setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
         )
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 

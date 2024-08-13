@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.CompletedStoryItemBinding
 import org.oppia.android.databinding.CompletedStoryListFragmentBinding
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
 
 /** The presenter for [CompletedStoryListFragment]. */
 class CompletedStoryListFragmentPresenter @Inject constructor(

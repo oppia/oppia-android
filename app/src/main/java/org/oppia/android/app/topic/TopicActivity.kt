@@ -45,7 +45,8 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    internalProfileId =
+      intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
@@ -57,7 +58,12 @@ class TopicActivity :
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = args?.storyId
-    topicActivityPresenter.handleOnCreate(internalProfileId.loggedInInternalProfileId, classroomId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(
+      internalProfileId.loggedInInternalProfileId,
+      classroomId,
+      topicId,
+      storyId
+    )
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -65,7 +71,8 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
+        ProfileId.newBuilder()
+          .setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
       )
     )
   }

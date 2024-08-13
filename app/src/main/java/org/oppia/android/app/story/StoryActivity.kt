@@ -40,7 +40,8 @@ class StoryActivity :
       STORY_ACTIVITY_PARAMS_KEY,
       StoryActivityParams.getDefaultInstance()
     )
-    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    profileId =
+      intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     classroomId = checkNotNull(args.classroomId) {
       "Expected extra classroom ID to be included for StoryActivity."
     }
@@ -52,7 +53,12 @@ class StoryActivity :
     }
 
     if (!profileId.loggedOut) {
-      storyActivityPresenter.handleOnCreate(profileId.loggedInInternalProfileId, classroomId, topicId, storyId)
+      storyActivityPresenter.handleOnCreate(
+        profileId.loggedInInternalProfileId,
+        classroomId,
+        topicId,
+        storyId
+      )
     }
   }
 

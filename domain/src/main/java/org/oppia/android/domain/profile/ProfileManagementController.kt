@@ -711,7 +711,8 @@ class ProfileManagementController @Inject constructor(
       }
       AsyncResult.Failure(
         ProfileNotFoundException(
-          "ProfileId ${profileId.loggedInInternalProfileId} is not associated with an existing profile"
+          "ProfileId " +
+            "${profileId.loggedInInternalProfileId} is not associated with an existing profile"
         )
       )
     }

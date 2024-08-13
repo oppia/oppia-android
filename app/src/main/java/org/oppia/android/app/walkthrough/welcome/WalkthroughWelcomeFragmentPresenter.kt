@@ -47,7 +47,9 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
 
-    profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    profileId =
+      activity.intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true)
+      .build()
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
 
     binding.let {
