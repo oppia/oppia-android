@@ -84,6 +84,20 @@ class ClassroomController @Inject constructor(
     }
   }
 
+  /**
+   * Returns the classroomId of the classroom to which the topic with the given [topicId]
+   * belongs to.
+   */
+  fun getClassroomIdByTopicId(topicId: String): String {
+    var classroomId = ""
+    loadClassrooms().forEach {
+      if (it.topicPrerequisitesMap.keys.contains(topicId)) {
+        classroomId = it.id
+      }
+    }
+    return classroomId
+  }
+
   private fun createClassroomList(
     contentLocale: OppiaLocale.ContentLocale
   ): ClassroomList {
@@ -317,6 +331,81 @@ class ClassroomController @Inject constructor(
       .setTopicPlayAvailability(topicPlayAvailability)
       .setFirstStoryId(firstStoryId)
       .build()
+  }
+
+  private fun loadClassrooms(): List<ClassroomRecord> {
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = "classrooms",
+        baseMessage = ClassroomIdList.getDefaultInstance()
+      ).classroomIdsList.map { classroomId ->
+        loadClassroomById(classroomId)
+      }
+    } else loadClassroomsFromJson()
+  }
+
+  private fun loadClassroomsFromJson(): List<ClassroomRecord> {
+    // Load the classrooms.json file.
+    val classroomIdsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
+    checkNotNull(classroomIdsObj) { "Failed to load classrooms.json." }
+    val classroomIds = classroomIdsObj.optJSONArray("classroom_id_list")
+    checkNotNull(classroomIds) { "classrooms.json is missing classroom IDs." }
+
+    // Initialize a list to store the [ClassroomRecord]s.
+    val classroomRecords = mutableListOf<ClassroomRecord>()
+
+    // Iterate over all classroomIds and load each classroom's JSON.
+    for (i in 0 until classroomIds.length()) {
+      val classroomId = checkNotNull(classroomIds.optString(i)) {
+        "Expected non-null classroom ID at index $i."
+      }
+      val classroomRecord = loadClassroomById(classroomId)
+      classroomRecords.add(classroomRecord)
+    }
+
+    return classroomRecords
+  }
+
+  private fun loadClassroomById(classroomId: String): ClassroomRecord {
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.tryLoadProtoFromLocalAssets(
+        assetName = classroomId,
+        defaultMessage = ClassroomRecord.getDefaultInstance()
+      ) ?: ClassroomRecord.getDefaultInstance()
+    } else loadClassroomByIdFromJson(classroomId)
+  }
+
+  private fun loadClassroomByIdFromJson(classroomId: String): ClassroomRecord {
+    // Load the classroom obj.
+    val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
+    checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
+
+    // Load the topic prerequisite map.
+    val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
+      "Expected classroom to have non-null topic_prerequisites."
+    }
+    val topicPrereqs = topicPrereqsObj.keys().asSequence().associateWith { topicId ->
+      val topicIdArray = checkNotNull(topicPrereqsObj.optJSONArray(topicId)) {
+        "Expected topic $topicId to have a non-null string list."
+      }
+      return@associateWith List(topicIdArray.length()) { index ->
+        checkNotNull(topicIdArray.optString(index)) {
+          "Expected topic $topicId to have non-null string at index $index."
+        }
+      }
+    }
+    return ClassroomRecord.newBuilder().apply {
+      id = checkNotNull(classroomObj.optString("classroom_id")) {
+        "Expected classroom to have ID."
+      }
+      putAllTopicPrerequisites(
+        topicPrereqs.mapValues { (_, topicIds) ->
+          ClassroomRecord.TopicIdList.newBuilder().apply {
+            addAllTopicIds(topicIds)
+          }.build()
+        }
+      )
+    }.build()
   }
 }
 

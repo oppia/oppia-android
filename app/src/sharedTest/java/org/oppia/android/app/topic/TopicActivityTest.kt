@@ -62,6 +62,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -155,11 +156,11 @@ class TopicActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID
+      context, 1, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).extractCurrentAppScreenName()
 
     val currentScreenNameWithIntentTwo = TopicActivity.createTopicPlayStoryActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+      context, 1, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntentOne).isEqualTo(ScreenName.TOPIC_ACTIVITY)
@@ -169,7 +170,9 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+    launchTopicActivity(
+      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+    ).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
 
@@ -183,7 +186,7 @@ class TopicActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivity(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -206,10 +209,11 @@ class TopicActivityTest {
 
   private fun launchTopicActivity(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val scenario = ActivityScenario.launch<TopicActivity>(
-      TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(context, internalProfileId, classroomId, topicId)
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))

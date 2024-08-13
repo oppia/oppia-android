@@ -32,6 +32,7 @@ class StoryViewModel @Inject constructor(
   private val translationController: TranslationController
 ) {
   private var internalProfileId: Int = -1
+  private lateinit var classroomId: String
   private lateinit var topicId: String
 
   /** [storyId] needs to be set before any of the live data members can be accessed. */
@@ -60,6 +61,10 @@ class StoryViewModel @Inject constructor(
 
   fun setInternalProfileId(internalProfileId: Int) {
     this.internalProfileId = internalProfileId
+  }
+
+  fun setClassroomId(classroomId: String) {
+    this.classroomId = classroomId
   }
 
   fun setTopicId(topicId: String) {
@@ -121,6 +126,7 @@ class StoryViewModel @Inject constructor(
           explorationSelectionListener,
           explorationCheckpointController,
           internalProfileId,
+          classroomId,
           topicId,
           storyId,
           ephemeralChapterSummary,

@@ -19,7 +19,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.CLASSROOM_LIST_ACTIVITY
-import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIntent
+import org.oppia.android.app.topic.TopicActivity.Companion.createTopicPlayStoryActivityIntent
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -98,15 +99,23 @@ class ClassroomListActivity :
     )
   }
 
-  override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {
+    startActivity(
+      createTopicActivityIntent(this, internalProfileId, classroomId, topicId)
+    )
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     startActivity(
-      TopicActivity.createTopicPlayStoryActivityIntent(
+      createTopicPlayStoryActivityIntent(
         this,
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )

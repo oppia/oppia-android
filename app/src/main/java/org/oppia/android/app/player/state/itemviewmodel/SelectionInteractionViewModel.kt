@@ -6,14 +6,16 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -49,7 +51,8 @@ class SelectionInteractionViewModel private constructor(
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -60,6 +63,9 @@ class SelectionInteractionViewModel private constructor(
       ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
       ?: listOf()
   }
+
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
+
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
   }
@@ -106,6 +112,27 @@ class SelectionInteractionViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+
+    if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
+      userAnswerState.itemSelection.selectedIndexesList.forEach { selectedIndex ->
+        selectedItems += selectedIndex
+        choiceItems[selectedIndex].isAnswerSelected.set(true)
+      }
+      updateItemSelectability()
+      updateSelectionText()
+      updateIsAnswerAvailable()
+    }
+
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
+  }
+
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.itemSelection = ItemSelectionAnswerState.newBuilder().addAllSelectedIndexes(
+        selectedItems
+      ).build()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -141,10 +168,14 @@ class SelectionInteractionViewModel private constructor(
    * updates the error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     pendingAnswerError = when (category) {
-      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.REAL_TIME -> {
+        null
+      }
       AnswerErrorCategory.SUBMIT_TIME ->
         getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
+      else -> null
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
@@ -267,7 +298,8 @@ class SelectionInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return SelectionInteractionViewModel(
         entityId,
@@ -277,7 +309,8 @@ class SelectionInteractionViewModel private constructor(
         isSplitView,
         writtenTranslationContext,
         translationController,
-        resourceHandler
+        resourceHandler,
+        userAnswerState
       )
     }
   }

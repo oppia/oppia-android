@@ -19,6 +19,7 @@ private const val TERMINAL_INTERACTION_ID = "EndExploration"
  */
 internal class ExplorationProgress {
   internal lateinit var currentProfileId: ProfileId
+  internal lateinit var currentClassroomId: String
   internal lateinit var currentTopicId: String
   internal lateinit var currentStoryId: String
   internal lateinit var currentExplorationId: String

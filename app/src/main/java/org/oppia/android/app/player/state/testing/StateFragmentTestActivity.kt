@@ -71,6 +71,7 @@ class StateFragmentTestActivity :
     fun createTestActivityIntent(
       context: Context,
       profileId: Int,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
@@ -78,6 +79,7 @@ class StateFragmentTestActivity :
     ): Intent {
       val args = StateFragmentTestActivityParams.newBuilder().apply {
         this.internalProfileId = profileId
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId

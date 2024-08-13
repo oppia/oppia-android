@@ -19,18 +19,26 @@ const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.arguments"
 /** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+  private lateinit var classroomId: String
   private lateinit var topicId: String
 
   private lateinit var profileId: ProfileId
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String?) {
+  fun handleOnCreate(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String?
+  ) {
     this.topicId = topicId
+    this.classroomId = classroomId
     activity.setContentView(R.layout.topic_activity)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
       val arguments = Bundle().apply {
         val args = TopicFragmentArguments.newBuilder().apply {
+          this.classroomId = classroomId
           this.topicId = topicId
           if (storyId != null) {
             this.storyId = storyId

@@ -27,6 +27,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
@@ -111,7 +112,8 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    userAnswerState: UserAnswerState
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
@@ -125,7 +127,7 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
+      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, userAnswerState),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
@@ -373,6 +375,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
   ) {
+    recyclerViewAssembler.resetUserAnswerState()
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
     answerOutcomeLiveData.observe(
       fragment,
@@ -391,6 +394,11 @@ class StateFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  /** Returns the [UserAnswerState] representing the user's current pending answer. */
+  fun getUserAnswerState(): UserAnswerState {
+    return stateViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -438,9 +446,8 @@ class StateFragmentPresenter @Inject constructor(
     val inputManager: InputMethodManager =
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
-      fragment.view!!.windowToken,
-      @Suppress("DEPRECATION") // TODO(#5406): Use the correct constant value here.
-      InputMethodManager.SHOW_FORCED
+      fragment.requireView().windowToken,
+      0 // Flag value to force hide the keyboard when possible.
     )
   }
 

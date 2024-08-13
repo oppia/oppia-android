@@ -30,7 +30,14 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     temporaryRootFolder.newFile(".bazelversion").also { it.writeText(BAZEL_VERSION) }
   }
   private val bazelRcFile by lazy {
-    temporaryRootFolder.newFile(".bazelrc").also { it.writeText("--noenable_bzlmod") }
+    temporaryRootFolder.newFile(".bazelrc").also {
+      it.writeText(
+        """
+          --noenable_bzlmod
+          build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+        """.trimIndent()
+      )
+    }
   }
 
   private val testFileMap = mutableMapOf<String, File>()

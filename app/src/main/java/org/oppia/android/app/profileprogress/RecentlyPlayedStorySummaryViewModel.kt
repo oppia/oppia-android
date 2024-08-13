@@ -35,7 +35,9 @@ class RecentlyPlayedStorySummaryViewModel(
   }
 
   fun onStoryItemClicked() {
-    routeToTopicPlayStory(internalProfileId, promotedStory.topicId, promotedStory.storyId)
+    routeToTopicPlayStory(
+      internalProfileId, promotedStory.classroomId, promotedStory.topicId, promotedStory.storyId
+    )
   }
 
   fun computeLessonThumbnailContentDescription(): String {
@@ -44,10 +46,16 @@ class RecentlyPlayedStorySummaryViewModel(
     )
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
       internalProfileId,
+      classroomId,
       topicId,
       storyId
     )

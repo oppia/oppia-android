@@ -19,6 +19,10 @@ echo ""
 bash scripts/ktlint_lint_check.sh
 echo ""
 
+# Run feature flag checks
+bash scripts/feature_flags_check.sh
+echo ""
+
 # Run protobuf lint checks
 bash scripts/buf_lint_check.sh
 echo ""

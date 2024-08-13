@@ -73,6 +73,7 @@ class StoryFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): View {
@@ -83,6 +84,7 @@ class StoryFragmentPresenter @Inject constructor(
     )
     profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     storyViewModel.setInternalProfileId(internalProfileId)
+    storyViewModel.setClassroomId(classroomId)
     storyViewModel.setTopicId(topicId)
     storyViewModel.setStoryId(storyId)
     logStoryActivityEvent(topicId, storyId)
@@ -115,6 +117,7 @@ class StoryFragmentPresenter @Inject constructor(
 
   fun handleSelectExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -126,6 +129,7 @@ class StoryFragmentPresenter @Inject constructor(
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -135,6 +139,7 @@ class StoryFragmentPresenter @Inject constructor(
     } else {
       playExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -266,6 +271,7 @@ class StoryFragmentPresenter @Inject constructor(
 
   private fun playExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -277,6 +283,7 @@ class StoryFragmentPresenter @Inject constructor(
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
         profileId.internalId,
+        classroomId,
         topicId,
         storyId,
         explorationId
@@ -284,6 +291,7 @@ class StoryFragmentPresenter @Inject constructor(
     } else {
       explorationDataController.replayExploration(
         profileId.internalId,
+        classroomId,
         topicId,
         storyId,
         explorationId
@@ -298,6 +306,7 @@ class StoryFragmentPresenter @Inject constructor(
           oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

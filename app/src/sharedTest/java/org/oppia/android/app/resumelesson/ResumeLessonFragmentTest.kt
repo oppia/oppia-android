@@ -40,10 +40,12 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.FontSizeMatcher.Companion.withFontSize
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -61,6 +63,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -83,8 +86,10 @@ import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -272,6 +277,7 @@ class ResumeLessonFragmentTest {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
@@ -284,12 +290,69 @@ class ResumeLessonFragmentTest {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      TEST_CLASSROOM_ID_1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
       parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
       checkpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testResumeLessonFragment_extraLargeTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(withFontSize(67F))
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testResumeLessonFragment_largeTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(withFontSize(58F))
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testResumeLessonFragment_mediumTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(withFontSize(48F))
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testResumeLessonFragment_smallTextSize_hasCorrectDimension() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      it.onActivity { activity ->
+        activity.resumeLessonActivityPresenter
+          .loadResumeLessonFragment(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(withFontSize(38F))
+      )
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

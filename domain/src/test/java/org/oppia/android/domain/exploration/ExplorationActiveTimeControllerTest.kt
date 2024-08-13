@@ -27,6 +27,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -109,7 +110,11 @@ class ExplorationActiveTimeControllerTest {
 
     applicationLifecycleObserver.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -131,7 +136,11 @@ class ExplorationActiveTimeControllerTest {
 
     applicationLifecycleObserver.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -153,7 +162,11 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -206,7 +219,11 @@ class ExplorationActiveTimeControllerTest {
 
     applicationLifecycleObserver.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -262,6 +279,7 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.onAppInForeground()
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -308,6 +326,7 @@ class ExplorationActiveTimeControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(1))
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -353,6 +372,7 @@ class ExplorationActiveTimeControllerTest {
     applicationLifecycleObserver.onAppInForeground()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -380,6 +400,7 @@ class ExplorationActiveTimeControllerTest {
     applicationLifecycleObserver.onAppInForeground()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -389,6 +410,7 @@ class ExplorationActiveTimeControllerTest {
     stopExploration()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -423,6 +445,7 @@ class ExplorationActiveTimeControllerTest {
     applicationLifecycleObserver.onAppInForeground()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -432,6 +455,7 @@ class ExplorationActiveTimeControllerTest {
     stopExploration()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -460,6 +484,7 @@ class ExplorationActiveTimeControllerTest {
   }
 
   private fun startPlayingNewExploration(
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -467,7 +492,7 @@ class ExplorationActiveTimeControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
