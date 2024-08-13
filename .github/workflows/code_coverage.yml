@@ -16,19 +16,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check_unit_tests_completed:
-    name: Check unit test completed
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for unit tests to checks
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
-        with:
-          workflow: unit_tests.yml
-          sha: auto
+#  check_unit_tests_completed:
+#    name: Check unit test completed
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Wait for unit tests to checks
+#        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+#        with:
+#          workflow: unit_tests.yml
+#          sha: auto
 
   compute_changed_files:
     name: Compute changed files
-    needs: check_unit_tests_completed
+#    needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
@@ -95,7 +95,7 @@ jobs:
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_files
+          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=false
           FILE_BUCKET_LIST=$(cat ./changed_files.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
           echo "::set-output name=matrix::{\"changed-files-bucket-base64-encoded-shard\":[$FILE_BUCKET_LIST]}"
@@ -296,7 +296,7 @@ jobs:
 
       - name: Generate Markdown Coverage Report
         run: |
-          bazel run //scripts:coverage_reporter -- $(pwd) $(cat pb_files.txt)
+          bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4

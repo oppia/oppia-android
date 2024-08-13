@@ -36,8 +36,17 @@ const val BOLD = "\u001B[1m"
  *     /org/oppia/android/util/parser/math/MathModel/coverage_report.pb
  */
 fun main(vararg args: String) {
+
   val repoRoot = args[0]
-  val filePathList = args.drop(1).takeWhile { !it.startsWith("--") }
+  val pbTxtFile = File(repoRoot, args[1])
+
+  if (!pbTxtFile.exists()) {
+    println("File not found: ${pbTxtFile.absolutePath}")
+    return
+  }
+
+  val fileContent = pbTxtFile.readText()
+  val filePathList = fileContent.split(" ").filter { it.isNotBlank() }
 
   val coverageResultList = filePathList.mapNotNull { filePath ->
     try {
