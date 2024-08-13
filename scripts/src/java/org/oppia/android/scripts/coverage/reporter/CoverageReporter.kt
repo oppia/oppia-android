@@ -29,12 +29,16 @@ const val BOLD = "\u001B[1m"
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
- * - text_file_with_list_of_coverage_data_proto_paths: the text file that contains the list of
- *     relative path to the proto files with coverage report data to analyse coverage.
+ * - text_file_with_list_of_coverage_data_proto_paths: the text file that contains
+ *     the list of relative path to the proto files containing coverage report data
+ *     separated by spaces to analyse coverage.
+ *     Sample `coverage_proto_list.txt` content:
+ *     ```
+ *     coverage_reports/coverage_report1.pb coverage_reports/coverage_report2.pb
+ *     ```
  *
  * Example:
- *     bazel run //scripts:coverage_reporter -- $(pwd) coverage_reports/utility/src/main/java \\
- *     /org/oppia/android/util/parser/math/MathModel/coverage_report.pb
+ *     bazel run //scripts:coverage_reporter -- $(pwd) coverage_proto_list.txt
  */
 fun main(vararg args: String) {
   val repoRoot = args[0]
