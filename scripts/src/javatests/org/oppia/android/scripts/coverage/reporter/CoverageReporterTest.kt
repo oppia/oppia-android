@@ -753,22 +753,40 @@ class CoverageReporterTest {
     assertThat(outContent.toString().trim()).isEqualTo("-> $testExemptedFilePath - $additionalData")
   }
 
-  /*@Test
-  fun testCoverageReporter_passingInvalidProtoPath_throwsException() {
-    val invalidProtoPath = "invalid.pb"
+  @Test
+  fun testCoverageReporter_passingInvalidProtoListTextPath_throwsException() {
+    val invalidProtoListTextPath = "invalid.txt"
 
     val exception = assertThrows<IllegalStateException>() {
       main(
         "${tempFolder.root}",
-        invalidProtoPath
+        invalidProtoListTextPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("File not found")
+  }
+
+  @Test
+  fun testCoverageReporter_passingInvalidProtoPath_throwsException() {
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    val invalidProtoPath = "invalid.pb"
+    protoListTextFile.writeText(invalidProtoPath)
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        protoListTextPath
       )
     }
 
     assertThat(exception).hasMessageThat()
       .contains("Error processing file $invalidProtoPath")
-  }*/
+  }
 
-  /*@Test
+  @Test
   fun testCoverageReporter_successCoverageProtoPath_checksCoverageStatus() {
     System.setOut(PrintStream(outContent))
     val validProtoPath = "coverageReport.pb"
@@ -787,16 +805,20 @@ class CoverageReporterTest {
       coverageReport.writeTo(outputStream)
     }
 
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.writeText(validProtoPath)
+
     main(
       "${tempFolder.root}",
-      validProtoPath
+      protoListTextPath
     )
 
     assertThat(outContent.toString().trim())
       .contains("Coverage Analysis$BOLD$GREEN PASSED$RESET")
-  }*/
+  }
 
-  /*@Test
+  @Test
   fun testCoverageReporter_failureCoverageProtoPath_checksCoverageStatus() {
     val validProtoPath = "coverageReport.pb"
     val protoFile = tempFolder.newFile(validProtoPath)
@@ -817,18 +839,22 @@ class CoverageReporterTest {
       coverageReport.writeTo(outputStream)
     }
 
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.writeText(validProtoPath)
+
     val exception = assertThrows<IllegalStateException>() {
       main(
         "${tempFolder.root}",
-        validProtoPath
+        protoListTextPath
       )
     }
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
-  }*/
+  }
 
-  /*@Test
+  @Test
   fun testCoverageReporter_listOfCoverageProtoPath_checksCoverageStatus() {
     val successProtoPath = "successCoverageReport.pb"
     val successProtoFile = tempFolder.newFile(successProtoPath)
@@ -865,19 +891,24 @@ class CoverageReporterTest {
       failureCoverageReport.writeTo(outputStream)
     }
 
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.appendText(successProtoPath)
+    protoListTextFile.appendText(" ")
+    protoListTextFile.appendText(failureProtoPath)
+
     val exception = assertThrows<IllegalStateException>() {
       main(
         "${tempFolder.root}",
-        successProtoPath,
-        failureProtoPath
+        protoListTextPath
       )
     }
 
     assertThat(exception).hasMessageThat()
       .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
-  }*/
+  }
 
-  /*@Test
+  @Test
   fun testCoverageReporter_listOfCoverageProtoPath_generatesMarkdownReport() {
     val successProtoPath = "successCoverageReport.pb"
     val successProtoFile = tempFolder.newFile(successProtoPath)
@@ -911,11 +942,16 @@ class CoverageReporterTest {
       failureCoverageReport.writeTo(outputStream)
     }
 
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.appendText(successProtoPath)
+    protoListTextFile.appendText(" ")
+    protoListTextFile.appendText(failureProtoPath)
+
     val exception = assertThrows<IllegalStateException>() {
       main(
         "${tempFolder.root}",
-        successProtoPath,
-        failureProtoPath
+        protoListTextPath
       )
     }
 
@@ -946,7 +982,7 @@ class CoverageReporterTest {
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
-  }*/
+  }
 
   private fun readFinalMdReport(): String {
     return File(

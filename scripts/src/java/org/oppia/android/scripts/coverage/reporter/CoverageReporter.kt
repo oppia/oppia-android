@@ -24,57 +24,57 @@ const val BOLD = "\u001B[1m"
  * Function for generating coverage report for a list of proto files.
  *
  * Usage:
- *    bazel run //scripts:coverage_runner -- <path_to_root> <list_of_relative_path_to_proto_files>
+ *    bazel run //scripts:coverage_runner -- <path_to_root>
+ *    <text_file_with_list_of_coverage_data_proto_paths>
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
- * - list_of_relative_path_to_proto_files: the list of relative path to the proto files
- *     with coverage report data to analyse coverage.
+ * - text_file_with_list_of_coverage_data_proto_paths: the text file that contains the list of
+ *     relative path to the proto files with coverage report data to analyse coverage.
  *
  * Example:
  *     bazel run //scripts:coverage_reporter -- $(pwd) coverage_reports/utility/src/main/java \\
  *     /org/oppia/android/util/parser/math/MathModel/coverage_report.pb
  */
 fun main(vararg args: String) {
-
   val repoRoot = args[0]
   val pbTxtFile = File(repoRoot, args[1])
 
-  if (!pbTxtFile.exists()) {
-    println("File not found: ${pbTxtFile.absolutePath}")
-    return
-  }
+  pbTxtFile.takeIf { it.exists() }?.let {
+    val pbList = pbTxtFile.readText()
+    val filePathList = pbList.split(" ")
+      .filter { it.isNotBlank() }
+      .map { it.trim() }
 
-  val pbList = pbTxtFile.readText()
-  val filePathList = pbList.split(" ")
-    .filter { it.isNotBlank() }
-    .map { it.trim() }
-
-  val coverageResultList = filePathList.mapNotNull { filePath ->
-    try {
-      File(repoRoot, filePath).inputStream().use { stream ->
-        CoverageReport.newBuilder().also { builder ->
-          builder.mergeFrom(stream)
-        }.build()
+    val coverageResultList = filePathList.mapNotNull { filePath ->
+      try {
+        println("Filepath: $filePath")
+        File(repoRoot, filePath).inputStream().use { stream ->
+          CoverageReport.newBuilder().also { builder ->
+            builder.mergeFrom(stream)
+          }.build()
+        }
+      } catch (e: Exception) {
+        error("Error processing file $filePath: ${e.message}")
       }
-    } catch (e: Exception) {
-      error("Error processing file $filePath: ${e.message}")
     }
-  }
 
-  val coverageReportContainer = CoverageReportContainer.newBuilder().apply {
-    addAllCoverageReport(coverageResultList)
-  }.build()
+    val coverageReportContainer = CoverageReportContainer.newBuilder().apply {
+      addAllCoverageReport(coverageResultList)
+    }.build()
 
-  val coverageStatus = CoverageReporter(
-    repoRoot,
-    coverageReportContainer,
-    ReportFormat.MARKDOWN
-  ).generateRichTextReport()
+    val coverageStatus = CoverageReporter(
+      repoRoot,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN
+    ).generateRichTextReport()
 
-  when (coverageStatus) {
-    CoverageCheck.PASS -> println("Coverage Analysis$BOLD$GREEN PASSED$RESET")
-    CoverageCheck.FAIL -> error("Coverage Analysis$BOLD$RED FAILED$RESET")
+    when (coverageStatus) {
+      CoverageCheck.PASS -> println("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+      CoverageCheck.FAIL -> error("Coverage Analysis$BOLD$RED FAILED$RESET")
+    }
+  } ?: run {
+    error("File not found: ${pbTxtFile.absolutePath}")
   }
 }
 

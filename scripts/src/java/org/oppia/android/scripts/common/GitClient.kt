@@ -75,7 +75,6 @@ class GitClient(
     val renamedFilesCommand = executeGitCommand("diff -M --name-status ${computeCommitRange()}")
     return renamedFilesCommand.filter { it.startsWith("R") }
       .map { it.split("\t")[1] }
-
   }
 
   private fun computeCommitRange(): String = "HEAD..$branchMergeBase"
