@@ -45,8 +45,10 @@ fun main(vararg args: String) {
     return
   }
 
-  val fileContent = pbTxtFile.readText()
-  val filePathList = fileContent.split(" ").filter { it.isNotBlank() }
+  val pbList = pbTxtFile.readText()
+  val filePathList = pbList.split(" ")
+    .filter { it.isNotBlank() }
+    .map { it.removePrefix("./") }
 
   val coverageResultList = filePathList.mapNotNull { filePath ->
     try {
@@ -684,4 +686,3 @@ private fun loadTestFileExemptionsProto(
     }.build()
   }
 }
-
