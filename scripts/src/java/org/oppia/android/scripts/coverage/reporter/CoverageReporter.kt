@@ -48,7 +48,7 @@ fun main(vararg args: String) {
   val pbList = pbTxtFile.readText()
   val filePathList = pbList.split(" ")
     .filter { it.isNotBlank() }
-    .map { it.removePrefix("./") }
+    .map { it.trim() }
 
   val coverageResultList = filePathList.mapNotNull { filePath ->
     try {
