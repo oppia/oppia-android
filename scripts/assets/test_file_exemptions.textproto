@@ -1,96 +1,4 @@
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
-  override_min_coverage_percent_required: 57
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventLoggingConfigurationModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/KenyaAlphaEventLoggingConfigurationModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/ConsoleLogger.kt"
-  override_min_coverage_percent_required: 54
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathExpressionExtensions.kt"
-  override_min_coverage_percent_required: 42
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/LocaleProdModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/testing/LocaleTestModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityIntentFactories.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
-  override_min_coverage_percent_required: 38
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/TextInputAction.kt"
-  override_min_coverage_percent_required: 60
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/SyncStatusTestModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockPlatformParameterService.kt"
-  override_min_coverage_percent_required: 64
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/AuthenticationController.kt"
-  override_min_coverage_percent_required: 21
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthWrapperImpl.kt"
-  override_min_coverage_percent_required: 31
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/CpuPerformanceSnapshotterModule.kt"
-  override_min_coverage_percent_required: 26
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
-  override_min_coverage_percent_required: 68
-}
-test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/ComputeAabDifferences.kt"
-  override_min_coverage_percent_required: 6
-}
-test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/ApkAnalyzerClient.kt"
-  override_min_coverage_percent_required: 6
-}
-test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/BundleToolClient.kt"
-  override_min_coverage_percent_required: 59
-}
-test_file_exemption {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/JsonPrefixNetworkInterceptor.kt"
-  override_min_coverage_percent_required: 28
-}
-test_file_exemption {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/api/FeedbackReportingService.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
   test_file_not_required: true
 }
@@ -101,6 +9,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponentImpl.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityIntentFactories.kt"
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityIntentFactoriesModule.kt"
@@ -1107,11 +1019,11 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/ClassroomSummaryClickListener.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/AllClassroomsViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/AllClassroomsViewModel.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/ClassroomSummaryClickListener.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3163,6 +3075,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/JsonPrefixNetworkInterceptor.kt"
+  override_min_coverage_percent_required: 28
+}
+test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkApiKey.kt"
   test_file_not_required: true
 }
@@ -3173,6 +3089,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/XssiPrefix.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/api/FeedbackReportingService.kt"
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReport.kt"
@@ -3207,6 +3127,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/AuthenticationController.kt"
+  override_min_coverage_percent_required: 21
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthInstance.kt"
   test_file_not_required: true
 }
@@ -3221,6 +3145,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthWrapper.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/FirebaseAuthWrapperImpl.kt"
+  override_min_coverage_percent_required: 31
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/auth/FirebaseUserWrapper.kt"
@@ -3675,6 +3603,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
+  override_min_coverage_percent_required: 68
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsStartupListener.kt"
   test_file_not_required: true
 }
@@ -3685,6 +3617,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/CpuPerformanceLoggingTimePeriodMillis.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/CpuPerformanceSnapshotterModule.kt"
+  override_min_coverage_percent_required: 26
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsInactivityLimitMillis.kt"
@@ -3931,6 +3867,18 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/ApkAnalyzerClient.kt"
+  override_min_coverage_percent_required: 6
+}
+test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/BundleToolClient.kt"
+  override_min_coverage_percent_required: 59
+}
+test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/ComputeAabDifferences.kt"
+  override_min_coverage_percent_required: 6
+}
+test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/CommandExecutor.kt"
   test_file_not_required: true
 }
@@ -4083,8 +4031,16 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/TextInputAction.kt"
+  override_min_coverage_percent_required: 60
+}
+test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/DefineAppLanguageLocaleContext.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
+  override_min_coverage_percent_required: 38
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/OppiaParameterizedBaseRunner.kt"
@@ -4133,6 +4089,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/EventLogSubject.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/SyncStatusTestModule.kt"
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/ComparableOperationSubject.kt"
@@ -4189,6 +4149,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockFeedbackReportingService.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockPlatformParameterService.kt"
+  override_min_coverage_percent_required: 64
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockQuestionPlayerService.kt"
@@ -4367,6 +4331,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/LocaleProdModule.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatter.kt"
   test_file_not_required: true
 }
@@ -4375,8 +4343,16 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/testing/LocaleTestModule.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/AnalyticsEventLogger.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/ConsoleLogger.kt"
+  override_min_coverage_percent_required: 54
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/ConsoleLoggerInjector.kt"
@@ -4387,12 +4363,20 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventLoggingConfigurationModule.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventTypeToHumanReadableNameConverter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/ExceptionLogger.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/KenyaAlphaEventLoggingConfigurationModule.kt"
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/KenyaAlphaEventTypeToHumanReadableNameConverterImpl.kt"
@@ -4491,6 +4475,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathExpressionExtensions.kt"
+  override_min_coverage_percent_required: 42
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathParsingError.kt"
   test_file_not_required: true
 }
@@ -4509,6 +4497,14 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/NetworkConnectionUtil.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModule.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModule.kt"
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/ExplorationHtmlParserEntityType.kt"
@@ -4585,6 +4581,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/TextPictureDrawable.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
+  override_min_coverage_percent_required: 57
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/math/MathBitmapModelLoader.kt"
