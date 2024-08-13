@@ -21,7 +21,6 @@ import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
-import com.google.protobuf.TextFormat
 
 /**
  * Entry point function for running coverage analysis for a source file.
@@ -137,8 +136,6 @@ class RunCoverage(
       .associateBy { it.exemptedFilePath }
   }
 
-  val tfe = loadTestFileExemptionsProto(testFileExemptionTextProtoPath)
-
   /**
    * Executes coverage analysis for the specified file.
    *
@@ -148,13 +145,6 @@ class RunCoverage(
    * coverage analysis for each test target found.
    */
   fun execute() {
-
-    val tp = tfe.testFileExemptionList.sortedBy { it.exemptedFilePath }
-    val up = TestFileExemptions.newBuilder().apply {
-      addAllTestFileExemption(tp)
-    }.build()
-    TextFormat.printer().print(up, System.out)
-
     if (reportFormat == ReportFormat.PROTO) {
       filePathList.forEach { filePath ->
         val coverageReport = runCoverageForFile(filePath)
