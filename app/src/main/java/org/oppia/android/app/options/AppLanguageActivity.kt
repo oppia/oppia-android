@@ -23,15 +23,15 @@ import javax.inject.Inject
 class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var appLanguageActivityPresenter: AppLanguageActivityPresenter
-  private var profileId: Int? = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     appLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
-      profileId!!
+      profileId.loggedInInternalProfileId
     )
   }
 

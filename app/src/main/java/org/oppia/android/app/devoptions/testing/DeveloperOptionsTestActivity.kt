@@ -30,15 +30,14 @@ class DeveloperOptionsTestActivity :
   RouteToMarkTopicsCompletedListener,
   RouteToViewEventLogsListener {
 
-  private var internalProfileId = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
 
-    val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.loggedInInternalProfileId ?: -1
+    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
 
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
@@ -57,7 +56,7 @@ class DeveloperOptionsTestActivity :
   override fun routeToMarkChaptersCompleted() {
     startActivity(
       MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-        context = this, internalProfileId, showConfirmationNotice = false
+        context = this, profileId.loggedInInternalProfileId, showConfirmationNotice = false
       )
     )
   }
@@ -65,14 +64,14 @@ class DeveloperOptionsTestActivity :
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createMarkStoriesCompletedIntent(this, profileId.loggedInInternalProfileId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createMarkTopicsCompletedIntent(this, profileId.loggedInInternalProfileId)
     )
   }
 

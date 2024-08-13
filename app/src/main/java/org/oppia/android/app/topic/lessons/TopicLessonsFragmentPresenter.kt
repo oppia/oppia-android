@@ -53,7 +53,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicLessonsFragmentBinding
-  private var internalProfileId: Int = -1
+  private var internalProfileId: Int = 0
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String

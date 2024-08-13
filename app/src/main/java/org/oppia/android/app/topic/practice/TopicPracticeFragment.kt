@@ -28,7 +28,12 @@ class TopicPracticeFragment : InjectableFragment() {
     /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
 
-      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+      val profileId = if (internalProfileId != -1) {
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+      } else {
+        ProfileId.newBuilder().setLoggedOut(true).build()
+      }
+
       val args = TopicPracticeFragmentArguments.newBuilder().apply {
         this.topicId = topicId
       }.build()
@@ -70,8 +75,13 @@ class TopicPracticeFragment : InjectableFragment() {
       TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
       TopicPracticeFragmentArguments.getDefaultInstance()
     )
+    val profileId = arguments?.extractCurrentUserProfileId()
     val internalProfileId =
-      arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+      profileId?.loggedInInternalProfileId ?: if (profileId?.loggedOut == true) {
+        0
+      } else {
+        -1
+      }
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }

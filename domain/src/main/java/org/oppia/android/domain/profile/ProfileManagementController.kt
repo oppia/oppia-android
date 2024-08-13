@@ -39,7 +39,7 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
+private val DEFAULT_LOGGED_OUT_PROFILE_ID = ProfileId.newBuilder().setLoggedOut(true).build()
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
 private const val GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
@@ -95,7 +95,7 @@ class ProfileManagementController @Inject constructor(
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
-  private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
+  private var currentProfileId: ProfileId = DEFAULT_LOGGED_OUT_PROFILE_ID
   private val profileDataStore =
     cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
 
@@ -706,13 +706,12 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(SET_CURRENT_PROFILE_ID_PROVIDER_ID) {
       val profileDatabase = profileDataStore.readDataAsync().await()
       if (profileDatabase.profilesMap.containsKey(profileId.loggedInInternalProfileId)) {
-        currentProfileId = profileId.loggedInInternalProfileId
+        currentProfileId = profileId
         return@createInMemoryDataProviderAsync AsyncResult.Success(0)
       }
       AsyncResult.Failure(
         ProfileNotFoundException(
-          "ProfileId ${profileId.loggedInInternalProfileId} is" +
-            " not associated with an existing profile"
+          "ProfileId ${profileId.loggedInInternalProfileId} is not associated with an existing profile"
         )
       )
     }
@@ -789,9 +788,7 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns the [ProfileId] of the current profile, or null if one hasn't yet been logged into. */
   fun getCurrentProfileId(): ProfileId? {
-    return currentProfileId.takeIf { it != DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID }?.let {
-      ProfileId.newBuilder().setLoggedInInternalProfileId(it).build()
-    }
+    return if (!currentProfileId.loggedOut) currentProfileId else null
   }
 
   /**

@@ -34,7 +34,7 @@ class TopicActivity :
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
-  private var internalProfileId: Int = -1
+  private var internalProfileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
   private lateinit var topicId: String
   private lateinit var classroomId: String
   private var storyId: String? = null
@@ -45,7 +45,7 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    internalProfileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
@@ -57,7 +57,7 @@ class TopicActivity :
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = args?.storyId
-    topicActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(internalProfileId.loggedInInternalProfileId, classroomId, topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -65,7 +65,7 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
       )
     )
   }

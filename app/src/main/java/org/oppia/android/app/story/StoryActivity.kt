@@ -28,7 +28,7 @@ class StoryActivity :
   RouteToResumeLessonListener {
   @Inject
   lateinit var storyActivityPresenter: StoryActivityPresenter
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -40,7 +40,7 @@ class StoryActivity :
       STORY_ACTIVITY_PARAMS_KEY,
       StoryActivityParams.getDefaultInstance()
     )
-    internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
+    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     classroomId = checkNotNull(args.classroomId) {
       "Expected extra classroom ID to be included for StoryActivity."
     }
@@ -50,7 +50,10 @@ class StoryActivity :
     storyId = checkNotNull(args.storyId) {
       "Expected extra story ID to be included for StoryActivity."
     }
-    storyActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
+
+    if (!profileId.loggedOut) {
+      storyActivityPresenter.handleOnCreate(profileId.loggedInInternalProfileId, classroomId, topicId, storyId)
+    }
   }
 
   override fun routeToExploration(

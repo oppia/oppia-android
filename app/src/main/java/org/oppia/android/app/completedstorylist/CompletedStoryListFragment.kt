@@ -47,11 +47,10 @@ class CompletedStoryListFragment : InjectableFragment() {
       "Expected arguments to be passed to CompletedStoryListFragment"
     }
     val profileId = arguments.extractCurrentUserProfileId()
-    val internalProfileId = profileId.loggedInInternalProfileId
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId
+      profileId
     )
   }
 }

@@ -11,6 +11,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.CompletedStoryItemBinding
 import org.oppia.android.databinding.CompletedStoryListFragmentBinding
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 /** The presenter for [CompletedStoryListFragment]. */
 class CompletedStoryListFragmentPresenter @Inject constructor(
@@ -26,9 +27,9 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    profileId: ProfileId
   ): View? {
-    viewModel.setProfileId(internalProfileId)
+    viewModel.setProfileId(profileId)
 
     binding = CompletedStoryListFragmentBinding
       .inflate(

@@ -64,7 +64,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var binding: DrawerFragmentBinding
   private lateinit var profileId: ProfileId
   private var previousMenuItemId: Int? = null
-  private var internalProfileId: Int = -1
+  private var internalProfileId: Int = 0
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

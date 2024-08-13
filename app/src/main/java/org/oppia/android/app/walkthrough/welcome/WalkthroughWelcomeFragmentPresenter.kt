@@ -36,7 +36,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
-  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
@@ -48,9 +47,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
 
-    internalProfileId =
-      activity.intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
-    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+    profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
 
     binding.let {

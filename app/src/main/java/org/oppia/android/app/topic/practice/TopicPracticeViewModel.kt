@@ -26,7 +26,7 @@ class TopicPracticeViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
   private lateinit var topicId: String
-  private var internalProfileId: Int = -1
+  private var internalProfileId: Int = 0
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(

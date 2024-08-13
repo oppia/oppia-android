@@ -25,7 +25,7 @@ class TopicLessonViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) {
-  private var internalProfileId: Int = -1
+  private var internalProfileId: Int = 0
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var topicStoryList: List<StorySummary>

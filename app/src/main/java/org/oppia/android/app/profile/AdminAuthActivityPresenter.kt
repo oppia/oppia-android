@@ -84,14 +84,19 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         when (args?.adminPinEnum ?: 0) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-            val internalId = args?.internalProfileId ?: -1
-            val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalId).build()
+            val profileId = args?.internalProfileId?.let { internalId ->
+              if (internalId == -1) {
+                ProfileId.newBuilder().setLoggedOut(true).build()
+              } else {
+                ProfileId.newBuilder().setLoggedInInternalProfileId(internalId).build()
+              }
+            } ?: ProfileId.newBuilder().setLoggedOut(true).build()
+
             activity.startActivity(
               AdministratorControlsActivity.createAdministratorControlsActivityIntent(
                 context, profileId
               )
             )
-
             activity.finish()
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {

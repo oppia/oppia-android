@@ -37,35 +37,37 @@ class DeveloperOptionsActivity :
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var internalProfileId = -1
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.extractCurrentUserProfileId().loggedInInternalProfileId
+    profileId = intent.extractCurrentUserProfileId()
     developerOptionsActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }
 
   override fun routeToMarkChaptersCompleted() {
-    startActivity(
-      MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-        context = this, internalProfileId, showConfirmationNotice = false
+    if (!profileId.loggedOut) {
+      startActivity(
+        MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+          context = this, profileId.loggedInInternalProfileId, showConfirmationNotice = false
+        )
       )
-    )
+    }
   }
 
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createMarkStoriesCompletedIntent(this, profileId.loggedInInternalProfileId)
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createMarkTopicsCompletedIntent(this, profileId.loggedInInternalProfileId)
     )
   }
 

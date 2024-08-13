@@ -84,7 +84,7 @@ class StoryFragmentPresenter @Inject constructor(
     )
     profileId =
       ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
-    storyViewModel.setInternalProfileId(internalProfileId)
+    storyViewModel.setInternalProfileId(profileId)
     storyViewModel.setClassroomId(classroomId)
     storyViewModel.setTopicId(topicId)
     storyViewModel.setStoryId(storyId)
