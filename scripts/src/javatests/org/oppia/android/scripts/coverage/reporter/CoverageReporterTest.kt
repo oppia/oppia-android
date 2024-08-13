@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.coverage
+package org.oppia.android.scripts.coverage.reporter
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
@@ -13,6 +13,7 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
+import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
@@ -71,7 +72,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filename)} " +
-          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
     }
@@ -113,7 +114,7 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(filename)} | " +
-          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |"
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n"
       )
     }
 
@@ -148,9 +149,9 @@ class CoverageReporterTest {
       append("Coverage Analysis: **FAIL** :x:\n")
       append("##\n\n")
       append("### Failure Cases\n\n")
-      append("| File | Failure Reason |\n")
-      append("|------|----------------|\n")
-      append("| ://bazelTestTarget | Failure Message |")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| ://bazelTestTarget | Failure Message | :x: |")
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
@@ -159,7 +160,12 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withTestFileExemptionCoverageReport_generatesMarkdownTable() {
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = testExemptedFilePath
       this.testFileNotRequired = true
@@ -172,7 +178,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
-          .setExemptionReason(additionalData)
+          .setExemptionReason(exemptionReason)
           .build()
       ).build()
 
@@ -195,8 +201,13 @@ class CoverageReporterTest {
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(testExemptedFilePath)} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
       append("</details>")
     }
 
@@ -206,8 +217,13 @@ class CoverageReporterTest {
   @Test
   fun testGenerateMarkDownReport_withSourceIncompatibilityExemption_generatesMarkdownTable() {
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is incompatible with code coverage tooling; " +
+    val exemptionReason = "This file is incompatible with code coverage tooling; " +
       "skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = testExemptedFilePath
       this.testFileNotRequired = true
@@ -220,7 +236,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
-          .setExemptionReason(additionalData)
+          .setExemptionReason(exemptionReason)
           .build()
       ).build()
 
@@ -243,8 +259,13 @@ class CoverageReporterTest {
       append("Coverage Analysis: **PASS** :white_check_mark:\n")
       append("##\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(testExemptedFilePath)} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
       append("</details>")
     }
 
@@ -363,7 +384,11 @@ class CoverageReporterTest {
     val successFileName = "SampleSuccessFile.kt"
     val failureFileName = "SampleFailureFile.kt"
     val testExemptedFilePath = "TestExempted.kt"
-    val additionalData = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
 
     val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
       this.exemptedFilePath = testExemptedFilePath
@@ -377,7 +402,7 @@ class CoverageReporterTest {
       .setExemption(
         CoverageExemption.newBuilder()
           .setFilePath(testExemptedFilePath)
-          .setExemptionReason(additionalData)
+          .setExemptionReason(exemptionReason)
           .build()
       ).build()
 
@@ -429,15 +454,15 @@ class CoverageReporterTest {
       append("Coverage Analysis: **FAIL** :x:\n")
       append("##\n\n")
       append("### Failure Cases\n\n")
-      append("| File | Failure Reason |\n")
-      append("|------|----------------|\n")
-      append("| ://bazelTestTarget | Failure Message |\n\n")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| ://bazelTestTarget | Failure Message | :x: |\n\n")
       append("### Failing coverage\n\n")
       append("| File | Coverage | Lines Hit | Status | Min Required |\n")
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(failureFileName)} | " +
-          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n"
+          "0.00% | 0 / 10 | :x: | $MIN_THRESHOLD% |\n\n"
       )
       append("### Passing coverage\n\n")
       append("<details>\n")
@@ -446,12 +471,17 @@ class CoverageReporterTest {
       append("|------|:--------:|----------:|:------:|:------------:|\n")
       append(
         "| ${getFilenameAsDetailsSummary(successFileName)} | " +
-          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n"
+          "100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>\n\n")
       append("### Exempted coverage\n")
-      append("<details><summary>Files exempted from coverage</summary> <br>")
-      append("${getFilenameAsDetailsSummary(testExemptedFilePath, additionalData)}")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(testExemptedFilePath)} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
       append("</details>")
     }
 
@@ -723,6 +753,237 @@ class CoverageReporterTest {
     assertThat(outContent.toString().trim()).isEqualTo("-> $testExemptedFilePath - $additionalData")
   }
 
+  @Test
+  fun testCoverageReporter_passingInvalidProtoListTextPath_throwsException() {
+    val invalidProtoListTextPath = "invalid.txt"
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        invalidProtoListTextPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("File not found")
+  }
+
+  @Test
+  fun testCoverageReporter_passingInvalidProtoPath_throwsException() {
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    val invalidProtoPath = "invalid.pb"
+    protoListTextFile.writeText(invalidProtoPath)
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        protoListTextPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Error processing file $invalidProtoPath")
+  }
+
+  @Test
+  fun testCoverageReporter_successCoverageProtoPath_checksCoverageStatus() {
+    System.setOut(PrintStream(outContent))
+    val validProtoPath = "coverageReport.pb"
+    val protoFile = tempFolder.newFile(validProtoPath)
+
+    val coverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath("file.kt")
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    protoFile.outputStream().use { outputStream ->
+      coverageReport.writeTo(outputStream)
+    }
+
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.writeText(validProtoPath)
+
+    main(
+      "${tempFolder.root}",
+      protoListTextPath
+    )
+
+    assertThat(outContent.toString().trim())
+      .contains("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+  }
+
+  @Test
+  fun testCoverageReporter_failureCoverageProtoPath_checksCoverageStatus() {
+    val validProtoPath = "coverageReport.pb"
+    val protoFile = tempFolder.newFile(validProtoPath)
+
+    val coverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:coverageReport")
+          .setFailureMessage(
+            "Coverage retrieval failed for the test target: " +
+              "//:coverageReport"
+          )
+          .build()
+      )
+      .build()
+
+    protoFile.outputStream().use { outputStream ->
+      coverageReport.writeTo(outputStream)
+    }
+
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.writeText(validProtoPath)
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        protoListTextPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+  }
+
+  @Test
+  fun testCoverageReporter_listOfCoverageProtoPath_checksCoverageStatus() {
+    val successProtoPath = "successCoverageReport.pb"
+    val successProtoFile = tempFolder.newFile(successProtoPath)
+
+    val successCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath("file.kt")
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    successProtoFile.outputStream().use { outputStream ->
+      successCoverageReport.writeTo(outputStream)
+    }
+
+    val failureProtoPath = "failureCoverageReport.pb"
+    val failureProtoFile = tempFolder.newFile(failureProtoPath)
+
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:coverageReport")
+          .setFailureMessage(
+            "Coverage retrieval failed for the test target: " +
+              "//:coverageReport"
+          )
+          .build()
+      )
+      .build()
+
+    failureProtoFile.outputStream().use { outputStream ->
+      failureCoverageReport.writeTo(outputStream)
+    }
+
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.appendText(successProtoPath)
+    protoListTextFile.appendText(" ")
+    protoListTextFile.appendText(failureProtoPath)
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        protoListTextPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+  }
+
+  @Test
+  fun testCoverageReporter_listOfCoverageProtoPath_generatesMarkdownReport() {
+    val successProtoPath = "successCoverageReport.pb"
+    val successProtoFile = tempFolder.newFile(successProtoPath)
+
+    val successCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath("file.kt")
+          .setLinesFound(10)
+          .setLinesHit(10)
+          .build()
+      ).build()
+
+    successProtoFile.outputStream().use { outputStream ->
+      successCoverageReport.writeTo(outputStream)
+    }
+
+    val failureProtoPath = "failureCoverageReport.pb"
+    val failureProtoFile = tempFolder.newFile(failureProtoPath)
+
+    val failureCoverageReport = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//:coverageReport")
+          .setFailureMessage("Failure Message")
+          .build()
+      )
+      .build()
+
+    failureProtoFile.outputStream().use { outputStream ->
+      failureCoverageReport.writeTo(outputStream)
+    }
+
+    val protoListTextPath = "protoList.txt"
+    val protoListTextFile = tempFolder.newFile(protoListTextPath)
+    protoListTextFile.appendText(successProtoPath)
+    protoListTextFile.appendText(" ")
+    protoListTextFile.appendText(failureProtoPath)
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        "${tempFolder.root}",
+        protoListTextPath
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **100.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| //:coverageReport | Failure Message | :x: |\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary("file.kt")} " +
+          "| 100.00% | 10 / 10 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
   private fun readFinalMdReport(): String {
     return File(
       "${tempFolder.root}" +
@@ -744,5 +1005,15 @@ class CoverageReporterTest {
     return tempFolder.newFile("test_file_exemptions.pb").also {
       it.outputStream().use(testFileExemptions::writeTo)
     }.path
+  }
+
+  private fun loadCoverageReportProto(
+    coverageReportProtoPath: String
+  ): CoverageReport {
+    return File("$coverageReportProtoPath").inputStream().use { stream ->
+      CoverageReport.newBuilder().also { builder ->
+        builder.mergeFrom(stream)
+      }.build()
+    }
   }
 }
