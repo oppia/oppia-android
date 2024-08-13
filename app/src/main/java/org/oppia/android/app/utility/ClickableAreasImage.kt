@@ -92,8 +92,8 @@ class ClickableAreasImage(
 
   /** Selects default region. */
   fun maybeSelectDefaultRegion() {
-    if (defaultRegionCoordinates != null) {
-      onPhotoTap(defaultRegionCoordinates!!.x, defaultRegionCoordinates!!.y)
+    defaultRegionCoordinates?.let {
+      onPhotoTap(it.x, it.y)
     }
   }
 
