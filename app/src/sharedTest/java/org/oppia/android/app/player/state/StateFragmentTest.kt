@@ -1134,6 +1134,7 @@ class StateFragmentTest {
       // Drag and drop interaction without grouping.
       dragAndDropItem(fromPosition = 0, toPosition = 3)
       rotateToLandscape()
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
@@ -1152,6 +1153,7 @@ class StateFragmentTest {
       mergeDragAndDropItems(position = 0)
       dragAndDropItem(fromPosition = 0, toPosition = 2)
       rotateToLandscape()
+      testCoroutineDispatchers.runCurrent()
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
         atPositionOnView(
