@@ -1139,7 +1139,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_loadDragDropExp_mergeTwoItems_dargAndDrop_retainStateOnConfigurationChange() {
+  fun testStateFragment_loadDragDropExp_mergeItems_dargAndDrop_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1165,7 +1165,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadDragDropExp_submitTimeError_retainStateOnConfigurationChange(){
+  fun testStateFragment_loadDragDropExp_submitTimeError_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
