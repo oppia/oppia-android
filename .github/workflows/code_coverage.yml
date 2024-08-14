@@ -259,6 +259,7 @@ jobs:
     name: Evaluate Code Coverage Reports
     runs-on: ubuntu-20.04
     needs: code_coverage_run
+    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -308,12 +309,13 @@ jobs:
   publish_coverage_report:
     name: Publish Code Coverage Report
     needs: evaluate-code-coverage-reports
+    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && !cancelled()}}
     permissions:
       pull-requests: write
 
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-    if: ${{ !cancelled() }}
+#    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Download Generated Markdown Report
