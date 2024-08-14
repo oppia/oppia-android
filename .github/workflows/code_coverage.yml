@@ -5,13 +5,13 @@ name: Code Coverage
 # Controls when the action will run. Triggers the workflow on pull request
 # events or push events in the develop branch.
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
+#  pull_request_target:
+#    types: [opened, synchronize, reopened]
 
-#  push:
-#    branches:
-#      # Push events on develop branch
-#      - develop
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
