@@ -23,6 +23,23 @@ kt_android_library(
 )
 
 oppia_android_test(
+    name = "CurrentAppScreenNameIntentDecoratorTest",
+    srcs = ["CurrentAppScreenNameIntentDecoratorTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.CurrentAppScreenNameIntentDecoratorTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//:dagger",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+    ],
+)
+
+oppia_android_test(
     name = "EventBundleCreatorTest",
     srcs = ["EventBundleCreatorTest.kt"],
     custom_package = "org.oppia.android.util.logging",
