@@ -31,3 +31,31 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_test(
+    name = "ComputeChangedFilesTest",
+    srcs = ["ComputeChangedFilesTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "RetrieveChangedFilesTest",
+    srcs = ["RetrieveChangedFilesTest.kt"],
+    deps = [
+        "//scripts:test_file_check_assets",
+        "//scripts/src/java/org/oppia/android/scripts/ci:retrieve_changed_files_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

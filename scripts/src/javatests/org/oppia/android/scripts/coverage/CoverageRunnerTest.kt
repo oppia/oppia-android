@@ -10,6 +10,8 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.BazelTestTarget
 import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoverageDetails
+import org.oppia.android.scripts.proto.CoverageFailure
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.testing.TestBazelWorkspace
@@ -101,7 +103,7 @@ class CoverageRunnerTest {
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_withIncorrectPackageStructure_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_withIncorrectPackageStructure_generatesFailureReport() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -112,17 +114,27 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/example"
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      coverageRunner.retrieveCoverageDataForTestTarget(
-        "//coverage/example:AddNumsTest"
-      )
-    }
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
+      "//coverage/example:AddNumsTest"
+    )
 
-    assertThat(exception).hasMessageThat().contains("Failed to retrieve coverage result")
+    val expectedResult = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//coverage/example:AddNumsTest")
+          .setFailureMessage(
+            "Coverage retrieval failed for the test target: " +
+              "//coverage/example:AddNumsTest"
+          )
+          .build()
+      ).build()
+
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRetrieveCoverageDataForTestTarget_withNoDepsToSourceFile_throwsException() {
+  fun testRetrieveCoverageDataForTestTarget_withNoDepsToSourceFile_generatesFailureReport() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "AddNums",
@@ -170,13 +182,20 @@ class CoverageRunnerTest {
       """.trimIndent()
     )
 
-    val exception = assertThrows<IllegalArgumentException>() {
-      coverageRunner.retrieveCoverageDataForTestTarget(
-        "//coverage/test/java/com/example:SubNumsTest"
-      )
-    }
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
+      "//coverage/test/java/com/example:SubNumsTest"
+    )
 
-    assertThat(exception).hasMessageThat().contains("Coverage data not found")
+    val expectedResult = CoverageReport.newBuilder()
+      .setFailure(
+        CoverageFailure.newBuilder()
+          .setBazelTestTarget("//coverage/test/java/com/example:SubNumsTest")
+          .setFailureMessage("Source File: SubNums.kt not found in the coverage data")
+          .build()
+      ).build()
+
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
   }
 
   @Test
@@ -191,46 +210,50 @@ class CoverageRunnerTest {
       testSubpackage = "coverage/test/java/com/example"
     )
 
-    val result = coverageRunner.retrieveCoverageDataForTestTarget(
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
       "//coverage/test/java/com/example:AddNumsTest"
     )
 
     val expectedResult = CoverageReport.newBuilder()
-      .addBazelTestTargets(
-        BazelTestTarget.newBuilder()
-          .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
-      )
-      .setFilePath("coverage/main/java/com/example/AddNums.kt")
-      .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
-      .addCoveredLine(
-        CoveredLine.newBuilder()
-          .setLineNumber(3)
-          .setCoverage(Coverage.NONE)
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .addBazelTestTargets(
+            BazelTestTarget.newBuilder()
+              .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
+          )
+          .setFilePath("coverage/main/java/com/example/AddNums.kt")
+          .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(3)
+              .setCoverage(Coverage.NONE)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(7)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(8)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(10)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .setLinesFound(4)
+          .setLinesHit(3)
           .build()
-      )
-      .addCoveredLine(
-        CoveredLine.newBuilder()
-          .setLineNumber(7)
-          .setCoverage(Coverage.FULL)
-          .build()
-      )
-      .addCoveredLine(
-        CoveredLine.newBuilder()
-          .setLineNumber(8)
-          .setCoverage(Coverage.FULL)
-          .build()
-      )
-      .addCoveredLine(
-        CoveredLine.newBuilder()
-          .setLineNumber(10)
-          .setCoverage(Coverage.FULL)
-          .build()
-      )
-      .setLinesFound(4)
-      .setLinesHit(3)
-      .build()
+      ).build()
 
-    assertThat(result).isEqualTo(expectedResult)
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
