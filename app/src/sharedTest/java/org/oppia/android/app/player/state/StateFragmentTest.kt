@@ -1119,6 +1119,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_dragAndDrop_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
