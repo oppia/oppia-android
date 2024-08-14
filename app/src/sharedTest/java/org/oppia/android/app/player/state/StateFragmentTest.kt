@@ -1125,6 +1125,7 @@ class StateFragmentTest {
       startPlayingExploration()
       dragAndDropItem(fromPosition = 0, toPosition = 1)
       rotateToLandscape()
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
