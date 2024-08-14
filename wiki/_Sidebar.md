@@ -25,9 +25,8 @@
   * Testing
     * [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing)
     * [End to End Testing Guide](https://github.com/oppia/oppia-android/wiki/End-to-End-Testing-Guide)
-  * Code Coverage
     * [Oppia Android Code Coverage](https://github.com/oppia/oppia-android-workflow/wiki/Oppia-Android-Code-Coverage)
-    * [Writing effective tests](https://github.com/oppia/oppia-android/wiki/)  
+    * [Writing tests with good behavioural coverage](https://github.com/oppia/oppia-android/wiki/Writing-Tests-With-Good-Behavioural-Coverage)
   * [Developing Skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
   * [Frequent Errors and Solutions](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions)
   * [RTL Guidelines](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines) 

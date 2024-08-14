@@ -39,7 +39,7 @@ A basic test case for line coverage might look like this:
 ```
 @Test fun testValidName() {
     // Tests line coverage by hitting the line where name is accessed
-    assertThat(getName("Alice"), equalTo("Alice")) 
+    assertThat(getName("Alice")).isEqualTo("Alice") 
 }
 ```
 
@@ -52,7 +52,7 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 ```
 @Test fun testGetName_withDefaultValue_result(getName()) {
     // Default value when no name is provided
-    assertThat(getName(), equalTo(" ")) 
+    assertThat(getName()).isEqualTo(" ") 
 }
 
 @Test fun testGetName_withNullName_throwsException() {
@@ -67,12 +67,12 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 
 @Test fun testGetName_withEmptyName_result(getName("")) {
     // Empty string should use default value
-    assertThat(getName(""), equalTo(" ")) 
+    assertThat(getName("")).isEqualTo(" ") 
 }
 
 @Test fun testGetName_withWhitespaceName_result(getName("   ")) {
     // Whitespace name
-    assertThat(getName("   "), equalTo("   ")) 
+    assertThat(getName("   ")).isEqualTo("   ") 
 }
 ```
 
@@ -82,7 +82,7 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 
 While line coverage might reach 100% with a single test, it doesn’t ensure that all scenarios are tested. Behavioral coverage ensures quality by validating all possible scenarios and edge cases, which is more important for reliable software.
 
-For more details on testing methodologies specific to Oppia Android, please refer to the [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
+For more details on testing methodologies specific to Oppia Android, please refer to the [Oppia Android Testing wiki page](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
 
 # Writing Effective Tests
 
@@ -229,7 +229,7 @@ fun testProcessOrder_listsItems_correctly() {
 fun testProcessOrder_calculatesTotal_correctly() {
     processOrder(listOf("Pizza", "Burger"), paymentMade = true)
     val output = outContent.toString().trim()
-    assertThat(output, containsString("Total: 20.0"))
+    assertThat(output).contains("Total: 20.0")
 }
 ```
 
@@ -240,7 +240,7 @@ fun testProcessOrder_calculatesTotal_correctly() {
 fun testProcessOrder_paymentSuccessful() {
     processOrder(listOf("Pizza", "Burger"), paymentMade = true)
     val output = outContent.toString().trim()
-    assertThat(output, containsString("Payment successful"))
+    assertThat(output).contains("Payment successful")
 }
 ```
 
@@ -251,7 +251,7 @@ fun testProcessOrder_paymentSuccessful() {
 fun testProcessOrder_paymentPending() {
     processOrder(listOf("Pizza", "Burger"), paymentMade = false)
     val output = outContent.toString().trim()
-    assertThat(output, containsString("Payment pending"))
+    assertThat(output).contains("Payment pending")
 }
 ```
 
@@ -284,7 +284,7 @@ Positive Number: Verifies that the function correctly identifies positive number
 ```
 @Test
 fun testCheckNumber_forPositiveInput_returnsPositive() {
-    assertThat(checkNumber(5), equalTo("Positive"))
+    assertThat(checkNumber(5)).isEqualTo("Positive")
 }
 ```
 
@@ -293,7 +293,7 @@ Negative Number: Ensures that negative numbers are correctly classified.
 ```
 @Test
 fun testCheckNumber_forNegativeInput_returnsNegative() {
-    assertThat(checkNumber(-3), equalTo("Negative"))
+    assertThat(checkNumber(-3)).isEqualTo("Negative")
 }
 ```
 
@@ -302,7 +302,7 @@ Zero: Checks that zero is handled correctly.
 ```
 @Test
 fun testCheckNumber_forZeroInput_returnsZero() {
-    assertThat(checkNumber(0), equalTo("Zero"))
+    assertThat(checkNumber(0)).isEqualTo("Zero")
 }
 ```
 
@@ -311,7 +311,7 @@ Maximum Value: Tests the function with Int.MAX_VALUE to ensure it handles the up
 ```
 @Test
 fun testCheckNumber_forMaxValue_returnsPositive() {
-    assertThat(checkNumber(Int.MAX_VALUE), equalTo("Positive"))
+    assertThat(checkNumber(Int.MAX_VALUE)).isEqualTo("Positive")
 }
 ```
 
@@ -320,7 +320,7 @@ Minimum Value: Tests the function with Int.MIN_VALUE to ensure it handles the lo
 ```
 @Test
 fun testCheckNumber_forMinValue_returnsNegative() {
-    assertThat(checkNumber(Int.MIN_VALUE), equalTo("Negative"))
+    assertThat(checkNumber(Int.MIN_VALUE)).isEqualTo("Negative")
 }
 ```
 
@@ -360,22 +360,22 @@ Testing needs to be performed to cover all branches, paths and conditions.
 ```
 @Test
 fun testEvaluateAccess_adultMember() {
-  assertThat(evaluateAccess(25, true), equalTo("Access granted"))
+  assertThat(evaluateAccess(25, true)).isEqualTo("Access granted")
 }
 
 @Test
 fun testEvaluateAccess_adultNonMember() {
-  assertThat(evaluateAccess(30, false), equalTo("Membership required"))
+  assertThat(evaluateAccess(30, false)).isEqualTo("Membership required")
 }
 
 @Test
 fun testEvaluateAccess_minorMember() {
-  assertThat(evaluateAccess(16, true), equalTo("Access denied"))
+  assertThat(evaluateAccess(16, true)).isEqualTo("Access denied")
 }
 
 @Test
 fun testEvaluateAccess_minorNonMember() {
-  assertThat(evaluateAccess(15, false), equalTo("Access denied"))
+  assertThat(evaluateAccess(15, false)).isEqualTo("Access denied")
 }
 ```
 
@@ -1097,7 +1097,7 @@ println("Receipt: Withdrew $amount. Current balance: $balance")
 
 and its function call `printReceipt` are marked in red, indicating that this line was never executed by the test case. This suggests that the functionality is not covered by the current tests, potentially exposing it to issues or regressions if the code is modified in the future. The green highlights indicate the lines of code that are covered by test cases.
 
-For more information on how to utilize the code coverage analysis tool, please refer to the [Oppia Android Code Coverage](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) page.
+For more information on how to utilize the code coverage analysis tool, please refer to the [Oppia Android Code Coverage wiki page](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) page.
 
 ### 2. Map to the Line of Code
 

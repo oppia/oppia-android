@@ -36,12 +36,12 @@ Please refer to the [Oppia Android testing documentation](https://github.com/opp
 
 ```
 import org.junit.Test
-import kotlin.test.assertEquals
+import com.google.common.truth.Truth.assertThat
 
 class checkSignTest {
     @Test
     fun testCheckSign_withPositiveInteger_returnsPositive() {
-        assertEquals("Positive", checkSign(4))
+        assertThat(checkSign(4)).isEqualTo("Positive")
     }
 }
 ```
@@ -53,17 +53,17 @@ For thorough testing, the tests should also check how the function responds to n
 
 ```diff
 import org.junit.Test
-import kotlin.test.assertEquals
+import com.google.common.truth.Truth.assertThat
 
 class checkSignTest {
     @Test
     fun testCheckSign_withPositiveInteger_returnsPositive() {
-        assertEquals("Positive", checkSign(4))
+        assertThat(checkSign(4)).isEqualTo("Positive")
     }
 
 +  @Test
 +  fun testCheckSign_withNegativeInteger_returnsNegative() {
-+      assertEquals("Negative", checkSign(-7))
++      assertThat(checkSign(-7)).isEqualTo("Negative")
 +  }
 }
 ```
@@ -192,12 +192,14 @@ This section lists files that failed to acquire coverage data. Failures may occu
 - Bazel failing to collect coverage data for the source file.
 - Bazel lacking a reference to the required source file in the collected data.
 - Other potential reasons are still under exploration.
-  The table has two columns:
+  
+  The table has three columns:
 
 1. **File:** Displays the file for which the error occurred (Clicking the drop-down reveals the file's path in the codebase).
 2. **Failure Reason:** Describes the reason for the failure.
+3. **Status:** Indicates that the coverage status is a failure.
 
-Note: If this table or section is not present in the coverage report, it indicates that no changes exhibited failure
+Note: If this table or section is not present in the coverage report, it indicates that no changes exhibited failure.
 
 #
 
@@ -215,7 +217,7 @@ Note: If this table or section is not present in the coverage report, it indicat
 
 #
 
-This section highlights files that have failed to meet the minimum coverage percentage. Any file that does not meet the minimum threshold percentage is considered to have a failing status. The minimum threshold is set to a standard value (currently as 70%) and displayed alongside the status for each file.
+This section highlights files that have failed to meet the minimum coverage percentage. Any file that does not meet the minimum threshold percentage is considered to have a failing status. The minimum threshold is configured to a standard value, as specified in [CoverageReporter.kt](https://github.com/oppia/oppia-android/blob/develop/scripts/src/java/org/oppia/android/scripts/coverage/reporter/CoverageReporter.kt), and this value is shown alongside the status for each file.
 
 Files with overridden coverage thresholds are indicated by an asterisk (*) and include the specific required percentage.
 
@@ -277,13 +279,13 @@ The data presented includes:
 
 Certain files are exempt from coverage checks. These exemptions include:
 
-1. **Test File Exemptions:** Files that do not have corresponding test files are exempt from coverage checks. Since no test files are available for these sources, coverage analysis cannot be performed, and these files are therefore skipped.
+1. **Test File Exemptions:** Files that are exempted from having corresponding test files are also exempted from coverage checks. Since no test files are available for these sources, coverage analysis cannot be performed, and these files are therefore skipped.
 
 2. **Source File Incompatibility Exemptions:** Some files are currently incompatible with Bazel coverage execution ([see tracking issue #5481](https://github.com/oppia/oppia-android/issues/5481)) and are temporarily excluded from coverage checks.
 
 You can find the complete list of exemptions in this file: [test_file_exemptions.textproto](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/test_file_exemptions.textproto)
 
-This section appears at the bottom of the report, as a drop-down. It includes a table listing the exemptions as,
+This section appears at the bottom of the report, as a drop-down. It includes a table listing the exemptions with columns:
 
 1. **File:** Displays the file name that is exempted (Clicking the drop-down reveals the file's path in the codebase).
 2. **Failure Reason:** Describes the specific reason for its exemption.
@@ -295,13 +297,13 @@ With this report, you can review the coverage percentages for various files and 
 
 While the CI check provides an overview of coverage, you might want to visualize how tests cover specific files locally, including which lines are covered and which are not. For this, Oppia's local command-line coverage tooling is useful.
 
-Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) if Bazel isn't yet set up on your device:
+Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) if Bazel isn't yet set up in your local development environment.
 
 Oppia Android allows you to generate coverage reports in HTML format using the command:
 
 ### Run Coverage
 
-```
+```sh
 bazel run //scripts:run_coverage -- <path_to_root> <list_of_relative_path_to_files>
 ```
 
@@ -310,15 +312,15 @@ bazel run //scripts:run_coverage -- <path_to_root> <list_of_relative_path_to_fil
 
 For example, to analyze coverage for the file MathTokenizer.kt, use the relative path:
 
-```
+```sh
 bazel run //scripts:run_coverage -- $(pwd) utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt
 ```
 
 By default, this will generate an HTML report in the coverage_reports directory. For the given file, the report will be saved as **coverage_reports/utility/src/main/java/org/oppia/android/util/math/MathTokenizer/coverage.html**
 
-A list of files can be provided as an input to generate coverage reports for all the files.
+A list of files can be provided as an input to generate coverage reports for each of the provided the files. An example of this is:
 
-```
+```sh
 bazel run //scripts:run_coverage -- $(pwd) 
 utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt 
 utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
@@ -328,14 +330,14 @@ utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
 
 The default wait time for a process to complete is 300 seconds (5 minutes). If the process does not finish within this period, you may encounter a "Process Did Not Finish Within Intended Time" error. To extend the wait time, you can modify the timeout setting by adding the flag --processTimeout=15 (The Time unit is minutes).
 
-```
+```sh
 bazel run //scripts:run_coverage -- $(pwd)
 utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --processTimeout=15
 ```
 
 ## 2.1 Understanding the CI Coverage Report
 
-Let's examine the coverage.html report located at coverage_reports/utility/src/main/java/org/oppia/android/util/math/MathTokenizer/coverage.html to understand its contents.
+Let's examine the example coverage.html report (generated using the sample command in the previous section) to understand its contents. The report should be located at ``coverage_reports/utility/src/main/java/org/oppia/android/util/math/MathTokenizer/coverage.html``.
 
 **Header Section:** At the top of the report, you'll find information including:
 
@@ -348,7 +350,7 @@ Let's examine the coverage.html report located at coverage_reports/utility/src/m
 - **Line Coverage Data:** Details on the coverage of individual lines.
 - **Main Content:**
 
-Visual Coverage Representation: The report visually highlights which lines are covered and which are not.
+Visual Coverage Representation: The report visually highlights the coverage status of source code lines.
 
 ![image](https://github.com/user-attachments/assets/0e36fde3-639b-4874-b809-59d33827388d)
 
@@ -370,6 +372,6 @@ By identifying and adding appropriate test scenarios to cover previously uncover
 
 ## Limitations of the code coverage tool
 
-1. **Incompatibility with Code Coverage Analysis:** Certain test targets in the Oppia-Android codebase fail to execute and collect coverage using the Bazel coverage command. The underlying issues are still being investigated ([see tracking issue #5481](https://github.com/oppia/oppia-android/issues/5481)), and these files are currently exempt from coverage checks.
+1. **Incompatibility with Code Coverage Analysis:** Certain test targets in the Oppia-Android codebase fail to execute and collect coverage using the Bazel coverage command. The underlying issues are still being investigated ([see tracking issue #5481](https://github.com/oppia/oppia-android/issues/5481)), and these files are currently exempt from coverage checks. However, it's expected that all new test files should work without needing this exemption.
 
 2. **Function and Branch Coverage:** The Oppia-Android code coverage tool currently provides only line coverage data. It does not include information on function or branch coverage.
