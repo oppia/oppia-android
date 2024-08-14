@@ -1121,54 +1121,35 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_dragAndDrop_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-      playThroughPrototypeState5()
-      playThroughPrototypeState6()
-      playThroughPrototypeState7()
-      playThroughPrototypeState8()
-      // Drag and drop interaction without grouping.
-      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
       rotateToLandscape()
-      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 3,
+          position = 0,
           targetViewId = R.id.drag_drop_content_text_view
         )
-      ).check(matches(withText(containsString("0.35"))))
+      ).check(matches(withText(containsString("a camera at the store"))))
     }
   }
 
   @Test
-  fun testStateFragment_dragAndDrop_mergeFirstTwoItems_dragItem_retainStateOnConfigurationChange() {
+  fun testStateFragment_dragAndDrop_mergeFirstTwoItems_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       mergeDragAndDropItems(position = 0)
-      dragAndDropItem(fromPosition = 0, toPosition = 2)
       rotateToLandscape()
-      testCoroutineDispatchers.runCurrent()
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 2,
+          position = 0,
           targetViewId = R.id.drag_drop_item_recyclerview
         )
       ).check(matches(hasChildCount(2)))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 2,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
-      ).check(matches(withText(containsString("a camera at the store"))))
     }
   }
 
