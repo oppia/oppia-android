@@ -9,6 +9,7 @@
     - [Local Command Line Interface Tools](#2-local-command-line-interface-cli-tools)
         - [Understanding the Html Reports](#21-understanding-the-ci-coverage-report)
 - [Increasing Code Coverage Metrics](#increasing-code-coverage-metrics)
+- [Unit-Centric Coverage Philosophy](#unit-centric-coverage-philosophy)
 - [Limitations of the code coverage tool](#limitations-of-the-code-coverage-tool)
 
 # Overview
@@ -192,7 +193,7 @@ This section lists files that failed to acquire coverage data. Failures may occu
 - Bazel failing to collect coverage data for the source file.
 - Bazel lacking a reference to the required source file in the collected data.
 - Other potential reasons are still under exploration.
-  
+
   The table has three columns:
 
 1. **File:** Displays the file for which the error occurred (Clicking the drop-down reveals the file's path in the codebase).
@@ -339,36 +340,119 @@ utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt --processT
 
 Let's examine the example coverage.html report (generated using the sample command in the previous section) to understand its contents. The report should be located at ``coverage_reports/utility/src/main/java/org/oppia/android/util/math/MathTokenizer/coverage.html``.
 
-**Header Section:** At the top of the report, you'll find information including:
-
-![image](https://github.com/user-attachments/assets/08c4f0a0-51b5-4d8e-a2f3-ff13d8b6cb2f)
+The report is divided into two sections:
+- Coverage Overview
+- Line-by-Line Coverage Breakdown
 
 #
+
+### Coverage Overview
+
+![image](https://github.com/user-attachments/assets/e366af1f-2f64-4f14-a7e4-f7a592688c6c)
+
+In the top section of the report, you'll find the following details:
 
 - **File Path:** The relative path of the file to the oppia-android codebase.
 - **Coverage Percentage:** The percentage of code covered by tests.
 - **Line Coverage Data:** Details on the coverage of individual lines.
 - **Main Content:**
 
-Visual Coverage Representation: The report visually highlights the coverage status of source code lines.
-
-![image](https://github.com/user-attachments/assets/0e36fde3-639b-4874-b809-59d33827388d)
-
-
 #
+
+### Line-by-Line Coverage Breakdown
+
+The subsequent section of the report visually represents the coverage status of each line of the source code.
 
 - **Red Lines:** Indicate lines not covered by test cases.
 - **Green Lines:** Represent lines that are covered by test cases.
+
+![image](https://github.com/user-attachments/assets/c1d55cf8-94bf-4ab5-a02b-c95264e854db)
 
 These generated html reports are be used to identify areas of your code that may need additional testing.
 
 ## Increasing Code Coverage Metrics
 
-While figuring out which lines are covered and which are not, you can increase code coverage by ensuring that each line is thoroughly tested. To enhance code coverage effectiveness, locate the test files associated with the source file (typically found in the same package but within the test directories).
+To improve code coverage, start by identifying which lines are covered and which are not. To effectively increase coverage, trace the uncovered lines back to their calling functions, and ensure these are executed and tested in your test suites. The corresponding test files for the source code are usually located in the same package within the test directories. Add tests that cover all relevant behavioral scenarios for the uncovered lines to achieve comprehensive testing.
 
-Note: Some files in the app module may have multiple test files, located in the sharedTest and test packages, all testing a single source file. (eg: The file StateFragment.kt has 2 test files StateFragmentTest.kt under sharedTest and StateFragmentLocalTest.kt under test folder)
+For more guidance on best practices, refer to the [Writing Tests with Good Behavioural Coverage](https://github.com/oppia/oppia-android/wiki/Writing-Tests-With-Good-Behavioural-Coverage) wiki page.
 
-By identifying and adding appropriate test scenarios to cover previously uncovered lines, you will boost the coverage percentage and improve the overall quality and reliability of your code.
+Note: Some files in the app module may have multiple test files, located in the sharedTest and test packages, all testing a single source file. For example: [StateFragment.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/main/java/org/oppia/android/app/player/state/StateFragment.kt) has 2 test files [StateFragmentTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt) under ``app/src/sharedTest`` and [StateFragmentLocalTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt) under ``app/src/test``.
+
+## Unit-Centric Coverage Philosophy
+
+Oppia Android's approach to code coverage is focused on analyzing each source unit within the context of its own tests. This means that only the tests specifically written for a particular source file are considered when determining that file's coverage. Incidental coverage—when a source file is indirectly tested through another test file—is not counted towards the coverage metrics of the original file.
+
+This approach ensures that coverage percentages are more meaningful, as they reflect deliberate and thorough testing of each source file. This makes it essential to write comprehensive tests for every source unit to achieve accurate and reliable coverage metrics.
+
+### Example Scenario
+
+To clarify the concept, consider the following example with source files and their corresponding test files:
+
+| **Source File**              | **Tested By** | **Test File**                  |
+|------------------------------|:-------------:|--------------------------------|
+| `OppiaCommentBot.kt`         |       ->      |`OppiaCommentBotTest.kt`        |
+| `UploadReviewComment.kt`     |       ->      |`UploadReviewCommentTest.kt`    |
+
+**OppiaCommentBot.kt (Source file):**
+
+It manages the logic for uploading comments and interacting with the Oppia project’s comment system.
+
+```
+class OppiaCommentBot {
+    fun uploadComment(comment: String): String {
+        // Uploads a comment to a repository
+        return "Comment uploaded: $comment"
+    }
+}
+```
+
+**OppiaCommentBotTest.kt (Test file for OppiaCommentBot):**
+
+```
+import org.junit.Test
+import com.google.common.truth.Truth.assertThat
+
+class OppiaCommentBotTest {
+    @Test
+    fun testUploadComment_returnsExpectedMessage() {
+        val bot = OppiaCommentBot()
+        val result = bot.uploadComment("Great job!")
+        assertThat(result).isEqualTo("Comment uploaded: Great job!")
+    }
+}
+```
+
+**UploadReviewComment.kt (Another Source file):**
+
+It handles the creation and submission of review comments, utilizing features from OppiaCommentBot.kt.
+
+```
+class UploadReviewComment {
+    fun createAndUploadReview(comment: String) {
+        // generates review
+        val bot = OppiaCommentBot()
+        bot.uploadComment(review)
+    }
+}
+```
+
+**UploadReviewCommentTest.kt (Test file for UploadReviewComment):**
+
+```
+import org.junit.Test
+
+class UploadReviewCommentTest {
+    @Test
+    fun testCreateAndUploadReview_callsUploadComment() {
+        val review = UploadReviewComment()
+        review.createAndUploadReview("Needs revision")
+    }
+}
+```
+
+In this example, the `OppiaCommentBot` class is used in both `UploadReviewComment.kt` and `OppiaCommentBotTest.kt`. However, the code coverage tool only considers the tests in `OppiaCommentBotTest.kt` when calculating the coverage for `OppiaCommentBot.kt`. Tests in `UploadReviewCommentTest.kt` that indirectly call `OppiaCommentBot` do not count toward its coverage.
+
+It’s essential to ensure that each source file is directly tested by its own corresponding test file to accurately reflect the unit's coverage. This approach helps maintain a high standard of code quality and ensures that the coverage metrics genuinely represent the code’s reliability.
 
 ## Limitations of the code coverage tool
 
