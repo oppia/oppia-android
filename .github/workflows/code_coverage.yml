@@ -343,5 +343,5 @@ jobs:
         run: exit 1
 
       - name: Check that coverage status is passed
-        if: ${{ needs.evaluate-code-coverage-reports.result != 'success' }}
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.evaluate-code-coverage-reports.result != 'success' }}
         run: exit 1
