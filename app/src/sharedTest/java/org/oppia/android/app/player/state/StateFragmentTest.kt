@@ -1119,8 +1119,8 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_dragAndDrop_retainStateOnConfigurationChange() {
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1138,7 +1138,48 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_dragAndDrop_mergeFirstTwoItems_retainStateOnConfigurationChange() {
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_mergeTwoItems_dargAndDrop_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      mergeDragAndDropItems(position = 0)
+      dragAndDropItem(fromPosition = 0, toPosition = 2)
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("a camera at the store"))))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_submitTimeError_retainStateOnConfigurationChange(){
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+      clickSubmitAnswerButton()
+      rotateToLandscape()
+      onView(withId(R.id.drag_drop_interaction_error)).check(
+        matches(withText(R.string.drag_and_drop_interaction_empty_input))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1360,7 +1401,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       rotateToLandscape()
       onView(withId(R.id.image_input_error)).check(
-        matches(withText(containsString("Select an image to continue")))
+        matches(withText(R.string.image_error_empty_input))
       )
     }
   }
