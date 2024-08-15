@@ -7,9 +7,6 @@ name: Code Coverage
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
-  push:
-    branches:
-      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
