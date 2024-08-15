@@ -4,6 +4,9 @@ name: Code Coverage
 
 on:
   workflow_dispatch:
+  pull_request_target:
+    types: [ opened, synchronize, reopened ]
+
 
 # Controls when the action will run. Triggers the workflow on pull request
 # events or push events in the develop branch.
@@ -335,13 +338,13 @@ jobs:
       - name: Upload Coverage Report as PR Comment
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: 5483
+          issue-number: ${{ github.event.pull_request.number }}
           body-path: 'CoverageReport.md'
 
   # Reference: https://github.community/t/127354/7.
   check_coverage_results:
     name: Check Code Coverage Results
-    needs: [ compute_changed_files, code_coverage_run, evaluate-code-coverage-reports ]
+    needs: [ compute_changed_files, code_coverage_run, publish_coverage_report, evaluate-code-coverage-reports ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
     if: ${{ !cancelled() }}
