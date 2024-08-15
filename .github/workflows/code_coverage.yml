@@ -6,8 +6,7 @@ name: Code Coverage
 # events or push events in the develop branch.
 on:
   pull_request_target:
-    branches:
-      - develop
+    types: [opened, synchronize, reopened]
   push:
     branches:
       - develop
