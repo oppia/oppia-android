@@ -6,8 +6,9 @@ name: Code Coverage
 # events or push events in the develop branch.
 on:
   pull_request_target:
-    branches:
-      - develop
+    push:
+      branches:
+        - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
