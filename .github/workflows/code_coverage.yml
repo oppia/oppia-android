@@ -335,7 +335,7 @@ jobs:
       - name: Upload Coverage Report as PR Comment
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: 5483
           body-path: 'CoverageReport.md'
 
   # Reference: https://github.community/t/127354/7.
