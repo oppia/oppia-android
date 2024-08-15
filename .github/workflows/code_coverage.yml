@@ -333,7 +333,7 @@ jobs:
           name: final-coverage-report
 
       - name: Upload Coverage Report as PR Comment
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: 'CoverageReport.md'
