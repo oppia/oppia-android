@@ -38,6 +38,7 @@ class HomeActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
+  // #HomeActivity github action changes
   private var internalProfileId: Int = -1
 
   companion object {
