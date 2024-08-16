@@ -219,6 +219,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -256,6 +257,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_inputCorrectPin_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -544,6 +546,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPin_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
