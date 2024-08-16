@@ -28,7 +28,10 @@ class GitClient(
   val changedFiles: Set<String> by lazy { retrieveChangedFilesWithPotentialDuplicates().toSet() }
 
   /** The list of files that have been committed in the local branch. */
-  val committedFiles: List<String> by lazy { retrieveChangedCommittedFiles() }
+  val committedFiles: List<String> by lazy {
+    retrieveChangedCommittedFiles() +
+      retrieveRenamedFiles()
+  }
 
   private fun retrieveCurrentCommit(): String {
     return executeGitCommandWithOneLineOutput("rev-parse HEAD")
@@ -66,6 +69,12 @@ class GitClient(
 
   private fun retrieveChangedUntrackedFiles(): List<String> {
     return executeGitCommand("ls-files --others --exclude-standard")
+  }
+
+  private fun retrieveRenamedFiles(): List<String> {
+    val renamedFilesCommand = executeGitCommand("diff -M --name-status ${computeCommitRange()}")
+    return renamedFilesCommand.filter { it.startsWith("R") }
+      .map { it.split("\t")[1] }
   }
 
   private fun computeCommitRange(): String = "HEAD..$branchMergeBase"

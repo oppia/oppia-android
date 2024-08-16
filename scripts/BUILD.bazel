@@ -248,6 +248,16 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
+    name = "coverage_reporter",
+    testonly = True,
+    data = TEST_FILE_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.coverage.reporter.CoverageReporterKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
+    ],
+)
+
+kt_jvm_binary(
     name = "retrieve_changed_files",
     testonly = True,
     data = TEST_FILE_EXEMPTION_ASSETS,

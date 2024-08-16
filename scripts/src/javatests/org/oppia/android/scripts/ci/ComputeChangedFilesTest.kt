@@ -1029,6 +1029,7 @@ class ComputeChangedFilesTest {
     oldFilePath.copyTo(newFilePath)
     oldFilePath.delete()
 
+    testGitRepository.stageFileForCommit(oldFilePath)
     testGitRepository.stageFileForCommit(newFilePath)
     testGitRepository.commit(message = "Move file from $oldFilePath to $newFilePath")
   }

@@ -4,6 +4,13 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.coverage.reporter.BOLD
+import org.oppia.android.scripts.coverage.reporter.CoverageCheck
+import org.oppia.android.scripts.coverage.reporter.CoverageReporter
+import org.oppia.android.scripts.coverage.reporter.GREEN
+import org.oppia.android.scripts.coverage.reporter.RED
+import org.oppia.android.scripts.coverage.reporter.RESET
+import org.oppia.android.scripts.coverage.reporter.ReportFormat
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageDetails
 import org.oppia.android.scripts.proto.CoverageExemption
@@ -15,21 +22,11 @@ import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-/** ANSI escape codes for colors. */
-/** Green text. */
-const val GREEN = "\u001B[32m"
-/** Red text. */
-const val RED = "\u001B[31m"
-/** Default text. */
-const val RESET = "\u001B[0m"
-/** Bold text. */
-const val BOLD = "\u001B[1m"
-
 /**
  * Entry point function for running coverage analysis for a source file.
  *
  * Usage:
- *    bazel run //scripts:run_coverage_for_test_target -- <path_to_root> <list_of_relative_path_to_files>
+ *    bazel run //scripts:run_coverage -- <path_to_root> <list_of_relative_path_to_files>
  *
  * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.

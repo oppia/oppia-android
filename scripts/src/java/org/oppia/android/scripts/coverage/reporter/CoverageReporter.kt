@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.coverage
+package org.oppia.android.scripts.coverage.reporter
 
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
@@ -8,6 +8,79 @@ import java.io.File
 
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
+
+/* ANSI escape codes for colors. */
+
+/** Green text. */
+const val GREEN = "\u001B[32m"
+/** Red text. */
+const val RED = "\u001B[31m"
+/** Default text. */
+const val RESET = "\u001B[0m"
+/** Bold text. */
+const val BOLD = "\u001B[1m"
+
+/**
+ * Function for generating coverage report for a list of proto files.
+ *
+ * Usage:
+ *    bazel run //scripts:coverage_runner -- <path_to_root>
+ *    <text_file_with_list_of_coverage_data_proto_paths>
+ *
+ * Arguments:
+ * - path_to_root: directory path to the root of the Oppia Android repository.
+ * - text_file_with_list_of_coverage_data_proto_paths: the text file that contains
+ *     the list of relative path to the proto files containing coverage report data
+ *     separated by spaces to analyse coverage.
+ *     Sample `coverage_proto_list.txt` content:
+ *     ```
+ *     coverage_reports/coverage_report1.pb coverage_reports/coverage_report2.pb
+ *     ```
+ *
+ * Example:
+ *     bazel run //scripts:coverage_reporter -- $(pwd) coverage_proto_list.txt
+ */
+fun main(vararg args: String) {
+  val repoRoot = args[0]
+  val pbTxtFile = File(repoRoot, args[1])
+
+  pbTxtFile.takeIf { it.exists() }?.let {
+    val pbList = pbTxtFile.readText()
+    val filePathList = pbList.split(" ")
+      .filter { it.isNotBlank() }
+      .map { it.trim() }
+
+    val coverageResultList = filePathList.mapNotNull { filePath ->
+      try {
+        println("Filepath: $filePath")
+        File(repoRoot, filePath).inputStream().use { stream ->
+          CoverageReport.newBuilder().also { builder ->
+            builder.mergeFrom(stream)
+          }.build()
+        }
+      } catch (e: Exception) {
+        error("Error processing file $filePath: ${e.message}")
+      }
+    }
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder().apply {
+      addAllCoverageReport(coverageResultList)
+    }.build()
+
+    val coverageStatus = CoverageReporter(
+      repoRoot,
+      coverageReportContainer,
+      ReportFormat.MARKDOWN
+    ).generateRichTextReport()
+
+    when (coverageStatus) {
+      CoverageCheck.PASS -> println("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+      CoverageCheck.FAIL -> error("Coverage Analysis$BOLD$RED FAILED$RESET")
+    }
+  } ?: run {
+    error("File not found: ${pbTxtFile.absolutePath}")
+  }
+}
 
 /**
  * Class responsible for generating rich text coverage report.
@@ -261,7 +334,7 @@ class CoverageReporter(
           ?.takeIf { it.isNotEmpty() }
           ?.let { getFilenameAsDetailsSummary(it) }
           ?: failure.bazelTestTarget
-        "| $failurePath | ${failure.failureMessage} |"
+        "| $failurePath | ${failure.failureMessage} | :x: |"
       }
     }.joinToString(separator = "\n")
 
@@ -322,7 +395,7 @@ class CoverageReporter(
       .map { exemption ->
         val filePath = exemption.exemption.filePath
         val exemptionReason = exemption.exemption.exemptionReason
-        "${getFilenameAsDetailsSummary(filePath, exemptionReason)}"
+        "| ${getFilenameAsDetailsSummary(filePath)} | $exemptionReason |"
       }.joinToString(separator = "\n") { "$it" }
 
     val tableHeader = buildString {
@@ -334,8 +407,8 @@ class CoverageReporter(
       if (failureTableRows.isNotEmpty()) {
         append("\n\n")
         append("### Failure Cases\n\n")
-        append("| File | Failure Reason |\n")
-        append("|------|----------------|\n")
+        append("| File | Failure Reason | Status |\n")
+        append("|------|----------------|--------|\n")
         append(failureTableRows)
       }
     }
@@ -346,7 +419,10 @@ class CoverageReporter(
         append("### Failing coverage")
         append("\n\n")
         append(tableHeader)
-        append(failureBelowThresholdTableRows)
+        if (failureBelowThresholdTableRows.isNotEmpty()) {
+          append(failureBelowThresholdTableRows)
+          append('\n')
+        }
         if (exemptedFailureTableRows.isNotEmpty()) {
           append(exemptedFailureTableRows)
           append(
@@ -377,7 +453,10 @@ class CoverageReporter(
         append("<summary>Files with passing code coverage</summary><br>\n\n")
         if (successTableRows.isNotEmpty()) {
           append(tableHeader)
-          append(successTableRows)
+          if (successTableRows.isNotEmpty()) {
+            append(successTableRows)
+            append('\n')
+          }
           if (exemptedSuccessTableRows.isNotEmpty()) {
             append(exemptedSuccessTableRows)
             append(
@@ -399,11 +478,20 @@ class CoverageReporter(
     } else ""
 
     val testFileExemptedSection = buildString {
+      val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+        "(https://github.com/oppia/oppia-android/blob/develop/" +
+        "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+        "list of file exemptions and their required coverage percentages."
       if (testFileExemptedCasesList.isNotEmpty()) {
         append("\n\n")
         append("### Exempted coverage\n")
-        append("<details><summary>Files exempted from coverage</summary> <br>")
+        append("<details><summary>Files exempted from coverage</summary><br>")
+        append("\n\n")
+        append("| File | Exemption Reason |\n")
+        append("|------|------------------|\n")
         append(testFileExemptedCasesList)
+        append("\n\n")
+        append(exemptionsReferenceNote)
         append("</details>")
       }
     }
