@@ -24,11 +24,11 @@ Consider a Kotlin function designed to determine if a number is positive or nega
 
 ```kotlin
 fun checkSign(n: Int): String {
-    return if (n >= 0) {
-        "Positive" 
-    } else { 
-        "Negative"
-    }
+  return if (n >= 0) {
+    "Positive"
+  } else {
+    "Negative"
+  }
 }
 ```
 
@@ -397,28 +397,28 @@ To clarify the concept, consider the following example with source files and the
 
 It manages the logic for uploading comments and interacting with the Oppia project’s comment system.
 
-```
+```kotlin
 class OppiaCommentBot {
-    fun uploadComment(comment: String): String {
-        // Uploads a comment to a repository
-        return "Comment uploaded: $comment"
-    }
+  fun uploadComment(comment: String): String {
+    // Uploads a comment to a repository
+    return "Comment uploaded: $comment"
+  }
 }
 ```
 
 **OppiaCommentBotTest.kt (Test file for OppiaCommentBot):**
 
-```
+```kotlin
 import org.junit.Test
 import com.google.common.truth.Truth.assertThat
 
 class OppiaCommentBotTest {
-    @Test
-    fun testUploadComment_returnsExpectedMessage() {
-        val bot = OppiaCommentBot()
-        val result = bot.uploadComment("Great job!")
-        assertThat(result).isEqualTo("Comment uploaded: Great job!")
-    }
+  @Test
+  fun testUploadComment_returnsExpectedMessage() {
+    val bot = OppiaCommentBot()
+    val result = bot.uploadComment("Great job!")
+    assertThat(result).isEqualTo("Comment uploaded: Great job!")
+  }
 }
 ```
 
@@ -426,27 +426,27 @@ class OppiaCommentBotTest {
 
 It handles the creation and submission of review comments, utilizing features from OppiaCommentBot.kt.
 
-```
+```kotlin
 class UploadReviewComment {
-    fun createAndUploadReview(comment: String) {
-        // generates review
-        val bot = OppiaCommentBot()
-        bot.uploadComment(review)
-    }
+  fun createAndUploadReview(comment: String) {
+    // generates review
+    val bot = OppiaCommentBot()
+    bot.uploadComment(review)
+  }
 }
 ```
 
 **UploadReviewCommentTest.kt (Test file for UploadReviewComment):**
 
-```
+```kotlin
 import org.junit.Test
 
 class UploadReviewCommentTest {
-    @Test
-    fun testCreateAndUploadReview_callsUploadComment() {
-        val review = UploadReviewComment()
-        review.createAndUploadReview("Needs revision")
-    }
+  @Test
+  fun testCreateAndUploadReview_callsUploadComment() {
+    val review = UploadReviewComment()
+    review.createAndUploadReview("Needs revision")
+  }
 }
 ```
 
