@@ -9,11 +9,12 @@
   - [Covering Different Scenarios](#4-covering-different-scenarios)
   - [Covering All Branches, Paths, and Conditions](#5-covering-all-branches-paths-and-conditions)
   - [Exception and Error Handling](#6-exception-and-error-handling)
+  - [Absence of Unwanted Output](#7-absence-of-unwanted-output)
+- [Testing Public API](#testing-public-api)
 - [Structuring Test Functionalities](#structuring-test-functionalities)
   - [When and How to Divide Responsibilities](#1-when-and-how-to-divide-responsibilities)
   - [When Not to Divide Responsibilities](#2-when-not-to-divide-responsibilities)
   - [Importance of Descriptive Test Names](#3-importance-of-descriptive-test-names)
-- [Guidelines for Testing Public API](#guidelines-for-testing-public-api)
 - [How to Map a Line of Code to Its Corresponding Behaviors?](#how-to-map-a-line-of-code-to-its-corresponding-behaviors)
 
 # What is Behavioral Coverage?
@@ -85,6 +86,45 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 ### Quality > Percentage
 
 While line coverage might reach 100% with a single test, it doesn’t ensure that all scenarios are tested. Behavioral coverage ensures quality by validating all possible scenarios and edge cases, which is more important for reliable software.
+
+**Evaluation and Enhancement Flow:**
+
+```sh
+
+                         +-------------------+
+                         | Coverage Analysis |
+                         +-------------------+
+                                   ↓
++---------------------------+              +--------------------------------+
+|    100% Line Coverage     |              |    Less Than 100% Coverage     |
+|  Does not guarantee full  |              |    Guarantees at least one     |
+|   behavioural coverage    |              | important behaviour is missing |
++---------------------------+              +--------------------------------+
+                                                     
+              ↓                                            ↓
++------------------------------+           +---------------------------------+
+| Add tests for lines that     |           | Find uncovered lines and add    |
+| misses behavioural coverages |   <---    | tests that cover all behaviours |
+| even if stated as covered    |           | and not just line coverages     |
++------------------------------+           +---------------------------------+
+
+```
+
+**Coverage and Behaviour:**
+
+- 100% Line Coverage: Does not guarantee that all critical behaviors and edge cases are tested. It merely shows that each line of code has been executed.
+- Less Than 100% Coverage: Guarantees that some part of the code is not covered by tests, which likely means that at least one important behavior or edge case is missing from the tests.
+
+**Line Coverage as a Starting Point:**
+
+- Use line coverage metrics as a starting point to identify which parts of the code have not been tested.
+- Analyze these uncovered lines to determine which behaviors are associated with them. While line coverage helps locate untested code, it is crucial to ensure that all significant behaviors are tested, especially for volatile or complex scenarios.
+
+**Improving Coverage:**
+
+- Testing a specific line of code is useful, but it’s equally important to check for other missing behaviors or edge cases even if a line is stated as covered with coverage analysis.
+- If a line of code is covered but does not account for all potential scenarios, add tests to cover those additional important behaviors.
+- Ensure that tests are comprehensive by addressing various scenarios, including edge cases and error conditions, which might not be immediately obvious from line coverage alone.
 
 For more details on testing methodologies specific to Oppia Android, please refer to the [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
 
@@ -387,45 +427,9 @@ Testing all branches and conditions ensures that your function can handle all po
 
 ## 6. Exception and Error Handling
 
-**Exception Handling:**
+### Exceptions
 
-Exceptions are unexpected conditions or events that disrupt the normal flow of a program. They handle situations not part of the regular program flow, like invalid user input or file operation issues.
-
-Examples:
-- `NullPointerException` (accessing a null reference)
-- `IllegalArgumentException` (invalid function argument)
-- `IOException` (I/O operation failure)
-
-This allows to catch and handle issues, allowing the program to continue running or fail in a controlled manner.
-
-For instance, to handle division by zero error.
-
-```kotlin
-fun divide(a: Int, b: Int): Int {
-  if (b == 0) throw ArithmeticException("Division by zero")
-  return a / b
-}
-```
-
-**Error Handling:**
-
-Errors are more severe issues indicating fundamental problems with the program's environment or state, often beyond the program's control. In Java/Kotlin, these are represented by classes extending Error, like `OutOfMemoryError` or `StackOverflowError`.
-
-This allows to manage situations where the application may not continue running properly, ensuring the program does not enter an unstable state.
-
-For instance,
-
-```kotlin
-fun simulateError() {
-  val arr = IntArray(Int.MAX_VALUE) // May cause OutOfMemoryError
-}
-```
-
-### Testing Exceptions
-
-Ensure that the code handles invalid or unexpected inputs gracefully and verify that appropriate errors or exceptions are triggered.
-
-**Functionality:**
+Exceptions are unexpected events or errors that occur during the execution of a program, disrupting the normal flow of instructions. These are typically conditions that a program cannot anticipate or recover from easily, such as a division by zero, accessing an invalid index in an array, or trying to open a file that doesn’t exist. When an exception occurs, the program may terminate abruptly unless the exception is properly handled.
 
 ```kotlin
 fun divideNumbers(numerator: Int, denominator: Int): Int {
@@ -434,7 +438,13 @@ fun divideNumbers(numerator: Int, denominator: Int): Int {
 }
 ```
 
-**Test Case:**
+In this example, if the denominator is zero, an `IllegalArgumentException` is thrown. This is a standard way to handle situations where continuing the program as usual doesn’t make sense due to an error in the input.
+
+**Testing Exceptions:**
+
+The primary focus when testing exceptions is ensuring that the correct exception is thrown in the appropriate circumstances and that the program can handle it gracefully.
+
+**Test:**
 
 ```kotlin
 @Test
@@ -445,6 +455,80 @@ fun testDivideNumbers_forZeroDenominator_throwsIllegalArgumentException() {
   assertThat(exception).contains("Denominator cannot be zero")
 }
 ```
+
+This test verifies that the divideNumbers function throws an IllegalArgumentException when the denominator is zero. It also checks that the exception message contains the expected text. Testing exceptions involves confirming that the application correctly identifies and handles these unexpected situations.
+
+### Domain Errors
+
+Domain errors are errors related to the business logic or rules of the application, rather than technical issues like those covered by exceptions. These errors occur when the data or conditions within the domain do not meet the specific rules or constraints defined by the business. Domain errors are expected conditions and are handled within the normal flow of the application, rather than through exceptions.
+
+Let's understand this with a sample snippet from the source **[FractionParser.kt](https://github.com/oppia/oppia-android/blob/develop/utility/src/main/java/org/oppia/android/util/math/FractionParser.kt)**
+
+```kotlin
+fun getSubmitTimeError(text: String): FractionParsingError {
+  if (text.isNullOrBlank()) {
+    return FractionParsingError.EMPTY_INPUT
+  }
+  if (invalidCharsLengthRegex.find(text) != null) {
+    return FractionParsingError.NUMBER_TOO_LONG
+  }
+  if (text.endsWith("/")) {
+    return FractionParsingError.INVALID_FORMAT
+  }
+  val fraction = parseFraction(text)
+  return when {
+    fraction == null -> FractionParsingError.INVALID_FORMAT
+    fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
+    else -> FractionParsingError.VALID
+  }
+}
+```
+
+This function checks various conditions on the input string text to determine whether it meets the criteria for a valid fraction. Each condition that fails returns a specific domain error from the FractionParsingError enum. Unlike exceptions, these errors are expected as part of the application's logic and represent specific, recoverable conditions that the application can handle.
+
+**Testing Domain Errors:**
+
+The goal when testing domain errors is to ensure that the application correctly identifies and responds to these errors as part of its normal operation.
+
+**Test samples from [FractionParserTest.kt](https://github.com/oppia/oppia-android/blob/develop/utility/src/test/java/org/oppia/android/util/math/FractionParserTest.kt):**
+
+```kotlin
+@Test
+fun testSubmitTimeError_tenDigitNumber_returnsNumberTooLong() {
+  val error = getSubmitTimeError("0123456789")
+  assertThat(error).isEqualTo(FractionParsingError.NUMBER_TOO_LONG)
+}
+
+@Test
+fun testSubmitTimeError_nonDigits_returnsInvalidFormat() {
+  val error = getSubmitTimeError("jdhfc")
+  assertThat(error).isEqualTo(FractionParsingError.INVALID_FORMAT)
+}
+
+@Test
+fun testSubmitTimeError_divisionByZero_returnsDivisionByZero() {
+  val error = getSubmitTimeError("123/0")
+  assertThat(error).isEqualTo(FractionParsingError.DIVISION_BY_ZERO)
+}
+
+@Test
+fun testSubmitTimeError_ambiguousSpacing_returnsInvalidFormat() {
+  val error = getSubmitTimeError("1 2 3/4")
+  assertThat(error).isEqualTo(FractionParsingError.INVALID_FORMAT)
+}
+```
+
+These tests check various inputs to ensure the getSubmitTimeError function correctly identifies and returns the appropriate FractionParsingError. Each test case focuses on a specific condition that is expected and handled within the domain logic, ensuring the application behaves as intended.
+
+### Handling Exceptions and Domain Errors
+
+- **Nature:** Exceptions are typically unforeseen disruptions in program execution, whereas domain errors are expected results of business logic conditions.
+
+- **Focus:** When testing exceptions, the focus is on ensuring proper handling and recovery from unexpected situations. In contrast, testing domain errors involves verifying that the application correctly identifies and manages these expected conditions.
+
+- **Handling and Recovery:** Exceptions often require special recovery mechanisms, such as try-catch blocks, while domain errors are managed through normal application logic and flow control.
+
+## Key Considerations for Testing Exception / Error Scenarios
 
 Testing exceptions and error handling is vital to ensure that applications behave correctly under error conditions, provide meaningful feedback, and maintain reliability. Without these tests, applications are prone to unpredictable failures, poor user experiences, and potential security issues.
 
@@ -616,7 +700,78 @@ fun testCalculateDiscount_forNegativeDiscount_throwsIllegalArgumentException() {
 }
 ```
 
-# Guidelines for Testing Public API
+## 7. Absence of Unwanted Output
+
+In addition to validating correct handling of valid and invalid files, it's also important to ensure that unwanted output or behavior does not occur.
+
+Let's use a simple `Pizza` class with an `orderPizza` function that has optional parameters like **addCheese** and **takeaway**. The idea is to test that when these options are set to **false**, no corresponding messages are printed.
+
+**Functionality:**
+
+```kotlin
+class Pizza {
+  fun orderPizza(addCheese: Boolean = false, takeaway: Boolean = false): String {
+    var orderDetails = "Ordered a pizza"
+        
+    if (addCheese) {
+      orderDetails += " with extra cheese"
+    }
+        
+    if (takeaway) {
+      orderDetails += " for takeaway"
+    }
+
+    println(orderDetails)
+    return orderDetails
+  }
+}
+```
+
+**Test:**
+
+Ensure No Cheese Message When **addCheese** is **false**
+
+```kotlin
+@Test
+fun testOrderPizza_withNoCheese_doesNotPrintCheeseMessage() {
+  val pizza = Pizza()
+  val output = ByteArrayOutputStream()
+  System.setOut(PrintStream(output))
+
+  // Order pizza without cheese, default value is false
+  pizza.orderPizza(addCheese = false)
+
+  // Verify that "with extra cheese" is not printed
+  assertThat(output.toString().trim()).doesNotContain("with extra cheese")
+
+  System.setOut(System.out)
+}
+```
+
+**Test:**
+
+Ensure No Takeaway Message When **takeaway** is **false**
+
+```kotlin
+@Test
+fun testOrderPizza_withNoTakeaway_doesNotPrintTakeawayMessage() {
+  val pizza = Pizza()
+  val output = ByteArrayOutputStream()
+  System.setOut(PrintStream(output))
+
+  // Order pizza without takeaway, default value is false
+  pizza.orderPizza(takeaway = false)
+
+  // Verify that "with extra cheese" is not printed
+  assertThat(output.toString().trim()).doesNotContain("for takeaway")
+
+  System.setOut(System.out)
+}
+```
+
+These tests confirm that the class behaves as expected without producing unnecessary outputs.
+
+# Testing Public API
 
 A public API (Application Programming Interface) refers to the set of methods, properties, and functionalities exposed by a class or module for use by external code. It defines how other parts of a system or external systems can interact with the functionality provided by that class or module.
 
@@ -678,56 +833,91 @@ class BankAccount(
 
 The **`withdraw`** method serves as the single public entry point for withdrawing money from the account. It handles user validation, amount checking, optional file upload and printing of the receipt. By keeping the internal methods private, the class ensures that the operations are performed in a controlled manner while hiding the complexity of these operations from the user.
 
-## Testing Public API
+## How to Write Tests for Public API
 
-Testing a public API involves verifying that its methods and functionalities work as expected under various conditions. To ensure comprehensive coverage, it's important to focus on the behavior of the API rather than just individual lines of code.
+```sh
++---------+    +---------------+    +-----------+    +--------+
+| Analyze | -> | Map Behaviors | -> | Add Tests | -> | Refine |
++---------+    +---------------+    +-----------+    +--------+
 
-### 1. Checking Pre-Conditions
-
-Ensure the necessary setup, such as initializing bank data, is completed before running tests.
-
-**Test:**
-
-```kotlin
-@Test
-fun testWithdraw_noBankData_initializationError() {
-  val account = BankAccount(null, null, null) // Initialize with null values
-  
-  val exception = assertThrows<IllegalStateException> {
-    account.withdraw("user", "password", 200.0)
-  }
-  assertThat(exception).contains("Bank data not initialized")
-}
 ```
 
-This test ensures that if the bank data is not set up properly, the system throws an appropriate exception. This is important to verify that the API behaves correctly when initialization is incomplete.
+### 1. Analyze the Public API
 
-### 2. Testing Valid Data
+Goal: Identify and map all possible behaviors and edge cases of the API method.
 
-Verify that the API correctly processes valid input data.
+**1. Identify Core Functionalities:** Break down the public method into its core functionalities. For the withdraw method, these include:
+
+- User authentication
+- Amount validation
+- Withdrawal execution
+- Receipt printing
+- File processing
+
+**2. Determine Expected Behaviors:** List the expected behaviors and outcomes for each core functionality. Consider both normal and edge cases.
+
+- Valid and invalid user credentials
+- Valid and invalid withdrawal amounts
+- Presence and absence of receipt
+- File presence and absence
+
+### 2. Map Expected Behaviors to Test Cases
+
+- Goal: Create a comprehensive list of test cases based on the identified behaviors.
+- Format: Use clear and descriptive test names to represent each behavior.
+
+Example Mappings:
+
+**1. User Authentication:**
+- testWithdraw_validCredentials_outputsCorrectBalance
+- testWithdraw_invalidUsername_throwsException
+- testWithdraw_invalidPassword_throwsException
+- testWithdraw_noBankData_initializationError
+
+**2. Amount Validation:**
+- testWithdraw_validAmount_updatesBalance
+- testWithdraw_negativeAmount_throwsException
+- testWithdraw_amountGreaterThanBalance_throwsException
+
+**3. Receipt Printing:**
+- testWithdraw_withNeedReceipt_receiptPrinted
+- testWithdraw_withoutNeedReceipt_noReceiptPrinted
+- testWithdraw_withDefaultReceipt_noReceiptPrinted
+
+**4. File Processing:**
+- testWithdraw_withValidFile_processesFile
+- testWithdraw_withInvalidFileFormat_throwsException
+- testWithdraw_withAvailableFile_processesFile
+- testWithdraw_withUnavailableFile_throwsException
+
+**5. Edge Cases:**
+- testWithdraw_emptyUsername_throwsException
+- testWithdraw_emptyPassword_throwsException
+- testWithdraw_emptyAmount_throwsException
+- testWithdraw_noBankData_initializationError
+
+### 3. Write the Tests Based on Mapped Behaviors
+
+Goal: Implement the test cases using your mapping as a guide.
+
+**Test Samples:**
 
 ```kotlin
 @Test
-fun testWithdraw_validData_outputsCorrectBalance() {
+fun testWithdraw_validCredentials_outputsCorrectBalance() {
   val account = BankAccount(1000.0, "user", "password")
+  
   val output = ByteArrayOutputStream()
   System.setOut(PrintStream(output))
 
   account.withdraw("user", "password", 200.0)
 
-  val outputLines = output.toString().trim()
-  assertThat(outputLines).isEqualTo("Withdrew 200.0. New balance is 800.0")
+  assertThat(output.toString().trim()).contains("Withdrew 200.0. New balance is 800.0")
   System.setOut(System.out)
 }
-```
 
-### 3. Testing Invalid Data
-
-Ensure the API handles incorrect or invalid data properly.
-
-```kotlin
 @Test
-fun testWithdraw_invalidUserName_throwsException() {
+fun testWithdraw_invalidUsername_throwsInvalidCredentialsException() {
   val account = BankAccount(1000.0, "user", "password")
 
   val exception = assertThrows<IllegalArgumentException> {
@@ -737,214 +927,55 @@ fun testWithdraw_invalidUserName_throwsException() {
 }
 
 @Test
-fun testWithdraw_invalidPassword_throwsException() {
-  val account = BankAccount(1000.0, "user", "password")
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "invalidPassword", 200.0)
-  }
-  assertThat(exception).contains("Invalid credentials")
-}
-```
-
-### 4. Testing Edge Cases
-
-Verify the API's behavior with edge cases and boundary conditions.
-
-```kotlin
-@Test
-fun testWithdraw_emptyUsername_throwsException() {
-  val account = BankAccount(1000.0, "user", "password")
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("", "password", 200.0)
-  }
-  assertThat(exception).contains("Username cannot be empty")
-}
-
-@Test
-fun testWithdraw_emptyBalance_throwsException() {
-  val account = BankAccount(0.0, "user", "password")
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 200.0)
-  }
-  assertThat(exception).contains("Insufficient balance")
-}
-
-@Test
-fun testWithdraw_emptyAmount_throwsException() {
-  val account = BankAccount(1000.0, "user", "password")
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 0.0)
-  }
-  assertThat(exception).contains("Invalid withdrawal amount")
-}
-
-@Test
-fun testWithdraw_amountGreaterThanBalance_throwsException() {
-  val account = BankAccount(1000.0, "user", "password")
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 1500.0)
-  }
-  assertThat(exception).contains("Invalid withdrawal amount")
-}
-```
-
-### 5. Testing Default Values
-
-Verify the API's behaviour with different receipt parameter values.
-
-```kotlin
-@Test
-fun testWithdraw_withDefaultReceipt_noReceiptPrinted() {
-  val account = BankAccount(1000.0, "user", "password")
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
-
-  account.withdraw("user", "password", 200.0)
-
-  val outputLines = output.toString().trim()
-  assertThat(outputLines).doesNotContain("Receipt: Withdrew 200.0. Current balance: 800.0")
-  System.setOut(System.out)
-}
-
-@Test
 fun testWithdraw_withNeedReceipt_receiptPrinted() {
   val account = BankAccount(1000.0, "user", "password")
+  
   val output = ByteArrayOutputStream()
   System.setOut(PrintStream(output))
 
   account.withdraw("user", "password", 200.0, needReceipt = true)
 
-  val outputLines = output.toString().trim()
-  assertThat(outputLines).contains("Receipt: Withdrew 200.0. Current balance: 800.0")
+  assertThat(output.toString().trim()).contains("Receipt: Withdrew 200.0. Current balance: 800.0")
   System.setOut(System.out)
 }
 
 @Test
-fun testWithdraw_withoutNeedReceipt_noReceiptPrinted() {
+fun testWithdraw_withInvalidFileFormat_throwsInvalidFileFormatException() {
   val account = BankAccount(1000.0, "user", "password")
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
+  val invalidFile = File("invalid.txt")
 
-  account.withdraw("user", "password", 200.0, needReceipt = false)
-
-  val outputLines = output.toString().trim()
-  assertThat(outputLines).doesNotContain("Receipt: Withdrew 200.0. Current balance: 800.0")
-  System.setOut(System.out)
-}
-```
-
-These tests check if the receipt value is correctly processed. They ensure that receipts are printed when requested and not printed otherwise.
-
-### 6. Testing Validity of File
-
-Testing how an API handles file inputs is crucial because:
-
-1. File Format Validation: Ensures that only acceptable file formats are processed, avoiding potential errors or security issues.
-2. File Existence: Confirms that the API properly handles cases where files are missing, preventing unexpected failures.
-3. File Processing: Validates that the API processes files correctly when they are valid, ensuring proper functionality.
-
-**Test:**
-
-a. Testing with Invalid File Format
-
-```kotlin
-@Test
-fun testWithdraw_withInvalidFileFormat_throwsException() {
-  val account = BankAccount(1000.0, "user", "password")
-  val invalidFile = File("invalidFile.txt") // File with an invalid format
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 200.0, file = invalidFile)
+  val exception = assertThrows<InvalidFileFormatException> {
+    account.withdraw("user", "password", invalidFile, 200.0)
   }
   assertThat(exception).contains("Invalid file format")
 }
-```
 
-b. Testing with Unavailable File
-
-```kotlin
-@Test
-fun testWithdraw_withUnavailableFile_throwsException() {
-  val account = BankAccount(1000.0, "user", "password")
-  val unavailableFile = File("nonExistentFile.pdf") // File that does not exist
-
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 200.0, file = unavailableFile)
-  }
-  assertThat(exception).contains("File not found")
-}
-```
-
-c. Testing with Valid File
-
-```kotlin
-@Test
-fun testWithdraw_withValidFile_processesFile() {
-  val account = BankAccount(1000.0, "user", "password")
-  val validFile = File("passbook.pdf")
-  validFile.createNewFile() // Ensure the file exists for the test
-
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
-
-  account.withdraw("user", "password", 200.0, file = validFile)
-
-  assertThat(output.toString().trim()).isEqualTo("Processing file: passbook.pdf")
-  System.setOut(System.out)
-}
-```
-
-These tests collectively cover critical aspects of file handling, ensuring robust and reliable API functionality.
-
-### 7. Testing Absence of Unwanted Output
-
-In addition to validating correct handling of valid and invalid files, it's also important to ensure that unwanted output or behavior does not occur.
-
-**Test:**
-
-a. Ensure No Processing Message for Missing File
-
-```kotlin
-@Test
-fun testWithdraw_withNoFile_producesNoFileProcessingOutput() {
-  val account = BankAccount(1000.0, "user", "password")
-
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
-
-  account.withdraw("user", "password", 200.0) // No file provided
-
-  assertThat(output.toString().trim()).doesNotContain("Processing file")
-  System.setOut(System.out)
-}
-```
-
-This test ensures that no unwanted methods, such as file processing, are called when the file parameter is not provided, thereby verifying that the API behaves as expected without unnecessary actions.
-
-b. Ensure No Receipt Message for Default Value
-
-```kotlin
 @Test
 fun testWithdraw_withDefaultReceipt_noReceiptPrinted() {
   val account = BankAccount(1000.0, "user", "password")
+
   val output = ByteArrayOutputStream()
   System.setOut(PrintStream(output))
 
-  account.withdraw("user", "password", 200.0) // Using default receipt flag (false)
+  account.withdraw("user", "password", 200.0)
 
   assertThat(output.toString().trim()).doesNotContain("Receipt:")
   System.setOut(System.out)
 }
+
 ```
 
-This test verifies that no receipt message is output when the default receipt flag is in use, ensuring that the API respects the default behavior and does not produce unintended output.
+### 4. Review and Refine
 
-### 8. Testing a Single Outcome in Multiple Ways
+Goal: Ensure all scenarios are covered and tests are effective.
+
+1. Cross-Reference: Verify that all behaviors from the mapping are tested.
+2. Add Additional Cases: Incorporate any edge cases or additional scenarios discovered during review.
+3. Refactor Tests: Ensure tests are clear, maintainable, and provide meaningful results.
+
+By systematically analyzing the public API, mapping expected behaviors to test cases, and writing tests based on these mappings, you can ensure comprehensive and effective testing. This structured approach helps in covering all scenarios and provides clarity on how to test the API thoroughly.
+
+## Testing a Single Outcome in Multiple Ways
 
 When testing a single outcome like a successful withdrawal, you can use multiple approaches to verify the if the balance is updated correctly. Here are different ways to ensure the single outcome of withdrawal was processed correctly, each following a distinct approach.
 
