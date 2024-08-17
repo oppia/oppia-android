@@ -6,11 +6,9 @@ import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ClickOnImage
-import org.oppia.android.app.model.ImageInteractionState
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -41,7 +39,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   var errorMessage = ObservableField<String>("")
   private var isDefaultRegionClicked = false
   var answerText: CharSequence = ""
-  private var dafaultRegionCoordinates: Point2d? = null
   val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
     schemaObject?.customSchemaValue?.imageWithRegions?.labelRegionsList ?: listOf()
@@ -84,16 +81,11 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
     when (region) {
       is DefaultRegionClickedEvent -> {
-        dafaultRegionCoordinates = Point2d.newBuilder().apply {
-          x = region.x
-          y = region.y
-        }.build()
         answerText = ""
         isAnswerAvailable.set(false)
         isDefaultRegionClicked = true
       }
       is NamedRegionClickedEvent -> {
-        dafaultRegionCoordinates = null
         answerText = region.regionLabel
         isAnswerAvailable.set(true)
       }
@@ -128,14 +120,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
-      if (answerText.isNotEmpty() || dafaultRegionCoordinates != null) {
-        this.imageInteractionState = ImageInteractionState.newBuilder().apply {
-          if (answerText.isNotEmpty()) {
-            this.imageLabel = answerText.toString()
-          } else {
-            this.defaultRegionCoordinates = dafaultRegionCoordinates
-          }
-        }.build()
+      if (answerText.isNotEmpty()) {
+        this.imageLabel = answerText.toString()
       }
       this.answerErrorCategory = answerErrorCetegory
     }.build()

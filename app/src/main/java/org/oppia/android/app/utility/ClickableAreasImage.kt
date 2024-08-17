@@ -10,7 +10,6 @@ import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
-import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
@@ -27,20 +26,13 @@ class ClickableAreasImage(
   userAnswerState: UserAnswerState
 ) {
   private var imageLabel: String? = null
-  private var defaultRegionCoordinates: Point2d? = null
-
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
 
   init {
     imageView.initializeShowRegionTouchListener()
 
-    if (userAnswerState.hasImageInteractionState()) {
-      if (userAnswerState.imageInteractionState.imageLabel.isNotBlank()) {
-        imageLabel = userAnswerState.imageInteractionState.imageLabel
-      } else {
-        defaultRegionCoordinates =
-          userAnswerState.imageInteractionState.defaultRegionCoordinates
-      }
+    if (userAnswerState.imageLabel.isNotBlank()) {
+      imageLabel = userAnswerState.imageLabel
     }
   }
 
@@ -88,13 +80,6 @@ class ClickableAreasImage(
 
   private fun getImageViewContentHeight(): Int {
     return imageView.height - imageView.paddingTop - imageView.paddingBottom
-  }
-
-  /** Selects default region. */
-  fun maybeSelectDefaultRegion() {
-    defaultRegionCoordinates?.let {
-      onPhotoTap(it.x, it.y)
-    }
   }
 
   /** Add selectable regions to [FrameLayout]. */

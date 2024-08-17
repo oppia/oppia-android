@@ -441,16 +441,8 @@ message UserAnswerState {
     // A user's selected list of set of html content ids in drag and drop interaction.
     ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
     // Image region selected by user.
-    ImageInteractionState image_interaction_state=5;
+    string image_label=5;
   }
-}
-
-// Represents the state of image selection that the user has selected.
-message ImageInteractionState{
-    // Selected image label.
-    string image_label=1;
-    // Selected default region coordinates.
-    Point2d default_region_coordinates=2;
 }
 
 // Represents categories of errors that can be inferred from a pending answer.

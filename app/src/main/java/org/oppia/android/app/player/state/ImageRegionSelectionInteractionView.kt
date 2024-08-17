@@ -132,7 +132,6 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         userAnswerState
       )
       areasImage.addRegionViews()
-      areasImage.maybeSelectDefaultRegion()
       performAttachment(areasImage)
     }
   }
