@@ -9,6 +9,10 @@
   - [Covering Different Scenarios](#4-covering-different-scenarios)
   - [Covering All Branches, Paths, and Conditions](#5-covering-all-branches-paths-and-conditions)
   - [Exception and Error Handling](#6-exception-and-error-handling)
+- [Structuring Test Functionalities](#structuring-test-functionalities)
+  - [When and How to Divide Responsibilities](#1-when-and-how-to-divide-responsibilities)
+  - [When Not to Divide Responsibilities](#2-when-not-to-divide-responsibilities)
+  - [Importance of Descriptive Test Names](#3-importance-of-descriptive-test-names)
 - [Guidelines for Testing Public API](#guidelines-for-testing-public-api)
 - [How to Map a Line of Code to Its Corresponding Behaviors?](#how-to-map-a-line-of-code-to-its-corresponding-behaviors)
 
@@ -1031,123 +1035,236 @@ fun testWithdraw_withSufficientBalance_updatesBalanceCorrectly() {
 
 These tests cover various aspects of the withdrawal functionality, ensuring that the balance updates correctly with receipts, passbooks and output messages. Although the core functionality of withdrawing funds and updating the balance is consistent, it can be observed in multiple ways. Each test focuses on a specific verification method while ultimately validating the same core functionality.
 
-## Testing Practices for Effective Validation
+# Structuring Test Functionalities
 
-The following best practices are meant to assist in the organization and execution of tests. By following these guidelines, you can ensure that your testing process is efficient, thorough, and well-structured.
+In testing, it's crucial to ensure that your tests verify implementation code while maintaining clarity and readability. Tests validate the correctness of the code, but it is humans who verify the correctness of the test code itself. Therefore, striking a balance between clarity and conciseness in test writing is essential.
 
-### 1. Use of Helper Functions
+```sh
++------------+     verify     +--------------+
+|   Tests    |   --------->   |  Source Code |
++------------+                +--------------+
 
-Helper functions are crucial for avoiding repetitive code, especially for pre-setup tasks that are used across multiple test cases. In this scenario, initializing the bank data or ensuring the proper state of the BankAccount object can be encapsulated in helper functions.
++------------+     verify     +--------------+
+|   Human    |   ---------->  |    Tests     |
++------------+                +--------------+
+
+```
+
+Tests should focus on verifying the behavior of the implementation code, while humans should be able to easily understand and verify the correctness of the test code itself.
+
+Let's use a Restaurant class as an example to explain how to structure test functionalities effectively. The Restaurant class manages orders, calculates bills, and applies discounts.
 
 ```kotlin
-// Helper function to initialize a BankAccount with default data
-fun createDefaultBankAccount(): BankAccount {
-  return BankAccount(1000.0, "user", "password")
+class Restaurant(private val menu: Map<String, Double>) {
+  var items: List<String> = listOf()
+  private var discount: Double = 0.0
+
+  fun placeOrder(orderItems: List<String>) {
+    items = orderItems
+    println("Order placed: $items")
+    val totalBill = calculateBill()
+    println("Total bill after discount: ${totalBill - (totalBill * discount)}")
+  }
+
+  fun applyDiscount(isMember: Boolean, code: String, quarter: YearQuarter) {
+    discount = when {
+      isMember && code == "SAVE10" -> 0.10
+      code == "SAVE20" && quarter == YearQuarter.QUARTER1 -> 0.20
+      code == "SUMMERSALE" && quarter == YearQuarter.QUARTER2 -> 0.15
+      else -> 0.0
+    }
+    println("Discount applied: ${discount * 100}%")
+  }
+
+  private fun calculateBill(): Double {
+    return items.sumOf { menu[it] ?: 0.0 }
+  }
+}
+
+enum class YearQuarter {
+    QUARTER1, QUARTER2, QUARTER3, QUARTER4
 }
 ```
 
-This helps to reduce redundancy and maintain consistency across multiple test cases by centralizing repetitive setup tasks.
+It's important to understand how to segment or split functionalities in your tests to maintain clarity and avoid confusion. Knowing when to use helper functions and `@Before` / `@After` annotations effectively, and when to keep logic within the test cases themselves, ensures that your tests are both clear and maintainable. Let’s explore these concepts with a Restaurant Ordering System example.
 
-### 2. Setup and Teardown using `@Before` and `@After`
+## 1. When and How to Divide Responsibilities
 
-Using `@Before` and `@After` annotations ensures that common setup and cleanup tasks are automatically executed before and after each test case, maintaining a clean and consistent test environment.
+### a. Helper Functions
 
-**Example:**
+Helper Functions are valuable for reducing redundancy in tests. They encapsulate **non-behavioral tasks**, ensuring that the focus remains on testing the core logic.
+
+**Helper Function:**
 
 ```kotlin
-class BankAccountTests {
+// Helper function to initialize a Restaurant with a menu
+fun createRestaurantWithMenu(): Restaurant {
+  val menu = mapOf(
+    "Burger" to 5.0, 
+    "Pizza" to 8.0, 
+    "Salad" to 4.0
+  )
+  return Restaurant(menu)
+}
+```
 
-  private lateinit var account: BankAccount
+**Test using the Helper Function:**
+
+```kotlin
+@Test
+fun testPlaceOrder_withValidItems_displaysCorrectTotalBill() {
+  val restaurant = createRestaurantWithMenu()
+  restaurant.placeOrder(listOf("Burger", "Pizza"))
+
+  val outputStream = ByteArrayOutputStream()
+  System.setOut(PrintStream(outputStream))
+
+  assertThat(outputStream.toString().trim()).contains("Total bill: 13.0")
+
+  System.setOut(System.out)
+}
+```
+
+### b. `@Before` and `@After` Annotations
+
+`@Before` and `@After` Annotations help in managing setup and teardown tasks, ensuring consistency and reducing redundancy in test cases.
+
+```kotlin
+class RestaurantTests {
+  private lateinit var restaurant: Restaurant
+  private lateinit var outputStream: ByteArrayOutputStream
 
   @Before
   fun setUp() {
-    // Initialize a BankAccount instance before each test
-    account = createDefaultBankAccount()
+    // Setup necessary resources
+    outputStream = ByteArrayOutputStream()
+    System.setOut(PrintStream(outputStream))
+    restaurant = createRestaurantWithMenu()
   }
 
   @After
   fun tearDown() {
-    // Clean up any resources or data after each test
-    
-    // Restore the original system output stream after test
+    // Clean up resources after tests
     System.setOut(System.out)
   }
 
-  // Test cases here
+  @Test
+  fun testPlaceOrder_withValidItems_displaysCorrectTotalBill() {
+    restaurant.placeOrder(listOf("Burger", "Pizza"))
+    assertThat(outputStream.toString().trim()).contains("Total bill: 13.0")
+  }
 }
 ```
 
-### 3. Descriptive Test Names
+Use `@Before` and `@After` for tasks that need to be performed before and after every test case, such as setting up streams, initializing objects, or restoring states. These tasks should not contain logic that is part of the actual test behavior.
 
-Naming test functions descriptively helps in identifying the purpose and scope of each test. Use names that reflect the specific behavior being tested.
+## 2. When Not to Divide Responsibilities
+
+### Prioritizing Clarity Over Conciseness in Tests
+
+While it’s tempting to reduce code duplication in tests by using helper functions or annotations, **clarity should take precedence**. Tests are meant to verify that the code works correctly, but they also need to be clear enough for humans to understand and verify their correctness.
+
+**The Pitfalls of Complex Test Helper Implementations can be understood with the following case:**
+
+```kotlin
+fun createDiscount(): Triple<Boolean, String, YearQuarter> {
+  val isMember = true
+  val code = "SAVE10"
+  val quarter = YearQuarter.QUARTER1
+  return Triple(isMember, code, quarter)
+}
+
+@Test
+fun testDiscountedBill_withHelper() {
+  val restaurant = createRestaurantWithMenu()
+  val discountDetails = createDiscount()
+
+  restaurant.applyDiscount(discountDetails.first, discountDetails.second, discountDetails.third)
+  restaurant.placeOrder(listOf("Burger"))
+
+  assertThat((outputStream.toString().trim()).contains("Total bill after discount: 4.5")
+}
+```
+
+**The Drawbacks of This Approach**
+- Hidden Logic: The helper function `createDiscount()` hides critical logic affecting the test outcome. This makes the test harder to understand and debug.
+- Complexity: The helper function handles multiple scenarios, which should be tested separately. This introduces complexity and reduces clarity.
+- Clarity: Hidden logic in a helper function makes the test less transparent and harder to interpret, compromising its readability.
+
+**Approach to write test with clarity:**
+
+In test code, being explicit often trumps being concise. This means defining the necessary conditions and actions directly within the test case, so the test's intent is immediately clear to anyone reading it.
 
 ```kotlin
 @Test
-fun testWithdraw_withValidData_updatesBalance() {
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
+fun testDiscountedBill_withAppliedDicount_returnsDiscountedBill() {
+  val restaurant = createRestaurantWithMenu()
+    
+  // Explicitly defining discount details in the test
+  val isMember = true
+  val code = "SAVE10"
+  val quarter = YearQuarter.QUARTER1
 
-  account.withdraw("user", "password", 200.0)
+  restaurant.applyDiscount(isMember, code, quarter)
+  restaurant.placeOrder(listOf("Burger"))
 
-  // Check that the withdrawal output is correct and no exceptions are thrown
-  assertThat(output.toString().trim()).contains("Withdrew 200.0. New balance is 800.0")
-  System.setOut(System.out)
-}
-
-@Test
-fun testWithdraw_withNoFile_producesNoFileProcessingOutput() {
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
-
-  account.withdraw("user", "password", 200.0)
-
-  // Ensure no file processing message is output when no file is provided
-  assertThat(output.toString().trim()).doesNotContain("Processing file")
-  System.setOut(System.out)
-}
-
-@Test
-fun testWithdraw_withInvalidFileFormat_throwsException() {
-  val invalidFile = File("invalidFile.txt")
-
-  // Verify that an invalid file format results in an appropriate exception
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 200.0, file = invalidFile)
-  }
-  assertThat(exception.message).contains("Invalid file format")
-}
-
-@Test
-fun testWithdraw_withUnavailableFile_throwsException() {
-  val unavailableFile = File("nonExistentFile.pdf")
-
-  // Verify that attempting to use a non-existent file results in an exception
-  val exception = assertThrows<IllegalArgumentException> {
-    account.withdraw("user", "password", 200.0, file = unavailableFile)
-  }
-  assertThat(exception.message).contains("File not found")
-}
-
-@Test
-fun testWithdraw_withDefaultReceipt_noReceiptPrinted() {
-  val output = ByteArrayOutputStream()
-  System.setOut(PrintStream(output))
-
-  account.withdraw("user", "password", 200.0)
-
-  // Ensure that no receipt is printed when the default receipt flag is used
-  assertThat(output.toString().trim()).doesNotContain("Receipt:")
-  System.setOut(System.out)
+  assertThat((outputStream.toString().trim()).contains("Total bill after discount: 4.5")
 }
 ```
 
-**Importance of Specific Naming and Conditions:**
+Laying out the logic and conditions directly within the test makes it independent of external functions or files, which makes the test easier to understand, maintain, and debug.
 
-- Clarity: Specific names and conditions make tests easier to understand and manage.
-- Focus: Helps pinpoint exact scenarios being tested, improving test coverage.
-- Debugging: Clear names and conditions aid in quickly identifying the cause of failures.
-- Documentation: Serves as self-documentation, providing insight into test purpose and scope.
-- Maintenance: Simplifies updates and modifications by clearly defining what each test covers.
+Unlike production code, where duplication is often avoided, in test code, it’s sometimes better to duplicate code if it leads to clearer, more understandable tests. This ensures that the behavior being tested is directly represented in the test case.
+
+## 3. Importance of Descriptive Test Names
+
+Naming test functions descriptively helps in identifying the purpose and scope of each test. Use names that reflect the specific behavior being tested.
+
+Oppia Android follows a naming convention where the test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. Consider using a format similar to the following for naming test functions:
+
+```
+testAction_withOneCondition_withSecondCondition_hasExpectedOutcome
+```
+
+```kotlin
+@Test
+fun testPlaceOrder_withValidItems_orderPlacedSuccessfully() {
+  // Test Logic: Order should be placed with given items
+}
+
+@Test
+fun testPlaceOrder_withEmptyItems_orderNotPlaced() {
+  // Test Logic: Handle empty order gracefully
+}
+
+@Test
+fun testCalculateBill_withValidItems_correctBillCalculated() {
+  // Test Logic: Calculate correct bill for ordered items
+}
+
+@Test
+fun testApplyDiscount_withMemberAndValidCode_discountApplied() {
+  // Test Logic: Apply 10% discount for valid code and membership
+}
+
+@Test
+fun testApplyDiscount_withNonMemberAndValidCode_noDiscountApplied() {
+  // Test Logic: No discount applied for non-member
+}
+
+@Test
+fun testApplyDiscount_withMemberAndQuarter2_discountApplied() {
+  // Test Logic: Apply discount for valid code in Quarter 2
+}
+```
+
+### Benefits of Descriptive Naming Conventions
+
+- **Clarity:** Specific names and conditions make tests easier to understand and manage.
+- **Focus:** Helps pinpoint exact scenarios being tested, improving test coverage.
+- **Debugging:** Clear names and conditions aid in quickly identifying the cause of failures.
+- **Documentation:** Serves as self-documentation, providing insight into test purpose and scope.
+- **Maintenance:** Simplifies updates and modifications by clearly defining what each test covers.
 
 # How to Map a Line of Code to Its Corresponding Behaviors
 
@@ -1327,7 +1444,7 @@ fun withdraw(
   requestedPassword: String,
   amount: Double,
   needReceipt: Boolean = false, // Defaults to false   
-  file: File? = null                                          
+  file: File? = null
 ) {  }
 ```
 
