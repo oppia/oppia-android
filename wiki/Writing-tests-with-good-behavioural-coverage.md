@@ -168,7 +168,7 @@ Consider a function that manages a food order process. This function does the fo
 
 1. Lists the food items.
 2. Calculates the total price.
-3. Display the order.
+3. Displays the order.
 4. Checks if the payment has been made and provides the corresponding message.
 
 ```kotlin
@@ -211,7 +211,7 @@ fun testProcessOrder_allSteps_returnsCorrectMessage() {
 **Difficulties in Testing All Aspects Together:**
 
 - Complex Failure Diagnosis: If this test fails, you need to diagnose whether the issue lies in listing items, calculating the total, displaying the order, or payment status.
-- Less Focused: It does not target individual aspects of the function, making it harder to identify which specific action failed.
+- Less Focused: It does not target individual aspects of the function, making it harder to identify which specific action failed for cases when the test overall is failing.
 
 ### Testing Specific Aspects
 
@@ -1175,7 +1175,7 @@ fun createDiscount(): Triple<Boolean, String, YearQuarter> {
 }
 
 @Test
-fun testDiscountedBill_withHelper() {
+fun testDiscountedBill_withCreateDiscountHelper_returnsDiscountedBill() {
   val restaurant = createRestaurantWithMenu()
   val discountDetails = createDiscount()
 

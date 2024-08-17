@@ -2,23 +2,14 @@
 
 name: Code Coverage
 
-on:
-  workflow_dispatch:
-  pull_request_target:
-    types: [ opened, synchronize, reopened ]
-
-
 # Controls when the action will run. Triggers the workflow on pull request
 # events or push events in the develop branch.
-#on:
-#  pull_request_target:
-#    types: [opened, synchronize, reopened]
-#on:
-#  pull_request:
-#  push:
-#    branches:
-#      # Push events on develop branch
-#      - develop
+on:
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
 
 permissions:
   pull-requests: write
@@ -327,7 +318,6 @@ jobs:
 
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-#    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Download Generated Markdown Report
