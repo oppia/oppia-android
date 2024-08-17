@@ -690,4 +690,3 @@ private fun loadTestFileExemptionsProto(
     }.build()
   }
 }
-
