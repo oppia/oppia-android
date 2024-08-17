@@ -12,6 +12,10 @@ on:
       # Push events on develop branch
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   bazel_compute_affected_targets:
     name: Compute affected tests
@@ -320,7 +324,9 @@ jobs:
   check_test_results:
       name: Check Bazel Test Results
       needs: [bazel_compute_affected_targets, bazel_run_test]
-      if: ${{ always() }}
+      # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+      # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+      if: ${{ !cancelled() }}
       runs-on: ubuntu-20.04
       steps:
         # This step will be skipped if there are no tests to run, so the overall job should pass.
