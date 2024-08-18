@@ -90,6 +90,7 @@ class RunCoverageTest {
       append("| File | Failure Reason | Status |\n")
       append("|------|----------------|--------|\n")
       append("| ${getFilenameAsDetailsSummary(sampleFile)} | $failureMessage | :x: |")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
@@ -229,6 +230,7 @@ class RunCoverageTest {
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -278,6 +280,7 @@ class RunCoverageTest {
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -385,6 +388,7 @@ class RunCoverageTest {
       append("| File | Failure Reason | Status |\n")
       append("|------|----------------|--------|\n")
       append("| //coverage/example:AddNumsTest | $failureMessage | :x: |")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
@@ -469,6 +473,7 @@ class RunCoverageTest {
       append("| File | Failure Reason | Status |\n")
       append("|------|----------------|--------|\n")
       append("| //coverage/test/java/com/example:SubNumsTest | $failureMessage | :x: |")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
@@ -655,6 +660,7 @@ class RunCoverageTest {
           ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -843,6 +849,7 @@ class RunCoverageTest {
         "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
           ":x: | $MIN_THRESHOLD% |\n"
       )
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -934,6 +941,7 @@ class RunCoverageTest {
           ":x: | 101% _*_ |"
       )
       append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1021,6 +1029,7 @@ class RunCoverageTest {
       )
       append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds\n")
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1090,6 +1099,7 @@ class RunCoverageTest {
           ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1162,6 +1172,7 @@ class RunCoverageTest {
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1238,6 +1249,7 @@ class RunCoverageTest {
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1333,6 +1345,7 @@ class RunCoverageTest {
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1438,6 +1451,7 @@ class RunCoverageTest {
       append("\n\n")
       append(exemptionsReferenceNote)
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1642,6 +1656,7 @@ class RunCoverageTest {
           ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -1722,6 +1737,7 @@ class RunCoverageTest {
           ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedResult)
@@ -2282,6 +2298,7 @@ class RunCoverageTest {
           "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
       )
       append("</details>")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     return markdownText
@@ -2582,6 +2599,15 @@ class RunCoverageTest {
     val additionalDataPart = additionalData?.let { " - $it" } ?: ""
 
     return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
+  }
+
+  private val oppiaCoverageWikiPageLinkNote = buildString {
+    val wikiPageReferenceNote = ">To learn more, visit the [Oppia Android Code Coverage]" +
+      "(https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) wiki page"
+    append("\n")
+    append("#")
+    append("\n")
+    append(wikiPageReferenceNote)
   }
 
   private fun loadCoverageReportProto(
