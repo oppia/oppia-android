@@ -1023,9 +1023,8 @@ class CoverageReporterTest {
       append("## Coverage Report\n")
       append("### Results\n")
       append("Coverage Analysis: **SKIP** :next_track_button:\n\n")
-      append("_This PR did not introduce any changes to Kotlin source or test files._\n\n")
-      append("#\n")
-      append("> To learn more, visit the [Oppia Android Code Coverage](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) wiki page")
+      append("_This PR did not introduce any changes to Kotlin source or test files._")
+      append(oppiaCoverageWikiPageLinkNote)
     }
 
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
