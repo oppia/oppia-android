@@ -7,7 +7,7 @@ name: Coverage Report
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [assigned, opened, synchronize, reopened]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -27,21 +27,25 @@ jobs:
           allowed-conclusions: |
             success
             failure
-            neutral
 
-  comment_coverage_report:
-    name: Comment Code Coverage Report
+  evaluate-code-coverage-reports:
+    name: Evaluate Code Coverage Reports
+    runs-on: ubuntu-20.04
+    outputs:
+      pb_file_empty: ${{ steps.filter-coverage-reports.outputs.pb_file_empty }}
     needs: check_code_coverage_completed
-    permissions:
-      pull-requests: write
-    runs-on: ubuntu-latest
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - name: Find CI workflow run for PR
+      - uses: actions/checkout@v2
+
+      - name: Find CI workflow ru for PR
         id: find-workflow-run
         uses: actions/github-script@v7
         continue-on-error: true
         with:
           script: |
+            // Find the last successful workflow run for the current PR's head
             const { owner, repo } = context.repo;
             const runsResponse = await github.rest.actions.listWorkflowRuns({
               owner,
@@ -62,15 +66,88 @@ jobs:
 
             core.setOutput('run-id', run.id);
 
+
+      - name: Download Coverage Report Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage-report-artifact
+          pattern: coverage-report-*
+          merge-multiple: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.find-workflow-run.outputs.run-id }}
+
+      - name: Filter Coverage Reports
+        id: filter-coverage-reports
+        run: |
+          # Find all coverage_report.pb files in the current directory and subdirectories
+          PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
+          echo "${PB_FILES_LIST[@]}" > pb_files.txt
+          if [ ! -s pb_files.txt ]; then
+            echo "::set-output name=pb_file_empty::false"
+          else
+            echo "::set-output name=pb_file_empty::true"
+            echo "No coverage report generated. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
+          fi
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - uses: actions/cache@v2
+        id: scripts_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Generate Markdown Coverage Report
+        run: |
+          bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
+
+      - name: Upload Generated Markdown Report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
+        with:
+          name: final-coverage-report
+          path: coverage_reports/CoverageReport.md
+
+  comment_coverage_report:
+    name: Comment Code Coverage Report
+    needs: evaluate-code-coverage-reports
+    permissions:
+      pull-requests: write
+
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Download Generated Markdown Report
         uses: actions/download-artifact@v4
         with:
           name: final-coverage-report
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.find-workflow-run.outputs.run-id }}
 
       - name: Upload Coverage Report as PR Comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: 'CoverageReport.md'
+
+  # Reference: https://github.community/t/127354/7.
+  check_coverage_results:
+    name: Check Code Coverage Results
+    needs: [ evaluate-code-coverage-reports, comment_coverage_report ]
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && !cancelled()}}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check that coverage status is passed
+        if: ${{ needs.evaluate-code-coverage-reports.outputs.pb_file_empty != 'true' && needs.evaluate-code-coverage-reports.result != 'success' }}
+        run: exit 1

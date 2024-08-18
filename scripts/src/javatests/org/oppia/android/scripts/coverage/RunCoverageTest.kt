@@ -2592,19 +2592,17 @@ class RunCoverageTest {
   }
 
   private fun getFilenameAsDetailsSummary(
-    filePath: String,
-    additionalData: String? = null
+    filePath: String
   ): String {
     val fileName = filePath.substringAfterLast("/")
-    val additionalDataPart = additionalData?.let { " - $it" } ?: ""
 
-    return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
+    return "<details><summary><b>$fileName</b></summary>$filePath</details>"
   }
 
   private val oppiaCoverageWikiPageLinkNote = buildString {
     val wikiPageReferenceNote = ">To learn more, visit the [Oppia Android Code Coverage]" +
       "(https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) wiki page"
-    append("\n")
+    append("\n\n")
     append("#")
     append("\n")
     append(wikiPageReferenceNote)

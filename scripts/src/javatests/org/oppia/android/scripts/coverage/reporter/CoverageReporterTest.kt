@@ -917,6 +917,22 @@ class CoverageReporterTest {
   }
 
   @Test
+  fun testCoverageReporter_emptyCoverageProtoFile_passesCoverageStatus() {
+    System.setOut(PrintStream(outContent))
+
+    val protoListTextPath = "protoList.txt"
+    tempFolder.newFile(protoListTextPath)
+
+    main(
+      "${tempFolder.root}",
+      protoListTextPath
+    )
+
+    assertThat(outContent.toString().trim())
+      .contains("Coverage Analysis$BOLD$GREEN PASSED$RESET")
+  }
+
+  @Test
   fun testCoverageReporter_listOfCoverageProtoPath_generatesMarkdownReport() {
     val successProtoPath = "successCoverageReport.pb"
     val successProtoFile = tempFolder.newFile(successProtoPath)
@@ -993,6 +1009,28 @@ class CoverageReporterTest {
     assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
+  @Test
+  fun testCoverageReporter_emptyCoverageProtoFile_generatesSkipCoverageReport() {
+    val protoListTextPath = "protoList.txt"
+    tempFolder.newFile(protoListTextPath)
+
+    main(
+      "${tempFolder.root}",
+      protoListTextPath
+    )
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n")
+      append("### Results\n")
+      append("Coverage Analysis: **SKIP** :next_track_button:\n\n")
+      append("_This PR did not introduce any changes to Kotlin source or test files._\n\n")
+      append("#\n")
+      append("> To learn more, visit the [Oppia Android Code Coverage](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) wiki page")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
   private fun readFinalMdReport(): String {
     return File(
       "${tempFolder.root}" +
@@ -1013,7 +1051,7 @@ class CoverageReporterTest {
   private val oppiaCoverageWikiPageLinkNote = buildString {
     val wikiPageReferenceNote = ">To learn more, visit the [Oppia Android Code Coverage]" +
       "(https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) wiki page"
-    append("\n")
+    append("\n\n")
     append("#")
     append("\n")
     append(wikiPageReferenceNote)

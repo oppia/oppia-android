@@ -16,19 +16,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check_unit_tests_completed:
-    name: Check unit test completed
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for unit tests to checks
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
-        with:
-          workflow: unit_tests.yml
-          sha: auto
+  # check_unit_tests_completed:
+  #   name: Check unit test completed
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Wait for unit tests to checks
+  #       uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+  #       with:
+  #         workflow: unit_tests.yml
+  #         sha: auto
 
   compute_changed_files:
     name: Compute changed files
-    needs: check_unit_tests_completed
+    # needs: check_unit_tests_completed
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
@@ -254,71 +254,3 @@ jobs:
         with:
           name: coverage-report-${{ env.SHARD_NAME }} # Saving with unique names to avoid conflict
           path: coverage_reports
-
-  evaluate-code-coverage-reports:
-    name: Evaluate Code Coverage Reports
-    runs-on: ubuntu-20.04
-    needs: code_coverage_run
-    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
-    env:
-      CACHE_DIRECTORY: ~/.bazel_cache
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download Coverage Report Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: coverage-report-artifact
-          pattern: coverage-report-*
-          merge-multiple: true
-
-      - name: Filter Coverage Reports
-        run: |
-          # Find all coverage_report.pb files in the current directory and subdirectories
-          PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
-          echo "${PB_FILES_LIST[@]}" > pb_files.txt
-
-      - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 6.5.0
-
-      - uses: actions/cache@v2
-        id: scripts_cache
-        with:
-          path: ${{ env.CACHE_DIRECTORY }}
-          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
-
-      - name: Set up build environment
-        uses: ./.github/actions/set-up-android-bazel-build-environment
-
-      - name: Generate Markdown Coverage Report
-        run: |
-          bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
-
-      - name: Upload Generated Markdown Report
-        uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
-        with:
-          name: final-coverage-report
-          path: coverage_reports/CoverageReport.md
-
-  # Reference: https://github.community/t/127354/7.
-  check_coverage_results:
-    name: Check Code Coverage Results
-    needs: [ compute_changed_files, code_coverage_run, evaluate-code-coverage-reports ]
-    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Check coverages passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' }}
-        run: exit 1
-
-      - name: Check that coverage status is passed
-        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.evaluate-code-coverage-reports.result != 'success' }}
-        run: exit 1
