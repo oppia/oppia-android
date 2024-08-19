@@ -34,12 +34,10 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   private lateinit var profileId: ProfileId
 
   /** An [ObservableField] to bind the resolved audio language to the dropdown text. */
-  val selectedAudioLanguage = ObservableField("")
+  val selectedAudioLanguage = ObservableField(OppiaLanguage.LANGUAGE_UNSPECIFIED)
 
-  // TODO(#4938): Update the pre-selection logic to include the admin profile audio language for
-  //  non-sole learners.
   /** The [LiveData] representing the language to be displayed by default in the dropdown menu. */
-  val languagePreselectionLiveData: LiveData<String> by lazy {
+  val languagePreselectionLiveData: LiveData<OppiaLanguage> by lazy {
     Transformations.map(languagePreselectionProvider.toLiveData()) { languageResult ->
       return@map when (languageResult) {
         is AsyncResult.Failure -> {
@@ -48,14 +46,10 @@ class AudioLanguageSelectionViewModel @Inject constructor(
             "Failed to retrieve language information.",
             languageResult.error
           )
-          computeAppLanguageDisplayName(OppiaLanguage.LANGUAGE_UNSPECIFIED)
+          OppiaLanguage.LANGUAGE_UNSPECIFIED
         }
-        is AsyncResult.Pending -> {
-          computeAppLanguageDisplayName(OppiaLanguage.LANGUAGE_UNSPECIFIED)
-        }
-        is AsyncResult.Success -> {
-          computePreselectionDisplayName(languageResult.value)
-        }
+        is AsyncResult.Pending -> OppiaLanguage.LANGUAGE_UNSPECIFIED
+        is AsyncResult.Success -> languageResult.value
       }
     }
   }
@@ -72,6 +66,28 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   val availableAudioLanguages: LiveData<List<String>> get() = _availableAudioLanguages
   private val _availableAudioLanguages = MutableLiveData<List<String>>()
 
+  /** Sets the list of audio languages supported by the app based on [OppiaLanguage]. */
+  val supportedOppiaLanguagesLiveData: LiveData<List<OppiaLanguage>> by lazy {
+    Transformations.map(
+      translationController.getSupportedAppLanguages().toLiveData()
+    ) { supportedLanguagesResult ->
+      return@map when (supportedLanguagesResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "AudioLanguageFragment",
+            "Failed to retrieve supported languages.",
+            supportedLanguagesResult.error
+          )
+          listOf()
+        }
+        is AsyncResult.Pending -> listOf()
+        is AsyncResult.Success -> supportedLanguagesResult.value
+      }
+    }
+  }
+
+  // TODO(#4938): Update the pre-selection logic to include the admin profile audio language for
+  //  non-sole learners.
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
     appLanguageSelectionProvider.combineWith(
       systemLanguageProvider,
@@ -96,14 +112,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     this.profileId = profileId
   }
 
-  /** Sets the list of [AudioLanguage]s supported by the app. */
-  fun initializeAvailableAudioLanguages() {
-    val availableLanguages = AudioLanguage.values().filter { it !in IGNORED_AUDIO_LANGUAGES }
-      .map(::computeAudioLanguageDisplayName)
-
-    _availableAudioLanguages.value = availableLanguages
-  }
-
   private fun computePreselection(
     appLanguage: OppiaLanguage,
     systemLanguage: OppiaLanguage
@@ -115,16 +123,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
   }
 
-  private fun computePreselectionDisplayName(language: OppiaLanguage): String {
-    return if (language != OppiaLanguage.LANGUAGE_UNSPECIFIED) {
-      computeAppLanguageDisplayName(language)
-    } else {
-      computeAudioLanguageDisplayName(
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      )
-    }
-  }
-
   private fun createItemViewModel(language: AudioLanguage): AudioLanguageItemViewModel {
     return AudioLanguageItemViewModel(
       language,
@@ -132,14 +130,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
       selectedLanguage,
       fragment as AudioLanguageRadioButtonListener
     )
-  }
-
-  private fun computeAudioLanguageDisplayName(audioLanguage: AudioLanguage): String {
-    return appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
-  }
-
-  private fun computeAppLanguageDisplayName(oppiaLanguage: OppiaLanguage): String {
-    return appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
   }
 
   private companion object {

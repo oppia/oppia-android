@@ -2,9 +2,9 @@ package org.oppia.android.app.onboarding
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
-import org.oppia.android.app.model.OppiaLanguage
 
 /** ViewModel for managing language selection in [OnboardingFragment]. */
 class OnboardingAppLanguageViewModel @Inject constructor() : ObservableViewModel() {

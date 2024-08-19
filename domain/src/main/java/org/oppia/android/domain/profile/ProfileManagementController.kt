@@ -422,11 +422,12 @@ class ProfileManagementController @Inject constructor(
 
       val updatedProfile = profile.toBuilder()
 
-      if(profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED){
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
         return@storeDataWithCustomChannelAsync Pair(
           it,
-          ProfileActionStatus.PROFILE_TYPE_UNKNOWN)
-      }else{
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
         updatedProfile.profileType = profileType
       }
 
@@ -754,11 +755,12 @@ class ProfileManagementController @Inject constructor(
           ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
-      if(profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED){
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
         return@storeDataWithCustomChannelAsync Pair(
           it,
-          ProfileActionStatus.PROFILE_TYPE_UNKNOWN)
-      }else{
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
         updatedProfile.profileType = profileType
       }
 

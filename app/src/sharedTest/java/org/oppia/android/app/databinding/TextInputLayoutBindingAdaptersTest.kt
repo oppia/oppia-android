@@ -11,8 +11,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -26,6 +24,7 @@ import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -43,6 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.TextInputLayoutBindingAdaptersTestActivity
@@ -80,6 +80,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -113,17 +114,23 @@ import javax.inject.Singleton
 class TextInputLayoutBindingAdaptersTest {
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.registerIdlingResource()
     Intents.release()
   }
 
@@ -143,7 +150,7 @@ class TextInputLayoutBindingAdaptersTest {
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
         val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
-        TextInputLayoutBindingAdapters.setSelection(testView, "English", false)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, false)
         assertThat(testView.text.toString()).isEqualTo("English")
       }
     }
@@ -154,7 +161,7 @@ class TextInputLayoutBindingAdaptersTest {
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
         val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
-        TextInputLayoutBindingAdapters.setSelection(testView, "English", true)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, true)
         assertThat(testView.text.toString()).isEqualTo("English")
       }
     }
@@ -165,8 +172,7 @@ class TextInputLayoutBindingAdaptersTest {
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
         val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
-        TextInputLayoutBindingAdapters.setSelection(testView, "English", false)
-        onView(withId(R.id.test_text_input_view)).perform(click())
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, false)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.test_autocomplete_view)).perform(KeyboardShownAction())
         assertThat(KeyboardShownAction().isKeyboardShown).isFalse()
@@ -178,8 +184,8 @@ class TextInputLayoutBindingAdaptersTest {
   fun testBindingAdapters_setSelection_filterEnabled_allowsKeyboardInput() {
     launchActivity().use { scenario ->
       scenario?.onActivity { activity ->
-        onView(withId(R.id.test_autocomplete_view))
-          .perform(click(), replaceText("Port"))
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, true)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.test_autocomplete_view)).check(matches(withText("Port")))
       }

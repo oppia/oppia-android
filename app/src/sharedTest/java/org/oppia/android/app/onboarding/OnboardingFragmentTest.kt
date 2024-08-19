@@ -94,6 +94,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -125,6 +126,8 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
+import java.lang.RuntimeException
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -158,6 +161,8 @@ class OnboardingFragmentTest {
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
+
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @After
   fun tearDown() {
@@ -1095,6 +1100,36 @@ class OnboardingFragmentTest {
         )
       }
     }
+  }
+
+  @Test
+  fun testOnboardingFragment_onboardingV2Enabled_setSelectedLanguageFailed_appCrashes() {
+    setUpTestWithOnboardingV2Enabled()
+    corruptCacheFile()
+
+    launch(OnboardingActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        try {
+          // Accept default selection.
+          onView(withId(R.id.onboarding_language_lets_go_button))
+            .perform(click())
+          testCoroutineDispatchers.runCurrent()
+        } catch (e: RuntimeException) {
+          // Catch the crash to continue the test.
+        }
+
+        val exception = fakeExceptionLogger.getMostRecentException()
+        assertThat(exception).hasMessageThat().contains("app broke")
+      }
+    }
+  }
+
+  private fun corruptCacheFile() {
+    // Statically retrieve the application context since injection may not have yet occurred.
+    val applicationContext = ApplicationProvider.getApplicationContext<Context>()
+    File(applicationContext.filesDir, "app_language_content_database.cache").writeText("broken")
   }
 
   private fun forceDefaultLocale(locale: Locale) {

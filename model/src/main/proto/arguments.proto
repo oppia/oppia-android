@@ -283,7 +283,7 @@ message AudioLanguageFragmentStateBundle {
   AudioLanguage audio_language = 1;
 
   // The selected language display name.
-  string selected_language = 2;
+  OppiaLanguage selected_language = 2;
 }
 
 // Activity Parameters needed to create the policy page.
@@ -910,6 +910,6 @@ message CreateProfileFragmentArguments {
 
 // The bundle of properties that are saved on configuration change in OnboardingFragment.
 message OnboardingFragmentStateBundle {
-  // The selected language display name.
-  string selected_language = 1;
+  // The current selected language.
+  OppiaLanguage selected_language = 1;
 }
