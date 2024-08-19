@@ -137,19 +137,6 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "standard_event_logging_configuration_module",
-    srcs = [
-        "EventLoggingConfigurationModule.kt",
-        "StandardEventTypeToHumanReadableNameConverterImpl.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":event_type_to_human_readable_name_converter",
-        "//:dagger",
-    ],
-)
-
-kt_android_library(
     name = "log_uploader",
     srcs = [
         "LogUploader.kt",

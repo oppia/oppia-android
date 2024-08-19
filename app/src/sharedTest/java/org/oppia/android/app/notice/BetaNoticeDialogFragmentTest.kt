@@ -86,7 +86,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -249,7 +248,7 @@ class BetaNoticeDialogFragmentTest {
       SplitScreenInteractionModule::class, LoggingIdentifierModule::class,
       ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
       CachingTestModule::class, MetricLogSchedulerModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]
