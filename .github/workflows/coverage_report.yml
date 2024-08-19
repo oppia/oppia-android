@@ -9,6 +9,10 @@ on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check_code_coverage_completed:
     name: Check code coverage completed
