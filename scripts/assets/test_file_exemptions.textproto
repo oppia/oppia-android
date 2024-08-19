@@ -239,18 +239,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/alphakenya/AlphaKenyaApplicationComponent.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/alphakenya/AlphaKenyaBuildFlavorModule.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/alphakenya/AlphaKenyaOppiaApplication.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/application/beta/BetaApplicationComponent.kt"
   test_file_not_required: true
 }
@@ -3531,10 +3519,6 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigAlphaKenyaModule.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigFastShowTestModule.kt"
   test_file_not_required: true
 }
@@ -3669,10 +3653,6 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/survey/SurveyEventsLogger.kt"
   source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterAlphaKenyaModule.kt"
-  test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterAlphaModule.kt"
@@ -4372,14 +4352,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/ExceptionLogger.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/KenyaAlphaEventLoggingConfigurationModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/KenyaAlphaEventTypeToHumanReadableNameConverterImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
