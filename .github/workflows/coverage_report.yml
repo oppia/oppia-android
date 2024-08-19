@@ -31,8 +31,6 @@ jobs:
   evaluate-code-coverage-reports:
     name: Evaluate Code Coverage Reports
     runs-on: ubuntu-20.04
-    outputs:
-      pb_file_empty: ${{ steps.filter-coverage-reports.outputs.pb_file_empty }}
     needs: check_code_coverage_completed
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -82,12 +80,6 @@ jobs:
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
           echo "${PB_FILES_LIST[@]}" > pb_files.txt
-          if [ ! -s pb_files.txt ]; then
-            echo "::set-output name=pb_file_empty::false"
-          else
-            echo "::set-output name=pb_file_empty::true"
-            echo "No coverage report generated. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
-          fi
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -145,9 +137,9 @@ jobs:
     needs: [ evaluate-code-coverage-reports, comment_coverage_report ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-    if: ${{ needs.evaluate-code-coverage-reports.outputs.pb_file_empty != 'true' && !cancelled()}}
+    if: ${{ !cancelled()}}
     runs-on: ubuntu-20.04
     steps:
       - name: Check that coverage status is passed
-        if: ${{ needs.evaluate-code-coverage-reports.outputs.pb_file_empty != 'true' && needs.evaluate-code-coverage-reports.result != 'success' }}
+        if: ${{ needs.evaluate-code-coverage-reports.result != 'success' }}
         run: exit 1
