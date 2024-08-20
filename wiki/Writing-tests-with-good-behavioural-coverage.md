@@ -490,7 +490,7 @@ This function checks various conditions on the input string text to determine wh
 
 The goal when testing domain errors is to ensure that the application correctly identifies and responds to these errors as part of its normal operation.
 
-**Test samples from [FractionParserTest.kt](https://github.com/oppia/oppia-android/blob/develop/utility/src/test/java/org/oppia/android/util/math/FractionParserTest.kt):**
+**Test samples from [FractionParserTest.kt](https://github.com/oppia/oppia-android/blob/f9106d91297abd09b24da25d5485deb8473b0125/utility/src/test/java/org/oppia/android/util/math/FractionParserTest.kt#L19):**
 
 ```kotlin
 @Test
@@ -777,7 +777,7 @@ A public API (Application Programming Interface) refers to the set of methods, p
 
 Public APIs are essential because they provide a way to interact with the functionality of a class or module without exposing its internal workings. They define how external code can use the functionality offered by the class or module, ensuring that interactions are safe and predictable while keeping the internal implementation hidden and secure.
 
-Let's consider the following example for a public API to withdraw money from the BankAccount.
+Let's consider the following example for a public API to withdraw money from a BankAccount.
 
 ```kotlin
 class BankAccount(
@@ -833,7 +833,7 @@ class BankAccount(
 
 The **`withdraw`** method serves as the single public entry point for withdrawing money from the account. It handles user validation, amount checking, optional file upload and printing of the receipt. By keeping the internal methods private, the class ensures that the operations are performed in a controlled manner while hiding the complexity of these operations from the user.
 
-## How to Write Tests for Public API
+## How to Write Tests for a Public API
 
 ```sh
 +---------+    +---------------+    +-----------+    +--------+
