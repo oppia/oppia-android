@@ -72,7 +72,7 @@ class TestFileCheckTest {
     tempFolder.newFile("testfiles/ProdFile3.kt")
 
     val exception = assertThrows<Exception>() { runScript() }
-
+    // #TestFileCheckTest coverage file
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
