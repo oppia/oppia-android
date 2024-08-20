@@ -843,10 +843,16 @@ The **`withdraw`** method serves as the single public entry point for withdrawin
 
 ## How to Write Tests for a Public API
 
-```
-+---------+    +---------------+    +-----------+    +--------+
-| Analyze | -> | Map Behaviors | -> | Add Tests | -> | Refine |
-+---------+    +---------------+    +-----------+    +--------+
+```mermaid
+graph LR
+    A[Analyze] --> B[Map Behaviors]
+    B --> C[Add Tests]
+    C --> D[Refine]
+
+    style A fill:#ffffcf,stroke:#333,stroke-width:1px
+    style B fill:#fffea6,stroke:#333,stroke-width:1px
+    style C fill:#f0ffbf,stroke:#333,stroke-width:1px
+    style D fill:#e5ff91,stroke:#333,stroke-width:1px
 
 ```
 
