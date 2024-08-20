@@ -374,7 +374,7 @@ These generated html reports are be used to identify areas of your code that may
 
 To improve code coverage, start by identifying which lines are covered and which are not. To effectively increase coverage, trace the uncovered lines back to their calling functions, and ensure these are executed and tested in your test suites. The corresponding test files for the source code are usually located in the same package within the test directories. Add tests that cover all relevant behavioral scenarios for the uncovered lines to achieve comprehensive testing.
 
-For more guidance on best practices, refer to the [Writing Tests with Good Behavioural Coverage](https://github.com/oppia/oppia-android/wiki/Writing-Tests-With-Good-Behavioural-Coverage) wiki page.
+For more guidance on best practices, refer to the [Writing Tests with Good Behavioral Coverage](https://github.com/oppia/oppia-android/wiki/Writing-Tests-With-Good-Behavioral-Coverage) wiki page.
 
 Note: Some files in the app module may have multiple test files, located in the sharedTest and test packages, all testing a single source file. For example: [StateFragment.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/main/java/org/oppia/android/app/player/state/StateFragment.kt) has 2 test files [StateFragmentTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt) under ``app/src/sharedTest`` and [StateFragmentLocalTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt) under ``app/src/test``.
 

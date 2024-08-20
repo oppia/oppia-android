@@ -50,7 +50,7 @@ A basic test case for line coverage might look like this:
 
 **Line Coverage Result:** This test covers the line of code but doesn’t test all scenarios.
 
-### Behavioural Coverage Testing
+### Behavioral Coverage Testing
 
 To ensure behavioral coverage, the test needs to verify various conditions:
 
@@ -81,7 +81,7 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 }
 ```
 
-**Behavioural Coverage Result:** These tests ensure that all potential behaviors, including edge cases and exceptions, are covered, providing a more thorough validation.
+**Behavioral Coverage Result:** These tests ensure that all potential behaviors, including edge cases and exceptions, are covered, providing a more thorough validation.
 
 ### Quality > Percentage
 
@@ -94,16 +94,16 @@ block-beta
 columns 2 
   A[["Coverage Analysis"]]:2
   block:Coverage1
-    B["100% Line Coverage<br>Does not guarantee full<br>behavioural coverage"]
+    B["100% Line Coverage<br>Does not guarantee full<br>behavioral coverage"]
   end
   block:Coverage2
-    C["Less Than 100% Coverage<br>Guarantees at least one<br>important behaviour is missing"]
+    C["Less Than 100% Coverage<br>Guarantees at least one<br>important behavior is missing"]
   end
   block:Action1
-    D["Add tests for lines that<br>miss behavioural coverages<br>even if stated as covered"]
+    D["Add tests for lines that<br>miss behavioral coverages<br>even if stated as covered"]
   end
   block:Action2
-    E["Find uncovered lines and add<br>tests that cover all behaviours<br>and not just line coverages"]
+    E["Find uncovered lines and add<br>tests that cover all behaviors<br>and not just line coverages"]
   end
   space
   Coverage1 --> D
@@ -118,7 +118,7 @@ columns 2
 
 ```
 
-**Coverage and Behaviour:**
+**Coverage and Behavior:**
 
 - 100% Line Coverage: Does not guarantee that all critical behaviors and edge cases are tested. It merely shows that each line of code has been executed.
 - Less Than 100% Coverage: Guarantees that some part of the code is not covered by tests, which likely means that at least one important behavior or edge case is missing from the tests.
@@ -1357,7 +1357,7 @@ fun testWithdraw_withValidCredentials_printsWithdrawMessage() {
 }
 ```
 
-This validates the code behaviour to function properly with valid inputs.
+This validates the code behavior to function properly with valid inputs.
 
 ### 1. Identify the Line of Code
 
