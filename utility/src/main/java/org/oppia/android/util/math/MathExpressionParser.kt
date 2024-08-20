@@ -725,10 +725,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     inline fun <reified T : Token> consumeTokenOfType(
       missingError: () -> MathParsingError = { GenericError }
     ): MathParsingResult<T> {
-      println("In consumer Token of type")
       val maybeToken = tokens.expectNextMatches { it is T } as? T
       return maybeToken?.let { token ->
-        println("Hit in may be Token")
         previousToken = token
         MathParsingResult.Success(token)
       } ?: missingError().toFailure()
