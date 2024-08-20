@@ -468,7 +468,7 @@ This test verifies that the divideNumbers function throws an IllegalArgumentExce
 
 ### Domain Errors
 
-Domain errors are errors related to the business logic or rules of the application, rather than technical issues like those covered by exceptions. These errors occur when the data or conditions within the domain do not meet the specific rules or constraints defined by the business. Domain errors are expected conditions and are handled within the normal flow of the application, rather than through exceptions.
+Domain errors are errors related to the logic or rules of the application, rather than technical issues like those covered by exceptions. These errors occur when the data or conditions within the domain do not meet the specific rules or constraints defined during application design. Domain errors are expected conditions and are handled within the normal flow of the application, rather than through exceptions.
 
 Let's understand this with a sample snippet from the source **[FractionParser.kt](https://github.com/oppia/oppia-android/blob/develop/utility/src/main/java/org/oppia/android/util/math/FractionParser.kt)**
 
@@ -1285,7 +1285,7 @@ Unlike production code, where duplication is often avoided, in test code, it’s
 
 Naming test functions descriptively helps in identifying the purpose and scope of each test. Use names that reflect the specific behavior being tested.
 
-Oppia Android follows a naming convention where the test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. Consider using a format similar to the following for naming test functions:
+Oppia Android follows a naming convention where the test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. It's preferred that the following format be used for naming test functions:
 
 ```
 testAction_withOneCondition_withSecondCondition_hasExpectedOutcome
@@ -1318,7 +1318,7 @@ fun testApplyDiscount_withNonMemberAndValidCode_noDiscountApplied() {
 }
 
 @Test
-fun testApplyDiscount_withMemberAndQuarter2_discountApplied() {
+fun testApplyDiscount_withMemberAndValidCode_inQuarter2_discountApplied() {
   // Test Logic: Apply discount for valid code in Quarter 2
 }
 ```
