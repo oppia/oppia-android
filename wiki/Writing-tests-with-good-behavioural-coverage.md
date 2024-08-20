@@ -11,7 +11,7 @@
   - [Exception and Error Handling](#6-exception-and-error-handling)
   - [Absence of Unwanted Output](#7-absence-of-unwanted-output)
 - [Testing Public API](#testing-public-api)
-- [Structuring Test Functionalities](#structuring-test-functionalities)
+- [Structuring Test Bodies](#structuring-test-bodies)
   - [When and How to Divide Responsibilities](#1-when-and-how-to-divide-responsibilities)
   - [When Not to Divide Responsibilities](#2-when-not-to-divide-responsibilities)
   - [Importance of Descriptive Test Names](#3-importance-of-descriptive-test-names)
@@ -44,7 +44,7 @@ A basic test case for line coverage might look like this:
 ```kotlin
 @Test fun testValidName() {
   // Tests line coverage by hitting the line where name is accessed
-  assertThat(getName("Alice"), equalTo("Alice")) 
+  assertThat(getName("Alice")).isEqualTo("Alice") 
 }
 ```
 
@@ -57,7 +57,7 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 ```kotlin
 @Test fun testGetName_withDefaultValue_result(getName()) {
   // Default value when no name is provided
-  assertThat(getName(), equalTo(" ")) 
+  assertThat(getName()).isEqualTo(" ") 
 }
 
 @Test fun testGetName_withNullName_throwsException() {
@@ -72,12 +72,12 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 
 @Test fun testGetName_withEmptyName_result(getName("")) {
   // Empty string should use default value
-  assertThat(getName(""), equalTo(" ")) 
+  assertThat(getName("")).isEqualTo(" ")
 }
 
 @Test fun testGetName_withWhitespaceName_result(getName("   ")) {
   // Whitespace name
-  assertThat(getName("   "), equalTo("   ")) 
+  assertThat(getName("   ")).isEqualTo("   ")
 }
 ```
 
@@ -328,7 +328,7 @@ Positive Number: Verifies that the function correctly identifies positive number
 ```kotlin
 @Test
 fun testCheckNumber_forPositiveInput_returnsPositive() {
-  assertThat(checkNumber(5), equalTo("Positive"))
+  assertThat(checkNumber(5)).isEqualTo("Positive")
 }
 ```
 
@@ -337,7 +337,7 @@ Negative Number: Ensures that negative numbers are correctly classified.
 ```kotlin
 @Test
 fun testCheckNumber_forNegativeInput_returnsNegative() {
-  assertThat(checkNumber(-3), equalTo("Negative"))
+  assertThat(checkNumber(-3)).isEqualTo("Negative")
 }
 ```
 
@@ -346,7 +346,7 @@ Zero: Checks that zero is handled correctly.
 ```kotlin
 @Test
 fun testCheckNumber_forZeroInput_returnsZero() {
-  assertThat(checkNumber(0), equalTo("Zero"))
+  assertThat(checkNumber(0)).isEqualTo("Zero")
 }
 ```
 
@@ -355,7 +355,7 @@ Maximum Value: Tests the function with Int.MAX_VALUE to ensure it handles the up
 ```kotlin
 @Test
 fun testCheckNumber_forMaxValue_returnsPositive() {
-  assertThat(checkNumber(Int.MAX_VALUE), equalTo("Positive"))
+  assertThat(checkNumber(Int.MAX_VALUE)).isEqualTo("Positive")
 }
 ```
 
@@ -364,7 +364,7 @@ Minimum Value: Tests the function with Int.MIN_VALUE to ensure it handles the lo
 ```kotlin
 @Test
 fun testCheckNumber_forMinValue_returnsNegative() {
-  assertThat(checkNumber(Int.MIN_VALUE), equalTo("Negative"))
+  assertThat(checkNumber(Int.MIN_VALUE)).isEqualTo("Negative")
 }
 ```
 
@@ -404,22 +404,22 @@ Testing needs to be performed to cover all branches, paths and conditions.
 ```kotlin
 @Test
 fun testEvaluateAccess_forAdultMember_grantsAccess() {
-  assertThat(evaluateAccess(25, true), equalTo("Access granted"))
+  assertThat(evaluateAccess(25, true)).isEqualTo("Access granted")
 }
 
 @Test
 fun testEvaluateAccess_forAdultNonMember_requiresMembership() {
-  assertThat(evaluateAccess(30, false), equalTo("Membership required"))
+  assertThat(evaluateAccess(30, false)).isEqualTo("Membership required")
 }
 
 @Test
 fun testEvaluateAccess_forMinorMember_deniesAccess() {
-  assertThat(evaluateAccess(16, true), equalTo("Access denied"))
+  assertThat(evaluateAccess(16, true)).isEqualTo("Access denied")
 }
 
 @Test
 fun testEvaluateAccess_forminorNonMember_deniesAccess() {
-  assertThat(evaluateAccess(15, false), equalTo("Access denied"))
+  assertThat(evaluateAccess(15, false)).isEqualTo("Access denied")
 }
 ```
 
@@ -1066,7 +1066,7 @@ fun testWithdraw_withSufficientBalance_updatesBalanceCorrectly() {
 
 These tests cover various aspects of the withdrawal functionality, ensuring that the balance updates correctly with receipts, passbooks and output messages. Although the core functionality of withdrawing funds and updating the balance is consistent, it can be observed in multiple ways. Each test focuses on a specific verification method while ultimately validating the same core functionality.
 
-# Structuring Test Functionalities
+# Structuring Test Bodies
 
 In testing, it's crucial to ensure that your tests verify implementation code while maintaining clarity and readability. Tests validate the correctness of the code, but it is humans who verify the correctness of the test code itself. Therefore, striking a balance between clarity and conciseness in test writing is essential.
 
