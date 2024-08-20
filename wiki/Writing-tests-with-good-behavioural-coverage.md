@@ -1084,15 +1084,15 @@ These tests cover various aspects of the withdrawal functionality, ensuring that
 
 In testing, it's crucial to ensure that your tests verify implementation code while maintaining clarity and readability. Tests validate the correctness of the code, but it is humans who verify the correctness of the test code itself. Therefore, striking a balance between clarity and conciseness in test writing is essential.
 
-```sh
-+------------+     verify     +--------------+
-|   Tests    |   --------->   |  Source Code |
-+------------+                +--------------+
+```mermaid
+graph LR
+    A[&ensp;&nbsp;Tests&ensp;] -..->|verify| B[Source Code]
+    C[Humans] -..->|verify| D[&emsp;&ensp;Tests&ensp;&emsp;]
 
-+------------+     verify     +--------------+
-|   Human    |   ---------->  |    Tests     |
-+------------+                +--------------+
-
+    style A fill:#e8e8e8,stroke:#333,stroke-width:1px
+    style B fill:#dcf5a4,stroke:#333,stroke-width:1px
+    style C fill:#e8e8e8,stroke:#333,stroke-width:1px
+    style D fill:#dcf5a4,stroke:#333,stroke-width:1px
 ```
 
 Tests should focus on verifying the behavior of the implementation code, while humans should be able to easily understand and verify the correctness of the test code itself.
