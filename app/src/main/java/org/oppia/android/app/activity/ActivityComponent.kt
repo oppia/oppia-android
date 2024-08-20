@@ -9,3 +9,5 @@ import org.oppia.android.app.utility.datetime.DateTimeUtil
  * Instances of this subcomponent should be created using [ActivityComponentFactory].
  */
 interface ActivityComponent : AppLanguageActivityInjector, DateTimeUtil.Injector
+
+// # Some test comment
