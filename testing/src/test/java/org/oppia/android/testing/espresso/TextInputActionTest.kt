@@ -53,7 +53,7 @@ class TextInputActionTest {
     }
   }
 
-  /*@Test
+  @Test
   fun testTextExistsMatcher_descriptionMatchesExpectedDescription() {
     val errorText = "Incorrect Administrator PIN. Please try again."
     val expectedDescription =
@@ -87,7 +87,7 @@ class TextInputActionTest {
       val result: Boolean = errorTextNotExisted.matches(textInputLayout)
       assertThat(result).isFalse()
     }
-  }*/
+  }
 
   @Test
   fun testTextDoesNotExistMatcher_descriptionMatchesExpectedDescription() {
