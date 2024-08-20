@@ -6,6 +6,8 @@ import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 
+//CoverageReporter github action changes
+
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
 
