@@ -983,11 +983,31 @@ fun testWithdraw_withDefaultReceipt_noReceiptPrinted() {
 
 Goal: Ensure all scenarios are covered and tests are effective.
 
-1. Cross-Reference: Verify that all behaviors from the mapping are tested.
-2. Add Additional Cases: Incorporate any edge cases or additional scenarios discovered during review.
-3. Refactor Tests: Ensure tests are clear, maintainable, and provide meaningful results.
+Once you have confirmed that all mappings are tested, proceed with the following steps.
+
+```mermaid
+graph LR
+    A[Code Coverage] --> B[Map Lines]
+    B --> C[Add Tests]
+    C --> A
+
+    style A fill:#e6e6e6,stroke:#333,stroke-width:1px
+    style B fill:#ecfae3,stroke:#333,stroke-width:1px
+    style C fill:#d8ffbf,stroke:#333,stroke-width:1px
+```
+
+1. **Perform Code Coverage Analysis:** Evaluate code coverage to identify any uncovered lines.
+
+2. **Trace and map uncovered lines:** Investigate to identify lines not covered by existing tests.
+
+3. **Add Additional Cases:** Add behavioral tests for uncovered lines and include other missing tests even for covered lines.
+
+
+Ensure tests are clear, maintainable, and provide meaningful results. Continue this process iteratively until all lines and behaviors are fully covered
 
 By systematically analyzing the public API, mapping expected behaviors to test cases, and writing tests based on these mappings, you can ensure comprehensive and effective testing. This structured approach helps in covering all scenarios and provides clarity on how to test the API thoroughly.
+
+Note: For more information on how to utilize the code coverage analysis tool, please refer to the [Oppia Android Code Coverage](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Code-Coverage) page.
 
 ## Testing a Single Outcome in Multiple Ways
 
