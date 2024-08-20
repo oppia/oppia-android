@@ -90,6 +90,7 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
     } ?: listOf()
   }
 
+  // #ApkAnalyzerClient for github actions change
   private fun collectZipEntries(
     inputZipFile: String,
     namePredicate: (String) -> Boolean
