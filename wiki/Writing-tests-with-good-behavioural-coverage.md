@@ -452,7 +452,7 @@ fun testDivideNumbers_forZeroDenominator_throwsIllegalArgumentException() {
   val exception = assertThrows<IllegalArgumentException> {
     divideNumbers(10, 0)
   }
-  assertThat(exception).contains("Denominator cannot be zero")
+  assertThat(exception).hasMessageThat().contains("Denominator cannot be zero")
 }
 ```
 
@@ -577,7 +577,7 @@ fun testBookTickets_withUnavailableSeats_throwsException() {
   val exception = assertThrows<IllegalStateException> {
     booking.reserveSeat(0)
   }
-  assertThat(exception).contains("No seats are available. Please check other bookings for available seats.")
+  assertThat(exception).hasMessageThat().contains("No seats are available. Please check other bookings for available seats.")
 }
 ```
 
@@ -633,7 +633,7 @@ fun testBookTickets_withUnavailableSeats_throwsException() {
   val exception = assertThrows<IllegalStateException> {
     booking.reserveSeat(0)
   }
-  assertThat(exception).contains("No seats are available. Please check other bookings for available seats.")
+  assertThat(exception).hasMessageThat().contains("No seats are available. Please check other bookings for available seats.")
 }
 ```
 
@@ -648,7 +648,7 @@ fun testConfirmPayment_withUnsuccessfulPayment_throwsException() {
   val exception = assertThrows<IllegalStateException> {
     booking.confirmPayment(false)
   }
-  assertThat(exception).contains("Payment not successful. Please try again.")
+  assertThat(exception).hasMessageThat().contains("Payment not successful. Please try again.")
 }
 
 ```
@@ -688,7 +688,7 @@ fun testCalculateDiscount_forNegativePrice_throwsIllegalArgumentException() {
   val exception = assertThrows<IllegalArgumentException> {
     calculateDiscount(-100.0, 10.0)
   }
-  assertThat(exception).contains("Price and discount cannot be negative")
+  assertThat(exception).hasMessageThat().contains("Price and discount cannot be negative")
 }
 
 @Test
@@ -696,7 +696,7 @@ fun testCalculateDiscount_forNegativeDiscount_throwsIllegalArgumentException() {
   val exception = assertThrows<IllegalArgumentException> {
     calculateDiscount(100.0, -10.0)
   }
-  assertThat(exception).contains("Price and discount cannot be negative")
+  assertThat(exception).hasMessageThat().contains("Price and discount cannot be negative")
 }
 ```
 
@@ -923,7 +923,7 @@ fun testWithdraw_invalidUsername_throwsInvalidCredentialsException() {
   val exception = assertThrows<IllegalArgumentException> {
     account.withdraw("invalidUser", "password", 200.0)
   }
-  assertThat(exception).contains("Invalid credentials")
+  assertThat(exception).hasMessageThat().contains("Invalid credentials")
 }
 
 @Test
@@ -947,7 +947,7 @@ fun testWithdraw_withInvalidFileFormat_throwsInvalidFileFormatException() {
   val exception = assertThrows<InvalidFileFormatException> {
     account.withdraw("user", "password", invalidFile, 200.0)
   }
-  assertThat(exception).contains("Invalid file format")
+  assertThat(exception).hasMessageThat().contains("Invalid file format")
 }
 
 @Test
