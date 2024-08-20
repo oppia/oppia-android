@@ -40,7 +40,7 @@ class GitClient(
   private fun retrieveCurrentBranch(): String {
     return executeGitCommandWithOneLineOutput("rev-parse --abbrev-ref HEAD")
   }
-  // #GitClient github action changes
+
   private fun retrieveBranchMergeBase(): String {
     return executeGitCommandWithOneLineOutput("merge-base $baseCommit HEAD").also {
       if (baseCommit != it) {

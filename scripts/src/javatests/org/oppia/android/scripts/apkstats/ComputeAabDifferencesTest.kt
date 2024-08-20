@@ -31,6 +31,15 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
+  fun testComputeBuildStats_forZeroProfiles_returnsEmptyStats() {
+    val differencesUtility = createComputeAabDifferences()
+
+    val stats = differencesUtility.computeBuildStats()
+
+    assertThat(stats.aabStats).isEmpty()
+  }
+
+  @Test
   fun testComputeBuildStats_forProfileWithMissingFiles_throwsException() {
     val differencesUtility = createComputeAabDifferences()
     val profile = createProfile(oldAabFilePath = "fake.apk", newAabFilePath = "fake.apk")
