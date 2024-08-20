@@ -89,7 +89,7 @@ While line coverage might reach 100% with a single test, it doesn’t ensure tha
 
 **Evaluation and Enhancement Flow:**
 
-```sh
+```
 
                          +-------------------+
                          | Coverage Analysis |
@@ -262,7 +262,7 @@ fun testProcessOrder_allSteps_returnsCorrectMessage() {
 fun testProcessOrder_providedWithList_displaysListOfItems() {
   processOrder(listOf("Pizza", "Burger"), paymentMade = true)
   val output = outContent.toString().trim()
-  assertThat(output, containsString("Order: Pizza, Burger"))
+  assertThat(output).contains("Order: Pizza, Burger")
 }
 ```
 
@@ -273,7 +273,7 @@ fun testProcessOrder_providedWithList_displaysListOfItems() {
 fun testProcessOrder_forListItems_calculatesCorrectTotalPrice() {
   processOrder(listOf("Pizza", "Burger"), paymentMade = true)
   val output = outContent.toString().trim()
-  assertThat(output, containsString("Total: 20.0"))
+  assertThat(output).contains("Total: 20.0")
 }
 ```
 
@@ -284,7 +284,7 @@ fun testProcessOrder_forListItems_calculatesCorrectTotalPrice() {
 fun testProcessOrder_whenPaymentMade_displaysPaymentSuccess() {
   processOrder(listOf("Pizza", "Burger"), paymentMade = true)
   val output = outContent.toString().trim()
-  assertThat(output, containsString("Payment successful"))
+  assertThat(output).contains("Payment successful")
 }
 ```
 
@@ -295,7 +295,7 @@ fun testProcessOrder_whenPaymentMade_displaysPaymentSuccess() {
 fun testProcessOrder_whenNotPaymentMade_displaysPaymentPending() {
   processOrder(listOf("Pizza", "Burger"), paymentMade = false)
   val output = outContent.toString().trim()
-  assertThat(output, containsString("Payment pending"))
+  assertThat(output).contains("Payment pending")
 }
 ```
 
