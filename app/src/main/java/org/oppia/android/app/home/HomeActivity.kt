@@ -59,7 +59,7 @@ class HomeActivity :
 
     internalProfileId = intent.extractCurrentUserProfileId().internalId
     homeActivityPresenter.handleOnCreate(internalProfileId)
-    title = resourceHandler.getStringInLocale(R.string.home_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.home_activity_back_dialog_exit)
   }
 
   override fun onRestart() {
