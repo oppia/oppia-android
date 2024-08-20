@@ -111,10 +111,10 @@ columns 2
   E --> D
 
   style A fill:#f3f3f3,stroke:#333,stroke-width:1px
-  style B fill:#e8f7c8,stroke:#333,stroke-width:1px
+  style B fill:#e8fcde,stroke:#333,stroke-width:1px
   style C fill:#ffdad4,stroke:#333,stroke-width:1px
-  style D fill:#dcf5a4,stroke:#333,stroke-width:1px
-  style E fill:#e4f7ba,stroke:#333,stroke-width:1px
+  style D fill:#d8fac5,stroke:#333,stroke-width:1px
+  style E fill:#e2fcd4,stroke:#333,stroke-width:1px
 
 ```
 
@@ -849,10 +849,10 @@ graph LR
     B --> C[Add Tests]
     C --> D[Refine]
 
-    style A fill:#ffffcf,stroke:#333,stroke-width:1px
-    style B fill:#fffea6,stroke:#333,stroke-width:1px
-    style C fill:#f0ffbf,stroke:#333,stroke-width:1px
-    style D fill:#e5ff91,stroke:#333,stroke-width:1px
+    style A fill:#f5f5f5,stroke:#333,stroke-width:1px
+    style B fill:#f2fced,stroke:#333,stroke-width:1px
+    style C fill:#e8fcde,stroke:#333,stroke-width:1px
+    style D fill:#dcf5d0,stroke:#333,stroke-width:1px
 
 ```
 
@@ -1090,9 +1090,9 @@ graph LR
     C[Humans] -..->|verify| D[&emsp;&ensp;Tests&ensp;&emsp;]
 
     style A fill:#e8e8e8,stroke:#333,stroke-width:1px
-    style B fill:#dcf5a4,stroke:#333,stroke-width:1px
+    style B fill:#e0f7d7,stroke:#333,stroke-width:1px
     style C fill:#e8e8e8,stroke:#333,stroke-width:1px
-    style D fill:#dcf5a4,stroke:#333,stroke-width:1px
+    style D fill:#e0f7d7,stroke:#333,stroke-width:1px
 ```
 
 Tests should focus on verifying the behavior of the implementation code, while humans should be able to easily understand and verify the correctness of the test code itself.
@@ -1375,8 +1375,8 @@ Flow Diagram
 graph TD
     F[printReceipt] --> G[print - Receipt: Withdrew $400]
 
-    style F fill:#cfc,stroke:#333,stroke-width:1px
-    style G fill:#cfc,stroke:#333,stroke-width:1px
+    style F fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style G fill:#e0f7d7,stroke:#333,stroke-width:1px
 ```
 
 **2. Traceback to the calling point:**
@@ -1423,10 +1423,10 @@ graph TD
     E --> F[printReceipt]
     F --> G[print - Receipt: Withdrew $400]
 
-    style D fill:#cfc,stroke:#333,stroke-width:1px
-    style E fill:#cfc,stroke:#333,stroke-width:1px
-    style F fill:#cfc,stroke:#333,stroke-width:1px
-    style G fill:#cfc,stroke:#333,stroke-width:1px
+    style D fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style E fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style F fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style G fill:#e0f7d7,stroke:#333,stroke-width:1px
 ```
 
 2.2 Determine the Origin of the Conditional Value
@@ -1458,10 +1458,10 @@ graph TD
     F --> G[print - Receipt: Withdrew $400]
 
     style B fill:#FFB6C1,stroke:#333,stroke-width:1px, color:#00
-    style D fill:#cfc,stroke:#333,stroke-width:1px
-    style E fill:#cfc,stroke:#333,stroke-width:1px
-    style F fill:#cfc,stroke:#333,stroke-width:1px
-    style G fill:#cfc,stroke:#333,stroke-width:1px
+    style D fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style E fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style F fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style G fill:#e0f7d7,stroke:#333,stroke-width:1px
 ```
 
 It can be seen that the **needReceipt** value is passed as a parameter while having a **default value** of **false**. Since the value was **never set to true** in our test case,
@@ -1506,11 +1506,11 @@ graph TD
 
     style A fill:#f5f5f5,stroke:#333,stroke-width:1px, color:#000
     style B fill:#ffb6c1,stroke:#333,stroke-width:1px, color:#00
-    style C fill:#cfc,stroke:#333,stroke-width:1px
-    style D fill:#cfc,stroke:#333,stroke-width:1px
-    style E fill:#cfc,stroke:#333,stroke-width:1px
-    style F fill:#cfc,stroke:#333,stroke-width:1px
-    style G fill:#cfc,stroke:#333,stroke-width:1px
+    style C fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style D fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style E fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style F fill:#e0f7d7,stroke:#333,stroke-width:1px
+    style G fill:#e0f7d7,stroke:#333,stroke-width:1px
 ```
 
 **3. Add Test Case to Cover the Line:**
