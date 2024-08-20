@@ -89,24 +89,32 @@ While line coverage might reach 100% with a single test, it doesn’t ensure tha
 
 **Evaluation and Enhancement Flow:**
 
-```
+```mermaid
+block-beta
+columns 2 
+  A[["Coverage Analysis"]]:2
+  block:Coverage1
+    B["100% Line Coverage<br>Does not guarantee full<br>behavioural coverage"]
+  end
+  block:Coverage2
+    C["Less Than 100% Coverage<br>Guarantees at least one<br>important behaviour is missing"]
+  end
+  block:Action1
+    D["Add tests for lines that<br>miss behavioural coverages<br>even if stated as covered"]
+  end
+  block:Action2
+    E["Find uncovered lines and add<br>tests that cover all behaviours<br>and not just line coverages"]
+  end
+  space
+  Coverage1 --> D
+  Coverage2 --> E
+  E --> D
 
-                         +-------------------+
-                         | Coverage Analysis |
-                         +-------------------+
-                                   ↓
-+---------------------------+              +--------------------------------+
-|    100% Line Coverage     |              |    Less Than 100% Coverage     |
-|  Does not guarantee full  |              |    Guarantees at least one     |
-|   behavioural coverage    |              | important behaviour is missing |
-+---------------------------+              +--------------------------------+
-                                                     
-              ↓                                            ↓
-+------------------------------+           +---------------------------------+
-| Add tests for lines that     |           | Find uncovered lines and add    |
-| misses behavioural coverages |   <---    | tests that cover all behaviours |
-| even if stated as covered    |           | and not just line coverages     |
-+------------------------------+           +---------------------------------+
+  style A fill:#f3f3f3,stroke:#333,stroke-width:1px
+  style B fill:#e8f7c8,stroke:#333,stroke-width:1px
+  style C fill:#ffdad4,stroke:#333,stroke-width:1px
+  style D fill:#dcf5a4,stroke:#333,stroke-width:1px
+  style E fill:#e4f7ba,stroke:#333,stroke-width:1px
 
 ```
 
@@ -835,7 +843,7 @@ The **`withdraw`** method serves as the single public entry point for withdrawin
 
 ## How to Write Tests for a Public API
 
-```sh
+```
 +---------+    +---------------+    +-----------+    +--------+
 | Analyze | -> | Map Behaviors | -> | Add Tests | -> | Refine |
 +---------+    +---------------+    +-----------+    +--------+
