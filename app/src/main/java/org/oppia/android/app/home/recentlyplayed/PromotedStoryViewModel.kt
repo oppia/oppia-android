@@ -38,6 +38,12 @@ class PromotedStoryViewModel(
       promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
     )
   }
+  /** Sets the classroom of the recently played story. */
+  val classroomTitle by lazy {
+    translationController.extractString(
+      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
+    )
+  }
 
   /**
    * Starts [ResumeLessonActivity] if a saved exploration is selected or [ExplorationActivity] if an
