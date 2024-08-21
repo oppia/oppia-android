@@ -436,12 +436,12 @@ message UserAnswerState {
   oneof answer_input_type {
     // User's selection for selection input interactions.
     ItemSelectionAnswerState item_selection = 2;
-    // Raw answer entered by the user in text-based interactions.
+    // Text answer entered by the user in text-based interactions.
     string text_input_answer = 3;
-    // A user's selected list of set of html content ids in drag and drop interaction.
+    // A user's selected list of sets of HTML content IDs in drag-and-drop interactions.
     ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
-    // Image region selected by user.
-    string image_label=5;
+    // Selected image's label.
+    string image_label = 5;
   }
 }
 
