@@ -476,7 +476,7 @@ This test verifies that the divideNumbers function throws an IllegalArgumentExce
 
 Domain errors are errors related to the logic or rules of the application, rather than technical issues like those covered by exceptions. These errors occur when the data or conditions within the domain do not meet the specific rules or constraints defined during application design. Domain errors are expected conditions and are handled within the normal flow of the application, rather than through exceptions.
 
-Let's understand this with a sample snippet from the source **[FractionParser.kt](https://github.com/oppia/oppia-android/blob/develop/utility/src/main/java/org/oppia/android/util/math/FractionParser.kt)**
+Let's understand this with a sample snippet from the source **[FractionParser.kt](https://github.com/oppia/oppia-android/blob/f9106d91297abd09b24da25d5485deb8473b0125/utility/src/main/java/org/oppia/android/util/math/FractionParser.kt#L7)**
 
 ```kotlin
 fun getSubmitTimeError(text: String): FractionParsingError {
