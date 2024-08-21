@@ -1165,17 +1165,21 @@ It's important to understand how to segment or split functionalities in your tes
 
 Helper Functions are valuable for reducing redundancy in tests. They encapsulate **non-behavioral tasks**, ensuring that the focus remains on testing the core logic.
 
+With the above Restaurant class example, it can be seen that each order is logged to a provided file. While testing these functionalities it is crucial to ensure that each test case operates with its own unique log file. This is necessary to avoid cross-test interference and to verify that each test correctly logs its own data. To streamline this process, instead of creating a new log file manually within each test case, we use a utility function to handle the file creation.
+
+This approach keeps the test code clean and focused on testing the core logic, as the utility function purely deals with file management. By keeping this utility function separate from the core logic, it ensures that it doesn't affect the actual functionality being tested, making it an ideal candidate for a helper function.
+
 **Helper Function:**
 
 ```kotlin
-// Helper function to initialize a Restaurant with a menu
-fun createRestaurantWithMenu(): Restaurant {
-  val menu = mapOf(
-    "Burger" to 5.0, 
-    "Pizza" to 8.0, 
-    "Salad" to 4.0
-  )
-  return Restaurant(menu)
+// Helper function to create a new log file and return its path
+fun createLogFile(filePath: String): String {
+  val file = File(filePath)
+  if (file.exists()) {
+    file.delete()
+  }
+  file.createNewFile()
+  return filePath
 }
 ```
 
@@ -1183,18 +1187,22 @@ fun createRestaurantWithMenu(): Restaurant {
 
 ```kotlin
 @Test
-fun testPlaceOrder_withValidItems_displaysCorrectTotalBill() {
-  val restaurant = createRestaurantWithMenu()
+fun testPlaceOrder_withValidItems_logsOrderDetails() {
+  val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
+  // Use the utility function to create a log file
+  val logFilePath = createLogFile("testLogHistory.txt") 
+  val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+
   restaurant.placeOrder(listOf("Burger", "Pizza"))
 
-  val outputStream = ByteArrayOutputStream()
-  System.setOut(PrintStream(outputStream))
+  val logContent = File(logFilePath).readText()
 
-  assertThat(outputStream.toString().trim()).contains("Total bill: 13.0")
-
-  System.setOut(System.out)
+  assertThat(logContent).contains("Items: [Burger, Pizza]")
+  assertThat(logContent).contains("Total bill: 13.0")
 }
 ```
+
+Using the `createLogFile` utility function helps maintain clean and focused test cases. It manages the file creation process without interfering with the actual logic being tested.
 
 ### b. `@Before` and `@After` Annotations
 
@@ -1202,7 +1210,6 @@ fun testPlaceOrder_withValidItems_displaysCorrectTotalBill() {
 
 ```kotlin
 class RestaurantTests {
-  private lateinit var restaurant: Restaurant
   private lateinit var outputStream: ByteArrayOutputStream
 
   @Before
@@ -1210,7 +1217,6 @@ class RestaurantTests {
     // Setup necessary resources
     outputStream = ByteArrayOutputStream()
     System.setOut(PrintStream(outputStream))
-    restaurant = createRestaurantWithMenu()
   }
 
   @After
@@ -1221,6 +1227,10 @@ class RestaurantTests {
 
   @Test
   fun testPlaceOrder_withValidItems_displaysCorrectTotalBill() {
+    val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
+    val logFilePath = createLogFile("LogHistory.txt")
+    val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+
     restaurant.placeOrder(listOf("Burger", "Pizza"))
     assertThat(outputStream.toString().trim()).contains("Total bill: 13.0")
   }
@@ -1247,7 +1257,10 @@ fun createDiscount(): Triple<Boolean, String, YearQuarter> {
 
 @Test
 fun testDiscountedBill_withCreateDiscountHelper_returnsDiscountedBill() {
-  val restaurant = createRestaurantWithMenu()
+  val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
+  val logFilePath = createLogFile("LogHistory.txt")
+  val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+  
   val discountDetails = createDiscount()
 
   restaurant.applyDiscount(discountDetails.first, discountDetails.second, discountDetails.third)
@@ -1269,8 +1282,10 @@ In test code, being explicit often trumps being concise. This means defining the
 ```kotlin
 @Test
 fun testDiscountedBill_withAppliedDicount_returnsDiscountedBill() {
-  val restaurant = createRestaurantWithMenu()
-    
+  val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
+  val logFilePath = createLogFile("LogHistory.txt")
+  val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+
   // Explicitly defining discount details in the test
   val isMember = true
   val code = "SAVE10"
