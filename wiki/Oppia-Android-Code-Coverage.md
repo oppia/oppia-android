@@ -40,10 +40,10 @@ import org.junit.Test
 import com.google.common.truth.Truth.assertThat
 
 class checkSignTest {
-    @Test
-    fun testCheckSign_withPositiveInteger_returnsPositive() {
-        assertThat(checkSign(4)).isEqualTo("Positive")
-    }
+  @Test
+  fun testCheckSign_withPositiveInteger_returnsPositive() {
+    assertThat(checkSign(4)).isEqualTo("Positive")
+  }
 }
 ```
 
@@ -57,15 +57,15 @@ import org.junit.Test
 import com.google.common.truth.Truth.assertThat
 
 class checkSignTest {
-    @Test
-    fun testCheckSign_withPositiveInteger_returnsPositive() {
-        assertThat(checkSign(4)).isEqualTo("Positive")
-    }
+  @Test
+  fun testCheckSign_withPositiveInteger_returnsPositive() {
+    assertThat(checkSign(4)).isEqualTo("Positive")
+  }
 
-+  @Test
-+  fun testCheckSign_withNegativeInteger_returnsNegative() {
-+      assertThat(checkSign(-7)).isEqualTo("Negative")
-+  }
++ @Test
++ fun testCheckSign_withNegativeInteger_returnsNegative() {
++   assertThat(checkSign(-7)).isEqualTo("Negative")
++ }
 }
 ```
 

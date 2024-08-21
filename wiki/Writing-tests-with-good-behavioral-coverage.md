@@ -42,7 +42,8 @@ fun getName(name: String? = " ") =
 A basic test case for line coverage might look like this:
 
 ```kotlin
-@Test fun testValidName() {
+@Test 
+fun testValidName() {
   // Tests line coverage by hitting the line where name is accessed
   assertThat(getName("Alice")).isEqualTo("Alice") 
 }
@@ -55,27 +56,32 @@ A basic test case for line coverage might look like this:
 To ensure behavioral coverage, the test needs to verify various conditions:
 
 ```kotlin
-@Test fun testGetName_withDefaultValue_result(getName()) {
+@Test 
+fun testGetName_withDefaultValue_result(getName()) {
   // Default value when no name is provided
   assertThat(getName()).isEqualTo(" ") 
 }
 
-@Test fun testGetName_withNullName_throwsException() {
+@Test 
+fun testGetName_withNullName_throwsException() {
   // Exception for null value
   assertThrows<IllegalArgumentException> { getName(null) } 
 }
 
-@Test fun testGetName_withSpecialCharacters_throwsException() {
+@Test 
+fun testGetName_withSpecialCharacters_throwsException() {
   // Exception for special characters
   assertThrows<IllegalArgumentException> { getName("!@#$%^&*()") } 
 }
 
-@Test fun testGetName_withEmptyName_result(getName("")) {
+@Test 
+fun testGetName_withEmptyName_result(getName("")) {
   // Empty string should use default value
   assertThat(getName("")).isEqualTo(" ")
 }
 
-@Test fun testGetName_withWhitespaceName_result(getName("   ")) {
+@Test 
+fun testGetName_withWhitespaceName_result(getName("   ")) {
   // Whitespace name
   assertThat(getName("   ")).isEqualTo("   ")
 }
