@@ -1274,7 +1274,7 @@ fun createDiscount(): Triple<Boolean, String, YearQuarter> {
 fun testDiscountedBill_withCreateDiscountHelper_returnsDiscountedBill() {
   val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
   val logFilePath = createLogFile("LogHistory.txt")
-  val restaurant = Restaurant(menu logHistoryPath = logFilePath)
+  val restaurant = Restaurant(menu, logHistoryPath = logFilePath)
   
   val discountDetails = createDiscount()
 
