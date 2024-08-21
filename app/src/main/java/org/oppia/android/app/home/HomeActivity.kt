@@ -55,6 +55,8 @@ class HomeActivity :
 
   // HomeActivity github action changes
 
+  // HomeActivity workflow canceller github action changes
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
