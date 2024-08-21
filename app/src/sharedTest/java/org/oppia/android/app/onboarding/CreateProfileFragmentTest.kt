@@ -50,7 +50,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -102,6 +105,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -113,6 +117,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -604,11 +609,19 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity():
     ActivityScenario<CreateProfileActivity>? {
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context)
-      )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
+      val intent = CreateProfileActivity.createProfileActivityIntent(context)
+      intent.apply {
+        decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+        putProtoExtra(
+          CREATE_PROFILE_PARAMS_KEY,
+          CreateProfileActivityParams.newBuilder()
+            .setProfileType(ProfileType.SOLE_LEARNER)
+            .build()
+        )
+        val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+        testCoroutineDispatchers.runCurrent()
+        return scenario
+      }
     }
 
   private fun setUpTestApplicationComponent() {
