@@ -1126,7 +1126,10 @@ Tests should focus on verifying the behavior of the implementation code, while h
 Let's use a Restaurant class as an example to explain how to structure test functionalities effectively. The Restaurant class manages orders, calculates bills, and applies discounts.
 
 ```kotlin
-class Restaurant(private val menu: Map<String, Double>) {
+class Restaurant(
+  private val menu: Map<String, Double>,
+  private val logHistoryPath: String = "LogHistory.txt"
+) {
   var items: List<String> = listOf()
   private var discount: Double = 0.0
 
@@ -1135,6 +1138,10 @@ class Restaurant(private val menu: Map<String, Double>) {
     println("Order placed: $items")
     val totalBill = calculateBill()
     println("Total bill after discount: ${totalBill - (totalBill * discount)}")
+
+    val logDetails = "Items: $items, Total bill: ${totalBill - (totalBill * discount)}"
+    val file = loadLogHistory()
+    file.appendText(logDetails + "\n")
   }
 
   fun applyDiscount(isMember: Boolean, code: String, quarter: YearQuarter) {
@@ -1149,6 +1156,14 @@ class Restaurant(private val menu: Map<String, Double>) {
 
   private fun calculateBill(): Double {
     return items.sumOf { menu[it] ?: 0.0 }
+  }
+
+  private fun loadLogHistory(): File {
+    val file = File(logHistoryPath)
+    if (!file.exists()) {
+      file.createNewFile()
+    }
+    return file
   }
 }
 
@@ -1191,7 +1206,7 @@ fun testPlaceOrder_withValidItems_logsOrderDetails() {
   val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
   // Use the utility function to create a log file
   val logFilePath = createLogFile("testLogHistory.txt") 
-  val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+  val restaurant = Restaurant(menu, logHistoryPath = logFilePath)
 
   restaurant.placeOrder(listOf("Burger", "Pizza"))
 
@@ -1229,7 +1244,7 @@ class RestaurantTests {
   fun testPlaceOrder_withValidItems_displaysCorrectTotalBill() {
     val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
     val logFilePath = createLogFile("LogHistory.txt")
-    val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+    val restaurant = Restaurant(menu, logHistoryPath = logFilePath)
 
     restaurant.placeOrder(listOf("Burger", "Pizza"))
     assertThat(outputStream.toString().trim()).contains("Total bill: 13.0")
@@ -1259,7 +1274,7 @@ fun createDiscount(): Triple<Boolean, String, YearQuarter> {
 fun testDiscountedBill_withCreateDiscountHelper_returnsDiscountedBill() {
   val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
   val logFilePath = createLogFile("LogHistory.txt")
-  val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+  val restaurant = Restaurant(menu logHistoryPath = logFilePath)
   
   val discountDetails = createDiscount()
 
@@ -1284,7 +1299,7 @@ In test code, being explicit often trumps being concise. This means defining the
 fun testDiscountedBill_withAppliedDicount_returnsDiscountedBill() {
   val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
   val logFilePath = createLogFile("LogHistory.txt")
-  val restaurant = Restaurant(menu, logOrders = true, logHistoryPath = logFilePath)
+  val restaurant = Restaurant(menu, logHistoryPath = logFilePath)
 
   // Explicitly defining discount details in the test
   val isMember = true
