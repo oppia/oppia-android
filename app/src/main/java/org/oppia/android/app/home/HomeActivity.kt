@@ -53,6 +53,8 @@ class HomeActivity :
     }
   }
 
+  // HomeActivity github action changes
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
