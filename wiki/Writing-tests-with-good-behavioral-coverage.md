@@ -10,7 +10,7 @@
   - [Covering All Branches, Paths, and Conditions](#5-covering-all-branches-paths-and-conditions)
   - [Exception and Error Handling](#6-exception-and-error-handling)
   - [Absence of Unwanted Output](#7-absence-of-unwanted-output)
-- [Testing Public API](#testing-public-api)
+- [Testing Public APIs](#testing-public-apis)
 - [Structuring Test Bodies](#structuring-test-bodies)
   - [When and How to Divide Responsibilities](#1-when-and-how-to-divide-responsibilities)
   - [When Not to Divide Responsibilities](#2-when-not-to-divide-responsibilities)
@@ -57,9 +57,9 @@ To ensure behavioral coverage, the test needs to verify various conditions:
 
 ```kotlin
 @Test 
-fun testGetName_withDefaultValue_result(getName()) {
+fun testGetName_withDefaultValue_returnsEmptyValue() {
   // Default value when no name is provided
-  assertThat(getName()).isEqualTo(" ") 
+  assertThat(getName()).isEmpty()
 }
 
 @Test 
@@ -75,13 +75,13 @@ fun testGetName_withSpecialCharacters_throwsException() {
 }
 
 @Test 
-fun testGetName_withEmptyName_result(getName("")) {
+fun testGetName_withEmptyName_returnsEmptyValue() {
   // Empty string should use default value
-  assertThat(getName("")).isEqualTo(" ")
+  assertThat(getName("")).isEmpty()
 }
 
 @Test 
-fun testGetName_withWhitespaceName_result(getName("   ")) {
+fun testGetName_withWhitespaceName_returnsWhitespaceValue() {
   // Whitespace name
   assertThat(getName("   ")).isEqualTo("   ")
 }
@@ -785,7 +785,7 @@ fun testOrderPizza_withNoTakeaway_doesNotPrintTakeawayMessage() {
 
 These tests confirm that the class behaves as expected without producing unnecessary outputs.
 
-# Testing Public API
+# Testing Public APIs
 
 A public API (Application Programming Interface) refers to the set of methods, properties, and functionalities exposed by a class or module for use by external code. It defines how other parts of a system or external systems can interact with the functionality provided by that class or module.
 
@@ -1009,7 +1009,7 @@ graph LR
 3. **Add Additional Cases:** Add behavioral tests for uncovered lines and include other missing tests even for covered lines.
 
 
-Ensure tests are clear, maintainable, and provide meaningful results. Continue this process iteratively until all lines and behaviors are fully covered
+Ensure tests are clear, maintainable, and provide meaningful results. Continue this process iteratively until all lines and behaviors are fully covered.
 
 By systematically analyzing the public API, mapping expected behaviors to test cases, and writing tests based on these mappings, you can ensure comprehensive and effective testing. This structured approach helps in covering all scenarios and provides clarity on how to test the API thoroughly.
 
