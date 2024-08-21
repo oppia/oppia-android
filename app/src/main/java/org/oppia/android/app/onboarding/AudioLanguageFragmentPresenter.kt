@@ -116,7 +116,14 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     }
 
     binding.onboardingNavigationContinue.setOnClickListener {
-      updateSelectedAudioLanguage(selectedLanguage, profileId)
+      updateSelectedAudioLanguage(selectedLanguage, profileId).also {
+        val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
+        fragment.startActivity(intent)
+        // Finish this activity as well as all activities immediately below it in the current
+        // task so that the user cannot navigate back to the onboarding flow by pressing the
+        // back button once onboarding is complete
+        fragment.activity?.finishAffinity()
+      }
     }
 
     return binding.root
@@ -140,21 +147,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
       .toLiveData().observe(fragment) {
         when (it) {
-          is AsyncResult.Success -> {
-            val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-            fragment.startActivity(intent)
-            // Finish this activity as well as all activities immediately below it in the current
-            // task so that the user cannot navigate back to the onboarding flow by pressing the
-            // back button once onboarding is complete
-            fragment.activity?.finishAffinity()
-          }
           is AsyncResult.Failure ->
             oppiaLogger.e(
-              "OnboardingAudioLanguageFragment",
+              "AudioLanguageFragment",
               "Failed to set the selected language.",
               it.error
             )
-          is AsyncResult.Pending -> {} // Wait for a result.
+          else -> {} // Do nothing.
         }
       }
   }

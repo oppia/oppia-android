@@ -94,7 +94,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -110,7 +109,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -119,15 +117,12 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.File
-import java.lang.RuntimeException
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -150,19 +145,10 @@ class OnboardingFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @After
   fun tearDown() {
@@ -1011,7 +997,6 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       // Verifies that the default language selection is set if the user does not make a selection.
-      // Language being correctly set is a condition for navigating to the next screen.
       onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
@@ -1039,8 +1024,6 @@ class OnboardingFragmentTest {
           matches(withText(R.string.nigerian_pidgin_localized_language_name))
         )
 
-        // Verifies that the selected language is set successfully.
-        // Language being correctly set is a condition for navigating to the next screen.
         onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
         testCoroutineDispatchers.runCurrent()
         intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
@@ -1100,36 +1083,6 @@ class OnboardingFragmentTest {
         )
       }
     }
-  }
-
-  @Test
-  fun testOnboardingFragment_onboardingV2Enabled_setSelectedLanguageFailed_appCrashes() {
-    setUpTestWithOnboardingV2Enabled()
-    corruptCacheFile()
-
-    launch(OnboardingActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scenario.onActivity { activity ->
-        try {
-          // Accept default selection.
-          onView(withId(R.id.onboarding_language_lets_go_button))
-            .perform(click())
-          testCoroutineDispatchers.runCurrent()
-        } catch (e: RuntimeException) {
-          // Catch the crash to continue the test.
-        }
-
-        val exception = fakeExceptionLogger.getMostRecentException()
-        assertThat(exception).hasMessageThat().contains("app broke")
-      }
-    }
-  }
-
-  private fun corruptCacheFile() {
-    // Statically retrieve the application context since injection may not have yet occurred.
-    val applicationContext = ApplicationProvider.getApplicationContext<Context>()
-    File(applicationContext.filesDir, "app_language_content_database.cache").writeText("broken")
   }
 
   private fun forceDefaultLocale(locale: Locale) {

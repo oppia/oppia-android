@@ -362,8 +362,6 @@ class AudioLanguageFragmentTest {
           matches(withText(R.string.nigerian_pidgin_localized_language_name))
         )
 
-        // Verifies that the selected language is set successfully.
-        // Language being correctly set is a condition for navigating to the next screen.
         onView(withId(R.id.onboarding_navigation_continue)).perform(click())
         testCoroutineDispatchers.runCurrent()
         intended(hasComponent(HomeActivity::class.java.name))

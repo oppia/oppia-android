@@ -123,7 +123,14 @@ class OnboardingFragmentPresenter @Inject constructor(
           }
       }
 
-      onboardingLanguageLetsGoButton.setOnClickListener { updateSelectedLanguage(selectedLanguage) }
+      onboardingLanguageLetsGoButton.setOnClickListener {
+        updateSelectedLanguage(selectedLanguage).also {
+          val intent =
+            OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+          intent.decorateWithUserProfileId(profileId)
+          fragment.startActivity(intent)
+        }
+      }
     }
 
     return binding.root
@@ -151,18 +158,12 @@ class OnboardingFragmentPresenter @Inject constructor(
         fragment,
         { result ->
           when (result) {
-            is AsyncResult.Success -> {
-              val intent =
-                OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-              intent.decorateWithUserProfileId(profileId)
-              fragment.startActivity(intent)
-            }
             is AsyncResult.Failure -> oppiaLogger.e(
               "OnboardingFragment",
               "Failed to set AppLanguageSelection",
               result.error
             )
-            is AsyncResult.Pending -> {}
+            else -> {} // Do nothing. The user should be able to progress regardless of the result.
           }
         }
       )
