@@ -42,6 +42,8 @@ class OnboardingFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    onboardingFragmentPresenter.saveToSavedInstanceState(outState)
+    if (enableOnboardingFlowV2.value) {
+      onboardingFragmentPresenter.saveToSavedInstanceState(outState)
+    }
   }
 }
