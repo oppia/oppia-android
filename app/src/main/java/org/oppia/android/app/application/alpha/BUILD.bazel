@@ -19,7 +19,6 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//domain/src/main/java/org/oppia/android/domain/auth:auth_module",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
     ],
