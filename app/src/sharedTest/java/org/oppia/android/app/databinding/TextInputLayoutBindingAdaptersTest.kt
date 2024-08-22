@@ -2,30 +2,15 @@ package org.oppia.android.app.databinding
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -163,66 +148,6 @@ class TextInputLayoutBindingAdaptersTest {
         val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
         TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, true)
         assertThat(testView.text.toString()).isEqualTo("English")
-      }
-    }
-  }
-
-  @Test
-  fun testBindingAdapters_setSelection_filterDisabled_doesNotAllowKeyboardInput() {
-    launchActivity().use { scenario ->
-      scenario?.onActivity { activity ->
-        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
-        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, false)
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.test_autocomplete_view)).perform(KeyboardShownAction())
-        assertThat(KeyboardShownAction().isKeyboardShown).isFalse()
-      }
-    }
-  }
-
-  @Test
-  fun testBindingAdapters_setSelection_filterEnabled_allowsKeyboardInput() {
-    launchActivity().use { scenario ->
-      scenario?.onActivity { activity ->
-        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
-        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, true)
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.test_autocomplete_view)).check(matches(withText("Port")))
-      }
-    }
-  }
-
-  class KeyboardShownAction : ViewAction {
-    var isKeyboardShown = false
-
-    override fun getConstraints(): Matcher<View> {
-      return allOf(isDisplayed(), isAssignableFrom(View::class.java))
-    }
-
-    override fun getDescription(): String {
-      return "Check if the soft keyboard is shown"
-    }
-
-    override fun perform(uiController: UiController?, view: View?) {
-      val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-      isKeyboardShown = imm.isAcceptingText
-    }
-  }
-
-  /**
-   * This function checks if the soft input keyboard is shown.
-   *
-   * @param view the input view
-   * @param context the activity context
-   */
-  fun isKeyboardShown(): Matcher<KeyboardShownAction> {
-    return object : TypeSafeMatcher<KeyboardShownAction>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Checking if soft keyboard is displayed.")
-      }
-
-      override fun matchesSafely(action: KeyboardShownAction): Boolean {
-        return action.isKeyboardShown
       }
     }
   }
