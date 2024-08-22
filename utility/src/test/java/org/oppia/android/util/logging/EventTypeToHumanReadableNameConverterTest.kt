@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Tests for [StandardEventTypeToHumanReadableNameConverterImpl].
+ * Tests for [EventTypeToHumanReadableNameConverter].
  *
  * Note that this suite has special change detector tests to ensure that the converter conforms to
  * event logger restrictions (such as not having an event name longer than a certain number), which
@@ -29,9 +29,9 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = StandardEventTypeToHumanReadableNameConverterImplTest.TestApplication::class)
-class StandardEventTypeToHumanReadableNameConverterImplTest {
-  @Inject lateinit var converterImpl: StandardEventTypeToHumanReadableNameConverterImpl
+@Config(application = EventTypeToHumanReadableNameConverterTest.TestApplication::class)
+class EventTypeToHumanReadableNameConverterTest {
+  @Inject lateinit var converter: EventTypeToHumanReadableNameConverter
 
   private companion object {
     private val FAILURE_TYPES = setOf(
@@ -49,7 +49,7 @@ class StandardEventTypeToHumanReadableNameConverterImplTest {
   fun testConvertToHumanReadableName_nonErrorTypes_returnsUniqueNameForEach() {
     val nonErrorContexts = ActivityContextCase.values().toSet() - FAILURE_TYPES
 
-    val nonErrorNames = nonErrorContexts.map(converterImpl::convertToHumanReadableName)
+    val nonErrorNames = nonErrorContexts.map(converter::convertToHumanReadableName)
 
     assertThat(nonErrorNames).containsNoDuplicates()
   }
@@ -58,7 +58,7 @@ class StandardEventTypeToHumanReadableNameConverterImplTest {
   fun testConvertToHumanReadableName_errorTypes_shareTheSameName() {
     val errorContexts = FAILURE_TYPES
 
-    val errorNames = errorContexts.map(converterImpl::convertToHumanReadableName)
+    val errorNames = errorContexts.map(converter::convertToHumanReadableName)
 
     assertThat(errorNames.toSet()).hasSize(1)
   }
@@ -68,8 +68,8 @@ class StandardEventTypeToHumanReadableNameConverterImplTest {
     val errorContexts = FAILURE_TYPES
     val nonErrorContexts = ActivityContextCase.values().toSet() - errorContexts
 
-    val nonErrorNames = nonErrorContexts.map(converterImpl::convertToHumanReadableName).toSet()
-    val errorNames = errorContexts.map(converterImpl::convertToHumanReadableName).toSet()
+    val nonErrorNames = nonErrorContexts.map(converter::convertToHumanReadableName).toSet()
+    val errorNames = errorContexts.map(converter::convertToHumanReadableName).toSet()
 
     assertThat(errorNames).containsNoneIn(nonErrorNames)
   }
@@ -77,7 +77,7 @@ class StandardEventTypeToHumanReadableNameConverterImplTest {
   @Test
   fun testConvertToHumanReadableName_allNamesLessThan40Chars() {
     val allContexts = ActivityContextCase.values()
-    val allNames = allContexts.map(converterImpl::convertToHumanReadableName)
+    val allNames = allContexts.map(converter::convertToHumanReadableName)
 
     val namesLongerThan40 = allNames.filter { it.length > 40 }
 
@@ -100,17 +100,17 @@ class StandardEventTypeToHumanReadableNameConverterImplTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: StandardEventTypeToHumanReadableNameConverterImplTest)
+    fun inject(test: EventTypeToHumanReadableNameConverterTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerStandardEventTypeToHumanReadableNameConverterImplTest_TestApplicationComponent.builder()
+      DaggerEventTypeToHumanReadableNameConverterTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: StandardEventTypeToHumanReadableNameConverterImplTest) {
+    fun inject(test: EventTypeToHumanReadableNameConverterTest) {
       component.inject(test)
     }
   }
