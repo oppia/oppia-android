@@ -81,7 +81,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
-  val hasProfileEverBeenAddedValue = ObservableField(true)
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -95,7 +94,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
 
     logProfileChooserEvent()
-    subscribeToWasProfileEverBeenAdded()
 
     binding.apply {
       when (Resources.getSystem().configuration.orientation) {
@@ -111,6 +109,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ProfileSelectionFragmentBinding.setupPortraitMode() {
+    subscribeToWasProfileEverAdded()
+
     profilesList?.apply {
       isNestedScrollingEnabled = false
       adapter = createRecyclerViewAdapter()
@@ -124,21 +124,21 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     profilesListLandscape?.onFlingListener = null
 
     profilesListLandscape?.viewTreeObserver?.addOnGlobalLayoutListener {
-      val lv = profilesListLandscape as RecyclerView
-      if (lv.shouldShowScrollArrows()) {
-        profileScrollLeft?.visibility = View.VISIBLE
-        profileScrollRight?.visibility = View.VISIBLE
+      val landscapeList = profilesListLandscape as RecyclerView
+      if (landscapeList.shouldShowScrollArrows()) {
+        profileListScrollLeft?.visibility = View.VISIBLE
+        profileListScrollRight?.visibility = View.VISIBLE
       } else {
-        profileScrollLeft?.visibility = View.GONE
-        profileScrollRight?.visibility = View.GONE
+        profileListScrollLeft?.visibility = View.GONE
+        profileListScrollRight?.visibility = View.GONE
       }
     }
 
-    profileScrollLeft?.setOnClickListener {
+    profileListScrollLeft?.setOnClickListener {
       snapRecyclerView(layoutManager, snapHelper, true)
     }
 
-    profileScrollRight?.setOnClickListener {
+    profileListScrollRight?.setOnClickListener {
       snapRecyclerView(layoutManager, snapHelper, false)
     }
   }
@@ -159,21 +159,30 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     val newLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
     val targetView = snapHelper.findSnapView(layoutManager ?: newLayoutManager)
-    targetView?.let {
-      val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager ?: newLayoutManager, it)
+    targetView?.let { recyclerView ->
+      val distance =
+        snapHelper.calculateDistanceToFinalSnap(layoutManager ?: newLayoutManager, recyclerView)
       val scrollDistance = distance?.get(0) ?: 0
-      val width = binding.profilesListLandscape?.width ?: 0
-
-      val offset = if (isLeft) scrollDistance - width else width - scrollDistance
+      val scrollableWidth = binding.profilesListLandscape?.let {
+        it.width - (it.paddingStart + it.paddingEnd)
+      } ?: 0
+      val offset =
+        if (isLeft) scrollDistance - scrollableWidth else scrollableWidth - scrollDistance
       binding.profilesListLandscape?.smoothScrollBy(offset, 0)
     }
   }
 
-  private fun subscribeToWasProfileEverBeenAdded() {
-    wasProfileEverBeenAdded.observe(
+  private val wasProfileEverAdded: LiveData<Boolean> by lazy {
+    Transformations.map(
+      profileManagementController.getWasProfileEverAdded().toLiveData(),
+      ::processWasProfileEverAddedResult
+    )
+  }
+
+  private fun subscribeToWasProfileEverAdded() {
+    wasProfileEverAdded.observe(
       activity,
       {
-        hasProfileEverBeenAddedValue.set(it)
         val spanCount = if (it) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
         } else {
@@ -185,35 +194,30 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     )
   }
 
-  private val wasProfileEverBeenAdded: LiveData<Boolean> by lazy {
-    Transformations.map(
-      profileManagementController.getWasProfileEverAdded().toLiveData(),
-      ::processWasProfileEverBeenAddedResult
-    )
-  }
-
-  private fun processWasProfileEverBeenAddedResult(
-    wasProfileEverBeenAddedResult: AsyncResult<Boolean>
+  private fun processWasProfileEverAddedResult(
+    wasProfileEverAddedResult: AsyncResult<Boolean>
   ): Boolean {
-    return when (wasProfileEverBeenAddedResult) {
+    return when (wasProfileEverAddedResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
           "ProfileChooserFragment",
-          "Failed to retrieve the information on wasProfileEverBeenAdded",
-          wasProfileEverBeenAddedResult.error
+          "Failed to retrieve the information on wasProfileEverAdded",
+          wasProfileEverAddedResult.error
         )
         false
       }
       is AsyncResult.Pending -> false
-      is AsyncResult.Success -> wasProfileEverBeenAddedResult.value
+      is AsyncResult.Success -> wasProfileEverAddedResult.value
     }
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    return COLORS_LIST.map {
+    val availableColors = COLORS_LIST.map {
       ContextCompat.getColor(context, it)
-    }.minus(chooserViewModel.usedColors).random()
+    }.toSet().minus(chooserViewModel.usedColors)
+
+    return availableColors.random()
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileItemViewModel> {
@@ -230,14 +234,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     viewModel: ProfileItemViewModel
   ) {
     binding.viewModel = viewModel
-    binding.profileItemContainer.setOnClickListener {
-    }
-  }
-
-  /** Click listener for handling clicks to login to a profile. */
-  fun onProfileClick(profile: Profile) {
-    updateLearnerIdIfAbsent(profile)
-    ensureProfileOnboarded(profile)
   }
 
   private fun addProfileButtonClickListener() {
@@ -255,33 +251,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         AdminAuthActivity.createAdminAuthActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          -1,
+          0,
           selectUniqueRandomColor(),
           AdminAuthEnum.PROFILE_ADD_PROFILE.value
-        )
-      )
-    }
-  }
-
-  /** Handles navigation to the [AdministratorControlsActivity]. */
-  fun routeToAdminPin() {
-    if (chooserViewModel.adminPin.isEmpty()) {
-      val profileId =
-        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
-      activity.startActivity(
-        AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-          activity,
-          profileId
-        )
-      )
-    } else {
-      activity.startActivity(
-        AdminAuthActivity.createAdminAuthActivityIntent(
-          activity,
-          chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
         )
       )
     }
@@ -354,5 +326,35 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       )
       activity.startActivity(pinPasswordIntent)
     }
+  }
+
+  /** Handles navigation to the [AdministratorControlsActivity]. */
+  fun routeToAdminPin() {
+    if (chooserViewModel.adminPin.isEmpty()) {
+      val profileId =
+        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
+      activity.startActivity(
+        AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+          activity,
+          profileId
+        )
+      )
+    } else {
+      activity.startActivity(
+        AdminAuthActivity.createAdminAuthActivityIntent(
+          activity,
+          chooserViewModel.adminPin,
+          chooserViewModel.adminProfileId.internalId,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        )
+      )
+    }
+  }
+
+  /** Click listener for handling clicks to login to a profile. */
+  fun onProfileClick(profile: Profile) {
+    updateLearnerIdIfAbsent(profile)
+    ensureProfileOnboarded(profile)
   }
 }

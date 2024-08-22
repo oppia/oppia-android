@@ -13,6 +13,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/profile_list_container"
+    android:background="@color/component_color_profile_selection_background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -34,7 +35,7 @@
       app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-      android:id="@+id/profile_scroll_left"
+      android:id="@+id/profile_list_scroll_left"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
@@ -47,7 +48,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-      android:id="@+id/profile_scroll_right"
+      android:id="@+id/profile_list_scroll_right"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
@@ -73,8 +74,8 @@
       android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@id/profile_scroll_right"
-      app:layout_constraintStart_toEndOf="@id/profile_scroll_left"
+      app:layout_constraintEnd_toStartOf="@id/profile_list_scroll_right"
+      app:layout_constraintStart_toEndOf="@id/profile_list_scroll_left"
       app:layout_constraintTop_toTopOf="parent"
       app:profileList="@{viewModel.profilesList}" />
 

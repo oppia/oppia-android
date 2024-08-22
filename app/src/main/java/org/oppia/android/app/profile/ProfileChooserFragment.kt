@@ -43,9 +43,9 @@ class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener, Pr
 
   override fun routeToAdminPin() {
     if (enableOnboardingFlowV2.value) {
-      profileChooserFragmentPresenterV1.routeToAdminPin()
-    } else {
       profileChooserFragmentPresenter.routeToAdminPin()
+    } else {
+      profileChooserFragmentPresenterV1.routeToAdminPin()
     }
   }
 
