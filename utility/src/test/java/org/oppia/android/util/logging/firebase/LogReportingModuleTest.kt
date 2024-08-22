@@ -111,7 +111,6 @@ class LogReportingModuleTest {
       RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class,
-      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

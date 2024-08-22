@@ -4343,10 +4343,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventLoggingConfigurationModule.kt"
-  override_min_coverage_percent_required: 0
-}
-test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventTypeToHumanReadableNameConverter.kt"
   test_file_not_required: true
 }
