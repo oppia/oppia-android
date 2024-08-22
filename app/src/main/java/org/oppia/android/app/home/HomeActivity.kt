@@ -37,7 +37,7 @@ class HomeActivity :
 
   @Inject
   lateinit var activityRouter: ActivityRouter
-  // some other change to test cancellation
+  // some other change to test cancellation of running actions
   private var internalProfileId: Int = -1
 
   companion object {
