@@ -84,8 +84,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -342,6 +345,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_selectionIsUpdated() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
@@ -362,8 +366,6 @@ class AudioLanguageFragmentTest {
           matches(withText(R.string.nigerian_pidgin_localized_language_name))
         )
 
-        // Verifies that the selected language is set successfully.
-        // Language being correctly set is a condition for navigating to the next screen.
         onView(withId(R.id.onboarding_navigation_continue)).perform(click())
         testCoroutineDispatchers.runCurrent()
         intended(hasComponent(HomeActivity::class.java.name))
@@ -372,6 +374,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(

@@ -109,7 +109,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -118,7 +117,6 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -147,17 +145,10 @@ class OnboardingFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
 
   @After
   fun tearDown() {
@@ -1006,7 +997,6 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       // Verifies that the default language selection is set if the user does not make a selection.
-      // Language being correctly set is a condition for navigating to the next screen.
       onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))
@@ -1034,8 +1024,6 @@ class OnboardingFragmentTest {
           matches(withText(R.string.nigerian_pidgin_localized_language_name))
         )
 
-        // Verifies that the selected language is set successfully.
-        // Language being correctly set is a condition for navigating to the next screen.
         onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
         testCoroutineDispatchers.runCurrent()
         intended(hasComponent(OnboardingProfileTypeActivity::class.java.name))

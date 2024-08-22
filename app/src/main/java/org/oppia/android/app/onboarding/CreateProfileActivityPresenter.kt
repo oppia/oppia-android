@@ -12,10 +12,10 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
-
-/** Arguments key for [CreateProfileFragment] args. */
+/** Argument key for [CreateProfileFragment] arguments. */
 const val CREATE_PROFILE_FRAGMENT_ARGS = "CreateProfileFragment.args"
+
+private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
 
 /** Presenter for [CreateProfileActivity]. */
 class CreateProfileActivityPresenter @Inject constructor(
