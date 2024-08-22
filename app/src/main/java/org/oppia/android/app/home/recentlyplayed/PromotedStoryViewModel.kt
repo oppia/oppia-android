@@ -18,6 +18,7 @@ class PromotedStoryViewModel(
   private val promotedStoryClickListener: PromotedStoryClickListener,
   private val position: Int,
   private val resourceHandler: AppLanguageResourceHandler,
+  val showClassroomLabel: Boolean,
   translationController: TranslationController
 ) : RecentlyPlayedItemViewModel() {
   /** Sets the story title of the recently played story. */

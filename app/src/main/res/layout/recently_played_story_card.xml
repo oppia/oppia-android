@@ -105,6 +105,7 @@
           android:textAllCaps="true"
           android:textColor="@color/component_color_classroom_promoted_list_classroom_label_color"
           android:background="@drawable/classroom_label_text_background"
+          android:visibility="@{viewModel.showClassroomLabel ? View.VISIBLE : View.GONE}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/topic_name_text_view" />
