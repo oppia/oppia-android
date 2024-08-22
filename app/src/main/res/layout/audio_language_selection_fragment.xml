@@ -97,7 +97,7 @@
           android:inputType="none"
           android:padding="@dimen/onboarding_shared_padding_small"
           app:filter="@{false}"
-          app:selection="@{viewModel.selectedAudioLanguage}" />
+          app:languageSelection="@{viewModel.selectedAudioLanguage}" />
       </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.card.MaterialCardView>
 

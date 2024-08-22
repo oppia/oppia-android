@@ -119,7 +119,7 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the selected image was not stored properly. */
   class FailedToStoreImageException(msg: String) : Exception(msg)
 
-  /** Indicates that the profile's directory was not delete properly. */
+  /** Indicates that the profile's directory was not deleted properly. */
   class FailedToDeleteDirException(msg: String) : Exception(msg)
 
   /** Indicates that the given profileId is not associated with an existing profile. */
@@ -130,6 +130,9 @@ class ProfileManagementController @Inject constructor(
 
   /** Indicates that the Profile already has admin. */
   class ProfileAlreadyHasAdminException(msg: String) : Exception(msg)
+
+  /** Indicates that the a ProfileType was not passed. */
+  class UnknownProfileTypeException(msg: String) : Exception(msg)
 
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
@@ -176,7 +179,10 @@ class ProfileManagementController @Inject constructor(
      * Indicates that the operation failed due to an attempt to re-elevate an administrator to
      * administrator status (this should never happen in regular app operations).
      */
-    PROFILE_ALREADY_HAS_ADMIN
+    PROFILE_ALREADY_HAS_ADMIN,
+
+    /** Indicates that the operation failed due to the profileType property not supplied. */
+    PROFILE_TYPE_UNKNOWN,
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -521,10 +527,21 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setProfileType(profileType).build()
+
+      val updatedProfile = profile.toBuilder()
+
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
+        updatedProfile.profileType = profileType
+      }
+
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
-        updatedProfile
+        updatedProfile.build()
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
@@ -846,7 +863,14 @@ class ProfileManagementController @Inject constructor(
           ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
-      updatedProfile.profileType = profileType
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
+        updatedProfile.profileType = profileType
+      }
 
       updatedProfile.name = newName
 
@@ -1144,6 +1168,12 @@ class ProfileManagementController @Inject constructor(
         AsyncResult.Failure(
           ProfileAlreadyHasAdminException(
             "Profile cannot be an admin"
+          )
+        )
+      ProfileActionStatus.PROFILE_TYPE_UNKNOWN ->
+        AsyncResult.Failure(
+          UnknownProfileTypeException(
+            "ProfileType must be set"
           )
         )
     }

@@ -14,6 +14,8 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.options.AudioLanguageSelectionViewModel
@@ -21,6 +23,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
@@ -36,11 +39,12 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  private val translationController: TranslationController,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
-  private lateinit var selectedLanguage: String
+  private lateinit var selectedLanguage: OppiaLanguage
 
   /**
    * Returns a newly inflated view to render the fragment with an evaluated audio language as the
@@ -74,13 +78,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     audioLanguageSelectionViewModel.updateProfileId(profileId)
 
-    audioLanguageSelectionViewModel.initializeAvailableAudioLanguages()
-
-    if (!savedSelectedLanguage.isNullOrBlank()) {
-      setSelectedLanguage(savedSelectedLanguage)
-    } else {
-      observePreselectedLanguage()
-    }
+    savedSelectedLanguage?.let {
+      if (it != OppiaLanguage.LANGUAGE_UNSPECIFIED) {
+        setSelectedLanguage(it)
+      } else {
+        observePreselectedLanguage()
+      }
+    } ?: observePreselectedLanguage()
 
     binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
       R.string.audio_language_fragment_text,
@@ -89,14 +93,14 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
 
-    audioLanguageSelectionViewModel.availableAudioLanguages.observe(
+    audioLanguageSelectionViewModel.supportedOppiaLanguagesLiveData.observe(
       fragment,
       { languages ->
         val adapter = ArrayAdapter(
           fragment.requireContext(),
           R.layout.onboarding_language_dropdown_item,
           R.id.onboarding_language_text_view,
-          languages
+          languages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
         )
         binding.audioLanguageDropdownList.setAdapter(adapter)
       }
@@ -107,16 +111,25 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
       onItemClickListener =
         AdapterView.OnItemClickListener { _, _, position, _ ->
-          adapter.getItem(position).let { selectedItem ->
-            if (selectedItem != null) {
-              selectedLanguage = selectedItem as String
+          val selectedItem = adapter.getItem(position) as? String
+          selectedItem?.let {
+            val localizedNameMap = OppiaLanguage.values().associateBy { oppiaLanguage ->
+              appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
             }
+            selectedLanguage = localizedNameMap[it] ?: OppiaLanguage.ENGLISH
           }
         }
     }
 
     binding.onboardingNavigationContinue.setOnClickListener {
-      updateSelectedAudioLanguage(selectedLanguage, profileId)
+      updateSelectedAudioLanguage(selectedLanguage, profileId).also {
+        val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
+        fragment.startActivity(intent)
+        // Finish this activity as well as all activities immediately below it in the current
+        // task so that the user cannot navigate back to the onboarding flow by pressing the
+        // back button once onboarding is complete
+        fragment.activity?.finishAffinity()
+      }
     }
 
     return binding.root
@@ -129,33 +142,24 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun setSelectedLanguage(selectedLanguage: String) {
+  private fun setSelectedLanguage(selectedLanguage: OppiaLanguage) {
     this.selectedLanguage = selectedLanguage
     audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
   }
 
-  private fun updateSelectedAudioLanguage(selectedLanguage: String, profileId: ProfileId) {
-    val audioLanguage =
-      appLanguageResourceHandler.getAudioLanguageFromLocalizedName(selectedLanguage)
-    profileManagementController.updateAudioLanguage(profileId, audioLanguage).toLiveData()
-      .observe(fragment) {
+  private fun updateSelectedAudioLanguage(selectedLanguage: OppiaLanguage, profileId: ProfileId) {
+    val audioLanguageSelection =
+      AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
+    translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
+      .toLiveData().observe(fragment) {
         when (it) {
-          is AsyncResult.Success -> {
-            loginToProfile(profileId)
-            val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-            fragment.startActivity(intent)
-            // Finish this activity as well as all activities immediately below it in the current
-            // task so that the user cannot navigate back to the onboarding flow by pressing the
-            // back button once onboarding is complete
-            fragment.activity?.finishAffinity()
-          }
           is AsyncResult.Failure ->
             oppiaLogger.e(
-              "OnboardingAudioLanguageFragment",
+              "AudioLanguageFragment",
               "Failed to set the selected language.",
               it.error
             )
-          is AsyncResult.Pending -> {} // Wait for a result.
+          else -> {} // Do nothing.
         }
       }
   }

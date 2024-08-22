@@ -46,7 +46,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
-  private lateinit var selectedLanguage: String
+  private lateinit var selectedLanguage: OppiaLanguage
 
   /** Handle creation and binding of the [OnboardingFragment] layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, outState: Bundle?): View {
@@ -61,9 +61,9 @@ class OnboardingFragmentPresenter @Inject constructor(
       OnboardingFragmentStateBundle.getDefaultInstance()
     )?.selectedLanguage
 
-    if (!savedSelectedLanguage.isNullOrBlank()) {
+    if (savedSelectedLanguage != null) {
       selectedLanguage = savedSelectedLanguage
-      onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(savedSelectedLanguage)
+      onboardingAppLanguageViewModel.setSystemLanguageLivedata(savedSelectedLanguage)
     } else {
       initializeSelectedLanguageToSystemLanguage()
     }
@@ -97,7 +97,12 @@ class OnboardingFragmentPresenter @Inject constructor(
         fragment,
         { language ->
           selectedLanguage = language
-          onboardingLanguageDropdown.setText(selectedLanguage, false)
+          onboardingLanguageDropdown.setText(
+            appLanguageResourceHandler.computeLocalizedDisplayName(
+              language
+            ),
+            false
+          )
         }
       )
 
@@ -107,15 +112,25 @@ class OnboardingFragmentPresenter @Inject constructor(
         onItemClickListener =
           AdapterView.OnItemClickListener { _, _, position, _ ->
             adapter.getItem(position).let { selectedItem ->
-              if (selectedItem != null) {
-                selectedLanguage = selectedItem as String
-                onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(selectedLanguage)
+              selectedItem?.let {
+                val localizedNameMap = OppiaLanguage.values().associateBy { oppiaLanguage ->
+                  appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
+                }
+                selectedLanguage = localizedNameMap[it] ?: OppiaLanguage.ENGLISH
+                onboardingAppLanguageViewModel.setSystemLanguageLivedata(selectedLanguage)
               }
             }
           }
       }
 
-      onboardingLanguageLetsGoButton.setOnClickListener { updateSelectedLanguage(selectedLanguage) }
+      onboardingLanguageLetsGoButton.setOnClickListener {
+        updateSelectedLanguage(selectedLanguage).also {
+          val intent =
+            OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+          intent.decorateWithUserProfileId(profileId)
+          fragment.startActivity(intent)
+        }
+      }
     }
 
     return binding.root
@@ -136,26 +151,19 @@ class OnboardingFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun updateSelectedLanguage(selectedLanguage: String) {
-    val oppiaLanguage = appLanguageResourceHandler.getOppiaLanguageFromDisplayName(selectedLanguage)
-    val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(oppiaLanguage).build()
+  private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
+    val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
     translationController.updateAppLanguage(profileId, selection).toLiveData()
       .observe(
         fragment,
         { result ->
           when (result) {
-            is AsyncResult.Success -> {
-              val intent =
-                OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-              intent.decorateWithUserProfileId(profileId)
-              fragment.startActivity(intent)
-            }
             is AsyncResult.Failure -> oppiaLogger.e(
               "OnboardingFragment",
               "Failed to set AppLanguageSelection",
               result.error
             )
-            is AsyncResult.Pending -> {}
+            else -> {} // Do nothing. The user should be able to progress regardless of the result.
           }
         }
       )
@@ -165,10 +173,8 @@ class OnboardingFragmentPresenter @Inject constructor(
     translationController.getSystemLanguageLocale().toLiveData().observe(
       fragment,
       { result ->
-        onboardingAppLanguageViewModel.setSelectedLanguageDisplayName(
-          appLanguageResourceHandler.computeLocalizedDisplayName(
-            processSystemLanguageResult(result)
-          )
+        onboardingAppLanguageViewModel.setSystemLanguageLivedata(
+          processSystemLanguageResult(result)
         )
       }
     )
@@ -199,11 +205,9 @@ class OnboardingFragmentPresenter @Inject constructor(
       { result ->
         when (result) {
           is AsyncResult.Success -> {
-            val supportedLanguages = mutableListOf<String>()
-            result.value.map {
-              supportedLanguages.add(appLanguageResourceHandler.computeLocalizedDisplayName(it))
-              onboardingAppLanguageViewModel.setSupportedAppLanguages(supportedLanguages)
-            }
+            onboardingAppLanguageViewModel.setSupportedAppLanguages(
+              result.value.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+            )
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(

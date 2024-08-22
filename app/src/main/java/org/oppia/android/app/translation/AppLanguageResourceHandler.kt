@@ -200,18 +200,6 @@ class AppLanguageResourceHandler @Inject constructor(
     return localizedNameMap[displayName] ?: OppiaLanguage.ENGLISH
   }
 
-  /**
-   * Returns an [AudioLanguage] from its human-readable, localized representation.
-   * It is expected that each input string is localized to the user's current locale, as per
-   * [computeLocalizedDisplayName].
-   */
-  fun getAudioLanguageFromLocalizedName(localizedName: String): AudioLanguage {
-    val localizedNameMap = AudioLanguage.values()
-      .filter { it !in IGNORED_AUDIO_LANGUAGES }
-      .associateBy { computeLocalizedDisplayName(it) }
-    return localizedNameMap[localizedName] ?: AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-  }
-
   private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
     // TODO(#3791): Remove this dependency.
     val locale = Locale(languageCode, regionCode)
