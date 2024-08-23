@@ -153,7 +153,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/PinPassword
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/PinPasswordActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserActivity.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserFragmentPresenterV1.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ResetPinDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ResetPinDialogFragmentPresenter.kt"
