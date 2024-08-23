@@ -518,9 +518,7 @@ class AudioLanguageFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }
