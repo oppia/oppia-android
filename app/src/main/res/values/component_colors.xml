@@ -325,10 +325,13 @@
   <color name="component_color_edittext_stroke_color">@color/color_palette_edittext_stroke_color</color>
   <color name="component_color_shared_error_color">@color/color_palette_text_error_color</color>
   <!-- Classroom List Activity -->
+  <color name="component_color_classroom_shared_header_text_color">@color/color_palette_classroom_shared_header_text_color</color>
   <color name="component_color_classroom_card_color">@color/color_palette_classroom_card_color</color>
-  <color name="component_color_classroom_card_icon_color">@color/color_palette_classroom_shared_text_color</color>
+  <color name="component_color_classroom_card_selected_color">@color/color_palette_classroom_card_selected_color</color>
+  <color name="component_color_classroom_card_icon_stroke_color">@color/color_palette_classroom_card_icon_stroke_color</color>
   <color name="component_color_classroom_card_text_color">@color/color_palette_classroom_shared_text_color</color>
   <color name="component_color_classroom_all_topics_header_text_color">@color/color_palette_classroom_shared_text_color</color>
   <color name="component_color_classroom_topic_list_background_color">@color/color_palette_classroom_topic_list_background_color</color>
   <color name="component_color_classroom_promoted_list_classroom_label_color">@color/color_palette_classroom_promoted_list_classroom_label_color</color>
+  <color name="component_color_classroom_promoted_list_card_background_color">@color/color_palette_classroom_promoted_list_card_background_color</color>
 </resources>

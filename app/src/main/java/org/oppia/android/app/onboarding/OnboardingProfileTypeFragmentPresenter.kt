@@ -57,6 +57,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
         // TODO(#4938): Add profileId and ProfileType to intent extras.
         fragment.startActivity(intent)
+        // Clear back stack so that user cannot go back to the onboarding flow.
         fragment.activity?.finishAffinity()
       }
 

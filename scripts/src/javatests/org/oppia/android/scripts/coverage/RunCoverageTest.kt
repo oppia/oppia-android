@@ -8,19 +8,24 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.coverage.reporter.BOLD
+import org.oppia.android.scripts.coverage.reporter.MIN_THRESHOLD
+import org.oppia.android.scripts.coverage.reporter.RED
+import org.oppia.android.scripts.coverage.reporter.RESET
+import org.oppia.android.scripts.coverage.reporter.ReportFormat
+import org.oppia.android.scripts.proto.Coverage
+import org.oppia.android.scripts.proto.CoverageReport
+import org.oppia.android.scripts.proto.CoveredLine
+import org.oppia.android.scripts.proto.TestFileExemptions
+import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
-
-  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = System.out
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
@@ -30,8 +35,7 @@ class RunCoverageTest {
   private lateinit var markdownOutputPath: String
   private lateinit var htmlOutputPath: String
 
-  private lateinit var sourceContent: String
-  private lateinit var testContent: String
+  private lateinit var testExemptions: String
 
   @Before
   fun setUp() {
@@ -39,45 +43,10 @@ class RunCoverageTest {
     markdownOutputPath = "${tempFolder.root}/coverage_reports/report.md"
     htmlOutputPath = "${tempFolder.root}/coverage_reports/report.html"
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-
-    sourceContent =
-      """
-      package com.example
-      
-      class TwoSum {
-        companion object {
-          fun sumNumbers(a: Int, b: Int): Any {
-            return if (a == 0 && b == 0) {
-                "Both numbers are zero"
-            } else {
-                a + b
-            }
-          }
-        }
-      }
-      """.trimIndent()
-
-    testContent =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumTest {
-        @Test
-        fun testSumNumbers() {
-          assertEquals(TwoSum.sumNumbers(0, 1), 1)
-          assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-          assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-        }
-      }
-      """.trimIndent()
   }
 
   @After
   fun tearDown() {
-    System.setOut(originalOut)
     scriptBgDispatcher.close()
   }
 
@@ -92,37 +61,60 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_missingTestFileNotExempted_throwsException() {
+  fun testRunCoverage_missingTestFileNotExempted_generatesFailureReport() {
+    val sampleFile = "file.kt"
     testBazelWorkspace.initEmptyWorkspace()
+    tempFolder.newFile(sampleFile)
     val exception = assertThrows<IllegalStateException>() {
-      val sampleFile = File(tempFolder.root.absolutePath, "file.kt")
-      sampleFile.createNewFile()
-      main(tempFolder.root.absolutePath, "file.kt")
+      main(
+        tempFolder.root.absolutePath,
+        sampleFile,
+        "--format=Markdown"
+      )
     }
 
-    assertThat(exception).hasMessageThat().contains("No appropriate test file found")
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val failureMessage =
+      "No appropriate test file found for $sampleFile."
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| ${getFilenameAsDetailsSummary(sampleFile)} | $failureMessage | :x: |")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
   }
 
   @Test
   fun testRunCoverage_invalidFormat_throwsException() {
     testBazelWorkspace.initEmptyWorkspace()
     val exception = assertThrows<IllegalArgumentException>() {
-      main(tempFolder.root.absolutePath, "file.kt", "format=PDF")
+      main(tempFolder.root.absolutePath, "file.kt", "--format=PDF")
     }
 
     assertThat(exception).hasMessageThat().contains("Unsupported report format")
   }
 
   @Test
-  fun testRunCoverage_ignoreCaseMarkdownArgument_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_ignoreCaseMarkdownArgument_generatesCoverageReport() {
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -130,26 +122,26 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "format=Markdown",
-      "processTimeout=10"
+      "--format=Markdown",
+      "--processTimeout=10"
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+      "$coverageDir/CoverageReport.md"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
 
   @Test
-  fun testRunCoverage_ignoreCaseHtmlArgument_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_ignoreCaseHtmlArgument_generatesCoverageReport() {
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -157,8 +149,8 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "format=Html",
-      "processTimeout=10"
+      "--format=Html",
+      "--processTimeout=10"
     )
 
     val outputFilePath = "${tempFolder.root}" +
@@ -168,15 +160,15 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_reorderedArguments_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_reorderedArguments_generatesCoverageReport() {
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -184,45 +176,355 @@ class RunCoverageTest {
     main(
       "${tempFolder.root}",
       filePath,
-      "processTimeout=10",
-      "format=MARKDOWN"
+      "--processTimeout=10",
+      "--format=MARKDOWN"
     )
 
     val outputFilePath = "${tempFolder.root}" +
-      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
+      "$coverageDir/CoverageReport.md"
 
     assertThat(File(outputFilePath).exists()).isTrue()
   }
 
   @Test
-  fun testRunCoverage_testFileExempted_noCoverage() {
-    System.setOut(PrintStream(outContent))
-    val exemptedFilePath = "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+  fun testRunCoverage_testFileExempted_exemptedFromCoverageAnalysis() {
+    val exemptedFile = "TestExempted.kt"
+    val exemptedFilePathList = listOf(exemptedFile)
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     RunCoverage(
       "${tempFolder.root}",
-      exemptedFilePath,
+      exemptedFilePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
-    assertThat(outContent.toString().trim()).isEqualTo(
-      "This file is exempted from having a test file; skipping coverage check."
-    )
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(exemptedFile)} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sampleTestsDefaultFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_sourceFileIncompatibleWithCodeCoverage_exemptedFromCoverageAnalysis() {
+    val exemptedFile = "SourceIncompatibleWithCoverage.kt"
+    val exemptedFilePathList = listOf(exemptedFile)
+    val exemptionReason = "This file is incompatible with code coverage tooling; " +
+      "skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.sourceFileIsIncompatibleWithCodeCoverage = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    RunCoverage(
+      "${tempFolder.root}",
+      exemptedFilePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+    ).execute()
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(exemptedFile)} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withNonKotlinFileInput_analyzeOnlyKotlinFiles() {
+    val kotlinFilePath = "coverage/main/java/com/example/AddNums.kt"
+    val nonKotlinFilePath1 = "screen.xml"
+    val nonKotlinFilePath2 = "coverage.txt"
+    val nonKotlinFilePath3 = "report.md"
+
+    tempFolder.newFile("screen.xml")
+    tempFolder.newFile("coverage.txt")
+    tempFolder.newFile("report.md")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      kotlinFilePath,
+      nonKotlinFilePath1,
+      nonKotlinFilePath2,
+      nonKotlinFilePath3
+    )
+
+    val expectedResult = getExpectedHtmlText(kotlinFilePath)
+
+    assertThat(readHtmlReport(kotlinFilePath)).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withTestFileInput_mapsToSourceFileAndGeneratesCoverageReport() {
+    val testFilePath = "coverage/test/java/com/example/AddNumsTest.kt"
+    val sourceFilePath = testFilePath.replace("/test/", "/main/").replace("Test.kt", ".kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      testFilePath,
+    )
+
+    val expectedResult = getExpectedHtmlText(sourceFilePath)
+
+    assertThat(readHtmlReport(sourceFilePath)).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withIncorrectPackageStructure_generatesFailureReport() {
+    val filePathList = listOf(
+      "coverage/example/AddNums.kt",
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/example",
+      testSubpackage = "coverage/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val failureMessage = "Coverage retrieval failed for the test target: " +
+      "//coverage/example:AddNumsTest"
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| //coverage/example:AddNumsTest | $failureMessage | :x: |")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testRunCoverage_withNoDepsToSourceFile_generatesFailureReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/SubNums.kt",
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val subTestFile = tempFolder.newFile("coverage/test/java/com/example/SubNumsTest.kt")
+    subTestFile.writeText(
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      import com.example.AddNums
+      
+      class SubNumsTest {
+      
+          @Test
+          fun testSubNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.appendText(
+      """
+      kt_jvm_test(
+          name = "SubNumsTest",
+          srcs = ["SubNumsTest.kt"],
+          deps = [
+            "//coverage/main/java/com/example:addnums",
+            "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.SubNumsTest",
+      )
+      """.trimIndent()
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val failureMessage = "Source File: SubNums.kt not found in the coverage data"
+
+    val expectedMarkdown = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| //coverage/test/java/com/example:SubNumsTest | $failureMessage | :x: |")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedMarkdown)
+  }
+
+  @Test
+  fun testRunCoverage_withMissingTestDeclarations_generatesFailureReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.writeText("")
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val failureMessage = "Missing test declaration(s) for existing test file(s): " +
+      "${listOf("coverage/test/java/com/example/AddNumsTest.kt")}."
+
+    val expectedFailureReport = "| ${getFilenameAsDetailsSummary(filePathList.get(0))} " +
+      "| $failureMessage |"
+
+    assertThat(readFinalMdReport()).contains(expectedFailureReport)
+  }
+
+  @Test
+  fun testRunCoverage_sampleTestsDefaultFormat_generatesCoverageReport() {
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
@@ -232,24 +534,460 @@ class RunCoverageTest {
       filePath,
     )
 
-    val outputReportText = File(
-      "${tempFolder.root}" +
-        "$coverageDir/${filePath.removeSuffix(".kt")}/coverage.md"
-    ).readText()
+    val expectedResult = getExpectedHtmlText(filePath)
 
-    val expectedResult = getExpectedMarkdownText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readHtmlReport(filePath)).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sampleTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_sampleTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withMultipleFilesMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/SubNums.kt"
+    )
+
+    val subSourceContent =
+      """
+      package com.example
+      
+      class SubNums {
+        companion object {
+          fun subNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a - b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val subTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class SubNumsTest {
+        @Test
+        fun testSubNumbers() {
+          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
+          assertEquals(SubNums.subNumbers(4, 3), 1)         
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "SubNums",
+      testFilename = "SubNumsTest",
+      sourceContent = subSourceContent,
+      testContent = subTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **75.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n"
+      )
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withMultipleFiles_generatesOverallCoveragePercentage() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/SubNums.kt"
+    )
+
+    val subSourceContent =
+      """
+      package com.example
+      
+      class SubNums {
+        companion object {
+          fun subNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a - b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val subTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class SubNumsTest {
+        @Test
+        fun testSubNumbers() {
+          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
+          assertEquals(SubNums.subNumbers(4, 3), 1)         
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "SubNums",
+      testFilename = "SubNumsTest",
+      sourceContent = subSourceContent,
+      testContent = subTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    assertThat(readFinalMdReport()).contains("Overall Coverage: **75.00%**")
+  }
+
+  @Test
+  fun testRunCoverage_withCoverageStatusFail_throwsException() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessFiles_generatesFinalCoverageReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withFailureFiles_generatesFinalCoverageReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |\n"
+      )
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_highCoverageExemptionFailFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "coverage/main/java/com/example/HighCoverageExempted.kt"
+    val filePathList = listOf(exemptedFile)
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.overrideMinCoveragePercentRequired = 101
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class HighCoverageExempted {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class HighCoverageExemptedTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(HighCoverageExempted.sumNumbers(0, 1), 1)
+          assertEquals(HighCoverageExempted.sumNumbers(3, 4), 7)         
+          assertEquals(HighCoverageExempted.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "HighCoverageExempted",
+      testFilename = "HighCoverageExemptedTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **75.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":x: | 101% _*_ |"
+      )
+      append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_lowCoverageExemptionFailFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "coverage/main/java/com/example/LowCoverageExempted.kt"
+    val filePathList = listOf(exemptedFile)
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.overrideMinCoveragePercentRequired = 0
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class LowCoverageExempted {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowCoverageExemptedTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowCoverageExempted",
+      testFilename = "LowCoverageExemptedTest",
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
@@ -258,423 +996,1090 @@ class RunCoverageTest {
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
+      filePathList,
       ReportFormat.MARKDOWN,
-      markdownOutputPath,
       longCommandExecutor,
-      scriptBgDispatcher
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
+          ":white_check_mark: | 0% _*_ |"
+      )
+      append("\n\n>**_*_** represents tests with custom overridden pass/fail coverage thresholds\n")
+      append("</details>")
+    }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_scriptTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "scripts/java/com/example/TwoSum.kt"
+  fun testRunCoverage_withSuccessAndFailureFiles_generatesFinalCoverageReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt"
+    )
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **37.50%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      exemptedFile
+    )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "scripts/java/com/example",
-      testSubpackage = "scripts/javatests/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePath,
-      ReportFormat.MARKDOWN,
-      markdownOutputPath,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_appTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/test/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePath,
-      ReportFormat.MARKDOWN,
-      markdownOutputPath,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_localTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
-
-    testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumLocalTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumLocalTest",
-      sourceContent = sourceContent,
-      testContent = testContentLocal,
-      sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/test/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePath,
-      ReportFormat.MARKDOWN,
-      markdownOutputPath,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_sharedTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
-      sourceSubpackage = "app/main/java/com/example",
-      testSubpackage = "app/sharedTest/java/com/example"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePath,
-      ReportFormat.MARKDOWN,
-      markdownOutputPath,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
-
-    testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
-      """
-      package com.example
-      
-      import org.junit.Assert.assertEquals
-      import org.junit.Test
-      
-      class TwoSumLocalTest {
-      
-          @Test
-          fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
-          }
-      }
-      """.trimIndent()
-
-    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      sourceContent = sourceContent,
-      testContentShared = testContent,
-      testContentLocal = testContentLocal,
-      subpackage = "app"
-    )
-
-    RunCoverage(
-      "${tempFolder.root}",
-      filePath,
-      ReportFormat.MARKDOWN,
-      markdownOutputPath,
-      longCommandExecutor,
-      scriptBgDispatcher
-    ).execute()
-
-    val outputReportText = File(markdownOutputPath).readText()
-    val expectedResult = getExpectedMarkdownText(filePath)
-
-    assertThat(outputReportText).isEqualTo(expectedResult)
-  }
-
-  @Test
-  fun testRunCoverage_sampleTestsHtmlFormat_returnsCoverageData() {
-    val filePath = "coverage/main/java/com/example/TwoSum.kt"
-
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "coverage/main/java/com/example",
       testSubpackage = "coverage/test/java/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
-      ReportFormat.HTML,
-      htmlOutputPath,
+      filePathList,
+      ReportFormat.MARKDOWN,
       longCommandExecutor,
-      scriptBgDispatcher
+      scriptBgDispatcher,
+      testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **75.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(1))} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
+      append("</details>")
+    }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_scriptTestsHtmlFormat_returnsCoverageData() {
-    val filePath = "scripts/java/com/example/TwoSum.kt"
+  fun testRunCoverage_withFailureAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
+    val filePathList = listOf(
+      "coverage/main/java/com/example/LowTestNums.kt",
+      exemptedFile
+    )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 2\n")
+      append("Overall Coverage: **0.00%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(1))} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessFailureAndExemptedFiles_generatesFinalCoverageReport() {
+    val exemptedFile = "TestExempted.kt"
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt",
+      exemptedFile
+    )
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 3\n")
+      append("Overall Coverage: **37.50%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(2))} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withSuccessFailureMissingTestAndExemptedFiles_generatesFinalReport() {
+    val exemptedFile = "TestExempted.kt"
+    val exemptionReason = "This file is exempted from having a test file; skipping coverage check."
+    val exemptionsReferenceNote = ">Refer [test_file_exemptions.textproto]" +
+      "(https://github.com/oppia/oppia-android/blob/develop/" +
+      "scripts/assets/test_file_exemptions.textproto) for the comprehensive " +
+      "list of file exemptions and their required coverage percentages."
+
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/LowTestNums.kt",
+      exemptedFile,
+      "file.kt"
+    )
+
+    tempFolder.newFile("file.kt")
+
+    val testFileExemption = TestFileExemptions.TestFileExemption.newBuilder().apply {
+      this.exemptedFilePath = exemptedFile
+      this.testFileNotRequired = true
+    }.build()
+    val testFileExemptions = TestFileExemptions.newBuilder().apply {
+      addTestFileExemption(testFileExemption)
+    }.build()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "LowTestNums",
+      testFilename = "LowTestNumsTest",
+      sourceContent = getLowTestSourceContent(),
+      testContent = getLowTestTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      RunCoverage(
+        "${tempFolder.root}",
+        filePathList,
+        ReportFormat.MARKDOWN,
+        longCommandExecutor,
+        scriptBgDispatcher,
+        testFileExemptionTextProtoPath = createTestFileExemptionsProtoFile(testFileExemptions)
+      ).execute()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Coverage Analysis$BOLD$RED FAILED$RESET")
+
+    val failureMessage =
+      "No appropriate test file found for file.kt."
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 4\n")
+      append("Overall Coverage: **37.50%**\n")
+      append("Coverage Analysis: **FAIL** :x:\n")
+      append("##\n\n")
+      append("### Failure Cases\n\n")
+      append("| File | Failure Reason | Status |\n")
+      append("|------|----------------|--------|\n")
+      append("| ${getFilenameAsDetailsSummary("file.kt")} | $failureMessage | :x: |\n\n")
+      append("### Failing coverage\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(1))} | 0.00% | 0 / 4 | " +
+          ":x: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>\n\n")
+      append("### Exempted coverage\n")
+      append("<details><summary>Files exempted from coverage</summary><br>")
+      append("\n\n")
+      append("| File | Exemption Reason |\n")
+      append("|------|------------------|\n")
+      append("| ${getFilenameAsDetailsSummary(filePathList.get(2))} | $exemptionReason |")
+      append("\n\n")
+      append(exemptionsReferenceNote)
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_scriptTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("scripts/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "scripts/java/com/example",
       testSubpackage = "scripts/javatests/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
-      ReportFormat.HTML,
-      htmlOutputPath,
+      filePathList,
+      ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_appTestsHtmlFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_appTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
-      ReportFormat.HTML,
-      htmlOutputPath,
+      filePathList,
+      ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_localTestsHtmlFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_localTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
+    val addTestContentLocal =
       """
       package com.example
       
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumLocalTest {
+      class AddNumsLocalTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumLocalTest",
-      sourceContent = sourceContent,
-      testContent = testContentLocal,
+      filename = "AddNums",
+      testFilename = "AddNumsLocalTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = addTestContentLocal,
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/test/java/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
-      ReportFormat.HTML,
-      htmlOutputPath,
+      filePathList,
+      ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedTestsHtmlFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_sharedTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.addSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      testFilename = "TwoSumTest",
-      sourceContent = sourceContent,
-      testContent = testContent,
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
       sourceSubpackage = "app/main/java/com/example",
       testSubpackage = "app/sharedTest/java/com/example"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      filePath,
-      ReportFormat.HTML,
-      htmlOutputPath,
+      filePathList,
+      ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val expectedResult = getExpectedMarkdownText(filePathList.get(0))
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
   @Test
-  fun testRunCoverage_sharedAndLocalTestsHtmlFormat_returnsCoverageData() {
-    val filePath = "app/main/java/com/example/TwoSum.kt"
+  fun testRunCoverage_sharedAndLocalTestsMarkdownFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
 
     testBazelWorkspace.initEmptyWorkspace()
-    val testContentLocal =
+
+    val addTestContentShared =
       """
       package com.example
       
       import org.junit.Assert.assertEquals
       import org.junit.Test
       
-      class TwoSumLocalTest {
+      class AddNumsTest {
       
           @Test
           fun testSumNumbers() {
-              assertEquals(TwoSum.sumNumbers(0, 1), 1)
-              assertEquals(TwoSum.sumNumbers(3, 4), 7)         
-              assertEquals(TwoSum.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
+    val addTestContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
           }
       }
       """.trimIndent()
 
     testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
-      filename = "TwoSum",
-      sourceContent = sourceContent,
-      testContentShared = testContent,
-      testContentLocal = testContentLocal,
+      filename = "AddNums",
+      sourceContent = getAddNumsSourceContent(),
+      testContentShared = addTestContentShared,
+      testContentLocal = addTestContentLocal,
       subpackage = "app"
     )
 
     RunCoverage(
       "${tempFolder.root}",
-      "app/main/java/com/example/TwoSum.kt",
-      ReportFormat.HTML,
-      htmlOutputPath,
+      filePathList,
+      ReportFormat.MARKDOWN,
       longCommandExecutor,
       scriptBgDispatcher
     ).execute()
 
-    val outputReportText = File(htmlOutputPath).readText()
-    val expectedResult = getExpectedHtmlText(filePath)
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **75.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>")
+    }
 
-    assertThat(outputReportText).isEqualTo(expectedResult)
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
-  private fun getExpectedMarkdownText(filePath: String): String {
-    val markdownText =
+  @Test
+  fun testRunCoverage_withMultipleTestsForFile_analysingSameFile() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val testContent1 =
       """
-        ## Coverage Report
-        
-        - **Covered File:** $filePath
-        - **Coverage percentage:** 75.00% covered
-        - **Line coverage:** 3 / 4 lines covered
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
       """.trimIndent()
 
-    return markdownText
+    val testContent2 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "AddNums",
+      sourceContent = getAddNumsSourceContent(),
+      testContentShared = testContent1,
+      testContentLocal = testContent2,
+      subpackage = "app"
+    )
+
+    // Both the test files will correspond to one single source file
+    // therefore no error would be thrown while aggregating the coverage reports.
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.MARKDOWN,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **75.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePathList.get(0))} | 75.00% | 3 / 4 | " +
+          ":white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>")
+    }
+
+    assertThat(readFinalMdReport()).isEqualTo(expectedResult)
   }
 
-  private fun getExpectedHtmlText(filePath: String): String {
-    val htmlText =
+  @Test
+  fun testRunCoverage_withMultipleTestsHittingSameLine_calculatesCoverageReportCorrectly() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+    val protoOutputPath = "${tempFolder.root}/coverage_reports/" +
+      "${filePathList.get(0).substringBeforeLast(".")}/coverage_report.pb"
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val testContent1 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")       
+          }
+      }
+      """.trimIndent()
+
+    val testContent2 =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")       
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "AddNums",
+      sourceContent = getAddNumsSourceContent(),
+      testContentShared = testContent1,
+      testContentLocal = testContent2,
+      subpackage = "app"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.PROTO,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val coverageReport = loadCoverageReportProto(protoOutputPath)
+    val coveredLines = coverageReport.details.coveredLineList
+
+    val expectedCoveredLine = CoveredLine.newBuilder()
+      .setLineNumber(7)
+      .setCoverage(Coverage.FULL)
+      .build()
+
+    assertThat(coveredLines).contains(expectedCoveredLine)
+  }
+
+  @Test
+  fun testRunCoverage_withMultipleFilesHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf(
+      "coverage/main/java/com/example/AddNums.kt",
+      "coverage/main/java/com/example/SubNums.kt"
+    )
+
+    val subSourceContent =
+      """
+      package com.example
+      
+      class SubNums {
+        companion object {
+          fun subNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a - b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val subTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class SubNumsTest {
+        @Test
+        fun testSubNumbers() {
+          assertEquals(SubNums.subNumbers(1, 0), 1)
+          assertEquals(SubNums.subNumbers(4, 3), 1)         
+          assertEquals(SubNums.subNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "SubNums",
+      testFilename = "SubNumsTest",
+      sourceContent = subSourceContent,
+      testContent = subTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult1 = getExpectedHtmlText(filePathList.get(0))
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult1)
+
+    val expectedResult2 = getExpectedHtmlText(filePathList.get(1))
+    assertThat(readHtmlReport(filePathList.get(1))).isEqualTo(expectedResult2)
+  }
+
+  @Test
+  fun testRunCoverage_sampleTestsHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
+
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_scriptTestsHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf("scripts/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "scripts/java/com/example",
+      testSubpackage = "scripts/javatests/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
+
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_appTestsHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "app/main/java/com/example",
+      testSubpackage = "app/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
+
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_localTestsHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    val addTestContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 1), 1)
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsLocalTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = addTestContentLocal,
+      sourceSubpackage = "app/main/java/com/example",
+      testSubpackage = "app/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
+
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_sharedTestsHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "app/main/java/com/example",
+      testSubpackage = "app/sharedTest/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult = getExpectedHtmlText(filePathList.get(0))
+
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_sharedAndLocalTestsHtmlFormat_generatesCoverageReport() {
+    val filePathList = listOf("app/main/java/com/example/AddNums.kt")
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val addTestContentShared =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(0, 1), 1)       
+          }
+      }
+      """.trimIndent()
+
+    val addTestContentLocal =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsLocalTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+              assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addMultiLevelSourceAndTestFileWithContent(
+      filename = "AddNums",
+      sourceContent = getAddNumsSourceContent(),
+      testContentShared = addTestContentShared,
+      testContentLocal = addTestContentLocal,
+      subpackage = "app"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.HTML,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val expectedResult =
       """
     <!DOCTYPE html>
     <html lang="en">
@@ -684,46 +2089,39 @@ class RunCoverageTest {
       <title>Coverage Report</title>
       <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
+          font-family: Arial, sans-serif;
+          font-size: 12px;
+          line-height: 1.6;
+          padding: 20px;
         }
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
         }
         th, td {
-            padding: 8px;
-            margin-left: 20px;
-            text-align: left;
-            border-bottom: 1px solid #fdfdfd;
+          padding: 8px;
+          text-align: left;
+          white-space: pre-wrap;
+          border-bottom: 1px solid #e3e3e3;
         }
         .line-number-col {
-            width: 2%;
-        }
-        .line-number-row {
-            border-right: 1px dashed #000000
+          width: 4%;
         }
         .source-code-col {
-            width: 98%;
+          width: 96%;
         }
         .covered-line, .not-covered-line, .uncovered-line {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            box-sizing: border-box;
-            border-radius: 4px;
-            padding: 2px 8px 2px 4px;
-            display: inline-block;
+          white-space: pre-wrap;
         }
         .covered-line {
-            background-color: #c8e6c9; /* Light green */
+          background-color: #c8e6c9; /* Light green */
         }
         .not-covered-line {
-            background-color: #ffcdd2; /* Light red */
+          background-color: #ffcdd2; /* Light red */
         }
         .uncovered-line {
-            background-color: #f1f1f1; /* light gray */
+          background-color: #f7f7f7; /* light gray */
         }
         .coverage-summary {
           margin-bottom: 20px;
@@ -737,7 +2135,6 @@ class RunCoverageTest {
           text-align: center;
         }
         .summary-box {
-          background-color: #f0f0f0;
           border: 1px solid #ccc;
           border-radius: 8px;
           padding: 10px;
@@ -771,12 +2168,221 @@ class RunCoverageTest {
           background-color: #ffcdd2; /* Light red */
         }
         @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            table {
-                width: auto;
-            }
+          body {
+            padding: 10px;
+          }
+          table {
+            width: auto;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Coverage Report</h2>
+      <div class="summary-box">
+        <div class="summary-left">
+          <strong>Covered File:</strong> ${filePathList.get(0)} <br>
+          <div class="legend">
+            <div class="legend-item covered"></div>
+            <span>Covered</span>
+            <div class="legend-item not-covered"></div>
+            <span>Uncovered</span>
+          </div>
+        </div>
+        <div class="summary-right">
+          <div><strong>Coverage percentage:</strong> 75.00%</div>
+          <div><strong>Line coverage:</strong> 3 / 4 covered</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="line-number-col">Line No</th>
+            <th class="source-code-col">Source Code</th>
+          </tr>
+        </thead>
+        <tbody><tr>
+      <td class="line-number-row">   1</td>
+      <td class="uncovered-line">package com.example</td>
+    </tr><tr>
+      <td class="line-number-row">   2</td>
+      <td class="uncovered-line"></td>
+    </tr><tr>
+      <td class="line-number-row">   3</td>
+      <td class="not-covered-line">class AddNums {</td>
+    </tr><tr>
+      <td class="line-number-row">   4</td>
+      <td class="uncovered-line">  companion object {</td>
+    </tr><tr>
+      <td class="line-number-row">   5</td>
+      <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
+    </tr><tr>
+      <td class="line-number-row">   6</td>
+      <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+    </tr><tr>
+      <td class="line-number-row">   7</td>
+      <td class="covered-line">          "Both numbers are zero"</td>
+    </tr><tr>
+      <td class="line-number-row">   8</td>
+      <td class="uncovered-line">      } else {</td>
+    </tr><tr>
+      <td class="line-number-row">   9</td>
+      <td class="covered-line">          a + b</td>
+    </tr><tr>
+      <td class="line-number-row">  10</td>
+      <td class="uncovered-line">      }</td>
+    </tr><tr>
+      <td class="line-number-row">  11</td>
+      <td class="uncovered-line">    }</td>
+    </tr><tr>
+      <td class="line-number-row">  12</td>
+      <td class="uncovered-line">  }</td>
+    </tr><tr>
+      <td class="line-number-row">  13</td>
+      <td class="uncovered-line">}</td>
+    </tr>    </tbody>
+      </table>
+    </body>
+    </html>
+      """.trimIndent()
+
+    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverage_withProtoReportFormat_savesCoverageReportProto() {
+    val sampleFile = "file.kt"
+    val outputFilePath = "${tempFolder.root}/coverage_reports/file/coverage_report.pb"
+    testBazelWorkspace.initEmptyWorkspace()
+    tempFolder.newFile(sampleFile)
+    main(
+      tempFolder.root.absolutePath,
+      sampleFile,
+      "--format=Proto"
+    )
+
+    assertThat(File(outputFilePath).exists()).isTrue()
+  }
+
+  private fun getExpectedMarkdownText(filePath: String): String {
+    val markdownText = buildString {
+      append("## Coverage Report\n\n")
+      append("### Results\n")
+      append("Number of files assessed: 1\n")
+      append("Overall Coverage: **75.00%**\n")
+      append("Coverage Analysis: **PASS** :white_check_mark:\n")
+      append("##\n")
+      append("### Passing coverage\n\n")
+      append("<details>\n")
+      append("<summary>Files with passing code coverage</summary><br>\n\n")
+      append("| File | Coverage | Lines Hit | Status | Min Required |\n")
+      append("|------|:--------:|----------:|:------:|:------------:|\n")
+      append(
+        "| ${getFilenameAsDetailsSummary(filePath)} | 75.00% | " +
+          "3 / 4 | :white_check_mark: | $MIN_THRESHOLD% |\n\n"
+      )
+      append("</details>")
+    }
+
+    return markdownText
+  }
+
+  private fun getExpectedHtmlText(filePath: String): String {
+    val htmlText =
+      """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Coverage Report</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 12px;
+          line-height: 1.6;
+          padding: 20px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+        }
+        th, td {
+          padding: 8px;
+          text-align: left;
+          white-space: pre-wrap;
+          border-bottom: 1px solid #e3e3e3;
+        }
+        .line-number-col {
+          width: 4%;
+        }
+        .source-code-col {
+          width: 96%;
+        }
+        .covered-line, .not-covered-line, .uncovered-line {
+          white-space: pre-wrap;
+        }
+        .covered-line {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .not-covered-line {
+          background-color: #ffcdd2; /* Light red */
+        }
+        .uncovered-line {
+          background-color: #f7f7f7; /* light gray */
+        }
+        .coverage-summary {
+          margin-bottom: 20px;
+        }
+        h2 {
+          text-align: center;
+        }
+        ul {
+          list-style-type: none;
+          padding: 0;
+          text-align: center;
+        }
+        .summary-box {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .summary-left {
+          text-align: left;
+        }
+        .summary-right {
+          text-align: right;
+        }
+        .legend {
+          display: flex;
+          align-items: center;
+        }
+        .legend-item {
+          width: 20px;
+          height: 10px;
+          margin-right: 5px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        .legend .covered {
+          background-color: #c8e6c9; /* Light green */
+        }
+        .legend .not-covered {
+          margin-left: 4px;
+          background-color: #ffcdd2; /* Light red */
+        }
+        @media screen and (max-width: 768px) {
+          body {
+            padding: 10px;
+          }
+          table {
+            width: auto;
+          }
         }
       </style>
     </head>
@@ -805,44 +2411,44 @@ class RunCoverageTest {
           </tr>
         </thead>
         <tbody><tr>
-        <td class="line-number-row">   1</td>
-        <td class="uncovered-line">package com.example</td>
+      <td class="line-number-row">   1</td>
+      <td class="uncovered-line">package com.example</td>
     </tr><tr>
-        <td class="line-number-row">   2</td>
-        <td class="uncovered-line"></td>
+      <td class="line-number-row">   2</td>
+      <td class="uncovered-line"></td>
     </tr><tr>
-        <td class="line-number-row">   3</td>
-        <td class="not-covered-line">class TwoSum {</td>
+      <td class="line-number-row">   3</td>
+      <td class="not-covered-line">class ${getExpectedClassName(filePath)} {</td>
     </tr><tr>
-        <td class="line-number-row">   4</td>
-        <td class="uncovered-line">  companion object {</td>
+      <td class="line-number-row">   4</td>
+      <td class="uncovered-line">  companion object {</td>
     </tr><tr>
-        <td class="line-number-row">   5</td>
-        <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
+      <td class="line-number-row">   5</td>
+      <td class="uncovered-line">    fun ${getExpectedFuncName(filePath)}(a: Int, b: Int): Any {</td>
     </tr><tr>
-        <td class="line-number-row">   6</td>
-        <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+      <td class="line-number-row">   6</td>
+      <td class="covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
-        <td class="line-number-row">   7</td>
-        <td class="covered-line">          "Both numbers are zero"</td>
+      <td class="line-number-row">   7</td>
+      <td class="covered-line">          "Both numbers are zero"</td>
     </tr><tr>
-        <td class="line-number-row">   8</td>
-        <td class="uncovered-line">      } else {</td>
+      <td class="line-number-row">   8</td>
+      <td class="uncovered-line">      } else {</td>
     </tr><tr>
-        <td class="line-number-row">   9</td>
-        <td class="covered-line">          a + b</td>
+      <td class="line-number-row">   9</td>
+      <td class="covered-line">          ${getExpectedLogic(filePath)}</td>
     </tr><tr>
-        <td class="line-number-row">  10</td>
-        <td class="uncovered-line">      }</td>
+      <td class="line-number-row">  10</td>
+      <td class="uncovered-line">      }</td>
     </tr><tr>
-        <td class="line-number-row">  11</td>
-        <td class="uncovered-line">    }</td>
+      <td class="line-number-row">  11</td>
+      <td class="uncovered-line">    }</td>
     </tr><tr>
-        <td class="line-number-row">  12</td>
-        <td class="uncovered-line">  }</td>
+      <td class="line-number-row">  12</td>
+      <td class="uncovered-line">  }</td>
     </tr><tr>
-        <td class="line-number-row">  13</td>
-        <td class="uncovered-line">}</td>
+      <td class="line-number-row">  13</td>
+      <td class="uncovered-line">}</td>
     </tr>    </tbody>
       </table>
     </body>
@@ -852,9 +2458,139 @@ class RunCoverageTest {
     return htmlText
   }
 
+  private fun createTestFileExemptionsProtoFile(testFileExemptions: TestFileExemptions): String {
+    return tempFolder.newFile("test_file_exemptions.pb").also {
+      it.outputStream().use(testFileExemptions::writeTo)
+    }.path
+  }
+
+  private fun getExpectedClassName(filePath: String): String {
+    return filePath.substringAfterLast("/").removeSuffix(".kt")
+  }
+
+  private fun getExpectedFuncName(filePath: String): String {
+    when {
+      filePath.endsWith("AddNums.kt") -> return "sumNumbers"
+      filePath.endsWith("SubNums.kt") -> return "subNumbers"
+      else -> return ""
+    }
+  }
+
+  private fun getExpectedLogic(filePath: String): String {
+    when {
+      filePath.endsWith("AddNums.kt") -> return "a + b"
+      filePath.endsWith("SubNums.kt") -> return "a - b"
+      else -> return ""
+    }
+  }
+
+  private fun readFinalMdReport(): String {
+    return File(
+      "${tempFolder.root}" +
+        "$coverageDir/CoverageReport.md"
+    ).readText()
+  }
+
+  private fun readHtmlReport(file: String): String {
+    return File(
+      "${tempFolder.root}" +
+        "$coverageDir/${file.removeSuffix(".kt")}/coverage.html"
+    ).readText()
+  }
+
+  private fun getAddNumsSourceContent(): String {
+    return """
+      package com.example
+      
+      class AddNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+    """.trimIndent()
+  }
+
+  private fun getAddNumsTestContent(): String {
+    return """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+    """.trimIndent()
+  }
+
+  private fun getLowTestSourceContent(): String {
+    return """
+      package com.example
+      
+      class LowTestNums {
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+                "Both numbers are zero"
+            } else {
+                a + b
+            }
+          }
+        }
+      }
+    """.trimIndent()
+  }
+
+  private fun getLowTestTestContent(): String {
+    return """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class LowTestNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+    """.trimIndent()
+  }
+
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
+  }
+
+  private fun getFilenameAsDetailsSummary(
+    filePath: String,
+    additionalData: String? = null
+  ): String {
+    val fileName = filePath.substringAfterLast("/")
+    val additionalDataPart = additionalData?.let { " - $it" } ?: ""
+
+    return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
+  }
+
+  private fun loadCoverageReportProto(
+    coverageReportProto: String
+  ): CoverageReport {
+    return File("$coverageReportProto").inputStream().use { stream ->
+      CoverageReport.newBuilder().also { builder ->
+        builder.mergeFrom(stream)
+      }.build()
+    }
   }
 }

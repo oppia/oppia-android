@@ -136,7 +136,7 @@
   <color name="color_palette_revision_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_hints_and_solutions_fragment_toolbar_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_brown_dark</color>
-  <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue</color>
+  <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue_1</color>
   <color name="color_palette_underline_view_color">@color/color_def_oppia_light_brown</color>
   <color name="color_palette_menu_text_color">@color/color_def_black</color>
   <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
@@ -287,8 +287,12 @@
   <color name="color_palette_edittext_stroke_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_text_error_color">@color/color_def_error_text</color>
   <!-- CLASSROOM -->
-  <color name="color_palette_classroom_card_color">@color/color_def_greenish_white</color>
+  <color name="color_palette_classroom_shared_header_text_color">@color/color_def_black</color>
+  <color name="color_palette_classroom_card_color">@color/color_def_white</color>
+  <color name="color_palette_classroom_card_selected_color">@color/color_def_pale_green_2</color>
+  <color name="color_palette_classroom_card_icon_stroke_color">@color/color_def_oppia_green</color>
   <color name="color_palette_classroom_shared_text_color">@color/color_def_green</color>
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_white</color>
-  <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue</color>
+  <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_1</color>
+  <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_white</color>
 </resources>

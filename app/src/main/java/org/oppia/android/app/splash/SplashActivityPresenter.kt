@@ -346,40 +346,35 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun fetchProfiles() {
-    profileManagementController.getProfiles().toLiveData()
-      .observe(
-        activity,
-        { result ->
-          when (result) {
-            is AsyncResult.Success -> {
-              val soleLearnerProfile = getSoleLearnerProfile(result.value)
-              if (soleLearnerProfile != null) {
-                ensureProfileOnboarded(soleLearnerProfile)
-              } else {
-                launchOnboardingActivity()
-              }
-            }
-            is AsyncResult.Pending -> {} // no-op
-            is AsyncResult.Failure -> oppiaLogger.e(
-              "SplashActivity", "Failed to retrieve the list of profiles",
-              result.error
-            )
-          }
-        }
-      )
+    profileManagementController.getProfiles().toLiveData().observe(activity) { result ->
+      when (result) {
+        is AsyncResult.Success -> handleProfiles(result.value)
+        is AsyncResult.Failure -> oppiaLogger.e(
+          "SplashActivity", "Failed to retrieve the list of profiles", result.error
+        )
+        is AsyncResult.Pending -> {} // no-op
+      }
+    }
   }
 
-  private fun getSoleLearnerProfile(profiles: List<Profile>): Profile? {
-    return profiles.find { it.isAdmin && it.pin.isNullOrBlank() }
-  }
-
-  private fun ensureProfileOnboarded(profile: Profile) {
-    if (profile.startedProfileOboarding && !profile.completedProfileOboarding) {
-      resumeOnboarding(profile.id, profile.name)
-    } else if (profile.startedProfileOboarding && profile.completedProfileOboarding) {
-      loginToProfile(profile.id)
+  private fun handleProfiles(profiles: List<Profile>) {
+    val soleLearnerProfile = profiles.find { it.isAdmin && it.pin.isNullOrBlank() }
+    if (soleLearnerProfile != null) {
+      proceedBasedOnProfileState(soleLearnerProfile)
     } else {
       launchOnboardingActivity()
+    }
+  }
+
+  private fun proceedBasedOnProfileState(profile: Profile) {
+    when {
+      profile.startedProfileOboarding && !profile.completedProfileOboarding -> {
+        resumeOnboarding(profile.id, profile.name)
+      }
+      profile.startedProfileOboarding && profile.completedProfileOboarding -> {
+        loginToProfile(profile.id)
+      }
+      else -> launchOnboardingActivity()
     }
   }
 
@@ -388,8 +383,7 @@ class SplashActivityPresenter @Inject constructor(
       .setProfileNickname(profileName)
       .build()
 
-    val intent = IntroActivity.createIntroActivity(activity)
-    intent.apply {
+    val intent = IntroActivity.createIntroActivity(activity).apply {
       putProtoExtra(PARAMS_KEY, introActivityParams)
       decorateWithUserProfileId(profileId)
     }
@@ -398,18 +392,11 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun loginToProfile(profileId: ProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(
-      activity,
-      {
-        if (it is AsyncResult.Success) {
-          // Prevent launching if the current activity is finishing, which would cause duplicate
-          // intents.
-          if (!activity.isFinishing) {
-            launchHomeScreen(profileId)
-          }
-        }
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) { result ->
+      if (result is AsyncResult.Success && !activity.isFinishing) {
+        launchHomeScreen(profileId)
       }
-    )
+    }
   }
 
   private fun launchHomeScreen(profileId: ProfileId) {

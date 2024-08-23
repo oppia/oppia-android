@@ -4,21 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.R
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.databinding.TextInputLayoutBindingAdaptersTestFragmentBinding
 
 /** Test-only fragment for verifying behaviors of [TextInputLayoutBindingAdapters]. */
 class TextInputLayoutBindingAdaptersTestFragment : InjectableFragment() {
+
+  private lateinit var binding: TextInputLayoutBindingAdaptersTestFragmentBinding
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    return inflater.inflate(
-      R.layout.text_input_layout_binding_adapters_test_fragment,
+    binding = TextInputLayoutBindingAdaptersTestFragmentBinding.inflate(
+      inflater,
       container,
-      /* attachToRoot= */ false
+      false
     )
+
+    binding.lifecycleOwner = this@TextInputLayoutBindingAdaptersTestFragment
+
+    return binding.root
   }
 }

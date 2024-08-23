@@ -95,7 +95,8 @@
   <color name="color_def_white_0">#00FFFFFF</color>
   <color name="color_def_maastricht_blue">#0e162f</color>
   <color name="color_def_ocean_blue">#081661</color>
-  <color name="color_def_persian_blue">#00609C</color>
+  <color name="color_def_persian_blue_1">#00609C</color>
+  <color name="color_def_persian_blue_2">#0097F5</color>
   <color name="color_def_bright_green">#009C8A</color>
   <color name="color_def_grape_violet">#674172</color>
   <color name="color_def_bright_violet">#7659B6</color>
@@ -143,13 +144,18 @@
   
   <color name="color_def_disabled_button_grey">#E8E8E8</color>
   <color name="color_def_pale_green">#E2F5F4</color>
+  <color name="color_def_pale_green_1">#89A9A7</color>
+  <color name="color_def_pale_green_2">#CFE7E5</color>
   <color name="color_def_black_25">#25000000</color>
   <color name="color_def_greenish_white">#EDF6F5</color>
-  <color name="color_def_greenish_black">#172B28</color>
+  <color name="color_def_greenish_black_1">#325D57</color>
+  <color name="color_def_greenish_black_2">#1C3531</color>
+  <color name="color_def_greenish_black_3">#1D3532</color>
   <color name="color_def_jade">#8EBBB6</color>
   <color name="color_def_dark_jade">#64817E</color>
   <color name="color_def_light_orange">#F8BF74</color>
   <color name="color_def_sky_blue">#B3D8F1</color>
+  <color name="color_def_white_1">#B8FFFFFF</color>
   <color name="color_def_ivory">#FEFFF0</color>
   <color name="color_def_charcoal">#2B2B2B</color>
 </resources>

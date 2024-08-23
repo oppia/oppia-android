@@ -74,8 +74,8 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
 
     logHomeActivityEvent()
 
@@ -179,11 +179,10 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun handleProfileOnboardingState(profile: Profile) {
+    // App onboarding is completed by the first profile on the app(SOLE_LEARNER or SUPERVISOR),
+    // while profile onboarding is completed by each profile.
     if (!profile.completedProfileOboarding) {
       markProfileOnboardingEnded(profileId)
-
-      // App onboarding is completed by the fist profile on the app(SOLE_LEARNER or SUPERVISOR),
-      // while profile onboarding is completed by each profile.
       if (profile.profileType == ProfileType.SOLE_LEARNER ||
         profile.profileType == ProfileType.SUPERVISOR
       ) {

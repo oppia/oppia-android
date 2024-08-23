@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
+import org.oppia.android.app.classroom.classroomlist.AllClassroomsHeaderText
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
 import org.oppia.android.app.classroom.promotedlist.ComingSoonTopicList
 import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
@@ -38,6 +40,7 @@ import org.oppia.android.app.classroom.welcome.WelcomeText
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.home.classroomlist.AllClassroomsViewModel
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
@@ -197,8 +200,15 @@ class ClassroomListFragmentPresenter @Inject constructor(
       ?.plus(classroomListViewModel.topicList)
       ?.groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
+    val listState = rememberLazyListState()
+    val classroomListIndex = groupedItems
+      ?.flatMap { (type, items) -> items.map { type to it } }
+      ?.indexOfFirst { it.first == AllClassroomsViewModel::class }
+      ?: -1
+
     LazyColumn(
-      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
+      state = listState
     ) {
       groupedItems?.forEach { (type, items) ->
         when (type) {
@@ -223,10 +233,16 @@ class ClassroomListFragmentPresenter @Inject constructor(
               )
             }
           }
-          ClassroomSummaryViewModel::class -> stickyHeader {
+          AllClassroomsViewModel::class -> items.forEach { _ ->
+            item {
+              AllClassroomsHeaderText()
+            }
+          }
+          ClassroomSummaryViewModel::class -> stickyHeader() {
             ClassroomList(
               classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
-              classroomListViewModel.selectedClassroomId.get() ?: ""
+              selectedClassroomId = classroomListViewModel.selectedClassroomId.get() ?: "",
+              isSticky = listState.firstVisibleItemIndex >= classroomListIndex
             )
           }
           AllTopicsViewModel::class -> items.forEach { _ ->
