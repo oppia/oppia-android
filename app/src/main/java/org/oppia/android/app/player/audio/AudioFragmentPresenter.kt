@@ -17,7 +17,6 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.CellularDataPreference
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
@@ -147,15 +146,15 @@ class AudioFragmentPresenter @Inject constructor(
     ) as? SpotlightManager
   }
 
-  private fun getProfileData(): LiveData<String> {
+  private fun retrieveAudioLanguageCode(): LiveData<String> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileResult
+      profileManagementController.getAudioLanguage(profileId).toLiveData(),
+      ::processAudioLanguageResult
     )
   }
 
   private fun subscribeToAudioLanguageLiveData() {
-    getProfileData().observe(
+    retrieveAudioLanguageCode().observe(
       activity,
       Observer<String> { result ->
         audioViewModel.selectedLanguageCode = result
@@ -165,11 +164,9 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   /** Gets language code by [AudioLanguage]. */
-  private fun getAudioLanguage(audioLanguage: AudioLanguage): String {
+  private fun computeLanguageCode(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
       AudioLanguage.ARABIC_LANGUAGE -> "ar"
       AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
@@ -178,16 +175,16 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
-    val profile = when (profileResult) {
+  private fun processAudioLanguageResult(languageResult: AsyncResult<AudioLanguage>): String {
+    val audioLanguage = when (languageResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.error)
-        Profile.getDefaultInstance()
+        oppiaLogger.e("AudioFragment", "Failed to retrieve audio language", languageResult.error)
+        AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
+      is AsyncResult.Pending -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+      is AsyncResult.Success -> languageResult.value
     }
-    return getAudioLanguage(profile.audioLanguage)
+    return computeLanguageCode(audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel. */
