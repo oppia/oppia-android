@@ -125,9 +125,9 @@ import javax.inject.Singleton
 class AudioLanguageFragmentTest {
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
-    private const val PORTUGUESE_BUTTON_INDEX = 4
-    private const val ARABIC_BUTTON_INDEX = 5
-    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 6
+    private const val PORTUGUESE_BUTTON_INDEX = 2
+    private const val ARABIC_BUTTON_INDEX = 3
+    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 4
   }
 
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()

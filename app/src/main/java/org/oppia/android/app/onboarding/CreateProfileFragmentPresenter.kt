@@ -187,7 +187,15 @@ class CreateProfileFragmentPresenter @Inject constructor(
                 appLanguageResourceHandler.getStringInLocale(
                   R.string.add_profile_error_name_only_letters
                 )
-              else -> result.error.localizedMessage
+              is ProfileManagementController.UnknownProfileTypeException ->
+                appLanguageResourceHandler.getStringInLocale(
+                  R.string.add_profile_error_missing_profile_type
+                )
+              else -> {
+                appLanguageResourceHandler.getStringInLocale(
+                  R.string.add_profile_default_error_message
+                )
+              }
             }
 
             createProfileViewModel.errorMessage.set(errorMessage)

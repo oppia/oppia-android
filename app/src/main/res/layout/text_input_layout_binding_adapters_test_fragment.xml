@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/fragment_container"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="fragment"
+      type="org.oppia.android.app.testing.TextInputLayoutBindingAdaptersTestFragment" />
+  </data>
+
+  <FrameLayout
+    android:id="@+id/fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/test_text_input_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <AutoCompleteTextView
+        android:id="@+id/test_autocomplete_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="none"
+        app:filter="@{false}"
+        app:languageSelection="@{fragment.selectedLanguage}" />
+    </com.google.android.material.textfield.TextInputLayout>
+  </FrameLayout>
+</layout>

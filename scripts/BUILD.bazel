@@ -247,6 +247,31 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "coverage_reporter",
+    testonly = True,
+    data = TEST_FILE_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.coverage.reporter.CoverageReporterKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
+    ],
+)
+
+kt_jvm_binary(
+    name = "retrieve_changed_files",
+    testonly = True,
+    data = TEST_FILE_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.ci.RetrieveChangedFilesKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:retrieve_changed_files_lib"],
+)
+
+kt_jvm_binary(
+    name = "compute_changed_files",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ci.ComputeChangedFilesKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:compute_changed_files_lib"],
+)
+
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
 # this apparently needs to be a java_binary to set up runfiles correctly when executed within a
 # Starlark rule as a tool.

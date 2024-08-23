@@ -598,6 +598,34 @@ class CreateProfileFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_profileTypeArgumentMissing_showsUnknownProfileTypeError() {
+    val intent = CreateProfileActivity.createProfileActivityIntent(context)
+    intent.apply {
+      // Not adding the profile type intent parameter to trigger the exception.
+      decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+
+      val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.use {
+        onView(withId(R.id.create_profile_nickname_edittext))
+          .perform(
+            editTextInputAction.appendText("John"),
+            closeSoftKeyboard()
+          )
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.create_profile_nickname_error))
+          .check(matches(withText(R.string.add_profile_error_missing_profile_type)))
+      }
+    }
+  }
+
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
