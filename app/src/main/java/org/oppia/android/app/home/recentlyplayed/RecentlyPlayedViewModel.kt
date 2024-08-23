@@ -13,6 +13,8 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** View model for [RecentlyPlayedFragment]. */
@@ -22,6 +24,7 @@ class RecentlyPlayedViewModel private constructor(
   @StoryHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
+  private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
   private val promotedStoryClickListener: PromotedStoryClickListener,
   private val profileId: ProfileId,
 ) {
@@ -33,6 +36,8 @@ class RecentlyPlayedViewModel private constructor(
     @StoryHtmlParserEntityType private val entityType: String,
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
+    @EnableMultipleClassrooms
+    private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
   ) {
 
     /** Creates an instance of [RecentlyPlayedViewModel]. */
@@ -46,6 +51,7 @@ class RecentlyPlayedViewModel private constructor(
         entityType,
         resourceHandler,
         translationController,
+        enableMultipleClassrooms,
         promotedStoryClickListener,
         profileId,
       )
@@ -166,6 +172,7 @@ class RecentlyPlayedViewModel private constructor(
       promotedStoryClickListener,
       index,
       resourceHandler,
+      enableMultipleClassrooms.value,
       translationController
     )
   }
