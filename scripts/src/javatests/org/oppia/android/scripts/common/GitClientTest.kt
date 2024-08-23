@@ -253,6 +253,45 @@ class GitClientTest {
     )
   }
 
+  @Test
+  fun testCommittedFiles_featureBranch_committedFile_includesFile() {
+    initializeRepoWithDevelopBranch()
+    testGitRepository.checkoutNewBranch("introduce-feature")
+    commitNewFile("example_file")
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val committedFiles = gitClient.committedFiles
+
+    assertThat(committedFiles).containsExactly("example_file")
+  }
+
+  @Test
+  fun testCommittedFiles_featureBranch_movedFile_includesFile() {
+    initializeRepoWithDevelopBranch()
+    testGitRepository.checkoutNewBranch("introduce-feature")
+    commitNewFile("example_file")
+    moveFile(File(tempFolder.root, "example_file"), File(tempFolder.root, "moved_file"))
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val committedFiles = gitClient.committedFiles
+
+    assertThat(committedFiles).containsExactly("moved_file")
+  }
+
+  @Test
+  fun testCommittedFiles_committedAndMovedFiles_includeAllFiles() {
+    initializeRepoWithDevelopBranch()
+    testGitRepository.checkoutNewBranch("introduce-feature")
+    commitNewFile("committed_file")
+    commitNewFile("to_be_moved_file")
+    moveFile(File(tempFolder.root, "to_be_moved_file"), File(tempFolder.root, "moved_file"))
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val committedAndMovedFiles = gitClient.committedFiles
+
+    assertThat(committedAndMovedFiles).containsExactly("committed_file", "moved_file")
+  }
+
   private fun initializeRepoWithDevelopBranch() {
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
@@ -281,6 +320,11 @@ class GitClientTest {
   private fun commitNewFile(name: String) {
     stageNewFile(name)
     testGitRepository.commit(message = "Add file $name.")
+  }
+
+  private fun moveFile(oldFile: File, newFile: File) {
+    testGitRepository.moveFileForCommit(oldFile, newFile)
+    testGitRepository.commit(message = "Move from $oldFile to $newFile")
   }
 
   private fun modifyFile(name: String) {

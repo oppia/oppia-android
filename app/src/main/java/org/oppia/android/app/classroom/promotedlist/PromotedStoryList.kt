@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -52,40 +53,46 @@ fun PromotedStoryList(
   promotedStoryListViewModel: PromotedStoryListViewModel,
   machineLocale: OppiaLocale.MachineLocale,
 ) {
-  Row(
-    modifier = Modifier
-      .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
-      .fillMaxWidth()
-      .padding(
-        start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-        top = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_top),
-        end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
-      ),
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically,
+  Box(
+    contentAlignment = Alignment.Center,
   ) {
-    Text(
-      text = promotedStoryListViewModel.getHeader(),
-      color = colorResource(id = R.color.component_color_shared_primary_text_color),
-      fontFamily = FontFamily.SansSerif,
-      fontWeight = FontWeight.Medium,
-      fontSize = dimensionResource(id = R.dimen.promoted_story_list_header_text_size).value.sp,
+    Row(
       modifier = Modifier
-        .weight(weight = 1f, fill = false),
-    )
-    if (promotedStoryListViewModel.getViewAllButtonVisibility() == View.VISIBLE) {
+        .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+        .fillMaxWidth()
+        .padding(
+          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+          top = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_top),
+          end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+        ),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
       Text(
-        text = machineLocale.run { stringResource(id = R.string.view_all).toMachineUpperCase() },
-        color = colorResource(id = R.color.component_color_home_activity_view_all_text_color),
+        text = promotedStoryListViewModel.getHeader(),
+        color = colorResource(id = R.color.component_color_classroom_shared_header_text_color),
         fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = dimensionResource(id = R.dimen.promoted_story_list_view_all_text_size).value.sp,
+        fontWeight = FontWeight.Normal,
+        fontSize = dimensionResource(id = R.dimen.promoted_story_list_header_text_size).value.sp,
         modifier = Modifier
-          .padding(
-            start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start)
-          )
-          .clickable { promotedStoryListViewModel.clickOnViewAll() },
+          .weight(weight = 1f, fill = false),
       )
+      if (promotedStoryListViewModel.getViewAllButtonVisibility() == View.VISIBLE) {
+        Text(
+          text = machineLocale.run { stringResource(id = R.string.view_all).toMachineUpperCase() },
+          color = colorResource(id = R.color.component_color_home_activity_view_all_text_color),
+          fontFamily = FontFamily.SansSerif,
+          fontWeight = FontWeight.Medium,
+          fontSize = dimensionResource(
+            id = R.dimen.promoted_story_list_view_all_text_size
+          ).value.sp,
+          modifier = Modifier
+            .padding(
+              start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start)
+            )
+            .clickable { promotedStoryListViewModel.clickOnViewAll() },
+        )
+      }
     }
   }
   LazyRow(
@@ -127,7 +134,7 @@ fun PromotedStoryCard(
       )
       .clickable { promotedStoryViewModel.clickOnStoryTile() },
     backgroundColor = colorResource(
-      id = R.color.component_color_shared_screen_primary_background_color
+      id = R.color.component_color_classroom_promoted_list_card_background_color
     ),
     elevation = dimensionResource(id = R.dimen.promoted_story_card_elevation),
   ) {

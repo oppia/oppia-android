@@ -1,5 +1,6 @@
 package org.oppia.android.domain.translation
 
+import com.google.protobuf.MessageLite
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.LanguageSupportDefinition
@@ -28,10 +29,8 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWithAsync
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
@@ -56,6 +55,10 @@ private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 private const val APP_LANGUAGE_CONTENT_DATABASE = "app_language_content_database"
+private const val WRITTEN_TRANSLATION_LANGUAGE_CONTENT_DATABASE =
+  "written_language_content_database"
+private const val AUDIO_TRANSLATION_LANGUAGE_CONTENT_DATABASE =
+  "audio_translation_language_content_database"
 private const val RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID =
   "retrieved_content_language_data_provider_id"
 
@@ -76,17 +79,12 @@ class TranslationController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
 ) {
-  // TODO(#4938): Finish this implementation. The implementation below saves/restores per-profile app
-  //  language, but not audio language.
-
-  private val dataLock = ReentrantLock()
-  private val writtenTranslationLanguageSettings =
-    mutableMapOf<ProfileId, WrittenTranslationLanguageSelection>()
-  private val audioVoiceoverLanguageSettings =
-    mutableMapOf<ProfileId, AudioTranslationLanguageSelection>()
-
-  private val cacheStoreMap =
+  private val appLanguageCacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<AppLanguageSelection>>()
+  private val writtenTranslationLanguageCacheStoreMap =
+    mutableMapOf<ProfileId, PersistentCacheStore<WrittenTranslationLanguageSelection>>()
+  private val audioTranslationLanguageCacheStoreMap =
+    mutableMapOf<ProfileId, PersistentCacheStore<AudioTranslationLanguageSelection>>()
 
   /**
    * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
@@ -144,7 +142,7 @@ class TranslationController @Inject constructor(
    * the underlying configured selection.
    */
   fun getAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> =
-    retrieveLanguageContentCacheStore(profileId)
+    retrieveAppLanguageContentCacheStore(profileId)
 
   /**
    * Updates the language to be used by the specified user for app string translations. Note that
@@ -156,18 +154,17 @@ class TranslationController @Inject constructor(
    * language matches a supported language, otherwise the app defaults to English).
    *
    * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails. The
-   *     payload of the data provider is the *current* selection state.
+   *     payload of the data provider is the *previous* selection state.
    */
   fun updateAppLanguage(
     profileId: ProfileId,
     selection: AppLanguageSelection
   ): DataProvider<AppLanguageSelection> {
-    val cacheStore = retrieveLanguageContentCacheStore(profileId)
-    val deferred = cacheStore.storeDataAsync(updateInMemoryCache = true) { selection }
-
+    val cacheStore = retrieveAppLanguageContentCacheStore(profileId)
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
-      deferred.await()
-      AsyncResult.Success(cacheStore.readDataAsync().await())
+      AsyncResult.Success(cacheStore.readDataAsync().await()).also {
+        cacheStore.storeDataAsync(updateInMemoryCache = true) { selection }.await()
+      }
     }
   }
 
@@ -216,12 +213,8 @@ class TranslationController @Inject constructor(
    */
   fun getWrittenTranslationContentLanguageSelection(
     profileId: ProfileId
-  ): DataProvider<WrittenTranslationLanguageSelection> {
-    val providerId = WRITTEN_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProvider(providerId) {
-      retrieveWrittenTranslationContentLanguageSelection(profileId)
-    }
-  }
+  ): DataProvider<WrittenTranslationLanguageSelection> =
+    retrieveWrittenTranslationLanguageContentCacheStore(profileId)
 
   /**
    * Updates the language to be used by the specified user for written content string translations.
@@ -240,9 +233,13 @@ class TranslationController @Inject constructor(
     profileId: ProfileId,
     selection: WrittenTranslationLanguageSelection
   ): DataProvider<WrittenTranslationLanguageSelection> {
-    val providerId = UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProviderAsync(providerId) {
-      AsyncResult.Success(updateWrittenTranslationContentLanguageSelection(profileId, selection))
+    val cacheStore = retrieveWrittenTranslationLanguageContentCacheStore(profileId)
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
+    ) {
+      AsyncResult.Success(cacheStore.readDataAsync().await()).also {
+        cacheStore.storeDataAsync(updateInMemoryCache = true) { selection }.await()
+      }
     }
   }
 
@@ -290,12 +287,8 @@ class TranslationController @Inject constructor(
    */
   fun getAudioTranslationContentLanguageSelection(
     profileId: ProfileId
-  ): DataProvider<AudioTranslationLanguageSelection> {
-    val providerId = AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProvider(providerId) {
-      retrieveAudioTranslationContentLanguageSelection(profileId)
-    }
-  }
+  ): DataProvider<AudioTranslationLanguageSelection> =
+    retrieveAudioTranslationLanguageContentCacheStore(profileId)
 
   /**
    * Updates the language to be used by the specified user for audio voiceover selection. Note that
@@ -314,9 +307,13 @@ class TranslationController @Inject constructor(
     profileId: ProfileId,
     selection: AudioTranslationLanguageSelection
   ): DataProvider<AudioTranslationLanguageSelection> {
-    val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
-    return dataProviders.createInMemoryDataProviderAsync(providerId) {
-      AsyncResult.Success(updateAudioTranslationContentLanguageSelection(profileId, selection))
+    val cacheStore = retrieveAudioTranslationLanguageContentCacheStore(profileId)
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
+    ) {
+      AsyncResult.Success(cacheStore.readDataAsync().await()).also {
+        cacheStore.storeDataAsync(updateInMemoryCache = true) { selection }.await()
+      }
     }
   }
 
@@ -414,15 +411,49 @@ class TranslationController @Inject constructor(
     }
   }
 
-  private fun retrieveLanguageContentCacheStore(
+  private fun retrieveAppLanguageContentCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<AppLanguageSelection> {
-    return cacheStoreMap.getOrPut(profileId) {
+    return retrieveContentCacheStore(
+      profileId,
+      APP_LANGUAGE_CONTENT_DATABASE,
+      AppLanguageSelection.getDefaultInstance(),
+      appLanguageCacheStoreMap
+    )
+  }
+
+  private fun retrieveWrittenTranslationLanguageContentCacheStore(
+    profileId: ProfileId
+  ): PersistentCacheStore<WrittenTranslationLanguageSelection> {
+    return retrieveContentCacheStore(
+      profileId,
+      WRITTEN_TRANSLATION_LANGUAGE_CONTENT_DATABASE,
+      WrittenTranslationLanguageSelection.getDefaultInstance(),
+      writtenTranslationLanguageCacheStoreMap
+    )
+  }
+
+  private fun retrieveAudioTranslationLanguageContentCacheStore(
+    profileId: ProfileId
+  ): PersistentCacheStore<AudioTranslationLanguageSelection> {
+    return retrieveContentCacheStore(
+      profileId,
+      AUDIO_TRANSLATION_LANGUAGE_CONTENT_DATABASE,
+      AudioTranslationLanguageSelection.getDefaultInstance(),
+      audioTranslationLanguageCacheStoreMap
+    )
+  }
+
+  private fun <T : MessageLite> retrieveContentCacheStore(
+    profileId: ProfileId,
+    databaseName: String,
+    defaultCacheValue: T,
+    cacheMap: MutableMap<ProfileId, PersistentCacheStore<T>>
+  ): PersistentCacheStore<T> {
+    return cacheMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(
-        APP_LANGUAGE_CONTENT_DATABASE,
-        AppLanguageSelection.getDefaultInstance(),
-        profileId
-      ).also<PersistentCacheStore<AppLanguageSelection>> {
+        databaseName, defaultCacheValue, profileId
+      ).also<PersistentCacheStore<T>> {
         it.primeInMemoryAndDiskCacheAsync(
           updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
           publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
@@ -437,46 +468,6 @@ class TranslationController @Inject constructor(
         }
       }
     }
-  }
-
-  private fun retrieveWrittenTranslationContentLanguageSelection(
-    profileId: ProfileId
-  ): WrittenTranslationLanguageSelection {
-    return dataLock.withLock {
-      writtenTranslationLanguageSettings[profileId]
-        ?: WrittenTranslationLanguageSelection.getDefaultInstance()
-    }
-  }
-
-  private suspend fun updateWrittenTranslationContentLanguageSelection(
-    profileId: ProfileId,
-    selection: WrittenTranslationLanguageSelection
-  ): WrittenTranslationLanguageSelection {
-    return dataLock.withLock {
-      writtenTranslationLanguageSettings.put(profileId, selection)
-    }.also {
-      asyncDataSubscriptionManager.notifyChange(WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
-    } ?: WrittenTranslationLanguageSelection.getDefaultInstance()
-  }
-
-  private fun retrieveAudioTranslationContentLanguageSelection(
-    profileId: ProfileId
-  ): AudioTranslationLanguageSelection {
-    return dataLock.withLock {
-      audioVoiceoverLanguageSettings[profileId]
-        ?: AudioTranslationLanguageSelection.getDefaultInstance()
-    }
-  }
-
-  private suspend fun updateAudioTranslationContentLanguageSelection(
-    profileId: ProfileId,
-    selection: AudioTranslationLanguageSelection
-  ): AudioTranslationLanguageSelection {
-    return dataLock.withLock {
-      audioVoiceoverLanguageSettings.put(profileId, selection)
-    }.also {
-      asyncDataSubscriptionManager.notifyChange(AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID)
-    } ?: AudioTranslationLanguageSelection.getDefaultInstance()
   }
 
   private fun getSystemLanguage(): DataProvider<OppiaLanguage> =
