@@ -255,10 +255,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ensureProfileOnboarded(profile: Profile) {
-    if (!isAdminWithPin(profile.isAdmin, profile.pin) && !profile.completedProfileOboarding) {
-      launchOnboardingScreen(profile.id, profile.name)
-    } else {
+    if (isAdminWithPin(profile.isAdmin, profile.pin) || profile.completedProfileOboarding) {
       loginToProfile(profile)
+    } else {
+      launchOnboardingScreen(profile.id, profile.name)
     }
   }
 

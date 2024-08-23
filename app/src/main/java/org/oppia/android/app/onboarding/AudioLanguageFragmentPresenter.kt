@@ -123,12 +123,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationContinue.setOnClickListener {
       updateSelectedAudioLanguage(selectedLanguage, profileId).also {
-        val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-        fragment.startActivity(intent)
-        // Finish this activity as well as all activities immediately below it in the current
-        // task so that the user cannot navigate back to the onboarding flow by pressing the
-        // back button once onboarding is complete
-        fragment.activity?.finishAffinity()
+        loginToProfile(profileId)
       }
     }
 
@@ -182,6 +177,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
     }
     fragment.startActivity(intent)
+    // Finish this activity as well as all activities immediately below it in the current
+    // task so that the user cannot navigate back to the onboarding flow by pressing the
+    // back button once onboarding is complete
     fragment.activity?.finishAffinity()
   }
 
