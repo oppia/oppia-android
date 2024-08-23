@@ -64,8 +64,8 @@ message Profile {
   // Represents user selected reading-text-size.
   ReadingTextSize reading_text_size = 10;
 
-  // Represents user selected audio-language.
-  AudioLanguage audio_language = 11;
+  // Represented user selected audio-language (now deprecated).
+  reserved 11;
 
   // Reserve 12 which was used before as using it might cause import issues for older profiles.
   reserved 12;
@@ -155,8 +155,10 @@ enum AudioLanguage {
   NO_AUDIO = 1;
   ENGLISH_AUDIO_LANGUAGE = 2;
   HINDI_AUDIO_LANGUAGE = 3;
-  FRENCH_AUDIO_LANGUAGE = 4;
-  CHINESE_AUDIO_LANGUAGE =  5;
+  // Previously corresponded to French.
+  reserved 4;
+  // Previously corresponded to Chinese.
+  reserved 5;
   BRAZILIAN_PORTUGUESE_LANGUAGE = 6;
   ARABIC_LANGUAGE = 7;
   NIGERIAN_PIDGIN_LANGUAGE = 8;

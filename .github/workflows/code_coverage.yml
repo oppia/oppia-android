@@ -1,0 +1,345 @@
+# Contains jobs corresponding to code coverage.
+
+name: Code Coverage
+
+# Controls when the action will run. Triggers the workflow on pull request
+# events or push events in the develop branch.
+on:
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check_unit_tests_completed:
+    name: Check unit test completed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for unit tests to checks
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        with:
+          workflow: unit_tests.yml
+          sha: auto
+
+  compute_changed_files:
+    name: Compute changed files
+    needs: check_unit_tests_completed
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
+      can_skip_files: ${{ steps.compute-file-matrix.outputs.can_skip_files }}
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - uses: actions/cache@v2
+        id: scripts_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Compute file matrix
+        id: compute-file-matrix
+        env:
+          compute_all_files: ${{ contains(github.event.pull_request.title, '[RunAllTests]') }}
+          # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request. Defer to origin/develop outside a PR (such as develop's main CI runs).
+          base_commit_hash: ${{ github.event.pull_request.base.sha || 'origin/develop' }}
+        # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
+        # comma-separated list of test targets for the matrix.
+        run: |
+          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_files
+          FILE_BUCKET_LIST=$(cat ./changed_files.log | sed 's/^\|$/"/g' | paste -sd, -)
+          echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
+          echo "::set-output name=matrix::{\"changed-files-bucket-base64-encoded-shard\":[$FILE_BUCKET_LIST]}"
+          if [[ ! -z "$FILE_BUCKET_LIST" ]]; then
+            echo "::set-output name=can_skip_files::false"
+          else
+            echo "::set-output name=can_skip_files::true"
+            echo "No files are affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
+          fi
+
+  code_coverage_run:
+    name: Run Code Coverage
+    needs: compute_changed_files
+    if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJson(needs.compute_changed_files.outputs.matrix) }}
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - uses: actions/cache@v2
+        id: scripts_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Configure Bazel to use a local cache (for scripts)
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Extract caching bucket
+        env:
+          CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD: ${{ matrix.changed-files-bucket-base64-encoded-shard }}
+        run: |
+          # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
+          # user-friendly shard prefix from the matrix value.
+          CHANGED_FILES_BUCKET_BASE64=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
+          SHARD_NAME=$(echo "$CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 1)
+          bazel run //scripts:retrieve_changed_files -- $(pwd) $CHANGED_FILES_BUCKET_BASE64 $(pwd)/file_bucket_name $(pwd)/changed_files $(pwd)/bazel_test_targets
+          FILE_CATEGORY=$(cat ./file_bucket_name)
+          CHANGED_FILES=$(cat ./changed_files)
+          BAZEL_TEST_TARGETS=$(cat ./bazel_test_targets)
+          echo "File category: $FILE_CATEGORY"
+          echo "Changed Files: $CHANGED_FILES"
+          echo "Bazel test targets: $BAZEL_TEST_TARGETS"
+          echo "Shard name: $SHARD_NAME"
+          echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
+          echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
+          echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
+
+      # For reference on this & the later cache actions, see:
+      # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
+      # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
+      # with Bazel since Bazel can share the most recent cache from an unrelated build and still
+      # benefit from incremental build performance (assuming that actions/cache aggressively removes
+      # older caches due to the 5GB cache limit size & Bazel's large cache size).
+      - uses: actions/cache@v2
+        id: test_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-${{ env.FILE_CACHING_BUCKET }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-${{ env.FILE_CACHING_BUCKET }}-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Build Oppia Tests
+        env:
+          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
+        run: |
+          # Attempt to build 5 times in case there are flaky builds.
+          # TODO(#3759): Remove this once there are no longer app test build failures.
+          i=0
+          # Disable exit-on-first-failure.
+          set +e
+          while [ $i -ne 5 ]; do
+            i=$(( $i+1 ))
+            echo "Attempt $i/5 to build test targets"
+            bazel build --keep_going -- $BAZEL_TEST_TARGETS
+          done
+          # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
+          last_error_code=$?
+          # Reenable exit-on-first-failure.
+          set -e
+          # Exit only if the most recent exit was a failure (by using a subshell).
+          (exit $last_error_code)
+
+      - name: Run Oppia Coverage
+        env:
+          CHANGED_FILES: ${{ env.CHANGED_FILES }}
+        run: |
+          echo "CHANGED FILES: $CHANGED_FILES"
+          bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
+
+      - name: Upload Coverage Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ env.SHARD_NAME }} # Saving with unique names to avoid conflict
+          path: coverage_reports
+
+  evaluate-code-coverage-reports:
+    name: Evaluate Code Coverage Reports
+    runs-on: ubuntu-20.04
+    needs: code_coverage_run
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Coverage Report Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage-report-artifact
+          pattern: coverage-report-*
+          merge-multiple: true
+
+      - name: Filter Coverage Reports
+        run: |
+          # Find all coverage_report.pb files in the current directory and subdirectories
+          PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
+          echo "${PB_FILES_LIST[@]}" > pb_files.txt
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - uses: actions/cache@v2
+        id: scripts_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Generate Markdown Coverage Report
+        run: |
+          bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
+
+      - name: Upload Generated Markdown Report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
+        with:
+          name: final-coverage-report
+          path: coverage_reports/CoverageReport.md
+
+  publish_coverage_report:
+    name: Publish Code Coverage Report
+    needs: evaluate-code-coverage-reports
+    permissions:
+      pull-requests: write
+
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Generated Markdown Report
+        uses: actions/download-artifact@v4
+        with:
+          name: final-coverage-report
+
+      - name: Upload Coverage Report as PR Comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: 'CoverageReport.md'
+
+  # Reference: https://github.community/t/127354/7.
+  check_coverage_results:
+    name: Check Code Coverage Results
+    needs: [ compute_changed_files, code_coverage_run, evaluate-code-coverage-reports ]
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check coverages passed
+        if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.code_coverage_run.result != 'success' }}
+        run: exit 1
+
+      - name: Check that coverage status is passed
+        if: ${{ needs.evaluate-code-coverage-reports.result != 'success' }}
+        run: exit 1

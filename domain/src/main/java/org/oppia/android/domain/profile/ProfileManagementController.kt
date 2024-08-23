@@ -9,7 +9,9 @@ import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
@@ -23,6 +25,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -65,8 +68,8 @@ private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_p
 private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
   "update_reading_text_size_provider_id"
 private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
-private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
-  "update_audio_language_provider_id"
+private const val GET_AUDIO_LANGUAGE_PROVIDER_ID = "get_audio_language_provider_id"
+private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID = "update_audio_language_provider_id"
 private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
 private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "record_survey_last_shown_timestamp_provider_id"
@@ -96,7 +99,8 @@ class ProfileManagementController @Inject constructor(
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   @EnableLoggingLearnerStudyIds
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
-  private val profileNameValidator: ProfileNameValidator
+  private val profileNameValidator: ProfileNameValidator,
+  private val translationController: TranslationController
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
   private val profileDataStore =
@@ -284,7 +288,6 @@ class ProfileManagementController @Inject constructor(
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
         if (enableLoggingLearnerStudyIds.value) {
@@ -679,33 +682,51 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Returns the current audio language configured for the specified profile ID, as possibly set by
+   * [updateAudioLanguage].
+   *
+   * The return [DataProvider] will automatically update for subsequent calls to
+   * [updateAudioLanguage] for this [profileId].
+   */
+  fun getAudioLanguage(profileId: ProfileId): DataProvider<AudioLanguage> {
+    return translationController.getAudioTranslationContentLanguage(
+      profileId
+    ).transform(GET_AUDIO_LANGUAGE_PROVIDER_ID) { oppiaLanguage ->
+      when (oppiaLanguage) {
+        OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
+        OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+        OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
+        OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+        OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+        OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+      }
+    }
+  }
+
+  /**
    * Updates the audio language of the profile.
    *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param audioLanguage New audio language for the profile being updated.
-   * @return a [DataProvider] that indicates the success/failure of this update operation.
+   * @param profileId the ID corresponding to the profile being updated
+   * @param audioLanguage New audio language for the profile being updated
+   * @return a [DataProvider] that indicates the success/failure of this update operation
    */
   fun updateAudioLanguage(profileId: ProfileId, audioLanguage: AudioLanguage): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
-      val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-          it,
-          ProfileActionStatus.PROFILE_NOT_FOUND
-        )
-      val updatedProfile = profile.toBuilder().setAudioLanguage(audioLanguage).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_AUDIO_LANGUAGE_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-    }
+    val audioSelection = AudioTranslationLanguageSelection.newBuilder().apply {
+      this.selectedLanguage = when (audioLanguage) {
+        AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
+        AudioLanguage.NO_AUDIO -> OppiaLanguage.LANGUAGE_UNSPECIFIED
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> OppiaLanguage.ENGLISH
+        AudioLanguage.HINDI_AUDIO_LANGUAGE -> OppiaLanguage.HINDI
+        AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> OppiaLanguage.BRAZILIAN_PORTUGUESE
+        AudioLanguage.ARABIC_LANGUAGE -> OppiaLanguage.ARABIC
+        AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> OppiaLanguage.NIGERIAN_PIDGIN
+      }
+    }.build()
+    // The transformation is needed to reinterpreted the result of the update to 'Any?'.
+    return translationController.updateAudioTranslationContentLanguage(
+      profileId, audioSelection
+    ).transform(UPDATE_AUDIO_LANGUAGE_PROVIDER_ID) { value -> value }
   }
 
   /**
