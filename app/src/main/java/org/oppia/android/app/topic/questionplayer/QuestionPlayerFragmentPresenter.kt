@@ -124,10 +124,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
-  fun dismissConceptCard() {
-    ConceptCardFragment.dismissAll(fragment.childFragmentManager)
-  }
-
   private fun retrieveArguments(): QuestionPlayerFragmentArguments {
     return fragment.requireArguments().getProto(
       QuestionPlayerFragment.ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance()

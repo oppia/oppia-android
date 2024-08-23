@@ -428,10 +428,6 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
   }
 
-  fun dismissConceptCard() {
-    ConceptCardFragment.dismissAll(fragment.childFragmentManager)
-  }
-
   private fun moveToNextState() {
     stateViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     explorationProgressController.moveToNextState().toLiveData().observe(
