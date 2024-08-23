@@ -275,8 +275,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   fun dismissConceptCard() {
-    getHintsAndSolutionDialogFragment()
-      ?.hintsAndSolutionDialogFragmentPresenter?.dismissConceptCard()
+    getHintsAndSolutionDialogFragment()?.dismissConceptCard()
   }
 
   private fun getHintsAndSolutionDialogFragment(): HintsAndSolutionDialogFragment? {

@@ -191,7 +191,7 @@ class ExplorationActivity :
   }
 
   override fun dismissConceptCard() {
-    getHintsAndSolution()?.hintsAndSolutionDialogFragmentPresenter?.dismissConceptCard()
+    getHintsAndSolution()?.dismissConceptCard()
   }
 
   override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
