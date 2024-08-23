@@ -332,6 +332,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     ConceptCardFragment.bringToFrontOrCreateIfNew(skillId, profileId, fragment.childFragmentManager)
   }
 
+  /** Removes all [ConceptCardFragment] in the given FragmentManager. */
   fun dismissConceptCard() {
     ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
