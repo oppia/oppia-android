@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -215,7 +214,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun selectUniqueRandomColor(): Int {
     val availableColors = COLORS_LIST.map {
       ContextCompat.getColor(context, it)
-    }.toSet().minus(chooserViewModel.usedColors)
+    }.minus(chooserViewModel.usedColors.toSet())
 
     return availableColors.random()
   }

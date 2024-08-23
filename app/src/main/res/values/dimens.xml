@@ -645,15 +645,23 @@
   <dimen name="profile_rename_activity_profile_rename_input_margin_end">28dp</dimen>
   <dimen name="profile_rename_activity_profile_rename_save_button_margin_end">28dp</dimen>
 
-  <!-- Profile Selection Activity -->
-  <dimen name="profile_selection_activity_header_text_size">24sp</dimen>
-  <dimen name="profile_selection_activity_nickname_text_size">16sp</dimen>
-  <dimen name="profile_selection_activity_prompt_text_size">14sp</dimen>
-  <dimen name="profile_selection_activity_role_text_size">14sp</dimen>
-  <dimen name="profile_selection_activity_last_login_size">14sp</dimen>
+  <!-- ProfileSelectionFragment -->
+  <dimen name="profile_selection_fragment_header_text_size">20sp</dimen>
+  <dimen name="profile_selection_fragment_nickname_text_size">16sp</dimen>
+  <dimen name="profile_selection_fragment_prompt_text_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_role_text_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_last_login_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_profile_prompt_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_profile_settings_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_padding">32dp</dimen>
+  <dimen name="profile_selection_fragment_icon_size">48dp</dimen>
+  <dimen name="profile_selection_fragment_view_min_size">48dp</dimen>
+  <dimen name="profile_selection_fragment_prompt_width">48dp</dimen>
+  <dimen name="profile_selection_fragment_icon_padding">4dp</dimen>
+  <dimen name="profile_selection_fragment_icon_margin">12dp</dimen>
 
-  <dimen name="profile_selection_activity_profile_icon_size">72dp</dimen>
-  <dimen name="profile_selection_activity_profile_picture_stroke_width">2dp</dimen>
+  <dimen name="profile_item_profile_icon_size">72dp</dimen>
+  <dimen name="profile_item_profile_picture_stroke_width">2dp</dimen>
 
   <!-- SectionTitleFragment -->
   <dimen name="section_title_divider_view_layout_margin_top">32dp</dimen>
