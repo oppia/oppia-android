@@ -332,8 +332,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     ConceptCardFragment.bringToFrontOrCreateIfNew(skillId, profileId, fragment.childFragmentManager)
   }
 
-  fun dismissConceptCard()
-  {
+  fun dismissConceptCard() {
     ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
 }

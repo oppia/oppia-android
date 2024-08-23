@@ -38,7 +38,6 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
 import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
-import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
