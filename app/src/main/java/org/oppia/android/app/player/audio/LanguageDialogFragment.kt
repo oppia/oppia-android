@@ -80,8 +80,6 @@ class LanguageDialogFragment : InjectableDialogFragment() {
     for (languageCode in languageCodeArrayList) {
       val audioLanguage = when (machineLocale.run { languageCode.toMachineLowerCase() }) {
         "hi" -> AudioLanguage.HINDI_AUDIO_LANGUAGE
-        "fr" -> AudioLanguage.FRENCH_AUDIO_LANGUAGE
-        "zh" -> AudioLanguage.CHINESE_AUDIO_LANGUAGE
         "pt", "pt-br" -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
         "ar" -> AudioLanguage.ARABIC_LANGUAGE
         "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE

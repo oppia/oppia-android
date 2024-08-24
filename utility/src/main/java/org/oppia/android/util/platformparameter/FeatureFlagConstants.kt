@@ -178,4 +178,4 @@ annotation class EnableMultipleClassrooms
 const val ENABLE_MULTIPLE_CLASSROOMS = "enable_multiple_classrooms"
 
 /** Default value of the feature flag corresponding to [EnableMultipleClassrooms]. */
-const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = false
+const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = true
