@@ -17,10 +17,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.ARABIC_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
@@ -31,7 +35,10 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -74,6 +81,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileManagementControllerTest.TestApplication::class)
 class ProfileManagementControllerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
@@ -129,7 +137,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.loggedInInternalProfileId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(profile.numberOfLogins).isEqualTo(0)
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
@@ -197,7 +204,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
     assertThat(profile.id.loggedInInternalProfileId).isEqualTo(3)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
   }
 
   @Test
@@ -715,18 +721,168 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
   }
 
+  // Requires language configurations.
   @Test
-  fun testUpdateAudioLanguage_addProfiles_updateWithFrenchLanguage_checkUpdateIsSuccessful() {
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testGetAudioLanguage_initialProfileCreation_defaultsToEnglish() {
+    setUpTestApplicationComponent()
+
+    addTestProfiles()
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(ENGLISH_AUDIO_LANGUAGE)
+  }
+
+  @Test
+  fun testUpdateAudioLanguage_updateToHindi_updateIsSuccessful() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
-      profileManagementController.updateAudioLanguage(PROFILE_ID_2, FRENCH_AUDIO_LANGUAGE)
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, HINDI_AUDIO_LANGUAGE)
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
 
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.audioLanguage).isEqualTo(FRENCH_AUDIO_LANGUAGE)
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateIsSuccessful() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, BRAZILIAN_PORTUGUESE_LANGUAGE)
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateAudioLanguage_updateToArabic_updateIsSuccessful() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, ARABIC_LANGUAGE)
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  @Test
+  fun testUpdateAudioLanguage_updateToNigerianPidgin_updateIsSuccessful() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, NIGERIAN_PIDGIN_LANGUAGE)
+    val monitor = monitorFactory.createMonitor(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  // Requires language configurations.
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testUpdateAudioLanguage_updateToHindi_updateChangesAudioLanguage() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, HINDI_AUDIO_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(HINDI_AUDIO_LANGUAGE)
+  }
+
+  // Requires language configurations.
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateChangesAudioLanguage() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, BRAZILIAN_PORTUGUESE_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(BRAZILIAN_PORTUGUESE_LANGUAGE)
+  }
+
+  // Requires language configurations.
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testUpdateAudioLanguage_updateToArabic_updateChangesAudioLanguage() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, ARABIC_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(ARABIC_LANGUAGE)
+  }
+
+  // Requires language configurations.
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testUpdateAudioLanguage_updateToNigerianPidgin_updateChangesAudioLanguage() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, NIGERIAN_PIDGIN_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(NIGERIAN_PIDGIN_LANGUAGE)
+  }
+
+  // Requires language configurations.
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testUpdateAudioLanguage_updateToArabicThenEnglish_updateChangesAudioLanguageToEnglish() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    val updateProvider1 =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, NIGERIAN_PIDGIN_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider1)
+
+    val updateProvider2 =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_2, ENGLISH_AUDIO_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider2)
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(ENGLISH_AUDIO_LANGUAGE)
+  }
+
+  // Requires language configurations.
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testUpdateAudioLanguage_updateProfile1ToArabic_profile2IsUnchanged() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val updateProvider =
+      profileManagementController.updateAudioLanguage(PROFILE_ID_1, ARABIC_LANGUAGE)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val audioLanguageProvider = profileManagementController.getAudioLanguage(PROFILE_ID_2)
+    val audioLanguage = monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider)
+    assertThat(audioLanguage).isEqualTo(ENGLISH_AUDIO_LANGUAGE)
   }
 
   @Test

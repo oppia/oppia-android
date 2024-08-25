@@ -490,7 +490,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testUpdateAppLanguage_uninitializedToSystem_returnsDefaultSelection() {
+  fun testUpdateAppLanguage_uninitializedToSystem_returnsUninitialized() {
     forceDefaultLocale(Locale.ROOT)
 
     val languageSelection = AppLanguageSelection.newBuilder().apply {
@@ -503,11 +503,11 @@ class TranslationControllerTest {
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualTo(languageSelection)
+    assertThat(selection).isEqualToDefaultInstance()
   }
 
   @Test
-  fun testUpdateAppLanguage_uninitializedToEnglish_returnsEnglishSelection() {
+  fun testUpdateAppLanguage_uninitializedToEnglish_returnsUninitialized() {
     forceDefaultLocale(Locale.ROOT)
 
     val expectedLanguageSelection = AppLanguageSelection.newBuilder().apply {
@@ -520,7 +520,7 @@ class TranslationControllerTest {
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection).isEqualTo(expectedLanguageSelection)
+    assertThat(selection).isEqualToDefaultInstance()
   }
 
   @Test
@@ -535,11 +535,11 @@ class TranslationControllerTest {
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
-    assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
+    assertThat(selection.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
   }
 
   @Test
-  fun testUpdateAppLanguage_englishToPortuguese_returnsPortugueseSelection() {
+  fun testUpdateAppLanguage_englishToPortuguese_returnsEnglishSelection() {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
 
@@ -551,7 +551,7 @@ class TranslationControllerTest {
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
     assertThat(selection.selectionTypeCase).isEqualTo(SELECTED_APP_LANGUAGE)
-    assertThat(selection.selectedLanguage).isEqualTo(BRAZILIAN_PORTUGUESE)
+    assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
   }
 
   /* Tests for written translation content functions */

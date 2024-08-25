@@ -18,6 +18,7 @@ class PromotedStoryViewModel(
   private val promotedStoryClickListener: PromotedStoryClickListener,
   private val position: Int,
   private val resourceHandler: AppLanguageResourceHandler,
+  val showClassroomLabel: Boolean,
   translationController: TranslationController
 ) : RecentlyPlayedItemViewModel() {
   /** Sets the story title of the recently played story. */
@@ -36,6 +37,12 @@ class PromotedStoryViewModel(
   val nextChapterTitle by lazy {
     translationController.extractString(
       promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
+    )
+  }
+  /** Sets the classroom of the recently played story. */
+  val classroomTitle by lazy {
+    translationController.extractString(
+      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
     )
   }
 
