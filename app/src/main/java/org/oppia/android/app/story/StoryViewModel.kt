@@ -31,7 +31,7 @@ class StoryViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) {
-  private var internalProfileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
   private lateinit var classroomId: String
   private lateinit var topicId: String
 
@@ -42,7 +42,7 @@ class StoryViewModel @Inject constructor(
   private val storyResultLiveData: LiveData<AsyncResult<EphemeralStorySummary>> by lazy {
     topicController.getStory(
       ProfileId.newBuilder()
-        .setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build(),
+        .setLoggedInInternalProfileId(profileId.loggedInInternalProfileId).build(),
       topicId,
       storyId
     ).toLiveData()
@@ -61,7 +61,7 @@ class StoryViewModel @Inject constructor(
   }
 
   fun setInternalProfileId(internalProfileId: ProfileId) {
-    this.internalProfileId = internalProfileId
+    this.profileId = internalProfileId
   }
 
   fun setClassroomId(classroomId: String) {
@@ -126,7 +126,7 @@ class StoryViewModel @Inject constructor(
           fragment,
           explorationSelectionListener,
           explorationCheckpointController,
-          internalProfileId.loggedInInternalProfileId,
+          profileId.loggedInInternalProfileId,
           classroomId,
           topicId,
           storyId,

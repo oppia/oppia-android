@@ -63,7 +63,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
   private lateinit var overlayBinding: Any
-  private var internalProfileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
   private var isSpotlightActive = false
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -73,7 +73,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    internalProfileId =
+    profileId =
       arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     calculateScreenSize()
   }
@@ -100,10 +100,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
     if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
-    val profileId = internalProfileId
+    val currentProfileId = profileId
     val featureViewStateLiveData =
       spotlightStateController.retrieveSpotlightViewState(
-        profileId,
+        currentProfileId,
         spotlightTarget.feature
       ).toLiveData()
 
@@ -136,7 +136,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
         override fun onEnded() {
           if (targetList.isNotEmpty()) targetList.removeFirst()
-          spotlightStateController.markSpotlightViewed(internalProfileId, spotlightTarget.feature)
+          spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
         }
       })
       .build(spotlightTarget.anchor)

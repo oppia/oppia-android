@@ -39,7 +39,7 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val DEFAULT_LOGGED_OUT_PROFILE_ID = ProfileId.newBuilder().setLoggedOut(true).build()
+private val LOGGED_OUT_PROFILE_ID = ProfileId.newBuilder().setLoggedOut(true).build()
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
 private const val GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
@@ -95,7 +95,7 @@ class ProfileManagementController @Inject constructor(
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
-  private var currentProfileId: ProfileId = DEFAULT_LOGGED_OUT_PROFILE_ID
+  private var currentProfileId: ProfileId = LOGGED_OUT_PROFILE_ID
   private val profileDataStore =
     cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
 

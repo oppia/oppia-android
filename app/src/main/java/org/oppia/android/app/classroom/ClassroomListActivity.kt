@@ -42,7 +42,7 @@ class ClassroomListActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
-  private lateinit var internalProfileId: ProfileId
+  private lateinit var profileId: ProfileId
 
   companion object {
     /** Returns a new [Intent] to route to [ClassroomListActivity] for a specified [profileId]. */
@@ -58,7 +58,7 @@ class ClassroomListActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    internalProfileId = intent.extractCurrentUserProfileId()
+    profileId = intent.extractCurrentUserProfileId()
     classroomListActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
   }
@@ -88,10 +88,7 @@ class ClassroomListActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(
-          ProfileId.newBuilder()
-            .setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
-        )
+        .setProfileId(profileId)
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

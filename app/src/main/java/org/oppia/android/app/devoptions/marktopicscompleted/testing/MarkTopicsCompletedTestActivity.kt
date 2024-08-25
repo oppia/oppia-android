@@ -14,7 +14,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 /** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
-  private var internalProfileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -22,11 +22,11 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
-    val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    val currentProfileId = intent?.extractCurrentUserProfileId()
+    profileId = currentProfileId ?: ProfileId.newBuilder().setLoggedOut(true).build()
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(
-        internalProfileId.loggedInInternalProfileId
+        profileId.loggedInInternalProfileId
       )
       supportFragmentManager.beginTransaction().add(
         R.id.mark_topics_completed_container,

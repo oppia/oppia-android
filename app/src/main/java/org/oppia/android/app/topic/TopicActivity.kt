@@ -34,7 +34,7 @@ class TopicActivity :
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
-  private var internalProfileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
   private lateinit var topicId: String
   private lateinit var classroomId: String
   private var storyId: String? = null
@@ -45,7 +45,7 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId =
+    profileId =
       intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
@@ -59,7 +59,7 @@ class TopicActivity :
     }
     storyId = args?.storyId
     topicActivityPresenter.handleOnCreate(
-      internalProfileId.loggedInInternalProfileId,
+      profileId.loggedInInternalProfileId,
       classroomId,
       topicId,
       storyId
@@ -72,7 +72,7 @@ class TopicActivity :
         this,
         skillIdList,
         ProfileId.newBuilder()
-          .setLoggedInInternalProfileId(internalProfileId.loggedInInternalProfileId).build()
+          .setLoggedInInternalProfileId(profileId.loggedInInternalProfileId).build()
       )
     )
   }
