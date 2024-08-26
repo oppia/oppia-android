@@ -1119,6 +1119,84 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      rotateToLandscape()
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("a camera at the store"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_mergeItems_dargAndDrop_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      mergeDragAndDropItems(position = 0)
+      dragAndDropItem(fromPosition = 0, toPosition = 2)
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("a camera at the store"))))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_submitTimeError_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+      clickSubmitAnswerButton()
+      rotateToLandscape()
+      onView(withId(R.id.drag_drop_interaction_error)).check(
+        matches(withText(R.string.drag_and_drop_interaction_empty_input))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      mergeDragAndDropItems(position = 0)
+      rotateToLandscape()
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
   fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -1290,6 +1368,41 @@ class StateFragmentTest {
           targetViewId = R.id.drag_drop_item_recyclerview
         )
       ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickRegion6_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      waitForImageViewInteractionToFullyLoad()
+      clickImageRegion(pointX = 0.5f, pointY = 0.5f)
+      rotateToLandscape()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_submitTimeError_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      waitForImageViewInteractionToFullyLoad()
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+      clickSubmitAnswerButton()
+      rotateToLandscape()
+      onView(withId(R.id.image_input_error)).check(
+        matches(withText(R.string.image_error_empty_input))
+      )
     }
   }
 
