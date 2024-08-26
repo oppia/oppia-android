@@ -242,23 +242,23 @@ class AppLanguageFragmentTest {
   fun testAppLanguageFragment_saveInstanceState_workingProperly() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
       .use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
 
-        var appLanguageFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-        appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
+          var appLanguageFragment = activity.supportFragmentManager
+            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
 
-        activity.recreate()
+          activity.recreate()
 
-        appLanguageFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-        val recievedLanguage =
-          appLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
+          appLanguageFragment = activity.supportFragmentManager
+            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          val recievedLanguage =
+            appLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
 
-        assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ARABIC)
+          assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ARABIC)
+        }
       }
-    }
   }
 
   private fun verifyKiswahiliIsSelected(appLanguageActivity: AppLanguageActivity?) {
