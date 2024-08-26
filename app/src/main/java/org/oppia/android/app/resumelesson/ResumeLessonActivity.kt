@@ -46,11 +46,12 @@ class ResumeLessonActivity :
       params.parentScreen,
       params.checkpoint
     )
-    onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
-     override fun handleOnBackPressed() {
-       resumeLessonActivityPresenter.setReadingTextSizeNormal()
-     }
-   })
+    onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(/* enabled = */ true) {
+      override fun handleOnBackPressed() {
+        resumeLessonActivityPresenter.setReadingTextSizeNormal()
+        finish()
+      }
+    })
   }
 
   // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -123,5 +124,4 @@ class ResumeLessonActivity :
   override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
     resumeLessonActivityPresenter.loadResumeLessonFragment(readingTextSize)
   }
-
-
+}
