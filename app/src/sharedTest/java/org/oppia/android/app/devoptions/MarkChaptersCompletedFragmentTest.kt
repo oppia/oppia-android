@@ -121,15 +121,23 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkChaptersCompletedFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var storyProgressController: StoryProgressController
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var storyProgressController: StoryProgressController
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
@@ -941,16 +949,20 @@ class MarkChaptersCompletedFragmentTest {
 
         var fragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
-        val actualSelectedExplorationIds = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
-        val actualSelectedExplorationTitles = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+        val actualSelectedExplorationIds =
+          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        val actualSelectedExplorationTitles =
+          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
 
         activity.recreate()
 
         fragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
 
-        val receivedSelectedExplorationIds = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
-        val receivedSelectedExplorationTitles = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+        val receivedSelectedExplorationIds =
+          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        val receivedSelectedExplorationTitles =
+          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
 
         assertThat(receivedSelectedExplorationIds).isEqualTo(actualSelectedExplorationIds)
         assertThat(receivedSelectedExplorationTitles).isEqualTo(actualSelectedExplorationTitles)

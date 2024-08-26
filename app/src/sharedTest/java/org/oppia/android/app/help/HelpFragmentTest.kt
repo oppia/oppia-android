@@ -1391,7 +1391,8 @@ class HelpFragmentTest {
 
         var fragment = activity.supportFragmentManager
           .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment
-        val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
+        val isMultipane =
+          activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
 
         val arguments = checkNotNull(fragment.arguments) {
           "Expected arguments to be passed to HelpFragment"

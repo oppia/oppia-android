@@ -220,19 +220,21 @@ class AppLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testAppLanguageFragment_arguments_workingProperly() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
+      .use { scenario ->
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
 
-        val appLanguageFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-        val recievedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
-        val receivedProfileId = appLanguageFragment.arguments?.extractCurrentUserProfileId()?.internalId
+          val appLanguageFragment = activity.supportFragmentManager
+            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          val recievedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
+          val receivedProfileId =
+            appLanguageFragment.arguments?.extractCurrentUserProfileId()?.internalId
 
-        assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ENGLISH)
-        assertThat(receivedProfileId).isEqualTo(internalProfileId)
+          assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ENGLISH)
+          assertThat(receivedProfileId).isEqualTo(internalProfileId)
+        }
       }
-    }
   }
 
   @Test
@@ -250,7 +252,8 @@ class AppLanguageFragmentTest {
 
         appLanguageFragment = activity.supportFragmentManager
           .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-        val recievedLanguage = appLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
+        val recievedLanguage =
+          appLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
 
         assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ARABIC)
       }

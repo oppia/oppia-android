@@ -463,7 +463,9 @@ class MarkTopicsCompletedFragmentTest {
         var fragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
         val arguments =
-          checkNotNull(fragment.arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to MarkTopicsCompletedFragment"
+          }
         val receivedProfileId = arguments.extractCurrentUserProfileId()
 
         assertThat(receivedProfileId).isEqualTo(profileId)

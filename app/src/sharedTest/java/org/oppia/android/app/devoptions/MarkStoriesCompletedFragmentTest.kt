@@ -483,7 +483,9 @@ class MarkStoriesCompletedFragmentTest {
           .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
 
         val arguments =
-          checkNotNull(fragment.arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to MarkStoriesCompletedFragment"
+          }
         val profileId = arguments.extractCurrentUserProfileId()
         val receivedInternalProfileId = profileId.internalId
 
@@ -504,13 +506,15 @@ class MarkStoriesCompletedFragmentTest {
 
         var fragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
-        val actualSelectedStoryIdList = fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+        val actualSelectedStoryIdList =
+          fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
 
         activity.recreate()
 
         fragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
-        val receivedSelectedStoryIdList = fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+        val receivedSelectedStoryIdList =
+          fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
 
         assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
       }
