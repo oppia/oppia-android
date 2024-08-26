@@ -9,6 +9,7 @@ import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
@@ -52,6 +53,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
 
+  private lateinit var userAnswerState: UserAnswerState
+
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
    * data-binding.
@@ -59,6 +62,10 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   fun setImageUrl(imageUrl: String) {
     this.imageUrl = imageUrl
     maybeInitializeClickableAreas()
+  }
+
+  fun setUserAnswerState(userAnswerrState: UserAnswerState) {
+    this.userAnswerState = userAnswerrState
   }
 
   fun setEntityId(entityId: String) {
@@ -121,7 +128,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         onRegionClicked,
         bindingInterface,
         isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled(),
-        clickableAreas
+        clickableAreas,
+        userAnswerState
       )
       areasImage.addRegionViews()
       performAttachment(areasImage)
