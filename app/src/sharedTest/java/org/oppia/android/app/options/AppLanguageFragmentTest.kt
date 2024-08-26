@@ -240,7 +240,8 @@ class AppLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testAppLanguageFragment_saveInstanceState_workingProperly() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use { scenario ->
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
+      .use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 

@@ -923,7 +923,9 @@ class MarkChaptersCompletedFragmentTest {
         val fragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
         val arguments =
-          checkNotNull(fragment.arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to MarkChaptersCompletedFragment"
+          }
         val args = arguments.getProto(
           "MarkChaptersCompletedFragment.arguments",
           MarkChaptersCompletedFragmentArguments.getDefaultInstance()
