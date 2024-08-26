@@ -45,6 +45,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS
 import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
+import org.oppia.android.app.model.ProfileEditActivityParams
+import org.oppia.android.app.model.ProfileEditFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -100,6 +102,8 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -114,10 +118,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ProfileEditActivityParams
-import org.oppia.android.app.model.ProfileEditFragmentArguments
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [ProfileEditFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -480,7 +480,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEditFragment_arguments_workingProperly() {
     launchFragmentTestActivity(internalProfileId = 1).use { scenario ->
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
 
         val activityArgs = activity.intent.getProtoExtra(
           ProfileEditActivity.PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
@@ -504,7 +504,6 @@ class ProfileEditFragmentTest {
         assertThat(receivedInternalProfileId).isEqualTo(1)
         assertThat(receivedIsMultipane).isEqualTo(isMultipane)
       }
-
     }
   }
 
