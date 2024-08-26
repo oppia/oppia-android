@@ -102,6 +102,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 
 /** Tests for [AudioLanguageFragment]. */
 // Function name: test names are conventionally named with underscores.
@@ -350,6 +351,49 @@ class AudioLanguageFragmentTest {
       )
     }
   }
+
+  @Test
+  fun testAudioLanguageFragment_arguments_workingProperly() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val receivedAudioLanguage = fragment.arguments?.retrieveLanguageFromArguments()
+
+        assertThat(ENGLISH_AUDIO_LANGUAGE).isEqualTo(receivedAudioLanguage)
+      }
+    }
+  }
+
+  @Test
+  fun testAudioLanguageFragment_SaveInstanceState_workingProperly() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        fragment.audioLanguageFragmentPresenterV1.onLanguageSelected(BRAZILIAN_PORTUGUESE_LANGUAGE)
+
+        activity.recreate()
+
+        fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val restoredAudioLanguage = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+
+        assertThat(restoredAudioLanguage).isEqualTo(BRAZILIAN_PORTUGUESE_LANGUAGE)
+      }
+    }
+  }
+
 
   private fun launchActivityWithLanguage(
     audioLanguage: AudioLanguage

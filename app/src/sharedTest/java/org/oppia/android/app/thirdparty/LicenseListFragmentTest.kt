@@ -19,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -102,6 +103,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.help.thirdparty.LicenseListFragment
+import org.oppia.android.app.model.LicenseListFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 /** Tests for [LicenseListFragmentTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -337,6 +341,32 @@ class LicenseListFragmentTest {
         )
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLicenseListFragment_arguments_workingProperly() {
+    launch<LicenseListActivity>(createLicenseListActivity(2)).use { scenario ->
+
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.license_list_fragment_placeholder) as LicenseListFragment
+
+        val arguments = checkNotNull(fragment.arguments) {
+          "Expected arguments to be passed to LicenseListFragment"
+        }
+        val args = arguments.getProto(
+          "LicenseListFragment.arguments",
+          LicenseListFragmentArguments.getDefaultInstance()
+        )
+        val receivedDependencyIndex = args.dependencyIndex
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedDependencyIndex).isEqualTo(2)
+        assertThat(receivedIsMultipane).isEqualTo(false)
+      }
     }
   }
 

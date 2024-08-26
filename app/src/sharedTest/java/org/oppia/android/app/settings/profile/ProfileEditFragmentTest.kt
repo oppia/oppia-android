@@ -114,6 +114,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileEditActivityParams
+import org.oppia.android.app.model.ProfileEditFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [ProfileEditFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -471,6 +475,37 @@ class ProfileEditFragmentTest {
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
+  }
+
+  @Test
+  fun testProfileEditFragment_arguments_workingProperly() {
+    launchFragmentTestActivity(internalProfileId = 1).use { scenario ->
+      scenario.onActivity { activity->
+
+        val activityArgs = activity.intent.getProtoExtra(
+          ProfileEditActivity.PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
+          ProfileEditActivityParams.getDefaultInstance()
+        )
+        val isMultipane = activityArgs?.isMultipane ?: false
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_edit_fragment_placeholder) as ProfileEditFragment
+
+        val arguments = checkNotNull(fragment.arguments) {
+          "Expected variables to be passed to ProfileEditFragment"
+        }
+        val args = arguments.getProto(
+          ProfileEditFragment.PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
+          ProfileEditFragmentArguments.getDefaultInstance()
+        )
+        val receivedInternalProfileId = args.internalProfileId
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedInternalProfileId).isEqualTo(1)
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
+
+    }
   }
 
   private fun launchFragmentTestActivity(internalProfileId: Int) =

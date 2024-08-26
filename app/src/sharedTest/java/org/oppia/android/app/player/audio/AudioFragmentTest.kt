@@ -23,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -114,6 +115,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -342,6 +344,25 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
     }
   }
+
+  @Test
+  fun testAudioFragment_arguments_workingProperly() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        val receivedProfileId = audioFragment.arguments?.extractCurrentUserProfileId()
+
+        assertThat(receivedProfileId).isEqualTo(profileId)
+      }
+    }
+  }
+
 
   private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {

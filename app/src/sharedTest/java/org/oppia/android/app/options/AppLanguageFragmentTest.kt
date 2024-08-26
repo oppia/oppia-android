@@ -99,6 +99,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.options.AppLanguageFragment.Companion.retrieveLanguageFromArguments
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [AppLanguageFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -212,6 +214,46 @@ class AppLanguageFragmentTest {
       appLanguageActivity?.recreate()
       testCoroutineDispatchers.runCurrent()
       verifyKiswahiliIsSelected(appLanguageActivity)
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testAppLanguageFragment_arguments_workingProperly() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val appLanguageFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+        val recievedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
+        val receivedProfileId = appLanguageFragment.arguments?.extractCurrentUserProfileId()?.internalId
+
+        assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ENGLISH)
+        assertThat(receivedProfileId).isEqualTo(internalProfileId)
+      }
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testAppLanguageFragment_saveInstanceState_workingProperly() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var appLanguageFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+        appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
+
+        activity.recreate()
+
+        appLanguageFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+        val recievedLanguage = appLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
+
+        assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ARABIC)
+      }
     }
   }
 

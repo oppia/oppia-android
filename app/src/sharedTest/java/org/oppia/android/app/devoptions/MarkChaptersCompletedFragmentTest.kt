@@ -109,6 +109,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
+import org.oppia.android.app.model.MarkChaptersCompletedFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 /** Tests for [MarkChaptersCompletedFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -898,6 +901,60 @@ class MarkChaptersCompletedFragmentTest {
       val exp2PlayState = retrievePlayStateInFirstTestStory(expId = "13")
       assertThat(exp1PlayState).isEqualTo(ChapterPlayState.COMPLETED)
       assertThat(exp2PlayState).isEqualTo(ChapterPlayState.COMPLETED)
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedFragment_arguments_workingProperly() {
+    launchMarkChaptersCompletedFragmentTestActivity(
+      internalProfileId, showConfirmationNotice = true
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+        val arguments =
+          checkNotNull(fragment.arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
+        val args = arguments.getProto(
+          "MarkChaptersCompletedFragment.arguments",
+          MarkChaptersCompletedFragmentArguments.getDefaultInstance()
+        )
+        val receivedInternalProfileId = args?.internalProfileId
+        val receivedShowConfirmationNotice = args?.showConfirmationNotice
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+        assertThat(receivedShowConfirmationNotice).isEqualTo(true)
+      }
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedFragment_saveInstanceState_workingProperly() {
+    launchMarkChaptersCompletedFragmentTestActivity(
+      internalProfileId, showConfirmationNotice = true
+    ).use { scenario ->
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+        val actualSelectedExplorationIds = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        val actualSelectedExplorationTitles = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+
+        activity.recreate()
+
+        fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+
+        val receivedSelectedExplorationIds = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        val receivedSelectedExplorationTitles = fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+
+        assertThat(receivedSelectedExplorationIds).isEqualTo(actualSelectedExplorationIds)
+        assertThat(receivedSelectedExplorationTitles).isEqualTo(actualSelectedExplorationTitles)
+      }
     }
   }
 

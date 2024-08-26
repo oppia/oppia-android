@@ -103,6 +103,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [MarkStoriesCompletedFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -466,6 +468,52 @@ class MarkStoriesCompletedFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedFragment_arguments_workingProperly() {
+    launch<MarkStoriesCompletedTestActivity>(
+      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+
+        val arguments =
+          checkNotNull(fragment.arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
+        val profileId = arguments.extractCurrentUserProfileId()
+        val receivedInternalProfileId = profileId.internalId
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+      }
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedFragment_saveInstanceState_workingProperly() {
+    launch<MarkStoriesCompletedTestActivity>(
+      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+        val actualSelectedStoryIdList = fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+
+        activity.recreate()
+
+        fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+        val receivedSelectedStoryIdList = fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+
+        assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
+      }
     }
   }
 

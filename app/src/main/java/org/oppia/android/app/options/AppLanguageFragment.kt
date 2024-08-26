@@ -42,7 +42,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
       }
     }
 
-    private fun Bundle.retrieveLanguageFromArguments(): OppiaLanguage {
+    fun Bundle.retrieveLanguageFromArguments(): OppiaLanguage {
       return getProto(
         FRAGMENT_ARGUMENTS_KEY, AppLanguageFragmentArguments.getDefaultInstance()
       ).oppiaLanguage

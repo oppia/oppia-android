@@ -131,6 +131,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ConceptCardFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [ConceptCardFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -488,6 +491,38 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         assertThat(activity.supportFragmentManager.fragments).isEmpty()
         ConceptCardFragment.dismissAll(activity.supportFragmentManager)
+      }
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_arguments_workingProperly() {
+    launchTestActivity().use { scenario ->
+      scenario.onActivity { activity ->
+
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          profileId,
+          activity.supportFragmentManager
+        )
+        val fragmentSkill0 =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+
+        val arguments = checkNotNull(fragmentSkill0.arguments) {
+          "Expected arguments to be passed to ConceptCardFragment"
+        }
+        val args = arguments.getProto(
+          ConceptCardFragment.CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+          ConceptCardFragmentArguments.getDefaultInstance()
+        )
+        val skillId =
+          checkNotNull(args.skillId) {
+            "Expected skillId to be passed to ConceptCardFragment"
+          }
+        val receivedProfileId = arguments.extractCurrentUserProfileId()
+
+        assertThat(skillId).isEqualTo(TEST_SKILL_ID_0)
+        assertThat(receivedProfileId).isEqualTo(profileId)
       }
     }
   }

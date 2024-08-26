@@ -2,6 +2,7 @@ package org.oppia.android.app.help
 
 import android.app.Application
 import android.content.Intent
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.equalTo
 import org.junit.After
@@ -119,6 +121,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.HelpFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -1371,6 +1375,33 @@ class HelpFragmentTest {
       it.openNavigationDrawer()
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_arguments_workingProperly() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment
+        val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
+
+        val arguments = checkNotNull(fragment.arguments) {
+          "Expected arguments to be passed to HelpFragment"
+        }
+        val args =
+          arguments.getProto("HelpFragment.arguments", HelpFragmentArguments.getDefaultInstance())
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
     }
   }
 

@@ -103,6 +103,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [MarkTopicsCompletedFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -447,6 +449,50 @@ class MarkTopicsCompletedFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testMarkTopicsCompletedFragment_arguments_workingProperly() {
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+        val arguments =
+          checkNotNull(fragment.arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
+        val receivedProfileId = arguments.extractCurrentUserProfileId()
+
+        assertThat(receivedProfileId).isEqualTo(profileId)
+      }
+    }
+  }
+
+  @Test
+  fun testMarkTopicsCompletedFragment_saveInstanceState_workingProperly() {
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+
+        fragment.markTopicsCompletedFragmentPresenter.selectedTopicIdList =
+          arrayListOf("topic_1", "topic_2")
+
+        activity.recreate()
+
+        fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+
+        val restoredTopicIdList = fragment.markTopicsCompletedFragmentPresenter.selectedTopicIdList
+        assertThat(restoredTopicIdList).isEqualTo(listOf("topic_1", "topic_2"))
+      }
     }
   }
 
