@@ -474,26 +474,32 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedFragment_saveInstanceState_workingProperly() {
+  fun testMarkTopicsCompletedFragment_saveInstanceState_workProperly() {
     launch<MarkTopicsCompletedTestActivity>(
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
       scenario.onActivity { activity ->
 
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+          .findFragmentById(R.id.mark_topics_completed_container) as? MarkTopicsCompletedFragment
+        assertThat(fragment).isNotNull()
 
-        fragment.markTopicsCompletedFragmentPresenter.selectedTopicIdList =
-          arrayListOf("topic_1", "topic_2")
+        val actualSelectedTopicsList =
+          fragment?.markTopicsCompletedFragmentPresenter?.selectedTopicIdList
 
         activity.recreate()
 
         fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+          .findFragmentById(R.id.mark_topics_completed_container) as? MarkTopicsCompletedFragment
+        assertThat(fragment).isNotNull()
 
-        val restoredTopicIdList = fragment.markTopicsCompletedFragmentPresenter.selectedTopicIdList
-        assertThat(restoredTopicIdList).isEqualTo(listOf("topic_1", "topic_2"))
+        fragment?.let {
+          val restoredTopicIdList = it.markTopicsCompletedFragmentPresenter.selectedTopicIdList
+
+          assertThat(restoredTopicIdList).isEqualTo(actualSelectedTopicsList)
+        }
       }
     }
   }

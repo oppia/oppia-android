@@ -950,24 +950,31 @@ class MarkChaptersCompletedFragmentTest {
       scenario.onActivity { activity ->
 
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+          .findFragmentById(R.id.mark_chapters_completed_container) as? MarkChaptersCompletedFragment
+
+        assertThat(fragment).isNotNull()
+
         val actualSelectedExplorationIds =
-          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+          fragment?.markChaptersCompletedFragmentPresenter?.serializableSelectedExplorationIds
         val actualSelectedExplorationTitles =
-          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+          fragment?.markChaptersCompletedFragmentPresenter?.serializableSelectedExplorationTitles
 
         activity.recreate()
 
         fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+          .findFragmentById(R.id.mark_chapters_completed_container) as? MarkChaptersCompletedFragment
 
-        val receivedSelectedExplorationIds =
-          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
-        val receivedSelectedExplorationTitles =
-          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+        assertThat(fragment).isNotNull()
 
-        assertThat(receivedSelectedExplorationIds).isEqualTo(actualSelectedExplorationIds)
-        assertThat(receivedSelectedExplorationTitles).isEqualTo(actualSelectedExplorationTitles)
+        fragment?.let {
+          val receivedSelectedExplorationIds =
+            it.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+          val receivedSelectedExplorationTitles =
+            it.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+
+          assertThat(receivedSelectedExplorationIds).isEqualTo(actualSelectedExplorationIds)
+          assertThat(receivedSelectedExplorationTitles).isEqualTo(actualSelectedExplorationTitles)
+        }
       }
     }
   }

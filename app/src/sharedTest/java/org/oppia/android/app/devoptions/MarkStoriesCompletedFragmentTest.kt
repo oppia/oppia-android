@@ -495,7 +495,7 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedFragment_saveInstanceState_workingProperly() {
+  fun testMarkStoriesCompletedFragment_saveInstanceState_workProperly() {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->
@@ -505,18 +505,24 @@ class MarkStoriesCompletedFragmentTest {
       scenario.onActivity { activity ->
 
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+          .findFragmentById(R.id.mark_stories_completed_container) as? MarkStoriesCompletedFragment
+        assertThat(fragment).isNotNull()
+
         val actualSelectedStoryIdList =
-          fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+          fragment?.markStoriesCompletedFragmentPresenter?.selectedStoryIdList
 
         activity.recreate()
 
         fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
-        val receivedSelectedStoryIdList =
-          fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+          .findFragmentById(R.id.mark_stories_completed_container) as? MarkStoriesCompletedFragment
+        assertThat(fragment).isNotNull()
 
-        assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
+        fragment?.let {
+          val receivedSelectedStoryIdList =
+            it.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+
+          assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
+        }
       }
     }
   }
