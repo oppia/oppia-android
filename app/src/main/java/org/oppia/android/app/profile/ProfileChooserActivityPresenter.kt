@@ -3,13 +3,13 @@ package org.oppia.android.app.profile
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
-import org.oppia.android.domain.profile.ProfileManagementController
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** The presenter for [ProfileChooserActivity]. */
 @ActivityScope

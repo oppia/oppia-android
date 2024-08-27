@@ -22,6 +22,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
@@ -38,7 +39,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileType
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,

@@ -651,8 +651,8 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       orientationLandscape()
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_scroll_left)).check(matches(isDisplayed()))
-      onView(withId(R.id.profile_scroll_right)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_list_scroll_left)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_list_scroll_right)).check(matches(isDisplayed()))
     }
   }
 
@@ -665,8 +665,8 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       orientationLandscape()
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_scroll_left)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_scroll_right)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_list_scroll_left)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_list_scroll_right)).check(matches(not(isDisplayed())))
     }
   }
 
