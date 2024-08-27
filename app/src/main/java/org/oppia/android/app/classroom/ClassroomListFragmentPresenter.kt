@@ -3,6 +3,7 @@ package org.oppia.android.app.classroom
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
 import org.oppia.android.app.classroom.topiclist.TopicCard
 import org.oppia.android.app.classroom.welcome.WelcomeText
+import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
@@ -50,6 +52,9 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -66,6 +71,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
@@ -88,8 +95,11 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val appStartupStateController: AppStartupStateController,
   private val analyticsController: AnalyticsController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+  private val exitProfileListener = activity as ExitProfileListener
   private lateinit var binding: ClassroomListFragmentBinding
   private lateinit var classroomListViewModel: ClassroomListViewModel
   private var internalProfileId: Int = -1
@@ -134,7 +144,8 @@ class ClassroomListFragmentPresenter @Inject constructor(
           sender: ObservableList<HomeItemViewModel>,
           positionStart: Int,
           itemCount: Int
-        ) {}
+        ) {
+        }
 
         override fun onItemRangeInserted(
           sender: ObservableList<HomeItemViewModel>,
@@ -149,17 +160,23 @@ class ClassroomListFragmentPresenter @Inject constructor(
           fromPosition: Int,
           toPosition: Int,
           itemCount: Int
-        ) {}
+        ) {
+        }
 
         override fun onItemRangeRemoved(
           sender: ObservableList<HomeItemViewModel>,
           positionStart: Int,
           itemCount: Int
-        ) {}
+        ) {
+        }
       }
     )
 
-    logAppOnboardedEvent()
+    if (enableOnboardingFlowV2.value) {
+      subscribeToProfileResult(profileId)
+    } else {
+      logAppOnboardedEvent(profileId)
+    }
 
     return binding.root
   }
@@ -265,7 +282,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logAppOnboardedEvent() {
+  private fun logAppOnboardedEvent(profileId: ProfileId) {
     val startupStateProvider = appStartupStateController.getAppStartupState()
     val liveData = startupStateProvider.toLiveData()
     liveData.observe(
@@ -274,7 +291,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
         override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
           when (startUpStateResult) {
             null, is AsyncResult.Pending -> {
-              // Do nothing.
+              // Do nothing
             }
             is AsyncResult.Success -> {
               liveData.removeObserver(this)
@@ -297,10 +314,69 @@ class ClassroomListFragmentPresenter @Inject constructor(
     )
   }
 
+  private fun subscribeToProfileResult(profileId: ProfileId) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+      processProfileResult(it)
+    }
+  }
+
+  private fun processProfileResult(result: AsyncResult<Profile>) {
+    when (result) {
+      is AsyncResult.Success -> {
+        val profile = result.value
+        handleProfileOnboardingState(profile)
+        handleBackPress(profile.profileType)
+      }
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ClassroomListFragment", "Failed to fetch profile with id:$profileId", result.error
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> {
+        Profile.getDefaultInstance()
+      }
+    }
+  }
+
+  private fun handleProfileOnboardingState(profile: Profile) {
+    // App onboarding is completed by the first profile on the app(SOLE_LEARNER or SUPERVISOR),
+    // while profile onboarding is completed by each profile.
+    if (!profile.completedProfileOboarding) {
+      markProfileOnboardingEnded(profileId)
+      if (profile.profileType == ProfileType.SOLE_LEARNER ||
+        profile.profileType == ProfileType.SUPERVISOR
+      ) {
+        appStartupStateController.markOnboardingFlowCompleted()
+        logAppOnboardedEvent(profileId)
+      }
+    }
+  }
+
+  private fun markProfileOnboardingEnded(profileId: ProfileId) {
+    profileManagementController.markProfileOnboardingEnded(profileId)
+
+    analyticsController.logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingEndedContext(profileId),
+      profileId = profileId
+    )
+  }
+
   private fun logHomeActivityEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
       profileId
+    )
+  }
+
+  private fun handleBackPress(profileType: ProfileType) {
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          exitProfileListener.exitProfile(profileType)
+        }
+      }
     )
   }
 }
