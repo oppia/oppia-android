@@ -117,6 +117,7 @@ kt_android_library(
     ],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 

@@ -112,3 +112,18 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
+
+oppia_android_test(
+    name = "EventTypeToHumanReadableNameConverterTest",
+    srcs = ["EventTypeToHumanReadableNameConverterTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.EventTypeToHumanReadableNameConverterTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
