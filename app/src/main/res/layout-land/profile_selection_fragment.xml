@@ -69,8 +69,6 @@
       android:clipToPadding="false"
       android:orientation="horizontal"
       android:overScrollMode="never"
-      android:paddingStart="64dp"
-      android:paddingEnd="64dp"
       android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"

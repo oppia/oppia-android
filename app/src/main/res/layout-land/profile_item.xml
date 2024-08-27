@@ -17,7 +17,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/profile_chooser_profile_view_margin_start_profile_already_added"
     android:layout_marginTop="@dimen/space_0dp"
-    android:layout_marginEnd="@dimen/profile_chooser_profile_view_margin_end_profile_already_added"
+    android:layout_marginEnd="@dimen/profile_chooser_profile_view_margin_start_profile_already_added"
     android:layout_marginBottom="@dimen/profile_view_already_added_margin"
     android:clickable="true"
     android:onClick="@{(v) -> viewModel.profileClicked()}">

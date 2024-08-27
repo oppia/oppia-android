@@ -58,28 +58,27 @@ class StartSnapHelper : LinearSnapHelper() {
   ): View? {
     if (layoutManager is LinearLayoutManager) {
       val firstChild = layoutManager.findFirstVisibleItemPosition()
-      val isLastItem =
-        layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1
-      if (firstChild == RecyclerView.NO_POSITION || isLastItem) {
+      val lastChild = layoutManager.findLastCompletelyVisibleItemPosition()
+      val isLastItemFullyVisible = lastChild == layoutManager.itemCount - 1
+
+      if (firstChild == RecyclerView.NO_POSITION) {
         return null
       }
 
       val child = layoutManager.findViewByPosition(firstChild)
-      return if (helper.getDecoratedEnd(child) >=
-        helper.getDecoratedMeasurement(child) / 2 &&
-        helper.getDecoratedEnd(
-          child
-        ) > 0
+
+      // If the last item is fully visible, but we're still in the middle of the list, allow
+      // snapping to the start.
+      if (isLastItemFullyVisible && firstChild > 0) {
+        return child
+      }
+
+      return if (helper.getDecoratedEnd(child) >= helper.getDecoratedMeasurement(child) / 2 &&
+        helper.getDecoratedEnd(child) > 0
       ) {
         child
       } else {
-        if (layoutManager.findLastCompletelyVisibleItemPosition() ==
-          layoutManager.getItemCount() - 1
-        ) {
-          null
-        } else {
-          layoutManager.findViewByPosition(firstChild + 1)
-        }
+        layoutManager.findViewByPosition(firstChild + 1)
       }
     }
     return super.findSnapView(layoutManager)
