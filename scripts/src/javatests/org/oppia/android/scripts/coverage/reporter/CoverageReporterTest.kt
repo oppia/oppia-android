@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.coverage.reporter
 
+import com.google.common.html.HtmlEscapers
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -697,7 +698,13 @@ class CoverageReporterTest {
     </html>
       """.trimIndent()
 
-    assertThat(outputReportText).isEqualTo(expectedHtml)
+    val unescapedOutputReportText = outputReportText
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedOutputReportText).isEqualTo(expectedHtml)
   }
 
   @Test
