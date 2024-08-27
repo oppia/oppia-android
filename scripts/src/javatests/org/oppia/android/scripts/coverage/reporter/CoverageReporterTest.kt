@@ -697,13 +697,7 @@ class CoverageReporterTest {
     </html>
       """.trimIndent()
 
-    val unescapedOutputReportText = outputReportText
-      .replace("&quot;", "\"")
-      .replace("&amp;", "&")
-      .replace("&lt;", "<")
-      .replace("&gt;", ">")
-
-    assertThat(unescapedOutputReportText).isEqualTo(expectedHtml)
+    assertThat(outputReportText).isEqualTo(expectedHtml)
   }
 
   @Test

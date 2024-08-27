@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.coverage.reporter
 
-import com.google.common.html.HtmlEscapers
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
@@ -278,7 +277,7 @@ class CoverageReporter(
                 """
                   <tr>
                     <td class="line-number-row">${lineNumber.toString().padStart(4, ' ')}</td>
-                    <td class="$lineClass">${HtmlEscapers.htmlEscaper().escape(line)}</td>
+                    <td class="$lineClass">$line</td>
                   </tr>
                 """.trimIndent()
               )
