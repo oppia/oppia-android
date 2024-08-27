@@ -46,7 +46,7 @@ class ResumeLessonActivity :
       params.parentScreen,
       params.checkpoint
     )
-    onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(/* enabled = */ true) {
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
       override fun handleOnBackPressed() {
         resumeLessonActivityPresenter.setReadingTextSizeNormal()
         finish()
