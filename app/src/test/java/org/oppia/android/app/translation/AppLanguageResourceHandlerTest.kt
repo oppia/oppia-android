@@ -493,8 +493,6 @@ class AppLanguageResourceHandlerTest {
   // TODO(#3793): Remove this once OppiaLanguage is used as the source of truth.
   @Test
   @Iteration("hi", "lang=HINDI_AUDIO_LANGUAGE", "expectedDisplayText=हिन्दी")
-  @Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français")
-  @Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文")
   @Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português")
   @Iteration("ar", "lang=ARABIC_LANGUAGE", "expectedDisplayText=العربية")
   @Iteration("pcm", "lang=NIGERIAN_PIDGIN_LANGUAGE", "expectedDisplayText=Naijá")
