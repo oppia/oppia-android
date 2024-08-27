@@ -319,10 +319,6 @@ class ProfileManagementController @Inject constructor(
             avatarImageUri = imageUri
           } else avatarColorRgb = colorRgb
         }.build()
-
-        if (enableOnboardingFlowV2.value) {
-          this.profileType = computeProfileType(isAdmin, pin)
-        }
       }.build()
 
       val wasProfileEverAdded = it.profilesCount > 0
@@ -851,7 +847,7 @@ class ProfileManagementController @Inject constructor(
     profileId: ProfileId,
     profileType: ProfileType,
     avatarImagePath: Uri?,
-    colorRgb: Int,
+    colorRgb: Int?,
     newName: String,
     isAdmin: Boolean
   ): DataProvider<Any?> {
@@ -881,7 +877,7 @@ class ProfileManagementController @Inject constructor(
           ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
       } else {
         updatedProfile.avatar =
-          ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+          colorRgb?.let { color -> ProfileAvatar.newBuilder().setAvatarColorRgb(color).build() }
       }
 
       if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {

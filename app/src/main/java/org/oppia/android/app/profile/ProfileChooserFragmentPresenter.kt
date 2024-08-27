@@ -38,6 +38,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileType
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
@@ -212,11 +213,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    val availableColors = COLORS_LIST.map {
+    return COLORS_LIST.map {
       ContextCompat.getColor(context, it)
-    }.minus(chooserViewModel.usedColors.toSet())
-
-    return availableColors.random()
+    }.minus(chooserViewModel.usedColors).random()
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileItemViewModel> {
@@ -273,16 +272,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ensureProfileOnboarded(profile: Profile) {
-    if (isAdminWithPin(profile.isAdmin, profile.pin) || profile.completedProfileOboarding) {
+    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOboarding) {
       loginToProfile(profile)
     } else {
       launchOnboardingScreen(profile.id, profile.name)
     }
-  }
-
-  // TODO(#4938): Replace with proper admin profile migration.
-  private fun isAdminWithPin(isAdmin: Boolean, pin: String?): Boolean {
-    return isAdmin && !pin.isNullOrBlank()
   }
 
   private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {

@@ -55,6 +55,7 @@
       style="@style/Subtitle2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_gravity="center"
       android:layout_marginTop="4dp"
       android:textAlignment="center"
       android:textColor="@color/component_color_shared_primary_text_color"

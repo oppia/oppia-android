@@ -13,9 +13,13 @@ import org.oppia.android.databinding.OnboardingProfileTypeFragmentBinding
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileChooserActivityParams
 
 /** Argument key for [CreateProfileActivity] intent parameters. */
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
+
+/** Argument key for [ProfileChooserActivity] intent parameters. */
+const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 
 /** The presenter for [OnboardingProfileTypeFragment]. */
 class OnboardingProfileTypeFragmentPresenter @Inject constructor(
@@ -55,7 +59,15 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
 
       profileTypeSupervisorNavigationCard.setOnClickListener {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
-        // TODO(#4938): Add profileId and ProfileType to intent extras.
+        intent.apply {
+          decorateWithUserProfileId(profileId)
+          putProtoExtra(
+            PROFILE_CHOOSER_PARAMS_KEY,
+            ProfileChooserActivityParams.newBuilder()
+              .setProfileType(ProfileType.SUPERVISOR)
+              .build()
+          )
+        }
         fragment.startActivity(intent)
         // Clear back stack so that user cannot go back to the onboarding flow.
         fragment.activity?.finishAffinity()
