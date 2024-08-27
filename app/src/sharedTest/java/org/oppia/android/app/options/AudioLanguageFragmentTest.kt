@@ -383,7 +383,9 @@ class AudioLanguageFragmentTest {
         var fragment = activity.supportFragmentManager
           .findFragmentById(R.id.audio_language_fragment_container) as? AudioLanguageFragment
         assertThat(fragment).isNotNull()
-        fragment?.audioLanguageFragmentPresenterV1?.onLanguageSelected(BRAZILIAN_PORTUGUESE_LANGUAGE)
+
+        fragment?.audioLanguageFragmentPresenterV1?.
+        onLanguageSelected(BRAZILIAN_PORTUGUESE_LANGUAGE)
 
         activity.recreate()
 

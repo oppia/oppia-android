@@ -950,7 +950,8 @@ class MarkChaptersCompletedFragmentTest {
       scenario.onActivity { activity ->
 
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as? MarkChaptersCompletedFragment
+          .findFragmentById(R.id.mark_chapters_completed_container)
+          as? MarkChaptersCompletedFragment
 
         assertThat(fragment).isNotNull()
 
@@ -962,7 +963,8 @@ class MarkChaptersCompletedFragmentTest {
         activity.recreate()
 
         fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as? MarkChaptersCompletedFragment
+          .findFragmentById(R.id.mark_chapters_completed_container)
+          as? MarkChaptersCompletedFragment
 
         assertThat(fragment).isNotNull()
 
