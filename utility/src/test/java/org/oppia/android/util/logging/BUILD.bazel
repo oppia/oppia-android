@@ -127,3 +127,4 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
     ],
+)
