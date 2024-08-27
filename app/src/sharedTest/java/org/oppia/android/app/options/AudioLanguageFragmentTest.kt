@@ -118,12 +118,17 @@ class AudioLanguageFragmentTest {
     private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 4
   }
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @After
   fun tearDown() {
@@ -384,8 +389,9 @@ class AudioLanguageFragmentTest {
           .findFragmentById(R.id.audio_language_fragment_container) as? AudioLanguageFragment
         assertThat(fragment).isNotNull()
 
-        fragment?.audioLanguageFragmentPresenterV1?.
-        onLanguageSelected(BRAZILIAN_PORTUGUESE_LANGUAGE)
+        fragment?.audioLanguageFragmentPresenterV1?.onLanguageSelected(
+          BRAZILIAN_PORTUGUESE_LANGUAGE
+        )
 
         activity.recreate()
 
