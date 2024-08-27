@@ -139,7 +139,7 @@ Coverage Analysis: **FAIL** :x: <br>
 
 | File | Coverage | Lines Hit | Status | Min Required |
 |------|:--------:|----------:|:------:|:------------:|
-| <details><summary>MathTokenizer.kt</summary>utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt</details> | 94.26% | 197 / 209 | :white_check_mark: | 70% |
+| <details><summary>Pass.kt</summary>utility/src/main/java/org/oppia/android/util/math/Pass.kt</details> | 94.26% | 197 / 209 | :white_check_mark: | 70% |
 </details>
 
 ### Exempted coverage
@@ -311,7 +311,19 @@ bazel run //scripts:run_coverage -- <path_to_root> <list_of_relative_path_to_fil
 - <path_to_root>: Your root directory.
 - <list_of_relative_path_to_files>: Files you want to generate coverage reports for.
 
-For example, to analyze coverage for the file MathTokenizer.kt, use the relative path:
+To get the relative path of a file:
+
+1. Navigate to the Project view on the left-hand side in Android Studio.
+2. Locate the file to analyze Code Coverage for.
+3. Right click the file and select Copy Path. To get the path relative to the root.
+
+Alternatively, the coverage report itself provides the relative paths. You can reveal this information by clicking on the drop-down that precedes the file name in the report.
+
+| File | Coverage | Lines Hit | Status | Min Required |
+|------|:--------:|----------:|:------:|:------------:|
+| <details open><summary>MathTokenizer.kt</summary>utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt</details> | 94.26% | 197 / 209 | :white_check_mark: | 70% |
+
+To analyze coverage for the file MathTokenizer.kt, use the relative path:
 
 ```sh
 bazel run //scripts:run_coverage -- $(pwd) utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt
