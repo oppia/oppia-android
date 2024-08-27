@@ -20,6 +20,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -47,7 +48,9 @@ import org.oppia.android.app.classroom.topiclist.ALL_TOPICS_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.welcome.WELCOME_TEST_TAG
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.HomeActivityLocalTest.TestApplicationComponent
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -78,6 +81,7 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -92,6 +96,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -174,6 +179,9 @@ class ClassroomListFragmentTest {
   @Inject
   lateinit var dataProviderTestMonitor: DataProviderTestMonitor.Factory
 
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   private val internalProfileId: Int = 0
   private lateinit var profileId: ProfileId
 
@@ -189,7 +197,48 @@ class ClassroomListFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    TestPlatformParameterModule.reset()
     Intents.release()
+  }
+
+  @Test
+  fun testFragment_onLaunch_logsEvent() {
+    testCoroutineDispatchers.runCurrent()
+    val event = fakeAnalyticsEventLogger.getOldestEvent()
+
+    assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+    assertThat(event.context.activityContextCase)
+      .isEqualTo(EventLog.Context.ActivityContextCase.OPEN_HOME)
+  }
+
+  @Test
+  fun testFragment_onFirstLaunch_logsCompletedOnboardingEvent() {
+    val event = fakeAnalyticsEventLogger.getMostRecentEvents(2).last()
+
+    assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(event.context.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
+    )
+  }
+
+  @Test
+  fun testFragment_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    testCoroutineDispatchers.runCurrent()
+
+    // OPEN_HOME, END_PROFILE_ONBOARDING_EVENT and COMPLETE_APP_ONBOARDING are all logged
+    // concurrently, in no defined order, and the actual order depends entirely on execution time.
+    val eventLog = getOneOfLastThreeEventsLogged(
+      EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
+    )
+    val eventLogContext = eventLog.context
+
+    assertThat(eventLogContext.activityContextCase)
+      .isEqualTo(EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT)
+    assertThat(eventLogContext.endProfileOnboardingEvent.profileId.internalId).isEqualTo(
+      internalProfileId
+    )
   }
 
   @Test
@@ -871,6 +920,17 @@ class ClassroomListFragmentTest {
     logIntoAdmin()
   }
 
+  private fun getOneOfLastThreeEventsLogged(
+    wantedContext: EventLog.Context.ActivityContextCase
+  ): EventLog {
+    val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
+    return when {
+      events[0].context.activityContextCase == wantedContext -> events[0]
+      events[1].context.activityContextCase == wantedContext -> events[1]
+      else -> events[2]
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -912,6 +972,12 @@ class ClassroomListFragmentTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(classroomListFragmentTest: ClassroomListFragmentTest)
+
+    fun getAppStartupStateController(): AppStartupStateController
+
+    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
+    fun getProfileTestHelper(): ProfileTestHelper
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -923,6 +989,10 @@ class ClassroomListFragmentTest {
 
     fun inject(classroomListFragmentTest: ClassroomListFragmentTest) {
       component.inject(classroomListFragmentTest)
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

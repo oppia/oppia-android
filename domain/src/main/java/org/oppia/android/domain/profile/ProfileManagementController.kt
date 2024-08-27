@@ -413,7 +413,7 @@ class ProfileManagementController @Inject constructor(
             ProfileOnboardingMode.MULTIPLE_PROFILES
           }
           profileList.size == 1 -> {
-            if (profileList.first().isAdmin && profileList.first().pin.isNotBlank()) {
+            if (profileList.first().profileType == ProfileType.SUPERVISOR) {
               ProfileOnboardingMode.ADMIN_PROFILE_ONLY
             } else {
               ProfileOnboardingMode.SOLE_LEARNER_PROFILE

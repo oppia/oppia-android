@@ -11,6 +11,9 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.databinding.OnboardingProfileTypeFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -24,7 +27,10 @@ const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 /** The presenter for [OnboardingProfileTypeFragment]. */
 class OnboardingProfileTypeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
 ) {
   private lateinit var binding: OnboardingProfileTypeFragmentBinding
 
@@ -58,6 +64,9 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
       }
 
       profileTypeSupervisorNavigationCard.setOnClickListener {
+        // TODO(#4938): Remove once admin profile onboarding is implemented.
+        markProfileOnboardingStarted(profileId)
+
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
         intent.apply {
           decorateWithUserProfileId(profileId)
@@ -79,5 +88,14 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
     }
 
     return binding.root
+  }
+
+  private fun markProfileOnboardingStarted(profileId: ProfileId) {
+    profileManagementController.markProfileOnboardingStarted(profileId)
+
+    analyticsController.logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingStartedContext(profileId),
+      profileId = profileId
+    )
   }
 }
