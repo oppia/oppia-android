@@ -319,10 +319,6 @@ class ProfileManagementController @Inject constructor(
             avatarImageUri = imageUri
           } else avatarColorRgb = colorRgb
         }.build()
-
-        if (enableOnboardingFlowV2.value) {
-          this.profileType = computeProfileType(isAdmin, pin)
-        }
       }.build()
 
       val wasProfileEverAdded = it.profilesCount > 0
@@ -417,7 +413,7 @@ class ProfileManagementController @Inject constructor(
             ProfileOnboardingMode.MULTIPLE_PROFILES
           }
           profileList.size == 1 -> {
-            if (profileList.first().isAdmin && profileList.first().pin.isNotBlank()) {
+            if (profileList.first().profileType == ProfileType.SUPERVISOR) {
               ProfileOnboardingMode.ADMIN_PROFILE_ONLY
             } else {
               ProfileOnboardingMode.SOLE_LEARNER_PROFILE

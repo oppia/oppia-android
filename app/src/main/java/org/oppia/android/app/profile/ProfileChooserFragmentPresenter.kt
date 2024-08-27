@@ -21,6 +21,7 @@ import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
@@ -255,16 +256,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ensureProfileOnboarded(profile: Profile) {
-    if (isAdminWithPin(profile.isAdmin, profile.pin) || profile.completedProfileOboarding) {
+    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOboarding) {
       loginToProfile(profile)
     } else {
       launchOnboardingScreen(profile.id, profile.name)
     }
-  }
-
-  // TODO(#4938): Replace with proper admin profile migration.
-  private fun isAdminWithPin(isAdmin: Boolean, pin: String?): Boolean {
-    return isAdmin && !pin.isNullOrBlank()
   }
 
   private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {

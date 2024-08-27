@@ -6,10 +6,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.model.CreateProfileActivityParams
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.databinding.OnboardingProfileTypeFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -17,10 +21,16 @@ import javax.inject.Inject
 /** Argument key for [CreateProfileActivity] intent parameters. */
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 
+/** Argument key for [ProfileChooserActivity] intent parameters. */
+const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
+
 /** The presenter for [OnboardingProfileTypeFragment]. */
 class OnboardingProfileTypeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger,
+  private val analyticsController: AnalyticsController,
 ) {
   private lateinit var binding: OnboardingProfileTypeFragmentBinding
 
@@ -54,8 +64,19 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
       }
 
       profileTypeSupervisorNavigationCard.setOnClickListener {
+        // TODO(#4938): Remove once admin profile onboarding is implemented.
+        markProfileOnboardingStarted(profileId)
+
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
-        // TODO(#4938): Add profileId and ProfileType to intent extras.
+        intent.apply {
+          decorateWithUserProfileId(profileId)
+          putProtoExtra(
+            PROFILE_CHOOSER_PARAMS_KEY,
+            ProfileChooserActivityParams.newBuilder()
+              .setProfileType(ProfileType.SUPERVISOR)
+              .build()
+          )
+        }
         fragment.startActivity(intent)
         // Clear back stack so that user cannot go back to the onboarding flow.
         fragment.activity?.finishAffinity()
@@ -67,5 +88,14 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
     }
 
     return binding.root
+  }
+
+  private fun markProfileOnboardingStarted(profileId: ProfileId) {
+    profileManagementController.markProfileOnboardingStarted(profileId)
+
+    analyticsController.logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingStartedContext(profileId),
+      profileId = profileId
+    )
   }
 }
