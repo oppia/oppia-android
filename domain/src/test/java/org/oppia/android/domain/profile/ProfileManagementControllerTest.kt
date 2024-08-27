@@ -167,7 +167,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
-    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
   }
 
   @Test
@@ -188,28 +187,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
-    assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
-  }
-
-  @Test
-  fun testAddProfile_addAdditionalLearnerProfile_onboardingV2Enabled_checkProfileIsAdded() {
-    setUpTestWithOnboardingV2Enabled(true)
-    val dataProvider = addNonAdminProfile(name = "James", pin = "")
-
-    monitorFactory.waitForNextSuccessfulResult(dataProvider)
-
-    val profileDatabase = readProfileDatabase()
-    val profile = profileDatabase.profilesMap[0]!!
-    assertThat(profile.name).isEqualTo("James")
-    assertThat(profile.pin).isEqualTo("")
-    assertThat(profile.allowDownloadAccess).isEqualTo(true)
-    assertThat(profile.id.internalId).isEqualTo(0)
-    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.numberOfLogins).isEqualTo(0)
-    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
-    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
-    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
-    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
   }
 
   @Test
@@ -230,7 +207,6 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
-    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
   }
 
   @Test
@@ -1763,9 +1739,14 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyState() {
+  fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
+
+    val updateProfileProvider =
+      profileManagementController.updateProfileType(ADMIN_PROFILE_ID_0, ProfileType.SUPERVISOR)
+
+    monitorFactory.ensureDataProviderExecutes(updateProfileProvider)
 
     val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
 

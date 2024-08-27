@@ -406,24 +406,21 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns the state of the app based on the number and type of existing profiles. */
   fun getProfileOnboardingState(): DataProvider<ProfileOnboardingMode> {
-    return getProfiles()
-      .transform(PROFILE_ONBOARDING_MODE_PROVIDER_ID) { profileList ->
-        when {
-          profileList.size > 1 -> {
-            ProfileOnboardingMode.MULTIPLE_PROFILES
-          }
-          profileList.size == 1 -> {
-            if (profileList.first().profileType == ProfileType.SUPERVISOR) {
-              ProfileOnboardingMode.ADMIN_PROFILE_ONLY
-            } else {
-              ProfileOnboardingMode.SOLE_LEARNER_PROFILE
-            }
-          }
-          else -> {
-            ProfileOnboardingMode.NEW_INSTALL
+    return getProfiles().transform(PROFILE_ONBOARDING_MODE_PROVIDER_ID) { profileList ->
+      val profileCount = profileList.size
+      when {
+        profileCount > 1 -> ProfileOnboardingMode.MULTIPLE_PROFILES
+        profileCount == 1 -> {
+          val profileType = profileList.first().profileType
+          if (profileType == ProfileType.SUPERVISOR) {
+            ProfileOnboardingMode.ADMIN_PROFILE_ONLY
+          } else {
+            ProfileOnboardingMode.SOLE_LEARNER_PROFILE
           }
         }
+        else -> ProfileOnboardingMode.NEW_INSTALL
       }
+    }
   }
 
   /**
