@@ -54,6 +54,7 @@ import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
@@ -1072,6 +1073,7 @@ class SplashActivityTest {
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     profileTestHelper.markProfileOnboardingStarted(profileId)
     val params = IntroActivityParams.newBuilder()
       .setProfileNickname("Admin")

@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -147,11 +148,36 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testProfileOnboarding_markOnboardingCompleted_chekIsSuccessful() {
+  fun testProfileOnboarding_markOnboardingStarted_checkIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = profileManagementController.getCurrentProfileId()
+    val onboardingProvider = profileTestHelper.markProfileOnboardingStarted(profileId!!)
+    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
+  @Test
+  fun testProfileOnboarding_markOnboardingCompleted_checkIsSuccessful() {
     profileTestHelper.addOnlyAdminProfile()
     val profileId = profileManagementController.getCurrentProfileId()
     val onboardingProvider = profileTestHelper.markProfileOnboardingEnded(profileId!!)
     monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
+  @Test
+  fun testUpdateProfile_updateProfileType_checkIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = profileManagementController.getCurrentProfileId()
+    val updateProvider = profileTestHelper.updateProfileType(profileId!!, ProfileType.SUPERVISOR)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val profilesProvider = profileManagementController.getProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
+    assertThat(profiles.size).isEqualTo(1)
+    assertThat(profiles[0].name).isEqualTo("Admin")
+    assertThat(profiles[0].isAdmin).isTrue()
+    assertThat(profiles[0].profileType).isEqualTo(ProfileType.SUPERVISOR)
   }
 
   // TODO(#89): Move this to a common test application component.

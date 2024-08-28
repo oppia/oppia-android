@@ -179,11 +179,15 @@ enum ProfileOnboardingMode {
   NEW_INSTALL = 1;
 
   // Indicates that there is only one profile and it is a sole learner profile.
-  SOLE_LEARNER_PROFILE = 2;
+  SOLE_LEARNER_PROFILE_ONLY = 2;
 
   // Indicates that there is only one profile and it is an admin profile.
-  ADMIN_PROFILE_ONLY = 3;
+  SUPERVISOR_PROFILE_ONLY = 3;
 
   // Indicates that there are multiple profiles on the device.
   MULTIPLE_PROFILES = 4;
+
+  // Indicates that there is only one profile and the profile type is unknown, indicating that
+  // migration is required.
+  UNKNOWN_PROFILE_TYPE = 5;
 }

@@ -85,17 +85,28 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileManagementControllerTest.TestApplication::class)
 class ProfileManagementControllerTest {
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
-  @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
-  @Inject lateinit var oppiaClock: FakeOppiaClock
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+  @field:[BackgroundDispatcher Inject]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -1726,16 +1737,21 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerState() {
+  fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
 
-    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
+    val updateProfileProvider =
+      profileManagementController.updateProfileType(ADMIN_PROFILE_ID_0, ProfileType.SOLE_LEARNER)
+    monitorFactory.ensureDataProviderExecutes(updateProfileProvider)
 
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
     val profileOnboardingModeResult =
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
-    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.SOLE_LEARNER_PROFILE)
+    assertThat(profileOnboardingModeResult).isEqualTo(
+      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY
+    )
   }
 
   @Test
@@ -1745,26 +1761,23 @@ class ProfileManagementControllerTest {
 
     val updateProfileProvider =
       profileManagementController.updateProfileType(ADMIN_PROFILE_ID_0, ProfileType.SUPERVISOR)
-
     monitorFactory.ensureDataProviderExecutes(updateProfileProvider)
 
-    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
-
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
     val profileOnboardingModeResult =
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
-    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.ADMIN_PROFILE_ONLY)
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.SUPERVISOR_PROFILE_ONLY)
   }
 
   @Test
-  fun testProfileOnboardingState_multipleProfiles_returnsMultipleProfilesState() {
+  fun testProfileOnboardingState_multipleProfiles_returnsMultipleProfilesTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
     addNonAdminProfileAndWait(name = "Rohit", pin = "")
 
-    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
-
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
     val profileOnboardingModeResult =
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
@@ -1772,15 +1785,26 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_noProfilesFound_returnsNewInstallState() {
+  fun testProfileOnboardingState_noProfilesFound_returnsNewInstallTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
 
-    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingState()
-
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
     val profileOnboardingModeResult =
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
     assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.NEW_INSTALL)
+  }
+
+  @Test
+  fun testProfileOnboardingState_existingProfilesV1_returnsUnknownProfileTypeMode() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfileAndWait(name = "James")
+
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
+
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.UNKNOWN_PROFILE_TYPE)
   }
 
   @Test
