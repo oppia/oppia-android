@@ -3,6 +3,7 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ReadingTextSize
@@ -34,6 +35,19 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
       savedInstanceState?.retrieveStateBundle()?.selectedReadingTextSize
         ?: retrieveActivityParams().readingTextSize
     readingTextSizeActivityPresenter.handleOnCreate(readingTextSize)
+
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
+      override fun handleOnBackPressed() {
+        val resultBundle = ReadingTextSizeActivityResultBundle.newBuilder().apply {
+          selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
+        }.build()
+        val intent = Intent().apply {
+          putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
+        }
+        setResult(RESULT_OK, intent)
+        finish()
+      }
+    })
   }
 
   companion object {
@@ -58,17 +72,6 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
       selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
     }.build()
     outState.putProto(ACTIVITY_SAVED_STATE_KEY, stateBundle)
-  }
-
-  override fun onBackPressed() {
-    val resultBundle = ReadingTextSizeActivityResultBundle.newBuilder().apply {
-      selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
-    }.build()
-    val intent = Intent().apply {
-      putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
-    }
-    setResult(RESULT_OK, intent)
-    finish()
   }
 
   private fun retrieveActivityParams() =
