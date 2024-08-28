@@ -71,7 +71,6 @@ class ExplorationActivity :
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
       override fun handleOnBackPressed() {
         explorationActivityPresenter.backButtonPressed()
-        finish()
       }
     })
   }
