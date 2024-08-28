@@ -1017,7 +1017,7 @@ Note: For more information on how to utilize the code coverage analysis tool, pl
 
 ## Testing a Single Outcome in Multiple Ways
 
-When testing a single outcome like a successful withdrawal, you can use multiple approaches to verify the if the balance is updated correctly. Here are different ways to ensure the single outcome of withdrawal was processed correctly, each following a distinct approach.
+When testing a single outcome, such as a successful withdrawal, you can use multiple approaches to verify if the balance is updated correctly. Here are different ways to ensure the single outcome of withdrawal was processed correctly, each following a distinct approach.
 
 **a. To verify correctness of output:**
 
