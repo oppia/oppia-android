@@ -3,6 +3,7 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -67,6 +68,12 @@ class ExplorationActivity :
       params.parentScreen,
       params.isCheckpointingEnabled
     )
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
+      override fun handleOnBackPressed() {
+        explorationActivityPresenter.backButtonPressed()
+        finish()
+      }
+    })
   }
 
   // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -112,10 +119,6 @@ class ExplorationActivity :
 
     private fun Intent.extractParams() =
       getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
-  }
-
-  override fun onBackPressed() {
-    explorationActivityPresenter.backButtonPressed()
   }
 
   override fun deleteCurrentProgressAndStopSession(isCompletion: Boolean) {
