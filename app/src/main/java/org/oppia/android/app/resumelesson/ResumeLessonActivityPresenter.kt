@@ -1,5 +1,6 @@
 package org.oppia.android.app.resumelesson
 
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -73,8 +74,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
         context = activity,
         ReadingTextSize.MEDIUM_TEXT_SIZE
       )
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      activity.onBackPressed()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
   }
 
