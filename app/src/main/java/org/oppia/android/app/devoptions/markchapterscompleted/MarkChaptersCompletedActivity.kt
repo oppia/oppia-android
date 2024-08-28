@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -37,12 +38,17 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId, showConfirmationNotice)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
+
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
+      override fun handleOnBackPressed() {
+        finish()
+      }
+    })
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      onBackPressed()
+      onBackPressedDispatcher.onBackPressed()
     }
     return super.onOptionsItemSelected(item)
   }
