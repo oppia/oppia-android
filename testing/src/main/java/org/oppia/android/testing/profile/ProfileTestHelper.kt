@@ -1,6 +1,7 @@
 package org.oppia.android.testing.profile
 
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.util.data.AsyncResult
@@ -127,6 +128,11 @@ class ProfileTestHelper @Inject constructor(
   /** Marks a profile as having started the onboarding flow. */
   fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
     return profileManagementController.markProfileOnboardingStarted(profileId)
+  }
+
+  /** Updates the [ProfileType] of an existing profile. */
+  fun updateProfileType(profileId: ProfileId, profileType: ProfileType): DataProvider<Any?> {
+    return profileManagementController.updateProfileType(profileId, profileType)
   }
 
   /** Returns the continue button animation seen for profile. */

@@ -21,6 +21,7 @@ import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.notice.DeprecationNoticeActionResponse
@@ -278,7 +279,7 @@ class SplashActivityPresenter @Inject constructor(
           OsDeprecationNoticeDialogFragment::newInstance
         )
       }
-      StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfiles()
+      StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
@@ -297,7 +298,7 @@ class SplashActivityPresenter @Inject constructor(
           AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
       }
-      StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfiles()
+      StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
         // defaulted), assume the user needs to be onboarded.
@@ -316,7 +317,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun getProfileOnboardingState() {
-    profileManagementController.getProfileOnboardingState().toLiveData().observe(
+    profileManagementController.getProfileOnboardingMode().toLiveData().observe(
       activity,
       { result ->
         when (result) {
@@ -337,7 +338,7 @@ class SplashActivityPresenter @Inject constructor(
       ProfileOnboardingMode.NEW_INSTALL -> {
         launchOnboardingActivity()
       }
-      ProfileOnboardingMode.SOLE_LEARNER_PROFILE -> fetchProfiles()
+      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY -> fetchProfile()
       else -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         activity.finish()
@@ -345,7 +346,7 @@ class SplashActivityPresenter @Inject constructor(
     }
   }
 
-  private fun fetchProfiles() {
+  private fun fetchProfile() {
     profileManagementController.getProfiles().toLiveData().observe(activity) { result ->
       when (result) {
         is AsyncResult.Success -> handleProfiles(result.value)
@@ -358,7 +359,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun handleProfiles(profiles: List<Profile>) {
-    val soleLearnerProfile = profiles.find { it.isAdmin && it.pin.isNullOrBlank() }
+    val soleLearnerProfile = profiles.find { it.profileType == ProfileType.SOLE_LEARNER }
     if (soleLearnerProfile != null) {
       proceedBasedOnProfileState(soleLearnerProfile)
     } else {

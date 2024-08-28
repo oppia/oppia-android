@@ -48,7 +48,6 @@ import org.oppia.android.app.classroom.topiclist.ALL_TOPICS_HEADER_TEST_TAG
 import org.oppia.android.app.classroom.welcome.WELCOME_TEST_TAG
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.home.HomeActivityLocalTest.TestApplicationComponent
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
