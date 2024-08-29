@@ -388,12 +388,11 @@ class AudioLanguageFragmentTest {
         var fragment = activity.supportFragmentManager
           .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
         language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
-
       }
 
       scenario.recreate()
 
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         val newfragment = activity.supportFragmentManager
           .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
         val restoredAudioLanguage =

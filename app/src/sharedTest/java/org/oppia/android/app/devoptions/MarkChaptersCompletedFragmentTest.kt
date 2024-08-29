@@ -953,7 +953,7 @@ class MarkChaptersCompletedFragmentTest {
 
       scenario.recreate()
 
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         val newFragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
 

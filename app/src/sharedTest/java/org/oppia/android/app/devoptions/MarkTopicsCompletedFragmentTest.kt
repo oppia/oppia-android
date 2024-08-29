@@ -491,7 +491,7 @@ class MarkTopicsCompletedFragmentTest {
 
       scenario.recreate()
 
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         val newFragment = activity.supportFragmentManager
           .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
         val restoredTopicIdList =
