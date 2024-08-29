@@ -121,23 +121,15 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkChaptersCompletedFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
@@ -940,43 +932,38 @@ class MarkChaptersCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedFragment_saveInstanceState_workingProperly() {
+  fun testMarkChaptersCompletedFragment_saveInstanceState_restoresCorrectly() {
     launchMarkChaptersCompletedFragmentTestActivity(
       internalProfileId, showConfirmationNotice = true
     ).use { scenario ->
-
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      var actualSelectedExplorationIds = ArrayList<String>()
+      var actualSelectedExplorationTitles = ArrayList<String>()
+
       scenario.onActivity { activity ->
-
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container)
-          as? MarkChaptersCompletedFragment
+          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
 
-        assertThat(fragment).isNotNull()
+        actualSelectedExplorationIds =
+          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        actualSelectedExplorationTitles =
+          fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
+      }
 
-        val actualSelectedExplorationIds =
-          fragment?.markChaptersCompletedFragmentPresenter?.serializableSelectedExplorationIds
-        val actualSelectedExplorationTitles =
-          fragment?.markChaptersCompletedFragmentPresenter?.serializableSelectedExplorationTitles
+      scenario.recreate()
 
-        activity.recreate()
+      scenario.onActivity { activity->
+        val newFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
 
-        fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container)
-          as? MarkChaptersCompletedFragment
+        val receivedSelectedExplorationIds =
+          newFragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
+        val receivedSelectedExplorationTitles =
+          newFragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
 
-        assertThat(fragment).isNotNull()
-
-        fragment?.let {
-          val receivedSelectedExplorationIds =
-            it.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
-          val receivedSelectedExplorationTitles =
-            it.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
-
-          assertThat(receivedSelectedExplorationIds).isEqualTo(actualSelectedExplorationIds)
-          assertThat(receivedSelectedExplorationTitles).isEqualTo(actualSelectedExplorationTitles)
-        }
+        assertThat(receivedSelectedExplorationIds).isEqualTo(actualSelectedExplorationIds)
+        assertThat(receivedSelectedExplorationTitles).isEqualTo(actualSelectedExplorationTitles)
       }
     }
   }

@@ -218,7 +218,6 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
   fun testAppLanguageFragment_arguments_workingProperly() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
       .use { scenario ->
@@ -238,28 +237,30 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
-  fun testAppLanguageFragment_saveInstanceState_workingProperly() {
+  fun testAppLanguageFragment_saveInstanceState_restoresCorrectly() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
       .use { scenario ->
         testCoroutineDispatchers.runCurrent()
-        scenario.onActivity { activity ->
 
+        scenario.onActivity { activity ->
           var appLanguageFragment = activity.supportFragmentManager
             .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
           appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
+        }
 
-          activity.recreate()
+        scenario.recreate()
 
-          appLanguageFragment = activity.supportFragmentManager
+        scenario.onActivity { activity->
+          val newAppLanguageFragment = activity.supportFragmentManager
             .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-          val recievedLanguage =
-            appLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
+          val restoredLanguage =
+            newAppLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
 
-          assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ARABIC)
+          assertThat(restoredLanguage).isEqualTo(OppiaLanguage.ARABIC)
         }
       }
   }
+
 
   private fun verifyKiswahiliIsSelected(appLanguageActivity: AppLanguageActivity?) {
     checkSelectedLanguage(index = KISWAHILI_BUTTON_INDEX, expectedLanguageName = "Kiswahili")

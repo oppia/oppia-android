@@ -42,6 +42,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
       }
     }
 
+    /** Returns the [OppiaLanguage] stored in the fragment's arguments. */
     fun Bundle.retrieveLanguageFromArguments(): OppiaLanguage {
       return getProto(
         FRAGMENT_ARGUMENTS_KEY, AppLanguageFragmentArguments.getDefaultInstance()

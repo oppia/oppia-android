@@ -84,6 +84,7 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
       }
     }
 
+    /** Returns the [AudioLanguage] stored in the fragment's arguments. */
     fun Bundle.retrieveLanguageFromArguments(): AudioLanguage {
       return getProto(
         FRAGMENT_ARGUMENTS_KEY, AudioLanguageFragmentArguments.getDefaultInstance()

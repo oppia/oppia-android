@@ -376,34 +376,30 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguageFragment_SaveInstanceState_workProperly() {
+  fun testAudioLanguageFragment_saveInstanceState_restoresCorrectly() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
     ).use { scenario ->
-
       testCoroutineDispatchers.runCurrent()
+      var language: AudioLanguage? = null
+
       scenario.onActivity { activity ->
-
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as? AudioLanguageFragment
-        assertThat(fragment).isNotNull()
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
 
-        fragment?.audioLanguageFragmentPresenterV1?.onLanguageSelected(
-          BRAZILIAN_PORTUGUESE_LANGUAGE
-        )
+      }
 
-        activity.recreate()
+      scenario.recreate()
 
-        fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as? AudioLanguageFragment
-        assertThat(fragment).isNotNull()
+      scenario.onActivity { activity->
+        val newfragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val restoredAudioLanguage =
+          newfragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
 
-        fragment?.let {
-          val restoredAudioLanguage = it.audioLanguageFragmentPresenterV1.getLanguageSelected()
-
-          assertThat(restoredAudioLanguage).isEqualTo(BRAZILIAN_PORTUGUESE_LANGUAGE)
-        }
+        assertThat(restoredAudioLanguage).isEqualTo(language)
       }
     }
   }

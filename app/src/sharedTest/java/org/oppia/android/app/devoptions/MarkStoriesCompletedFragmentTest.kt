@@ -495,34 +495,30 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedFragment_saveInstanceState_workProperly() {
+  fun testMarkStoriesCompletedFragment_saveInstanceState_restoresCorrectly() {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->
-
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      var actualSelectedStoryIdList = ArrayList<String>()
+
       scenario.onActivity { activity ->
-
         var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_stories_completed_container) as? MarkStoriesCompletedFragment
-        assertThat(fragment).isNotNull()
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+        actualSelectedStoryIdList =
+          fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+      }
 
-        val actualSelectedStoryIdList =
-          fragment?.markStoriesCompletedFragmentPresenter?.selectedStoryIdList
+      scenario.recreate()
 
-        activity.recreate()
+      scenario.onActivity { activity->
+        val newFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+        val receivedSelectedStoryIdList =
+          newFragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
 
-        fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_stories_completed_container) as? MarkStoriesCompletedFragment
-        assertThat(fragment).isNotNull()
-
-        fragment?.let {
-          val receivedSelectedStoryIdList =
-            it.markStoriesCompletedFragmentPresenter.selectedStoryIdList
-
-          assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
-        }
+        assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
       }
     }
   }
