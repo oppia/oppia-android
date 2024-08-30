@@ -29,7 +29,7 @@ class ConceptCardFragmentTestActivity :
   }
 
   override fun dismissConceptCard() {
-    getConceptCardFragment()?.dismiss()
+    ConceptCardFragment.dismissAll(supportFragmentManager)
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {

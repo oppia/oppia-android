@@ -14,6 +14,7 @@ import org.oppia.android.app.model.HintsAndSolutionDialogFragmentStateBundle
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -191,5 +192,13 @@ class HintsAndSolutionDialogFragment :
       solutionIndex,
       isSolutionRevealed
     )
+  }
+
+  /**
+   * Delegates the removal of all [ConceptCardFragment] instances
+   * to the [hintsAndSolutionDialogFragmentPresenter].
+   */
+  fun dismissConceptCard() {
+    hintsAndSolutionDialogFragmentPresenter.dismissConceptCard()
   }
 }
