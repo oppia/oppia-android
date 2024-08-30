@@ -87,7 +87,7 @@ class AdministratorControlsActivity :
 
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
       override fun handleOnBackPressed() {
-        this@AdministratorControlsActivity.handleTheOnBackPressed()
+        this@AdministratorControlsActivity.handleBackPress()
       }
     })
   }
@@ -128,7 +128,7 @@ class AdministratorControlsActivity :
     }
   }
 
-  private fun handleTheOnBackPressed() {
+  private fun handleBackPress() {
     val fragment =
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
