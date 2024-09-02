@@ -317,7 +317,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(kotlinFilePath)
 
-    assertThat(readHtmlReport(kotlinFilePath)).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(kotlinFilePath)
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -342,7 +348,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(sourceFilePath)
 
-    assertThat(readHtmlReport(sourceFilePath)).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(sourceFilePath)
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -541,7 +553,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePath)
 
-    assertThat(readHtmlReport(filePath)).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePath)
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1880,10 +1898,20 @@ class RunCoverageTest {
     ).execute()
 
     val expectedResult1 = getExpectedHtmlText(filePathList.get(0))
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult1)
+    val unescapedHtmlReport1 = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+    assertThat(unescapedHtmlReport1).isEqualTo(expectedResult1)
 
     val expectedResult2 = getExpectedHtmlText(filePathList.get(1))
-    assertThat(readHtmlReport(filePathList.get(1))).isEqualTo(expectedResult2)
+    val unescapedHtmlReport2 = readHtmlReport(filePathList.get(1))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+    assertThat(unescapedHtmlReport2).isEqualTo(expectedResult2)
   }
 
   @Test
@@ -1910,7 +1938,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1937,7 +1971,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -1964,7 +2004,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2009,7 +2055,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2036,7 +2088,13 @@ class RunCoverageTest {
 
     val expectedResult = getExpectedHtmlText(filePathList.get(0))
 
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
@@ -2262,7 +2320,13 @@ class RunCoverageTest {
     </html>
       """.trimIndent()
 
-    assertThat(readHtmlReport(filePathList.get(0))).isEqualTo(expectedResult)
+    val unescapedHtmlReport = readHtmlReport(filePathList.get(0))
+      .replace("&quot;", "\"")
+      .replace("&amp;", "&")
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+
+    assertThat(unescapedHtmlReport).isEqualTo(expectedResult)
   }
 
   @Test
