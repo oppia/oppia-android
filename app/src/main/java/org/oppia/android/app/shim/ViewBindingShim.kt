@@ -12,6 +12,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.profile.ProfileItemViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
 import org.oppia.android.util.parser.html.HtmlParser
 
@@ -205,5 +206,21 @@ interface ViewBindingShim {
   fun provideNpsItemsViewModel(
     view: View,
     viewModel: MultipleChoiceOptionContentViewModel
+  )
+
+  /** Handles binding inflation for [org.oppia.android.app.profile.ProfileListView]. */
+  fun provideProfileItemInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /**
+   * Handles binding inflation for [org.oppia.android.app.profile.ProfileListView]
+   * and returns the view model.
+   */
+  fun provideProfileItemViewModel(
+    view: View,
+    viewModel: ProfileItemViewModel
   )
 }

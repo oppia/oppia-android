@@ -277,6 +277,10 @@
   <color name="component_color_profile_chooser_activity_gradient_end_color">@color/color_palette_profile_chooser_activity_gradient_end_color</color>
   <color name="component_color_profile_chooser_activity_gradient_center_color">@color/color_palette_profile_chooser_activity_gradient_center_color</color>
   <color name="component_color_profile_chooser_activity_gradient_start_color">@color/color_palette_profile_chooser_activity_gradient_start_color</color>
+  <color name="component_color_profile_selection_background_color">@color/color_palette_profile_selection_background_color</color>
+  <color name="component_color_profile_icon_stroke_color">@color/color_palette_primary_color</color>
+  <color name="component_color_profile_selection_profile_icon_background_color">@color/color_palette_profile_selection_profile_icon_background_color</color>
+  <color name="component_color_profile_selection_settings_icon_background_color">@color/color_palette_secondary_1_text_color</color>
   <!-- WalkThrough Activity -->
   <color name="component_color_walkthrough_activity_status_bar_color">@color/color_palette_color_palette_walkthrough_status_bar_color</color>
   <color name="component_color_walkthrough_activity_rounded_corners_color">@color/color_palette_walkthrough_activity_rounded_corners_color</color>

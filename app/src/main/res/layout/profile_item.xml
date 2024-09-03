@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.profile.ProfileItemViewModel" />
+  </data>
+
+  <LinearLayout
+    android:id="@+id/profile_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/profile_chooser_profile_view_margin_start_profile_already_added"
+    android:layout_marginTop="@dimen/space_0dp"
+    android:layout_marginEnd="@dimen/profile_chooser_profile_view_margin_end_profile_already_added"
+    android:layout_marginBottom="@dimen/profile_view_already_added_margin"
+    android:clickable="true"
+    android:onClick="@{(v) -> viewModel.profileClicked()}"
+    android:orientation="vertical"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+      android:id="@+id/profile_avatar"
+      android:layout_width="@dimen/profile_item_profile_icon_size"
+      android:layout_height="@dimen/profile_item_profile_icon_size"
+      android:layout_gravity="center"
+      android:contentDescription="@string/create_profile_activity_current_picture_content_description"
+      android:focusable="false"
+      android:padding="@dimen/onboarding_profile_picture_padding"
+      app:profileImageSource="@{viewModel.profile.avatar}"
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+      app:strokeColor="@color/component_color_profile_icon_stroke_color"
+      app:strokeWidth="@dimen/profile_item_profile_picture_stroke_width" />
+
+    <TextView
+      android:id="@+id/profile_name_text"
+      style="@style/Caption"
+      android:layout_gravity="center"
+      android:layout_marginTop="@dimen/profile_chooser_profile_view_name_margin_top_profile_already_added"
+      android:ellipsize="end"
+      android:maxLines="2"
+      android:singleLine="false"
+      android:text="@{viewModel.profile.name}"
+      android:textAlignment="center"
+      android:textColor="@color/component_color_shared_primary_text_color" />
+
+    <TextView
+      android:id="@+id/profile_last_visited"
+      style="@style/Subtitle2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_marginTop="4dp"
+      android:textAlignment="center"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textSize="12sp"
+      android:textStyle="italic"
+      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
+      app:profileLastVisitedTime="@{viewModel.profile.lastLoggedInTimestampMs}" />
+
+    <TextView
+      android:id="@+id/profile_is_admin_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_marginTop="@dimen/profile_chooser_profile_view_is_admin_margin_top"
+      android:text="@string/profile_chooser_admin"
+      android:textAlignment="center"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textSize="12sp"
+      android:textStyle="italic"
+      android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+  </LinearLayout>
+</layout>

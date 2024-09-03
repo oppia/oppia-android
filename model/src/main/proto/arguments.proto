@@ -900,12 +900,30 @@ message IntroActivityParams {
 
   // The internal Id associated with the newly created profile.
   int32 profile_id = 2;
+
+  // The screen from which the introduction activity was opened.
+  ParentScreen parent_screen = 3;
+
+  // Different parent screens that can open a new onboarding introduction activity instance.
+  enum ParentScreen {
+    // Indicates that the originating screen isn't actually known.
+    PARENT_SCREEN_UNSPECIFIED = 0;
+
+    // Corresponds to the Create Profile Screen in the onboarding flow.
+    CREATE_PROFILE_SCREEN = 1;
+
+    // Corresponds to the profile list screen.
+    PROFILE_CHOOSER_SCREEN = 2;
+  }
 }
 
 // Arguments required when creating a new IntroFragment.
 message IntroFragmentArguments {
   // The nickname associated with a newly created profile.
   string profile_nickname = 1;
+
+  // The screen from which the introduction fragment was opened.
+  IntroActivityParams.ParentScreen parent_screen = 2;
 }
 
 // Params required when creating a new CreateProfileActivity.

@@ -27,15 +27,19 @@ class IntroFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val profileNickname =
+    val args =
       checkNotNull(
         arguments?.getProto(
-          PROFILE_NICKNAME_ARGUMENT_KEY,
+          INTRO_FRAGMENT_ARGUMENT_KEY,
           IntroFragmentArguments.getDefaultInstance()
         )
       ) {
-        "Expected profileNickname to be included in the arguments for IntroFragment."
-      }.profileNickname
+        "Expected IntroFragment to have arguments."
+      }
+
+    val profileNickname = args.profileNickname
+
+    val parentScreen = args.parentScreen
 
     val profileId =
       checkNotNull(arguments?.extractCurrentUserProfileId()) {
@@ -46,7 +50,8 @@ class IntroFragment : InjectableFragment() {
       inflater,
       container,
       profileNickname,
-      profileId
+      profileId,
+      parentScreen
     )
   }
 }

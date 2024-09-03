@@ -156,4 +156,6 @@
   <color name="color_def_light_orange">#F8BF74</color>
   <color name="color_def_sky_blue">#B3D8F1</color>
   <color name="color_def_white_1">#B8FFFFFF</color>
+  <color name="color_def_ivory">#FEFFF0</color>
+  <color name="color_def_charcoal">#2B2B2B</color>
 </resources>

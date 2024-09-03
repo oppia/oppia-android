@@ -21,12 +21,14 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileNickname =
-      intent.getProtoExtra(PARAMS_KEY, IntroActivityParams.getDefaultInstance()).profileNickname
+    val activityParams = intent.getProtoExtra(PARAMS_KEY, IntroActivityParams.getDefaultInstance())
+    val profileNickname = activityParams.profileNickname
 
     val profileId = intent.extractCurrentUserProfileId()
 
-    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, profileId)
+    val parentScreen = activityParams.parentScreen
+
+    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, profileId, parentScreen)
   }
 
   companion object {

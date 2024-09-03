@@ -232,6 +232,7 @@ class IntroFragmentTest {
     ActivityScenario<IntroActivity>? {
       val params = IntroActivityParams.newBuilder()
         .setProfileNickname(testProfileNickname)
+        .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
         .build()
 
       val scenario = ActivityScenario.launch<IntroActivity>(

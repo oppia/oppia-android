@@ -27,6 +27,8 @@
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_top_profile_not_added">24dp</dimen>
 
+  <dimen name="profile_selection_activity_profile_icon_size">70dp</dimen>
+
   <dimen name="submitted_answer_exploration_view_margin_top">24dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_end">24dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_top">24dp</dimen>

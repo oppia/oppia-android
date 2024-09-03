@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.profile.ProfileChooserViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_list_container"
+    android:background="@color/component_color_profile_selection_background_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+      android:id="@+id/profile_selection_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+      android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+      android:layout_marginEnd="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+      android:layout_marginBottom="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:text="@string/profile_selection_header"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textSize="20sp"
+      app:layout_constraintBottom_toTopOf="@id/profiles_list_landscape"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+      android:id="@+id/profile_list_scroll_left"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginBottom="32dp"
+      android:contentDescription="scroll left"
+      app:srcCompat="@drawable/ic_chevron_left"
+      android:visibility="visible"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+      android:id="@+id/profile_list_scroll_right"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="24dp"
+      android:layout_marginBottom="32dp"
+      android:contentDescription="scroll right"
+      app:srcCompat="@drawable/ic_chevron_right"
+      android:visibility="visible"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <org.oppia.android.app.profile.ProfileListView
+      android:id="@+id/profiles_list_landscape"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:clipToPadding="false"
+      android:orientation="horizontal"
+      android:overScrollMode="never"
+      android:scrollbars="none"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/profile_list_scroll_right"
+      app:layout_constraintStart_toEndOf="@id/profile_list_scroll_left"
+      app:layout_constraintTop_toTopOf="parent"
+      app:profileList="@{viewModel.profilesList}" />
+
+    <ImageView
+      android:id="@+id/profile_chooser_setting_icon"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_marginStart="28dp"
+      android:layout_marginBottom="12dp"
+      android:contentDescription="@string/setting_icon_content_description"
+      android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
+      android:paddingStart="4dp"
+      android:paddingEnd="4dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:srcCompat="@drawable/ic_settings_grey_48dp"
+      app:tint="@color/component_color_profile_selection_settings_icon_background_color" />
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="12dp"
+      android:fontFamily="sans-serif"
+      android:gravity="center"
+      android:minHeight="48dp"
+      android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
+      android:paddingStart="4dp"
+      android:paddingEnd="4dp"
+      android:text="@string/profile_chooser_administrator_controls"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textSize="12sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toEndOf="@id/profile_chooser_setting_icon" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/add_profile_button"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_marginEnd="28dp"
+      android:layout_marginBottom="4dp"
+      android:contentDescription="@string/profile_selection_profile_icon_description"
+      android:paddingStart="4dp"
+      android:paddingEnd="4dp"
+      app:srcCompat="@drawable/ic_add"
+      android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
+      app:backgroundTint="@color/component_color_drawer_fragment_admin_controls_selected_text_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/add_profile_prompt"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+      android:id="@+id/add_profile_prompt"
+      android:layout_width="48dp"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_marginEnd="28dp"
+      android:layout_marginBottom="12dp"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:minHeight="48dp"
+      android:text="@string/profile_selection_add_profile_text"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textSize="14sp"
+      android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

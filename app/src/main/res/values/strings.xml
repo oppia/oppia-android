@@ -225,6 +225,12 @@
   <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
+  <string name="profile_selection_header">Select your profile to explore the lessons</string>
+  <string name="profile_selection_profile_icon_description">User\'s profile picture</string>
+  <string name="profile_selection_add_icon_description">Add another profile</string>
+  <string name="profile_selection_add_profile_text">Add a learner profile</string>
+  <string name="profile_selection_admin_label">Administrator</string>
+
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
