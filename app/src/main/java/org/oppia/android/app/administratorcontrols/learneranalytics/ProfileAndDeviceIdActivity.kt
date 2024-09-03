@@ -19,18 +19,22 @@ import javax.inject.Inject
  * a particular user or group.
  */
 class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
-  @Inject lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
+  @Inject
+  lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileAndDeviceIdActivityPresenter.handleOnCreate()
 
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        finish()
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          finish()
+        }
       }
-    })
+    )
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

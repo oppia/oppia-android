@@ -85,11 +85,14 @@ class AdministratorControlsActivity :
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
 
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        this@AdministratorControlsActivity.handleBackPress()
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          this@AdministratorControlsActivity.handleBackPress()
+        }
       }
-    })
+    )
   }
 
   override fun routeToAppVersion() {

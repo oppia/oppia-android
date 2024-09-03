@@ -39,11 +39,14 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId, showConfirmationNotice)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
 
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        finish()
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          finish()
+        }
       }
-    })
+    )
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

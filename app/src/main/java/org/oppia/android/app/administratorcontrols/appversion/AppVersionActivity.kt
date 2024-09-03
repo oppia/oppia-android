@@ -21,11 +21,14 @@ class AppVersionActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
     appVersionActivityPresenter.handleOnCreate()
 
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        finish()
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          finish()
+        }
       }
-    })
+    )
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
