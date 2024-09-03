@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.IntroFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.IntroActivityBinding
@@ -15,7 +16,7 @@ import javax.inject.Inject
 private const val TAG_LEARNER_INTRO_FRAGMENT = "TAG_INTRO_FRAGMENT"
 
 /** Argument key for bundling the profile nickname. */
-const val PROFILE_NICKNAME_ARGUMENT_KEY = "IntroFragment.Arguments"
+const val INTRO_FRAGMENT_ARGUMENT_KEY = "IntroFragment.Arguments"
 
 /** The Presenter for [IntroActivity]. */
 @ActivityScope
@@ -25,7 +26,11 @@ class IntroActivityPresenter @Inject constructor(
   private lateinit var binding: IntroActivityBinding
 
   /** Handle creation and binding of the [IntroActivity] layout. */
-  fun handleOnCreate(profileNickname: String, profileId: ProfileId) {
+  fun handleOnCreate(
+    profileNickname: String,
+    profileId: ProfileId,
+    parentScreen: IntroActivityParams.ParentScreen
+  ) {
     binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)
     binding.lifecycleOwner = activity
 
@@ -33,11 +38,14 @@ class IntroActivityPresenter @Inject constructor(
       val introFragment = IntroFragment()
 
       val argumentsProto =
-        IntroFragmentArguments.newBuilder().setProfileNickname(profileNickname).build()
+        IntroFragmentArguments.newBuilder()
+          .setProfileNickname(profileNickname)
+          .setParentScreen(parentScreen)
+          .build()
 
       val args = Bundle().apply {
         decorateWithUserProfileId(profileId)
-        putProto(PROFILE_NICKNAME_ARGUMENT_KEY, argumentsProto)
+        putProto(INTRO_FRAGMENT_ARGUMENT_KEY, argumentsProto)
       }
 
       introFragment.arguments = args

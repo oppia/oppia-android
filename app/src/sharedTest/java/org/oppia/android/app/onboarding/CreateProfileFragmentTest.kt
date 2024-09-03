@@ -208,8 +208,12 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+      val expectedParams = IntroActivityParams.newBuilder()
+        .setProfileNickname("John")
+        .setProfileId(0)
+        .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+        .build()
+
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
@@ -273,7 +277,12 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+        IntroActivityParams.newBuilder()
+          .setProfileNickname("John")
+          .setProfileId(0)
+          .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+          .build()
+
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
@@ -320,8 +329,11 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+      val expectedParams = IntroActivityParams.newBuilder()
+        .setProfileNickname("John")
+        .setProfileId(0)
+        .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+        .build()
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
@@ -383,8 +395,12 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+      val expectedParams = IntroActivityParams.newBuilder()
+        .setProfileNickname("John")
+        .setProfileId(0)
+        .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+        .build()
+
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),

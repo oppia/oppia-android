@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -33,7 +34,8 @@ class IntroFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileNickname: String,
-    profileId: ProfileId
+    profileId: ProfileId,
+    parentScreen: IntroActivityParams.ParentScreen
   ): View {
     binding = LearnerIntroFragmentBinding.inflate(
       inflater,
@@ -46,6 +48,10 @@ class IntroFragmentPresenter @Inject constructor(
     setLearnerName(profileNickname)
 
     markProfileOnboardingStarted(profileId)
+
+    if (parentScreen == IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN) {
+      binding.onboardingStepsCount?.visibility = View.GONE
+    }
 
     binding.onboardingNavigationBack.setOnClickListener {
       activity.finish()

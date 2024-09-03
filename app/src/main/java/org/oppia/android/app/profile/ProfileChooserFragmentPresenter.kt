@@ -282,6 +282,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
     val introActivityParams = IntroActivityParams.newBuilder()
       .setProfileNickname(profileName)
+      .setParentScreen(IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN)
       .build()
 
     val intent = IntroActivity.createIntroActivity(activity)

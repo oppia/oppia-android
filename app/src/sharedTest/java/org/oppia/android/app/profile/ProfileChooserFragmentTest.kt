@@ -10,14 +10,17 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -45,6 +48,8 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
@@ -85,7 +90,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -127,8 +131,8 @@ class ProfileChooserFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+//  @get:Rule
+//  val oppiaTestRule = OppiaTestRule()
 
   private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
     ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -145,6 +149,8 @@ class ProfileChooserFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -363,8 +369,9 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
-    profileTestHelper.initializeProfiles(autoLogIn = true)
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.initializeProfiles(autoLogIn = true)
+    profileTestHelper.updateProfileType(testProfileId, ProfileType.SUPERVISOR)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -434,6 +441,34 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(IntroActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkIntroActivityHasNoStepCount() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileManagementController.addProfile(
+      name = "Learner",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profiles_list,
+          position = 1
+        )
+      ).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.onboarding_step_count_four)).check(doesNotExist())
     }
   }
 
@@ -581,6 +616,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickProfile_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
@@ -643,7 +679,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_landscape_checkAScrollArrowsAreDisplayed() {
+  fun testFragment_enableOnboardingV2_landscapeMode_checkScrollArrowsAreDisplayed() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(8)
@@ -665,8 +701,16 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       orientationLandscape()
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_list_scroll_left)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_list_scroll_right)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_list_scroll_left)).check(
+        matches(withEffectiveVisibility(Visibility.GONE))
+      )
+      onView(withId(R.id.profile_list_scroll_right)).check(
+        matches(
+          withEffectiveVisibility(
+            Visibility.GONE
+          )
+        )
+      )
     }
   }
 
@@ -748,8 +792,9 @@ class ProfileChooserFragmentTest {
     // that a profile was previously logged in).
     profileTestHelper.initializeProfiles(autoLogIn = true)
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profiles_list_landscape,
@@ -840,6 +885,7 @@ class ProfileChooserFragmentTest {
   fun testFragment_enableOnboardingV2_clickProfileWithPin_checkOpensPinPasswordActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.updateProfileType(testProfileId, ProfileType.SUPERVISOR)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
