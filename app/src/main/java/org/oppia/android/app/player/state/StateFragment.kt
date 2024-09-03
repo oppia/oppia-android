@@ -162,8 +162,6 @@ class StateFragment :
     stateFragmentPresenter.viewSolution()
   }
 
-  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
-
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
 
   override fun onSaveInstanceState(outState: Bundle) {
