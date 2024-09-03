@@ -472,7 +472,7 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->
@@ -495,7 +495,7 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedFragment_saveInstanceState_restoresCorrectly() {
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->

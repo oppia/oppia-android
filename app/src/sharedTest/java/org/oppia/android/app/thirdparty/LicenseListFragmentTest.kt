@@ -345,7 +345,7 @@ class LicenseListFragmentTest {
   }
 
   @Test
-  fun testLicenseListFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<LicenseListActivity>(createLicenseListActivity(2)).use { scenario ->
 
       testCoroutineDispatchers.runCurrent()

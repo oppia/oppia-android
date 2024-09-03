@@ -496,7 +496,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launchTestActivity().use { scenario ->
       scenario.onActivity { activity ->
 

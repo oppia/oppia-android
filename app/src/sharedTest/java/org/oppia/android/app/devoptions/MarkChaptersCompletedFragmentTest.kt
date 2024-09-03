@@ -905,7 +905,7 @@ class MarkChaptersCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launchMarkChaptersCompletedFragmentTestActivity(
       internalProfileId, showConfirmationNotice = true
     ).use { scenario ->
@@ -932,7 +932,7 @@ class MarkChaptersCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedFragment_saveInstanceState_restoresCorrectly() {
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     launchMarkChaptersCompletedFragmentTestActivity(
       internalProfileId, showConfirmationNotice = true
     ).use { scenario ->

@@ -346,7 +346,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(internalProfileId)

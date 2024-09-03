@@ -218,7 +218,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguageFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
       .use { scenario ->
         testCoroutineDispatchers.runCurrent()
@@ -237,7 +237,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguageFragment_saveInstanceState_restoresCorrectly() {
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
       .use { scenario ->
         testCoroutineDispatchers.runCurrent()

@@ -453,7 +453,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<MarkTopicsCompletedTestActivity>(
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->
@@ -474,7 +474,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedFragment_saveInstanceState_restoresCorrectly() {
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     launch<MarkTopicsCompletedTestActivity>(
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use { scenario ->

@@ -358,7 +358,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguageFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -376,7 +376,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguageFragment_saveInstanceState_restoresCorrectly() {
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)

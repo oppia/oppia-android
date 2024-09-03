@@ -1379,7 +1379,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun testHelpFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,

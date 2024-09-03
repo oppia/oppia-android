@@ -478,7 +478,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEditFragment_arguments_workingProperly() {
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launchFragmentTestActivity(internalProfileId = 1).use { scenario ->
       scenario.onActivity { activity ->
 
