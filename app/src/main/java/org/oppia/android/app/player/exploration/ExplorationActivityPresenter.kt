@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.doOnPreDraw
@@ -222,6 +221,7 @@ class ExplorationActivityPresenter @Inject constructor(
         context.startActivity(intent)
         true
       }
+
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity,
@@ -232,6 +232,7 @@ class ExplorationActivityPresenter @Inject constructor(
         context.startActivity(intent)
         true
       }
+
       else -> false
     }
   }
@@ -293,11 +294,13 @@ class ExplorationActivityPresenter @Inject constructor(
       when (it) {
         is AsyncResult.Pending ->
           oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+
         is AsyncResult.Failure -> {
           oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
           // Allow the user to always exit if they get into a broken state.
           backPressActivitySelector()
         }
+
         is AsyncResult.Success -> {
           oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
           maybeShowSurveyDialog(profileId, topicId)
@@ -377,6 +380,7 @@ class ExplorationActivityPresenter @Inject constructor(
         )
         EphemeralExploration.getDefaultInstance()
       }
+
       is AsyncResult.Pending -> EphemeralExploration.getDefaultInstance()
       is AsyncResult.Success -> ephemeralExpResult.value
     }
@@ -386,6 +390,7 @@ class ExplorationActivityPresenter @Inject constructor(
     when (parentScreen) {
       ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()
+
       ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
       ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
         // Default to the topic activity.
@@ -502,6 +507,7 @@ class ExplorationActivityPresenter @Inject constructor(
             oldestCheckpointExplorationTitle = it.value.explorationTitle
           }
         }
+
         is AsyncResult.Failure -> {
           oppiaLogger.e(
             "ExplorationActivity",
@@ -509,6 +515,7 @@ class ExplorationActivityPresenter @Inject constructor(
             it.error
           )
         }
+
         is AsyncResult.Pending -> {} // Wait for an actual result.
       }
     }
@@ -536,10 +543,12 @@ class ExplorationActivityPresenter @Inject constructor(
           learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           stopExploration(isCompletion = false)
         }
+
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
           learnerAnalyticsLogger.explorationAnalyticsLogger.value?.logLessonSavedAdvertently()
           showProgressDatabaseFullDialogFragment()
         }
+
         else -> showUnsavedExplorationDialogFragment()
       }
     }
@@ -555,6 +564,7 @@ class ExplorationActivityPresenter @Inject constructor(
             null, is AsyncResult.Pending -> {
               oppiaLogger.d("ExplorationActivity", "A gating decision is pending")
             }
+
             is AsyncResult.Failure -> {
               oppiaLogger.e(
                 "ExplorationActivity",
@@ -563,6 +573,7 @@ class ExplorationActivityPresenter @Inject constructor(
               )
               backPressActivitySelector()
             }
+
             is AsyncResult.Success -> {
               if (gatingResult.value) {
                 val dialogFragment =

@@ -1,6 +1,5 @@
 package org.oppia.android.app.resumelesson
 
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -120,6 +119,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
         )
         Profile.getDefaultInstance()
       }
+
       is AsyncResult.Pending -> {
         oppiaLogger.d(
           "ResumeLessonActivity",
@@ -127,6 +127,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
         )
         Profile.getDefaultInstance()
       }
+
       is AsyncResult.Success -> profileResult.value
     }.readingTextSize
   }

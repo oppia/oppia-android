@@ -3,11 +3,7 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.os.BuildCompat
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -46,12 +42,15 @@ class ResumeLessonActivity :
       params.parentScreen,
       params.checkpoint
     )
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        resumeLessonActivityPresenter.setReadingTextSizeNormal()
-        finish()
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          resumeLessonActivityPresenter.setReadingTextSizeNormal()
+          finish()
+        }
       }
-    })
+    )
   }
 
   // TODO(#1655): Re-restrict access to fields in tests post-Gradle.

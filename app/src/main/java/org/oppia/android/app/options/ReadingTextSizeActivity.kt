@@ -36,18 +36,21 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
         ?: retrieveActivityParams().readingTextSize
     readingTextSizeActivityPresenter.handleOnCreate(readingTextSize)
 
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        val resultBundle = ReadingTextSizeActivityResultBundle.newBuilder().apply {
-          selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
-        }.build()
-        val intent = Intent().apply {
-          putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          val resultBundle = ReadingTextSizeActivityResultBundle.newBuilder().apply {
+            selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
+          }.build()
+          val intent = Intent().apply {
+            putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
+          }
+          setResult(RESULT_OK, intent)
+          finish()
         }
-        setResult(RESULT_OK, intent)
-        finish()
       }
-    })
+    )
   }
 
   companion object {

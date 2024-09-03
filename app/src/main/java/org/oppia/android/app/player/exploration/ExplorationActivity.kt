@@ -49,7 +49,8 @@ class ExplorationActivity :
   BottomSheetOptionsMenuItemClickListener,
   RequestVoiceOverIconSpotlightListener {
 
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -68,11 +69,14 @@ class ExplorationActivity :
       params.parentScreen,
       params.isCheckpointingEnabled
     )
-    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(/* enabled = */ true) {
-      override fun handleOnBackPressed() {
-        explorationActivityPresenter.backButtonPressed()
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          explorationActivityPresenter.backButtonPressed()
+        }
       }
-    })
+    )
   }
 
   // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
