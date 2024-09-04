@@ -107,6 +107,8 @@ jobs:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -204,6 +206,16 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
+
+      - name: Binary files check
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/pre-commit.sh
+          exit_code=$?
+
+          if [ $exit_code -eq 0 ]; then
+            echo "No binary files found"
+            echo "BINARY FILES CHECK PASSED"
+          fi
 
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
