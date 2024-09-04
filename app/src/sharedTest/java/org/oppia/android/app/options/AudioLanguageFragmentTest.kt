@@ -348,7 +348,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testFragment_portraitMode_continueButtonClicked_launchesClassroomScreen() {
+  fun testFragment_multipleClassroomsEnabled_continueButtonClicked_launchesClassroomScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
@@ -365,7 +365,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testFragment_landscapeMode_continueButtonClicked_launchesClassroomScreen() {
+  fun testFragment_landscapeMode_multipleClassroomsEnabled_continueButtonLaunchesClassroomScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
@@ -384,6 +384,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_selectionIsUpdated() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -413,6 +414,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
