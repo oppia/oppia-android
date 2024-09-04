@@ -24,10 +24,16 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     const val STORY_FRAGMENT_ARGUMENTS_KEY = "StoryFragment.arguments"
 
     /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
-    fun newInstance(internalProfileId: Int, topicId: String, storyId: String): StoryFragment {
+    fun newInstance(
+      internalProfileId: Int,
+      classroomId: String,
+      topicId: String,
+      storyId: String
+    ): StoryFragment {
 
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryFragmentArguments.newBuilder().apply {
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
       }.build()
@@ -54,24 +60,29 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     savedInstanceState: Bundle?
   ): View? {
     val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to StoryFragment"
+      "Expected arguments to be passed to StoryFragment."
     }
     val args =
       arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
 
     val internalProfileId = arguments.extractCurrentUserProfileId().internalId
+    val classroomId =
+      checkNotNull(args.classroomId) {
+        "Expected classroomId to be passed to StoryFragment."
+      }
     val topicId =
       checkNotNull(args.topicId) {
-        "Expected topicId to be passed to StoryFragment"
+        "Expected topicId to be passed to StoryFragment."
       }
     val storyId =
       checkNotNull(args.storyId) {
-        "Expected storyId to be passed to StoryFragment"
+        "Expected storyId to be passed to StoryFragment."
       }
     return storyFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
+      classroomId,
       topicId,
       storyId
     )
@@ -79,6 +90,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
 
   override fun selectExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -89,6 +101,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
   ) {
     storyFragmentPresenter.handleSelectExploration(
       profileId,
+      classroomId,
       topicId,
       storyId,
       explorationId,

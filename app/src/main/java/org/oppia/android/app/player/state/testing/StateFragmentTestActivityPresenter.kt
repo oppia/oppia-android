@@ -12,6 +12,7 @@ import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATI
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity.Companion.STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -34,6 +35,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 ) {
 
   private var profileId: Int = 1
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -54,6 +56,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       StateFragmentTestActivityParams.getDefaultInstance()
     )
     profileId = args?.internalProfileId ?: 1
+    classroomId = args?.classroomId ?: TEST_CLASSROOM_ID_0
     topicId =
       args?.topicId ?: TEST_TOPIC_ID_0
     storyId =
@@ -63,7 +66,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       ?: TEST_EXPLORATION_ID_2
     shouldSavePartialProgress = args?.shouldSavePartialProgress ?: false
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
+      startPlayingExploration(
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress
+      )
     }
   }
 
@@ -85,6 +95,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   private fun startPlayingExploration(
     profileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -95,10 +106,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        profileId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     } else {
-      explorationDataController.replayExploration(profileId, topicId, storyId, explorationId)
+      explorationDataController.replayExploration(
+        profileId, classroomId, topicId, storyId, explorationId
+      )
     }
     startPlayingProvider.toLiveData().observe(
       activity,

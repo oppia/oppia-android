@@ -11,9 +11,11 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.QuestionPlayerActivityParams
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
@@ -41,6 +43,7 @@ class QuestionPlayerActivity :
   RevealHintListener,
   RevealSolutionInterface,
   HintsAndSolutionQuestionManagerListener,
+  DefaultFontSizeStateListener,
   ConceptCardListener {
 
   @Inject
@@ -57,6 +60,7 @@ class QuestionPlayerActivity :
 
   override fun onBackPressed() {
     showStopExplorationDialogFragment()
+    questionPlayerActivityPresenter.setReadingTextSizeNormal()
   }
 
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
@@ -129,5 +133,9 @@ class QuestionPlayerActivity :
 
   override fun stopSession() {
     questionPlayerActivityPresenter.stopTrainingSession()
+  }
+
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    questionPlayerActivityPresenter.loadFragments(readingTextSize)
   }
 }

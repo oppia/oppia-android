@@ -58,7 +58,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       StateFragment.newInstance(
         args.profileId.internalId, args.topicId, args.storyId, args.explorationId
       )
-    logPracticeFragmentEvent(args.topicId, args.storyId, args.explorationId)
+    logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
@@ -141,8 +141,6 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.viewSolution()
   }
 
-  fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
-
   fun getExplorationCheckpointState() = getStateFragment()?.getExplorationCheckpointState()
 
   private fun getStateFragment(): StateFragment? {
@@ -153,9 +151,16 @@ class ExplorationFragmentPresenter @Inject constructor(
       ) as StateFragment?
   }
 
-  private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
+  private fun logPracticeFragmentEvent(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId),
+      oppiaLogger.createOpenExplorationActivityContext(
+        classroomId, topicId, storyId, explorationId
+      ),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }

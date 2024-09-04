@@ -70,6 +70,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
   private lateinit var profileId: ProfileId
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -85,6 +86,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun handleOnCreate(
     context: Context,
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -125,6 +127,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     this.profileId = profileId
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -187,6 +190,7 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
           profileId,
+          classroomId,
           topicId,
           storyId,
           explorationId,
@@ -330,10 +334,6 @@ class ExplorationActivityPresenter @Inject constructor(
     showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
-  fun dismissConceptCard() {
-    getExplorationFragment()?.dismissConceptCard()
-  }
-
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(
       explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
@@ -386,7 +386,12 @@ class ExplorationActivityPresenter @Inject constructor(
       ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
         // Default to the topic activity.
         activity.startActivity(
-          TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
+          TopicActivity.createTopicActivityIntent(
+            context,
+            profileId.internalId,
+            classroomId,
+            topicId
+          )
         )
         activity.finish()
       }

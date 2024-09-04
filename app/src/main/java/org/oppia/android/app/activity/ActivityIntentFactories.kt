@@ -16,15 +16,23 @@ interface ActivityIntentFactories {
    * This must be injected within an activity context.
    */
   interface TopicActivityIntentFactory {
-    /** Returns a new [Intent] to start the topic activity for the specified profile and topic. */
-    fun createIntent(profileId: ProfileId, topicId: String): Intent
+    /**
+     * Returns a new [Intent] to start the topic activity for the specified profile, classroom
+     * and topic.
+     */
+    fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent
 
     /**
-     * Returns a new [Intent] to start the topic activity for the specified profile, topic, and
-     * story (where the activity will automatically navigate to & expand the specified story in the
-     * topic).
+     * Returns a new [Intent] to start the topic activity for the specified profile, classroom,
+     * topic, and story (where the activity will automatically navigate to & expand the specified
+     * story in the topic).
      */
-    fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent
+    fun createIntent(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+      storyId: String
+    ): Intent
   }
 
   /**

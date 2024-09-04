@@ -53,6 +53,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_S
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
@@ -764,6 +765,32 @@ class EventLogSubject private constructor(
    */
   fun hasAppInForegroundContextThat(block: LearnerDetailsContextSubject.() -> Unit) {
     hasAppInForegroundContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [START_EXPLORATION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasStartExplorationContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(START_EXPLORATION_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasStartExplorationContext] and returns an
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasStartExplorationContextThat(): ExplorationContextSubject {
+    hasStartExplorationContext()
+    return ExplorationContextSubject.assertThat(actual.context.startExplorationContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasStartExplorationContextThat] except for the conditions of, and subject returned by,
+   * [hasStartExplorationContextThat].
+   */
+  fun hasStartExplorationContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasStartExplorationContextThat().block()
   }
 
   /**
@@ -1535,6 +1562,14 @@ class EventLogSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.ExplorationContext
   ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [StringSubject] to test [EventLog.ExplorationContext.getClassroomId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasClassroomIdThat(): StringSubject = assertThat(actual.classroomId)
+
     /**
      * Returns a [StringSubject] to test [EventLog.ExplorationContext.getTopicId].
      *

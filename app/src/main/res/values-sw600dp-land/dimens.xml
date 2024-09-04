@@ -277,7 +277,7 @@
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">72dp</dimen>
-  <dimen name="all_topics_text_margin_top">68dp</dimen>
+  <dimen name="all_topics_text_margin_top">48dp</dimen>
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">24dp</dimen>
 
@@ -290,6 +290,10 @@
   <dimen name="coming_soon_topic_promoted_list_view_margin_top">20dp</dimen>
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_start">72dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_end">72dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_start">0dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_end">32dp</dimen>
 
   <!-- Topic Practice Footer View -->
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
@@ -351,7 +355,7 @@
   <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
 
   <dimen name="home_fragment_padding_top">48dp</dimen>
-  <dimen name="home_fragment_padding_bottom">100dp</dimen>
+  <dimen name="home_fragment_padding_bottom">232dp</dimen>
 
   <!-- Recently Played -->
   <dimen name="recently_played_fragment_padding_top">0dp</dimen>
@@ -517,6 +521,10 @@
   <dimen name="classrooms_text_margin_top">20dp</dimen>
   <dimen name="classrooms_text_margin_end">72dp</dimen>
   <dimen name="classrooms_text_margin_bottom">12dp</dimen>
-  <dimen name="classrooms_card_width">150dp</dimen>
-  <dimen name="classrooms_card_height">182dp</dimen>
+  <dimen name="classrooms_card_collapsed_padding_vertical">28dp</dimen>
+  <dimen name="classrooms_card_padding_vertical">52dp</dimen>
+  <dimen name="classrooms_card_icon_padding_bottom">32dp</dimen>
+  <dimen name="classrooms_card_icon_size">100dp</dimen>
+  <dimen name="classrooms_card_margin_start">0dp</dimen>
+  <dimen name="classrooms_card_margin_end">16dp</dimen>
 </resources>

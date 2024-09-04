@@ -24,6 +24,7 @@ class StoryChapterSummaryViewModel(
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
   val internalProfileId: Int,
+  val classroomId: String,
   val topicId: String,
   val storyId: String,
   private val ephemeralChapterSummary: EphemeralChapterSummary,
@@ -76,6 +77,7 @@ class StoryChapterSummaryViewModel(
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 profileId,
+                classroomId,
                 topicId,
                 storyId,
                 explorationId,
@@ -88,6 +90,7 @@ class StoryChapterSummaryViewModel(
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 profileId,
+                classroomId,
                 topicId,
                 storyId,
                 explorationId,
@@ -103,6 +106,7 @@ class StoryChapterSummaryViewModel(
     } else {
       explorationSelectionListener.selectExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,

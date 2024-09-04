@@ -4,13 +4,14 @@ import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -29,7 +30,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
@@ -41,6 +43,12 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
     schemaObject?.customSchemaValue?.imageWithRegions?.labelRegionsList ?: listOf()
   }
+
+  val observableUserAnswrerState by lazy {
+    ObservableField(userAnswerState)
+  }
+
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
 
   val imagePath: String by lazy {
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
@@ -67,10 +75,10 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
-
     when (region) {
       is DefaultRegionClickedEvent -> {
         answerText = ""
@@ -87,6 +95,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   /** It checks the pending error for the current image region input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     when (category) {
       AnswerErrorCategory.REAL_TIME -> {
         pendingAnswerError = null
@@ -102,24 +111,42 @@ class ImageRegionSelectionInteractionViewModel private constructor(
             ).getErrorMessageFromStringRes(resourceHandler)
         }
       }
+      else -> {}
     }
 
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
-  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
-    val answerTextString = answerText.toString()
-    answer = InteractionObject.newBuilder().apply {
-      clickOnImage = parseClickOnImage(answerTextString)
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      if (answerText.isNotEmpty()) {
+        this.imageLabel = answerText.toString()
+      }
+      this.answerErrorCategory = answerErrorCetegory
     }.build()
-    plainAnswer = resourceHandler.getStringInLocaleWithWrapping(
-      R.string.image_interaction_answer_text,
-      answerTextString
-    )
-    this.writtenTranslationContext =
-      this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
-  }.build()
+  }
+
+  override fun getPendingAnswer(): UserAnswer {
+    // Resetting Observable UserAnswerState to its default instance to ensure that
+    // the ImageRegionSelectionInteractionView reflects no image region selection.
+    // This is necessary because ImageRegionSelectionInteractionView is not recreated every time
+    // the user submits an answer, causing it to retain the old UserAnswerState.
+    observableUserAnswrerState.set(UserAnswerState.getDefaultInstance())
+
+    return UserAnswer.newBuilder().apply {
+      val answerTextString = answerText.toString()
+      answer = InteractionObject.newBuilder().apply {
+        clickOnImage = parseClickOnImage(answerTextString)
+      }.build()
+      plainAnswer = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.image_interaction_answer_text,
+        answerTextString
+      )
+      this.writtenTranslationContext =
+        this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
+    }.build()
+  }
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
@@ -192,7 +219,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return ImageRegionSelectionInteractionViewModel(
         entityId,
@@ -201,7 +229,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,
-        resourceHandler
+        resourceHandler,
+        userAnswerState
       )
     }
   }

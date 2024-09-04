@@ -61,6 +61,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -151,6 +152,7 @@ class StoryActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createStoryActivityIntent(
       internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_0,
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0
     ).extractCurrentAppScreenName()
@@ -163,6 +165,7 @@ class StoryActivityTest {
     activityTestRule.launchActivity(
       createStoryActivityIntent(
         internalProfileId = internalProfileId,
+        classroomId = TEST_CLASSROOM_ID_0,
         topicId = TEST_TOPIC_ID_0,
         storyId = TEST_STORY_ID_0
       )
@@ -180,6 +183,7 @@ class StoryActivityTest {
     launch<StoryActivity>(
       createStoryActivityIntent(
         internalProfileId = internalProfileId,
+        classroomId = TEST_CLASSROOM_ID_0,
         topicId = TEST_TOPIC_ID_0,
         storyId = TEST_STORY_ID_0
       )
@@ -203,6 +207,7 @@ class StoryActivityTest {
         explorationId = TEST_EXPLORATION_ID_2
         storyId = TEST_STORY_ID_0
         topicId = TEST_TOPIC_ID_0
+        classroomId = TEST_CLASSROOM_ID_0
         profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN
         isCheckpointingEnabled = true
@@ -222,12 +227,14 @@ class StoryActivityTest {
 
   private fun createStoryActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): Intent {
     return StoryActivity.createStoryActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
       internalProfileId = internalProfileId,
+      classroomId = classroomId,
       topicId = topicId,
       storyId = storyId
     )

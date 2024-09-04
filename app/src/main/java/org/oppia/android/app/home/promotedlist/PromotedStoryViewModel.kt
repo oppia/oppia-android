@@ -63,6 +63,7 @@ class PromotedStoryViewModel(
   fun clickOnStoryTile() {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
       internalProfileId,
+      promotedStory.classroomId,
       promotedStory.topicId,
       promotedStory.storyId
     )

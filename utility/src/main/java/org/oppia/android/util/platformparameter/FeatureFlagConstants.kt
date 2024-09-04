@@ -24,13 +24,6 @@ const val DOWNLOADS_SUPPORT = "android_enable_downloads_support"
 /** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 
-/** Qualifier for the feature flag corresponding to enabling the language selection UI. */
-@Qualifier
-annotation class EnableLanguageSelectionUi
-
-/** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
-const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = true
-
 /**
  * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
  */
@@ -185,4 +178,4 @@ annotation class EnableMultipleClassrooms
 const val ENABLE_MULTIPLE_CLASSROOMS = "enable_multiple_classrooms"
 
 /** Default value of the feature flag corresponding to [EnableMultipleClassrooms]. */
-const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = false
+const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = true

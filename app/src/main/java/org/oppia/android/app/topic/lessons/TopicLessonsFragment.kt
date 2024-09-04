@@ -39,12 +39,14 @@ class TopicLessonsFragment :
     /** Returns a new [TopicLessonsFragment]. */
     fun newInstance(
       internalProfileId: Int,
+      classroomId: String,
       topicId: String,
       storyId: String
     ): TopicLessonsFragment {
 
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = TopicLessonsFragmentArguments.newBuilder().apply {
+        this.classroomId = classroomId
         this.topicId = topicId
         if (storyId.isNotBlank())
           this.storyId = storyId
@@ -91,6 +93,9 @@ class TopicLessonsFragment :
       TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
       TopicLessonsFragmentArguments.getDefaultInstance()
     )
+    val classroomId = checkNotNull(args?.classroomId) {
+      "Expected classroom ID to be included in arguments for TopicLessonsFragment."
+    }
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
@@ -101,6 +106,7 @@ class TopicLessonsFragment :
       currentExpandedChapterListIndex,
       this as ExpandedChapterListIndexListener,
       internalProfileId,
+      classroomId,
       topicId,
       storyId,
       isDefaultStoryExpanded

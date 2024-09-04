@@ -46,6 +46,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
@@ -152,7 +153,7 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
-    val expectedFeatureFlagCount = 12
+    val expectedFeatureFlagCount = 13
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
@@ -185,6 +186,7 @@ class FeatureFlagsLoggerTest {
   @Iteration("app_and_os_deprecation", "index=9", "flagName=$APP_AND_OS_DEPRECATION")
   @Iteration("enable_nps_survey", "index=10", "flagName=$ENABLE_NPS_SURVEY")
   @Iteration("enable_onboarding_flow_v2", "index=11", "flagName=$ENABLE_ONBOARDING_FLOW_V2")
+  @Iteration("enable_multiple_classrooms", "index=12", "flagName=$ENABLE_MULTIPLE_CLASSROOMS")
   fun testLogFeatureFlags_allFeatureFlagNamesAreLogged() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 

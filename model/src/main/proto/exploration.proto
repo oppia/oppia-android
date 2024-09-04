@@ -420,3 +420,42 @@ enum CheckpointState {
   // Progress made in the exploration is not saved.
   CHECKPOINT_UNSAVED = 3;
 }
+
+// Represents the state of item selection answers that the user has selected.
+message ItemSelectionAnswerState {
+  // List of selected item indices.
+  repeated int32 selected_indexes = 1;
+}
+
+// Represents the user's answer state, retained across configuration changes.
+message UserAnswerState {
+  // Represents the last error state.
+  AnswerErrorCategory answer_error_category = 1;
+
+  // Type of answer input:
+  oneof answer_input_type {
+    // User's selection for selection input interactions.
+    ItemSelectionAnswerState item_selection = 2;
+    // Text answer entered by the user in text-based interactions.
+    string text_input_answer = 3;
+    // A user's selected list of sets of HTML content IDs in drag-and-drop interactions.
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
+    // Selected image's label.
+    string image_label = 5;
+  }
+}
+
+// Represents categories of errors that can be inferred from a pending answer.
+enum AnswerErrorCategory {
+  // The error is unknown or not specified.
+  ERROR_UNSPECIFIED = 0;
+
+  // Corresponds to the pending answer having no error.
+  NO_ERROR = 1;
+
+  // Corresponds to errors that may be found while the user is trying to input an answer.
+  REAL_TIME = 2;
+
+  // Corresponds to errors that may be found only when a user tries to submit an answer.
+  SUBMIT_TIME = 3;
+}

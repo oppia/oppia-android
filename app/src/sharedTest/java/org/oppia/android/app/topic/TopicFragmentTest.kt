@@ -72,6 +72,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -195,7 +196,9 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
     }
@@ -205,13 +208,21 @@ class TopicFragmentTest {
   fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent(false)
     markSpotlightSeen(FIRST_CHAPTER)
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
+    ).use {
       // Mark lessons spotlight seen.
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(doesNotExist())
     }
@@ -223,6 +234,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -237,6 +249,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0
       )
@@ -251,6 +264,7 @@ class TopicFragmentTest {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0
       )
@@ -265,6 +279,7 @@ class TopicFragmentTest {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0
       )
@@ -285,7 +300,9 @@ class TopicFragmentTest {
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(
-      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+      createTopicPlayStoryActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
+      )
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -299,7 +316,9 @@ class TopicFragmentTest {
     markSpotlightSeen(TOPIC_LESSON_TAB)
     markSpotlightSeen(FIRST_CHAPTER)
     launch<TopicActivity>(
-      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+      createTopicPlayStoryActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
+      )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
@@ -317,7 +336,9 @@ class TopicFragmentTest {
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     launch<TopicActivity>(
-      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+      createTopicPlayStoryActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
+      )
     ).use {
       testCoroutineDispatchers.runCurrent()
       // Mark revision tab spotlight seen.
@@ -325,7 +346,9 @@ class TopicFragmentTest {
     }
 
     launch<TopicActivity>(
-      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+      createTopicPlayStoryActivityIntent(
+        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
+      )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
@@ -340,6 +363,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -362,6 +386,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -384,6 +409,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -405,6 +431,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -424,6 +451,7 @@ class TopicFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
+        TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -434,7 +462,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_container)).perform(click()).check(matches(isDisplayed()))
     }
   }
@@ -442,7 +470,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_swipePage_hasSwipedPage() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
       verifyTabTitleAtPosition(position = 1)
@@ -452,7 +480,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_enableExtraTabs_infoTopicTab_isDisplayedInTabLayout() {
     initializeApplicationComponent(enableExtraTabsUi = true)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(
         withText(
           TopicTab.getTabForPosition(
@@ -467,7 +495,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_disableExtraTabs_infoTopicTab_isNotDisplayedInTabLayout() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(withText(TopicTab.getTabForPosition(position = INFO_TAB_POSITION, true).name))
         .check(doesNotExist())
     }
@@ -478,6 +506,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableExtraTabsUi = false)
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -490,6 +519,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableExtraTabsUi = true)
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -500,7 +530,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_disableExtraTabs_clickOnLessonsTab_showsPlayTabSelected() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
@@ -510,7 +540,7 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = true)
     markAllSpotlightsSeen()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -526,7 +556,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_practiceTabEnabled_practiceTopicTabIsDisplayedInTabLayout() {
     initializeApplicationComponent(enableExtraTabsUi = true)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
         TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi.value)
       onView(withText(practiceTab.name)).check(
@@ -544,7 +574,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_disableExtraTabs_practiceTopicTabIsNotDisplayedInTabLayout() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       // Unconditionally retrieve the practice tab name since this test is verifying that it's not
       // enabled.
       val practiceTab =
@@ -556,7 +586,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_disableExtraTabs_configChange_practiceTopicTabIsNotDisplayed() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
@@ -572,7 +602,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabSelected() {
     initializeApplicationComponent(enableExtraTabsUi = true)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
     }
@@ -582,7 +612,7 @@ class TopicFragmentTest {
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = true)
     markAllSpotlightsSeen()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -598,7 +628,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       verifyTabTitleAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
@@ -608,7 +638,7 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = false)
     markAllSpotlightsSeen()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       testCoroutineDispatchers.runCurrent()
@@ -624,7 +654,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTab() {
     initializeApplicationComponent(enableExtraTabsUi = true)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       clickTabAtPosition(position = INFO_TAB_POSITION)
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
@@ -634,7 +664,7 @@ class TopicFragmentTest {
   @Test
   fun enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = true)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -651,7 +681,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnLessonsTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent(enableExtraTabsUi = false)
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
       onView(isRoot()).perform(orientationLandscape())
@@ -670,7 +700,7 @@ class TopicFragmentTest {
   fun enableExtraTabs_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent(enableExtraTabsUi = true)
     markAllSpotlightsSeen()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -696,7 +726,7 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent(enableExtraTabsUi = false)
     markAllSpotlightsSeen()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       onView(isRoot()).perform(orientationLandscape())
@@ -716,6 +746,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableExtraTabsUi = true)
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -736,6 +767,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableExtraTabsUi = false)
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -757,6 +789,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -786,6 +819,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -802,6 +836,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -821,6 +856,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -842,6 +878,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -861,6 +898,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
+      TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
@@ -877,10 +915,15 @@ class TopicFragmentTest {
   /**
    * Creates TopicActivity Intent without a storyId
    */
-  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
+  private fun createTopicActivityIntent(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String
+  ): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
+      classroomId,
       topicId
     )
   }
@@ -892,12 +935,14 @@ class TopicFragmentTest {
    */
   private fun createTopicPlayStoryActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): Intent {
     return TopicActivity.createTopicPlayStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
+      classroomId,
       topicId,
       storyId
     )
@@ -909,9 +954,10 @@ class TopicFragmentTest {
    */
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
-    return launch(createTopicActivityIntent(internalProfileId, topicId))
+    return launch(createTopicActivityIntent(internalProfileId, classroomId, topicId))
   }
 
   /**
@@ -920,11 +966,12 @@ class TopicFragmentTest {
    */
   private fun launchTopicPlayStoryActivityIntent(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): ActivityScenario<TopicActivity> {
     return launch<TopicActivity>(
-      createTopicPlayStoryActivityIntent(internalProfileId, topicId, storyId)
+      createTopicPlayStoryActivityIntent(internalProfileId, classroomId, topicId, storyId)
     ).also { testCoroutineDispatchers.runCurrent() }
   }
 

@@ -38,6 +38,7 @@ class KenyaAlphaEventTypeToHumanReadableNameConverterImpl @Inject constructor() 
       ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT -> "pause_voice_over_context"
       ActivityContextCase.APP_IN_BACKGROUND_CONTEXT -> "app_in_background_context"
       ActivityContextCase.APP_IN_FOREGROUND_CONTEXT -> "app_in_foreground_context"
+      ActivityContextCase.START_EXPLORATION_CONTEXT -> "start_exploration_context"
       ActivityContextCase.EXIT_EXPLORATION_CONTEXT -> "exit_exploration_context"
       ActivityContextCase.FINISH_EXPLORATION_CONTEXT -> "finish_exploration_context"
       ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT -> "progress_saving_success_context"

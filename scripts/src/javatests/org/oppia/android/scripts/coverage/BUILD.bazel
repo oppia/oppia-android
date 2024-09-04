@@ -6,9 +6,12 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "RunCoverageTest",
+    size = "large",
     srcs = ["RunCoverageTest.kt"],
+    shard_count = 24,
     deps = [
         "//scripts:test_file_check_assets",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",
@@ -23,17 +26,6 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/coverage:coverage_runner",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
-        "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-    ],
-)
-
-kt_jvm_test(
-    name = "CoverageReporterTest",
-    srcs = ["CoverageReporterTest.kt"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/coverage:coverage_reporter",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
