@@ -119,7 +119,6 @@ class ResumeLessonActivityPresenter @Inject constructor(
         )
         Profile.getDefaultInstance()
       }
-
       is AsyncResult.Pending -> {
         oppiaLogger.d(
           "ResumeLessonActivity",
@@ -127,7 +126,6 @@ class ResumeLessonActivityPresenter @Inject constructor(
         )
         Profile.getDefaultInstance()
       }
-
       is AsyncResult.Success -> profileResult.value
     }.readingTextSize
   }
