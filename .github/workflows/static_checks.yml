@@ -213,7 +213,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           bash /home/runner/work/oppia-android/oppia-android/scripts/pre-commit.sh
-          echo "No binary files found"
+          echo "No binary files found in commit"
           echo "BINARY FILES CHECK PASSED"
 
   # Note that caching is intentionally not enabled for this check since licenses should always be
