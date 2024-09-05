@@ -106,8 +106,6 @@ class QuestionPlayerFragment :
     questionPlayerFragmentPresenter.revealSolution()
   }
 
-  fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
-
   companion object {
 
     /** Arguments key for [QuestionPlayerFragment]. */
