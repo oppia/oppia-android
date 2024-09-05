@@ -21,7 +21,6 @@ class WikiTableOfContentsCheckTest {
 
   @Before
   fun setUp() {
-    tempFolder.newFolder("wiki")
     System.setOut(PrintStream(outContent))
   }
 
@@ -31,7 +30,21 @@ class WikiTableOfContentsCheckTest {
   }
 
   @Test
+  fun testWikiTOCCheck_noWikiDirExists_printsNoContentFound() {
+    runScript()
+    assertThat(outContent.toString().trim()).isEqualTo("No contents found in the Wiki directory.")
+  }
+
+  @Test
+  fun testWikiTOCCheck_noWikiDirectory_printsNoContentFound() {
+    tempFolder.newFile("wiki")
+    runScript()
+    assertThat(outContent.toString().trim()).isEqualTo("No contents found in the Wiki directory.")
+  }
+
+  @Test
   fun testWikiTOCCheck_validWikiTOC_checkPass() {
+    tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """
@@ -55,6 +68,7 @@ class WikiTableOfContentsCheckTest {
 
   @Test
   fun testWikiTOCCheck_missingWikiTOC_returnsNoTOCFound() {
+    tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """          
@@ -76,6 +90,7 @@ class WikiTableOfContentsCheckTest {
 
   @Test
   fun testWikiTOCCheck_mismatchWikiTOC_checkFail() {
+    tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
@@ -101,6 +116,7 @@ class WikiTableOfContentsCheckTest {
 
   @Test
   fun testWikiTOCCheck_validWikiTOCWithSeparator_checkPass() {
+    tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
@@ -124,6 +140,7 @@ class WikiTableOfContentsCheckTest {
 
   @Test
   fun testWikiTOCCheck_validWikiTOCWithSpecialCharacter_checkPass() {
+    tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
