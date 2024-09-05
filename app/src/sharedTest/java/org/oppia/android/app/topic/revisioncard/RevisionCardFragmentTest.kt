@@ -26,6 +26,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -137,6 +138,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.RevisionCardFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -807,6 +811,45 @@ class RevisionCardFragmentTest {
 
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val revisionCardFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.revision_card_fragment_placeholder) as RevisionCardFragment
+        val arguments = checkNotNull(revisionCardFragment.arguments) {
+          "Expected arguments to be passed to StoryFragment"
+        }
+        val args = arguments.getProto(
+          RevisionCardFragment.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
+          RevisionCardFragmentArguments.getDefaultInstance()
+        )
+        val receivedTopicId =
+          checkNotNull(args?.topicId) {
+            "Expected topicId to be passed to RevisionCardFragment"
+          }
+        val receivedSubtopicId = args?.subtopicId ?: -1
+        val receivedProfileId = arguments.extractCurrentUserProfileId()
+        val receivedSubtopicListSize = args?.subtopicListSize ?: -1
+
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(receivedSubtopicId).isEqualTo(2)
+        assertThat(receivedProfileId).isEqualTo(profileId)
+        assertThat(receivedSubtopicListSize).isEqualTo(FRACTIONS_SUBTOPIC_LIST_SIZE)
+      }
     }
   }
 

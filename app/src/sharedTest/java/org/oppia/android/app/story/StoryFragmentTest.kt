@@ -148,6 +148,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.StoryFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [StoryFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -769,6 +772,45 @@ class StoryFragmentTest {
           withText(headerString)
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val storyFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.story_fragment_placeholder) as StoryFragment
+
+        val arguments = checkNotNull(storyFragment.arguments) {
+          "Expected arguments to be passed to StoryFragment."
+        }
+        val args = arguments.getProto(
+          StoryFragment.STORY_FRAGMENT_ARGUMENTS_KEY,
+          StoryFragmentArguments.getDefaultInstance()
+        )
+
+        val receivedInternalProfileId = arguments.extractCurrentUserProfileId().internalId
+        val receivedClassroomId =
+          checkNotNull(args.classroomId) {
+            "Expected classroomId to be passed to StoryFragment."
+          }
+        val receivedTopicId =
+          checkNotNull(args.topicId) {
+            "Expected topicId to be passed to StoryFragment."
+          }
+        val receivedStoryId =
+          checkNotNull(args.storyId) {
+            "Expected storyId to be passed to StoryFragment."
+          }
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+        assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(receivedStoryId).isEqualTo(FRACTIONS_STORY_ID_0)
+      }
     }
   }
 

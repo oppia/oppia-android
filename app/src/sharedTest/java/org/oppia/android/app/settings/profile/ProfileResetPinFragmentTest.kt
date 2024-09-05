@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -107,6 +108,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileResetPinFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -1003,6 +1006,38 @@ class ProfileResetPinFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<ProfileResetPinActivity>(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context = context,
+        profileId = 0,
+        isAdmin = true
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileResetPinFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+
+        val arguments = checkNotNull(profileResetPinFragment.arguments) {
+          "Expected arguments to be passed to ProfileResetPinFragment"
+        }
+        val args =
+          arguments.getProto(
+            ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
+            ProfileResetPinFragmentArguments.getDefaultInstance()
+          )
+        val receivedProfileResetPinProfileId = args.internalProfileId
+        val receivedProfileResetPinIsAdmin = args.isAdmin
+
+        assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
+        assertThat(receivedProfileResetPinIsAdmin).isEqualTo(true)
+      }
     }
   }
 

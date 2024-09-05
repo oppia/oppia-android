@@ -113,6 +113,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ResumeLessonFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -270,6 +272,41 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(withText("Matthew learns about fractions."))
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val resumeLessonFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.resume_lesson_fragment_placeholder) as ResumeLessonFragment
+        val args = checkNotNull(resumeLessonFragment.arguments) {
+          "Expected arguments to be provided for fragment."
+        }.getProto(
+          ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+          ResumeLessonFragmentArguments.getDefaultInstance()
+        )
+        val receivedProfileId = args.profileId
+        val receivedClassroomId = args.classroomId
+        val receivedTopicId = args.topicId
+        val receivedStoryId = args.storyId
+        val receivedExplorationId = args.explorationId
+        val receivedParentScreen = args.parentScreen
+        val receivedCheckpoint = args.checkpoint
+
+        assertThat(receivedProfileId)
+          .isEqualTo(ProfileId.newBuilder().apply { internalId = 1 }.build())
+        assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(receivedStoryId).isEqualTo(FRACTIONS_STORY_ID_0)
+        assertThat(receivedExplorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+        assertThat(receivedParentScreen)
+          .isEqualTo(ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED)
+        assertThat(receivedCheckpoint).isEqualTo(ExplorationCheckpoint.getDefaultInstance())
+      }
     }
   }
 

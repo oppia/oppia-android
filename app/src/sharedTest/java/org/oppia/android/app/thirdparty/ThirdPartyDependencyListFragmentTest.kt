@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -101,6 +102,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
+import org.oppia.android.app.model.ThirdPartyDependencyListFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 /** Tests for [ThirdPartyDependencyListFragmentTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -444,6 +448,30 @@ class ThirdPartyDependencyListFragmentTest {
         )
       ).check(matches(hasDescendant(withText(version3))))
       onView(withText(version3)).check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch(ThirdPartyDependencyListActivity::class.java).use { scenario->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val thirdPartyDependencyListFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder)
+          as ThirdPartyDependencyListFragment
+
+        val arguments = checkNotNull(thirdPartyDependencyListFragment.arguments) {
+          "Expected arguments to be passed to ThirdPartyDependencyListFragment"
+        }
+        val args = arguments.getProto(
+          "ThirdPartyDependencyListFragment.arguments",
+          ThirdPartyDependencyListFragmentArguments.getDefaultInstance()
+        )
+        val receivedIsMultipane = args?.isMultipane ?: false
+
+        assertThat(receivedIsMultipane).isEqualTo(false)
+      }
     }
   }
 
