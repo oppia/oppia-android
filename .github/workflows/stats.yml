@@ -184,6 +184,32 @@ jobs:
             beta $(pwd)/oppia_beta_without_changes.aab $(pwd)/oppia_beta_with_changes.aab \
             ga $(pwd)/oppia_ga_without_changes.aab $(pwd)/oppia_ga_with_changes.aab
 
+      - name: Download previous build summary
+        uses: actions/download-artifact@v4
+        with:
+          name: brief_build_summary_${{ matrix.prInfo.number }}.log
+        continue-on-error: true # Ignore errors if the file doesn't exist (first run)
+
+      - name: Compare current build summary with the previous one
+        id: build-comparison
+        run: |
+          if [ -f brief_build_summary_${{ matrix.prInfo.number }}.log ]; then
+            echo "Comparing current and previous build summaries..."
+            if diff brief_build_summary.log brief_build_summary_${{ matrix.prInfo.number }}.log > /dev/null; then
+              echo "No significant changes detected; skipping comment."
+              exit 0
+            else
+              echo "Changes detected; proceeding with the comment."
+            fi
+          else
+            echo "No previous summary found; proceeding with the comment."
+
+      - name: Upload current build summary for future comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief_build_summary_${{ matrix.prInfo.number }}.log
+          path: brief_build_summary.log
+      
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
       - name: Extract reports for uploading & commenting
@@ -203,6 +229,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
 
       - name: Add build stats summary comment
+        if: ${{ steps.build-comparison.outcome == 'success' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         uses: peter-evans/create-or-update-comment@v1
@@ -210,6 +237,7 @@ jobs:
           issue-number: ${{ env.PR_NUMBER }}
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
+      # might be removed if found redundant
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
