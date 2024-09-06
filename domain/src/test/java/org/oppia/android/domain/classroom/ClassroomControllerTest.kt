@@ -132,6 +132,36 @@ class ClassroomControllerTest {
   }
 
   @Test
+  fun testGetClassrooms_returnsAllClassrooms() {
+    val classrooms = classroomController.getClassrooms()
+
+    assertThat(classrooms[0].id).isEqualTo(TEST_CLASSROOM_ID_0)
+    assertThat(classrooms[1].id).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(classrooms[2].id).isEqualTo(TEST_CLASSROOM_ID_2)
+  }
+
+  @Test
+  fun testGetClassroomById_returnsFirstClassroom() {
+    val classroom = classroomController.getClassroomById(TEST_CLASSROOM_ID_0)
+
+    assertThat(classroom.id).isEqualTo(TEST_CLASSROOM_ID_0)
+  }
+
+  @Test
+  fun testGetClassroomById_returnsSecondClassroom() {
+    val classroom = classroomController.getClassroomById(TEST_CLASSROOM_ID_1)
+
+    assertThat(classroom.id).isEqualTo(TEST_CLASSROOM_ID_1)
+  }
+
+  @Test
+  fun testGetClassroomById_returnsThirdClassroom() {
+    val classroom = classroomController.getClassroomById(TEST_CLASSROOM_ID_2)
+
+    assertThat(classroom.id).isEqualTo(TEST_CLASSROOM_ID_2)
+  }
+
+  @Test
   fun testRetrieveTopicList_isSuccessful() {
     val topicListProvider = classroomController.getTopicList(profileId0, TEST_CLASSROOM_ID_0)
 
