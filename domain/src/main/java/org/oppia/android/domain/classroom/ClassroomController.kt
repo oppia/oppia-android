@@ -386,6 +386,8 @@ class ClassroomController @Inject constructor(
     val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
     checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
 
+    val classroomTitle = classroomObj.getJSONObject("classroom_title")
+
     // Load the topic prerequisite map.
     val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
       "Expected classroom to have non-null topic_prerequisites."
@@ -404,6 +406,10 @@ class ClassroomController @Inject constructor(
       id = checkNotNull(classroomObj.optString("classroom_id")) {
         "Expected classroom to have ID."
       }
+      translatableTitle = SubtitledHtml.newBuilder().apply {
+        contentId = classroomTitle.getStringFromObject("content_id")
+        html = classroomTitle.getStringFromObject("html")
+      }.build()
       putAllTopicPrerequisites(
         topicPrereqs.mapValues { (_, topicIds) ->
           ClassroomRecord.TopicIdList.newBuilder().apply {
