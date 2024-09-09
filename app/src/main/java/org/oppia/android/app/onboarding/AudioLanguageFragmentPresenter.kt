@@ -123,7 +123,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationContinue.setOnClickListener {
       updateSelectedAudioLanguage(selectedLanguage, profileId).also {
-        loginToProfile(profileId)
+        logInToProfile(profileId)
       }
     }
 
@@ -159,7 +159,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       }
   }
 
-  private fun loginToProfile(profileId: ProfileId) {
+  private fun logInToProfile(profileId: ProfileId) {
     profileManagementController.loginToProfile(profileId).toLiveData().observe(
       fragment,
       { result ->

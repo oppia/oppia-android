@@ -364,7 +364,7 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setStartedProfileOboarding(true).build()
+      val updatedProfile = profile.toBuilder().setStartedProfileOnboarding(true).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
@@ -392,7 +392,7 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setCompletedProfileOboarding(true).build()
+      val updatedProfile = profile.toBuilder().setCompletedProfileOnboarding(true).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile

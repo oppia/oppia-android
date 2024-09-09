@@ -7,7 +7,6 @@ import com.google.common.truth.IntegerSubject
 import com.google.common.truth.IterableSubject
 import com.google.common.truth.LongSubject
 import com.google.common.truth.StringSubject
-import com.google.common.truth.Subject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
@@ -2473,7 +2472,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasProfileIdThat(): Subject = assertThat(actual.profileId)
+    fun hasProfileIdThat(): LiteProtoSubject = assertThat(actual.profileId)
 
     companion object {
       /**

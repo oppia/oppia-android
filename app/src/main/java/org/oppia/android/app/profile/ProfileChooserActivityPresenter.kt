@@ -31,7 +31,8 @@ class ProfileChooserActivityPresenter @Inject constructor(
         isAdmin = true
       )
     } else {
-      // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
+      // TODO(#482): Ensures that an admin profile is present.
+      // This can be removed once the new onboarding flow is finalized, as it will handle the creation of an admin profile.
       profileManagementController.addProfile(
         name = "Admin",
         pin = "",

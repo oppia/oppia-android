@@ -184,7 +184,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       if (enableOnboardingFlowV2.value) {
         ensureProfileOnboarded(model.profile)
       } else {
-        loginToProfile(model.profile)
+        logInToProfile(model.profile)
       }
     }
   }
@@ -256,8 +256,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ensureProfileOnboarded(profile: Profile) {
-    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOboarding) {
-      loginToProfile(profile)
+    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOnboarding) {
+      logInToProfile(profile)
     } else {
       launchOnboardingScreen(profile.id, profile.name)
     }
@@ -277,7 +277,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     activity.startActivity(intent)
   }
 
-  private fun loginToProfile(profile: Profile) {
+  private fun logInToProfile(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
       profileManagementController.loginToProfile(profile.id).toLiveData().observe(
         fragment,

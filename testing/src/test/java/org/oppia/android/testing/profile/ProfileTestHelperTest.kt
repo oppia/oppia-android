@@ -164,7 +164,7 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testUpdateProfile_updateProfileType_checkIsSuccessful() {
+  fun testUpdateProfile_updateProfileType_profileTypeShouldBeUpdated() {
     profileTestHelper.addOnlyAdminProfile()
     val profileId = profileManagementController.getCurrentProfileId()
     val updateProvider = profileTestHelper.updateProfileType(profileId!!, ProfileType.SUPERVISOR)

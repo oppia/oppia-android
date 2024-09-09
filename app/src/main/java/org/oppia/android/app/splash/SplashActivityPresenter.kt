@@ -369,10 +369,10 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun proceedBasedOnProfileState(profile: Profile) {
     when {
-      profile.startedProfileOboarding && !profile.completedProfileOboarding -> {
+      profile.startedProfileOnboarding && !profile.completedProfileOnboarding -> {
         resumeOnboarding(profile.id, profile.name)
       }
-      profile.startedProfileOboarding && profile.completedProfileOboarding -> {
+      profile.startedProfileOnboarding && profile.completedProfileOnboarding -> {
         loginToProfile(profile.id)
       }
       else -> launchOnboardingActivity()
