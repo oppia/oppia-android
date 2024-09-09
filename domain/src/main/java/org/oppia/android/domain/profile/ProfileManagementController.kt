@@ -1084,11 +1084,7 @@ class ProfileManagementController @Inject constructor(
           )
         )
       ProfileActionStatus.PROFILE_TYPE_UNKNOWN ->
-        AsyncResult.Failure(
-          UnknownProfileTypeException(
-            "ProfileType must be set"
-          )
-        )
+        AsyncResult.Failure(UnknownProfileTypeException("ProfileType must be set."))
     }
   }
 
