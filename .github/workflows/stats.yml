@@ -225,7 +225,7 @@ jobs:
           if [ -f ./develop/brief_build_summary.log ]; then
             echo "Comparing current and previous build summaries..."
             if diff ./develop/brief_build_summary.log ./previous_build_logs/brief_build_summary.log > /dev/null; then
-              echo "No significant changes detected; skipping comment."
+              echo "No changes detected; skipping comment."
               echo "skip_comment=true" >> $GITHUB_ENV
             else
               echo "Changes detected; proceeding with the comment."
@@ -251,7 +251,7 @@ jobs:
         run: |
           {
             echo 'comment_body<<EOF'
-            cat ./develop/brief_build_summary.log
+            cat $GITHUB_WORKSPACE/develop/brief_build_summary.log
             echo EOF
           } >> "$GITHUB_OUTPUT"
           FULL_BUILD_SUMMARY_FILE_NAME="full_build_summary_pr_$PR_NUMBER.log"
