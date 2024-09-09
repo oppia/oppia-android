@@ -597,28 +597,26 @@ class CreateProfileFragmentTest {
   @Test
   fun testFragment_profileTypeArgumentMissing_showsUnknownProfileTypeError() {
     val intent = CreateProfileActivity.createProfileActivityIntent(context)
-    intent.apply {
-      // Not adding the profile type intent parameter to trigger the exception.
-      decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+    // Not adding the profile type intent parameter to trigger the exception.
+    intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
 
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+    val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+    testCoroutineDispatchers.runCurrent()
+
+    scenario.use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+
       testCoroutineDispatchers.runCurrent()
 
-      scenario.use {
-        onView(withId(R.id.create_profile_nickname_edittext))
-          .perform(
-            editTextInputAction.appendText("John"),
-            closeSoftKeyboard()
-          )
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-        testCoroutineDispatchers.runCurrent()
-
-        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
-        testCoroutineDispatchers.runCurrent()
-
-        onView(withId(R.id.create_profile_nickname_error))
-          .check(matches(withText(R.string.add_profile_error_missing_profile_type)))
-      }
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_missing_profile_type)))
     }
   }
 
@@ -637,20 +635,19 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity():
     ActivityScenario<CreateProfileActivity>? {
-      val intent = CreateProfileActivity.createProfileActivityIntent(context)
-      intent.apply {
-        decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
-        putProtoExtra(
-          CREATE_PROFILE_PARAMS_KEY,
-          CreateProfileActivityParams.newBuilder()
-            .setProfileType(ProfileType.SOLE_LEARNER)
-            .build()
-        )
-        val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
-        testCoroutineDispatchers.runCurrent()
-        return scenario
-      }
-    }
+    val intent = CreateProfileActivity.createProfileActivityIntent(context)
+    intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+    intent.putProtoExtra(
+      CREATE_PROFILE_PARAMS_KEY,
+      CreateProfileActivityParams.newBuilder()
+        .setProfileType(ProfileType.SOLE_LEARNER)
+        .build()
+    )
+    val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
+}
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -692,24 +689,24 @@ class CreateProfileFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest)
+  fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest)
+}
+
+class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  private val component: TestApplicationComponent by lazy {
+    DaggerCreateProfileFragmentTest_TestApplicationComponent.builder()
+      .setApplication(this)
+      .build() as TestApplicationComponent
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerCreateProfileFragmentTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestApplicationComponent
-    }
-
-    fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest) {
-      component.inject(newLearnerProfileFragmentTest)
-    }
-
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
-
-    override fun getApplicationInjector(): ApplicationInjector = component
+  fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest) {
+    component.inject(newLearnerProfileFragmentTest)
   }
+
+  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+  }
+
+  override fun getApplicationInjector(): ApplicationInjector = component
+}
 }
