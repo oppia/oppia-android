@@ -13,6 +13,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
         "//testing:assertion_helpers",
+        "//third_party:com_google_guava_guava",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],

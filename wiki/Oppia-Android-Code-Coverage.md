@@ -139,7 +139,7 @@ Coverage Analysis: **FAIL** :x: <br>
 
 | File | Coverage | Lines Hit | Status | Min Required |
 |------|:--------:|----------:|:------:|:------------:|
-| <details><summary>MathTokenizer.kt</summary>utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt</details> | 94.26% | 197 / 209 | :white_check_mark: | 70% |
+| <details><summary>Pass.kt</summary>utility/src/main/java/org/oppia/android/util/math/Pass.kt</details> | 94.26% | 197 / 209 | :white_check_mark: | 70% |
 </details>
 
 ### Exempted coverage
@@ -282,7 +282,7 @@ Certain files are exempt from coverage checks. These exemptions include:
 
 1. **Test File Exemptions:** Files that are exempted from having corresponding test files are also exempted from coverage checks. Since no test files are available for these sources, coverage analysis cannot be performed, and these files are therefore skipped.
 
-2. **Source File Incompatibility Exemptions:** Some files are currently incompatible with Bazel coverage execution ([see tracking issue #5481](https://github.com/oppia/oppia-android/issues/5481)) and are temporarily excluded from coverage checks.
+2. **Source File Incompatibility Exemptions:** Some files are currently incompatible with Bazel coverage execution (see tracking issue [#5481](https://github.com/oppia/oppia-android/issues/5481)) and are temporarily excluded from coverage checks.
 
 You can find the complete list of exemptions in this file: [test_file_exemptions.textproto](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/test_file_exemptions.textproto)
 
@@ -311,7 +311,19 @@ bazel run //scripts:run_coverage -- <path_to_root> <list_of_relative_path_to_fil
 - <path_to_root>: Your root directory.
 - <list_of_relative_path_to_files>: Files you want to generate coverage reports for.
 
-For example, to analyze coverage for the file MathTokenizer.kt, use the relative path:
+To get the relative path of a file:
+
+1. Navigate to the Project view on the left-hand side in Android Studio.
+2. Locate the file to analyze Code Coverage for.
+3. Right click the file and select Copy Path. To get the path relative to the root.
+
+Alternatively, the coverage report itself provides the relative paths. You can reveal this information by clicking on the drop-down that precedes the file name in the report.
+
+| File | Coverage | Lines Hit | Status | Min Required |
+|------|:--------:|----------:|:------:|:------------:|
+| <details open><summary>MathTokenizer.kt</summary>utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt</details> | 94.26% | 197 / 209 | :white_check_mark: | 70% |
+
+To analyze coverage for the file MathTokenizer.kt, use the relative path:
 
 ```sh
 bazel run //scripts:run_coverage -- $(pwd) utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt
@@ -456,6 +468,14 @@ It’s essential to ensure that each source file is directly tested by its own c
 
 ## Limitations of the code coverage tool
 
-1. **Incompatibility with Code Coverage Analysis:** Certain test targets in the Oppia-Android codebase fail to execute and collect coverage using the Bazel coverage command. The underlying issues are still being investigated ([see tracking issue #5481](https://github.com/oppia/oppia-android/issues/5481)), and these files are currently exempt from coverage checks. However, it's expected that all new test files should work without needing this exemption.
+1. **Incompatibility with Code Coverage Analysis:** Certain test targets in the Oppia-Android codebase fail to execute and collect coverage using the Bazel coverage command. The underlying issues are still being investigated (see tracking issue [#5481](https://github.com/oppia/oppia-android/issues/5481)), and these files are currently exempt from coverage checks. However, it's expected that all new test files should work without needing this exemption.
 
 2. **Function and Branch Coverage:** The Oppia-Android code coverage tool currently provides only line coverage data. It does not include information on function or branch coverage.
+
+3. **Kotlin inline functions:** With JaCoCo coverage gaps, Kotlin inline functions may be inaccurately reported as uncovered in coverage reports. (See tracking issue [#5501](https://github.com/oppia/oppia-android/issues/5501))
+
+4. **Line and Partial Coverages:** The current line coverage analysis in Oppia Android is limited and may not accurately reflect the execution of complex or multi-branch code within a single line, reporting lines as fully covered even if only part of the logic within those lines is executed, leading to potentially misleading coverage data. (See tracking issue [#5503](https://github.com/oppia/oppia-android/issues/5503))
+
+5. **Flow Interrupting Statements:** The coverage reports may inaccurately reflect the coverage of flow-interrupting statements (e.g., exitProcess(1), assertion failures, break). These lines may be marked as uncovered even when executed, due to JaCoCo's limitations in tracking code execution after abrupt control flow interruptions. (See tracking issue [#5506](https://github.com/oppia/oppia-android/issues/5506))
+
+6. **Uncovered Last Curly Brace in Kotlin:** The last curly brace of some Kotlin functions may be reported as uncovered, even when the function is fully executed during tests. This issue requires further investigation to determine if it's due to incomplete test execution or dead code generated by the Kotlin compiler. (See tracking issue [#5523](https://github.com/oppia/oppia-android/issues/5523))
