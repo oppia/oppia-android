@@ -48,7 +48,8 @@ class DragAndDropSortInteractionViewModel private constructor(
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
   InteractionAnswerHandler,
   OnItemDragListener,
@@ -71,10 +72,18 @@ class DragAndDropSortInteractionViewModel private constructor(
       subtitledHtml.contentId to translatedHtml
     }
 
-  private val _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
 
-  private val _choiceItems = _originalChoiceItems.toMutableList()
+  private val _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
+    computeOriginalChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
+
+  private val _choiceItems = computeSelectedChoiceItems(
+    contentIdHtmlMap,
+    choiceSubtitledHtmls,
+    this,
+    resourceHandler,
+    userAnswerState
+  )
   val choiceItems: List<DragDropInteractionContentViewModel> = _choiceItems
 
   private var pendingAnswerError: String? = null
@@ -99,6 +108,7 @@ class DragAndDropSortInteractionViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
   override fun onItemDragged(
@@ -160,6 +170,7 @@ class DragAndDropSortInteractionViewModel private constructor(
    * updates the error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME ->
@@ -232,9 +243,9 @@ class DragAndDropSortInteractionViewModel private constructor(
   }
 
   private fun getSubmitTimeError(): DragAndDropSortInteractionError {
-    return if (_originalChoiceItems == _choiceItems)
+    return if (_originalChoiceItems == _choiceItems) {
       DragAndDropSortInteractionError.EMPTY_INPUT
-    else
+    } else
       DragAndDropSortInteractionError.VALID
   }
 
@@ -263,13 +274,30 @@ class DragAndDropSortInteractionViewModel private constructor(
         isSplitView,
         writtenTranslationContext,
         resourceHandler,
-        translationController
+        translationController,
+        userAnswerState
       )
     }
   }
 
+  override fun getUserAnswerState(): UserAnswerState {
+    if (_choiceItems == _originalChoiceItems) {
+      return UserAnswerState.newBuilder().apply {
+        this.answerErrorCategory = answerErrorCetegory
+      }.build()
+    }
+    return UserAnswerState.newBuilder().apply {
+      val htmlContentIds = _choiceItems.map { it.htmlContent }
+      listOfSetsOfTranslatableHtmlContentIds =
+        ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+          addAllContentIdLists(htmlContentIds)
+        }.build()
+      answerErrorCategory = answerErrorCetegory
+    }.build()
+  }
+
   companion object {
-    private fun computeChoiceItems(
+    private fun computeOriginalChoiceItems(
       contentIdHtmlMap: Map<String, String>,
       choiceStrings: List<SubtitledHtml>,
       dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
@@ -291,6 +319,30 @@ class DragAndDropSortInteractionViewModel private constructor(
           resourceHandler = resourceHandler
         )
       }.toMutableList()
+    }
+  }
+
+  private fun computeSelectedChoiceItems(
+    contentIdHtmlMap: Map<String, String>,
+    choiceStrings: List<SubtitledHtml>,
+    dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+    resourceHandler: AppLanguageResourceHandler,
+    userAnswerState: UserAnswerState
+  ): MutableList<DragDropInteractionContentViewModel> {
+    return if (userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount == 0) {
+      _originalChoiceItems.toMutableList()
+    } else {
+      userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+        .mapIndexed { index, contentId ->
+          DragDropInteractionContentViewModel(
+            contentIdHtmlMap = contentIdHtmlMap,
+            htmlContent = contentId,
+            itemIndex = index,
+            listSize = choiceStrings.size,
+            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+            resourceHandler = resourceHandler
+          )
+        }.toMutableList()
     }
   }
 }

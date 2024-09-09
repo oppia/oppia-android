@@ -15,5 +15,6 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/proto:coverage_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
+        "//third_party:com_google_guava_guava",
     ],
 )

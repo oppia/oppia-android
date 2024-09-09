@@ -10,6 +10,7 @@ import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
@@ -21,11 +22,19 @@ class ClickableAreasImage(
   private val listener: OnClickableAreaClickedListener,
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
-  private val clickableAreas: List<LabeledRegion>
+  private val clickableAreas: List<LabeledRegion>,
+  userAnswerState: UserAnswerState
 ) {
+  private var imageLabel: String? = null
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
 
-  init { imageView.initializeShowRegionTouchListener() }
+  init {
+    imageView.initializeShowRegionTouchListener()
+
+    if (userAnswerState.imageLabel.isNotBlank()) {
+      imageLabel = userAnswerState.imageLabel
+    }
+  }
 
   /**
    * Called when an image is clicked.
@@ -41,7 +50,7 @@ class ClickableAreasImage(
       defaultRegionView.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegionView.x = x
       defaultRegionView.y = y
-      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent(x, y))
     }
   }
 
@@ -104,6 +113,9 @@ class ClickableAreasImage(
       newView.isFocusableInTouchMode = true
       newView.tag = clickableArea.label
       newView.initializeToggleRegionTouchListener(clickableArea)
+      if (clickableArea.label.equals(imageLabel)) {
+        showOrHideRegion(newView = newView, clickableArea = clickableArea)
+      }
       if (isAccessibilityEnabled) {
         // Make default region visibility gone when talkback enabled to avoid any accidental touch.
         defaultRegionView.isVisible = false

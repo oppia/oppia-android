@@ -196,7 +196,9 @@ class ExplorationActivity :
     this.writtenTranslationContext = writtenTranslationContext
   }
 
-  override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+  override fun dismissConceptCard() {
+    getHintsAndSolution()?.dismissConceptCard()
+  }
 
   override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)
