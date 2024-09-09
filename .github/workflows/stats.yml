@@ -195,7 +195,6 @@ jobs:
               owner,
               repo,
               workflow_id: 'stats.yml',
-              head_sha: '${{ github.event.pull_request.head.sha }}',
             });
 
             const runs = runsResponse.data.workflow_runs;
