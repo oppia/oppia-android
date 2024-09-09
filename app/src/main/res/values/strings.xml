@@ -552,7 +552,7 @@
   <string name="privacy_policy_web_link">Please visit &lt;a href="https://www.oppia.org/privacy-policy"&gt;this page&lt;/a&gt; for the latest version of this privacy policy.</string>
   <!-- Terms of Service -->
   <string name="terms_of_service_title">Terms of Service</string>
-  <string name="agree_to_terms">By using %s, you agree to our &lt;br&gt; <oppia-noninteractive-policy link="tos">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link="privacy">Privacy Policy</oppia-noninteractive-policy>.</string>
+  <string name="agree_to_terms">By using %s, you agree to our &lt;br&gt; &lt;oppia-noninteractive-policy link="tos"&gt;Terms of Service&lt;/oppia-noninteractive-policy&gt; and &lt;oppia-noninteractive-policy link="privacy"&gt;Privacy Policy&lt;/oppia-noninteractive-policy&gt;.</string>
   <string name="terms_of_service_web_link">Please visit &lt;a href="https://www.oppia.org/terms"&gt;this page&lt;/a&gt; for the latest version of these terms.</string>
   <!-- Frequently asked questions & generic app help. -->
   <string name="faq_question_whats_oppia">What is %s?</string>
