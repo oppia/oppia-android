@@ -184,6 +184,64 @@ jobs:
             beta $(pwd)/oppia_beta_without_changes.aab $(pwd)/oppia_beta_with_changes.aab \
             ga $(pwd)/oppia_ga_without_changes.aab $(pwd)/oppia_ga_with_changes.aab
 
+      - name: Find CI workflow run for PR
+        id: find-workflow-run
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const runsResponse = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: 'stats.yml',
+              head_sha: '${{ github.event.pull_request.head.sha }}',
+            });
+
+            const runs = runsResponse.data.workflow_runs;
+            runs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+            const run = runs[1];
+            if(!run) {
+              core.setFailed('Could not find a succesful workflow run');
+              return;
+            }
+            console.log(run.id);
+
+            core.setOutput('run-id', run.id);
+
+      - name: Download previous build summary
+        uses: actions/download-artifact@v4
+        with:
+          name: brief_build_summary_${{ matrix.prInfo.number }}
+          path: ./previous_build_logs
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.find-workflow-run.outputs.run-id }}
+        continue-on-error: true # Ignore errors if the file doesn't exist (first run)
+
+      - name: Compare current build summary with the previous one
+        id: build-comparison
+        run: |
+          if [ -f ./develop/brief_build_summary.log ]; then
+            echo "Comparing current and previous build summaries..."
+            if diff ./develop/brief_build_summary.log ./previous_build_logs/brief_build_summary.log > /dev/null; then
+              echo "No significant changes detected; skipping comment."
+              echo "skip_comment=true" >> $GITHUB_ENV
+            else
+              echo "Changes detected; proceeding with the comment."
+              echo "skip_comment=false" >> $GITHUB_ENV
+            fi
+          else
+            echo "No previous summary found; proceeding with the comment."
+            echo "skip_comment=false" >> $GITHUB_ENV
+          fi
+
+      - name: Upload current build summary for future comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief_build_summary_${{ matrix.prInfo.number }}
+          path: ./develop/brief_build_summary.log
+
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
       - name: Extract reports for uploading & commenting
@@ -193,7 +251,7 @@ jobs:
         run: |
           {
             echo 'comment_body<<EOF'
-            cat $GITHUB_WORKSPACE/develop/brief_build_summary.log
+            cat ./develop/brief_build_summary.log
             echo EOF
           } >> "$GITHUB_OUTPUT"
           FULL_BUILD_SUMMARY_FILE_NAME="full_build_summary_pr_$PR_NUMBER.log"
@@ -203,6 +261,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
 
       - name: Add build stats summary comment
+        if: ${{ env.skip_comment == 'false' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         uses: peter-evans/create-or-update-comment@v1
