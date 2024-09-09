@@ -186,33 +186,11 @@ class AppLanguageResourceHandler @Inject constructor(
     }
   }
 
-  /**
-   * Returns an [OppiaLanguage] from its human-readable, localized representation.
-   * It is expected that each input string is localized to the user's current locale, as per
-   * [computeLocalizedDisplayName].
-   */
-  fun getOppiaLanguageFromDisplayName(displayName: String): OppiaLanguage {
-    val localizedNameMap = OppiaLanguage.values()
-      .filter { it !in IGNORED_OPPIA_LANGUAGES }
-      .associateBy { computeLocalizedDisplayName(it) }
-    return localizedNameMap[displayName] ?: OppiaLanguage.ENGLISH
-  }
-
   private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
     // TODO(#3791): Remove this dependency.
     val locale = Locale(languageCode, regionCode)
     return locale.getDisplayLanguage(locale).replaceFirstChar {
       if (it.isLowerCase()) it.titlecase(locale) else it.toString()
     }
-  }
-
-  private companion object {
-    private val IGNORED_AUDIO_LANGUAGES =
-      listOf(
-        AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED
-      )
-
-    private val IGNORED_OPPIA_LANGUAGES =
-      listOf(OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.UNRECOGNIZED)
   }
 }

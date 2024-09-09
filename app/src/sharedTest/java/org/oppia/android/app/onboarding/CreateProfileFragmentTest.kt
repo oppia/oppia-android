@@ -134,13 +134,20 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class CreateProfileFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
@@ -635,19 +642,18 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity():
     ActivityScenario<CreateProfileActivity>? {
-    val intent = CreateProfileActivity.createProfileActivityIntent(context)
-    intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
-    intent.putProtoExtra(
-      CREATE_PROFILE_PARAMS_KEY,
-      CreateProfileActivityParams.newBuilder()
-        .setProfileType(ProfileType.SOLE_LEARNER)
-        .build()
-    )
-    val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
-    testCoroutineDispatchers.runCurrent()
-    return scenario
-  }
-}
+      val intent = CreateProfileActivity.createProfileActivityIntent(context)
+      intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+      intent.putProtoExtra(
+        CREATE_PROFILE_PARAMS_KEY,
+        CreateProfileActivityParams.newBuilder()
+          .setProfileType(ProfileType.SOLE_LEARNER)
+          .build()
+      )
+      val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+      testCoroutineDispatchers.runCurrent()
+      return scenario
+    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -689,24 +695,24 @@ class CreateProfileFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-  fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest)
-}
-
-class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-  private val component: TestApplicationComponent by lazy {
-    DaggerCreateProfileFragmentTest_TestApplicationComponent.builder()
-      .setApplication(this)
-      .build() as TestApplicationComponent
+    fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest)
   }
 
-  fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest) {
-    component.inject(newLearnerProfileFragmentTest)
-  }
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerCreateProfileFragmentTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
+    }
 
-  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-  }
+    fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest) {
+      component.inject(newLearnerProfileFragmentTest)
+    }
 
-  override fun getApplicationInjector(): ApplicationInjector = component
-}
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
+  }
 }

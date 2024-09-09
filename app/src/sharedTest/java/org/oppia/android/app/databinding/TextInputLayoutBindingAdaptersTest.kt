@@ -158,7 +158,9 @@ class TextInputLayoutBindingAdaptersTest {
       scenario?.onActivity { activity ->
         val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
         TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ARABIC, true)
-        assertThat(testView.text.toString()).isEqualTo(context.getString(R.string.arabic_localized_language_name))
+        assertThat(testView.text.toString()).isEqualTo(
+          context.getString(R.string.arabic_localized_language_name)
+        )
       }
     }
   }
