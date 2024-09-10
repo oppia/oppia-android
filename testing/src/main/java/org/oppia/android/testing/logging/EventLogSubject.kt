@@ -65,6 +65,7 @@ import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -2467,12 +2468,12 @@ class EventLogSubject private constructor(
     private val actual: EventLog.ProfileOnboardingContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [ComparableSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].
+     * Returns a [LiteProtoSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasProfileIdThat(): LiteProtoSubject = assertThat(actual.profileId)
+    fun hasProfileIdThat(): LiteProtoSubject = LiteProtoTruth.assertThat(actual.profileId)
 
     companion object {
       /**
