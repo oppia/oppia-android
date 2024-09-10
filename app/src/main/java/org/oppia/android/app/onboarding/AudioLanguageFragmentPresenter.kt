@@ -179,7 +179,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     fragment.startActivity(intent)
     // Finish this activity as well as all activities immediately below it in the current
     // task so that the user cannot navigate back to the onboarding flow by pressing the
-    // back button once onboarding is complete
+    // back button once onboarding is complete.
     fragment.activity?.finishAffinity()
   }
 
