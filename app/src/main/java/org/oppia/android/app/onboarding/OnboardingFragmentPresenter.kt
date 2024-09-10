@@ -87,7 +87,7 @@ class OnboardingFragmentPresenter @Inject constructor(
             fragment.requireContext(),
             R.layout.onboarding_language_dropdown_item,
             R.id.onboarding_language_text_view,
-            languagesList
+            languagesList.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
           )
           onboardingLanguageDropdown.setAdapter(adapter)
         }
@@ -205,9 +205,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       { result ->
         when (result) {
           is AsyncResult.Success -> {
-            onboardingAppLanguageViewModel.setSupportedAppLanguages(
-              result.value.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
-            )
+            onboardingAppLanguageViewModel.setSupportedAppLanguages(result.value)
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(

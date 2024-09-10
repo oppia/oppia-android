@@ -1635,7 +1635,7 @@ class ProfileManagementControllerTest {
     )
 
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set")
+    assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
   }
 
   @Test
@@ -1733,7 +1733,7 @@ class ProfileManagementControllerTest {
     )
 
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set")
+    assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
   }
 
   @Test

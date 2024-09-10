@@ -50,6 +50,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -131,12 +132,17 @@ class AudioLanguageFragmentTest {
     private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 4
   }
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @After
   fun tearDown() {
@@ -444,6 +450,52 @@ class AudioLanguageFragmentTest {
         testCoroutineDispatchers.runCurrent()
 
         intended(hasComponent(HomeActivity::class.java.name))
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val receivedAudioLanguage = fragment.arguments?.retrieveLanguageFromArguments()
+
+        assertThat(ENGLISH_AUDIO_LANGUAGE).isEqualTo(receivedAudioLanguage)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      var language: AudioLanguage? = null
+
+      scenario.onActivity { activity ->
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity ->
+        val newfragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val restoredAudioLanguage =
+          newfragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+
+        assertThat(restoredAudioLanguage).isEqualTo(language)
       }
     }
   }
