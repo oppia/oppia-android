@@ -216,7 +216,7 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+        IntroActivityParams.newBuilder().setProfileNickname("John").build()
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
@@ -280,7 +280,7 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+        IntroActivityParams.newBuilder().setProfileNickname("John").build()
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
@@ -328,7 +328,7 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+        IntroActivityParams.newBuilder().setProfileNickname("John").build()
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
@@ -391,7 +391,7 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val expectedParams =
-        IntroActivityParams.newBuilder().setProfileNickname("John").setProfileId(0).build()
+        IntroActivityParams.newBuilder().setProfileNickname("John").build()
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),

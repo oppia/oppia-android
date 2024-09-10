@@ -2467,12 +2467,12 @@ class EventLogSubject private constructor(
     private val actual: EventLog.ProfileOnboardingContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [ComparableSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].
+     * Returns a [LiteProtoSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasProfileIdThat(): LiteProtoSubject = assertThat(actual.profileId)
+    fun hasProfileIdThat(): LiteProtoSubject = LiteProtoTruth.assertThat(actual.profileId)
 
     companion object {
       /**
