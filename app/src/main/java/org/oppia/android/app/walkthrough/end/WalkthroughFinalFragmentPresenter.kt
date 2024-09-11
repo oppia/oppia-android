@@ -103,6 +103,6 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   }
 
   override fun goBack() {
-    activity.onBackpressedDispatcher.onBackPressed()
+    activity.onBackPressedDispatcher.onBackPressed()
   }
 }
