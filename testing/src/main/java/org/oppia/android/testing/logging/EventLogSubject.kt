@@ -1376,7 +1376,7 @@ class EventLogSubject private constructor(
   fun hasEndProfileOnboardingContextThat(
     block: ProfileOnboardingContextSubject.() -> Unit
   ) {
-    hasStartProfileOnboardingContextThat().block()
+    hasEndProfileOnboardingContextThat().block()
   }
 
   /**

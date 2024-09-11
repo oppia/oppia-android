@@ -24,6 +24,7 @@ import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.translation.TranslationController
@@ -69,7 +70,6 @@ private const val DELETE_PROFILE_PROVIDER_ID = "delete_profile_provider_id"
 private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_provider_id"
 private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
   "update_reading_text_size_provider_id"
-private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
 private const val GET_AUDIO_LANGUAGE_PROVIDER_ID = "get_audio_language_provider_id"
 private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID = "update_audio_language_provider_id"
 private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
@@ -108,7 +108,8 @@ class ProfileManagementController @Inject constructor(
   private val profileNameValidator: ProfileNameValidator,
   private val translationController: TranslationController,
   @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val analyticsController: AnalyticsController
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
   private val profileDataStore =
@@ -351,7 +352,6 @@ class ProfileManagementController @Inject constructor(
    * Marks that the profile has started the onboarding flow, so that they can skip the profile setup
    * step if onboarding was previously abandoned.
    *
-   *
    * @param profileId The ID of the profile to update.
    * @return A [DataProvider] that represents the result of the update operation.
    */
@@ -364,10 +364,14 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setStartedProfileOnboarding(true).build()
+      val updatedProfileBuilder = profile.toBuilder()
+      if (!profile.startedProfileOnboarding) {
+        updatedProfileBuilder.startedProfileOnboarding = true
+        analyticsController.logProfileOnboardingStartedContext(profileId)
+      }
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
-        updatedProfile
+        updatedProfileBuilder.build()
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
@@ -392,10 +396,14 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setCompletedProfileOnboarding(true).build()
+      val updatedProfileBuilder = profile.toBuilder()
+      if (!profile.completedProfileOnboarding) {
+        updatedProfileBuilder.completedProfileOnboarding = true
+        analyticsController.logProfileOnboardingEndedContext(profileId)
+      }
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
-        updatedProfile
+        updatedProfileBuilder.build()
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }

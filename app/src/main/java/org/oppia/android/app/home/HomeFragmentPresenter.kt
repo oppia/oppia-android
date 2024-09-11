@@ -182,7 +182,7 @@ class HomeFragmentPresenter @Inject constructor(
     // App onboarding is completed by the first profile on the app(SOLE_LEARNER or SUPERVISOR),
     // while profile onboarding is completed by each profile.
     if (!profile.completedProfileOnboarding) {
-      markProfileOnboardingEnded(profileId)
+      profileManagementController.markProfileOnboardingEnded(profileId)
       if (profile.profileType == ProfileType.SOLE_LEARNER ||
         profile.profileType == ProfileType.SUPERVISOR
       ) {
@@ -190,15 +190,6 @@ class HomeFragmentPresenter @Inject constructor(
         logAppOnboardedEvent(profileId)
       }
     }
-  }
-
-  private fun markProfileOnboardingEnded(profileId: ProfileId) {
-    profileManagementController.markProfileOnboardingEnded(profileId)
-
-    analyticsController.logLowPriorityEvent(
-      oppiaLogger.createProfileOnboardingEndedContext(profileId),
-      profileId = profileId
-    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {

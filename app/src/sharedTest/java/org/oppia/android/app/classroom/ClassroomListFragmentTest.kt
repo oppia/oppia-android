@@ -50,7 +50,11 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -201,43 +205,47 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun testFragment_onLaunch_logsEvent() {
+  fun testFragment_onLaunch_logsOpenHomeEvent() {
     testCoroutineDispatchers.runCurrent()
     val event = fakeAnalyticsEventLogger.getOldestEvent()
 
     assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-    assertThat(event.context.activityContextCase)
-      .isEqualTo(EventLog.Context.ActivityContextCase.OPEN_HOME)
+    assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
   }
 
   @Test
-  fun testFragment_onFirstLaunch_logsCompletedOnboardingEvent() {
-    val event = fakeAnalyticsEventLogger.getMostRecentEvents(2).last()
+  fun testFragment_onFirstLaunch_logsCompleteAppOnboardingEvent() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
     assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
-    assertThat(event.context.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
-    )
+    assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
+  }
+
+  @Test
+  fun testFragment_onboardingV2Enabled_onFirstLaunch_logsCompleteAppOnboardingEvent() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
   }
 
   @Test
   fun testFragment_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId, profileType = ProfileType.SOLE_LEARNER
+    )
 
     // OPEN_HOME, END_PROFILE_ONBOARDING_EVENT and COMPLETE_APP_ONBOARDING are all logged
-    // concurrently, in no defined order, and the actual order depends entirely on execution time.
-    val eventLog = getOneOfLastThreeEventsLogged(
-      EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
-    )
-    val eventLogContext = eventLog.context
+    // concurrently.
+    val event = fakeAnalyticsEventLogger.getMostRecentEvents(3)[1]
 
-    assertThat(eventLogContext.activityContextCase)
-      .isEqualTo(EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT)
-    assertThat(eventLogContext.endProfileOnboardingEvent.profileId.internalId).isEqualTo(
-      internalProfileId
-    )
+    assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+    assertThat(event.context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
   }
 
   @Test
@@ -917,17 +925,6 @@ class ClassroomListFragmentTest {
   private fun logIntoAdminTwice() {
     logIntoAdmin()
     logIntoAdmin()
-  }
-
-  private fun getOneOfLastThreeEventsLogged(
-    wantedContext: EventLog.Context.ActivityContextCase
-  ): EventLog {
-    val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
-    return when {
-      events[0].context.activityContextCase == wantedContext -> events[0]
-      events[1].context.activityContextCase == wantedContext -> events[1]
-      else -> events[2]
-    }
   }
 
   private fun setUpTestApplicationComponent() {

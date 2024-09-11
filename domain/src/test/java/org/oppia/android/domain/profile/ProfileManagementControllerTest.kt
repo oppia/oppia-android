@@ -1833,19 +1833,27 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboarding_markOnboardingStarted_isSuccess() {
+  fun testProfileOnboarding_markOnboardingStarted_logsStartProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James", pin = "")
     val onboardingProvider = profileManagementController.markProfileOnboardingStarted(PROFILE_ID_0)
-    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+    monitorFactory.ensureDataProviderExecutes(onboardingProvider)
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event).hasStartProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
+    }
   }
 
   @Test
-  fun testProfileOnboarding_markOnboardingCompleted_isSuccess() {
+  fun testProfileOnboarding_markOnboardingCompleted_logsEndProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James", pin = "")
     val onboardingProvider = profileManagementController.markProfileOnboardingEnded(PROFILE_ID_0)
-    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+    monitorFactory.ensureDataProviderExecutes(onboardingProvider)
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event).hasEndProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
+    }
   }
 
   private fun addTestProfiles() {

@@ -137,8 +137,8 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onLaunch_logsEvent() {
-    setUpTestApplicationComponent()
+  fun testHomeActivity_onLaunch_logsOpenHomeEvent() {
+    setUpTestWithOnboardingV2Enabled(false)
 
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -150,8 +150,21 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
-    setUpTestApplicationComponent()
+  fun testHomeActivity_onboardingV2_onLaunch_logsOpenHomeEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      val event = fakeAnalyticsEventLogger.getOldestEvent()
+
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onFirstLaunch_logsCompletedAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(false)
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvents(2).last()
@@ -162,13 +175,13 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedOnboardingEvent() {
+  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestApplicationComponent()
+    setUpTestWithOnboardingV2Enabled(false)
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
@@ -182,21 +195,17 @@ class HomeActivityLocalTest {
 
   @Test
   fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled()
+    setUpTestWithOnboardingV2Enabled(true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       // OPEN_HOME, END_PROFILE_ONBOARDING_EVENT and COMPLETE_APP_ONBOARDING are all logged
-      // concurrently, in no defined order, and the actual order depends entirely on execution time.
-      val eventLog = getOneOfLastThreeEventsLogged(END_PROFILE_ONBOARDING_EVENT)
-      val eventLogContext = eventLog.context
+      // concurrently.
+      val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
 
-      assertThat(eventLogContext.activityContextCase)
-        .isEqualTo(END_PROFILE_ONBOARDING_EVENT)
-      assertThat(eventLogContext.endProfileOnboardingEvent.profileId.internalId).isEqualTo(
-        internalProfileId
-      )
+      assertThat(events[1].priority).isEqualTo(EventLog.Priority.OPTIONAL)
+      assertThat(events[1].context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
     }
   }
 
@@ -208,7 +217,7 @@ class HomeActivityLocalTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled()
+    setUpTestWithOnboardingV2Enabled(true)
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -228,8 +237,8 @@ class HomeActivityLocalTest {
     }
   }
 
-  private fun setUpTestWithOnboardingV2Enabled() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingFlowV2: Boolean) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
     setUpTestApplicationComponent()
   }
 

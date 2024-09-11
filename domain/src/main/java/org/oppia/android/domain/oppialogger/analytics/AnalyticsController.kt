@@ -388,6 +388,22 @@ class AnalyticsController @Inject constructor(
     )
   }
 
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
+  fun logProfileOnboardingStartedContext(profileId: ProfileId) {
+    logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingStartedContext(profileId),
+      profileId = profileId
+    )
+  }
+
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
+  fun logProfileOnboardingEndedContext(profileId: ProfileId) {
+    logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingEndedContext(profileId),
+      profileId = profileId
+    )
+  }
+
   private companion object {
     private suspend fun <T> resolveProfileOperation(
       profileId: ProfileId?,
