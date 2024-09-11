@@ -65,7 +65,7 @@ jobs:
         run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Utility Test Reports
         uses: actions/upload-artifact@v2
-        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
+        if: ${{ !cancelled() }} # IMPORTANT: Upload ar reports regardless of success or failure status
         with:
           name: utility reports
           path: utility/build/reports
