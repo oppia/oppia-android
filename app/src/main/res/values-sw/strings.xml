@@ -152,7 +152,7 @@
   <string name="number_error_starting_with_floating_point">Tafadhali anza jibu lako kwa nambari (k.m.,”0” katika 0.5).</string>
   <string name="number_error_invalid_format">Tafadhali weka nambari halali.</string>
   <string name="number_error_larger_than_fifteen_characters">Jibu linaweza kuwa na tarakimu zisizozidi 15 (0–9) au alama (. au -).</string>
-  <string name="ratio_error_invalid_chars" fuzzy="true">Tafadhali andika uwiano unaojumuisha tarakimu zilizotenganishwa na koloni(k.m. 1:2 au 1:2:3).</string>
+  <string name="ratio_error_invalid_chars" fuzzy="true">Tafadhali andika uwiano unaojumuisha tarakimu zilizotenganishwa na koloni (k.m. 1:2 au 1:2:3).</string>
   <string name="ratio_error_invalid_format" fuzzy="true">Tafadhali weka uwiano sahihi (k.m. 1:2 au 1:2:3).</string>
   <string name="ratio_error_invalid_colons" fuzzy="true">Jibu lako lina koloni mbili (:) karibu na kila moja.</string>
   <string name="ratio_error_invalid_size" fuzzy="true">Idadi ya masharti si sawa na masharti yanayohitajika.</string>
