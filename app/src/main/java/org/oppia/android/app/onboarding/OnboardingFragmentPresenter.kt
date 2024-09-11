@@ -63,7 +63,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
     if (savedSelectedLanguage != null) {
       selectedLanguage = savedSelectedLanguage
-      onboardingAppLanguageViewModel.setSystemLanguageLivedata(savedSelectedLanguage)
+      onboardingAppLanguageViewModel.setSelectedLanguageLivedata(savedSelectedLanguage)
     } else {
       initializeSelectedLanguageToSystemLanguage()
     }
@@ -117,7 +117,7 @@ class OnboardingFragmentPresenter @Inject constructor(
                   appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
                 }
                 selectedLanguage = localizedNameMap[it] ?: OppiaLanguage.ENGLISH
-                onboardingAppLanguageViewModel.setSystemLanguageLivedata(selectedLanguage)
+                onboardingAppLanguageViewModel.setSelectedLanguageLivedata(selectedLanguage)
               }
             }
           }
@@ -173,7 +173,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     translationController.getSystemLanguageLocale().toLiveData().observe(
       fragment,
       { result ->
-        onboardingAppLanguageViewModel.setSystemLanguageLivedata(
+        onboardingAppLanguageViewModel.setSelectedLanguageLivedata(
           processSystemLanguageResult(result)
         )
       }
