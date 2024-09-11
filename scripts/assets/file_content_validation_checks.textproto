@@ -117,6 +117,11 @@ file_content_checks {
   exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }
 file_content_checks {
+  file_path_regex: "app/src/main/res/values/strings\\.xml"
+  prohibited_content_regex: "CDATA"
+  failure_message: "CDATA isn't handled by Translatewiki correctly. Use escaped HTML, instead."
+}
+file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "android.text.BidiFormatter"
   failure_message: "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for KitKat compatibility."
