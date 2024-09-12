@@ -1041,6 +1041,38 @@ class ProfileResetPinFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_whenIsAdminFalse_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<ProfileResetPinActivity>(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context = context,
+        profileId = 0,
+        isAdmin = false
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileResetPinFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+
+        val arguments = checkNotNull(profileResetPinFragment.arguments) {
+          "Expected arguments to be passed to ProfileResetPinFragment"
+        }
+        val args =
+          arguments.getProto(
+            ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
+            ProfileResetPinFragmentArguments.getDefaultInstance()
+          )
+        val receivedProfileResetPinProfileId = args.internalProfileId
+        val receivedProfileResetPinIsAdmin = args.isAdmin
+
+        assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
+        assertThat(receivedProfileResetPinIsAdmin).isEqualTo(false)
+      }
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
