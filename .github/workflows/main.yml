@@ -64,7 +64,7 @@ jobs:
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Utility Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: utility reports
@@ -77,7 +77,7 @@ jobs:
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: sudo ./gradlew --full-stacktrace :data:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Data Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: data reports
@@ -90,7 +90,7 @@ jobs:
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Domain Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: domain reports
@@ -103,7 +103,7 @@ jobs:
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Testing Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: testing reports
@@ -144,7 +144,7 @@ jobs:
         run: |
           sudo ./gradlew --full-stacktrace :app:testDebugUnitTest --${{ matrix.shard }} -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload App Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: app reports ${{ matrix.shard }}
