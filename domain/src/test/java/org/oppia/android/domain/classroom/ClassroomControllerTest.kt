@@ -141,24 +141,11 @@ class ClassroomControllerTest {
   }
 
   @Test
-  fun testGetClassroomById_returnsFirstClassroom() {
+  fun testGetClassroomById_hasCorrectClassroomInfo() {
     val classroom = classroomController.getClassroomById(TEST_CLASSROOM_ID_0)
 
     assertThat(classroom.id).isEqualTo(TEST_CLASSROOM_ID_0)
-  }
-
-  @Test
-  fun testGetClassroomById_returnsSecondClassroom() {
-    val classroom = classroomController.getClassroomById(TEST_CLASSROOM_ID_1)
-
-    assertThat(classroom.id).isEqualTo(TEST_CLASSROOM_ID_1)
-  }
-
-  @Test
-  fun testGetClassroomById_returnsThirdClassroom() {
-    val classroom = classroomController.getClassroomById(TEST_CLASSROOM_ID_2)
-
-    assertThat(classroom.id).isEqualTo(TEST_CLASSROOM_ID_2)
+    assertThat(classroom.translatableTitle.html).isEqualTo("Science")
   }
 
   @Test
