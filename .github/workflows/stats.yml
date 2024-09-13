@@ -210,7 +210,7 @@ jobs:
           issue-number: ${{ env.PR_NUMBER }}
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v2
         with:
           name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
           path: ${{ env.FULL_BUILD_SUMMARY_FILE_PATH }}

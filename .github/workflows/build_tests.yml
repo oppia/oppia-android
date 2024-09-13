@@ -153,7 +153,7 @@ jobs:
         run: |
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel.apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
