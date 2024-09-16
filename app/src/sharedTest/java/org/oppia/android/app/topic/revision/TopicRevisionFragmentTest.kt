@@ -310,8 +310,8 @@ class TopicRevisionFragmentTest {
         val topicRevisionFragment = topicFragment.childFragmentManager
           .findFragmentByTag("f${viewPager.currentItem}") as TopicRevisionFragment
 
-        val receivedInternalProfileId = topicRevisionFragment.
-        arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val receivedInternalProfileId = topicRevisionFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
         val args = topicRevisionFragment.arguments?.getProto(
           TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,
           TopicRevisionFragmentArguments.getDefaultInstance()

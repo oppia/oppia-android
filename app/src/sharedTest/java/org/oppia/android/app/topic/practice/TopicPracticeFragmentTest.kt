@@ -451,7 +451,7 @@ class TopicPracticeFragmentTest {
 
       scenario.recreate()
 
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         val topicFragment = activity.supportFragmentManager
           .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
         val viewPager = topicFragment.requireView()
