@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
@@ -37,6 +38,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.SMALL_TEXT_SIZE
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -191,6 +193,47 @@ class ReadingTextSizeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE_INDEX)
       checkTextSizeLabel("Medium")
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val readingTextSizeFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+        val receivedReadingTextSize = readingTextSizeFragment.retrieveFragmentArguments()
+          .readingTextSize
+
+        assertThat(receivedReadingTextSize).isEqualTo(SMALL_TEXT_SIZE)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val readingTextSizeFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+        readingTextSizeFragment.readingTextSizeFragmentPresenter
+          .onTextSizeSelected(MEDIUM_TEXT_SIZE)
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity ->
+        val newReadingTextSizeFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+        val restoredTopicIdList =
+          newReadingTextSizeFragment.readingTextSizeFragmentPresenter.getTextSizeSelected()
+
+        assertThat(restoredTopicIdList).isEqualTo(MEDIUM_TEXT_SIZE)
+      }
     }
   }
 
