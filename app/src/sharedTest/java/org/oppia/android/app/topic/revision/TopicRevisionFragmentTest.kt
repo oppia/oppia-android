@@ -22,6 +22,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.viewpager2.widget.ViewPager2
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -118,6 +120,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.TopicRevisionFragmentArguments
+import org.oppia.android.app.topic.TopicFragment
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -283,6 +289,40 @@ class TopicRevisionFragmentTest {
           targetViewId = R.id.subtopic_image_view
         )
       ).check(matches(hasScaleType(ImageView.ScaleType.FIT_CENTER)))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use { scenario ->
+      clickRevisionTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicRevisionFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicRevisionFragment
+
+        val receivedInternalProfileId = topicRevisionFragment.
+        arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val args = topicRevisionFragment.arguments?.getProto(
+          TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,
+          TopicRevisionFragmentArguments.getDefaultInstance()
+        )
+        val receivedTopicId = checkNotNull(args?.topicId) {
+          "Expected topic ID to be included in arguments for TopicRevisionFragment."
+        }
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      }
     }
   }
 

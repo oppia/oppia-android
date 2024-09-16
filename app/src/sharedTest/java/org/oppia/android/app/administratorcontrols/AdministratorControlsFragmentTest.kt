@@ -8,6 +8,7 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -23,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -113,6 +115,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.AdministratorControlsFragmentArguments
+import org.oppia.android.util.extensions.getProto
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -431,6 +435,36 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateTopicSwitchNotClickable()
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val administratorControlsFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.administrator_controls_fragment_test_activity_fragment_container)
+          as AdministratorControlsFragment
+        val isMultipane = activity
+          .findViewById<DrawerLayout>(R.id.administrator_controls_activity_drawer_layout) != null
+
+        val arguments = checkNotNull(administratorControlsFragment.arguments) {
+          "Expected arguments to be passed to AdministratorControlsFragment"
+        }
+        val args = arguments.getProto(
+          ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
+          AdministratorControlsFragmentArguments.getDefaultInstance()
+        )
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
     }
   }
 

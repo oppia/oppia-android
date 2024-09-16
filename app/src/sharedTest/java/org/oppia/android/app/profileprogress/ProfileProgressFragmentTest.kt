@@ -139,6 +139,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [ProfileProgressFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -823,6 +824,27 @@ class ProfileProgressFragmentTest {
           profileId
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<ProfileProgressActivity>(
+      createProfileProgressActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileProgressFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_progress_fragment_placeholder) as ProfileProgressFragment
+
+        val args = checkNotNull(profileProgressFragment.arguments) {
+          "Expected arguments to be passed to ProfileProgressFragment"
+        }
+        val receivedInternalProfileId = args.extractCurrentUserProfileId().internalId
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+      }
     }
   }
 

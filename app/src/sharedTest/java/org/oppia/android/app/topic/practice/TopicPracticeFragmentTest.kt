@@ -20,6 +20,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.viewpager2.widget.ViewPager2
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -117,6 +119,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.TopicPracticeFragmentArguments
+import org.oppia.android.app.topic.TopicFragment
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -380,6 +386,91 @@ class TopicPracticeFragmentTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use { scenario ->
+      clickPracticeTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicPracticeFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicPracticeFragment
+
+        val args = topicPracticeFragment.arguments?.getProto(
+          TopicPracticeFragment.TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
+          TopicPracticeFragmentArguments.getDefaultInstance()
+        )
+        val receivedInternalProfileId = topicPracticeFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val receivedTopicId = checkNotNull(args?.topicId) {
+          "Expected topic ID to be included in arguments for TopicPracticeFragment."
+        }
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      classroomId = TEST_CLASSROOM_ID_1,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use { scenario ->
+      clickPracticeTab()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicPracticeFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicPracticeFragment
+
+        topicPracticeFragment.topicPracticeFragmentPresenter
+          .selectedSubtopicIdList = arrayListOf(1, 2, 3)
+        topicPracticeFragment.topicPracticeFragmentPresenter.skillIdHashMap = hashMapOf(
+          1 to mutableListOf("skill_1"),
+          2 to mutableListOf("skill_2", "skill_3")
+        )
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity->
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicPracticeFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicPracticeFragment
+
+        val restoredSelectedSubtopicList = topicPracticeFragment.topicPracticeFragmentPresenter
+          .selectedSubtopicIdList
+        val restoredSkillIdHashMap = topicPracticeFragment.topicPracticeFragmentPresenter
+          .skillIdHashMap
+
+        assertThat(restoredSelectedSubtopicList).containsExactly(1, 2, 3)
+        assertThat(restoredSkillIdHashMap)
+          .containsExactly(
+            1, mutableListOf("skill_1"),
+            2, mutableListOf("skill_2", "skill_3")
+          )
+      }
     }
   }
 

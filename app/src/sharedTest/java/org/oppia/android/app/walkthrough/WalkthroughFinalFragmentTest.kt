@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -100,6 +101,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.WalkthroughFinalFragmentArguments
+import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.util.extensions.getProto
 
 /** Tests for [WalkthroughFinalFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -265,6 +270,33 @@ class WalkthroughFinalFragmentTest {
       onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
         .perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        activity.pageWithTopicId(WalkthroughPages.FINAL.value, FRACTIONS_TOPIC_ID)
+
+        val walkthroughFinalFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughFinalFragment
+
+        val arguments =
+          checkNotNull(walkthroughFinalFragment.arguments) {
+            "Expected arguments to be passed to WalkthroughFinalFragment"
+          }
+        val args = arguments.getProto(
+          WalkthroughFinalFragment.WALKTHROUGH_FINAL_FRAGMENT_ARGUMENTS_KEY,
+          WalkthroughFinalFragmentArguments.getDefaultInstance()
+        )
+        val receivedTopicId = checkNotNull(args.topicId) {
+          "Expected topicId to be passed to WalkthroughFinalFragment"
+        }
+
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      }
     }
   }
 

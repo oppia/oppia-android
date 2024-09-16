@@ -119,6 +119,10 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PoliciesFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 
 /** Tests for [PoliciesFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -321,6 +325,44 @@ class PoliciesFragmentTest {
         intending(expectingIntent).respondWith(ActivityResult(0, null))
         onView(withId(R.id.policy_web_link_text_view)).perform(openLinkWithText("this page"))
         intended(expectingIntent)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<PoliciesFragmentTestActivity>(
+      createPoliciesFragmentTestIntent(
+        getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val policiesFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.policies_fragment_placeholder) as PoliciesFragment
+
+        val policiesActivityParams = activity.intent.getProtoExtra(
+          PoliciesFragmentTestActivity.POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO,
+          PoliciesActivityParams.getDefaultInstance()
+        )
+        val policiesFragmentArguments =
+          PoliciesFragmentArguments
+            .newBuilder()
+            .setPolicyPage(policiesActivityParams.policyPage)
+            .build()
+
+        val args = checkNotNull(policiesFragment.arguments) {
+          "Expected arguments to be passed to PoliciesFragment"
+        }
+        val receivedPolicies =
+          args.getProto(
+            "PoliciesFragment.policy_page",
+            PoliciesFragmentArguments.getDefaultInstance()
+          )
+
+        assertThat(receivedPolicies).isEqualTo(policiesFragmentArguments)
       }
     }
   }

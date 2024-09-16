@@ -136,6 +136,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -1647,6 +1648,31 @@ class RecentlyPlayedFragmentTest {
           position = 3
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = internalProfileId,
+        RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val recentlyPlayedFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.recently_played_fragment_placeholder) as RecentlyPlayedFragment
+
+        val arguments = checkNotNull(recentlyPlayedFragment.arguments) {
+          "Expected arguments to be passed to RecentlyPlayedFragment"
+        }
+        val profileId = arguments.extractCurrentUserProfileId()
+        val receivedInternalProfileId = profileId.internalId
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+      }
     }
   }
 

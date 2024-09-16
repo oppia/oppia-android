@@ -26,6 +26,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.viewpager2.widget.ViewPager2
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
@@ -141,6 +143,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.TopicLessonsFragmentArguments
+import org.oppia.android.app.topic.TopicFragment
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -1202,6 +1208,92 @@ class TopicLessonsFragmentTest {
       ).check(
         matches(isClickable())
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        internalProfileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use { scenario ->
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicLessonsFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
+
+        val receivedInternalProfileId = topicLessonsFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val args = topicLessonsFragment.arguments?.getProto(
+          TopicLessonsFragment.TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
+          TopicLessonsFragmentArguments.getDefaultInstance()
+        )
+        val receivedClassroomId = checkNotNull(args?.classroomId) {
+          "Expected classroom ID to be included in arguments for TopicLessonsFragment."
+        }
+        val receivedTopicId = checkNotNull(args?.topicId) {
+          "Expected topic ID to be included in arguments for TopicLessonsFragment."
+        }
+        val receivedStoryId = args?.storyId ?: ""
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+        assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+        assertThat(receivedTopicId).isEqualTo(RATIOS_TOPIC_ID)
+        assertThat(receivedStoryId).isEqualTo(RATIOS_STORY_ID_0)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        internalProfileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use { scenario ->
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicLessonsFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
+
+        topicLessonsFragment.onExpandListIconClicked(1)
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity->
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicLessonsFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
+
+        val receivedCurrentExpandedChapterListIndex = topicLessonsFragment
+          .getCurrentExpandedChapterListIndex()
+        val receivedIsDefaultStoryExpanded = topicLessonsFragment.getIsDefaultStoryExpanded()
+
+        assertThat(receivedCurrentExpandedChapterListIndex).isEqualTo(1)
+        assertThat(receivedIsDefaultStoryExpanded).isEqualTo(true)
+      }
     }
   }
 
