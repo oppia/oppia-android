@@ -117,7 +117,7 @@ The sub-sections below detail each of the code changes needed to perform these u
 
 This code change essentially requires replacing the old SDK version number (e.g. 31) with the new one (e.g. 33), but only for compile-time behaviors. All needed changes are detailed below:
 1. [``.github/actions/set-up-android-bazel-build-environment/action.yml``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/.github/actions/set-up-android-bazel-build-environment/action.yml#L75-L78) needs to be updated to install the correct SDK version (via the ``sdkmanager --install`` command).
-2. Bazel [``build_vars.bzl`](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/build_vars.bzl#L1) changes to ``BUILD_SDK_VERSION``.
+2. Bazel [``build_vars.bzl``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/build_vars.bzl#L1) changes to ``BUILD_SDK_VERSION``.
 3. Gradle ``compileSdkVersion`` changes (e.g. for [``app/build.gradle``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/app/build.gradle#L8)). Note that all module ``.gradle`` files will need to be updated in this way.
 
 #### Part 5.2: Updating the target SDK version
@@ -140,9 +140,9 @@ Ideally, Robolectric tests would also be upgraded with the target SDK version. H
 1. Robolectric's version is tightly coupled with the SDKs it supports (since Robolectric itself needs to be updated to support each version of Android).
 2. Robolectric usually lags far behind (sometimes more than a year) mainline Android for SDK support.
 3. Upgrading Robolectric can have significant downstream effects. One such case that's been observed in the past:
-  - Upgrading Robolectric required upgrading Espresso (since Robolectric depends on Espresso libraries to implement part of its API).
-  - Upgrading Espresso required upgrading AndroidX libraries (which actually impact production behaviors).
-  - Upgrading the AndroidX libraries led to many other version upgrades that actually eventually led to a Kotlin version upgrade and an upgrade to the version of Bazel used.
+    - Upgrading Robolectric required upgrading Espresso (since Robolectric depends on Espresso libraries to implement part of its API).
+    - Upgrading Espresso required upgrading AndroidX libraries (which actually impact production behaviors).
+    - Upgrading the AndroidX libraries led to many other version upgrades that actually eventually led to a Kotlin version upgrade and an upgrade to the version of Bazel used.
 4. Robolectric does not have strong behavior consistency between SDK versions so tests have a relatively higher chance of regressing when changing the SDK version Robolectric is using by default than production code.
 
 For now, the best course of action is to either file a new feature request to upgrade Robolectric tests to use the same target SDK as the app by default, or update the existing issue if there's one already tracking an upgrade (which is likely since the upgrade can be both difficult and time consuming, so it's usually not a team priority).
