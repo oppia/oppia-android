@@ -146,12 +146,12 @@ class TopicLessonsFragment :
     topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }
 
-  /** Returns the [currentExpandedChapterListIndex] stored in the fragment */
+  /** Returns the [currentExpandedChapterListIndex] stored in the fragment. */
   fun getCurrentExpandedChapterListIndex(): Int? {
     return currentExpandedChapterListIndex
   }
 
-  /** Returns the [isDefaultStoryExpanded] stored in the fragment */
+  /** Returns the [isDefaultStoryExpanded] stored in the fragment. */
   fun getIsDefaultStoryExpanded(): Boolean {
     return isDefaultStoryExpanded
   }
