@@ -147,7 +147,7 @@ Ideally, Robolectric tests would also be upgraded with the target SDK version. H
 1. Robolectric's version is tightly coupled with the SDKs it supports (since Robolectric itself needs to be updated to support each version of Android).
 2. Robolectric usually lags far behind (sometimes more than a year) mainline Android for SDK support.
 3. Upgrading Robolectric can have significant downstream effects. One such case that's been observed in the past:
-    - Upgrading Robolectric required upgrading Espresso (since Robolectric depends on Espresso libraries to implement step of its API).
+    - Upgrading Robolectric required upgrading Espresso (since Robolectric depends on Espresso libraries to implement part of its API).
     - Upgrading Espresso required upgrading AndroidX libraries (which actually impact production behaviors).
     - Upgrading the AndroidX libraries led to many other version upgrades that actually eventually led to a Kotlin version upgrade and an upgrade to the version of Bazel used.
 4. Robolectric does not have strong behavior consistency between SDK versions so tests have a relatively higher chance of regressing when changing the SDK version Robolectric is using by default than production code.
