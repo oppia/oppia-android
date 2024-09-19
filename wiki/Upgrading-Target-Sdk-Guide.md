@@ -99,7 +99,7 @@ Please note all found blocking issues with their issue numbers in a follow-up re
 
 ### Step 4: Fixing and stabilizing support
 
-Work on fixing all identified problems from parts (3) and (4) (either by directly fixing the problems via code changes, or via coordination with other members of the team).
+Work on fixing all identified problems from steps (3) and (4) (either by directly fixing the problems via code changes, or via coordination with other members of the team).
 
 Once all issues are fixed, verify each problem is correctly addressed using a temporary local build of the app (see step (3) above). If any problems are still occurring, reopen the corresponding tracking issue and leave a follow-up comment detailing the ongoing problem and steps to reproduce it.
 
