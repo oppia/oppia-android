@@ -67,6 +67,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StoryFragmentArguments
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -132,6 +133,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -143,6 +145,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.ImageTransformation
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -768,6 +771,45 @@ class StoryFragmentTest {
           withText(headerString)
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val storyFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.story_fragment_placeholder) as StoryFragment
+
+        val arguments = checkNotNull(storyFragment.arguments) {
+          "Expected arguments to be passed to StoryFragment."
+        }
+        val args = arguments.getProto(
+          StoryFragment.STORY_FRAGMENT_ARGUMENTS_KEY,
+          StoryFragmentArguments.getDefaultInstance()
+        )
+
+        val receivedInternalProfileId = arguments.extractCurrentUserProfileId().internalId
+        val receivedClassroomId =
+          checkNotNull(args.classroomId) {
+            "Expected classroomId to be passed to StoryFragment."
+          }
+        val receivedTopicId =
+          checkNotNull(args.topicId) {
+            "Expected topicId to be passed to StoryFragment."
+          }
+        val receivedStoryId =
+          checkNotNull(args.storyId) {
+            "Expected storyId to be passed to StoryFragment."
+          }
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+        assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(receivedStoryId).isEqualTo(FRACTIONS_STORY_ID_0)
+      }
     }
   }
 

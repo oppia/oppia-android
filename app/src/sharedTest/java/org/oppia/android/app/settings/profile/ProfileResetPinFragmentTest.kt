@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -42,6 +43,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileResetPinFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -92,6 +94,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -1002,6 +1005,70 @@ class ProfileResetPinFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<ProfileResetPinActivity>(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context = context,
+        profileId = 0,
+        isAdmin = true
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileResetPinFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+
+        val arguments = checkNotNull(profileResetPinFragment.arguments) {
+          "Expected arguments to be passed to ProfileResetPinFragment"
+        }
+        val args =
+          arguments.getProto(
+            ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
+            ProfileResetPinFragmentArguments.getDefaultInstance()
+          )
+        val receivedProfileResetPinProfileId = args.internalProfileId
+        val receivedProfileResetPinIsAdmin = args.isAdmin
+
+        assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
+        assertThat(receivedProfileResetPinIsAdmin).isEqualTo(true)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_whenIsAdminFalse_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<ProfileResetPinActivity>(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context = context,
+        profileId = 0,
+        isAdmin = false
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileResetPinFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+
+        val arguments = checkNotNull(profileResetPinFragment.arguments) {
+          "Expected arguments to be passed to ProfileResetPinFragment"
+        }
+        val args =
+          arguments.getProto(
+            ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
+            ProfileResetPinFragmentArguments.getDefaultInstance()
+          )
+        val receivedProfileResetPinProfileId = args.internalProfileId
+        val receivedProfileResetPinIsAdmin = args.isAdmin
+
+        assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
+        assertThat(receivedProfileResetPinIsAdmin).isEqualTo(false)
+      }
     }
   }
 

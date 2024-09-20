@@ -113,8 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      activity.onBackPressed()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
 
     binding.actionAudioPlayer.setOnClickListener {
@@ -332,10 +331,6 @@ class ExplorationActivityPresenter @Inject constructor(
     // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
     // fragment and log lesson saved advertently event.
     showDialogFragmentBasedOnCurrentCheckpointState()
-  }
-
-  fun dismissConceptCard() {
-    getExplorationFragment()?.dismissConceptCard()
   }
 
   private fun updateToolbarTitle(explorationId: String) {

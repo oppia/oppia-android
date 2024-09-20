@@ -33,6 +33,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.options.AppLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -94,6 +95,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -212,6 +214,50 @@ class AppLanguageFragmentTest {
       testCoroutineDispatchers.runCurrent()
       verifyKiswahiliIsSelected(appLanguageActivity)
     }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
+      .use { scenario ->
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+
+          val appLanguageFragment = activity.supportFragmentManager
+            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          val recievedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
+          val receivedProfileId =
+            appLanguageFragment.arguments?.extractCurrentUserProfileId()?.internalId
+
+          assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ENGLISH)
+          assertThat(receivedProfileId).isEqualTo(internalProfileId)
+        }
+      }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))
+      .use { scenario ->
+        testCoroutineDispatchers.runCurrent()
+
+        scenario.onActivity { activity ->
+          var appLanguageFragment = activity.supportFragmentManager
+            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
+        }
+
+        scenario.recreate()
+
+        scenario.onActivity { activity ->
+          val newAppLanguageFragment = activity.supportFragmentManager
+            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          val restoredLanguage =
+            newAppLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
+
+          assertThat(restoredLanguage).isEqualTo(OppiaLanguage.ARABIC)
+        }
+      }
   }
 
   private fun verifyKiswahiliIsSelected(appLanguageActivity: AppLanguageActivity?) {

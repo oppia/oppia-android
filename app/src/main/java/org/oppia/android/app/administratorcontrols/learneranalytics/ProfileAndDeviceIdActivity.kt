@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY
@@ -18,18 +19,27 @@ import javax.inject.Inject
  * a particular user or group.
  */
 class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
-  @Inject lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
+  @Inject
+  lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileAndDeviceIdActivityPresenter.handleOnCreate()
+
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          finish()
+        }
+      }
+    )
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item.itemId == android.R.id.home) {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      onBackPressed()
+      onBackPressedDispatcher.onBackPressed()
     }
     return super.onOptionsItemSelected(item)
   }

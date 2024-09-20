@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf.allOf
@@ -101,6 +102,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -437,6 +439,30 @@ class ProfileRenameFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context = context,
+        internalProfileId = 1
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileRenameFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_rename_fragment_placeholder) as ProfileRenameFragment
+        val args =
+          checkNotNull(profileRenameFragment.arguments) {
+            "Expected arguments to be passed to ProfileRenameFragment"
+          }
+        val receivedProfileId = args.extractCurrentUserProfileId().internalId
+
+        assertThat(receivedProfileId).isEqualTo(1)
+      }
     }
   }
 

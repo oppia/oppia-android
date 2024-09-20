@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -92,6 +93,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -335,6 +337,25 @@ class SpotlightFragmentTest {
       onView(withId(R.id.close_spotlight_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSecondSpotlightText)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    launch<SpotlightFragmentTestActivity>(
+      createSpotlightFragmentTestActivity(context)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val spotlightFragment = activity.supportFragmentManager
+          .findFragmentByTag(SpotlightManager.SPOTLIGHT_FRAGMENT_TAG) as SpotlightFragment
+        val receivedInternalProfileId = spotlightFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+
+        assertThat(receivedInternalProfileId).isEqualTo(0)
+      }
     }
   }
 

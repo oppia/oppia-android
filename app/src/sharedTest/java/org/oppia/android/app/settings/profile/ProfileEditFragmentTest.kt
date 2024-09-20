@@ -45,6 +45,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS
 import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
+import org.oppia.android.app.model.ProfileEditActivityParams
+import org.oppia.android.app.model.ProfileEditFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -100,6 +102,8 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -470,6 +474,36 @@ class ProfileEditFragmentTest {
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launchFragmentTestActivity(internalProfileId = 1).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val activityArgs = activity.intent.getProtoExtra(
+          ProfileEditActivity.PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
+          ProfileEditActivityParams.getDefaultInstance()
+        )
+        val isMultipane = activityArgs?.isMultipane ?: false
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_edit_fragment_placeholder) as ProfileEditFragment
+
+        val arguments = checkNotNull(fragment.arguments) {
+          "Expected variables to be passed to ProfileEditFragment"
+        }
+        val args = arguments.getProto(
+          ProfileEditFragment.PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
+          ProfileEditFragmentArguments.getDefaultInstance()
+        )
+        val receivedInternalProfileId = args.internalProfileId
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedInternalProfileId).isEqualTo(1)
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
+    }
   }
 
   private fun launchFragmentTestActivity(internalProfileId: Int) =
