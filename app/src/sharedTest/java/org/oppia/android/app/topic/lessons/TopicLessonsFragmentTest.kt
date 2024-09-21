@@ -1212,7 +1212,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testTopicLessonsFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
@@ -1255,7 +1255,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+  fun testTopicLessonsFragment_saveInstanceState_verifyCorrectStateRestored() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,

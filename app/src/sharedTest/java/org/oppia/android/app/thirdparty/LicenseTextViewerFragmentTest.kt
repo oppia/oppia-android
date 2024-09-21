@@ -322,7 +322,7 @@ class LicenseTextViewerFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testLicenseTextViewerFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 3,
@@ -339,7 +339,7 @@ class LicenseTextViewerFragmentTest {
           "Expected arguments to be passed to LicenseTextViewerFragment"
         }
         val args = arguments.getProto(
-          "LicenseTextViewerFragment.arguments",
+          LicenseTextViewerFragment.LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY,
           LicenseTextViewerFragmentArguments.getDefaultInstance()
         )
         val receivedDependencyIndex = args.dependencyIndex

@@ -5007,7 +5007,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testStateFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(
       FRACTIONS_EXPLORATION_ID_1,

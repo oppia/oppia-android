@@ -330,7 +330,7 @@ class PoliciesFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testPoliciesFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
         getApplicationContext(),
@@ -358,7 +358,7 @@ class PoliciesFragmentTest {
         }
         val receivedPolicies =
           args.getProto(
-            "PoliciesFragment.policy_page",
+            PoliciesFragmentTestActivity.POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO,
             PoliciesFragmentArguments.getDefaultInstance()
           )
 

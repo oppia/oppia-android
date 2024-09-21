@@ -274,7 +274,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testWalkthroughFinalFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->

@@ -467,7 +467,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testTopicFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       classroomId = TEST_CLASSROOM_ID,

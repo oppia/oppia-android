@@ -828,7 +828,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testProfileProgressFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<ProfileProgressActivity>(
       createProfileProgressActivityIntent(internalProfileId)
     ).use { scenario ->

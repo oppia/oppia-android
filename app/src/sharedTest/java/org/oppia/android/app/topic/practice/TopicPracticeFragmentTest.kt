@@ -390,7 +390,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testTopicPracticeFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -424,7 +424,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+  fun testTopicPracticeFragment_saveInstanceState_verifyCorrectStateRestored() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       classroomId = TEST_CLASSROOM_ID_1,
