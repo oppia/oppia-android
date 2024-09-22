@@ -358,7 +358,7 @@ class PoliciesFragmentTest {
         }
         val receivedPolicies =
           args.getProto(
-            PoliciesFragmentTestActivity.POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO,
+            POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
             PoliciesFragmentArguments.getDefaultInstance()
           )
 
