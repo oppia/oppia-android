@@ -64,7 +64,6 @@ class QuestionPlayerActivity :
         override fun handleOnBackPressed() {
           showStopExplorationDialogFragment()
           questionPlayerActivityPresenter.setReadingTextSizeNormal()
-          finish()
         }
       }
     )

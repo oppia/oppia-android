@@ -29,7 +29,6 @@ class WalkthroughActivity :
       object : OnBackPressedCallback(/* enabled = */ true) {
         override fun handleOnBackPressed() {
           walkthroughActivityPresenter.handleSystemBack()
-          finish()
         }
       }
     )
