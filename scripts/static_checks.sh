@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # INSTRUCTIONS
 # This script will run all script checks locally to make
 # sure that all script checks will still pass when run on
@@ -27,6 +29,8 @@ echo ""
 bash scripts/buf_lint_check.sh
 echo ""
 
+
+
 # Download Buildifier in oppia-android-tools folder (pre-requisite for buildifier checks)
 echo "********************************"
 echo "Downloading buildifier"
@@ -39,7 +43,6 @@ echo ""
 # Run Bazel Build file lint checks (buildifier checks)
 bash scripts/buildifier_lint_check.sh
 echo ""
-
 
 # SCRIPT CHECKS
 # These checks run on Bazel. Ensure Bazel is installed and configured correctly.
@@ -105,7 +108,7 @@ bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_in
 echo ""
 
 # License Texts Check
-echo "********************************"
+echo_success "********************************"
 echo "Running license texts checks"
 echo "********************************"
 bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
