@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
@@ -28,7 +29,6 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 
 /** Represents the type of errors that can be thrown by drag and drop sort interaction. */
 enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {
@@ -318,7 +318,7 @@ class DragAndDropSortInteractionViewModel private constructor(
       explorationProgressController: ExplorationProgressController
     ): MutableList<DragDropInteractionContentViewModel> {
       return runBlocking {
-        when(val result = explorationProgressController.getCurrentState().retrieveData()) {
+        when (val result = explorationProgressController.getCurrentState().retrieveData()) {
           is AsyncResult.Success -> {
             val ephemeralState = result.value
             val wrongAnswerList = ephemeralState.pendingState.wrongAnswerList
