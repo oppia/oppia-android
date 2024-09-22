@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 jar_file_path=$?
 config_file_path=$?
 os_type=$?

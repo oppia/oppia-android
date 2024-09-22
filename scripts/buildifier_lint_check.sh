@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 echo "********************************"
 echo "Checking Bazel file formatting"
 echo "********************************"

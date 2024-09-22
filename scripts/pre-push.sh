@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 # This script will run the pre-push checks in the given order
 # - ktlint
 # - checkstyle
