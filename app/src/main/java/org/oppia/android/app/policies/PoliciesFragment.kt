@@ -12,6 +12,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
+/** Argument key for PoliciesFragment. */
 const val POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesFragment.policy_page"
 
 /** Fragment that contains policies flow of the app. */
