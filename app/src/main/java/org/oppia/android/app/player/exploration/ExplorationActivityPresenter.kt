@@ -113,8 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      activity.onBackPressed()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
 
     binding.actionAudioPlayer.setOnClickListener {
