@@ -21,9 +21,14 @@ import javax.inject.Inject
  * event's integral type rather than its name (as this type will remain fixed for the lifetime of a
  * given event, unlike its name returned by this implementation).
  */
-class EventTypeToHumanReadableNameConverter @Inject constructor()
-   {
-   fun convertToHumanReadableName(eventType: ActivityContextCase): String {
+class EventTypeToHumanReadableNameConverter @Inject constructor() {
+  /**
+   * Converts an event type to a human-readable name.
+   *
+   * @param eventType The type of event to convert.
+   * @return A human-readable string representation of the event type.
+   */
+  fun convertToHumanReadableName(eventType: ActivityContextCase): String {
     return when (eventType) {
       ActivityContextCase.OPEN_EXPLORATION_ACTIVITY -> "open_exploration_player_screen"
       ActivityContextCase.OPEN_INFO_TAB -> "select_topic_info_tab"
