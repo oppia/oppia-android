@@ -8,7 +8,9 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.os.Build
+
 import javax.inject.Inject
+
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.robolectric.Shadows.shadowOf
