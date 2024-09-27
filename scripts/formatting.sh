@@ -17,4 +17,3 @@ function echo_warning() {
     echo -e "${YELLOW}$1${NC}"
 }
 
-
