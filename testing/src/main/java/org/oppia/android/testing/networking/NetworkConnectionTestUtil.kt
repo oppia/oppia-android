@@ -8,11 +8,11 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.os.Build
-import javax.inject.Inject
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowNetworkInfo
+import javax.inject.Inject
 
 /** Test utility to modify [ShadowNetworkInfo] in tests. */
 class NetworkConnectionTestUtil @Inject constructor(private val context: Context) {
