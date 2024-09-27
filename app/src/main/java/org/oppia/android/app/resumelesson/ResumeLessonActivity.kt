@@ -3,6 +3,7 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -40,6 +41,15 @@ class ResumeLessonActivity :
       params.explorationId,
       params.parentScreen,
       params.checkpoint
+    )
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          resumeLessonActivityPresenter.setReadingTextSizeNormal()
+          finish()
+        }
+      }
     )
   }
 
@@ -112,10 +122,5 @@ class ResumeLessonActivity :
 
   override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
     resumeLessonActivityPresenter.loadResumeLessonFragment(readingTextSize)
-  }
-
-  override fun onBackPressed() {
-    resumeLessonActivityPresenter.setReadingTextSizeNormal()
-    finish()
   }
 }
