@@ -84,14 +84,15 @@ class DragAndDropSortInteractionViewModel private constructor(
 
   private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
 
-  private val _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
+  private var _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeOriginalChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
 
   private var _choiceItems = computeSelectedChoiceItems(
     contentIdHtmlMap,
     choiceSubtitledHtmls,
     this,
-    resourceHandler
+    resourceHandler,
+    userAnswerState
   )
 
   private val _choiceItemsLiveData = MutableLiveData<List<DragDropInteractionContentViewModel>>()
@@ -347,7 +348,8 @@ class DragAndDropSortInteractionViewModel private constructor(
     contentIdHtmlMap: Map<String, String>,
     choiceStrings: List<SubtitledHtml>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-    resourceHandler: AppLanguageResourceHandler
+    resourceHandler: AppLanguageResourceHandler,
+    userAnswerState: UserAnswerState
   ): MutableList<DragDropInteractionContentViewModel> {
     val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
       explorationProgressController.getCurrentState().toLiveData()
@@ -413,8 +415,11 @@ class DragAndDropSortInteractionViewModel private constructor(
     ephemeralStateLiveData.observe(fragment) { result ->
       _choiceItems = processEphemeralStateResult(result)
       _choiceItemsLiveData.value = _choiceItems
+      _originalChoiceItems = _choiceItems.toMutableList()
     }
 
     return _choiceItems?.takeIf { it.isNotEmpty() } ?: _originalChoiceItems.toMutableList()
+
+//      _originalChoiceItems.toMutableList()
   }
 }
