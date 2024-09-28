@@ -87,16 +87,8 @@ class DragAndDropSortInteractionViewModel private constructor(
   private var _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeOriginalChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
 
-  private var _choiceItems = computeSelectedChoiceItems(
-    contentIdHtmlMap,
-    choiceSubtitledHtmls,
-    this,
-    resourceHandler,
-    userAnswerState
-  )
-
+  private var _choiceItems: MutableList<DragDropInteractionContentViewModel> = mutableListOf()
   private val _choiceItemsLiveData = MutableLiveData<List<DragDropInteractionContentViewModel>>()
-
   val choiceItems: LiveData<List<DragDropInteractionContentViewModel>> = _choiceItemsLiveData
 
   private var pendingAnswerError: String? = null
@@ -104,6 +96,13 @@ class DragAndDropSortInteractionViewModel private constructor(
   var errorMessage = ObservableField<String>("")
 
   init {
+    _choiceItems = computeSelectedChoiceItems(
+      contentIdHtmlMap,
+      choiceSubtitledHtmls,
+      this,
+      resourceHandler
+    )
+
     _choiceItemsLiveData.value = _choiceItems
 
     val callback: Observable.OnPropertyChangedCallback =
@@ -348,8 +347,7 @@ class DragAndDropSortInteractionViewModel private constructor(
     contentIdHtmlMap: Map<String, String>,
     choiceStrings: List<SubtitledHtml>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-    resourceHandler: AppLanguageResourceHandler,
-    userAnswerState: UserAnswerState
+    resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
     val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
       explorationProgressController.getCurrentState().toLiveData()
@@ -418,8 +416,7 @@ class DragAndDropSortInteractionViewModel private constructor(
       _originalChoiceItems = _choiceItems.toMutableList()
     }
 
-    return _choiceItems?.takeIf { it.isNotEmpty() } ?: _originalChoiceItems.toMutableList()
-
-//      _originalChoiceItems.toMutableList()
+    return _choiceItems.takeIf { it.isNotEmpty() }
+      ?: _originalChoiceItems.toMutableList()
   }
 }
