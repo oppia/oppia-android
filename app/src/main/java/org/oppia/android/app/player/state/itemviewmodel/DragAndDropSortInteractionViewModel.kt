@@ -377,11 +377,11 @@ class DragAndDropSortInteractionViewModel private constructor(
         val wrongAnswerList = state.pendingState.wrongAnswerList
 
         if (wrongAnswerList.isNotEmpty()) {
-        val latestWrongAnswerContentIdList = wrongAnswerList.last()
-          .userAnswer
-          .answer
-          .listOfSetsOfTranslatableHtmlContentIds
-          .contentIdListsList
+          val latestWrongAnswerContentIdList = wrongAnswerList.last()
+            .userAnswer
+            .answer
+            .listOfSetsOfTranslatableHtmlContentIds
+            .contentIdListsList
 
           latestWrongAnswerContentIdList.mapIndexed { index, setOfTranslatableHtmlContentIds ->
             DragDropInteractionContentViewModel(
