@@ -98,7 +98,6 @@ class DragAndDropSortInteractionViewModel private constructor(
   init {
     _choiceItems = computeSelectedChoiceItems(
       contentIdHtmlMap,
-      choiceSubtitledHtmls,
       this,
       resourceHandler
     )
@@ -342,7 +341,6 @@ class DragAndDropSortInteractionViewModel private constructor(
 
   private fun computeSelectedChoiceItems(
     contentIdHtmlMap: Map<String, String>,
-    choiceStrings: List<SubtitledHtml>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
     resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
@@ -350,99 +348,63 @@ class DragAndDropSortInteractionViewModel private constructor(
       explorationProgressController.getCurrentState().toLiveData()
     }
 
-    fun processEphemeralStateResult(
-      result: AsyncResult<EphemeralState>
-    ): MutableList<DragDropInteractionContentViewModel> {
-      return when (result) {
-        is AsyncResult.Failure -> mutableListOf()
-        is AsyncResult.Pending -> mutableListOf()
-        is AsyncResult.Success -> {
-          val state = result.value
-          val wrongAnswerList = state.pendingState.wrongAnswerList
-
-          if (wrongAnswerList.isNotEmpty()) {
-            val wrongAnswerListCount = wrongAnswerList.lastOrNull()
-              ?.userAnswer?.listOfHtmlAnswers?.setOfHtmlStringsCount
-
-            if (choiceStrings.size == wrongAnswerListCount) {
-              choiceStrings.mapIndexed { index, subtitledHtml ->
-                val contentIdFromWrongAnswer = wrongAnswerList?.lastOrNull()
-                  ?.userAnswer
-                  ?.answer
-                  ?.listOfSetsOfTranslatableHtmlContentIds
-                  ?.contentIdListsList
-                  ?.getOrNull(index)
-                  ?.contentIdsList
-                  ?.firstOrNull()
-                  ?.contentId
-
-                val contentHtmlFromWrongAnswer = wrongAnswerList?.lastOrNull()
-                  ?.userAnswer
-                  ?.listOfHtmlAnswers
-                  ?.setOfHtmlStringsList
-                  ?.get(index)
-                  ?.htmlList
-                  ?.firstOrNull()
-
-                val updatedContentIdMap = mapOf(
-                  contentIdFromWrongAnswer to contentHtmlFromWrongAnswer
-                ).filterKeys { it != null }
-                  .filterValues { it != null }
-                  .mapKeys { it.key as String }
-                  .mapValues { it.value as String }
-
-                DragDropInteractionContentViewModel(
-                  contentIdHtmlMap = updatedContentIdMap.ifEmpty {
-                    contentIdHtmlMap
-                  },
-                  htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-                    addContentIds(
-                      TranslatableHtmlContentId.newBuilder().apply {
-                        contentId = contentIdFromWrongAnswer ?: subtitledHtml.contentId
-                      }
-                    )
-                  }.build(),
-                  itemIndex = index,
-                  listSize = choiceStrings.size,
-                  dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-                  resourceHandler = resourceHandler
-                )
-              }.toMutableList()
-            } else {
-              wrongAnswerList.last().userAnswer.answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList.mapIndexed { index, setOfTranslatableHtmlContentIds ->
-                DragDropInteractionContentViewModel(
-                  contentIdHtmlMap = contentIdHtmlMap,
-                  htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-                    for (s in setOfTranslatableHtmlContentIds.contentIdsList) {
-                      addContentIds(
-                        TranslatableHtmlContentId.newBuilder().apply {
-                          contentId = s.contentId
-                        }
-                      )
-                    }
-                  }.build(),
-                  itemIndex = index,
-                  listSize = setOfTranslatableHtmlContentIds.contentIdsList.size,
-                  dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-                  resourceHandler = resourceHandler
-                )
-              }.toMutableList()
-
-            }
-          } else {
-            _originalChoiceItems.toMutableList()
-          }
-        }
-      }
-    }
-
     ephemeralStateLiveData.observe(fragment) { result ->
-      _choiceItems = processEphemeralStateResult(result)
+      _choiceItems = processEphemeralStateResult(
+        result,
+        contentIdHtmlMap,
+        dragAndDropSortInteractionViewModel,
+        resourceHandler
+      )
       _choiceItemsLiveData.value = _choiceItems
       _originalChoiceItems = _choiceItems.toMutableList()
     }
 
     return _choiceItems.takeIf { it.isNotEmpty() }
       ?: _originalChoiceItems.toMutableList()
+  }
+
+  private fun processEphemeralStateResult(
+    result: AsyncResult<EphemeralState>,
+    contentIdHtmlMap: Map<String, String>,
+    dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+    resourceHandler: AppLanguageResourceHandler
+  ): MutableList<DragDropInteractionContentViewModel> {
+    return when (result) {
+      is AsyncResult.Failure -> mutableListOf()
+      is AsyncResult.Pending -> mutableListOf()
+      is AsyncResult.Success -> {
+        val state = result.value
+        val wrongAnswerList = state.pendingState.wrongAnswerList
+
+        if (wrongAnswerList.isNotEmpty()) {
+        val latestWrongAnswerContentIdList = wrongAnswerList.last()
+          .userAnswer
+          .answer
+          .listOfSetsOfTranslatableHtmlContentIds
+          .contentIdListsList
+
+          latestWrongAnswerContentIdList.mapIndexed { index, setOfTranslatableHtmlContentIds ->
+            DragDropInteractionContentViewModel(
+              contentIdHtmlMap = contentIdHtmlMap,
+              htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+                for (contentIds in setOfTranslatableHtmlContentIds.contentIdsList) {
+                  addContentIds(
+                    TranslatableHtmlContentId.newBuilder().apply {
+                      contentId = contentIds.contentId
+                    }
+                  )
+                }
+              }.build(),
+              itemIndex = index,
+              listSize = latestWrongAnswerContentIdList.size,
+              dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+              resourceHandler = resourceHandler
+            )
+          }.toMutableList()
+        } else {
+          _originalChoiceItems.toMutableList()
+        }
+      }
+    }
   }
 }

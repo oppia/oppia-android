@@ -1139,7 +1139,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_loadDragDropExp_mergeItems_dargAndDrop_retainStateOnConfigurationChange() {
+  fun testStateFragment_loadDragDropExp_mergeItems_dragAndDrop_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1323,6 +1323,66 @@ class StateFragmentTest {
             context.getString(R.string.correct_submitted_answer)
           )
         )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).check(matches(hasChildCount(3)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeUnlinkFirstTwoItems_wrongAnswer_retainsLatestState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      unlinkDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).check(matches(hasChildCount(4)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeItems_unArrangedRetainState_causeSubmitTimeError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+
+      clickSubmitAnswerButton()
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.drag_drop_interaction_error)).check(
+        matches(withText(R.string.drag_and_drop_interaction_empty_input))
       )
     }
   }
