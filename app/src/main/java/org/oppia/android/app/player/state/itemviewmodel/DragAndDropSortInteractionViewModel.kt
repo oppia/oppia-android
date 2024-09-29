@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
@@ -100,7 +101,8 @@ class DragAndDropSortInteractionViewModel private constructor(
       contentIdHtmlMap,
       choiceSubtitledHtmls,
       this,
-      resourceHandler
+      resourceHandler,
+      userAnswerState
     )
 
     _choiceItemsLiveData.value = _choiceItems
@@ -139,7 +141,6 @@ class DragAndDropSortInteractionViewModel private constructor(
       _choiceItems[indexFrom].itemIndex = indexFrom
       _choiceItems[indexTo].itemIndex = indexTo
     }
-
     adapter.notifyItemMoved(indexFrom, indexTo)
   }
 
@@ -226,7 +227,6 @@ class DragAndDropSortInteractionViewModel private constructor(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = _choiceItems.size
     }
-
     // to update the content of grouped item
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
@@ -254,7 +254,6 @@ class DragAndDropSortInteractionViewModel private constructor(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = _choiceItems.size
     }
-
     // to update the list
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
@@ -347,7 +346,8 @@ class DragAndDropSortInteractionViewModel private constructor(
     contentIdHtmlMap: Map<String, String>,
     choiceStrings: List<SubtitledHtml>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-    resourceHandler: AppLanguageResourceHandler
+    resourceHandler: AppLanguageResourceHandler,
+    userAnswerState: UserAnswerState
   ): MutableList<DragDropInteractionContentViewModel> {
     val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
       explorationProgressController.getCurrentState().toLiveData()
@@ -362,8 +362,22 @@ class DragAndDropSortInteractionViewModel private constructor(
         is AsyncResult.Success -> {
           val state = result.value
           val wrongAnswerList = state.pendingState.wrongAnswerList
+          val wrongAnswerListCount = wrongAnswerList.lastOrNull()
+            ?.userAnswer?.listOfHtmlAnswers?.setOfHtmlStringsCount
+
+          wrongAnswerList.mapIndexed { index, answerAndResponse ->
+            Log.d("useranswerstring", "processEphemeralStateResult: wrong list index - $index")
+            Log.d("useranswerstring", "processEphemeralStateResult: wrong list ar - $answerAndResponse")
+          }
+
+          Log.d("useranswerstring", "processEphemeralStateResult: choice strings - $choiceStrings")
+          Log.d("useranswerstring", "processEphemeralStateResult: choice items - $_choiceItems")
+          Log.d("useranswerstring", "processEphemeralStateResult: user answer list - ${userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount}")
+          Log.d("useranswerstring", "processEphemeralStateResult: user answer list count - ${wrongAnswerList.lastOrNull()?.userAnswer?.listOfHtmlAnswers?.setOfHtmlStringsCount}")
 
           choiceStrings.mapIndexed { index, subtitledHtml ->
+            Log.d("useranswerstring", "processEphemeralStateResult: chs index - $index")
+            Log.d("useranswerstring", "processEphemeralStateResult: chs sbh - $subtitledHtml")
             val contentIdFromWrongAnswer = wrongAnswerList?.lastOrNull()
               ?.userAnswer
               ?.answer
