@@ -1328,7 +1328,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestState() {
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestStateCount() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1345,6 +1345,33 @@ class StateFragmentTest {
           targetViewId = R.id.drag_drop_item_recyclerview
         )
       ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestStateText() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 1,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("I bought")))
     }
   }
 
