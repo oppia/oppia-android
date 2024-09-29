@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
@@ -101,8 +100,7 @@ class DragAndDropSortInteractionViewModel private constructor(
       contentIdHtmlMap,
       choiceSubtitledHtmls,
       this,
-      resourceHandler,
-      userAnswerState
+      resourceHandler
     )
 
     _choiceItemsLiveData.value = _choiceItems
@@ -346,8 +344,7 @@ class DragAndDropSortInteractionViewModel private constructor(
     contentIdHtmlMap: Map<String, String>,
     choiceStrings: List<SubtitledHtml>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-    resourceHandler: AppLanguageResourceHandler,
-    userAnswerState: UserAnswerState
+    resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
     val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
       explorationProgressController.getCurrentState().toLiveData()
@@ -365,61 +362,53 @@ class DragAndDropSortInteractionViewModel private constructor(
           val wrongAnswerListCount = wrongAnswerList.lastOrNull()
             ?.userAnswer?.listOfHtmlAnswers?.setOfHtmlStringsCount
 
-          wrongAnswerList.mapIndexed { index, answerAndResponse ->
-            Log.d("useranswerstring", "processEphemeralStateResult: wrong list index - $index")
-            Log.d("useranswerstring", "processEphemeralStateResult: wrong list ar - $answerAndResponse")
+          if (choiceStrings.size == wrongAnswerListCount) {
+            choiceStrings.mapIndexed { index, subtitledHtml ->
+              val contentIdFromWrongAnswer = wrongAnswerList?.lastOrNull()
+                ?.userAnswer
+                ?.answer
+                ?.listOfSetsOfTranslatableHtmlContentIds
+                ?.contentIdListsList
+                ?.getOrNull(index)
+                ?.contentIdsList
+                ?.firstOrNull()
+                ?.contentId
+
+              val contentHtmlFromWrongAnswer = wrongAnswerList?.lastOrNull()
+                ?.userAnswer
+                ?.listOfHtmlAnswers
+                ?.setOfHtmlStringsList
+                ?.get(index)
+                ?.htmlList
+                ?.firstOrNull()
+
+              val updatedContentIdMap = mapOf(
+                contentIdFromWrongAnswer to contentHtmlFromWrongAnswer
+              ).filterKeys { it != null }
+                .filterValues { it != null }
+                .mapKeys { it.key as String }
+                .mapValues { it.value as String }
+
+              DragDropInteractionContentViewModel(
+                contentIdHtmlMap = updatedContentIdMap.ifEmpty {
+                  contentIdHtmlMap
+                },
+                htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+                  addContentIds(
+                    TranslatableHtmlContentId.newBuilder().apply {
+                      contentId = contentIdFromWrongAnswer ?: subtitledHtml.contentId
+                    }
+                  )
+                }.build(),
+                itemIndex = index,
+                listSize = choiceStrings.size,
+                dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+                resourceHandler = resourceHandler
+              )
+            }.toMutableList()
+          } else {
+            _originalChoiceItems.toMutableList()
           }
-
-          Log.d("useranswerstring", "processEphemeralStateResult: choice strings - $choiceStrings")
-          Log.d("useranswerstring", "processEphemeralStateResult: choice items - $_choiceItems")
-          Log.d("useranswerstring", "processEphemeralStateResult: user answer list - ${userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount}")
-          Log.d("useranswerstring", "processEphemeralStateResult: user answer list count - ${wrongAnswerList.lastOrNull()?.userAnswer?.listOfHtmlAnswers?.setOfHtmlStringsCount}")
-
-          choiceStrings.mapIndexed { index, subtitledHtml ->
-            Log.d("useranswerstring", "processEphemeralStateResult: chs index - $index")
-            Log.d("useranswerstring", "processEphemeralStateResult: chs sbh - $subtitledHtml")
-            val contentIdFromWrongAnswer = wrongAnswerList?.lastOrNull()
-              ?.userAnswer
-              ?.answer
-              ?.listOfSetsOfTranslatableHtmlContentIds
-              ?.contentIdListsList
-              ?.getOrNull(index)
-              ?.contentIdsList
-              ?.firstOrNull()
-              ?.contentId
-
-            val contentHtmlFromWrongAnswer = wrongAnswerList?.lastOrNull()
-              ?.userAnswer
-              ?.listOfHtmlAnswers
-              ?.setOfHtmlStringsList
-              ?.get(index)
-              ?.htmlList
-              ?.firstOrNull()
-
-            val updatedContentIdMap = mapOf(
-              contentIdFromWrongAnswer to contentHtmlFromWrongAnswer
-            ).filterKeys { it != null }
-              .filterValues { it != null }
-              .mapKeys { it.key as String }
-              .mapValues { it.value as String }
-
-            DragDropInteractionContentViewModel(
-              contentIdHtmlMap = updatedContentIdMap.ifEmpty {
-                contentIdHtmlMap
-              },
-              htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-                addContentIds(
-                  TranslatableHtmlContentId.newBuilder().apply {
-                    contentId = contentIdFromWrongAnswer ?: subtitledHtml.contentId
-                  }
-                )
-              }.build(),
-              itemIndex = index,
-              listSize = choiceStrings.size,
-              dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-              resourceHandler = resourceHandler
-            )
-          }.toMutableList()
         }
       }
     }
