@@ -198,7 +198,7 @@ dependencies {
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4',
-      'org.mockito:mockito-core:2.7.22',
+      'org.mockito:mockito-core:3.11.1',
       'com.github.oppia:android-spotlight:cc23499d37dc8533a2876e45b5063e981a4583f4'
   )
   compileOnly(
@@ -222,7 +222,7 @@ dependencies {
       'org.robolectric:robolectric:4.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
-      'org.mockito:mockito-core:2.7.22',
+      'org.mockito:mockito-core:3.11.1',
       project(":testing"),
   )
   androidTestImplementation(
@@ -238,7 +238,7 @@ dependencies {
       'androidx.work:work-testing:2.4.0',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4',
-      'org.mockito:mockito-android:2.7.22',
+      'org.mockito:mockito-android:3.11.1',
       'org.robolectric:annotations:4.5',
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
