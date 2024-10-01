@@ -39,6 +39,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
   private lateinit var selectedLanguage: OppiaLanguage
+  private lateinit var supportedLanguages: List<OppiaLanguage>
 
   /**
    * Returns a newly inflated view to render the fragment with an evaluated audio language as the
@@ -90,6 +91,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     audioLanguageSelectionViewModel.supportedOppiaLanguagesLiveData.observe(
       fragment,
       { languages ->
+        supportedLanguages = languages
         val adapter = ArrayAdapter(
           fragment.requireContext(),
           R.layout.onboarding_language_dropdown_item,
@@ -107,10 +109,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         AdapterView.OnItemClickListener { _, _, position, _ ->
           val selectedItem = adapter.getItem(position) as? String
           selectedItem?.let {
-            val localizedNameMap = OppiaLanguage.values().associateBy { oppiaLanguage ->
+            selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
               appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
-            }
-            selectedLanguage = localizedNameMap[it] ?: OppiaLanguage.ENGLISH
+            }[it] ?: OppiaLanguage.ENGLISH
           }
         }
     }
