@@ -370,8 +370,8 @@ class DragAndDropSortInteractionViewModel private constructor(
     resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
     return when (result) {
-      is AsyncResult.Failure -> mutableListOf()
-      is AsyncResult.Pending -> mutableListOf()
+      is AsyncResult.Failure -> _originalChoiceItems.toMutableList()
+      is AsyncResult.Pending -> _originalChoiceItems.toMutableList()
       is AsyncResult.Success -> {
         val state = result.value
         val wrongAnswerList = state.pendingState.wrongAnswerList
