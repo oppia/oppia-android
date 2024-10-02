@@ -14,15 +14,13 @@ jobs:
     # To verify that the wiki's table of contents matches the headers accurately.
     name: Check Wiki Table of Contents
     runs-on: ubuntu-20.04
-    env:
-      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 4.0.0
+          version: 6.5.0
 
       - name: Check Wiki Table of Contents
         id: checkWikiToc

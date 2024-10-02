@@ -47,7 +47,7 @@ fun processWikiDirectory(wikiDir: File) {
 fun checkTableOfContents(file: File) {
   val fileContents = file.readLines()
   val tocStartIdx = fileContents.indexOfFirst {
-    it.contains("## Table of Contents")
+    it.contains(Regex("""##\s+Table\s+of\s+Contents""", RegexOption.IGNORE_CASE))
   }
   if (tocStartIdx == -1) {
     println("No Table of Contents found for the file $file")
@@ -58,7 +58,7 @@ fun checkTableOfContents(file: File) {
   val eOfIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
     it.isBlank()
   }
-  if (eOfIdx == -1) error("Table of Contents didn't end with a blank line")
+  if (eOfIdx == -1) error("Table of Contents didn't end with a blank line.")
 
   val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + eOfIdx + 1)
   println("Toc line: $tocSpecificLines")
