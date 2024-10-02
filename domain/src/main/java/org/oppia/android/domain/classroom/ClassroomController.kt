@@ -73,6 +73,32 @@ class ClassroomController @Inject constructor(
   }
 
   /**
+   * Returns the list of [ClassroomRecord]s currently available in the app.
+   */
+  fun getClassrooms(): List<ClassroomRecord> {
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = "classrooms",
+        baseMessage = ClassroomIdList.getDefaultInstance()
+      ).classroomIdsList.map { classroomId ->
+        getClassroomById(classroomId)
+      }
+    } else loadClassroomsFromJson()
+  }
+
+  /**
+   * Returns the [ClassroomRecord] associated with the given [classroomId].
+   */
+  fun getClassroomById(classroomId: String): ClassroomRecord {
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.tryLoadProtoFromLocalAssets(
+        assetName = classroomId,
+        defaultMessage = ClassroomRecord.getDefaultInstance()
+      ) ?: ClassroomRecord.getDefaultInstance()
+    } else loadClassroomByIdFromJson(classroomId)
+  }
+
+  /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
@@ -90,7 +116,7 @@ class ClassroomController @Inject constructor(
    */
   fun getClassroomIdByTopicId(topicId: String): String {
     var classroomId = ""
-    loadClassrooms().forEach {
+    getClassrooms().forEach {
       if (it.topicPrerequisitesMap.keys.contains(topicId)) {
         classroomId = it.id
       }
@@ -333,17 +359,6 @@ class ClassroomController @Inject constructor(
       .build()
   }
 
-  private fun loadClassrooms(): List<ClassroomRecord> {
-    return if (loadLessonProtosFromAssets) {
-      assetRepository.loadProtoFromLocalAssets(
-        assetName = "classrooms",
-        baseMessage = ClassroomIdList.getDefaultInstance()
-      ).classroomIdsList.map { classroomId ->
-        loadClassroomById(classroomId)
-      }
-    } else loadClassroomsFromJson()
-  }
-
   private fun loadClassroomsFromJson(): List<ClassroomRecord> {
     // Load the classrooms.json file.
     val classroomIdsObj = jsonAssetRetriever.loadJsonFromAsset("classrooms.json")
@@ -359,26 +374,19 @@ class ClassroomController @Inject constructor(
       val classroomId = checkNotNull(classroomIds.optString(i)) {
         "Expected non-null classroom ID at index $i."
       }
-      val classroomRecord = loadClassroomById(classroomId)
+      val classroomRecord = getClassroomById(classroomId)
       classroomRecords.add(classroomRecord)
     }
 
     return classroomRecords
   }
 
-  private fun loadClassroomById(classroomId: String): ClassroomRecord {
-    return if (loadLessonProtosFromAssets) {
-      assetRepository.tryLoadProtoFromLocalAssets(
-        assetName = classroomId,
-        defaultMessage = ClassroomRecord.getDefaultInstance()
-      ) ?: ClassroomRecord.getDefaultInstance()
-    } else loadClassroomByIdFromJson(classroomId)
-  }
-
   private fun loadClassroomByIdFromJson(classroomId: String): ClassroomRecord {
     // Load the classroom obj.
     val classroomObj = jsonAssetRetriever.loadJsonFromAsset("$classroomId.json")
     checkNotNull(classroomObj) { "Failed to load $classroomId.json." }
+
+    val classroomTitle = classroomObj.getJSONObject("classroom_title")
 
     // Load the topic prerequisite map.
     val topicPrereqsObj = checkNotNull(classroomObj.optJSONObject("topic_prerequisites")) {
@@ -398,6 +406,10 @@ class ClassroomController @Inject constructor(
       id = checkNotNull(classroomObj.optString("classroom_id")) {
         "Expected classroom to have ID."
       }
+      translatableTitle = SubtitledHtml.newBuilder().apply {
+        contentId = classroomTitle.getStringFromObject("content_id")
+        html = classroomTitle.getStringFromObject("html")
+      }.build()
       putAllTopicPrerequisites(
         topicPrereqs.mapValues { (_, topicIds) ->
           ClassroomRecord.TopicIdList.newBuilder().apply {
