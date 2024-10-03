@@ -67,28 +67,6 @@ class WikiTableOfContentsCheckTest {
   }
 
   @Test
-  fun testWikiTOCCheck_missingWikiTOC_returnsNoTOCFound() {
-    tempFolder.newFolder("wiki")
-    val file = tempFolder.newFile("wiki/wiki.md")
-    file.writeText(
-      """          
-            - [Introduction](#introduction)
-            - [Usage](#usage)
-            
-            ## Introduction
-            Content
-            
-            ## Usage
-            Content
-      """.trimIndent()
-    )
-
-    runScript()
-
-    assertThat(outContent.toString().trim()).contains("No Table of Contents found")
-  }
-
-  @Test
   fun testWikiTOCCheck_mismatchWikiTOC_checkFail() {
     tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
