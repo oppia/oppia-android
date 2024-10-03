@@ -50,7 +50,6 @@ fun checkTableOfContents(file: File) {
     it.contains(Regex("""##\s+Table\s+of\s+Contents""", RegexOption.IGNORE_CASE))
   }
   if (tocStartIdx == -1) {
-    println("No Table of Contents found for the file $file")
     return
   }
 
@@ -61,7 +60,6 @@ fun checkTableOfContents(file: File) {
   if (eOfIdx == -1) error("Table of Contents didn't end with a blank line.")
 
   val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + eOfIdx + 1)
-  println("Toc line: $tocSpecificLines")
 
   for (line in tocSpecificLines) {
     if (line.trimStart().startsWith("- [") && !line.contains("https://")) {
@@ -85,7 +83,7 @@ fun validateTableOfContents(file: File, line: String) {
   val linkRegex = "\\(#(.*?)\\)".toRegex()
   val link = linkRegex.find(line)?.groupValues?.get(1)?.removePrefix("#")?.replace('-', ' ')
     ?.replace(Regex("[?&./:’'*!,(){}\\[\\]+]"), "")
-    ?.replace("confetti_ball", "")?.trim()
+    ?.trim()
 
   // Checks if the table of content title matches with the header link text.
   val matches = title.equals(link, ignoreCase = true)
