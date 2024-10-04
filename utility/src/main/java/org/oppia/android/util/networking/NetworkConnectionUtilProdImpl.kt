@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.annotation.RequiresApi
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
@@ -33,11 +32,9 @@ class NetworkConnectionUtilProdImpl @Inject constructor(
   }
 
   /** Uses NetworkCapabilities for SDK versions >= 23. */
-  @RequiresApi(Build.VERSION_CODES.M)
   private fun getConnectionStatusForNewerDevices(
     connectivityManager: ConnectivityManager
   ): ConnectionStatus {
-
     val network = connectivityManager.activeNetwork
     val capabilities = connectivityManager.getNetworkCapabilities(network)
     return capabilities?.let {
@@ -56,15 +53,15 @@ class NetworkConnectionUtilProdImpl @Inject constructor(
   private fun getConnectionStatusForOlderDevices(
     connectivityManager: ConnectivityManager
   ): ConnectionStatus {
-
-    val activeNetworkInfo = connectivityManager.activeNetworkInfo
-    return activeNetworkInfo?.let { activeNetwork ->
+    return connectivityManager.activeNetworkInfo?.let { activeNetwork ->
       val isConnected = activeNetwork.isConnected
-      val isLocal = activeNetwork.type == ConnectivityManager.TYPE_WIFI ||
+      val isLocal = activeNetwork.type ==
+        ConnectivityManager.TYPE_WIFI ||
         activeNetwork.type == ConnectivityManager.TYPE_ETHERNET
-      val isCellular = activeNetwork.type == ConnectivityManager.TYPE_MOBILE ||
+      val isCellular = activeNetwork.type ==
+        ConnectivityManager.TYPE_MOBILE ||
         activeNetwork.type == ConnectivityManager.TYPE_WIMAX
-      when {
+      return@let when {
         isConnected && isLocal -> LOCAL
         isConnected && isCellular -> CELLULAR
         else -> NONE

@@ -13,6 +13,7 @@ import org.mockito.Mockito.mock
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowNetworkInfo
 import javax.inject.Inject
+import org.robolectric.shadows.ShadowNetworkCapabilities
 
 /** Test utility to modify [ShadowNetworkInfo] in tests. */
 class NetworkConnectionTestUtil @Inject constructor(private val context: Context) {
@@ -20,6 +21,8 @@ class NetworkConnectionTestUtil @Inject constructor(private val context: Context
   private val connectivityManager by lazy {
     context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
   }
+  private val networkCapabilities = ShadowNetworkCapabilities.newInstance()
+
 
   /**
    * Sets the [ShadowNetworkInfo] during the test.
@@ -53,17 +56,12 @@ class NetworkConnectionTestUtil @Inject constructor(private val context: Context
    * @param transportType the type of transport being used (e.g., WiFi, Cellular)
    */
   private fun setNetworkCapabilities(isConnected: Boolean, transportType: Int) {
-    val networkCapabilities = mock(NetworkCapabilities::class.java)
-
-    `when`(networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
-      .thenReturn(isConnected)
-
-    `when`(networkCapabilities.hasTransport(transportType)).thenReturn(isConnected)
-
-    shadowOf(connectivityManager).setNetworkCapabilities(
-      mock(Network::class.java),
-      networkCapabilities
-    )
+    shadowOf(networkCapabilities).addCapability(transportType)
+    if (isConnected) {
+      shadowOf(networkCapabilities).addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    } else {
+      shadowOf(networkCapabilities).removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
   }
 
   private fun getTransportTypeFromStatus(status: Int): Int {
