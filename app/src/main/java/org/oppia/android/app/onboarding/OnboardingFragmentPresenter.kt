@@ -47,6 +47,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
   private var profileId: ProfileId = ProfileId.getDefaultInstance()
   private lateinit var selectedLanguage: OppiaLanguage
+  private lateinit var supportedLanguages: List<OppiaLanguage>
 
   /** Handle creation and binding of the [OnboardingFragment] layout. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, outState: Bundle?): View {
@@ -63,7 +64,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
     if (savedSelectedLanguage != null) {
       selectedLanguage = savedSelectedLanguage
-      onboardingAppLanguageViewModel.setSystemLanguageLivedata(savedSelectedLanguage)
+      onboardingAppLanguageViewModel.setSelectedLanguageLivedata(savedSelectedLanguage)
     } else {
       initializeSelectedLanguageToSystemLanguage()
     }
@@ -83,6 +84,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(
         fragment,
         { languagesList ->
+          supportedLanguages = languagesList
           val adapter = ArrayAdapter(
             fragment.requireContext(),
             R.layout.onboarding_language_dropdown_item,
@@ -113,11 +115,10 @@ class OnboardingFragmentPresenter @Inject constructor(
           AdapterView.OnItemClickListener { _, _, position, _ ->
             adapter.getItem(position).let { selectedItem ->
               selectedItem?.let {
-                val localizedNameMap = OppiaLanguage.values().associateBy { oppiaLanguage ->
+                selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
                   appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
-                }
-                selectedLanguage = localizedNameMap[it] ?: OppiaLanguage.ENGLISH
-                onboardingAppLanguageViewModel.setSystemLanguageLivedata(selectedLanguage)
+                }[it] ?: OppiaLanguage.ENGLISH
+                onboardingAppLanguageViewModel.setSelectedLanguageLivedata(selectedLanguage)
               }
             }
           }
@@ -173,7 +174,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     translationController.getSystemLanguageLocale().toLiveData().observe(
       fragment,
       { result ->
-        onboardingAppLanguageViewModel.setSystemLanguageLivedata(
+        onboardingAppLanguageViewModel.setSelectedLanguageLivedata(
           processSystemLanguageResult(result)
         )
       }
