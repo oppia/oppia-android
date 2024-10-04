@@ -4,16 +4,13 @@ package org.oppia.android.testing.networking
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.os.Build
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowNetworkInfo
-import javax.inject.Inject
 import org.robolectric.shadows.ShadowNetworkCapabilities
+import javax.inject.Inject
 
 /** Test utility to modify [ShadowNetworkInfo] in tests. */
 class NetworkConnectionTestUtil @Inject constructor(private val context: Context) {
