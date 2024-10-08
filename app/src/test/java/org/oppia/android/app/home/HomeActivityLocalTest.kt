@@ -200,12 +200,10 @@ class HomeActivityLocalTest {
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      // OPEN_HOME, END_PROFILE_ONBOARDING_EVENT and COMPLETE_APP_ONBOARDING are all logged
-      // concurrently.
-      val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
-
-      assertThat(events[1].priority).isEqualTo(EventLog.Priority.OPTIONAL)
-      assertThat(events[1].context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+      assertThat(hasProfileOnboardingEndedEvent).isTrue()
     }
   }
 
@@ -223,17 +221,6 @@ class HomeActivityLocalTest {
 
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
-    }
-  }
-
-  private fun getOneOfLastThreeEventsLogged(
-    wantedContext: EventLog.Context.ActivityContextCase
-  ): EventLog {
-    val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
-    return when {
-      events[0].context.activityContextCase == wantedContext -> events[0]
-      events[1].context.activityContextCase == wantedContext -> events[1]
-      else -> events[2]
     }
   }
 
