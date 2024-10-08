@@ -213,26 +213,24 @@ class ClassroomListFragmentPresenter @Inject constructor(
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   fun ClassroomListScreen() {
-    val groupedItems = classroomListViewModel.homeItemViewModelListLiveData.value
-      ?.plus(classroomListViewModel.topicList)
-      ?.groupBy { it::class }
+    val groupedItems = (classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty()
+      + classroomListViewModel.topicList)
+      .groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     val listState = rememberLazyListState()
     val classroomListIndex = groupedItems
-      ?.flatMap { (type, items) -> items.map { type to it } }
-      ?.indexOfFirst { it.first == AllClassroomsViewModel::class }
-      ?: -1
+      .flatMap { (type, items) -> items.map { type to it } }
+      .indexOfFirst { it.first == AllClassroomsViewModel::class }
 
     LazyColumn(
-      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
+      modifier = Modifier
+        .testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
       state = listState
     ) {
-      groupedItems?.forEach { (type, items) ->
+      groupedItems.forEach { (type, items) ->
         when (type) {
           WelcomeViewModel::class -> items.forEach { item ->
-            item {
-              WelcomeText(welcomeViewModel = item as WelcomeViewModel)
-            }
+            item { WelcomeText(welcomeViewModel = item as WelcomeViewModel) }
           }
           PromotedStoryListViewModel::class -> items.forEach { item ->
             item {
@@ -246,26 +244,22 @@ class ClassroomListFragmentPresenter @Inject constructor(
             item {
               ComingSoonTopicList(
                 comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
-                machineLocale = machineLocale,
+                machineLocale = machineLocale
               )
             }
           }
           AllClassroomsViewModel::class -> items.forEach { _ ->
-            item {
-              AllClassroomsHeaderText()
-            }
+            item { AllClassroomsHeaderText() }
           }
-          ClassroomSummaryViewModel::class -> stickyHeader() {
+          ClassroomSummaryViewModel::class -> stickyHeader {
             ClassroomList(
               classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
-              selectedClassroomId = classroomListViewModel.selectedClassroomId.get() ?: "",
+              selectedClassroomId = classroomListViewModel.selectedClassroomId.get().orEmpty(),
               isSticky = listState.firstVisibleItemIndex >= classroomListIndex
             )
           }
           AllTopicsViewModel::class -> items.forEach { _ ->
-            item {
-              AllTopicsHeaderText()
-            }
+            item { AllTopicsHeaderText() }
           }
           TopicSummaryViewModel::class -> {
             gridItems(
