@@ -196,6 +196,6 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun logAppOnboardedEvent(profileId: ProfileId?) {
-    analyticsController.logAppOnboardedEvent(null)
+    analyticsController.logAppOnboardedEvent(profileId)
   }
 }
