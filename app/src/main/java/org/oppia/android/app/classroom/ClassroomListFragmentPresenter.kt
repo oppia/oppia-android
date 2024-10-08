@@ -159,8 +159,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
       }
     )
 
-    logAppOnboardedEvent()
-
     return binding.root
   }
 
@@ -263,38 +261,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
         }
       }
     }
-  }
-
-  private fun logAppOnboardedEvent() {
-    val startupStateProvider = appStartupStateController.getAppStartupState()
-    val liveData = startupStateProvider.toLiveData()
-    liveData.observe(
-      activity,
-      object : Observer<AsyncResult<AppStartupState>> {
-        override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
-          when (startUpStateResult) {
-            null, is AsyncResult.Pending -> {
-              // Do nothing.
-            }
-            is AsyncResult.Success -> {
-              liveData.removeObserver(this)
-
-              if (startUpStateResult.value.startupMode ==
-                AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
-              ) {
-                analyticsController.logAppOnboardedEvent(profileId)
-              }
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "ClassroomListFragment",
-                "Failed to retrieve app startup state"
-              )
-            }
-          }
-        }
-      }
-    )
   }
 
   private fun logHomeActivityEvent() {

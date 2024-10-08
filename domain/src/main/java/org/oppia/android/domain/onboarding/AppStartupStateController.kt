@@ -1,5 +1,6 @@
 package org.oppia.android.domain.onboarding
 
+import androidx.lifecycle.Observer
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -17,6 +18,10 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -31,6 +36,7 @@ class AppStartupStateController @Inject constructor(
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
+  private val analyticsController: AnalyticsController,
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -65,8 +71,9 @@ class AppStartupStateController @Inject constructor(
    * Note that this does not notify existing subscribers of the changed state, nor can future
    * subscribers observe this state until the app restarts.
    */
-  fun markOnboardingFlowCompleted() {
+  fun markOnboardingFlowCompleted(profileId: ProfileId? = null) {
     updateOnboardingState { alreadyOnboardedApp = true }
+    logAppOnboardedEvent(profileId)
   }
 
   /**
@@ -189,5 +196,9 @@ class AppStartupStateController @Inject constructor(
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.isBeforeToday() ?: true
     } else false
+  }
+
+  private fun logAppOnboardedEvent(profileId: ProfileId?) {
+    analyticsController.logAppOnboardedEvent(null)
   }
 }

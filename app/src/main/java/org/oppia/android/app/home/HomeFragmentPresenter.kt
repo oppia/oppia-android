@@ -53,7 +53,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val appStartupStateController: AppStartupStateController
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
@@ -103,43 +102,7 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
-    logAppOnboardedEvent()
-
     return binding.root
-  }
-
-  private fun logAppOnboardedEvent() {
-    val startupStateProvider = appStartupStateController.getAppStartupState()
-    val liveData = startupStateProvider.toLiveData()
-    liveData.observe(
-      activity,
-      object : Observer<AsyncResult<AppStartupState>> {
-        override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
-          when (startUpStateResult) {
-            null, is AsyncResult.Pending -> {
-              // Do nothing
-            }
-            is AsyncResult.Success -> {
-              liveData.removeObserver(this)
-
-              if (startUpStateResult.value.startupMode ==
-                AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
-              ) {
-                analyticsController.logAppOnboardedEvent(
-                  ProfileId.newBuilder().setInternalId(internalProfileId).build()
-                )
-              }
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "HomeFragment",
-                "Failed to retrieve app startup state"
-              )
-            }
-          }
-        }
-      }
-    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
