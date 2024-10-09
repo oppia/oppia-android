@@ -31,6 +31,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,9 +55,13 @@ class ConsoleLoggerTest {
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
 
+  private lateinit var logFile: File
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    logFile = File(context.filesDir, "oppia_app.log")
+    logFile.delete() // Ensure we start with a clean log file
   }
 
   @Test
@@ -74,6 +79,35 @@ class ConsoleLoggerTest {
     assertThat(firstErrorContext.logTag).isEqualTo(testTag)
     assertThat(firstErrorContext.logLevel).isEqualTo(testLogLevel.toString())
     assertThat(firstErrorContext.fullErrorLog).isEqualTo(testMessage)
+  }
+
+  @Test
+  fun testConsoleLogger_multipleLogCalls_appendsToFile() {
+    consoleLogger.e(testTag, "Error 1")
+    testCoroutineDispatchers.advanceUntilIdle()
+    consoleLogger.e(testTag, "Error 2")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val logContent = logFile.readText()
+    assertThat(logContent).contains("Error 1")
+    assertThat(logContent).contains("Error 2")
+    assertThat(logContent.indexOf("Error 1")).isLessThan(logContent.indexOf("Error 2"))
+  }
+
+  @Test
+  fun testConsoleLogger_closeAndReopen_continuesToAppend() {
+    consoleLogger.e(testTag, "Error before close")
+    testCoroutineDispatchers.advanceUntilIdle()
+    consoleLogger.closeLogFile()
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    consoleLogger.e(testTag, "Error after reopen")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val logContent = logFile.readText()
+    assertThat(logContent).contains("Error before close")
+    assertThat(logContent).contains("Error after reopen")
+    assertThat(logContent.indexOf("Error before close")).isLessThan(logContent.indexOf("Error after reopen"))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -96,7 +130,7 @@ class ConsoleLoggerTest {
     @Provides
     @Singleton
     @EnableFileLog
-    fun provideEnableFileLog(): Boolean = false
+    fun provideEnableFileLog(): Boolean = true
 
     @Provides
     @Singleton
@@ -113,7 +147,6 @@ class ConsoleLoggerTest {
       FakeOppiaClockModule::class,
     ]
   )
-
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
