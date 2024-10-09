@@ -44,13 +44,12 @@ private fun checkTableOfContents(file: File) {
   }
 
   // Skipping the blank line after the ## Table of Contents
-  val spanLimitIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
-    it.isBlank()
+  val tocEndIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
+    it.startsWith("#")
   }.takeIf { it != -1 }
-    ?.plus(1)
-    ?: error("Table of Contents didn't end with a blank line.")
+    ?: error("Wiki doesn't contain headers referenced in Table of Contents.")
 
-  val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + spanLimitIdx + 1)
+  val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + tocEndIdx + 1)
 
   for (line in tocSpecificLines) {
     if (line.trimStart().startsWith("- [") && !line.contains("https://")) {

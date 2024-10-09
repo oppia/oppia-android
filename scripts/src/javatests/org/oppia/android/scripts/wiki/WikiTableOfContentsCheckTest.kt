@@ -89,6 +89,26 @@ class WikiTableOfContentsCheckTest {
   }
 
   @Test
+  fun testWikiTOCCheck_wikiTOCReference_noHeadersFound_throwsException() {
+    tempFolder.newFolder("wiki")
+    val file = tempFolder.newFile("wiki/wiki.md")
+    file.writeText(
+      """   
+            ## Table of Contents
+             
+            - [Introduction](#introductions)
+            
+      """.trimIndent()
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Wiki doesn't contain headers referenced in Table of Contents.")
+  }
+
+  @Test
   fun testWikiTOCCheck_mismatchWikiTOC_checkFail() {
     tempFolder.newFolder("wiki")
     val file = tempFolder.newFile("wiki/wiki.md")
