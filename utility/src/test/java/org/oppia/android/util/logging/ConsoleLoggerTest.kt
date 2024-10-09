@@ -107,7 +107,8 @@ class ConsoleLoggerTest {
     val logContent = logFile.readText()
     assertThat(logContent).contains("Error before close")
     assertThat(logContent).contains("Error after reopen")
-    assertThat(logContent.indexOf("Error before close")).isLessThan(logContent.indexOf("Error after reopen"))
+    assertThat(logContent.indexOf("Error before close"))
+      .isLessThan(logContent.indexOf("Error after reopen"))
   }
 
   private fun setUpTestApplicationComponent() {
