@@ -12,6 +12,10 @@ on:
   # (see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#gollum).
   gollum:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   table_of_contents_check:
     # To verify that the wiki's table of contents matches the headers accurately.
