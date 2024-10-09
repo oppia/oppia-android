@@ -48,7 +48,7 @@ private fun checkTableOfContents(file: File) {
     it.isBlank()
   }.takeIf { it != -1 }
     ?.plus(1)
-    ?: error ("Table of Contents didn't end with a blank line.")
+    ?: error("Table of Contents didn't end with a blank line.")
 
   val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + spanLimitIdx + 1)
 
