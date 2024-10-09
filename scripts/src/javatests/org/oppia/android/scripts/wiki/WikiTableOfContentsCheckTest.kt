@@ -105,7 +105,9 @@ class WikiTableOfContentsCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains("Wiki doesn't contain headers referenced in Table of Contents.")
+    assertThat(exception).hasMessageThat().contains(
+      "Wiki doesn't contain headers referenced in Table of Contents."
+    )
   }
 
   @Test
