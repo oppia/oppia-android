@@ -28,23 +28,13 @@ fun main(vararg args: String) {
   }
 }
 
-/**
- * Checks every file in the wiki repo.
- *
- * @param wikiDir the default working directory
- */
-fun processWikiDirectory(wikiDir: File) {
+private fun processWikiDirectory(wikiDir: File) {
   wikiDir.listFiles()?.forEach { file ->
     checkTableOfContents(file)
   }
 }
 
-/**
- * Checks the contents of a single wiki file to ensure the accuracy of the Table of Contents.
- *
- * @param file the wiki file to process.
- */
-fun checkTableOfContents(file: File) {
+private fun checkTableOfContents(file: File) {
   val fileContents = file.readLines()
   val tocStartIdx = fileContents.indexOfFirst {
     it.contains(Regex("""##\s+Table\s+of\s+Contents""", RegexOption.IGNORE_CASE))
@@ -54,12 +44,13 @@ fun checkTableOfContents(file: File) {
   }
 
   // Skipping the blank line after the ## Table of Contents
-  val eOfIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
+  val spanLimitIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
     it.isBlank()
-  }
-  if (eOfIdx == -1) error("Table of Contents didn't end with a blank line.")
+  }.takeIf { it != -1 }
+    ?.plus(1)
+    ?: error ("Table of Contents didn't end with a blank line.")
 
-  val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + eOfIdx + 1)
+  val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + spanLimitIdx + 1)
 
   for (line in tocSpecificLines) {
     if (line.trimStart().startsWith("- [") && !line.contains("https://")) {
@@ -68,13 +59,7 @@ fun checkTableOfContents(file: File) {
   }
 }
 
-/**
- * Validates the accuracy of a Table of Contents entry in a wiki file.
- *
- * @param file the wiki file being validated.
- * @param line the line containing the Table of Contents entry.
- */
-fun validateTableOfContents(file: File, line: String) {
+private fun validateTableOfContents(file: File, line: String) {
   val titleRegex = "\\[(.*?)\\]".toRegex()
   val title = titleRegex.find(line)?.groupValues?.get(1)?.replace('-', ' ')
     ?.replace(Regex("[?&./:’'*!,(){}\\[\\]+]"), "")
