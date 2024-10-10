@@ -83,8 +83,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
       fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      activity.onBackPressed()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.revisionCardToolbarTitle.setOnClickListener {
