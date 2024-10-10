@@ -3,7 +3,6 @@ package org.oppia.android.domain.onboarding
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -27,6 +26,7 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBO
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
+import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -42,6 +42,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -76,8 +77,6 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog
-import org.oppia.android.testing.FakeAnalyticsEventLogger
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.
