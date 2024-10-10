@@ -19,7 +19,6 @@ function echo_error() {
     echo -e "${RED}$1${NC}"
 }
 
-
 # Function to print a success message in green
 function echo_success() {
     echo -e "${GREEN}$1${NC}"
