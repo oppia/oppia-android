@@ -187,7 +187,9 @@ class LoggingIdentifierController @Inject constructor(
     val currentTimestamp = System.currentTimeMillis()
     val randomNumber = Random().nextLong() and MAX_RANDOM_VALUE
 
-    return ((SIGNED_BIT shl (TIMESTAMP_BITS + RANDOM_BITS))
-      or (currentTimestamp shl RANDOM_BITS) or randomNumber).toULong()
+    return (
+      (SIGNED_BIT shl (TIMESTAMP_BITS + RANDOM_BITS))
+        or (currentTimestamp shl RANDOM_BITS) or randomNumber
+      ).toULong()
   }
 }
