@@ -106,7 +106,7 @@ class FeatureFlagsLogger @Inject constructor(
    *
    * @param appSessionId denotes the id of the current appInForeground session
    */
-  fun logAllFeatureFlags(appSessionId: String) {
+  fun logAllFeatureFlags(appSessionId: String, currentProfileUuid: String?) {
     val featureFlagItemList = mutableListOf<FeatureFlagItemContext>()
     for (flag in featureFlagItemMap) {
       featureFlagItemList.add(
@@ -117,6 +117,7 @@ class FeatureFlagsLogger @Inject constructor(
     // TODO(#5341): Set the UUID value for this context
     val featureFlagContext = FeatureFlagListContext.newBuilder()
       .setAppSessionId(appSessionId)
+      .setUniqueUserUuid(currentProfileUuid)
       .addAllFeatureFlags(featureFlagItemList)
       .build()
 
