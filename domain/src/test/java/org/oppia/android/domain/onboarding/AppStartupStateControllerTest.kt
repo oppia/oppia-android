@@ -3,6 +3,7 @@ package org.oppia.android.domain.onboarding
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -75,6 +76,8 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -88,6 +91,7 @@ class AppStartupStateControllerTest {
   @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Parameter lateinit var initialFlavorName: String
 
   // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
@@ -121,6 +125,18 @@ class AppStartupStateControllerTest {
     // does not notify observers of the change.
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
     assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
+  fun testController_afterSettingAppOnboarded_logsCompletedOnboardingEvent() {
+    setUpDefaultTestApplicationComponent()
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
+
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(event.context.activityContextCase)
+      .isEqualTo(EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING)
   }
 
   @Test

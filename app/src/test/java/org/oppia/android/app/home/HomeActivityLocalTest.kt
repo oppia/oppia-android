@@ -142,18 +142,6 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
-    setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-      assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
-      assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
-    }
-  }
-
-  @Test
   fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
