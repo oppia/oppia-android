@@ -1,21 +1,21 @@
-
-name: PR Merge Comment
+name: Celebrating Initial Contributions
 
 on:
   pull_request_target:
     types: [closed]
 
-permissions: write-all
+permissions:
+  pull-requests: write
 
 jobs:
-  comment-on-merge:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+  comment_on_merged_pull_request:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set environment variables
+      - name: Set Environment Variables
         env:
           AUTHOR: ${{ github.event.pull_request.user.login }}
           REPO: ${{ github.event.repository.name }}
@@ -25,8 +25,8 @@ jobs:
           echo "REPO=${REPO}" >> $GITHUB_ENV
           echo "OWNER=${OWNER}" >> $GITHUB_ENV
 
-      - name: Count merged PRs
-        id: count-prs
+      - name: Count Merged Pull Requests
+        id: count_merged_pull_requests
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
             const prCount = data.items.filter(pr => pr.pull_request.merged_at).length;
             core.exportVariable('PR_COUNT', prCount);
 
-      - name: Comment on the PR
+      - name: Comment on the Merged Pull Request
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
