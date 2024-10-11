@@ -35,7 +35,6 @@ class ConsoleLogger @Inject constructor(
    */
   val logErrorMessagesFlow: SharedFlow<ConsoleLoggerContext> = _logErrorMessagesFlow
 
-  /** Long-lived PrintWriter to improve performance by not reopening the file every time */
   private var printWriter: PrintWriter? = null
 
   /** Logs a verbose message with the specified tag. */
@@ -136,7 +135,7 @@ class ConsoleLogger @Inject constructor(
   private fun logToFileInBackground(text: String) {
     blockingScope.launch {
       if (printWriter == null) {
-        printWriter = PrintWriter(FileWriter(logDirectory, true)) // Open in append mode
+        printWriter = PrintWriter(FileWriter(logDirectory, true)) // Open in append mode.
       }
       printWriter?.println(text)
       printWriter?.flush()
@@ -144,7 +143,7 @@ class ConsoleLogger @Inject constructor(
   }
 
   /** Close the log file when logging is finished. */
-  fun closeLogFile() {
+  private fun closeLogFile() {
     printWriter?.close()
     printWriter = null
   }

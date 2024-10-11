@@ -61,7 +61,7 @@ class ConsoleLoggerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     logFile = File(context.filesDir, "oppia_app.log")
-    logFile.delete() // Ensure we start with a clean log file
+    logFile.delete() // Ensure we start with a clean log file.
   }
 
   @Test
