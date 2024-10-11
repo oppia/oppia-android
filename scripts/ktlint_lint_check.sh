@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 echo "********************************"
 echo "Checking code formatting"
 echo "********************************"
@@ -19,15 +21,15 @@ java -jar $jar_file_path --android app/src/**/*.kt data/src/**/*.kt domain/src/*
 status=$?
 
 if [ "$status" = 0 ] ; then
-  echo "Lint completed successfully."
+  echo_success "Lint completed successfully."
   exit 0
 else
   echo "********************************"
-  echo "Ktlint issue found."
+  echo_error "Ktlint issue found."
   echo "Please fix the above issues.
   You can also use the java -jar $jar_file_path -F --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt scripts/src/**/*.kt  instrumentation/src/**/*.kt
   command to fix the most common issues."
-  echo "Please note, there might be a possibility where the above command will not fix the issue.
+  echo_warning "Please note, there might be a possibility where the above command will not fix the issue.
   In that case, you will have to fix it yourself."
   echo "********************************"
   exit 1

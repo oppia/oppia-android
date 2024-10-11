@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 echo "********************************"
 echo "Checking Bazel file formatting"
 echo "********************************"
@@ -19,12 +21,12 @@ $buildifier_file_path --lint=warn --mode=check --warnings=-native-android,+out-o
 status=$?
 
 if [ "$status" = 0 ] ; then
-  echo "Buildifier lint check completed successfully"
+  echo_success "Buildifier lint check completed successfully"
   exit 0
 else
   # Assume any lint output or non-zero exit code is a failure.
   echo "********************************"
-  echo "Buildifier issue found."
+  echo_error "Buildifier issue found."
   echo "Please fix the above issues."
   echo "********************************"
   exit 1
