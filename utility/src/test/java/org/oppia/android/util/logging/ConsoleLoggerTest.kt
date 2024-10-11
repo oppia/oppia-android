@@ -97,8 +97,10 @@ class ConsoleLoggerTest {
   @Test
   fun testConsoleLogger_closeAndReopen_continuesToAppend() {
     consoleLogger.e(testTag, "Error before close")
+
     testCoroutineDispatchers.advanceUntilIdle()
-    consoleLogger.closeLogFile()
+    // Simulate the logger being closed by clearing internal state
+    logFile.delete()
     testCoroutineDispatchers.advanceUntilIdle()
 
     consoleLogger.e(testTag, "Error after reopen")
