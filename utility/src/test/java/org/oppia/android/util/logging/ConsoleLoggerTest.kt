@@ -99,7 +99,7 @@ class ConsoleLoggerTest {
     consoleLogger.e(testTag, "Error before close")
 
     testCoroutineDispatchers.advanceUntilIdle()
-    // Simulate the logger being closed by clearing internal state
+    // Simulate the logger being closed by clearing internal state.
     logFile.delete()
     testCoroutineDispatchers.advanceUntilIdle()
 
