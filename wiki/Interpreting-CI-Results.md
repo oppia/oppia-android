@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [How to find the error message for a Failing CI check](#how-to-find-error-message-for-failing-ci-checks)
+- [How to find error message for Failing CI checks](#how-to-find-error-message-for-failing-ci-checks)
 - [Developer Video - Understanding CI check failures](#developer-video---understanding-ci-check-failures)
 
 ## How to find error message for Failing CI checks
