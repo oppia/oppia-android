@@ -238,6 +238,15 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
+    name = "wiki_table_of_contents_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.wiki.WikiTableOfContentsCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/wiki:wiki_table_of_contents_check_lib",
+    ],
+)
+
+kt_jvm_binary(
     name = "run_coverage",
     testonly = True,
     data = TEST_FILE_EXEMPTION_ASSETS,
