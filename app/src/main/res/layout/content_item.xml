@@ -48,6 +48,7 @@
       android:minWidth="48dp"
       android:minHeight="48dp"
       android:text="@{htmlContent}"
+      android:contentDescription="@{viewModel.replaceRegexWithBlank(htmlContent)}"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textColorLink="@color/component_color_shared_link_text_color"
       android:textSize="16sp"
