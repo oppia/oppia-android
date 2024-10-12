@@ -939,7 +939,6 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
-    "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
     "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
     "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",

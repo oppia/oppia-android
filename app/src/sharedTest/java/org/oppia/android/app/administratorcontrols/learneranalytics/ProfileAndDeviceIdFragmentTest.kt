@@ -122,7 +122,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -1139,7 +1138,7 @@ class ProfileAndDeviceIdFragmentTest {
       SyncStatusTestModule::class, SplitScreenInteractionModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
-      TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
+      TestingBuildFlavorModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
       ApplicationLifecycleModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class

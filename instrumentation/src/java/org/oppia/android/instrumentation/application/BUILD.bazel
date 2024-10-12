@@ -26,7 +26,6 @@ kt_android_library(
         "//domain",
         "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
         "//utility",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],

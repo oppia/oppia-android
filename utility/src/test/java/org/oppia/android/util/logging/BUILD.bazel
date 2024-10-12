@@ -56,79 +56,6 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
-    ],
-)
-
-oppia_android_test(
-    name = "EventLoggingConfigurationModuleTest",
-    srcs = ["EventLoggingConfigurationModuleTest.kt"],
-    custom_package = "org.oppia.android.util.logging",
-    test_class = "org.oppia.android.util.logging.EventLoggingConfigurationModuleTest",
-    test_manifest = "//utility:test_manifest",
-    deps = [
-        "//:dagger",
-        "//testing",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_ext_truth",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
-    ],
-)
-
-oppia_android_test(
-    name = "KenyaAlphaEventBundleCreatorTest",
-    srcs = ["KenyaAlphaEventBundleCreatorTest.kt"],
-    custom_package = "org.oppia.android.util.logging",
-    test_class = "org.oppia.android.util.logging.KenyaAlphaEventBundleCreatorTest",
-    test_manifest = "//utility:test_manifest",
-    deps = [
-        "//:dagger",
-        "//testing",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_ext_truth",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
-        "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
-    ],
-)
-
-oppia_android_test(
-    name = "KenyaAlphaEventLoggingConfigurationModuleTest",
-    srcs = ["KenyaAlphaEventLoggingConfigurationModuleTest.kt"],
-    custom_package = "org.oppia.android.util.logging",
-    test_class = "org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModuleTest",
-    test_manifest = "//utility:test_manifest",
-    deps = [
-        "//:dagger",
-        "//testing",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_ext_truth",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
-    ],
-)
-
-oppia_android_test(
-    name = "StandardEventTypeToHumanReadableNameConverterImplTest",
-    srcs = ["StandardEventTypeToHumanReadableNameConverterImplTest.kt"],
-    custom_package = "org.oppia.android.util.logging",
-    test_class = "org.oppia.android.util.logging.StandardEventTypeToHumanReadableNameConverterImplTest",
-    test_manifest = "//utility:test_manifest",
-    deps = [
-        "//:dagger",
-        "//testing",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
     ],
 )
 
@@ -182,7 +109,22 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    ],
+)
+
+oppia_android_test(
+    name = "EventTypeToHumanReadableNameConverterTest",
+    srcs = ["EventTypeToHumanReadableNameConverterTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.EventTypeToHumanReadableNameConverterTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
     ],
 )
