@@ -34,6 +34,9 @@ message Profile {
   // Unique ID given to each profile.
   ProfileId id = 1;
 
+  // Unique 64-bit UUID assigned to each profile
+  string uuid = 20;
+
   // Name of the user.
   string name = 2;
 
