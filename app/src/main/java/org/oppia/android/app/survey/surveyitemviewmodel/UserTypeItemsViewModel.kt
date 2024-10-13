@@ -13,6 +13,7 @@ import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import javax.inject.Inject
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 
 /** [SurveyAnswerItemViewModel] for providing the type of user question options. */
 class UserTypeItemsViewModel @Inject constructor(
@@ -96,9 +97,14 @@ class UserTypeItemsViewModel @Inject constructor(
   }
 
   private fun getUserTypeOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {
-    val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
-    observableList += UserTypeAnswer.values()
-      .filter { it.isValid() }
+    val observableList=ObservableArrayList<MultipleChoiceOptionContentViewModel>()
+    val filteredUserTypes=filterByEnumCondition(
+      UserTypeAnswer.values().toList(),
+      {it},
+      {it.isValid()}
+    )
+    observableList+=filteredUserTypes
+
       .mapIndexed { index, userTypeOption ->
         when (userTypeOption) {
           UserTypeAnswer.LEARNER ->
