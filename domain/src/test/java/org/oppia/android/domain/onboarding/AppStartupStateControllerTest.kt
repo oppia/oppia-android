@@ -26,6 +26,7 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBO
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
+import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -41,6 +42,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -51,6 +53,7 @@ import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -87,6 +90,7 @@ class AppStartupStateControllerTest {
   @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Parameter lateinit var initialFlavorName: String
 
   // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
@@ -120,6 +124,18 @@ class AppStartupStateControllerTest {
     // does not notify observers of the change.
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
     assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
+  fun testController_afterSettingAppOnboarded_logsCompletedOnboardingEvent() {
+    setUpDefaultTestApplicationComponent()
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
+
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(event.context.activityContextCase)
+      .isEqualTo(EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING)
   }
 
   @Test
@@ -1063,7 +1079,7 @@ class AppStartupStateControllerTest {
       ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

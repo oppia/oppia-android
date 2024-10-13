@@ -28,6 +28,7 @@ oppia_android_test(
         "//third_party:org_mockito_mockito-core",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
