@@ -23,7 +23,7 @@ class OngoingTopicListFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int): OngoingTopicListFragment {
       val ongoingTopicListFragment = OngoingTopicListFragment()
       val args = Bundle()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       args.decorateWithUserProfileId(profileId)
       ongoingTopicListFragment.arguments = args
       return ongoingTopicListFragment
@@ -45,7 +45,7 @@ class OngoingTopicListFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to OngoingTopicListFragment" }
-    val internalProfileId = args.extractCurrentUserProfileId().internalId
+    val internalProfileId = args.extractCurrentUserProfileId().loggedInInternalProfileId
     return ongoingTopicListFragmentPresenter.handleCreateView(
       inflater,
       container,

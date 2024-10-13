@@ -114,7 +114,7 @@ class StateFragmentPresenter @Inject constructor(
     explorationId: String,
     userAnswerState: UserAnswerState
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -287,7 +287,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getAudioUiManager(): AudioUiManager? {
     if (getAudioFragment() == null) {
-      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
+      val audioFragment: AudioFragment =
+        AudioFragment.newInstance(profileId.loggedInInternalProfileId)
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
     }

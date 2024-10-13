@@ -46,7 +46,7 @@ class WalkthroughActivity :
   companion object {
 
     fun createWalkthroughActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, WalkthroughActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(WALKTHROUGH_ACTIVITY)

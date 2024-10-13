@@ -430,7 +430,7 @@ class TopicPracticeFragmentTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)

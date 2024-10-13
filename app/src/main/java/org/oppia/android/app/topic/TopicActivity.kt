@@ -34,7 +34,7 @@ class TopicActivity :
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
-  private var internalProfileId: Int = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
   private lateinit var topicId: String
   private lateinit var classroomId: String
   private var storyId: String? = null
@@ -45,7 +45,8 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    profileId =
+      intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
@@ -57,7 +58,12 @@ class TopicActivity :
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = args?.storyId
-    topicActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(
+      profileId.loggedInInternalProfileId,
+      classroomId,
+      topicId,
+      storyId
+    )
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -65,7 +71,8 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        ProfileId.newBuilder()
+          .setLoggedInInternalProfileId(profileId.loggedInInternalProfileId).build()
       )
     )
   }
@@ -158,7 +165,7 @@ class TopicActivity :
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
     override fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, classroomId, topicId)
+      createTopicActivityIntent(activity, profileId.loggedInInternalProfileId, classroomId, topicId)
 
     override fun createIntent(
       profileId: ProfileId,
@@ -168,7 +175,7 @@ class TopicActivity :
     ): Intent =
       createTopicPlayStoryActivityIntent(
         activity,
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         classroomId,
         topicId,
         storyId
@@ -190,7 +197,7 @@ class TopicActivity :
         this.topicId = topicId
         this.classroomId = classroomId
       }.build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
         putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)

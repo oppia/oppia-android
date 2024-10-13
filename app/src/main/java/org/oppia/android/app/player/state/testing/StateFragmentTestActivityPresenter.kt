@@ -87,7 +87,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(profileId).build(),
+      ProfileId.newBuilder().setLoggedInInternalProfileId(profileId).build(),
       explorationId
     )
     stopExploration(isCompletion)

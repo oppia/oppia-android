@@ -129,7 +129,7 @@ class WalkthroughWelcomeFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
   }
 
   @After

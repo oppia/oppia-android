@@ -148,7 +148,7 @@ class RevisionCardActivityTest {
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -425,7 +425,7 @@ class RevisionCardActivityTest {
     subtopicId: Int
   ): ActivityScenario<RevisionCardActivity> {
     val scenario = ActivityScenario.launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(profileId.internalId, topicId, subtopicId)
+      createRevisionCardActivityIntent(profileId.loggedInInternalProfileId, topicId, subtopicId)
     )
     testCoroutineDispatchers.runCurrent()
     return scenario

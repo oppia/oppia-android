@@ -126,7 +126,7 @@ class ClassroomListActivityTest {
     val screenName = ClassroomListActivity
       .createClassroomListActivity(
         context,
-        ProfileId.newBuilder().setInternalId(0).build()
+        ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
       )
       .extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.CLASSROOM_LIST_ACTIVITY)
@@ -147,7 +147,7 @@ class ClassroomListActivityTest {
       val scenario = ActivityScenario.launch<ClassroomListActivity>(
         ClassroomListActivity.createClassroomListActivity(
           context,
-          ProfileId.newBuilder().setInternalId(0).build()
+          ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
         )
       )
       testCoroutineDispatchers.runCurrent()

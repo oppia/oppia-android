@@ -157,7 +157,7 @@ class SurveyFragmentTest {
   @Inject
   lateinit var surveyController: SurveyController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
 
   @Before
   fun setup() {
@@ -602,7 +602,7 @@ class SurveyFragmentTest {
       SurveyQuestionName.MARKET_FIT,
       SurveyQuestionName.NPS
     )
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
     surveyController.startSurveySession(questions, profileId = profileId)
     testCoroutineDispatchers.runCurrent()
   }

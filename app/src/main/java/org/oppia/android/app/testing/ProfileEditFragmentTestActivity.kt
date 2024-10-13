@@ -23,7 +23,8 @@ class ProfileEditFragmentTestActivity : TestActivity() {
   companion object {
     /** Returns an [Intent] for opening [ProfileEditFragmentTestActivity]. */
     fun createProfileEditFragmentTestActivity(context: Context, internalProfileId: Int): Intent {
-      val profileId = internalProfileId.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId =
+        internalProfileId.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
 
       val intent = Intent(context, ProfileEditFragmentTestActivity::class.java)
       intent.decorateWithUserProfileId(profileId)

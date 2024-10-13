@@ -195,7 +195,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          model.profile.id.internalId
+          model.profile.id.loggedInInternalProfileId
         )
         activity.startActivity(pinPasswordIntent)
       }
@@ -212,7 +212,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         activity.startActivity(
           AdminPinActivity.createAdminPinActivityIntent(
             activity,
-            chooserViewModel.adminProfileId.internalId,
+            chooserViewModel.adminProfileId.loggedInInternalProfileId,
             selectUniqueRandomColor(),
             AdminAuthEnum.PROFILE_ADD_PROFILE.value
           )
@@ -234,7 +234,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
       val profileId =
-        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
+        ProfileId.newBuilder()
+          .setLoggedInInternalProfileId(chooserViewModel.adminProfileId.loggedInInternalProfileId)
+          .build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
@@ -246,7 +248,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         AdminAuthActivity.createAdminAuthActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
+          chooserViewModel.adminProfileId.loggedInInternalProfileId,
           selectUniqueRandomColor(),
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
         )

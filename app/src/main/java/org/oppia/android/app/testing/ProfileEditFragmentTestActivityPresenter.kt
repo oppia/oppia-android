@@ -15,7 +15,7 @@ class ProfileEditFragmentTestActivityPresenter @Inject constructor(
   /** Handles onCreate function of [ProfileEditActivity]. */
   fun handleOnCreate() {
     activity.setContentView(R.layout.profile_edit_activity)
-    val profileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: 0
+    val profileId = activity.intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: 0
     if (getProfileEditFragment() == null) {
       activity.supportFragmentManager.beginTransaction().replace(
         R.id.profile_edit_fragment_placeholder,

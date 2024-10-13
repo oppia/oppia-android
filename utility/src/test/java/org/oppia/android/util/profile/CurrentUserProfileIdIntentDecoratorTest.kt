@@ -24,12 +24,12 @@ class CurrentUserProfileIdIntentDecoratorTest {
     val intent = Intent().apply {
       decorateWithUserProfileId(
         ProfileId.newBuilder().apply {
-          internalId = 1
+          loggedInInternalProfileId = 1
         }.build()
       )
     }
     val currentProfileId = intent.extractCurrentUserProfileId()
-    assertThat(currentProfileId.internalId).isEqualTo(1)
+    assertThat(currentProfileId.loggedInInternalProfileId).isEqualTo(1)
   }
 
   @Test
@@ -50,7 +50,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
 
   @Test
   fun testDecorator_decorateBundleWithProfileId_returnsBundleWithCorrectProfileId() {
-    val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
     val bundle = Bundle().apply {
       decorateWithUserProfileId(profileId)
     }

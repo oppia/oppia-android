@@ -25,15 +25,17 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var internalProfileId = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.internalId ?: -1
-    markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
+    val currentProfileId = intent?.extractCurrentUserProfileId()
+    profileId = currentProfileId ?: ProfileId.newBuilder().setLoggedOut(true).build()
+    markStoriesCompletedActivityPresenter.handleOnCreate(
+      profileId.loggedInInternalProfileId
+    )
     title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
 
     onBackPressedDispatcher.addCallback(
@@ -57,7 +59,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
 
     /** Returns an [Intent] to start this activity. */
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(MARK_STORIES_COMPLETED_ACTIVITY)

@@ -31,12 +31,14 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     myDownloadsActivityPresenter.handleOnCreate()
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
   }
 
   companion object {
     fun createMyDownloadsActivityIntent(context: Context, internalProfileId: Int?): Intent {
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId = internalProfileId?.let {
+        ProfileId.newBuilder().setLoggedInInternalProfileId(it).build()
+      }
       val intent = Intent(context, MyDownloadsActivity::class.java)
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)
@@ -47,7 +49,7 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     val intent = if (enableMultipleClassrooms.value)
       ClassroomListActivity.createClassroomListActivity(this, profileId)
     else

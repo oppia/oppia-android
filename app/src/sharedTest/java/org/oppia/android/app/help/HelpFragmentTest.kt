@@ -154,7 +154,7 @@ class HelpFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId,

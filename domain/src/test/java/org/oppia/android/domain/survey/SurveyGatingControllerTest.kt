@@ -708,7 +708,7 @@ class SurveyGatingControllerTest {
     // Date & time: Tue Apr 23 2019 23:22:00 GMT.
     private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
 
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_0 = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
+    private val PROFILE_ID_1 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
   }
 }

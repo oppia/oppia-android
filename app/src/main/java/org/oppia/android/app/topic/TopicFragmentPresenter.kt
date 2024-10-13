@@ -40,7 +40,7 @@ class TopicFragmentPresenter @Inject constructor(
   lateinit var accessibilityService: AccessibilityService
 
   private lateinit var tabLayout: TabLayout
-  private var internalProfileId: Int = -1
+  private var internalProfileId: Int = 0
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
@@ -170,7 +170,7 @@ class TopicFragmentPresenter @Inject constructor(
     }
     analyticsController.logImportantEvent(
       eventContext,
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
     )
   }
 }

@@ -134,7 +134,7 @@ class OptionsActivityTest {
   }
 
   private fun createOptionsActivityIntent(): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
       profileId = profileId,

@@ -160,7 +160,8 @@ class AudioFragmentTest {
       "2mzzFVDLuAj8/assets/audio/content-hi-2hn6btuei5.mp3"
 
   private var internalProfileId = 0
-  private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private var profileId =
+    ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
   @Before
   fun setUp() {

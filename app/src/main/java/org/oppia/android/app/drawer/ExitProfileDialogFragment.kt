@@ -13,6 +13,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -70,6 +71,10 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
+        ProfileId.newBuilder()
+          .setLoggedInInternalProfileId(0)
+          .setLoggedOut(true)
+          .build()
         // TODO(#3641): Investigate on using finish instead of intent.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         if (!restoreLastCheckedItem) {

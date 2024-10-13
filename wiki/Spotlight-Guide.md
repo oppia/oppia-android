@@ -137,7 +137,7 @@ In order to bypass a spotlight without any UI interaction, the ``SpotlightStateC
 	
 ```kotlin
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)  
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB) 
     spotlightStateController.markSpotlightViewed(profileId, YOUR_FEATURE_NAME)

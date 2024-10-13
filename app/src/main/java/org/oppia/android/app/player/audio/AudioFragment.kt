@@ -30,7 +30,7 @@ class AudioFragment :
      */
     fun newInstance(internalProfileId: Int): AudioFragment {
 
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val audioFragment = AudioFragment()
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)
@@ -51,7 +51,7 @@ class AudioFragment :
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     val internalProfileId =
-      arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+      arguments?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     return audioFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

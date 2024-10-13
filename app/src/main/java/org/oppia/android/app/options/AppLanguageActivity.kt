@@ -23,15 +23,16 @@ import javax.inject.Inject
 class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var appLanguageActivityPresenter: AppLanguageActivityPresenter
-  private var profileId: Int? = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    profileId =
+      intent?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
     appLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
-      profileId!!
+      profileId.loggedInInternalProfileId
     )
   }
 
@@ -45,7 +46,8 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
       oppiaLanguage: OppiaLanguage,
       internalProfileId: Int?
     ): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId!!).build()
+      val profileId =
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId!!).build()
       return Intent(context, AppLanguageActivity::class.java).apply {
         val arguments = AppLanguageActivityParams.newBuilder().apply {
           this.oppiaLanguage = oppiaLanguage

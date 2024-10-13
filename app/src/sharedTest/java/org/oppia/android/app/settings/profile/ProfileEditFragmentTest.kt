@@ -430,7 +430,7 @@ class ProfileEditFragmentTest {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     val updateLangProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = ProfileId.newBuilder().apply { internalId = 0 }.build(),
+      profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build(),
       allowInLessonQuickLanguageSwitching = true
     )
     monitorFactory.waitForNextSuccessfulResult(updateLangProvider)
@@ -451,7 +451,7 @@ class ProfileEditFragmentTest {
     // The user should not have permission to switch languages (since the switch wasn't toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build()
+        ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build()
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
 
@@ -471,7 +471,7 @@ class ProfileEditFragmentTest {
     // The user should have permission to switch languages (since the switch was toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build()
+        ProfileId.newBuilder().apply { loggedInInternalProfileId = 0 }.build()
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()

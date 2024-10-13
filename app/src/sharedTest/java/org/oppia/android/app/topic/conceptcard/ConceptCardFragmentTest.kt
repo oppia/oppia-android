@@ -161,7 +161,7 @@ class ConceptCardFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
 
   @Before
   fun setUp() {

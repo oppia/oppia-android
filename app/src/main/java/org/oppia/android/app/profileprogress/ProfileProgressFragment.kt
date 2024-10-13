@@ -19,7 +19,7 @@ class ProfileProgressFragment :
   companion object {
     /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
     fun newInstance(internalProfileId: Int): ProfileProgressFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val profileProgressFragment = ProfileProgressFragment()
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)
@@ -43,7 +43,7 @@ class ProfileProgressFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
-    val internalProfileId = args.extractCurrentUserProfileId().internalId
+    val internalProfileId = args.extractCurrentUserProfileId().loggedInInternalProfileId
     return profileProgressFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

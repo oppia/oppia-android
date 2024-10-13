@@ -623,7 +623,7 @@ class ViewEventLogsFragmentTest {
           .setFeedbackAnswer(answer)
           .setSurveyDetails(
             EventLog.SurveyResponseContext.newBuilder()
-              .setProfileId(profileId?.internalId.toString())
+              .setProfileId(profileId?.loggedInInternalProfileId.toString())
               .setSurveyId(surveyId)
               .build()
           )

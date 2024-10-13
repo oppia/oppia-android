@@ -80,7 +80,7 @@ class QuestionTrainingControllerTest {
 
   @Before
   fun setUp() {
-    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    profileId1 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
   }
 
   @Test

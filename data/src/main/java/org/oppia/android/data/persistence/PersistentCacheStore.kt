@@ -413,7 +413,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       initialValue: T,
       profileId: ProfileId
     ): PersistentCacheStore<T> {
-      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
+      val profileDirectory =
+        directoryManagementUtil.getOrCreateDir(profileId.loggedInInternalProfileId.toString())
       return PersistentCacheStore(
         application,
         cacheFactory,

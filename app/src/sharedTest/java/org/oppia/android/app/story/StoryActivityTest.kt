@@ -208,7 +208,8 @@ class StoryActivityTest {
         storyId = TEST_STORY_ID_0
         topicId = TEST_TOPIC_ID_0
         classroomId = TEST_CLASSROOM_ID_0
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId =
+          ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN
         isCheckpointingEnabled = true
       }.build()

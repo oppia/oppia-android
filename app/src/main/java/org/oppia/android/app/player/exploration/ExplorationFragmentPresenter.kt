@@ -53,10 +53,10 @@ class ExplorationFragmentPresenter @Inject constructor(
     val args = retrieveArguments()
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
-    internalProfileId = args.profileId.internalId
+    internalProfileId = args.profileId.loggedInInternalProfileId
     val stateFragment =
       StateFragment.newInstance(
-        args.profileId.internalId, args.topicId, args.storyId, args.explorationId
+        args.profileId.loggedInInternalProfileId, args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {
@@ -161,7 +161,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       oppiaLogger.createOpenExplorationActivityContext(
         classroomId, topicId, storyId, explorationId
       ),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
     )
   }
 

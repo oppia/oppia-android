@@ -52,7 +52,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 
     this.selectedTopicIdList = selectedTopicIdList
 
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

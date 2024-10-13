@@ -326,7 +326,7 @@ class ExplorationActivityLocalTest {
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
       profileManagementController.updateSurveyLastShownTimestamp(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       )
 
       onView(withText(R.string.survey_onboarding_title_text))
@@ -350,7 +350,7 @@ class ExplorationActivityLocalTest {
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
@@ -386,7 +386,7 @@ class ExplorationActivityLocalTest {
   ): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build(),
       classroomId,
       topicId,
       storyId,

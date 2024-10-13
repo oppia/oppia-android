@@ -55,7 +55,7 @@ class ProfileEditViewModel @Inject constructor(
 
   /** Sets the identifier of the profile. */
   fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(id).build()
   }
 
   /** Fetches the profile of a user asynchronously. */
@@ -64,7 +64,7 @@ class ProfileEditViewModel @Inject constructor(
       is AsyncResult.Failure -> {
         oppiaLogger.e(
           "ProfileEditViewModel",
-          "Failed to retrieve the profile with ID: ${profileId.internalId}",
+          "Failed to retrieve the profile with ID: ${profileId.loggedInInternalProfileId}",
           profileResult.error
         )
         Profile.getDefaultInstance()

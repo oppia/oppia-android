@@ -209,7 +209,7 @@ class QuestionPlayerActivityTest {
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
 
   @Before
   fun setUp() {

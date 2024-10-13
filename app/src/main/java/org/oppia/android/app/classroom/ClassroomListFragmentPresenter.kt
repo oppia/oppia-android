@@ -103,7 +103,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    internalProfileId = profileId.internalId
+    internalProfileId = profileId.loggedInInternalProfileId
 
     logHomeActivityEvent()
 

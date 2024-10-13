@@ -167,7 +167,7 @@ class HomeSpanTest {
   }
 
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 

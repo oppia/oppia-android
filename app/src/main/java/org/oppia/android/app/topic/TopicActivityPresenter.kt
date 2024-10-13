@@ -33,7 +33,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     this.topicId = topicId
     this.classroomId = classroomId
     activity.setContentView(R.layout.topic_activity)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
       val arguments = Bundle().apply {

@@ -1957,11 +1957,11 @@ class TranslationControllerTest {
     private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
 
     private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
-      internalId = 0
+      loggedInInternalProfileId = 0
     }.build()
 
     private val PROFILE_ID_1 = ProfileId.newBuilder().apply {
-      internalId = 1
+      loggedInInternalProfileId = 1
     }.build()
 
     private val APP_LANGUAGE_SELECTION_SYSTEM = AppLanguageSelection.newBuilder().apply {

@@ -273,7 +273,7 @@ class AppVersionActivityTest {
   }
 
   private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId

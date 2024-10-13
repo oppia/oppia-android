@@ -163,7 +163,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
 
   @Before
   fun setUp() {
@@ -182,7 +182,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         INVALID_CLASSROOM_ID,
         INVALID_TOPIC_ID,
         INVALID_STORY_ID,
@@ -209,7 +209,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_valid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -258,7 +258,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val profileId2 = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId2 = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
@@ -348,7 +348,7 @@ class ExplorationProgressControllerTest {
     // Try playing another exploration without finishing the previous one.
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId.loggedInInternalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -2172,7 +2172,7 @@ class ExplorationProgressControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2194,7 +2194,7 @@ class ExplorationProgressControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2218,8 +2218,8 @@ class ExplorationProgressControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3184,8 +3184,8 @@ class ExplorationProgressControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_englishToSwahili_diffProfile_doesNotChangeOtherProfilesLang() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { loggedInInternalProfileId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3305,7 +3305,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3320,7 +3320,12 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, explorationCheckpoint
+        profileId.loggedInInternalProfileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        explorationCheckpoint
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3334,7 +3339,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3348,7 +3353,7 @@ class ExplorationProgressControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }

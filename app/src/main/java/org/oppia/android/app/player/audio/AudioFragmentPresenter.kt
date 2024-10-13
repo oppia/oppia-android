@@ -71,7 +71,7 @@ class AudioFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,

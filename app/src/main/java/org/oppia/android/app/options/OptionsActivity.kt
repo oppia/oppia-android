@@ -94,7 +94,7 @@ class OptionsActivity :
       OptionsActivityParams.getDefaultInstance()
     )
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
-    profileId = intent.extractCurrentUserProfileId().internalId
+    profileId = intent.extractCurrentUserProfileId().loggedInInternalProfileId
     if (savedInstanceState != null) {
       isFirstOpen = false
     }

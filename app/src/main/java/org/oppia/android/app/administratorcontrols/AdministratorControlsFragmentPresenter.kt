@@ -56,8 +56,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
           /* attachToRoot= */ false
         )
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
     administratorControlsViewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

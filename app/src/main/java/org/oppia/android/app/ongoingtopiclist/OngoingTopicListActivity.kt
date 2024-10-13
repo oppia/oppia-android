@@ -20,7 +20,8 @@ class OngoingTopicListActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val internalProfileId: Int = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    val internalProfileId: Int =
+      intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     ongoingTopicListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
@@ -28,7 +29,7 @@ class OngoingTopicListActivity : InjectableAutoLocalizedAppCompatActivity() {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified profile ID. */
     fun createOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, OngoingTopicListActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(ONGOING_TOPIC_LIST_ACTIVITY)

@@ -51,7 +51,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     val recentlyPlayedViewModel = recentlyPlayedViewModelFactory.create(
       fragment as PromotedStoryClickListener,
       this.profileId
@@ -178,13 +178,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       // cases, lessons played from this fragment are known to be in progress, and that progress
       // can't be resumed here (hence the restart).
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     } else {
       // The only lessons that can't have their progress saved are those that were already
       // completed.
       explorationDataController.replayExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->

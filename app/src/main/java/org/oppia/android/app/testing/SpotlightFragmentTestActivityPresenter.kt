@@ -26,7 +26,8 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
 
     if (getSpotlightFragment() == null) {
       val spotlightFragment = SpotlightFragment()
-      val profileId = internalProfileId.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId =
+        internalProfileId.let { ProfileId.newBuilder().setLoggedInInternalProfileId(it).build() }
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)
       spotlightFragment.arguments = args

@@ -68,7 +68,7 @@ class SurveyControllerTest {
     SurveyQuestionName.MARKET_FIT,
     SurveyQuestionName.NPS
   )
-  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
   @Before
   fun setUp() {

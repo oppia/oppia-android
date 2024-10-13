@@ -34,7 +34,7 @@ class IntentFactoryShimImpl @Inject constructor(
   ): Intent {
     return topicActivityIntentFactory.createIntent(
       ProfileId.newBuilder().apply {
-        internalId = internalProfileId
+        loggedInInternalProfileId = internalProfileId
       }.build(),
       classroomId,
       topicId,
@@ -53,7 +53,7 @@ class IntentFactoryShimImpl @Inject constructor(
   ): Intent {
     return topicActivityIntentFactory.createIntent(
       ProfileId.newBuilder().apply {
-        internalId = internalProfileId
+        loggedInInternalProfileId = internalProfileId
       }.build(),
       classroomId,
       topicId

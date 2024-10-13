@@ -95,8 +95,8 @@ class ExplorationActiveTimeControllerTest {
   @Inject
   lateinit var explorationDataController: ExplorationDataController
 
-  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
+  private val secondTestProfile = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
   @Before
   fun setUp() {
@@ -492,7 +492,7 @@ class ExplorationActiveTimeControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.loggedInInternalProfileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }

@@ -201,7 +201,8 @@ class TopicActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the question activity is started with the correct profile ID.
-      val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      val profileId =
+        ProfileId.newBuilder().apply { loggedInInternalProfileId = internalProfileId }.build()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }
@@ -221,7 +222,7 @@ class TopicActivityTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)

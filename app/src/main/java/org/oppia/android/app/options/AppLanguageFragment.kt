@@ -22,7 +22,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
 
   @Inject
   lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
-  private var profileId: Int? = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   companion object {
     private const val FRAGMENT_ARGUMENTS_KEY = "AppLanguageFragment.arguments"
@@ -30,7 +30,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
 
     /** Returns a new [AppLanguageFragment] instance. */
     fun newInstance(oppiaLanguage: OppiaLanguage, internalProfileId: Int): AppLanguageFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return AppLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AppLanguageFragmentArguments.newBuilder().apply {
@@ -71,13 +71,14 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
       ) { "Expected arguments to be passed to AppLanguageFragment" }
-    profileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    profileId =
+      arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder().setLoggedOut(true).build()
 
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,
       container,
       oppiaLanguage,
-      profileId!!
+      profileId.loggedInInternalProfileId
     )
   }
 

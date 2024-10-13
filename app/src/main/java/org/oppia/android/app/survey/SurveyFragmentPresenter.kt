@@ -68,7 +68,7 @@ class SurveyFragmentPresenter @Inject constructor(
     topicId: String,
     fragment: SurveyFragment
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     this.answerAvailabilityReceiver = fragment
     this.answerHandler = fragment
 

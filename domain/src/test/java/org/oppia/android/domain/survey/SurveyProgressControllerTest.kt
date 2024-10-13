@@ -77,7 +77,7 @@ class SurveyProgressControllerTest {
   @Inject
   lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
 
-  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(1).build()
 
   @Before
   fun setUp() {

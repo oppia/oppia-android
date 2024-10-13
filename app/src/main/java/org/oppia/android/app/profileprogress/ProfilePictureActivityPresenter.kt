@@ -45,7 +45,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
       viewModel = profilePictureActivityViewModel
       lifecycleOwner = activity
     }
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
     subscribeToProfileLiveData()
     setUpToolbar()

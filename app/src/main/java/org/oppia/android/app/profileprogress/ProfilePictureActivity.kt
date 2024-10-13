@@ -21,13 +21,13 @@ class ProfilePictureActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    val internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     profilePictureActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
     fun createProfilePictureActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, ProfilePictureActivity::class.java).apply {
         decorateWithScreenName(PROFILE_PICTURE_ACTIVITY)
         decorateWithUserProfileId(profileId)

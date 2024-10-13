@@ -171,7 +171,7 @@ class OngoingTopicListActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
@@ -251,7 +251,7 @@ class OngoingTopicListActivityTest {
         classroomId = TEST_CLASSROOM_ID_1
         topicId = RATIOS_TOPIC_ID
       }.build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
@@ -284,7 +284,7 @@ class OngoingTopicListActivityTest {
         classroomId = TEST_CLASSROOM_ID_1
         topicId = RATIOS_TOPIC_ID
       }.build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))

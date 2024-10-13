@@ -25,7 +25,8 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val params = intent.extractParams()
-    this.profileId = params.profileId ?: ProfileId.newBuilder().setInternalId(-1).build()
+    this.profileId =
+      params.profileId ?: ProfileId.newBuilder().setLoggedInInternalProfileId(-1).build()
 
     surveyActivityPresenter.handleOnCreate(
       profileId,

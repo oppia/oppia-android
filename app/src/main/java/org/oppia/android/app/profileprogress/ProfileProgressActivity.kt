@@ -45,7 +45,7 @@ class ProfileProgressActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    internalProfileId = intent?.extractCurrentUserProfileId()?.loggedInInternalProfileId ?: -1
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
 
     resultLauncher = registerForActivityResult(
@@ -61,7 +61,9 @@ class ProfileProgressActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(
+          ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
+        )
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 
@@ -95,7 +97,7 @@ class ProfileProgressActivity :
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       return Intent(context, ProfileProgressActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_PROGRESS_ACTIVITY)

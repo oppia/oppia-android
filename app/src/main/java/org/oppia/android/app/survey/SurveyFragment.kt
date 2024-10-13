@@ -37,7 +37,7 @@ class SurveyFragment :
       internalProfileId: Int,
       topicId: String
     ): SurveyFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val args = SurveyFragmentArguments.newBuilder().apply {
         this.topicId = topicId
       }.build()
@@ -69,7 +69,7 @@ class SurveyFragment :
       SurveyFragmentArguments.getDefaultInstance()
     )
 
-    val internalProfileId = arguments!!.extractCurrentUserProfileId().internalId
+    val internalProfileId = arguments!!.extractCurrentUserProfileId().loggedInInternalProfileId
     val topicId = args.topicId!!
     val explorationId = args.explorationId!!
 

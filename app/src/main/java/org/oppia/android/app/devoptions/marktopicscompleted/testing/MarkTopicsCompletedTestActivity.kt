@@ -14,7 +14,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 /** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
-  private var internalProfileId = -1
+  private var profileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -22,10 +22,12 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
-    val profileId = intent?.extractCurrentUserProfileId()
-    internalProfileId = profileId?.internalId ?: -1
+    val currentProfileId = intent?.extractCurrentUserProfileId()
+    profileId = currentProfileId ?: ProfileId.newBuilder().setLoggedOut(true).build()
     if (getMarkTopicsCompletedFragment() == null) {
-      val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
+      val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(
+        profileId.loggedInInternalProfileId
+      )
       supportFragmentManager.beginTransaction().add(
         R.id.mark_topics_completed_container,
         markTopicsCompletedFragment
@@ -41,7 +43,7 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
   companion object {
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
     fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
       }

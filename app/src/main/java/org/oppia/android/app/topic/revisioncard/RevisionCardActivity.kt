@@ -43,7 +43,7 @@ class RevisionCardActivity :
         RevisionCardActivityParams.getDefaultInstance()
       )
 
-      val internalProfileId = intent.extractCurrentUserProfileId().internalId
+      val internalProfileId = intent.extractCurrentUserProfileId().loggedInInternalProfileId
       val topicId = checkNotNull(args.topicId) {
         "Expected topic ID to be included in intent for RevisionCardActivity."
       }
@@ -84,7 +84,7 @@ class RevisionCardActivity :
       subtopicId: Int,
       subtopicListSize: Int
     ): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
       val args = RevisionCardActivityParams.newBuilder().apply {
         this.topicId = topicId
         this.subtopicId = subtopicId

@@ -129,7 +129,8 @@ class CompletedStoryListActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   private val internalProfileId = 0
-  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId =
+    ProfileId.newBuilder().setLoggedInInternalProfileId(internalProfileId).build()
 
   @get:Rule
   val activityTestRule = ActivityTestRule(

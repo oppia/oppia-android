@@ -80,7 +80,7 @@ class TopicListControllerTest {
 
   @Before
   fun setUp() {
-    profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    profileId0 = ProfileId.newBuilder().setLoggedInInternalProfileId(0).build()
     setUpTestApplicationComponent()
 
     // Use uptime millis for time tracking since that allows proper time management for recorded
