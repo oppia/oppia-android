@@ -213,8 +213,10 @@ class ClassroomListFragmentPresenter @Inject constructor(
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   fun ClassroomListScreen() {
-    val groupedItems = (classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty()
-      + classroomListViewModel.topicList)
+    val groupedItems = (
+      classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty() +
+        classroomListViewModel.topicList
+      )
       .groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     val listState = rememberLazyListState()

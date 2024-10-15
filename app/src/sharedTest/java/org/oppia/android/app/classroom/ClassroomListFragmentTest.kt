@@ -282,6 +282,7 @@ class ClassroomListFragmentTest {
     setUpTestApplicationComponent()
     logIntoAdminTwice()
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+    testCoroutineDispatchers.runCurrent()
 
     composeRule.onNodeWithTag(WELCOME_TEST_TAG).assertIsDisplayed()
     composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).assertIsDisplayed()
@@ -858,6 +859,7 @@ class ClassroomListFragmentTest {
   fun testFragment_clickTopicSummary_opensTopicActivityThroughPlayIntent() {
     setUpTestApplicationComponent()
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+    testCoroutineDispatchers.runCurrent()
 
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
@@ -912,6 +914,8 @@ class ClassroomListFragmentTest {
   fun testFragment_switchClassroom_topicListUpdatesCorrectly() {
     setUpTestApplicationComponent()
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+    testCoroutineDispatchers.runCurrent()
+
     // Click on Science classroom card.
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
