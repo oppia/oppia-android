@@ -7,7 +7,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Prepare developer environment](#prepare-developer-environment)
 - [Install oppia-android](#install-oppia-android)
 - [Run the app from Android Studio](#run-the-app-from-android-studio)
-- [Run the tests](#set-up-and-run-tests)
+- [Set up and Run tests](#set-up-and-run-tests)
   - [Step-by-Step guidance for setting up and running app modules robolectric test](#step-by-step-guidance-for-setting-up-and-running-app-modules-robolectric-test)
   - [For tests that are in non-app modules, such as **domain** or **utility**:](#for-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
 
