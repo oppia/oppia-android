@@ -74,7 +74,8 @@
   </style>
 
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
-    <item name="android:windowBackground">@drawable/splash_page</item>
+    <item name="android:windowBackground">@drawable/splash_image</item>
+    <item name="android:adjustViewBounds">true</item>
     <item name="android:windowAnimationStyle">@style/FadeTransitionAnimation.Activity</item>
   </style>
   <!-- PREVIOUS BUTTON STYLE -->
