@@ -45,10 +45,11 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
-import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -158,6 +159,7 @@ class ProfileChooserFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
@@ -327,7 +329,8 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
+  fun testProfileChooserFragment_onboardingV1_clickAdminProfile_checkOpensPinPasswordActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -343,8 +346,13 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
-    profileTestHelper.initializeProfiles(autoLogIn = true)
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.initializeProfiles(autoLogIn = true)
+    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.updateProfileType(
+      profileId = adminProfileId,
+      profileType = ProfileType.SUPERVISOR
+    )
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -414,30 +422,6 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(IntroActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
-    profileManagementController.addProfile(
-      name = "Admin",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true
-    )
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.profile_recycler_view,
-          position = 1,
-          targetViewId = R.id.add_profile_item
-        )
-      ).perform(click())
-      intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtraWithKey(ADMIN_PIN_ACTIVITY_PARAMS_KEY))
     }
   }
 
