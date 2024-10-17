@@ -11,6 +11,8 @@ import org.oppia.android.app.model.EventLog.ConsoleLoggerContext
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
+import java.io.FileWriter
+import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,6 +34,8 @@ class ConsoleLogger @Inject constructor(
    * A flow that emits a [ConsoleLoggerContext] when a error message is logged.
    */
   val logErrorMessagesFlow: SharedFlow<ConsoleLoggerContext> = _logErrorMessagesFlow
+
+  private var printWriter: PrintWriter? = null
 
   /** Logs a verbose message with the specified tag. */
   fun v(tag: String, msg: String) {
@@ -73,12 +77,12 @@ class ConsoleLogger @Inject constructor(
     writeError(LogLevel.WARNING, tag, msg, tr)
   }
 
-  /** Logs a error message with the specified tag. */
+  /** Logs an error message with the specified tag. */
   fun e(tag: String, msg: String) {
     writeLog(LogLevel.ERROR, tag, msg)
   }
 
-  /** Logs a error message with the specified tag, message and exception. */
+  /** Logs an error message with the specified tag, message and exception. */
   fun e(tag: String, msg: String, tr: Throwable?) {
     writeError(LogLevel.ERROR, tag, msg, tr)
   }
@@ -109,7 +113,7 @@ class ConsoleLogger @Inject constructor(
     }
 
     // Add the log to the error message flow so it can be logged to firebase.
-    CoroutineScope(blockingDispatcher).launch {
+    blockingScope.launch {
       // Only log error messages to firebase.
       if (logLevel == LogLevel.ERROR) {
         _logErrorMessagesFlow.emit(
@@ -124,10 +128,17 @@ class ConsoleLogger @Inject constructor(
   }
 
   /**
-   * Writes the specified text line to file in a background thread to ensure that saving messages don't block the main
-   * thread. A blocking dispatcher is used to ensure messages are written in order.
+   * Writes the specified text line to file in a background thread to ensure that saving messages
+   * doesn't block the main thread. A blocking dispatcher is used to ensure messages are written
+   * in order.
    */
   private fun logToFileInBackground(text: String) {
-    blockingScope.launch { logDirectory.printWriter().use { out -> out.println(text) } }
+    blockingScope.launch {
+      if (printWriter == null) {
+        printWriter = PrintWriter(FileWriter(logDirectory, true)) // Open in append mode.
+      }
+      printWriter?.println(text)
+      printWriter?.flush()
+    }
   }
 }
