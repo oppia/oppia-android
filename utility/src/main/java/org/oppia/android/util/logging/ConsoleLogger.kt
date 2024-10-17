@@ -141,10 +141,4 @@ class ConsoleLogger @Inject constructor(
       printWriter?.flush()
     }
   }
-
-  /** Close the log file when logging is finished. */
-  private fun closeLogFile() {
-    printWriter?.close()
-    printWriter = null
-  }
 }
