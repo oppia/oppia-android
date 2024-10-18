@@ -80,6 +80,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -177,6 +178,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -5001,6 +5003,39 @@ class StateFragmentTest {
       onView(withText(R.string.survey_onboarding_message_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      shouldSavePartialProgress = false
+    ).use { scenario ->
+      testCoroutineDispatchers.unregisterIdlingResource()
+      startPlayingExploration()
+
+      scenario.onActivity { activity ->
+        val stateFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.state_fragment_placeholder) as StateFragment
+
+        val args =
+          stateFragment.arguments?.getProto(
+            StateFragment.STATE_FRAGMENT_ARGUMENTS_KEY,
+            StateFragmentArguments.getDefaultInstance()
+          )
+
+        val receivedInternalProfileId = args?.internalProfileId ?: -1
+        val receivedTopicId = args?.topicId!!
+        val receivedStoryId = args.storyId!!
+        val reveivedExplorationId = args.explorationId!!
+
+        assertThat(receivedInternalProfileId).isEqualTo(profileId.internalId)
+        assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID_0)
+        assertThat(receivedStoryId).isEqualTo(TEST_STORY_ID_0)
+        assertThat(reveivedExplorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
+      }
     }
   }
 
