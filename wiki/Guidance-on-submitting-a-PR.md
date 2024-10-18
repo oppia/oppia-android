@@ -22,7 +22,7 @@ Note: If your change involves more than around 500 lines of code, we recommend f
     - [Tips for getting your PR submitted](#tips-for-getting-your-pr-submitted)
     - [Appendix: Resolving merge conflicts using the terminal](#appendix-resolving-merge-conflicts-using-the-terminal)
     - [Appendix: Resolving merge conflicts using Android Studio](#appendix-resolving-merge-conflicts-using-android-studio)
-- [Step 4: Tidy up and celebrate!](#step-4-tidy-up-and-celebrate-confetti_ball)
+- [Step 4: Tidy up and celebrate! :confetti_ball:](#step-4-tidy-up-and-celebrate-confetti_ball)
 
 ## Step 1: Making a local code change
 

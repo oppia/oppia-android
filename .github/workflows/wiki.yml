@@ -1,20 +1,45 @@
 name: Deploy to Wiki
 on:
+  pull_request:
+    paths:
+      - 'wiki/**'
   push:
     branches:
       - develop
     paths:
       - 'wiki/**'
-  # Triggers this workflow when the wiki is changed
+  # Triggers this workflow when the wiki is changed.
   # (see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#gollum).
   gollum:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
+  table_of_contents_check:
+    # To verify that the wiki's table of contents matches the headers accurately.
+    name: Check Wiki Table of Contents
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Check Wiki Table of Contents
+        id: checkWikiToc
+        run: |
+          bazel run //scripts:wiki_table_of_contents_check -- ${GITHUB_WORKSPACE}
+
   wiki-deploy:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-20.04]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
     steps:
       - uses: actions/checkout@v3
         with:
