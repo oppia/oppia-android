@@ -36,6 +36,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/SplashTestAc
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/StateAssemblerMarginBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/StateAssemblerPaddingBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TestFontScaleConfigurationUtilActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TextInputLayoutBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TextViewBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TopicRevisionTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TopicTestActivity"

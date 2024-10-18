@@ -76,6 +76,16 @@ class ProfileTestHelper @Inject constructor(
     }
   }
 
+  /** Creates one admin profile with default values for all fields. */
+  fun createDefaultAdminProfile() {
+    addProfileAndWait(
+      name = "",
+      pin = "",
+      allowDownloadAccess = false,
+      isAdmin = true
+    )
+  }
+
   /** Log in to admin profile. */
   fun logIntoAdmin() = logIntoProfile(internalProfileId = 0)
 

@@ -16,6 +16,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
@@ -78,6 +79,8 @@ private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "set_last_selected_classroom_id_provider_id"
 private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "retrieve_last_selected_classroom_id_provider_id"
+private const val UPDATE_PROFILE_DETAILS_PROVIDER_ID = "update_profile_details_data_provider_id"
+private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -112,7 +115,7 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the selected image was not stored properly. */
   class FailedToStoreImageException(msg: String) : Exception(msg)
 
-  /** Indicates that the profile's directory was not delete properly. */
+  /** Indicates that the profile's directory was not deleted properly. */
   class FailedToDeleteDirException(msg: String) : Exception(msg)
 
   /** Indicates that the given profileId is not associated with an existing profile. */
@@ -123,6 +126,9 @@ class ProfileManagementController @Inject constructor(
 
   /** Indicates that the Profile already has admin. */
   class ProfileAlreadyHasAdminException(msg: String) : Exception(msg)
+
+  /** Indicates that the a ProfileType was not passed. */
+  class UnknownProfileTypeException(msg: String) : Exception(msg)
 
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
@@ -169,7 +175,10 @@ class ProfileManagementController @Inject constructor(
      * Indicates that the operation failed due to an attempt to re-elevate an administrator to
      * administrator status (this should never happen in regular app operations).
      */
-    PROFILE_ALREADY_HAS_ADMIN
+    PROFILE_ALREADY_HAS_ADMIN,
+
+    /** Indicates that the operation failed due to the profileType property not supplied. */
+    PROFILE_TYPE_UNKNOWN,
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -365,7 +374,7 @@ class ProfileManagementController @Inject constructor(
    * Updates the name of an existing profile.
    *
    * @param profileId the ID corresponding to the profile being updated.
-   * @param newName New name for the profile being updated.
+   * @param newName new name for the profile being updated.
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateName(profileId: ProfileId, newName: String): DataProvider<Any?> {
@@ -392,6 +401,47 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_NAME_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
+    }
+  }
+
+  /**
+   * Updates the profile type field of an existing profile.
+   *
+   * @param profileId the ID of the profile to update
+   * @return a [DataProvider] that represents the result of the update operation
+   */
+  fun updateProfileType(
+    profileId: ProfileId,
+    profileType: ProfileType
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+
+      val updatedProfile = profile.toBuilder()
+
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
+        updatedProfile.profileType = profileType
+      }
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_TYPE_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }
 
@@ -680,6 +730,77 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Updates the provided details of an newly created profile to migrate onboarding flow v2 support.
+   *
+   * @param profileId the ID of the profile to update
+   * @param avatarImagePath the path to the profile's avatar image, or null if unset
+   * @param colorRgb the randomly selected unique color to be used in place of a picture
+   * @param newName the nickname to identify the profile
+   * @param isAdmin whether the profile has administrator privileges
+   * @return [DataProvider] that represents the result of the update operation
+   */
+  fun updateNewProfileDetails(
+    profileId: ProfileId,
+    profileType: ProfileType,
+    avatarImagePath: Uri?,
+    colorRgb: Int,
+    newName: String,
+    isAdmin: Boolean
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      if (!enableLearnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
+      }
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val profileDir = directoryManagementUtil.getOrCreateDir(profileId.toString())
+
+      val updatedProfile = profile.toBuilder()
+
+      if (avatarImagePath != null) {
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir)
+            ?: return@storeDataWithCustomChannelAsync Pair(
+              it,
+              ProfileActionStatus.FAILED_TO_STORE_IMAGE
+            )
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
+      } else {
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+      }
+
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
+        updatedProfile.profileType = profileType
+      }
+
+      updatedProfile.name = newName
+
+      updatedProfile.isAdmin = isAdmin
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_DETAILS_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
+    }
+  }
+
+  /**
    * Log in to the user's Profile by setting the current profile Id, updating profile's last logged
    * in time and updating the total number of logins for the current profile Id.
    *
@@ -962,6 +1083,8 @@ class ProfileManagementController @Inject constructor(
             "Profile cannot be an admin"
           )
         )
+      ProfileActionStatus.PROFILE_TYPE_UNKNOWN ->
+        AsyncResult.Failure(UnknownProfileTypeException("ProfileType must be set."))
     }
   }
 

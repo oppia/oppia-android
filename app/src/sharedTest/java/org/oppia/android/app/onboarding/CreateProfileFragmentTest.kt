@@ -20,6 +20,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -28,13 +29,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.protobuf.MessageLite
 import dagger.Component
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,10 +50,14 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -87,6 +89,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -94,6 +97,7 @@ import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -101,7 +105,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -113,6 +117,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -128,18 +134,27 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class CreateProfileFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.createDefaultAdminProfile()
   }
 
   @After
@@ -195,6 +210,7 @@ class CreateProfileFragmentTest {
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.onboarding_navigation_continue))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -203,13 +219,15 @@ class CreateProfileFragmentTest {
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
+          hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
     }
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testFragment_continueButtonClicked_filledNickname_doesNotShowErrorText() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
@@ -218,11 +236,12 @@ class CreateProfileFragmentTest {
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.onboarding_navigation_continue))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.create_profile_activity_nickname_error))
+      onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
   }
@@ -244,6 +263,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
+
       onView(withText(R.string.create_profile_activity_nickname_error))
         .check(matches(isDisplayed()))
 
@@ -253,6 +273,7 @@ class CreateProfileFragmentTest {
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.onboarding_navigation_continue))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -261,7 +282,8 @@ class CreateProfileFragmentTest {
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
+          hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
     }
@@ -290,12 +312,15 @@ class CreateProfileFragmentTest {
   @Test
   fun testFragment_landscapeMode_filledNickname_continueButtonClicked_launchesLearnerIntroScreen() {
     launchNewLearnerProfileActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.onboarding_navigation_continue))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -304,7 +329,8 @@ class CreateProfileFragmentTest {
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
+          hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
     }
@@ -365,7 +391,8 @@ class CreateProfileFragmentTest {
       intended(
         allOf(
           hasComponent(IntroActivity::class.java.name),
-          hasProtoExtra("OnboardingIntroActivity.params", expectedParams)
+          hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
     }
@@ -451,6 +478,155 @@ class CreateProfileFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_inputNameWithNumbers_showsNameOnlyLettersError() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+    }
+  }
+
+  @Test
+  fun testFragment_landscape_inputNameWithNumbers_showsNameOnlyLettersError() {
+    launchNewLearnerProfileActivity().use {
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+    }
+  }
+
+  @Test
+  fun testFragment_inputNameWithNumbers_configChange_errorIsRetained() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_name_only_letters))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+  }
+
+  @Test
+  fun testFragment_inputNameWithNumbers_thenInputNameWithLetters_errorIsCleared() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testFragment_inputNameWithNumbers_configChange_thenInputNameWithLetters_errorIsCleared() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John123"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testFragment_profileTypeArgumentMissing_showsUnknownProfileTypeError() {
+    val intent = CreateProfileActivity.createProfileActivityIntent(context)
+    // Not adding the profile type intent parameter to trigger the exception.
+    intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+
+    val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+    testCoroutineDispatchers.runCurrent()
+
+    scenario.use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_error))
+        .check(matches(withText(R.string.add_profile_error_missing_profile_type)))
+    }
+  }
+
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
@@ -466,26 +642,18 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity():
     ActivityScenario<CreateProfileActivity>? {
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context)
+      val intent = CreateProfileActivity.createProfileActivityIntent(context)
+      intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+      intent.putProtoExtra(
+        CREATE_PROFILE_PARAMS_KEY,
+        CreateProfileActivityParams.newBuilder()
+          .setProfileType(ProfileType.SOLE_LEARNER)
+          .build()
       )
+      val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
       testCoroutineDispatchers.runCurrent()
       return scenario
     }
-
-  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
-    val defaultProto = expectedProto.newBuilderForType().build()
-    return object : TypeSafeMatcher<Intent>() {
-      override fun describeTo(description: Description) {
-        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
-      }
-
-      override fun matchesSafely(intent: Intent): Boolean {
-        return intent.hasExtra(keyName) &&
-          intent.getProtoExtra(keyName, defaultProto) == expectedProto
-      }
-    }
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

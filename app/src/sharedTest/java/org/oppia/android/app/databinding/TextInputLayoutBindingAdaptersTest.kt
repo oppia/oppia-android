@@ -1,17 +1,18 @@
-package org.oppia.android.app.onboarding
+package org.oppia.android.app.databinding
 
 import android.app.Application
 import android.content.Context
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -26,9 +27,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.TextInputLayoutBindingAdaptersTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -61,10 +63,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -74,7 +76,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -82,71 +83,92 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [IntroActivity]. */
+/** Tests for [TextInputLayoutBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = IntroActivityTest.TestApplication::class,
+  application = TextInputLayoutBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
-class IntroActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
+class TextInputLayoutBindingAdaptersTest {
   @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
+    Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.registerIdlingResource()
     Intents.release()
   }
 
   @Test
-  fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName =
-      IntroActivity.createIntroActivity(context)
-        .extractCurrentAppScreenName()
-
-    assertThat(screenName).isEqualTo(ScreenName.INTRO_ACTIVITY)
-  }
-
-  @Test
-  fun testLearnerIntroActivity_hasCorrectActivityLabel() {
-    launchOnboardingLearnerIntroActivity().use { scenario ->
-      lateinit var title: CharSequence
-      scenario?.onActivity { activity -> title = activity.title }
-
-      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-      // correct string when it's read out.
-      assertThat(title)
-        .isEqualTo(context.getString(R.string.onboarding_learner_intro_activity_title))
+  fun testBindingAdapters_setErrorMessage_setsMessageCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: TextInputLayout = activity.findViewById(R.id.test_text_input_view)
+        TextInputLayoutBindingAdapters.setErrorMessage(testView, "Some error message.")
+        assertThat(testView.error).isEqualTo("Some error message.")
+      }
     }
   }
 
-  private fun launchOnboardingLearnerIntroActivity():
-    ActivityScenario<IntroActivity>? {
-      val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(context)
+  @Test
+  fun testBindingAdapters_setSelection_filterDisabled_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, false)
+        assertThat(testView.text.toString()).isEqualTo("English")
+      }
+    }
+  }
+
+  @Test
+  fun testBindingAdapters_setSelection_filterEnabled_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, true)
+        assertThat(testView.text.toString()).isEqualTo("English")
+      }
+    }
+  }
+
+  @Test
+  fun testBindingAdapters_setSelection_arabicLanguage_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ARABIC, true)
+        assertThat(testView.text.toString()).isEqualTo(
+          context.getString(R.string.arabic_localized_language_name)
+        )
+      }
+    }
+  }
+
+  private fun launchActivity():
+    ActivityScenario<TextInputLayoutBindingAdaptersTestActivity>? {
+      val scenario = ActivityScenario.launch<TextInputLayoutBindingAdaptersTestActivity>(
+        TextInputLayoutBindingAdaptersTestActivity.createIntent(context)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
@@ -167,7 +189,7 @@ class IntroActivityTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverModule::class,
@@ -188,23 +210,24 @@ class IntroActivityTest {
       TestAuthenticationModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
-    fun inject(introActivityTest: IntroActivityTest)
+    fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerIntroActivityTest_TestApplicationComponent.builder()
+      DaggerTextInputLayoutBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(introActivityTest: IntroActivityTest) {
-      component.inject(introActivityTest)
+    fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest) {
+      component.inject(textInputLayoutBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

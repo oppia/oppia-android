@@ -124,7 +124,7 @@
       android:layout_marginStart="@dimen/phone_shared_margin_xl"
       android:layout_marginTop="@dimen/phone_shared_margin_small"
       android:layout_marginEnd="@dimen/phone_shared_margin_medium"
-      android:text="@string/create_profile_activity_nickname_error"
+      android:text="@{viewModel.errorMessage}"
       android:visibility="@{viewModel.hasErrorMessage ? View.VISIBLE : View.GONE}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_edittext" />

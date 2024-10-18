@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.CreateProfileFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment for displaying a new learner profile creation flow. */
@@ -33,6 +36,23 @@ class CreateProfileFragment : InjectableFragment() {
         createProfileFragmentPresenter.handleOnActivityResult(result.data)
       }
     }
-    return createProfileFragmentPresenter.handleCreateView(inflater, container)
+
+    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+      "Expected CreateProfileFragment to have a profileId argument."
+    }
+    val profileType = checkNotNull(
+      arguments?.getProto(
+        CREATE_PROFILE_FRAGMENT_ARGS, CreateProfileFragmentArguments.getDefaultInstance()
+      )?.profileType
+    ) {
+      "Expected CreateProfileFragment to have a profileType argument."
+    }
+
+    return createProfileFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      profileId,
+      profileType
+    )
   }
 }

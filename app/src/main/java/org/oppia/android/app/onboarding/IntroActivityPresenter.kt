@@ -5,13 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.IntroFragmentArguments
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.IntroActivityBinding
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 private const val TAG_LEARNER_INTRO_FRAGMENT = "TAG_INTRO_FRAGMENT"
 
-/** Argument key for bundling the profileId. */
-const val PROFILE_NICKNAME_ARGUMENT_KEY = "profile_nickname"
+/** Argument key for bundling the profile nickname. */
+const val PROFILE_NICKNAME_ARGUMENT_KEY = "IntroFragment.Arguments"
 
 /** The Presenter for [IntroActivity]. */
 @ActivityScope
@@ -21,15 +25,21 @@ class IntroActivityPresenter @Inject constructor(
   private lateinit var binding: IntroActivityBinding
 
   /** Handle creation and binding of the [IntroActivity] layout. */
-  fun handleOnCreate(profileNickname: String) {
+  fun handleOnCreate(profileNickname: String, profileId: ProfileId) {
     binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)
     binding.lifecycleOwner = activity
 
     if (getIntroFragment() == null) {
       val introFragment = IntroFragment()
 
-      val args = Bundle()
-      args.putString(PROFILE_NICKNAME_ARGUMENT_KEY, profileNickname)
+      val argumentsProto =
+        IntroFragmentArguments.newBuilder().setProfileNickname(profileNickname).build()
+
+      val args = Bundle().apply {
+        decorateWithUserProfileId(profileId)
+        putProto(PROFILE_NICKNAME_ARGUMENT_KEY, argumentsProto)
+      }
+
       introFragment.arguments = args
 
       activity.supportFragmentManager.beginTransaction().add(

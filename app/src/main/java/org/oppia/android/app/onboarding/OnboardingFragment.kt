@@ -34,9 +34,16 @@ class OnboardingFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     return if (enableOnboardingFlowV2.value) {
-      onboardingFragmentPresenter.handleCreateView(inflater, container)
+      onboardingFragmentPresenter.handleCreateView(inflater, container, savedInstanceState)
     } else {
       onboardingFragmentPresenterV1.handleCreateView(inflater, container)
+    }
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    if (enableOnboardingFlowV2.value) {
+      onboardingFragmentPresenter.saveToSavedInstanceState(outState)
     }
   }
 }
