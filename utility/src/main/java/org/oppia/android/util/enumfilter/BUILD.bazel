@@ -1,0 +1,17 @@
+"""
+General purposes utilities for filtering enums.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "enum_filter_util",
+    srcs = [
+        "genericutilityforfilteringenums.kt",
+    ],
+    visibility = ["//app:__subpackages__"],
+    deps = [
+        "//app:resources",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
