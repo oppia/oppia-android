@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.IntroFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that contains the introduction message for new learners. */
@@ -26,13 +28,25 @@ class IntroFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val profileNickname =
-      checkNotNull(arguments?.getStringFromBundle(PROFILE_NICKNAME_ARGUMENT_KEY)) {
+      checkNotNull(
+        arguments?.getProto(
+          PROFILE_NICKNAME_ARGUMENT_KEY,
+          IntroFragmentArguments.getDefaultInstance()
+        )
+      ) {
         "Expected profileNickname to be included in the arguments for IntroFragment."
+      }.profileNickname
+
+    val profileId =
+      checkNotNull(arguments?.extractCurrentUserProfileId()) {
+        "Expected profileId to be included in the arguments for IntroFragment."
       }
+
     return introFragmentPresenter.handleCreateView(
       inflater,
       container,
-      profileNickname
+      profileNickname,
+      profileId
     )
   }
 }

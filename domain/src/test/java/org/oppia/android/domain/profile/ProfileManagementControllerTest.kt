@@ -28,6 +28,7 @@ import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
@@ -141,7 +142,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
-    assertThat(profile.lastSelectedClassroomId).isEqualTo("")
+    assertThat(profile.lastSelectedClassroomId).isEmpty()
   }
 
   @Test
@@ -1432,6 +1433,190 @@ class ProfileManagementControllerTest {
       profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
     )
     assertThat(lastSelectedClassroomId).isEmpty()
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_checkUpdateIsSuccessful() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -1,
+      "John",
+      isAdmin = true
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+
+    assertThat(profile.name).isEqualTo("John")
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.avatar.avatarImageUri).isEmpty()
+    assertThat(profile.avatar.avatarColorRgb).isEqualTo(-1)
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_invalidName_checkNameUpdateFailed() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -1,
+      "John123",
+      isAdmin = true
+    )
+    val failure = monitorFactory.waitForNextFailureResult(updateProvider)
+
+    assertThat(failure).hasMessageThat().contains("John123 does not contain only letters")
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_nullAvatarUri_setsAvatarColorSuccessfully() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -11235672,
+      "John",
+      isAdmin = true
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+
+    assertThat(profile.avatar.avatarImageUri).isEmpty()
+    assertThat(profile.avatar.avatarColorRgb).isEqualTo(-11235672)
+    assertThat(profile.name).isEqualTo("John")
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+    assertThat(profile.isAdmin).isEqualTo(true)
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_unspecifiedProfileType_returnsProfileTypeError() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_0,
+      ProfileType.PROFILE_TYPE_UNSPECIFIED,
+      null,
+      -11235672,
+      "John",
+      isAdmin = true
+    )
+
+    val failure = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
+  }
+
+  @Test
+  fun testUpdateProfile_updateMultipleFields_invalidProfileId_checkUpdateFailed() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateNewProfileDetails(
+      PROFILE_ID_3,
+      ProfileType.SOLE_LEARNER,
+      null,
+      -1,
+      "John",
+      isAdmin = true
+    )
+    val failure = monitorFactory.waitForNextFailureResult(updateProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("ProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
+  }
+
+  @Test
+  fun testUpdateExistingAdminProfile_updateProfileTypeToSupervisor_checkProfileTypeSupervisor() {
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SUPERVISOR
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val updatedProfile = monitorFactory.waitForNextSuccessfulResult(updatedProfileProvider)
+    assertThat(updatedProfile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+  }
+
+  @Test
+  fun testUpdateExistingPinlessAdmin_updateProfileTypeToSoleLearner_checkProfileTypeSoleLearner() {
+    setUpTestApplicationComponent()
+    addAdminProfile(name = "Admin", pin = "")
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val updatedProfile = monitorFactory.waitForNextSuccessfulResult(updatedProfileProvider)
+    assertThat(updatedProfile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testUpdateExistingNonAdminProfile_updateProfileTypeToLearner_checkProfileTypeAddLearner() {
+    setUpTestApplicationComponent()
+    addAdminProfile("Admin")
+    addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_1,
+      ProfileType.ADDITIONAL_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_1)
+    val updatedProfile = monitorFactory.waitForNextSuccessfulResult(updatedProfileProvider)
+    assertThat(updatedProfile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+  }
+
+  @Test
+  fun testUpdateDefaultProfile_profileTypeToSoleLearner_checkProfileTypeSoleLearner() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.SOLE_LEARNER
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val updatedProfile = monitorFactory.waitForNextSuccessfulResult(updatedProfileProvider)
+    assertThat(updatedProfile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testUpdateDefaultProfile_profileTypeUnspecified_returnsProfileTypeError() {
+    setUpTestApplicationComponent()
+    profileTestHelper.createDefaultAdminProfile()
+
+    val updateProvider = profileManagementController.updateProfileType(
+      PROFILE_ID_0,
+      ProfileType.PROFILE_TYPE_UNSPECIFIED
+    )
+
+    val failure = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
   }
 
   private fun addTestProfiles() {
