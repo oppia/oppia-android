@@ -15,6 +15,9 @@ option java_multiple_files = true;
 message ExitProfileDialogArguments {
   // Decides the correct menu item to be highlighted after canceling the ExitProfileDialogFragment.
   HighlightItem highlight_item = 1;
+
+  // Decides the exit pathway depending on a user's profile type.
+  ProfileType profile_type = 2;
 }
 
 // Represents the type of item/menuItem that should be highlighted after canceling the
@@ -912,4 +915,16 @@ message CreateProfileFragmentArguments {
 message OnboardingFragmentStateBundle {
   // The current selected language.
   OppiaLanguage selected_language = 1;
+}
+
+// Params required when creating a new ProfileChooserActivity.
+message ProfileChooserActivityParams {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+}
+
+// Arguments required when creating a new ProfileChooserFragment.
+message ProfileChooserFragmentArguments {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
 }

@@ -13,12 +13,15 @@ import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
@@ -28,7 +31,8 @@ class HomeActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
-  RouteToRecentlyPlayedListener {
+  RouteToRecentlyPlayedListener,
+  ExitProfileListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
 
@@ -38,12 +42,15 @@ class HomeActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
+  @Inject
+  @field:EnableOnboardingFlowV2
+  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+
   private var internalProfileId: Int = -1
 
   companion object {
 
     fun createHomeActivity(context: Context, profileId: ProfileId?): Intent {
-
       return Intent(context, HomeActivity::class.java).apply {
         decorateWithScreenName(HOME_ACTIVITY)
         if (profileId != null) {
@@ -71,22 +78,6 @@ class HomeActivity :
     startActivity(
       TopicActivity.createTopicActivityIntent(this, internalProfileId, classroomId, topicId)
     )
-  }
-
-  override fun onBackPressed() {
-    val previousFragment =
-      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
-    if (previousFragment != null) {
-      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val exitProfileDialogArguments =
-      ExitProfileDialogArguments
-        .newBuilder()
-        .setHighlightItem(HighlightItem.NONE)
-        .build()
-    val dialogFragment = ExitProfileDialogFragment
-      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
-    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
   override fun routeToTopicPlayStory(
@@ -119,5 +110,25 @@ class HomeActivity :
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
         .build()
     )
+  }
+
+  override fun exitProfile(profileType: ProfileType) {
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val exitProfileDialogArguments =
+      ExitProfileDialogArguments
+        .newBuilder().apply {
+          if (enableOnboardingFlowV2.value) {
+            this.profileType = profileType
+          }
+          this.highlightItem = HighlightItem.NONE
+        }
+        .build()
+    val dialogFragment = ExitProfileDialogFragment
+      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 }

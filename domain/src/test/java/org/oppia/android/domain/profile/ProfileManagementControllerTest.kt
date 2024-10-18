@@ -28,6 +28,7 @@ import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
@@ -62,8 +63,10 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -82,17 +85,28 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileManagementControllerTest.TestApplication::class)
 class ProfileManagementControllerTest {
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
-  @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
-  @Inject lateinit var oppiaClock: FakeOppiaClock
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+  @field:[BackgroundDispatcher Inject]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -122,6 +136,7 @@ class ProfileManagementControllerTest {
   @After
   fun tearDown() {
     TestModule.enableLearnerStudyAnalytics = false
+    TestModule.enableOnboardingFlowV2 = false
   }
 
   @Test
@@ -143,6 +158,108 @@ class ProfileManagementControllerTest {
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
     assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
     assertThat(profile.lastSelectedClassroomId).isEmpty()
+  }
+
+  @Test
+  fun testAddProfile_addSoleLearnerProfile_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addAdminProfile(name = "James", pin = "")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+  }
+
+  @Test
+  fun testAddProfile_addSupervisorProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addAdminProfile(name = "James")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("12345")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+  }
+
+  @Test
+  fun testAddProfile_addAdditionalLearnerProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = addNonAdminProfile(name = "James")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("12345")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+  }
+
+  @Test
+  fun testAddProfile_addProfile_withPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
+    setUpTestWithOnboardingV2Enabled(false)
+    val dataProvider = addAdminProfile(name = "James")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("12345")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testAddProfile_addProfile_withoutPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
+    setUpTestWithOnboardingV2Enabled(false)
+    val dataProvider = addAdminProfile(name = "James", pin = "")
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(profile.surveyLastShownTimestampMs).isEqualTo(0L)
+    assertThat(profile.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
   }
 
   @Test
@@ -1619,6 +1736,126 @@ class ProfileManagementControllerTest {
     assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
   }
 
+  @Test
+  fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfileAndWait(name = "James", pin = "")
+
+    val updateProfileProvider =
+      profileManagementController.updateProfileType(ADMIN_PROFILE_ID_0, ProfileType.SOLE_LEARNER)
+    monitorFactory.ensureDataProviderExecutes(updateProfileProvider)
+
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
+
+    assertThat(profileOnboardingModeResult).isEqualTo(
+      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY
+    )
+  }
+
+  @Test
+  fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyMode() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfileAndWait(name = "James")
+
+    val updateProfileProvider =
+      profileManagementController.updateProfileType(ADMIN_PROFILE_ID_0, ProfileType.SUPERVISOR)
+    monitorFactory.ensureDataProviderExecutes(updateProfileProvider)
+
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
+
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.SUPERVISOR_PROFILE_ONLY)
+  }
+
+  @Test
+  fun testProfileOnboardingState_multipleProfiles_returnsMultipleProfilesTypeMode() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfileAndWait(name = "James")
+    addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
+    addNonAdminProfileAndWait(name = "Rohit", pin = "")
+
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
+
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.MULTIPLE_PROFILES)
+  }
+
+  @Test
+  fun testProfileOnboardingState_noProfilesFound_returnsNewInstallTypeMode() {
+    setUpTestWithOnboardingV2Enabled(true)
+
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
+
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.NEW_INSTALL)
+  }
+
+  @Test
+  fun testProfileOnboardingState_existingProfilesV1_returnsUnknownProfileTypeMode() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfileAndWait(name = "James")
+
+    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
+    val profileOnboardingModeResult =
+      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
+
+    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.UNKNOWN_PROFILE_TYPE)
+  }
+
+  @Test
+  fun testGetProfile_createAdmin_returnsSupervisorType() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James")
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+  }
+
+  @Test
+  fun testGetProfile_createSoleLearner_returnsSoleLearnerType() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James", pin = "")
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testGetProfile_createAdditionalLearner_returnsAdditionalLearnerType() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James")
+    addNonAdminProfile(name = "Rajat")
+    val profile = retrieveProfile(PROFILE_ID_1)
+    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+  }
+
+  @Test
+  fun testProfileOnboarding_markOnboardingStarted_logsStartProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James", pin = "")
+    val onboardingProvider = profileManagementController.markProfileOnboardingStarted(PROFILE_ID_0)
+    monitorFactory.ensureDataProviderExecutes(onboardingProvider)
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event).hasStartProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
+    }
+  }
+
+  @Test
+  fun testProfileOnboarding_markOnboardingCompleted_logsEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    addAdminProfile(name = "James", pin = "")
+    val onboardingProvider = profileManagementController.markProfileOnboardingEnded(PROFILE_ID_0)
+    monitorFactory.ensureDataProviderExecutes(onboardingProvider)
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event).hasEndProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
+    }
+  }
+
   private fun addTestProfiles() {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
@@ -1766,6 +2003,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
   }
 
+  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingV2: Boolean) {
+    TestModule.enableOnboardingFlowV2 = enableOnboardingV2
+    setUpTestApplicationComponent()
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1777,6 +2019,7 @@ class ProfileManagementControllerTest {
       // This is expected to be off by default, so this helps the tests above confirm that the
       // feature's default value is, indeed, off.
       var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+      var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
     }
 
     @Provides
@@ -1818,6 +2061,16 @@ class ProfileManagementControllerTest {
     fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
+      return PlatformParameterValue.createDefaultParameter(
+        defaultValue = enableFeature
+      )
+    }
+
+    @Provides
+    @EnableOnboardingFlowV2
+    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
+      // Snapshot the value so that it doesn't change between injection and use.
+      val enableFeature = enableOnboardingFlowV2
       return PlatformParameterValue.createDefaultParameter(
         defaultValue = enableFeature
       )

@@ -21,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -156,13 +155,6 @@ class OptionsFragmentTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-
-  @get:Rule
-  var optionActivityTestRule: ActivityTestRule<OptionsActivity> = ActivityTestRule(
-    OptionsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
 
   private fun createOptionActivityIntent(
     internalProfileId: Int,

@@ -38,6 +38,11 @@ message EventLog {
   // The audio language selection context at the time of this event's creation.
   AudioTranslationLanguageSelection audio_translation_language_selection = 7;
 
+  // The profileId and profileType to which this event corresponds, or empty if this event is not tied to a particular
+  // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+  // at source.
+  ProfileContext profile_context = 9;
+
   // Structure of an activity context.
   message Context {
     // Deprecated exploration context. This is now handled via the open_exploration_activity context
@@ -222,7 +227,27 @@ message EventLog {
 
       // The event being logged is related to viewing a solution that was already unlocked.
       ExplorationContext view_existing_solution_context = 55;
+
+      // The event being logged indicates that the profile user has started going through the
+      // onboarding flow.
+      ProfileOnboardingContext start_profile_onboarding_event = 57;
+
+      // The event being logged indicates that the profile user has reached the home screen for the
+      // first time.
+      ProfileOnboardingContext end_profile_onboarding_event = 58;
     }
+  }
+
+  // Structure of a ProfileContext which contains the profileId and profileType to which this event
+  // corresponds.
+  message ProfileContext {
+    // The profile to which this event corresponds, or empty if this event is not tied to a particular
+    // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
+    // at source.
+    ProfileId profile_id = 1;
+
+    // Represents the type of user profile.
+    ProfileType profile_type = 2;
   }
 
   // Structure of a question context.
@@ -503,6 +528,12 @@ message EventLog {
 
     // The sync status of the feature flag or sync status flag.
     PlatformParameter.SyncStatus flag_sync_status = 3;
+  }
+
+  // Structure for the profile onboarding context.
+  message ProfileOnboardingContext {
+    // The Id of the profile to be onboarded.
+    ProfileId profile_id = 1;
   }
 
   // Supported priority of events for event logging

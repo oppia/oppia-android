@@ -78,6 +78,8 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.RETROFIT_CALL_CONTEXT -> "retrofit_call_context"
       ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT -> "retrofit_call_failed_context"
       ActivityContextCase.APP_IN_FOREGROUND_TIME -> "app_in_foreground_time"
+      ActivityContextCase.START_PROFILE_ONBOARDING_EVENT -> "start_profile_onboarding_event"
+      ActivityContextCase.END_PROFILE_ONBOARDING_EVENT -> "end_profile_onboarding_event"
     }
   }
 }

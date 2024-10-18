@@ -45,6 +45,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
@@ -337,6 +338,82 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
+    profileTestHelper.initializeProfiles(autoLogIn = true)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensIntroActivity() {
+    profileTestHelper.initializeProfiles(autoLogIn = true)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      intended(hasComponent(IntroActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testMigrateProfiles_onboardingV2_clickAdminWithoutPin_checkOpensIntroActivity() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      intended(hasComponent(IntroActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkOpensIntroActivity() {
+    profileTestHelper.addOnlyAdminProfile()
+    profileManagementController.addProfile(
+      name = "Learner",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      intended(hasComponent(IntroActivity::class.java.name))
     }
   }
 
