@@ -7,6 +7,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.ONBOARDING_PROFILE_TYPE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The activity for showing the profile type selection screen. */
@@ -18,7 +19,9 @@ class OnboardingProfileTypeActivity : InjectableAutoLocalizedAppCompatActivity()
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    onboardingProfileTypeActivityPresenter.handleOnCreate()
+    val profileId = intent.extractCurrentUserProfileId()
+
+    onboardingProfileTypeActivityPresenter.handleOnCreate(profileId)
   }
 
   companion object {
