@@ -319,14 +319,21 @@ class UrlImageParser private constructor(
           drawableWidth -= maxContentItemPadding
         }
 
-        val drawableLeft = if (imageCenterAlign && !isRTLMode()) {
+        var drawableLeft = if (imageCenterAlign && !isRTLMode()) {
           calculateInitialMargin(maxAvailableWidth, drawableWidth)
         } else {
           0f
         }
 
         val drawableTop = 0f
-        val drawableRight = drawableLeft + drawableWidth
+        var drawableRight = drawableLeft + drawableWidth
+
+        // If the image is getting cut off, recalculate the positions of the drawableLeft and drawableRight.
+        if (drawableRight + maxContentItemPadding > maxAvailableWidth) {
+          drawableLeft -= maxContentItemPadding
+          drawableRight -= maxContentItemPadding
+        }
+
         val drawableBottom = drawableTop + drawableHeight
         return Rect(
           drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
