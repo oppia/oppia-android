@@ -50,7 +50,7 @@ class EditTextInputAction @Inject constructor(
       override fun perform(uiController: UiController?, view: View?) {
         // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
         if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
+          (view as? EditText)?.setText(text)
           testCoroutineDispatchers.runCurrent()
         } else baseAction.perform(uiController, view)
       }

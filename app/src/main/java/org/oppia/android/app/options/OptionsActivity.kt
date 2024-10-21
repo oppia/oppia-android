@@ -55,7 +55,8 @@ class OptionsActivity :
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
-  private var profileId: Int? = -1
+  private lateinit var profileId: ProfileId
+  private var internalProfileId: Int = -1
   private lateinit var readingTextSizeLauncher: ActivityResultLauncher<Intent>
   private lateinit var audioLanguageLauncher: ActivityResultLauncher<Intent>
 
@@ -94,7 +95,8 @@ class OptionsActivity :
       OptionsActivityParams.getDefaultInstance()
     )
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
-    profileId = intent.extractCurrentUserProfileId().internalId
+    profileId = intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
     if (savedInstanceState != null) {
       isFirstOpen = false
     }
@@ -116,7 +118,7 @@ class OptionsActivity :
       extraOptionsTitle,
       isFirstOpen,
       selectedFragment,
-      profileId!!
+      internalProfileId
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
 
@@ -153,15 +155,15 @@ class OptionsActivity :
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
         oppiaLanguage,
-        profileId!!
+        internalProfileId
       )
     )
   }
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
-    audioLanguageLauncher.launch(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage)
-    )
+    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage)
+    intent.decorateWithUserProfileId(profileId)
+    audioLanguageLauncher.launch(intent)
   }
 
   override fun routeReadingTextSize(readingTextSize: ReadingTextSize) {
@@ -191,7 +193,7 @@ class OptionsActivity :
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.audio_language)
     )
-    optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
+    optionActivityPresenter.loadAudioLanguageFragment(audioLanguage, profileId)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

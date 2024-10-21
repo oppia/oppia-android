@@ -261,6 +261,8 @@
   <string name="add_profile_error_name_not_unique">This name is already in use by another profile.</string>
   <string name="add_profile_error_name_empty">Please enter a valid name for this profile.</string>
   <string name="add_profile_error_name_only_letters">Please choose a profile name that doesn\'t include numbers or symbols.</string>
+  <string name="add_profile_error_missing_profile_type">Profile type unknown.</string>
+  <string name="add_profile_default_error_message">An error occurred while creating a profile.</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>

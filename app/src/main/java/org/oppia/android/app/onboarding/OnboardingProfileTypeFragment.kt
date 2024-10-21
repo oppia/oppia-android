@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that contains the profile type selection flow of the app. */
@@ -24,6 +25,9 @@ class OnboardingProfileTypeFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return onboardingProfileTypeFragmentPresenter.handleCreateView(inflater, container)
+    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+      "Expected OnboardingProfileTypeFragment to have a profileId argument."
+    }
+    return onboardingProfileTypeFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 }

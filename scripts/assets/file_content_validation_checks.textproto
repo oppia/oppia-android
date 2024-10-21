@@ -276,6 +276,7 @@ file_content_checks {
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/audio/LanguageDialogFragment.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/AppVersionActivityTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/home/HomeActivityTest.kt"
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/onboarding/OnboardingFragmentTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/parser/HtmlParserTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/parser/ListItemLeadingMarginSpanTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/player/audio/AudioFragmentTest.kt"

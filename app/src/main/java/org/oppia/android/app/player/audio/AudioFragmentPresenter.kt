@@ -11,12 +11,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
@@ -38,7 +36,6 @@ import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
-const val AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope
@@ -75,7 +72,7 @@ class AudioFragmentPresenter @Inject constructor(
     cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,
-        Observer<AsyncResult<CellularDataPreference>> {
+        {
           if (it is AsyncResult.Success) {
             showCellularDataDialog = !it.value.hideDialog
             useCellularData = it.value.useCellularData
@@ -103,7 +100,7 @@ class AudioFragmentPresenter @Inject constructor(
       })
     audioViewModel.playStatusLiveData.observe(
       fragment,
-      Observer {
+      {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
 
@@ -156,7 +153,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun subscribeToAudioLanguageLiveData() {
     retrieveAudioLanguageCode().observe(
       activity,
-      Observer<String> { result ->
+      { result ->
         audioViewModel.selectedLanguageCode = result
         audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
       }
