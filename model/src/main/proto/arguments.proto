@@ -281,6 +281,9 @@ message AudioLanguageFragmentArguments {
 message AudioLanguageFragmentStateBundle {
   // The default audio language selected by the user.
   AudioLanguage audio_language = 1;
+
+  // The selected language display name.
+  OppiaLanguage selected_language = 2;
 }
 
 // Activity Parameters needed to create the policy page.
@@ -885,4 +888,28 @@ message WalkthroughFinalFragmentArguments {
 message IntroActivityParams {
   // The nickname associated with a newly created profile.
   string profile_nickname = 1;
+}
+
+// Arguments required when creating a new IntroFragment.
+message IntroFragmentArguments {
+  // The nickname associated with a newly created profile.
+  string profile_nickname = 1;
+}
+
+// Params required when creating a new CreateProfileActivity.
+message CreateProfileActivityParams {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+}
+
+// Arguments required when creating a new CreateProfileFragment.
+message CreateProfileFragmentArguments {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+}
+
+// The bundle of properties that are saved on configuration change in OnboardingFragment.
+message OnboardingFragmentStateBundle {
+  // The current selected language.
+  OppiaLanguage selected_language = 1;
 }
