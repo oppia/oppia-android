@@ -29,7 +29,6 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.classroom.classroomlist.AllClassroomsHeaderText
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
@@ -48,7 +47,6 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
-import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
@@ -174,8 +172,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
 
     if (enableOnboardingFlowV2.value) {
       subscribeToProfileResult(profileId)
-    } else {
-      logAppOnboardedEvent(profileId)
     }
 
     return binding.root
@@ -278,38 +274,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logAppOnboardedEvent(profileId: ProfileId) {
-    val startupStateProvider = appStartupStateController.getAppStartupState()
-    val liveData = startupStateProvider.toLiveData()
-    liveData.observe(
-      activity,
-      object : Observer<AsyncResult<AppStartupState>> {
-        override fun onChanged(startUpStateResult: AsyncResult<AppStartupState>?) {
-          when (startUpStateResult) {
-            null, is AsyncResult.Pending -> {
-              // Do nothing
-            }
-            is AsyncResult.Success -> {
-              liveData.removeObserver(this)
-
-              if (startUpStateResult.value.startupMode ==
-                AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
-              ) {
-                analyticsController.logAppOnboardedEvent(profileId)
-              }
-            }
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "ClassroomListFragment",
-                "Failed to retrieve app startup state"
-              )
-            }
-          }
-        }
-      }
-    )
-  }
-
   private fun subscribeToProfileResult(profileId: ProfileId) {
     profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
       processProfileResult(it)
@@ -340,12 +304,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
     // while profile onboarding is completed by each profile.
     if (!profile.completedProfileOnboarding) {
       profileManagementController.markProfileOnboardingEnded(profileId)
-      if (profile.profileType == ProfileType.SOLE_LEARNER ||
-        profile.profileType == ProfileType.SUPERVISOR
-      ) {
-        appStartupStateController.markOnboardingFlowCompleted()
-        logAppOnboardedEvent(profileId)
-      }
     }
   }
 
