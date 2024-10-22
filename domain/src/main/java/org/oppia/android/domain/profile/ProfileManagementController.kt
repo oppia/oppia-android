@@ -16,6 +16,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -23,6 +24,7 @@ import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.translation.TranslationController
@@ -34,6 +36,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
@@ -67,7 +70,6 @@ private const val DELETE_PROFILE_PROVIDER_ID = "delete_profile_provider_id"
 private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_provider_id"
 private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
   "update_reading_text_size_provider_id"
-private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
 private const val GET_AUDIO_LANGUAGE_PROVIDER_ID = "get_audio_language_provider_id"
 private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID = "update_audio_language_provider_id"
 private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
@@ -81,6 +83,10 @@ private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "retrieve_last_selected_classroom_id_provider_id"
 private const val UPDATE_PROFILE_DETAILS_PROVIDER_ID = "update_profile_details_data_provider_id"
 private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_provider_id"
+private const val UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID =
+  "update_start_onboarding_flow_provider_id"
+private const val UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID = "update_end_onboarding_flow_provider_id"
+private const val PROFILE_ONBOARDING_MODE_PROVIDER_ID = "profile_onboarding_mode_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -100,7 +106,10 @@ class ProfileManagementController @Inject constructor(
   @EnableLoggingLearnerStudyIds
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val analyticsController: AnalyticsController
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
   private val profileDataStore =
@@ -209,6 +218,11 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
+        if (enableOnboardingFlowV2.value) {
+          if (profile.profileType.equals(ProfileType.PROFILE_TYPE_UNSPECIFIED)) {
+            updateProfileType(profileId, computeProfileType(profile.isAdmin, profile.pin))
+          }
+        }
         AsyncResult.Success(profile)
       } else {
         AsyncResult.Failure(
@@ -319,6 +333,106 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
+    }
+  }
+
+  private fun computeProfileType(isAdmin: Boolean, pin: String?): ProfileType {
+    return when {
+      isAdminWithPin(isAdmin, pin) -> ProfileType.SUPERVISOR
+      isAdmin -> ProfileType.SOLE_LEARNER
+      else -> ProfileType.ADDITIONAL_LEARNER
+    }
+  }
+
+  private fun isAdminWithPin(isAdmin: Boolean, pin: String?): Boolean {
+    return isAdmin && !pin.isNullOrBlank()
+  }
+
+  /**
+   * Marks that the profile has started the onboarding flow, so that they can skip the profile setup
+   * step if onboarding was previously abandoned.
+   *
+   * @param profileId The ID of the profile to update.
+   * @return A [DataProvider] that represents the result of the update operation.
+   */
+  fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfileBuilder = profile.toBuilder()
+      if (!profile.startedProfileOnboarding) {
+        updatedProfileBuilder.startedProfileOnboarding = true
+        analyticsController.logProfileOnboardingStartedContext(profileId)
+      }
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfileBuilder.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Marks that the profile has completed the onboarding flow so that the onboarding flow is not
+   * shown after the initial login.
+   *
+   * @param profileId the ID of the profile to update
+   * @return a [DataProvider] that represents the result of the update operation
+   */
+  fun markProfileOnboardingEnded(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfileBuilder = profile.toBuilder()
+      if (!profile.completedProfileOnboarding) {
+        updatedProfileBuilder.completedProfileOnboarding = true
+        analyticsController.logProfileOnboardingEndedContext(profileId)
+      }
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfileBuilder.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /** Returns the state of the app based on the number and type of existing profiles. */
+  fun getProfileOnboardingMode(): DataProvider<ProfileOnboardingMode> {
+    return getProfiles().transform(PROFILE_ONBOARDING_MODE_PROVIDER_ID) { profileList ->
+      val profileCount = profileList.size
+      when {
+        profileCount > 1 -> ProfileOnboardingMode.MULTIPLE_PROFILES
+        profileCount == 1 -> {
+          when (profileList.first().profileType) {
+            ProfileType.SUPERVISOR -> {
+              ProfileOnboardingMode.SUPERVISOR_PROFILE_ONLY
+            }
+            ProfileType.SOLE_LEARNER -> {
+              ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY
+            }
+            else -> {
+              ProfileOnboardingMode.UNKNOWN_PROFILE_TYPE
+            }
+          }
+        }
+        else -> ProfileOnboardingMode.NEW_INSTALL
+      }
     }
   }
 

@@ -93,6 +93,12 @@ message Profile {
 
   // Represents the type of user which informs the configuration options available to them.
   ProfileType profile_type = 20;
+
+  // Indicates that this profile has viewed the relevant onboarding introduction screen.
+  bool started_profile_onboarding = 21;
+
+  // Indicates that this profile has reached the home screen for the first time.
+  bool completed_profile_onboarding = 22;
 }
 
 // Represents the type of user using the app.
@@ -162,4 +168,26 @@ enum AudioLanguage {
   BRAZILIAN_PORTUGUESE_LANGUAGE = 6;
   ARABIC_LANGUAGE = 7;
   NIGERIAN_PIDGIN_LANGUAGE = 8;
+}
+
+// Indicates the state of the app with regards to the number and type of existing profiles.
+enum ProfileOnboardingMode {
+  // Indicates that the number or type of profiles is unknown.
+  PROFILE_ONBOARDING_MODE_UNSPECIFIED = 0;
+
+  // Indicates that this is a new app install given that there are no existing profiles.
+  NEW_INSTALL = 1;
+
+  // Indicates that there is only one profile and it is a sole learner profile.
+  SOLE_LEARNER_PROFILE_ONLY = 2;
+
+  // Indicates that there is only one profile and it is an admin profile.
+  SUPERVISOR_PROFILE_ONLY = 3;
+
+  // Indicates that there are multiple profiles on the device.
+  MULTIPLE_PROFILES = 4;
+
+  // Indicates that there is only one profile and the profile type is unknown, indicating that
+  // migration is required.
+  UNKNOWN_PROFILE_TYPE = 5;
 }

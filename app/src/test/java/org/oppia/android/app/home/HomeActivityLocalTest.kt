@@ -27,6 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -61,7 +62,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -70,6 +70,8 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -115,7 +117,12 @@ class HomeActivityLocalTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(1).build()
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  private val internalProfileId: Int = 0
+
+  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -124,12 +131,13 @@ class HomeActivityLocalTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
   @Test
-  fun testHomeActivity_onLaunch_logsEvent() {
-    setUpTestApplicationComponent()
+  fun testHomeActivity_onLaunch_logsOpenHomeEvent() {
+    setUpTestWithOnboardingV2Enabled(false)
 
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -141,13 +149,13 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedOnboardingEvent() {
+  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestApplicationComponent()
+    setUpTestWithOnboardingV2Enabled(false)
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
@@ -157,6 +165,42 @@ class HomeActivityLocalTest {
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
+  }
+
+  @Test
+  fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+      assertThat(hasProfileOnboardingEndedEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestWithOnboardingV2Enabled(true)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingFlowV2: Boolean) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
+    setUpTestApplicationComponent()
   }
 
   /**
@@ -193,7 +237,7 @@ class HomeActivityLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -231,6 +275,8 @@ class HomeActivityLocalTest {
     fun getAppStartupStateController(): AppStartupStateController
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
+    fun getProfileTestHelper(): ProfileTestHelper
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {

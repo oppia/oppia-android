@@ -3,6 +3,7 @@ package org.oppia.android.app.classroom
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -36,6 +37,7 @@ import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
 import org.oppia.android.app.classroom.topiclist.TopicCard
 import org.oppia.android.app.classroom.welcome.WelcomeText
+import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.home.WelcomeViewModel
@@ -48,6 +50,9 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -59,9 +64,13 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
@@ -84,8 +93,11 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val appStartupStateController: AppStartupStateController,
   private val analyticsController: AnalyticsController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+  private val exitProfileListener = activity as ExitProfileListener
   private lateinit var binding: ClassroomListFragmentBinding
   private lateinit var classroomListViewModel: ClassroomListViewModel
   private var internalProfileId: Int = -1
@@ -130,7 +142,8 @@ class ClassroomListFragmentPresenter @Inject constructor(
           sender: ObservableList<HomeItemViewModel>,
           positionStart: Int,
           itemCount: Int
-        ) {}
+        ) {
+        }
 
         override fun onItemRangeInserted(
           sender: ObservableList<HomeItemViewModel>,
@@ -145,15 +158,21 @@ class ClassroomListFragmentPresenter @Inject constructor(
           fromPosition: Int,
           toPosition: Int,
           itemCount: Int
-        ) {}
+        ) {
+        }
 
         override fun onItemRangeRemoved(
           sender: ObservableList<HomeItemViewModel>,
           positionStart: Int,
           itemCount: Int
-        ) {}
+        ) {
+        }
       }
     )
+
+    if (enableOnboardingFlowV2.value) {
+      subscribeToProfileResult(profileId)
+    }
 
     return binding.root
   }
@@ -190,26 +209,26 @@ class ClassroomListFragmentPresenter @Inject constructor(
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   fun ClassroomListScreen() {
-    val groupedItems = classroomListViewModel.homeItemViewModelListLiveData.value
-      ?.plus(classroomListViewModel.topicList)
-      ?.groupBy { it::class }
+    val groupedItems = (
+      classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty() +
+        classroomListViewModel.topicList
+      )
+      .groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     val listState = rememberLazyListState()
     val classroomListIndex = groupedItems
-      ?.flatMap { (type, items) -> items.map { type to it } }
-      ?.indexOfFirst { it.first == AllClassroomsViewModel::class }
-      ?: -1
+      .flatMap { (type, items) -> items.map { type to it } }
+      .indexOfFirst { it.first == AllClassroomsViewModel::class }
 
     LazyColumn(
-      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
+      modifier = Modifier
+        .testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
       state = listState
     ) {
-      groupedItems?.forEach { (type, items) ->
+      groupedItems.forEach { (type, items) ->
         when (type) {
           WelcomeViewModel::class -> items.forEach { item ->
-            item {
-              WelcomeText(welcomeViewModel = item as WelcomeViewModel)
-            }
+            item { WelcomeText(welcomeViewModel = item as WelcomeViewModel) }
           }
           PromotedStoryListViewModel::class -> items.forEach { item ->
             item {
@@ -223,26 +242,22 @@ class ClassroomListFragmentPresenter @Inject constructor(
             item {
               ComingSoonTopicList(
                 comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
-                machineLocale = machineLocale,
+                machineLocale = machineLocale
               )
             }
           }
           AllClassroomsViewModel::class -> items.forEach { _ ->
-            item {
-              AllClassroomsHeaderText()
-            }
+            item { AllClassroomsHeaderText() }
           }
-          ClassroomSummaryViewModel::class -> stickyHeader() {
+          ClassroomSummaryViewModel::class -> stickyHeader {
             ClassroomList(
               classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
-              selectedClassroomId = classroomListViewModel.selectedClassroomId.get() ?: "",
+              selectedClassroomId = classroomListViewModel.selectedClassroomId.get().orEmpty(),
               isSticky = listState.firstVisibleItemIndex >= classroomListIndex
             )
           }
           AllTopicsViewModel::class -> items.forEach { _ ->
-            item {
-              AllTopicsHeaderText()
-            }
+            item { AllTopicsHeaderText() }
           }
           TopicSummaryViewModel::class -> {
             gridItems(
@@ -259,10 +274,54 @@ class ClassroomListFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun subscribeToProfileResult(profileId: ProfileId) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+      processProfileResult(it)
+    }
+  }
+
+  private fun processProfileResult(result: AsyncResult<Profile>) {
+    when (result) {
+      is AsyncResult.Success -> {
+        val profile = result.value
+        handleProfileOnboardingState(profile)
+        handleBackPress(profile.profileType)
+      }
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ClassroomListFragment", "Failed to fetch profile with id:$profileId", result.error
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> {
+        Profile.getDefaultInstance()
+      }
+    }
+  }
+
+  private fun handleProfileOnboardingState(profile: Profile) {
+    // App onboarding is completed by the first profile on the app(SOLE_LEARNER or SUPERVISOR),
+    // while profile onboarding is completed by each profile.
+    if (!profile.completedProfileOnboarding) {
+      profileManagementController.markProfileOnboardingEnded(profileId)
+    }
+  }
+
   private fun logHomeActivityEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
       profileId
+    )
+  }
+
+  private fun handleBackPress(profileType: ProfileType) {
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          exitProfileListener.exitProfile(profileType)
+        }
+      }
     )
   }
 }

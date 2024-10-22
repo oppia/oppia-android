@@ -13,6 +13,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -63,6 +64,8 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
       else -> false
     }
 
+    val soleLearnerProfile = exitProfileDialogArguments.profileType == ProfileType.SOLE_LEARNER
+
     val alertDialog = AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
@@ -70,12 +73,17 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#3641): Investigate on using finish instead of intent.
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
-        if (!restoreLastCheckedItem) {
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        if (soleLearnerProfile) {
+          requireActivity().finish()
+        } else {
+          // TODO(#3641): Investigate on using finish instead of intent.
+          val intent = ProfileChooserActivity.createProfileChooserActivity(requireActivity())
+          if (!restoreLastCheckedItem) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+          }
+          requireActivity().startActivity(intent)
+          requireActivity().finish()
         }
-        activity!!.startActivity(intent)
       }
       .create()
     alertDialog.setCanceledOnTouchOutside(false)

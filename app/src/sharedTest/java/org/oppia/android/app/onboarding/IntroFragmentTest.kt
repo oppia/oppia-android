@@ -37,6 +37,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -72,11 +73,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -96,6 +100,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -116,13 +121,18 @@ class IntroFragmentTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val testProfileNickname = "John"
+  private val testInternalProfileId = 0
+  private val testProfileId = ProfileId.newBuilder().setInternalId(testInternalProfileId).build()
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -210,6 +220,16 @@ class IntroFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
+    launchOnboardingLearnerIntroActivity().use {
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event).hasStartProfileOnboardingContextThat {
+        hasProfileIdThat().isEqualTo(testProfileId)
+      }
+    }
+  }
+
   private fun launchOnboardingLearnerIntroActivity():
     ActivityScenario<IntroActivity>? {
       val params = IntroActivityParams.newBuilder()
@@ -219,6 +239,7 @@ class IntroFragmentTest {
       val scenario = ActivityScenario.launch<IntroActivity>(
         IntroActivity.createIntroActivity(context).apply {
           putProtoExtra(IntroActivity.PARAMS_KEY, params)
+          decorateWithUserProfileId(testProfileId)
         }
       )
       testCoroutineDispatchers.runCurrent()

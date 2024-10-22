@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,7 +13,9 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -28,8 +31,12 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
@@ -48,17 +55,23 @@ class HomeFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+  private val exitProfileListener = activity as ExitProfileListener
+
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
+  private var profileId: ProfileId = ProfileId.getDefaultInstance()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
+    profileId = activity.intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
 
     logHomeActivityEvent()
 
@@ -97,7 +110,42 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
+    if (enableOnboardingFlowV2.value) {
+      subscribeToProfileResult(profileId)
+    }
+
     return binding.root
+  }
+
+  private fun subscribeToProfileResult(profileId: ProfileId) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+      processProfileResult(it)
+    }
+  }
+
+  private fun processProfileResult(result: AsyncResult<Profile>) {
+    when (result) {
+      is AsyncResult.Success -> {
+        val profile = result.value
+        handleProfileOnboardingState(profile)
+        handleBackPress(profile.profileType)
+      }
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> {
+        Profile.getDefaultInstance()
+      }
+    }
+  }
+
+  private fun handleProfileOnboardingState(profile: Profile) {
+    // App onboarding is completed by the first profile on the app(SOLE_LEARNER or SUPERVISOR),
+    // while profile onboarding is completed by each profile.
+    if (!profile.completedProfileOnboarding) {
+      profileManagementController.markProfileOnboardingEnded(profileId)
+    }
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
@@ -165,6 +213,17 @@ class HomeFragmentPresenter @Inject constructor(
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    )
+  }
+
+  private fun handleBackPress(profileType: ProfileType) {
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          exitProfileListener.exitProfile(profileType)
+        }
+      }
     )
   }
 }

@@ -323,9 +323,7 @@ class AnalyticsController @Inject constructor(
     }
   }
 
-  /**
-   * Listens to the flow emitted by the [ConsoleLogger] and logs the error messages.
-   */
+  /** Listens to the flow emitted by the [ConsoleLogger] and logs the error messages. */
   fun listenForConsoleErrorLogs() {
     CoroutineScope(backgroundDispatcher).launch {
       consoleLogger.logErrorMessagesFlow.collect { consoleLoggerContext ->
@@ -382,12 +380,26 @@ class AnalyticsController @Inject constructor(
     }
   }
 
-  /**
-   * Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId].
-   */
+  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId]. */
   fun logAppOnboardedEvent(profileId: ProfileId?) {
     logLowPriorityEvent(
       oppiaLogger.createAppOnBoardingContext(),
+      profileId = profileId
+    )
+  }
+
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
+  fun logProfileOnboardingStartedContext(profileId: ProfileId) {
+    logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingStartedContext(profileId),
+      profileId = profileId
+    )
+  }
+
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
+  fun logProfileOnboardingEndedContext(profileId: ProfileId) {
+    logLowPriorityEvent(
+      oppiaLogger.createProfileOnboardingEndedContext(profileId),
       profileId = profileId
     )
   }

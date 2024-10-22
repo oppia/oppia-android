@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.testing.activity.TestActivity
 
@@ -19,7 +21,8 @@ class HomeFragmentTestActivity :
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener,
-  TestActivity() {
+  TestActivity(),
+  ExitProfileListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -41,4 +44,5 @@ class HomeFragmentTestActivity :
     storyId: String
   ) {}
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {}
+  override fun exitProfile(profileType: ProfileType) {}
 }

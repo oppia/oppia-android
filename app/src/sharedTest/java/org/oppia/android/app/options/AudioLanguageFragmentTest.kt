@@ -42,6 +42,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
@@ -320,6 +321,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -336,6 +338,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -351,8 +354,43 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  fun testFragment_multipleClassroomsEnabled_continueButtonClicked_launchesClassroomScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verifies that accepting the default language selection works correctly.
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_multipleClassroomsEnabled_continueButtonLaunchesClassroomScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verifies that accepting the default language selection works correctly.
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_selectionIsUpdated() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -382,6 +420,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
