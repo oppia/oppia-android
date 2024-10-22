@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   comment_on_merged_pull_request:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -47,7 +47,7 @@ jobs:
           script: |
             const prCount = parseInt(process.env.PR_COUNT);
             const author = process.env.AUTHOR;
-            const mention = 'adhiamboperes';  // Update this if the mention needs to change
+            const mention = 'adhiamboperes'; 
             const prNumber = context.payload.pull_request.number;
 
             let message;
