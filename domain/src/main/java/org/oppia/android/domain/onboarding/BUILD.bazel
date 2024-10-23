@@ -15,6 +15,7 @@ kt_android_library(
         ":exploration_meta_data_retriever",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//model/src/main/proto:deprecation_java_proto_lite",
         "//model/src/main/proto:onboarding_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
