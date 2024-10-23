@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 echo "********************************"
 echo "Running feature flag checks"
 echo "********************************"
@@ -120,7 +122,7 @@ function perform_checks_on_feature_flags() {
     in_array=$(item_in_array "$element" "${imported_classes[@]}")
     if [[ $in_array -ne 1 ]]; then
       failed_checks=$((failed_checks + 1))
-      echo "$element is not imported in the constructor argument in $file_path at line $imports_line_number"
+      echo_error "$element is not imported in the constructor argument in $file_path at line $imports_line_number"
     fi
   done
 
@@ -128,16 +130,16 @@ function perform_checks_on_feature_flags() {
     in_array=$(item_in_array "$element" "${flags_added_to_map[@]}")
     if [[ $in_array -ne 1 ]]; then
       failed_checks=$((failed_checks + 1))
-      echo "$element is not added to the logging map in $file_path at line $flags_map_line_number"
+      echo_error "$element is not added to the logging map in $file_path at line $flags_map_line_number"
     fi
   done
 
   if [[ $failed_checks -eq 0 ]]; then
-    echo "Feature flag checks completed successfully"
+    echo_success "Feature flag checks completed successfully"
     exit 0
   else
     echo "********************************"
-    echo "Feature flag issues found."
+    echo_error "Feature flag issues found."
     echo "Please fix the above issues."
     echo "********************************"
     exit 1
