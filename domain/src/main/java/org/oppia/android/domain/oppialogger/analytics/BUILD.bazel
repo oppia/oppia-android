@@ -20,7 +20,7 @@ kt_android_library(
     srcs = [
         "AnalyticsController.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_interceptors",

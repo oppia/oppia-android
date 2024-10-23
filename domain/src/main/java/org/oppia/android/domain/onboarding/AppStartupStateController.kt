@@ -6,8 +6,10 @@ import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.extensions.getStringFromBundle
@@ -31,6 +33,7 @@ class AppStartupStateController @Inject constructor(
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
+  private val analyticsController: AnalyticsController,
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -65,8 +68,9 @@ class AppStartupStateController @Inject constructor(
    * Note that this does not notify existing subscribers of the changed state, nor can future
    * subscribers observe this state until the app restarts.
    */
-  fun markOnboardingFlowCompleted() {
+  fun markOnboardingFlowCompleted(profileId: ProfileId? = null) {
     updateOnboardingState { alreadyOnboardedApp = true }
+    logAppOnboardedEvent(profileId)
   }
 
   /**
@@ -189,5 +193,9 @@ class AppStartupStateController @Inject constructor(
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.isBeforeToday() ?: true
     } else false
+  }
+
+  private fun logAppOnboardedEvent(profileId: ProfileId?) {
+    analyticsController.logAppOnboardedEvent(profileId)
   }
 }
