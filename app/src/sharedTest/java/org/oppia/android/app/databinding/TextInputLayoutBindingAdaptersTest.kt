@@ -1,20 +1,21 @@
-package org.oppia.android.app.home
+package org.oppia.android.app.databinding
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -26,12 +27,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.TextInputLayoutBindingAdaptersTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -53,7 +52,6 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -65,11 +63,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -86,103 +83,96 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [TextInputLayoutBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = HomeActivityLocalTest.TestApplication::class,
+  application = TextInputLayoutBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class HomeActivityLocalTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
+class TextInputLayoutBindingAdaptersTest {
   @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var appStartupStateController: AppStartupStateController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(1).build()
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
+    setUpTestApplicationComponent()
     Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.registerIdlingResource()
     Intents.release()
   }
 
   @Test
-  fun testHomeActivity_onLaunch_logsEvent() {
-    setUpTestApplicationComponent()
-
-    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getOldestEvent()
-
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+  fun testBindingAdapters_setErrorMessage_setsMessageCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: TextInputLayout = activity.findViewById(R.id.test_text_input_view)
+        TextInputLayoutBindingAdapters.setErrorMessage(testView, "Some error message.")
+        assertThat(testView.error).isEqualTo("Some error message.")
+      }
     }
   }
 
   @Test
-  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedOnboardingEvent() {
-    executeInPreviousAppInstance { testComponent ->
-      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
-      testComponent.getTestCoroutineDispatchers().runCurrent()
+  fun testBindingAdapters_setSelection_filterDisabled_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, false)
+        assertThat(testView.text.toString()).isEqualTo("English")
+      }
     }
+  }
 
-    setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+  @Test
+  fun testBindingAdapters_setSelection_filterEnabled_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ENGLISH, true)
+        assertThat(testView.text.toString()).isEqualTo("English")
+      }
+    }
+  }
+
+  @Test
+  fun testBindingAdapters_setSelection_arabicLanguage_setsSelectionCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
+        TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ARABIC, true)
+        assertThat(testView.text.toString()).isEqualTo(
+          context.getString(R.string.arabic_localized_language_name)
+        )
+      }
+    }
+  }
+
+  private fun launchActivity():
+    ActivityScenario<TextInputLayoutBindingAdaptersTestActivity>? {
+      val scenario = ActivityScenario.launch<TextInputLayoutBindingAdaptersTestActivity>(
+        TextInputLayoutBindingAdaptersTestActivity.createIntent(context)
+      )
       testCoroutineDispatchers.runCurrent()
-      val eventCount = fakeAnalyticsEventLogger.getEventListCount()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-      assertThat(eventCount).isEqualTo(1)
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+      return scenario
     }
-  }
-
-  /**
-   * Creates a separate test application component and executes the specified block. This should be
-   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
-   * This can be used to simulate arranging state in a "prior" run of the app.
-   *
-   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
-   * used, not any class-level injected dependencies.
-   */
-  private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
-    val testApplication = TestApplication()
-    // The true application is hooked as a base context. This is to make sure the new application
-    // can behave like a real Android application class (per Robolectric) without having a shared
-    // Dagger dependency graph with the application under test.
-    testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
-    block(
-      DaggerHomeActivityLocalTest_TestApplicationComponent.builder()
-        .setApplication(testApplication)
-        .build() as TestApplicationComponent
-    )
-  }
-
-  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
-    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -192,27 +182,27 @@ class HomeActivityLocalTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      RobolectricModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      SplitScreenInteractionModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
@@ -226,26 +216,18 @@ class HomeActivityLocalTest {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(homeActivityLocalTest: HomeActivityLocalTest)
-
-    fun getAppStartupStateController(): AppStartupStateController
-
-    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+    fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHomeActivityLocalTest_TestApplicationComponent.builder()
+      DaggerTextInputLayoutBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(homeActivityLocalTest: HomeActivityLocalTest) {
-      component.inject(homeActivityLocalTest)
-    }
-
-    public override fun attachBaseContext(base: Context?) {
-      super.attachBaseContext(base)
+    fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest) {
+      component.inject(textInputLayoutBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
