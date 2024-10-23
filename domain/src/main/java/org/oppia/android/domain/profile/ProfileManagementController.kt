@@ -285,6 +285,7 @@ class ProfileManagementController @Inject constructor(
         this.allowDownloadAccess = allowDownloadAccess
         this.allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
         this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        this.uuid = loggingIdentifierController.generateCustomUUID().toString()
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -917,6 +918,49 @@ class ProfileManagementController @Inject constructor(
    * See [fetchLearnerId] for specifics.
    */
   suspend fun fetchCurrentLearnerId(): String? = getCurrentProfileId()?.let { fetchLearnerId(it) }
+
+  suspend fun fetchCurrentProfileUuid(): String {
+    val profileId = getCurrentProfileId()
+    val profileDatabase = profileDataStore.readDataAsync().await()
+
+    return if (profileDatabase.profilesMap[profileId?.internalId]?.uuid != null) {
+      profileDatabase.profilesMap[profileId!!.internalId]!!.uuid!!
+    } else {
+      if (profileId == null) return ""
+
+      val randomUuid = loggingIdentifierController.generateCustomUUID().toString()
+      updateCurrentProfileUuid(profileId, randomUuid)
+      randomUuid
+    }
+  }
+
+  /**
+   * Updates the UUID of an existing profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param newUuid New UUID for the profile being updated.
+   * @return a [DataProvider] that indicates the success/failure of this update operation.
+   */
+  private fun updateCurrentProfileUuid(profileId: ProfileId, newUuid: String): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfile = profile.toBuilder().setUuid(newUuid).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_NAME_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, newUuid, deferred)
+    }
+  }
 
   /**
    * Returns the learner ID corresponding to the specified [profileId], or null if the specified

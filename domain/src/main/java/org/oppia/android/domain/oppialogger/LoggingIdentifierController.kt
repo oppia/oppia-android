@@ -42,7 +42,7 @@ class LoggingIdentifierController @Inject constructor(
   private val appSessionIdRandom by lazy { Random(appSessionRandomSeed) }
 
   private val sessionId by lazy { MutableStateFlow(computeSessionId()) }
-  private val appSessionId by lazy { MutableStateFlow(computeAppSessionId()) }
+  private val appSessionId by lazy { MutableStateFlow(generateCustomUUID().toString()) }
   private val sessionIdDataProvider by lazy {
     dataProviders.run { sessionId.convertToAutomaticDataProvider(SESSION_ID_DATA_PROVIDER_ID) }
   }
@@ -166,4 +166,30 @@ class LoggingIdentifierController @Inject constructor(
    */
   private fun Random.randomUuid(): UUID =
     UUID.nameUUIDFromBytes(ByteArray(16).also { this@randomUuid.nextBytes(it) })
+
+  /**
+   * Returns a new [UUID] as [ULong] using a custom algorithm derived from Twitter's snowflake algorithm.
+   *
+   * The [UUID] is made up of;
+   * - 1 bit - This will cater for the Year 2038 problem.
+   * - 41 bits - Timestamp representation of the UTC time of generation of the UUID.
+   * - 22 bits - Random number to increase the uniqueness of the UUID generated.
+   *
+   * Return type is [ULong] to take full advantage of all the bits and avoid generating
+   * negative [UUID]s
+   */
+  fun generateCustomUUID(): ULong {
+    val SIGNED_BIT = 1L
+    val TIMESTAMP_BITS = 41
+    val RANDOM_BITS = 22
+    val MAX_RANDOM_VALUE: Long = (1L shl RANDOM_BITS) - 1
+
+    val currentTimestamp = System.currentTimeMillis()
+    val randomNumber = Random().nextLong() and MAX_RANDOM_VALUE
+
+    return (
+      (SIGNED_BIT shl (TIMESTAMP_BITS + RANDOM_BITS))
+        or (currentTimestamp shl RANDOM_BITS) or randomNumber
+      ).toULong()
+  }
 }
