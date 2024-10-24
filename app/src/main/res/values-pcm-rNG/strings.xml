@@ -94,11 +94,11 @@
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics wey dey in Progress</string>
-  <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter %s with title %s don complete</string>
-  <string name="chapter_in_progress">Chapter %s with title %s dey in progress</string>
-  <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock dis chapter.</string>
-  <string name="chapter_locked_prerequisite_title_label">Chapter %s: %s dey locked currently. Abeg complete chapter %s: %s to fit unlock dis chapter.</string>
+  <string name="chapter_name">Chapter %1$s: %2$s</string>
+  <string name="chapter_completed">Chapter %1$s with title %2$s don complete</string>
+  <string name="chapter_in_progress">Chapter %1$s with title %2$s dey in progress</string>
+  <string name="chapter_prerequisite_title_label">Complete Chapter %1$s: %2$s to unlock dis chapter.</string>
+  <string name="chapter_locked_prerequisite_title_label">Chapter %1$s: %2$s dey locked currently. Abeg complete chapter %3$s: %4$s to fit unlock dis chapter.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Finish the chapter wey dey before to fit open dis chapter</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter fraction wey dey in di form x/x, or mixed nomba wey dey in di form x x/x.</string>
@@ -153,7 +153,7 @@
   <string name="topic_downloaded">Topic Wey You Don Download</string>
   <string name="downloaded">You don download am</string>
   <string name="question_player_title">Practice Mode</string>
-  <string name="question_training_session_progress">Question %s of %s</string>
+  <string name="question_training_session_progress">Question %1$s of %2$s</string>
   <string name="question_training_session_progress_finished">Complete</string>
   <string name="question_training_session_finished_header">Finished</string>
   <string name="question_training_session_finished_message">You don finish all of di questions! You fit choose to play anoda set of questions, or go back to di topic.</string>
@@ -193,8 +193,8 @@
     <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="one">%s of %s Chapter Completed</item>
-    <item quantity="other">%s of %s Chapters Completed</item>
+    <item quantity="one">%1$s of %2$s Chapter Completed</item>
+    <item quantity="other">%1$s of %2$s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
     <item quantity="one">1 Lesson</item>
@@ -267,7 +267,7 @@
   <string name="skip">Skip</string>
   <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
-  <string name="onboarding_slide_dots_content_description">Slide %s of %s</string>
+  <string name="onboarding_slide_dots_content_description">Slide %1$s of %2$s</string>
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Abeg put your Administrator PIN.</string>
   <string name="pin_password_user_enter">Abeg put your PIN.</string>
@@ -426,7 +426,7 @@
   <string name="move_item_up_content_description">Move item up to %s</string>
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
   <plurals name="minutes_ago" fuzzy="true">
     <item quantity="zero">0 minutes ago</item>
     <item quantity="one">a minute ago</item>

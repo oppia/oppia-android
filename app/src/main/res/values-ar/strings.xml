@@ -91,10 +91,10 @@
   <string name="topic_name">الموضوع: %s</string>
   <string name="topic">موضوع</string>
   <string name="ongoing_topic_list_activity_title">المواضيع قيد التقدم</string>
-  <string name="chapter_name">فصل %s: %s</string>
-  <string name="chapter_completed">تم انهاء الفصل %s الذي يحمل عنوان %s</string>
-  <string name="chapter_in_progress">الفصل %s الذي يحمل عنوان %s ما زال قيد التقدم</string>
-  <string name="chapter_prerequisite_title_label">قم بإنهاء الفصل %s: %s لكي تفتح هذا الفصل.</string>
+    <string name="chapter_name">فصل s$2% :s$1%</string>
+  <string name="chapter_completed">تم انهاء الفصل s$1% الذي يحمل عنوان s$2%</string>
+  <string name="chapter_in_progress">ما زال قيد التقدم الفصل s$1% الذي يحمل عنوان s$2%</string>
+  <string name="chapter_prerequisite_title_label">قم بإنهاء الفصل  %1$s%2$ :s لكي تفتح هذا الفصل.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">أكمل الفصل السابق لفتح هذا الفصل.</string>
   <string name="text_input_default_content_description">أدخل النص.</string>
   <string name="fractions_default_hint_text">أدخل كسر عشري في الصيغة (بسط/مقام)، أو عدد كسري في الصيغة (عدد بسط/مقام).</string>
@@ -110,7 +110,7 @@
   <string name="math_expression_error_multiple_redundant_parentheses">الرجاء إزالة الأقواس الزائدة حول \"( %1$s )\" ، على سبيل المثال: \" %1$s \".</string>
   <string name="math_expression_error_redundant_parentheses_individual_term">الرجاء إزالة الأقواس الزائدة حول \'( %1$s )\' ، على سبيل المثال: \' %1$s \'.</string>
   <string name="math_expression_error_unnecessary_symbols">يوجد \' %s \' غير صالح في الإجابة. يرجى إزالته.</string>
-  <string name="math_expression_error_number_after_var_term">الرجاء إعادة ترتيب ترتيب %1$s و %2$s . على سبيل المثال: %2$s% 1 $ s.</string>
+  <string name="math_expression_error_number_after_var_term">الرجاء إعادة ترتيب ترتيب %1$s و %2$s . على سبيل المثال: %1$s%2$s.</string>
   <string name="math_expression_error_consecutive_binary_operators">يجب فصل %1$s و %2$s برقم أو متغير.</string>
   <string name="math_expression_error_consecutive_unary_operators">الرجاء إزالة الرموز الإضافية في إجابتك.</string>
   <string name="math_expression_error_missing_lhs_for_addition_operator">هل هناك رقم أو متغير مفقود قبل أو بعد رمز الإضافة \' %1$s \'؟ إذا لم يكن كذلك ، يرجى إزالة \' %1$s \' الإضافي.</string>
@@ -149,7 +149,7 @@
   <string name="topic_downloaded">المواضيع التي تم تنزيلها</string>
   <string name="downloaded">تم التنزيل</string>
   <string name="question_player_title">وضع الممارسة</string>
-  <string name="question_training_session_progress">السؤال %s من أصل %s</string>
+  <string name="question_training_session_progress">السؤال s$1% من أصل s$2%</string>
   <string name="question_training_session_progress_finished">تمّ</string>
   <string name="question_training_session_finished_header">تم الإنتهاء</string>
   <string name="question_training_session_finished_message">تم الإنتهاء من جميع الأسئلة! يمكنك بدأ مجموعة أسئلة أخرى، أو العودة للموضوع.</string>
@@ -285,7 +285,7 @@
   <string name="skip">تخطي</string>
   <string name="next_arrow">التالي</string>
   <string name="get_started">ابدأ</string>
-  <string name="onboarding_slide_dots_content_description">شاشة العرض %s من %s</string>
+  <string name="onboarding_slide_dots_content_description">شاشة العرض s$1% من s$2%</string>
   <string name="pin_password_hello">أهلًا، %s!</string>
   <string name="pin_password_admin_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
   <string name="pin_password_user_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بك.</string>
@@ -443,7 +443,7 @@
   <string name="move_item_up_content_description">تحريك العنصر إلى الأعلى عند %s</string>
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited">s$2% s$1%</string>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>

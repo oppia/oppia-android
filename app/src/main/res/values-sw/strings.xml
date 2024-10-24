@@ -76,10 +76,10 @@
   <string name="topic_name">mada: %s</string>
   <string name="topic">mada</string>
   <string name="ongoing_topic_list_activity_title">mada zinazoendelea</string>
-  <string name="chapter_name">Sura ya %s: %s</string>
-  <string name="chapter_completed">Sura ya %s yenye kichwa %s imekamilika</string>
-  <string name="chapter_in_progress">Sura ya %s yenye kichwa %s inaendelea</string>
-  <string name="chapter_prerequisite_title_label">Kamilisha Sura ya %s: %s ili kufungua sura hii.</string>
+  <string name="chapter_name">Sura ya %1$s: %2$s</string>
+  <string name="chapter_completed">Sura ya %1$s yenye kichwa %2$s imekamilika</string>
+  <string name="chapter_in_progress">Sura ya %1$s yenye kichwa %2$s inaendelea</string>
+  <string name="chapter_prerequisite_title_label">Kamilisha Sura ya %1$s: %2$s ili kufungua sura hii.</string>
   <string name="text_input_default_content_description">Ingiza maandishi.</string>
   <string name="fractions_default_hint_text">Ingiza sehemu katika mpangilio huu x/x, au nambari iliyochanganywa katika mpangilio huu x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Ingiza sehemu katika mpangilio huu X/X.</string>
@@ -91,15 +91,15 @@
   <string name="math_expression_error_spaces_in_numerical_input">Tafadhali ondoa nafasi katikati ya nambari katika jibu lako.</string>
   <string name="math_expression_error_unbalanced_parentheses">Tafadhali funga au uondoe mabano.</string>
   <string name="math_expression_error_single_redundant_parentheses">Tafadhali ondoa mabano karibu na jibu mzima: \' %s\'.</string>
-  <string name="math_expression_error_multiple_redundant_parentheses">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'% 1 $ s\'.</string>
-  <string name="math_expression_error_redundant_parentheses_individual_term">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'% 1 $ s\'.</string>
+  <string name="math_expression_error_multiple_redundant_parentheses">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'%1$s\'.</string>
+  <string name="math_expression_error_redundant_parentheses_individual_term">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'%1$s\'.</string>
   <string name="math_expression_error_unnecessary_symbols">Kuna\'%s\' isiyo halali katika jibu. Tafadhali ondoa.</string>
-  <string name="math_expression_error_number_after_var_term">Tafadhali panga upya utaratibu wa % %1$s &amp; %2$s. Kwa mfano:% $ 2% $ s.</string>
-  <string name="math_expression_error_consecutive_binary_operators">%1$s na % $%2$s inapaswa kutengwa na nambari au kitu tofauti.</string>
+  <string name="math_expression_error_number_after_var_term">Tafadhali panga upya utaratibu wa %1$s &amp; %2$s. Kwa mfano:%1$s %2$s.</string>
+  <string name="math_expression_error_consecutive_binary_operators">%1$s na %2$s inapaswa kutengwa na nambari au kitu tofauti.</string>
   <string name="math_expression_error_consecutive_unary_operators">Tafadhali ondoa alama za ziada katika jibu lako.</string>
-  <string name="math_expression_error_missing_lhs_for_addition_operator">Je! Kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya kuongeza \'%1$s\'? Ikiwa sivyo, tafadhali ondoa\'% 1 $ s\' ya ziada.</string>
-  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Je, kuna nambari au kitu tofauti inayokosa kabla au baada ya ishara ya kuzidisha \'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'% 1 $ s\' ya ziada.</string>
-  <string name="math_expression_error_missing_lhs_for_division_operator">Je, kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya mgawanyiko \'%1$s\'? Ikiwa sivyo, tafadhali ondoa\'% 1 $ s\' ya ziada.</string>
+  <string name="math_expression_error_missing_lhs_for_addition_operator">Je! Kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya kuongeza \'%1$s\'? Ikiwa sivyo, tafadhali ondoa\'%1$s\' ya ziada.</string>
+  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Je, kuna nambari au kitu tofauti inayokosa kabla au baada ya ishara ya kuzidisha \'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'%1$s\' ya ziada.</string>
+  <string name="math_expression_error_missing_lhs_for_division_operator">Je, kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya mgawanyiko \'%1$s\'? Ikiwa sivyo, tafadhali ondoa\'%1$s\' ya ziada.</string>
   <string name="math_expression_error_missing_lhs_for_exponentiation_operator">Je! Kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya ufafanuzi\'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'%1$s\' ya ziada.</string>
   <string name="math_expression_error_missing_rhs_for_addition_operator">Inaonekana kuwa nambari au kitu tofauti inakosa baada ya alama ya kuongeza \'%s\'.</string>
   <string name="math_expression_error_missing_rhs_for_subtraction_operator">Inaonekana kuwa nambari au kitu tofauti inakosekana baada ya ishara ya kuondoa \'%s\'.</string>
@@ -133,7 +133,7 @@
   <string name="topic_downloaded">Mada Imepakuliwa</string>
   <string name="downloaded">Imepakuliwa</string>
   <string name="question_player_title">Hali ya Mazoezi</string>
-  <string name="question_training_session_progress">Swali %s kati ya %s</string>
+  <string name="question_training_session_progress">Swali %1$s kati ya %2$s</string>
   <string name="question_training_session_progress_finished">imekamilika</string>
   <string name="question_training_session_finished_header">imekamilika</string>
   <string name="question_training_session_finished_message">Umemaliza maswali yote! Unaweza kuchagua kucheza seti nyingine ya maswali, au kurudi kwenye mada.</string>
@@ -173,8 +173,8 @@
     <item quantity="other">Hadithi %s</item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="one">%s kati ya Sura %s Imekamilika</item>
-    <item quantity="other">%s ya Sura %s Imekamilika</item>
+    <item quantity="one">%1$s kati ya Sura %2$s Imekamilika</item>
+    <item quantity="other">%1$s ya Sura %2$s Imekamilika</item>
   </plurals>
   <plurals name="lesson_count" fuzzy="true">
     <item quantity="one">Somo 1</item>
@@ -237,7 +237,7 @@
   <string name="skip">Ruka</string>
   <string name="next_arrow">Inayofuata</string>
   <string name="get_started">Anza</string>
-  <string name="onboarding_slide_dots_content_description">Slaidi %s ya %s</string>
+  <string name="onboarding_slide_dots_content_description">Slaidi %1$s ya %2$s</string>
   <string name="pin_password_hello">Habari, %s!</string>
   <string name="pin_password_admin_enter">Tafadhali weka Nambari yako ya Siri ya Msimamizi.</string>
   <string name="pin_password_user_enter">Tafadhali weka Nambari yako ya Siri.</string>
@@ -374,7 +374,7 @@
   <string name="move_item_up_content_description">Hamisha kipengee juu hadi %s</string>
   <string name="up_button_disabled">Juu</string>
   <string name="down_button_disabled">Chini</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
   <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
