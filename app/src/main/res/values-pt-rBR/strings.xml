@@ -94,11 +94,11 @@
   <string name="topic_name">Tópico: %s</string>
   <string name="topic">Tópico</string>
   <string name="ongoing_topic_list_activity_title">Tópicos em Andamento</string>
-  <string name="chapter_name">Capítulo %s: %s</string>
-  <string name="chapter_completed">O capítulo %s com o título %s foi concluído</string>
-  <string name="chapter_in_progress">O capítulo %s com o título %s está em andamento</string>
-  <string name="chapter_prerequisite_title_label">Conclua o capítulo %s: %s para desbloquear este capítulo.</string>
-  <string name="chapter_locked_prerequisite_title_label">O capítulo %s: %s está bloqueado no momento. Conclua o capítulo %s: %s para desbloquear esse capítulo.</string>
+  <string name="chapter_name">Capítulo %1$s: %2$s</string>
+  <string name="chapter_completed">O capítulo %1$s com o título %2$s foi concluído</string>
+  <string name="chapter_in_progress">O capítulo %1$s com o título %2$s está em andamento</string>
+  <string name="chapter_prerequisite_title_label">Conclua o capítulo %1$s: %2$s para desbloquear este capítulo.</string>
+  <string name="chapter_locked_prerequisite_title_label">O capítulo %1$s: %2$s está bloqueado no momento. Conclua o capítulo %3$s: %4$s para desbloquear esse capítulo.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Conclua o capítulo anterior para desbloquear este capítulo.</string>
   <string name="text_input_default_content_description">Inserir texto.</string>
   <string name="fractions_default_hint_text">Insira uma fração na forma x/x, ou um número misto na forma x x/x.</string>
@@ -153,7 +153,7 @@
   <string name="topic_downloaded">Tópico Baixado</string>
   <string name="downloaded">Baixado</string>
   <string name="question_player_title">Modo de Prática</string>
-  <string name="question_training_session_progress">Questão %s de %s</string>
+  <string name="question_training_session_progress">Questão %1$s de %2$s</string>
   <string name="question_training_session_progress_finished">Concluído</string>
   <string name="question_training_session_finished_header">Concluído</string>
   <string name="question_training_session_finished_message">Você concluiu todas as perguntas! Você pode escolher reproduzir outro conjunto de perguntas ou retornar ao tópico.</string>
@@ -193,8 +193,8 @@
     <item quantity="other">%s Histórias</item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="one">%s de %s Capítulo Concluído</item>
-    <item quantity="other">%s de %s Capítulos Concluídos</item>
+    <item quantity="one">%1$s de %2$s Capítulo Concluído</item>
+    <item quantity="other">%1$s de %2$s Capítulos Concluídos</item>
   </plurals>
   <plurals name="lesson_count" fuzzy="true">
     <item quantity="one">%s Lição</item>
@@ -265,7 +265,7 @@
   <string name="skip">Pular</string>
   <string name="next_arrow">Próximo</string>
   <string name="get_started">Começar</string>
-  <string name="onboarding_slide_dots_content_description">Slide %s de %s</string>
+  <string name="onboarding_slide_dots_content_description">Slide %1$s de %2$s</string>
   <string name="pin_password_hello">Olá, %s!</string>
   <string name="pin_password_admin_enter">Por favor, insira o PIN do Administrador.</string>
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
@@ -423,7 +423,7 @@
   <string name="move_item_up_content_description">Mover o item para cima para %s</string>
   <string name="up_button_disabled">Para cima</string>
   <string name="down_button_disabled">Para baixo</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Por favor, selecione todas as alternativas corretas.</string>
