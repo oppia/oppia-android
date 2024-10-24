@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
+* Andrekowacs
 * Carolintaschi
+* Debora Gadelha
 * Eduardoaddad
 * Felipe L. Ewald
 * Jfalarini
 * Leosls
+* Pyscowicz
 * Re demz
 * Seanlip
 * Svjatysberega
+* Vanessagelinski
 * YuriNikolai
 -->
 <resources>
@@ -16,6 +20,7 @@
   <string name="menu_my_downloads">Meus Downloads</string>
   <string name="menu_help">Ajuda</string>
   <string name="exploration_activity_title">Reprodutor de Exploração</string>
+  <string name="play_exploration_button_text">Explorar</string>
   <string name="help_activity_title">Ajuda</string>
   <string name="bottom_sheet_options_menu_close">Fechar</string>
   <string name="menu_switch_profile">Trocar Perfil</string>
@@ -26,18 +31,20 @@
   <string name="audio_play_description">Tocar áudio</string>
   <string name="audio_pause_description">Pausar áudio</string>
   <string name="audio_unavailable_in_selected_language">%s o áudio não está disponível.</string>
-  <string name="audio_language_select_dialog_okay_button" fuzzy="true">OK</string>
+  <string name="audio_language_select_dialog_okay_button">Ok</string>
   <string name="audio_language_select_dialog_cancel_button">Cancelar</string>
   <string name="audio_language_select_dialog_title">Idioma de Áudio</string>
   <string name="audio_dialog_offline_title">Atualmente Offline</string>
   <string name="audio_dialog_offline_message">Certifique-se de que o Wi-Fi ou os dados móveis estejam ativados e tente novamente.</string>
-  <string name="audio_dialog_offline_positive" fuzzy="true">OK</string>
-  <string name="cellular_data_alert_dialog_okay_button" fuzzy="true">OK</string>
+  <string name="audio_dialog_offline_positive">Ok</string>
+  <string name="cellular_data_alert_dialog_okay_button">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancelar</string>
   <string name="cellular_data_alert_dialog_title">Atualmente em Dados Móveis</string>
   <string name="cellular_data_alert_dialog_description">O streaming de áudio pode usar muitos dados móveis.</string>
   <string name="cellular_data_alert_dialog_checkbox">Não mostre esta mensagem novamente</string>
   <string name="concept_card_toolbar_title">Cartão de Conceito</string>
+  <string name="concept_card_one_button_text">Cartão Conceitual 1</string>
+  <string name="concept_card_two_button_text">Cartão Conceitual 2</string>
   <string name="revision_card_toolbar_title">Cartão de Revisão</string>
   <string name="unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
@@ -71,13 +78,16 @@
   <string name="previous_state_description">Voltar ao cartão anterior</string>
   <string name="next_state_description">Avançar para o próximo cartão</string>
   <string name="state_submit_button">Enviar</string>
+  <string name="submit_button_text">Enviar</string>
   <string name="lesson_replay_button_text">Repetir</string>
   <string name="state_end_exploration_button">Retornar ao Tópico</string>
   <string name="previous_responses_header">Respostas Anteriores (%s)</string>
   <string name="image_interaction_answer_text">Cliques em %s</string>
+  <string name="image_error_empty_input">Selecione uma imagem para continuar.</string>
   <string name="state_learn_again_button">Aprender Novamente</string>
   <string name="see_more">Veja Mais</string>
   <string name="see_less">Veja Menos</string>
+  <string name="sample_text_view_text">Esta é uma visualização de texto de exemplo</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Perguntas em Destaque</string>
   <string name="frequently_asked_questions">Perguntas Frequentes</string>
@@ -106,8 +116,11 @@
   <string name="numeric_input_hint">Digite um número.</string>
   <string name="number_with_units_input_hint_text">Escreva números com unidades aqui.</string>
   <string name="numeric_expression_default_hint_text">Digite uma expressão aqui, usando apenas números.</string>
+  <string name="numeric_expression_error_empty_input">Insira uma expressão numérica para continuar.</string>
   <string name="algebraic_expression_default_hint_text">Digite uma expressão aqui.</string>
+  <string name="algebraic_expression_error_empty_input">Insira uma expressão algébrica para continuar.</string>
   <string name="math_equation_default_hint_text">Digite uma equação aqui.</string>
+  <string name="math_equation_error_empty_input">Insira uma equação para continuar.</string>
   <string name="math_expression_error_spaces_in_numerical_input">Por favor, remova os espaços entre os números em sua resposta.</string>
   <string name="math_expression_error_unbalanced_parentheses">Feche ou remova os parênteses.</string>
   <string name="math_expression_error_single_redundant_parentheses">Por favor, remova os parênteses ao redor da resposta inteira: \'%s\'.</string>
@@ -169,14 +182,19 @@
   <string name="fraction_error_invalid_format">Insira uma fração válida (por exemplo, 5/3 ou 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Por favor, não coloque 0 no denominador</string>
   <string name="fraction_error_larger_than_seven_digits">Nenhum dos números da fração deve ter mais de 7 dígitos.</string>
+  <string name="fraction_error_empty_input">Insira uma fração para continuar.</string>
   <string name="number_error_starting_with_floating_point">Comece sua resposta com um número (por exemplo, \"0\" em 0,5)</string>
   <string name="number_error_invalid_format">Por favor, insira um número válido.</string>
   <string name="number_error_larger_than_fifteen_characters">A resposta pode conter no máximo 15 dígitos (0–9) ou símbolos (. ou -).</string>
-  <string name="ratio_error_invalid_chars" fuzzy="true">Escreva uma proporção que consista em dígitos separados por dois pontos (por exemplo, 1:2 ou 1:2:3).</string>
-  <string name="ratio_error_invalid_format" fuzzy="true">Insira uma proporção válida (por exemplo, 1:2 ou 1:2:3).</string>
-  <string name="ratio_error_invalid_colons" fuzzy="true">Sua resposta tem dois dois-pontos (:) do lado um do outro.</string>
-  <string name="ratio_error_invalid_size" fuzzy="true">O número de termos não é igual ao exigido.</string>
-  <string name="ratio_error_includes_zero" fuzzy="true">Proporções não podem ter 0 como elemento.</string>
+  <string name="number_error_empty_input">Digite um número para continuar.</string>
+  <string name="ratio_error_invalid_chars">Escreva uma proporção que consista em dígitos separados por dois pontos (por exemplo, 1:2 ou 1:2:3).</string>
+  <string name="ratio_error_invalid_format">Insira uma proporção válida (por exemplo, 1:2 ou 1:2:3).</string>
+  <string name="ratio_error_invalid_colons">Sua resposta tem dois pontos (:) próximos um do outro.</string>
+  <string name="ratio_error_invalid_size">O número de termos não é igual aos termos exigidos.</string>
+  <string name="ratio_error_includes_zero">As proporções não podem ter 0 como elemento.</string>
+  <string name="ratio_error_empty_input">Insira uma proporção para continuar.</string>
+  <string name="text_error_empty_input">Digite o texto para continuar.</string>
+  <string name="selection_error_empty_input">Escolha uma resposta para continuar.</string>
   <string name="unknown_size">Tamanho desconhecido</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -307,6 +325,8 @@
   <string name="home_activity_title">Início</string>
   <string name="promoted_story_spotlight_hint">A partir de agora, você pode ver as lições recomendadas para você aqui.</string>
   <string name="select_a_topic_to_start">Selecione um Tópico para começar</string>
+  <string name="classroom_list_activity_title">Início</string>
+  <string name="classrooms_list_activity_section_header">Salas de aula</string>
   <string name="profile_list_activity_title">Perfis</string>
   <string name="profile_edit_activity_title">Editar Perfil</string>
   <string name="profile_edit_created">Criado em %s</string>
@@ -330,7 +350,7 @@
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Escolha da Biblioteca</string>
   <string name="profile_rename_activity_title">Renomear Perfil</string>
   <string name="profile_rename_label">Novo Nome</string>
-  <string name="profile_rename_save" fuzzy="true">salvar</string>
+  <string name="profile_rename_save">Salvar</string>
   <string name="profile_reset_pin_activity_title">Redefinir PIN</string>
   <string name="profile_reset_pin_main">Insira um novo PIN para o usuário usar ao acessar seu perfil.</string>
   <string name="profile_reset_pin_user_pin_label">PIN de 3 Dígitos</string>
@@ -343,6 +363,7 @@
   <string name="add_profile_required">Requerido</string>
   <string name="back_button">Botão de Voltar</string>
   <string name="next">Próximo</string>
+  <string name="learner_analytics_label_text">Análise de estudo do aluno</string>
   <string name="administrator_controls_general_label">Geral</string>
   <string name="administrator_controls_edit_account">Editar conta</string>
   <string name="administrator_controls_profile_management_label">Gerenciamento de Perfil</string>
@@ -363,12 +384,12 @@
   <string name="app_last_update_date">A última atualização foi instalada em %s. Use o número da versão acima para enviar feedback sobre erros.</string>
   <string name="app_version_activity_title">Versão do Aplicativo</string>
   <string name="app_language_activity_title">Idioma do Aplicativo</string>
-  <string name="audio_language_activity_title" fuzzy="true">Idioma Padrão de Áudio</string>
+  <string name="audio_language_activity_title">Idioma de áudio preferido</string>
   <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
   <string name="title_reading_text_size">Tamanho do Texto de Leitura</string>
   <string name="story_text_will_look_like_this">O texto da história ficará assim.</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language" fuzzy="true">Áudio Padrão</string>
+  <string name="audio_language">Idioma de áudio preferido</string>
   <string name="app_language">Idioma do Aplicativo</string>
   <string name="reading_text_size">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_small">Pequeno</string>
@@ -391,7 +412,7 @@
   <string name="great">Ótimo</string>
   <string name="lets_get_started">Vamos começar.</string>
   <string name="yes">Sim</string>
-  <string name="no">Não&#8230;</string>
+  <string name="no">Não…</string>
   <string name="pick_a_different_topic">Escolha um\ntópico diferente.</string>
   <string name="are_you_interested">Você está interessado em:\n%s?</string>
   <string name="new_hint_available">Nova dica disponível</string>
@@ -417,6 +438,7 @@
   <string name="return_to_lesson">Voltar para a lição</string>
   <string name="explanation">Explicação:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">Se dois itens forem iguais, junte-os.</string>
+  <string name="drag_and_drop_interaction_empty_input">Organize as caixas para continuar.</string>
   <string name="link_to_item_below">Link para o item %s</string>
   <string name="unlink_items">Desvincular itens em %s</string>
   <string name="move_item_down_content_description">Mover o item para baixo para %s</string>
@@ -427,9 +449,20 @@
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Por favor, selecione todas as alternativas corretas.</string>
-  <string name="unsupported_app_version_dialog_title" fuzzy="true">Versão do aplicativo não suportada</string>
+  <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
+  <string name="forced_app_update_dialog_title">Atualização do aplicativo necessária</string>
+  <string name="forced_app_update_dialog_message">Uma nova versão de %s já está disponível. A nova versão é mais segura e melhora sua experiência de aprendizado.\n\nEsta versão não é mais suportada. Para continuar usando o aplicativo, atualize para a versão mais recente.</string>
+  <string name="forced_app_update_dialog_update_button_text">Atualizar</string>
+  <string name="forced_app_update_dialog_close_button_text">Fechar App</string>
+  <string name="optional_app_update_dialog_title">Nova atualização disponível</string>
+  <string name="optional_app_update_dialog_message">Uma nova versão de %s já está disponível. Recomendamos que você atualize o aplicativo para corrigir bugs e melhorar a experiência de aprendizado.</string>
+  <string name="optional_app_update_dialog_dismiss_button_text">Dispensar</string>
+  <string name="optional_app_update_dialog_update_button_text">Atualizar</string>
+  <string name="os_deprecation_dialog_title">Atualize seu sistema operacional Android</string>
+  <string name="os_deprecation_dialog_message">Recomendamos atualizar seu sistema operacional Android para aproveitar os novos recursos e lições do %s.\n\nVisite o aplicativo Configurações do seu telefone para atualizar seu sistema operacional.</string>
+  <string name="os_deprecation_dialog_dismiss_button_text">Dispensar</string>
   <string name="splash_screen_developer_label">Versão do desenvolvedor</string>
   <string name="splash_screen_alpha_label">Alfa</string>
   <string name="splash_screen_beta_label">Beta</string>
@@ -441,9 +474,11 @@
   <string name="general_availability_notice_dialog_message">Olá! Seu aplicativo está sendo atualizado para a versão de disponibilidade geral. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">Não exibir esta mensagem novamente</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
-  <string name="ratio_content_description_separator" fuzzy="true"> para</string>
-  <string name="ratio_default_hint_text" fuzzy="true">Insira uma razão no formato x:y.</string>
+  <string name="ratio_content_description_separator"> para</string>
+  <string name="ratio_default_hint_text">Insira uma proporção no formato x:y.</string>
   <string name="text_input_default_hint_text">Clique aqui para inserir texto.</string>
+  <string name="test_number_input_interaction_hint">Escreva o dígito aqui.</string>
+  <string name="test_text_input_interaction_hint">Escreva aqui.</string>
   <string name="smallest_text_size_content_description">Menor tamanho de texto</string>
   <string name="largest_text_size_content_description">Maior tamanho de texto</string>
   <string name="coming_soon">Em Breve</string>
@@ -481,16 +516,28 @@
   <string name="faq_question_whats_oppia">O que é %s?</string>
   <string name="faq_question_whos_an_admin">Quem é um administrador?</string>
   <string name="faq_question_create_profile">Como posso criar um novo perfil?</string>
+  <string name="faq_question_app_language">Como faço para obter o aplicativo no meu idioma?</string>
+  <string name="faq_question_bug_reporting">Achei um bug. Como posso reportar?</string>
+  <string name="faq_question_math_lessons">Por que só há aulas de matemática?</string>
+  <string name="faq_question_more_lessons">Vocês vão criar mais lições?</string>
   <string name="faq_question_exploration_player">Por que a exploração não está carregando?</string>
   <string name="faq_question_audio_not_playing">Por que meu áudio não está tocando?</string>
   <string name="faq_question_delete_profile">Como posso deletar um perfil?</string>
+  <string name="faq_question_update_app">Como eu atualizo o aplicativo?</string>
+  <string name="faq_question_update_os">Como eu atualizo meu sistema operacional Android?</string>
   <string name="faq_question_cant_find_question">Não consigo encontrar minha pergunta aqui. E agora?</string>
   <string name="faq_answer_whats_oppia">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Finnish) - \"aprender\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s tem a missão de ajudar qualquer pessoa a aprender o que quiser de uma forma eficaz e agradável.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ao criar um conjunto de aulas gratuitas, de alta qualidade e comprovadamente eficazes com a ajuda de educadores de todo o mundo, %1$s visa proporcionar aos alunos uma educação de qualidade - independentemente de onde estejam ou a quais recursos tradicionais tenham acesso.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Como estudante, você pode começar sua aventura de aprendizado navegando pelos tópicos listados na página inicial!&lt;/p&gt;</string>
-  <string name="faq_answer_whos_an_admin">&lt;p&gt;Um administrador é o usuário principal que gerencia perfis e configurações para cada perfil em sua conta. Provavelmente, eles são seus pais, professores ou responsáveis ​​que criaram este perfil para você.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Os administradores podem gerenciar perfis, atribuir PINs e alterar outras configurações em suas contas. Dependendo do seu perfil, as permissões de administrador podem ser necessárias para determinados recursos, como download de tópicos, alteração do PIN e mais. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Para ver quem é o seu administrador, vá para o Seletor de perfil. O primeiro perfil listado e com \"Administrador\" escrito em seu nome é o Administrador. &lt;/p&gt;</string>
-  <string name="faq_answer_create_profile">&lt;p&gt;Se é a sua primeira vez criando um perfil e você não tem um PIN:&lt;ol&gt; &lt;li&gt; No Seletor de Perfil, toque em &lt;strong&gt;Configurar Múltiplos Perfis&lt;/strong&gt;. &lt;/li&gt; &lt;li&gt; Crie um PIN e &lt;strong&gt;Salvar&lt;/strong&gt;. &lt;/li&gt; &lt;li&gt; Preencha todos os campos do perfil. &lt;ol&gt; &lt;li&gt; (Opcional) Carregue uma foto. &lt;/li&gt; &lt;li&gt; Insira um nome. &lt;/li&gt; &lt;li&gt; (Opcional) Atribua um PIN de 3 dígitos. &lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt; 4. Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil está adicionado ao seu Seletor de Perfil! &lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt; Se você já criou um perfil antes e tem um PIN: &lt;ol&gt; &lt;li&gt;No Seletor de Perfil, toque em &lt;strong&gt;Adicionar Perfil&lt;/strong&gt;. &lt;/li&gt; &lt;li&gt; 2. Digite seu PIN e toque em &lt;strong&gt;Enviar&lt;/strong&gt;. &lt;/li&gt; &lt;li&gt; Preencha todos os campos do perfil. &lt;ol&gt; &lt;li&gt; (Opcional) Carregue uma foto. &lt;/li&gt; &lt;li&gt; Insira um nome. &lt;/li&gt; &lt;li&gt; (Opcional) Atribua um PIN de 3 dígitos. &lt;/li&gt; &lt;/ol&gt; &lt;/li&gt; &lt;li&gt; 4. Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil está adicionado ao seu Seletor de Perfil! &lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt; Nota: Apenas o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
-  <string name="faq_answer_exploration_player">&lt;p&gt;Se a exploração não estiver carregando&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique se o aplicativo está atualizado:&lt;/p&gt;&lt;p&gt; &lt;ul&gt; &lt;li&gt; Acesse a Play Store e certifique-se de que o aplicativo esteja atualizado com a versão mais recente &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique sua conexão com a internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Se sua conexão com a Internet estiver lenta, tente se reconectar à rede Wi-Fi ou conectar-se a uma rede diferente. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Peça ao administrador para verificar o dispositivo e a conexão com a Internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Peça ao administrador para solucionar o problema usando as etapas acima &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Informe-nos se você ainda tiver problemas com o carregamento::&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Relate um problema entrando em contato conosco em admin@oppia.org. &lt;/li&gt; &lt;/ul&gt;</string>
-  <string name="faq_answer_audio_not_playing">&lt;p&gt;Se o seu áudio não estiver tocando&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique se o aplicativo está atualizado:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Acesse a Play Store e certifique-se de que o aplicativo esteja atualizado com a versão mais recente &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique sua conexão com a internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Se sua conexão com a Internet estiver lenta, tente se reconectar à rede Wi-Fi ou conectar-se a uma rede diferente. A Internet lenta pode fazer com que o áudio carregue irregularmente, dificultando a reprodução. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Peça ao administrador para verificar o dispositivo e a conexão com a Internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Peça ao administrador para solucionar o problema usando as etapas acima&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Informe-nos se você ainda tiver problemas com o carregamento:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Relate um problema entrando em contato conosco em admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_delete_profile">&lt;p&gt;Depois que um perfil é deletado:&lt;/p&gt; &lt;ol&gt;&lt;li&gt;O perfil não pode ser recuperado. &lt;/li&gt; &lt;li&gt; As informações do perfil, como nome, fotos e progresso, serão excluídas permanentemente. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Para deletar um perfil(excluindo o do &lt;u&gt;Administrador&lt;/u&gt;):&lt;/p&gt; &lt;ol&gt;&lt;li&gt;Na página inicial do administrador, toque no botão de menu no canto superior esquerdo.&lt;/li&gt; &lt;li&gt;Toque em &lt;strong&gt;Controles do Administrador&lt;/strong&gt;.&lt;/li&gt; &lt;li&gt;3. Toque em &lt;strong&gt;Editar Perfis&lt;/strong&gt;.&lt;/li&gt; &lt;li&gt;4. Toque no perfil que deseja excluir.&lt;/li&gt; &lt;li&gt;5. Na parte inferior da tela, toque em &lt;strong&gt;Exclusão de Perfil&lt;/strong&gt;.&lt;/li&gt; &lt;li&gt;6. Toque em &lt;strong&gt;Deletar&lt;/strong&gt; para confirmar a exclusão.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Nota: Apenas o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
+  <string name="faq_answer_whos_an_admin">&lt;p&gt;Um administrador é o usuário principal que gerencia perfis e configurações de cada perfil da conta. Provavelmente foram seus pais, professores ou responsáveis ​​que criaram este perfil para você.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Os administradores podem gerenciar perfis, atribuir PINs e alterar outras configurações. sob sua conta. Dependendo do seu perfil, podem ser necessárias permissões de administrador para determinados recursos, como alteração do PIN e muito mais.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Para ver quem é o seu administrador, acesse o Perfil. Seletor. O primeiro perfil listado e com \"Administrador\" escrito em seu nome é o Administrador.&lt;/p&gt;</string>
+  <string name="faq_answer_create_profile">&lt;p&gt;Se for a primeira vez que você cria um perfil e você não tem um PIN:&lt;ol&gt;&lt;li&gt;No Seletor de perfil, toque em &lt;strong&gt;Configurar vários perfis&lt;/strong&gt;.&lt;/li&gt;&lt; li&gt;Crie um PIN e &lt;strong&gt;Salve&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Preencha todos os campos do perfil.&lt;ol&gt;&lt;li&gt;(Opcional) Faça upload de uma foto.&lt;/li&gt;&lt;li&gt; Digite um nome.&lt;/li&gt;&lt;li&gt;(Opcional) Atribua um PIN de três dígitos.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil será adicionado ao seu Seletor de perfil!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;Se você já criou um perfil e possui um PIN:&lt;ol&gt;&lt;li&gt;No Seletor de perfil, toque em &lt; strong&gt;Adicionar perfil&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Insira seu PIN e toque em &lt;strong&gt;Enviar&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Preencha todos os campos do perfil.&lt;ol&gt;&lt;li &gt;(Opcional) Faça upload de uma foto.&lt;/li&gt;&lt;li&gt;Digite um nome.&lt;/li&gt;&lt;li&gt;(Opcional) Atribua um PIN de três dígitos.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li &gt;Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil é adicionado ao seu Seletor de perfil!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Observação: somente o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
+  <string name="faq_answer_app_language">&lt;p&gt;O aplicativo %s atualmente oferece suporte a inglês, português do Brasil, árabe, suaíli e pidgin nigeriano. Escolha um desses idiomas no menu, em Opções. Para solicitar o aplicativo em seu idioma, entre em contato conosco pelo e-mail &lt;strong&gt;admin@oppia.org&lt;/strong&gt;.&lt;/p&gt;</string>
+  <string name="faq_answer_bug_reporting">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Na tela inicial do aplicativo %s, toque no menu no canto superior esquerdo.&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Compartilhar feedback&lt;/strong&gt;.&lt;/li&gt;&lt;li &gt;Siga as instruções para relatar o bug ou compartilhar comentários.&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
+  <string name="faq_answer_math_lessons">&lt;p&gt;A missão do %1$s é ajudar os alunos a adquirir as habilidades necessárias para a vida. A matemática é uma habilidade essencial na vida cotidiana. %1$s oferecerá novas aulas sobre ciências e outros assuntos em breve!&lt;/p&gt;</string>
+  <string name="faq_answer_more_lessons">&lt;p&gt;Sim, %s oferecerá novas aulas sobre ciências e outros assuntos em breve. Por favor, volte para atualizações!&lt;/p&gt;</string>
+  <string name="faq_answer_exploration_player">&lt;p&gt;Se o Exploration Player não estiver carregando&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique se o aplicativo está atualizado:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Acesse na Play Store e verifique se o aplicativo está atualizado para a versão mais recente&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique sua conexão com a Internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Se sua conexão com a Internet estiver lenta, tente reconectar-se à rede Wi-Fi ou conectar-se a uma rede diferente.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Peça ao administrador para verificar o dispositivo e a conexão com a Internet:&lt;/p&gt; &lt;ul&gt;&lt;li&gt;Peça ao administrador para solucionar o problema usando as etapas acima&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Informe-nos se você ainda tiver problemas com o carregamento:&lt;/p &gt;&lt;ul&gt;&lt;li&gt;Informe um problema entrando em contato conosco pelo e-mail admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_audio_not_playing">&lt;p&gt;Se o áudio não estiver sendo reproduzido&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique se o aplicativo está atualizado:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Vá para o Play Store e verifique se o aplicativo está atualizado para a versão mais recente&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique sua conexão com a Internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Se sua conexão com a Internet está lenta, tente reconectar-se à sua rede Wi-Fi ou conectar-se a uma rede diferente. A Internet lenta pode fazer com que o áudio carregue irregularmente, dificultando a reprodução.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Peça ao administrador para verificar o dispositivo e a conexão com a Internet:&lt;/ p&gt;&lt;ul&gt;&lt;li&gt;Peça ao administrador para solucionar o problema usando as etapas acima&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Informe-nos se você ainda tiver problemas com o carregamento:&lt; /p&gt;&lt;ul&gt;&lt;li&gt;Informe um problema entrando em contato conosco pelo e-mail admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_delete_profile">&lt;p&gt;Depois que um perfil for excluído:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;O perfil não poderá ser recuperado.&lt;/li&gt;&lt;li&gt;As informações do perfil, como nome, fotos e progresso, serão excluídas permanentemente.&lt;/li &lt;/ol&gt;&lt;p&gt;Para excluir um perfil (excluindo o &lt;u&gt;Administrador&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Na página inicial do administrador, toque no botão de menu no canto superior esquerdo .&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Controles do administrador&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Editar perfis&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Toque no perfil você deseja excluir.&lt;/li&gt;&lt;li&gt;Na parte inferior da tela, toque em &lt;strong&gt;Exclusão de perfil&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Excluir&lt;/strong&gt; para confirmar a exclusão .&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Nota: Somente o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
+  <string name="faq_answer_update_app">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Abra o aplicativo Google Play Store.&lt;/li&gt;&lt;li&gt;Procure o aplicativo %s.&lt;/li&gt;&lt;li&gt;Toque em Atualizar.&lt;/li&gt;&lt;/ol&gt;&lt;/ p&gt;</string>
+  <string name="faq_answer_update_os">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Toque no aplicativo Configurações do seu telefone.&lt;/li&gt;&lt;li&gt;Toque em Atualizações do sistema.&lt;/li&gt;&lt;li&gt;Toque em Atualizações do sistema e siga as instruções para atualizar seu sistema operacional Android.&lt;/li &lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_cant_find_question">&lt;p&gt;Se você não consegue encontrar sua pergunta ou gostaria de relatar um problema, entre em contato conosco em admin@oppia.org.&lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">Atividade de Teste de Fragmento de Edição de Perfil</string>
   <string name="administrator_controls_fragment_test_activity_label">Controle Administrativo da Atividade de Teste de Fragmento</string>
@@ -532,4 +579,52 @@
   <string name="nps_score_question">Em uma escala de 0 a 10, qual é a probabilidade de você recomendar %s a um amigo ou colega?</string>
   <string name="previous_subtopic_talkback_text">O subtópico anterior é %s</string>
   <string name="next_subtopic_talkback_text">O próximo subtópico é %s</string>
+  <string name="app_info_icon_content_description">Informações do aplicativo</string>
+  <string name="spotlight_overlay_arrow_content_description">Seta de sobreposição do cursor</string>
+  <string name="close_spotlight_button_content_description">Fechar cursor</string>
+  <string name="previous_state_navigation_button_content_description">Botão de navegação do estado anterior</string>
+  <string name="developer_options_icon_content_description">Ícone de opções do desenvolvedor</string>
+  <string name="administrator_controls_icon_content_description">Ícone de controles do administrador</string>
+  <string name="options_menu_content_description">Menu de opções</string>
+  <string name="previous_button_content_description">Botão Anterior</string>
+  <string name="next_button_content_description">Próximo botão</string>
+  <string name="language_icon_content_description">Ícone de idioma</string>
+  <string name="setting_icon_content_description">Ícone de configuração</string>
+  <string name="profile_picture_image_view_content_description">Visualização da imagem da foto do perfil</string>
+  <string name="lock_icon_content_description">Ícone de cadeado</string>
+  <string name="download_status_image_content_description">Estado de download</string>
+  <string name="font_scale_html_content_text">Conteúdo HTML</string>
+  <string name="onboarding_language_activity_title">Bem vindo a %s!</string>
+  <string name="onboarding_language_activity_subtitle">Aprenda matemática gratuitamente, a qualquer hora!</string>
+  <string name="onboarding_language_activity_text">Feito para estudantes de 7 a 14 anos</string>
+  <string name="onboarding_language_activity_select_label">Selecione um idioma para começar</string>
+  <string name="onboarding_language_activity_explanation_text">Você pode alterar sua seleção de idioma a qualquer momento nas configurações do aplicativo</string>
+  <string name="onboarding_language_activity_button_text">Vamos lá!</string>
+  <string name="onboarding_profile_type_activity_title">Selecione o tipo de perfil</string>
+  <string name="onboarding_profile_type_activity_header">Conte-nos mais sobre você!</string>
+  <string name="onboarding_profile_type_activity_student_text">Sou estudante e quero aprender coisas novas!</string>
+  <string name="onboarding_profile_type_activity_parent_text">Sou pai, professor ou responsável por um aluno.</string>
+  <string name="onboarding_step_count_two">PASSO 2 DE 5</string>
+  <string name="create_profile_activity_title">Criar perfil</string>
+  <string name="create_profile_activity_header">Como devemos chamá-lo?</string>
+  <string name="create_profile_activity_nickname_label">Apelido</string>
+  <string name="create_profile_activity_profile_picture_prompt">Toque aqui para adicionar uma foto</string>
+  <string name="create_profile_activity_nickname_error">Clique na caixa acima para digitar seu apelido.</string>
+  <string name="create_profile_activity_edit_icon_content_description">Editar foto do perfil</string>
+  <string name="create_profile_activity_current_picture_content_description">Foto do perfil atual</string>
+  <string name="onboarding_step_count_three">PASSO 3 DE 5</string>
+  <string name="onboarding_learner_intro_activity_title">Bem-vindo</string>
+  <string name="onboarding_learner_intro_activity_text">Bem-vindo, %s!</string>
+  <string name="onboarding_learner_intro_classroom_text">Aprenda matemática através de aulas divertidas baseadas em histórias.</string>
+  <string name="onboarding_learner_intro_practice_text">Experimente questões práticas para testar seu conhecimento.</string>
+  <string name="onboarding_learner_intro_feedback_text">Obtenha feedback para melhorar usando as correções de %s.</string>
+  <string name="onboarding_step_count_four">PASSO 4 DE 5</string>
+  <string name="onboarding_otter_content_description">Lontra fofa usando óculos.</string>
+  <string name="onboarding_learner_otter_content_description">Lontra fofa com livros.</string>
+  <string name="onboarding_parent_otter_content_description">Mamãe e bebê lontra.</string>
+  <string name="onboarding_navigation_back">Voltar</string>
+  <string name="onboarding_navigation_continue">Continuar</string>
+  <string name="audio_language_fragment_text">Em %s, você pode ouvir as lições!</string>
+  <string name="audio_language_fragment_subtitle">Selecione a lingua do áudio para ouvir às lições</string>
+  <string name="onboarding_step_count_five">Passo 5 de 5</string>
 </resources>
