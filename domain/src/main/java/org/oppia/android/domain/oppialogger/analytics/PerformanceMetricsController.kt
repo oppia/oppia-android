@@ -16,6 +16,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 
 /**
  * Controller for handling performance metrics event logging.
@@ -128,9 +129,11 @@ class PerformanceMetricsController @Inject constructor(
    * priority is returned.
    */
   private fun getLeastRecentMetricLogIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
-    oppiaMetricLogs.oppiaMetricLogList.withIndex()
-      .filter { it.value.priority == Priority.LOW_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index
+    filterByEnumCondition(
+      oppiaMetricLogs.oppiaMetricLogList.withIndex().toList(),
+      { it.value.priority },
+      { it == Priority.LOW_PRIORITY }
+    ).minByOrNull { it.value.timestampMillis }?.index
       ?: getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs)
 
   /**
@@ -142,9 +145,11 @@ class PerformanceMetricsController @Inject constructor(
    * priority is returned.
    */
   private fun getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
-    oppiaMetricLogs.oppiaMetricLogList.withIndex()
-      .filter { it.value.priority == Priority.MEDIUM_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index
+    filterByEnumCondition(
+      oppiaMetricLogs.oppiaMetricLogList.withIndex().toList(),
+      { it.value.priority },
+      { it == Priority.MEDIUM_PRIORITY }
+    ).minByOrNull { it.value.timestampMillis }?.index
       ?: getLeastRecentGeneralEventIndex(oppiaMetricLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */

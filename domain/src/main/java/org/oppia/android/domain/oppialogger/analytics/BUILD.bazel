@@ -54,6 +54,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+        "//utility/src/main/java/org/oppia/android/util/enumfilter:enum_filter_util",
     ],
 )
 

@@ -1,0 +1,20 @@
+"""
+General purposes utilities for filtering enums.
+"""
+
+# Load the Kotlin rules for Android from Bazel
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+# Define a Kotlin Android library for enum filtering utilities
+kt_android_library(
+    name = "enum_filter_util",  # The name of the library
+    srcs = [
+        "genericutilityforfilteringenums.kt",  # The source file containing the utility functions
+    ],
+    visibility = ["//visibility:public"],  # Visibility of this library within the project
+    deps = [
+
+
+
+    ],
+)
