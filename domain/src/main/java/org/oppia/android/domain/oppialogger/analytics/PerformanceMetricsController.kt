@@ -131,10 +131,10 @@ class PerformanceMetricsController @Inject constructor(
   private fun getLeastRecentMetricLogIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
     filterByEnumCondition(
       oppiaMetricLogs.oppiaMetricLogList.withIndex().toList(),
-      {it.value.priority},
-      {it==Priority.LOW_PRIORITY}
-    ).minByOrNull{it.value.timestampMillis}?.index
-      ?:getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs)
+      { it.value.priority },
+      { it == Priority.LOW_PRIORITY }
+    ).minByOrNull { it.value.timestampMillis }?.index
+      ?: getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs)
 
   /**
    * Returns the index of the least recent event from the existing store on the basis of recency and
@@ -147,11 +147,10 @@ class PerformanceMetricsController @Inject constructor(
   private fun getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
     filterByEnumCondition(
       oppiaMetricLogs.oppiaMetricLogList.withIndex().toList(),
-      {it.value.priority},
-      {it==Priority.MEDIUM_PRIORITY}
-    ).minByOrNull{it.value.timestampMillis}?.index
-      ?:getLeastRecentGeneralEventIndex(oppiaMetricLogs)
-
+      { it.value.priority },
+      { it == Priority.MEDIUM_PRIORITY }
+    ).minByOrNull { it.value.timestampMillis }?.index
+      ?: getLeastRecentGeneralEventIndex(oppiaMetricLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */
   private fun getLeastRecentGeneralEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =

@@ -97,52 +97,37 @@ class UserTypeItemsViewModel @Inject constructor(
   }
 
   private fun getUserTypeOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {
-    val observableList=ObservableArrayList<MultipleChoiceOptionContentViewModel>()
-    val filteredUserTypes=filterByEnumCondition(
+    val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
+    val filteredUserTypes = filterByEnumCondition(
       UserTypeAnswer.values().toList(),
-      {it},
-      {it.isValid()}
+      { userTypeAnswer -> userTypeAnswer },
+      { userTypeAnswer -> userTypeAnswer.isValid() }
     )
-    observableList+=filteredUserTypes
-
-      .mapIndexed { index, userTypeOption ->
-        when (userTypeOption) {
-          UserTypeAnswer.LEARNER ->
-            MultipleChoiceOptionContentViewModel(
-              resourceHandler.getStringInLocale(
-                R.string.user_type_answer_learner
-              ),
-              index,
-              this
-            )
-          UserTypeAnswer.TEACHER -> MultipleChoiceOptionContentViewModel(
-            resourceHandler.getStringInLocale(
-              R.string.user_type_answer_teacher
-            ),
-            index,
-            this
-          )
-
-          UserTypeAnswer.PARENT ->
-            MultipleChoiceOptionContentViewModel(
-              resourceHandler.getStringInLocale(
-                R.string.user_type_answer_parent
-              ),
-              index,
-              this
-            )
-
-          UserTypeAnswer.OTHER ->
-            MultipleChoiceOptionContentViewModel(
-              resourceHandler.getStringInLocale(
-                R.string.user_type_answer_other
-              ),
-              index,
-              this
-            )
-          else -> throw IllegalStateException("Invalid UserTypeAnswer")
-        }
+    observableList += filteredUserTypes.mapIndexed { index, userTypeOption ->
+      when (userTypeOption) {
+        UserTypeAnswer.LEARNER -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_learner),
+          index,
+          this
+        )
+        UserTypeAnswer.TEACHER -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_teacher),
+          index,
+          this
+        )
+        UserTypeAnswer.PARENT -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_parent),
+          index,
+          this
+        )
+        UserTypeAnswer.OTHER -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_other),
+          index,
+          this
+        )
+        else -> throw IllegalStateException("Invalid UserTypeAnswer")
       }
+    }
     return observableList
   }
 

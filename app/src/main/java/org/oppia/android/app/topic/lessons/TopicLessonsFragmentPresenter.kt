@@ -162,20 +162,18 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
     val chapterSummaries = storySummaryViewModel
       .storySummary.chapterList
-    val completedChapterCount=filterByEnumCondition(
+    val completedChapterCount = filterByEnumCondition(
       chapterSummaries.map(ChapterSummary::getChapterPlayState),
-      {it},
-      {it==ChapterPlayState.COMPLETED}
+      { it },
+      { it == ChapterPlayState.COMPLETED }
     ).size
 
-    val inProgressChapterCount=
+    val inProgressChapterCount =
       filterByEnumCondition(
         chapterSummaries.map(ChapterSummary::getChapterPlayState),
-        {it},
-        {it==ChapterPlayState.IN_PROGRESS_SAVED}
+        { it },
+        { it == ChapterPlayState.IN_PROGRESS_SAVED }
       ).size
-
-
 
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
