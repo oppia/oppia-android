@@ -99,6 +99,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestPlatform
 
 /** Tests for [SpotlightFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -110,6 +116,9 @@ import javax.inject.Singleton
 class SpotlightFragmentTest {
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -141,8 +150,9 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag("android_enable_spotlight_ui")
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(false)
+//    TestPlatformParameterModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -163,8 +173,10 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag("android_enable_spotlight_ui")
+  @DisableFeatureFlag("android_enable_learner_study_analytics")
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+//    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -369,7 +381,7 @@ class SpotlightFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

@@ -114,7 +114,7 @@ annotation class EnableSpotlightUi
 const val SPOTLIGHT_UI = "android_enable_spotlight_ui"
 
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
-const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
+const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
 
 /**
  * Qualifier for the feature flag that controls whether input interaction state is correctly

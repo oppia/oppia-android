@@ -13,12 +13,15 @@ import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
 
 /** JUnit rule to enable [RunOn] test targeting. */
 class OppiaTestRule : TestRule {
+
   override fun apply(base: Statement?, description: Description?): Statement {
+  System.out.println("Enabled Feature Flags are:")
     return object : Statement() {
       override fun evaluate() {
         val areAccessibilityChecksEnabled = description.areAccessibilityChecksEnabled()
@@ -26,43 +29,64 @@ class OppiaTestRule : TestRule {
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
+        val enabledFeatureFlags = description?.getAnnotation(EnableFeatureFlag::class.java)
+        System.out.println("Enabled Feature Flags are: $enabledFeatureFlags")
+        val disabledFeatureFlags = description?.getAnnotation(DisableFeatureFlag::class.java)
+        System.out.println("Disabled Feature Flags are: $disabledFeatureFlags")
 
-        when {
-          currentPlatform in targetPlatforms && currentEnvironment in targetEnvironments -> {
-            // Only run this test if it's targeting the current platform & environment.
-            if (currentPlatform == TestPlatform.ESPRESSO && areAccessibilityChecksEnabled) {
-              AccessibilityChecks.enable().apply {
-                // Suppressing failures for all views which matches with below conditions as we do not
-                // want to change the UI to pass these failures as it will change the expected behaviour
-                // for learner.
-                setSuppressingResultMatcher(
-                  allOf(
-                    matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
-                    matchesViews(withContentDescription("More options")),
-                    matchesViews(withClassName(endsWith("OverflowMenuButton")))
+        val eff = description?.annotations?.filterIsInstance<EnableFeatureFlag>()
+
+        try {
+          applyOverrides(eff, disabledFeatureFlags)
+
+          when {
+            currentPlatform in targetPlatforms && currentEnvironment in targetEnvironments -> {
+              // Only run this test if it's targeting the current platform & environment.
+              if (currentPlatform == TestPlatform.ESPRESSO && areAccessibilityChecksEnabled) {
+                AccessibilityChecks.enable().apply {
+                  // Suppressing failures for all views which matches with below conditions as we do not
+                  // want to change the UI to pass these failures as it will change the expected behaviour
+                  // for learner.
+                  setSuppressingResultMatcher(
+                    allOf(
+                      matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
+                      matchesViews(withContentDescription("More options")),
+                      matchesViews(withClassName(endsWith("OverflowMenuButton")))
+                    )
                   )
-                )
-              }.setRunChecksFromRootView(true)
+                }.setRunChecksFromRootView(true)
+              }
+              base?.evaluate()
             }
-            base?.evaluate()
+            currentPlatform !in targetPlatforms -> {
+              // See https://github.com/junit-team/junit4/issues/116 for context.
+              throw AssumptionViolatedException(
+                "Test targeting ${targetPlatforms.toPluralPlatformDescription()} ignored on" +
+                  " $currentPlatform"
+              )
+            }
+            currentEnvironment !in targetEnvironments -> {
+              throw AssumptionViolatedException(
+                "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
+                  " $currentEnvironment"
+              )
+            }
+            else -> throw AssertionError("Reached impossible state in test rule")
           }
-          currentPlatform !in targetPlatforms -> {
-            // See https://github.com/junit-team/junit4/issues/116 for context.
-            throw AssumptionViolatedException(
-              "Test targeting ${targetPlatforms.toPluralPlatformDescription()} ignored on" +
-                " $currentPlatform"
-            )
-          }
-          currentEnvironment !in targetEnvironments -> {
-            throw AssumptionViolatedException(
-              "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
-                " $currentEnvironment"
-            )
-          }
-          else -> throw AssertionError("Reached impossible state in test rule")
+        } finally {
+
         }
       }
     }
+  }
+
+  private fun applyOverrides(enabledFeatureFlag: List<EnableFeatureFlag>?, disabledFeatureFlag: DisableFeatureFlag?) {
+//    enabledFeatureFlag?.let { PlatformParameterModule.overrideParameter(it.name, true) }
+    enabledFeatureFlag?.forEach { flag ->
+      System.out.println("Flag name: $flag")
+      PlatformParameterModule.overrideParameter(flag.name, true)
+    }
+    disabledFeatureFlag?.let { PlatformParameterModule.overrideParameter(it.name, false) }
   }
 
   private fun getCurrentPlatform(): TestPlatform {

@@ -141,6 +141,8 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -175,7 +177,7 @@ class ProfileAndDeviceIdFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+//    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
     Intents.init()
@@ -492,7 +494,9 @@ class ProfileAndDeviceIdFragmentTest {
     }
   }
 
+  // learner study on
   @Test
+  @EnableFeatureFlag("android_enable_learner_study_analytics")
   fun testFragment_firstEntry_mixOfAdminAndGenericEvents_someUploaded_reportsAllEvents() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
     runWithLaunchedActivityAndAddedFragment {
@@ -512,6 +516,32 @@ class ProfileAndDeviceIdFragmentTest {
       onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
     }
   }
+
+  // learner study + log event
+  @Test
+//  @EnableFeatureFlag("android_enable_logging_learner_study_ids")
+//  @EnableFeatureFlag("android_enable_spotlight_ui")
+  @EnableFeatureFlag("android_enable_learner_study_analytics")
+  fun testFragment_firstEntry_reportsAllEvents_and_eventLogged_indicatorTextMentionsWaiting() {
+    profileTestHelper.addMoreProfiles(numProfiles = 1)
+    runWithLaunchedActivityAndAddedFragment {
+      disconnectNetwork() // Ensure events are cached.
+
+      // Log & upload a mix of events with and without the admin profile.
+      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+      logThreeAnalyticsEvents(profileId = null)
+      connectOnlyToFlushWorkerQueue()
+      logAnalyticsEvent(profileId = null)
+      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+
+      // Event counts should be represented in the correct places.
+      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
+      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("1")))
+      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
+      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
+    }
+  }
+
 
   @Test
   fun testFragment_secondEntry_noLearnerEvents_hasZeroLearnerEventsReported() {
@@ -613,6 +643,7 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag("android_enable_learner_study_analytics")
   fun testFragment_eventLogged_waitingForUpload_indicatorTextMentionsWaiting() {
     runWithLaunchedActivityAndAddedFragment {
       disconnectNetwork() // Ensure events are cached.
@@ -1117,7 +1148,7 @@ class ProfileAndDeviceIdFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestPlatformParameterModule::class,
+      PlatformParameterModule::class,
       TestModule::class, RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
