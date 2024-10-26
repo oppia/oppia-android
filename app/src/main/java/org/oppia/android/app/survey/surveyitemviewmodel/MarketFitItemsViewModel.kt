@@ -13,6 +13,7 @@ import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 
 /** [SurveyAnswerItemViewModel] for the market fit question options. */
 class MarketFitItemsViewModel @Inject constructor(
@@ -98,8 +99,12 @@ class MarketFitItemsViewModel @Inject constructor(
   private fun getMarketFitOptions(): ObservableList<MultipleChoiceOptionContentViewModel> {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
-    observableList += MarketFitAnswer.values()
-      .filter { it.isValid() }
+    val filteredmarketFitAnswer = filterByEnumCondition(
+      MarketFitAnswer.values().toList(),
+      { marketFitAnswer -> marketFitAnswer },
+      { marketFitAnswer -> marketFitAnswer.isValid() }
+    )
+    observableList += filteredmarketFitAnswer
       .mapIndexed { index, marketFitAnswer ->
         when (marketFitAnswer) {
           MarketFitAnswer.VERY_DISAPPOINTED -> MultipleChoiceOptionContentViewModel(
