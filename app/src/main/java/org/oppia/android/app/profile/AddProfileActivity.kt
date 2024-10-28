@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AddProfileActivityParams
 import org.oppia.android.app.model.ScreenName.ADD_PROFILE_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
