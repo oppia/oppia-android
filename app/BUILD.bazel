@@ -846,6 +846,7 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/ProtoExtraMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
+        "src/main/java/org/oppia/android/util/enumfilter/EnumFilterUtil.kt",
     ],
     visibility = [
         ":app_testing_visibility",
