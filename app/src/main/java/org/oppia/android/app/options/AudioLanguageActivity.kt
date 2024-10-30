@@ -14,6 +14,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
@@ -23,8 +24,10 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    val profileId = intent.extractCurrentUserProfileId()
     audioLanguageActivityPresenter.handleOnCreate(
-      savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams()
+      savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
+      profileId
     )
   }
 

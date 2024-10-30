@@ -3,6 +3,7 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileEditActivityParams
@@ -43,17 +44,25 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileEditActivityPresenter.handleOnCreate()
+
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          this@ProfileEditActivity.handleBackPress()
+        }
+      }
+    )
   }
 
-  override fun onBackPressed() {
+  private fun handleBackPress() {
     val args = intent.getProtoExtra(
       PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
       ProfileEditActivityParams.getDefaultInstance()
     )
     val isMultipane = args?.isMultipane ?: false
     if (isMultipane) {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      super.onBackPressed()
+      finish()
     } else {
       val intent = Intent(this, ProfileListActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

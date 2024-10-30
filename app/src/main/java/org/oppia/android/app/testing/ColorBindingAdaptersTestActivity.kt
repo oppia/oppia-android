@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 
-/** Test activity for ViewBindingAdapters. */
+/** Test activity for ColorBindingAdapters. */
 class ColorBindingAdaptersTestActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
