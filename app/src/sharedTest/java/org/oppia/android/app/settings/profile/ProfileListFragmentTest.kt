@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -37,6 +38,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileListFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -86,6 +88,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
@@ -364,6 +367,30 @@ class ProfileListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
       intended(hasComponent(ProfileEditActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    profileTestHelper.initializeProfiles()
+    launch(ProfileListActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileListFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_list_container) as ProfileListFragment
+
+        val arguments = checkNotNull(profileListFragment.arguments) {
+          "Expected variables to be passed to ProfileListFragment"
+        }
+        val args = arguments.getProto(
+          ProfileListFragment.PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY,
+          ProfileListFragmentArguments.getDefaultInstance()
+        )
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedIsMultipane).isEqualTo(false)
+      }
     }
   }
 

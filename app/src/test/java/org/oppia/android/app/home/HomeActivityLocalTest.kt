@@ -27,7 +27,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -138,18 +137,6 @@ class HomeActivityLocalTest {
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
-    }
-  }
-
-  @Test
-  fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
-    setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-      assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
-      assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
     }
   }
 

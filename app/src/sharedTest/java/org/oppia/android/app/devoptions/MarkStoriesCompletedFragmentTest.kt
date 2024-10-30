@@ -37,6 +37,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -99,6 +100,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -466,6 +468,58 @@ class MarkStoriesCompletedFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<MarkStoriesCompletedTestActivity>(
+      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+
+        val arguments =
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to MarkStoriesCompletedFragment"
+          }
+        val profileId = arguments.extractCurrentUserProfileId()
+        val receivedInternalProfileId = profileId.internalId
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launch<MarkStoriesCompletedTestActivity>(
+      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      var actualSelectedStoryIdList = ArrayList<String>()
+
+      scenario.onActivity { activity ->
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+        actualSelectedStoryIdList =
+          fragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity ->
+        val newFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment
+        val receivedSelectedStoryIdList =
+          newFragment.markStoriesCompletedFragmentPresenter.selectedStoryIdList
+
+        assertThat(receivedSelectedStoryIdList).isEqualTo(actualSelectedStoryIdList)
+      }
     }
   }
 
