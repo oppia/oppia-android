@@ -810,7 +810,8 @@ class TodoOpenCheckTest {
 
   // subha
   private fun setUpGitHubService(
-    openIssueNumbers: List<Int>, pullRequestNumbers: List<Int> = emptyList()
+    openIssueNumbers: List<Int>,
+    pullRequestNumbers: List<Int> = emptyList()
   ) {
     // Create JSON objects for open issues
     val openIssuesJson = openIssueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
