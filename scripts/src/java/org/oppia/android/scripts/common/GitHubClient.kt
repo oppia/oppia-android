@@ -72,7 +72,7 @@ class GitHubClient(
         "Failed to fetch issues at page $pageNumber: ${response.code()}\n${call.request()}" +
           "\n${response.errorBody()}."
       }
-      //subha
+      // subha
       // Filter out any pull requests from the list  added
       val issues = response.body()?.filter { it.pullRequest == null }
       return@async checkNotNull(issues) {
