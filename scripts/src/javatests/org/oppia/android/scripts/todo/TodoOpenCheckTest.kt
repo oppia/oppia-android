@@ -88,8 +88,9 @@ class TodoOpenCheckTest {
   @Test
   fun testOpenIssuesOnly_withPullRequests_checkShouldFail() {
     // Setup with open issues and some pull requests
-    setUpGitHubService(openIssueNumbers = listOf(11004, 11003, 11002, 11001),
-      pullRequestNumbers = listOf(21001))
+    setUpGitHubService(
+      openIssueNumbers = listOf(11004, 11003, 11002, 11001), pullRequestNumbers = listOf(21001)
+    )
 
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
@@ -808,8 +809,9 @@ class TodoOpenCheckTest {
   }
 
   // subha
-  private fun setUpGitHubService(openIssueNumbers: List<Int>,
-                                 pullRequestNumbers: List<Int> = emptyList()) {
+  private fun setUpGitHubService(
+    openIssueNumbers: List<Int>, pullRequestNumbers: List<Int> = emptyList()
+  ) {
     // Create JSON objects for open issues
     val openIssuesJson = openIssueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
 
