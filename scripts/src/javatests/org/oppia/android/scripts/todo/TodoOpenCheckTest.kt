@@ -84,37 +84,6 @@ class TodoOpenCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(TODO_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
-  // subha
-  @Test
-  fun testOpenIssuesOnly_withPullRequests_checkShouldFail() {
-    // Setup with open issues and some pull requests
-    setUpGitHubService(
-      openIssueNumbers = listOf(11004, 11003, 11002, 11001), pullRequestNumbers = listOf(21001)
-    )
-
-    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
-    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
-    val testContent1 =
-      """
-      // TODO(#11002): test summary 1.
-      # TODO(#11004): test summary 2.
-      test Todo
-      test TODO
-      """.trimIndent()
-    val testContent2 =
-      """
-      // TODO(#21001): test summary 3.
-      todo
-      <!-- TODO(#11003): test summary 4-->
-      """.trimIndent()
-    tempFile1.writeText(testContent1)
-    tempFile2.writeText(testContent2)
-
-    runScript()
-
-    assertThat(outContent.toString().trim()).isEqualTo(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
-  }
-
   @Test
   fun testTodoCheck_onlyPoorlyFormattedTodosPresent_checkShouldFail() {
     setUpGitHubService(issueNumbers = emptyList())
@@ -808,41 +777,13 @@ class TodoOpenCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
-  // subha
-  private fun setUpGitHubService(
-    openIssueNumbers: List<Int>,
-    pullRequestNumbers: List<Int> = emptyList()
-  ) {
-    // Create JSON objects for open issues
-    val openIssuesJson = openIssueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
-
-    // Create JSON objects for pull requests (using the `pull_request` field to indicate it's a PR)
-    val pullRequestsJson = pullRequestNumbers.joinToString(separator = ",") {
-      "{\"number\":$it, \"pull_request\":{}}" // Include an empty pull_request object
-    }
-
-    // Combine them to simulate a typical GitHub response where issues & PRs might mix
-    val combinedJson = if (pullRequestsJson.isNotEmpty()) {
-      "[$openIssuesJson, $pullRequestsJson]"
-    } else {
-      "[$openIssuesJson]" // Only include open issues if PRs are empty
-    }
+  private fun setUpGitHubService(issueNumbers: List<Int>) {
+    val issueJsons = issueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
     val mockWebServer = MockWebServer()
-
-    mockWebServer.enqueue(MockResponse().setBody(combinedJson))
-    mockWebServer.enqueue(MockResponse().setBody("[]")) // Simulate end of pagination.
-
-    // Set the mock server URL for the GitHub client to use
+    mockWebServer.enqueue(MockResponse().setBody("[$issueJsons]"))
+    mockWebServer.enqueue(MockResponse().setBody("[]")) // No more issues.
     GitHubClient.remoteApiUrl = mockWebServer.url("/").toString()
   }
-
-//  private fun setUpGitHubService(issueNumbers: List<Int>) {
-//    val issueJsons = issueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
-//    val mockWebServer = MockWebServer()
-//    mockWebServer.enqueue(MockResponse().setBody("[$issueJsons]"))
-//    mockWebServer.enqueue(MockResponse().setBody("[]")) // No more issues.
-//    GitHubClient.remoteApiUrl = mockWebServer.url("/").toString()
-//  }
 
   private fun setUpSupportForGhAuth(authToken: String) {
     fakeCommandExecutor.registerHandler("gh") { _, args, outputStream, _ ->
