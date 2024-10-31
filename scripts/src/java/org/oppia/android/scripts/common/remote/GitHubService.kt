@@ -32,7 +32,7 @@ interface GitHubService {
   // @GET("repos/{repo_owner}/{repo_name}/issues?direction=asc")
   // add by subha
   @GET("repos/{repo_owner}/{repo_name}/issues?direction=asc")
-  //@GET("repos/{repo_owner}/{repo_name}/issues?state=open&direction=asc")
+  // @GET("repos/{repo_owner}/{repo_name}/issues?state=open&direction=asc")
   fun fetchOpenIssues(
     @Path("repo_owner") repoOwner: String,
     @Path("repo_name") repoName: String,
