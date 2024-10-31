@@ -12,7 +12,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GitHubIssue(
   @Json(name = "number") val number: Int,
-  @Json(name = "pull_request") val pullRequest: PullRequest? = null // Nullable field to distinguish pull requests
+  @Json(name = "pull_request") val pullRequest: PullRequest? = null
 )
 
 // Define PullRequest class as needed, or leave it empty if you don’t require specific details
