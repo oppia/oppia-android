@@ -29,7 +29,9 @@ interface GitHubService {
    * @return the list of [GitHubIssue]s read from the remote repository (as a [Call])
    */
   @Headers("Accept: application/vnd.github+json", "X-GitHub-Api-Version: 2022-11-28")
-  @GET("repos/{repo_owner}/{repo_name}/issues?direction=asc")
+  //@GET("repos/{repo_owner}/{repo_name}/issues?direction=asc")
+  //add by subha
+  @GET("repos/{repo_owner}/{repo_name}/issues?state=open&sort=created&direction=asc")
   fun fetchOpenIssues(
     @Path("repo_owner") repoOwner: String,
     @Path("repo_name") repoName: String,
