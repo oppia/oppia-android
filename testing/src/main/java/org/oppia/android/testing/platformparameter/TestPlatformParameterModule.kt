@@ -333,7 +333,7 @@ class TestPlatformParameterModule {
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
     private var enablePerformanceMetricsCollection =
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-    private var enableSpotlightUi = ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
+    private var enableSpotlightUi = true
     private var enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
     private var minimumLearningTime =
       NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE

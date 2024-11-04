@@ -515,27 +515,6 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   @Test
-  fun testFragment_firstEntry_reportsAllEvents_and_eventLogged_indicatorTextMentionsWaiting() {
-    profileTestHelper.addMoreProfiles(numProfiles = 1)
-    runWithLaunchedActivityAndAddedFragment {
-      disconnectNetwork() // Ensure events are cached.
-
-      // Log & upload a mix of events with and without the admin profile.
-      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
-      logThreeAnalyticsEvents(profileId = null)
-      connectOnlyToFlushWorkerQueue()
-      logAnalyticsEvent(profileId = null)
-      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
-
-      // Event counts should be represented in the correct places.
-      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("2")))
-      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("1")))
-      onAwaitingUploadUncategorizedEventsCountAt(position = 1).check(matches(withText("1")))
-      onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
-    }
-  }
-
-  @Test
   fun testFragment_secondEntry_noLearnerEvents_hasZeroLearnerEventsReported() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
 

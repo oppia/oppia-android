@@ -359,7 +359,6 @@ class PlatformParameterModule {
   }
 
   companion object {
-
     private val overriddenParameters = mutableMapOf<String, Any>()
 
     fun overrideParameter(name: String, value: Any) {
