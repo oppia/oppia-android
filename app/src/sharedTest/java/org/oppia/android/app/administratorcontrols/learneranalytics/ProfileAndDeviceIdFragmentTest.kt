@@ -96,9 +96,11 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -109,7 +111,6 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.EventLogSubject.LearnerDetailsContextSubject
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -141,8 +142,6 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.testing.EnableFeatureFlag
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -535,7 +534,6 @@ class ProfileAndDeviceIdFragmentTest {
       onUploadedUncategorizedEventsCountAt(position = 1).check(matches(withText("3")))
     }
   }
-
 
   @Test
   fun testFragment_secondEntry_noLearnerEvents_hasZeroLearnerEventsReported() {

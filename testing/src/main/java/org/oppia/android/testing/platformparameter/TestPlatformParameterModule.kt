@@ -20,6 +20,7 @@ import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS_DEFAU
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
@@ -65,7 +66,6 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module

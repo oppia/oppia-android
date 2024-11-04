@@ -30,30 +30,49 @@ class OppiaTestRule : TestRule {
         val currentEnvironment = getCurrentBuildEnvironment()
 
         val enabledFeatureFlags = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), EnableFeatureFlag::class.java) +
+          description?.testClass?.annotations?.toList(), EnableFeatureFlag::class.java
+        ) +
           extractParametersAndFeatureFlags(description?.annotations, EnableFeatureFlag::class.java)
 
         val disabledFeatureFlags = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java) +
+          description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java
+        ) +
           extractParametersAndFeatureFlags(description?.annotations, DisableFeatureFlag::class.java)
 
         val overriddenBoolParameters = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), OverrideBoolParameter::class.java) +
-          extractParametersAndFeatureFlags(description?.annotations, OverrideBoolParameter::class.java)
+          description?.testClass?.annotations?.toList(),
+          OverrideBoolParameter::class.java
+        ) +
+          extractParametersAndFeatureFlags(
+            description?.annotations,
+            OverrideBoolParameter::class.java
+          )
 
         val overriddenIntParameters = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), OverrideIntParameter::class.java) +
-          extractParametersAndFeatureFlags(description?.annotations, OverrideIntParameter::class.java)
+          description?.testClass?.annotations?.toList(),
+          OverrideIntParameter::class.java
+        ) +
+          extractParametersAndFeatureFlags(
+            description?.annotations,
+            OverrideIntParameter::class.java
+          )
 
         val overriddenStringParameters = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), OverrideStringParameter::class.java) +
-          extractParametersAndFeatureFlags(description?.annotations, OverrideStringParameter::class.java)
+          description?.testClass?.annotations?.toList(),
+          OverrideStringParameter::class.java
+        ) +
+          extractParametersAndFeatureFlags(
+            description?.annotations,
+            OverrideStringParameter::class.java
+          )
 
         val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(
-          description?.annotations, ResetFeatureFlagToDefault::class.java)
+          description?.annotations, ResetFeatureFlagToDefault::class.java
+        )
 
         val resetParameterToDefault = extractParametersAndFeatureFlags(
-          description?.annotations, ResetParameterToDefault::class.java)
+          description?.annotations, ResetParameterToDefault::class.java
+        )
 
         try {
           applyOverrides(
@@ -101,7 +120,7 @@ class OppiaTestRule : TestRule {
             else -> throw AssertionError("Reached impossible state in test rule")
           }
         } finally {
-            PlatformParameterModule.clearAllParameterOverrides()
+          PlatformParameterModule.clearAllParameterOverrides()
         }
       }
     }

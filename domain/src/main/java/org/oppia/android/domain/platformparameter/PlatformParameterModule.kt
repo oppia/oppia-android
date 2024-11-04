@@ -89,7 +89,7 @@ class PlatformParameterModule {
     return overriddenParameters[DOWNLOADS_SUPPORT]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
-        ?: PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
   }
 
   @Provides
@@ -225,7 +225,7 @@ class PlatformParameterModule {
     return overriddenParameters[SPOTLIGHT_UI]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
-        ?: PlatformParameterValue.createDefaultParameter(ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE)
   }
 
   @Provides
@@ -358,7 +358,7 @@ class PlatformParameterModule {
       )
   }
 
-  companion object{
+  companion object {
 
     private val overriddenParameters = mutableMapOf<String, Any>()
 
