@@ -195,6 +195,8 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.OverrideBoolParameter
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -3469,6 +3471,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @OverrideBoolParameter("cache_latex_rendering", true)
   fun testStateFragment_mathInteractions_numericExp_validAns_submissionDisplaysLatex() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
@@ -5743,7 +5746,7 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestPlatformParameterModule::class,
+      TestModule::class, RobolectricModule::class, PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,

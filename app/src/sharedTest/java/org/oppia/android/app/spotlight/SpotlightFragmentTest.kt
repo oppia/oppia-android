@@ -103,6 +103,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.testing.DisableFeatureFlag
 import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.ResetFeatureFlagToDefault
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestPlatform
 
@@ -113,6 +114,7 @@ import org.oppia.android.testing.TestPlatform
   application = SpotlightFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+@EnableFeatureFlag("android_enable_spotlight_ui")
 class SpotlightFragmentTest {
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -150,7 +152,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag("android_enable_spotlight_ui")
+  @ResetFeatureFlagToDefault("android_enable_spotlight_ui")
+//  @DisableFeatureFlag("android_enable_spotlight_ui")
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
 //    TestPlatformParameterModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
@@ -173,8 +176,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag("android_enable_spotlight_ui")
-  @DisableFeatureFlag("android_enable_learner_study_analytics")
+//  @EnableFeatureFlag("android_enable_spotlight_ui")
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
 //    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(

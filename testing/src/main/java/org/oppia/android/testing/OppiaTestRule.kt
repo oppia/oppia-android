@@ -21,7 +21,6 @@ private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
 class OppiaTestRule : TestRule {
 
   override fun apply(base: Statement?, description: Description?): Statement {
-  System.out.println("Enabled Feature Flags are:")
     return object : Statement() {
       override fun evaluate() {
         val areAccessibilityChecksEnabled = description.areAccessibilityChecksEnabled()
@@ -29,15 +28,43 @@ class OppiaTestRule : TestRule {
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
-        val enabledFeatureFlags = description?.getAnnotation(EnableFeatureFlag::class.java)
-        System.out.println("Enabled Feature Flags are: $enabledFeatureFlags")
-        val disabledFeatureFlags = description?.getAnnotation(DisableFeatureFlag::class.java)
-        System.out.println("Disabled Feature Flags are: $disabledFeatureFlags")
 
-        val eff = description?.annotations?.filterIsInstance<EnableFeatureFlag>()
+        val enabledFeatureFlags = extractParametersAndFeatureFlags(
+          description?.testClass?.annotations?.toList(), EnableFeatureFlag::class.java) +
+          extractParametersAndFeatureFlags(description?.annotations, EnableFeatureFlag::class.java)
+
+        val disabledFeatureFlags = extractParametersAndFeatureFlags(
+          description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java) +
+          extractParametersAndFeatureFlags(description?.annotations, DisableFeatureFlag::class.java)
+
+        val overriddenBoolParameters = extractParametersAndFeatureFlags(
+          description?.testClass?.annotations?.toList(), OverrideBoolParameter::class.java) +
+          extractParametersAndFeatureFlags(description?.annotations, OverrideBoolParameter::class.java)
+
+        val overriddenIntParameters = extractParametersAndFeatureFlags(
+          description?.testClass?.annotations?.toList(), OverrideIntParameter::class.java) +
+          extractParametersAndFeatureFlags(description?.annotations, OverrideIntParameter::class.java)
+
+        val overriddenStringParameters = extractParametersAndFeatureFlags(
+          description?.testClass?.annotations?.toList(), OverrideStringParameter::class.java) +
+          extractParametersAndFeatureFlags(description?.annotations, OverrideStringParameter::class.java)
+
+        val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(
+          description?.annotations, ResetFeatureFlagToDefault::class.java)
+
+        val resetParameterToDefault = extractParametersAndFeatureFlags(
+          description?.annotations, ResetParameterToDefault::class.java)
 
         try {
-          applyOverrides(eff, disabledFeatureFlags)
+          applyOverrides(
+            enabledFeatureFlags,
+            disabledFeatureFlags,
+            overriddenBoolParameters,
+            overriddenIntParameters,
+            overriddenStringParameters,
+            resetFeatureFlagToDefault,
+            resetParameterToDefault
+          )
 
           when {
             currentPlatform in targetPlatforms && currentEnvironment in targetEnvironments -> {
@@ -74,19 +101,42 @@ class OppiaTestRule : TestRule {
             else -> throw AssertionError("Reached impossible state in test rule")
           }
         } finally {
-
+            PlatformParameterModule.clearAllParameterOverrides()
         }
       }
     }
   }
 
-  private fun applyOverrides(enabledFeatureFlag: List<EnableFeatureFlag>?, disabledFeatureFlag: DisableFeatureFlag?) {
-//    enabledFeatureFlag?.let { PlatformParameterModule.overrideParameter(it.name, true) }
-    enabledFeatureFlag?.forEach { flag ->
-      System.out.println("Flag name: $flag")
+  private fun applyOverrides(
+    enabledFeatureFlags: List<EnableFeatureFlag>?,
+    disabledFeatureFlags: List<DisableFeatureFlag>?,
+    overriddenBoolParameters: List<OverrideBoolParameter>?,
+    overriddenIntParameters: List<OverrideIntParameter>?,
+    overriddenStringParameters: List<OverrideStringParameter>?,
+    resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?,
+    resetParameterToDefault: List<ResetParameterToDefault>?
+  ) {
+    enabledFeatureFlags?.forEach { flag ->
       PlatformParameterModule.overrideParameter(flag.name, true)
     }
-    disabledFeatureFlag?.let { PlatformParameterModule.overrideParameter(it.name, false) }
+    disabledFeatureFlags?.forEach { flag ->
+      PlatformParameterModule.overrideParameter(flag.name, false)
+    }
+    overriddenBoolParameters?.forEach { overriddenValue ->
+      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    }
+    overriddenIntParameters?.forEach { overriddenValue ->
+      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    }
+    overriddenStringParameters?.forEach { overriddenValue ->
+      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    }
+    resetFeatureFlagToDefault?.forEach { resetFeatureFlag ->
+      PlatformParameterModule.resetParameterToDefault(resetFeatureFlag.name)
+    }
+    resetParameterToDefault?.forEach { resetParameter ->
+      PlatformParameterModule.resetParameterToDefault(resetParameter.name)
+    }
   }
 
   private fun getCurrentPlatform(): TestPlatform {
@@ -156,6 +206,27 @@ class OppiaTestRule : TestRule {
 
     private fun <T> Class<T>.areAccessibilityTestsEnabledForClass(): Boolean {
       return getAnnotation(DisableAccessibilityChecks::class.java) == null
+    }
+
+    inline fun <reified T : Annotation> extractParametersAndFeatureFlags(
+      annotations: Collection<Annotation>?,
+      featureFlagClass: Class<T>
+    ): List<T> {
+      return annotations?.flatMap { annotation ->
+        when (annotation) {
+          is T -> listOf(annotation)
+          else -> {
+            val containerClass = annotation.annotationClass.java
+            if (containerClass.simpleName == "Container") {
+              val valueMethod = containerClass.getDeclaredMethod("value")
+              val flagsArray = valueMethod.invoke(annotation) as Array<*>
+              flagsArray.filterIsInstance(featureFlagClass)
+            } else {
+              emptyList()
+            }
+          }
+        }
+      } ?: emptyList()
     }
   }
 }

@@ -75,7 +75,7 @@ annotation class CacheLatexRendering
 const val CACHE_LATEX_RENDERING = "cache_latex_rendering"
 
 /** Default value for whether to cache LaTeX rendering using Glide. */
-const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
+const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls the time interval in minutes of uploading

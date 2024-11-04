@@ -86,7 +86,6 @@ class PlatformParameterModule {
   fun provideEnableDownloadsSupport(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    System.out.println("In Enable downloads support")
     return overriddenParameters[DOWNLOADS_SUPPORT]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
@@ -131,7 +130,6 @@ class PlatformParameterModule {
   fun provideLearnerStudyAnalytics(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    System.out.println("In Enable learner study analysis")
     return overriddenParameters[LEARNER_STUDY_ANALYTICS]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
@@ -154,7 +152,6 @@ class PlatformParameterModule {
   fun provideLoggingLearnerStudyIds(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    System.out.println("In Enable logging learner study ids")
     return overriddenParameters[LOGGING_LEARNER_STUDY_IDS]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
@@ -166,7 +163,9 @@ class PlatformParameterModule {
   fun provideCacheLatexRendering(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
+    return overriddenParameters[CACHE_LATEX_RENDERING]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
   }
 
@@ -223,7 +222,6 @@ class PlatformParameterModule {
   fun provideEnableSpotlightUi(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    System.out.println("In Enable spotlight ui")
     return overriddenParameters[SPOTLIGHT_UI]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
@@ -365,40 +363,17 @@ class PlatformParameterModule {
     private val overriddenParameters = mutableMapOf<String, Any>()
 
     fun overrideParameter(name: String, value: Any) {
+      println("Name: $name, value: $value")
       overriddenParameters[name] = value
     }
 
-    /*private var downloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
-    private var editAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-    private var learnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-    private var fastLanguageSwitchingInLesson = FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
-    private var loggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    private var extraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
-    private var interactionConfigChangeStateRetention = ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
-    private var performanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-    private var spotlightUi = ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
-    private var appAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
-    private var npsSurvey = ENABLE_NPS_SURVEY_DEFAULT_VALUE
-    private var onboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-    private var multipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
-*/
-    /*fun overrideParameter(name: String, value: Boolean) {
-      when (name.lowercase()) {
-        "downloads_support" -> downloadsSupport = value
-        "edit_accounts_options_ui" -> editAccountsOptionsUi = value
-        "learner_study_analytics" -> learnerStudyAnalytics = value
-        "fast_language_switching_in_lesson" -> fastLanguageSwitchingInLesson = value
-        "logging_learner_study_ids" -> loggingLearnerStudyIds = value
-        "extra_topic_tabs_ui" -> extraTopicTabsUi = value
-        "interaction_config_change_state_retention" -> interactionConfigChangeStateRetention = value
-        "enable_performance_metrics_collection" -> performanceMetricsCollection = value
-        "spotlight_ui" -> spotlightUi = value
-        "app_and_os_deprecation" -> appAndOsDeprecation = value
-        "enable_nps_survey" -> npsSurvey = value
-        "enable_onboarding_flow_v2" -> onboardingFlowV2 = value
-        "enable_multiple_classrooms" -> multipleClassrooms = value
-        else -> throw IllegalArgumentException("Feature flag '$name' is not recognized.")
-      }
-    }*/
+    fun resetParameterToDefault(name: String) {
+      println("Resetting $name")
+      overriddenParameters.remove(name)
+    }
+
+    fun clearAllParameterOverrides() {
+      overriddenParameters.clear()
+    }
   }
 }

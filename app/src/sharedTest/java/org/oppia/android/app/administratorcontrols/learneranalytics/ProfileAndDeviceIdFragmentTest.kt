@@ -176,9 +176,9 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+//    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
 //    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+//    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
@@ -494,9 +494,7 @@ class ProfileAndDeviceIdFragmentTest {
     }
   }
 
-  // learner study on
   @Test
-  @EnableFeatureFlag("android_enable_learner_study_analytics")
   fun testFragment_firstEntry_mixOfAdminAndGenericEvents_someUploaded_reportsAllEvents() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
     runWithLaunchedActivityAndAddedFragment {
@@ -517,11 +515,7 @@ class ProfileAndDeviceIdFragmentTest {
     }
   }
 
-  // learner study + log event
   @Test
-//  @EnableFeatureFlag("android_enable_logging_learner_study_ids")
-//  @EnableFeatureFlag("android_enable_spotlight_ui")
-  @EnableFeatureFlag("android_enable_learner_study_analytics")
   fun testFragment_firstEntry_reportsAllEvents_and_eventLogged_indicatorTextMentionsWaiting() {
     profileTestHelper.addMoreProfiles(numProfiles = 1)
     runWithLaunchedActivityAndAddedFragment {
@@ -643,7 +637,6 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag("android_enable_learner_study_analytics")
   fun testFragment_eventLogged_waitingForUpload_indicatorTextMentionsWaiting() {
     runWithLaunchedActivityAndAddedFragment {
       disconnectNetwork() // Ensure events are cached.
@@ -811,7 +804,10 @@ class ProfileAndDeviceIdFragmentTest {
     }
   }
 
+  // req learner study analytics + log learner study id
   @Test
+  @EnableFeatureFlag("android_enable_logging_learner_study_ids")
+  @EnableFeatureFlag("android_enable_learner_study_analytics")
   fun testFragment_multipleProfiles_clickShareIdsAndLogs_sendsIntentWithIdsAndLogsText() {
     // Use fake time so that the generated event logs are consistent across runs.
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
