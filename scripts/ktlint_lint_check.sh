@@ -16,7 +16,7 @@ else
     jar_file_path="$github_actions_path/oppia-android-tools/ktlint"
 fi
 
-java -jar "$jar_file_path" -R ../oppia-android-tools/custom-ktlint-rules.jar --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt scripts/src/**/*.kt instrumentation/src/**/*.kt
+java -jar $jar_file_path -R ../oppia-android-tools/custom-ktlint-rules.jar --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt scripts/src/**/*.kt instrumentation/src/**/*.kt
 
 status=$?
 
@@ -27,7 +27,7 @@ else
   echo "********************************"
   echo_error "Ktlint issue found."
   echo "Please fix the above issues.
-  You can also use the java -jar $jar_file_path -R ../oppia-android-tools/custom-ktlint-rules.jar -F --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt scripts/src/**/*.kt  instrumentation/src/**/*.kt
+  You can also use the java -jar $jar_file_path -F -R ../oppia-android-tools/custom-ktlint-rules.jar --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt scripts/src/**/*.kt  instrumentation/src/**/*.kt
   command to fix the most common issues."
   echo_warning "Please note, there might be a possibility where the above command will not fix the issue.
   In that case, you will have to fix it yourself."

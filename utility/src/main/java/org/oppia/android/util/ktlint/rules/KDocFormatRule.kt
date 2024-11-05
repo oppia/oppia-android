@@ -34,7 +34,3 @@ class KDocFormatRule : Rule("kdoc-format-closing") {
     }
   }
 }
-/**
- *
- *
- * */
