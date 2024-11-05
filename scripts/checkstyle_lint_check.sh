@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 echo "********************************"
 echo "Checking Java file formatting"
 echo "********************************"
@@ -23,11 +25,11 @@ echo $lint_results
 if [ "$lint_command_result" -ne 0 ] || [ -z "$lint_results" ] || [[ ${lint_results} == *"[WARN]"* ]]; then
   # Assume any lint output or non-zero exit code is a failure.
   echo "********************************"
-  echo "Checkstyle issue found."
+  echo_error "Checkstyle issue found."
   echo "Please fix the above issues."
   echo "********************************"
   exit 1
 else
-  echo "Checkstyle lint check completed successfully"
+  echo_success "Checkstyle lint check completed successfully"
   exit 0
 fi
