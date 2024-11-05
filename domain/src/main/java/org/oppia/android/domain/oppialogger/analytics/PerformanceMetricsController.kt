@@ -7,6 +7,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
@@ -16,7 +17,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.enumfilter.filterByEnumCondition
 
 /**
  * Controller for handling performance metrics event logging.

@@ -30,8 +30,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 import org.oppia.android.util.enumfilter.filterByEnumCondition
+import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
