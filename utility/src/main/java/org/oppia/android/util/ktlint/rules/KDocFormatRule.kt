@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.kdoc.psi.impl.KDocImpl
 import org.jetbrains.kotlin.psi.KtFile
 
 class KDocFormatRule : Rule("kdoc-format-closing") {
-  override fun beforeVisitChildNodes(
+  override fun visit(
     node: ASTNode,
     autoCorrect: Boolean,
     emit: (offset: Int, errorMessage: String, canBeAutoCorrected: Boolean) -> Unit,
@@ -34,3 +34,7 @@ class KDocFormatRule : Rule("kdoc-format-closing") {
     }
   }
 }
+/**
+ *
+ *
+ * */

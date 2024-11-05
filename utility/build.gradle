@@ -97,7 +97,7 @@ dependencies {
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
       'javax.annotation:javax.annotation-api:1.3.2',
       'org.glassfish.jaxb:jaxb-runtime:2.3.2',
-      'com.pinterest.ktlint:ktlint-core:0.48.0',
+      'com.pinterest.ktlint:ktlint-core:0.37.1',
   )
   testImplementation(
       'androidx.test.ext:junit:1.1.1',
@@ -131,7 +131,7 @@ tasks.register('customRulesJar', Jar) {
   from("$buildDir/tmp/kotlin-classes/debug") {
     include '**/*.class'
   }
-  from('src/main/resources') {
+  from('src/main/res') {
     include 'META-INF/services/**'
   }
   manifest {

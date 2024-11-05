@@ -1,18 +1,10 @@
 package org.oppia.android.util.ktlint
 
-import com.pinterest.ktlint.core.RuleProvider
-import com.pinterest.ktlint.core.RuleSetProviderV2
+import com.pinterest.ktlint.core.RuleSet
+import com.pinterest.ktlint.core.RuleSetProvider
 import org.oppia.android.util.ktlint.rules.KDocFormatRule
 
-class CustomRuleSetProvider : RuleSetProviderV2(
-  id = "kdoc-format",
-  about = NO_ABOUT,
-) {
-  override fun getRuleProviders(): Set<RuleProvider> {
-    return setOf(
-      RuleProvider {
-        KDocFormatRule()
-      }
-    )
-  }
+class CustomRuleSetProvider : RuleSetProvider {
+
+  override fun get(): RuleSet = RuleSet("custom", KDocFormatRule())
 }
