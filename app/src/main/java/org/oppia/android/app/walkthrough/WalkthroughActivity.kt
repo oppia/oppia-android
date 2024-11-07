@@ -3,6 +3,7 @@ package org.oppia.android.app.walkthrough
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
@@ -22,6 +23,15 @@ class WalkthroughActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     walkthroughActivityPresenter.handleOnCreate()
+
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          walkthroughActivityPresenter.handleSystemBack()
+        }
+      }
+    )
   }
 
   override fun currentPage(walkthroughPage: Int) {
@@ -31,10 +41,6 @@ class WalkthroughActivity :
   override fun pageWithTopicId(walkthroughPage: Int, topicId: String) {
     walkthroughActivityPresenter.setTopicId(topicId)
     walkthroughActivityPresenter.changePage(walkthroughPage)
-  }
-
-  override fun onBackPressed() {
-    walkthroughActivityPresenter.handleSystemBack()
   }
 
   companion object {
