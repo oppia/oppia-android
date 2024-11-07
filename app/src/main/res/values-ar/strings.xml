@@ -24,13 +24,13 @@
   <string name="audio_play_description">تشغيل الصوت</string>
   <string name="audio_pause_description">إيقاف الصوت مؤقتًا</string>
   <string name="audio_unavailable_in_selected_language">صوت %s غير متوفر.</string>
-  <string name="audio_language_select_dialog_okay_button" fuzzy="true">موافق</string>
+  <string name="audio_language_select_dialog_okay_button">نعم</string>
   <string name="audio_language_select_dialog_cancel_button">إلغاء</string>
   <string name="audio_language_select_dialog_title">لغة الصوت</string>
   <string name="audio_dialog_offline_title">غير متصل بالإنترنت</string>
   <string name="audio_dialog_offline_message">من فضلك تأكد من وجود اتصال بالإنترنت عن طريق شبكة الوايفاي أو بيانات الهاتف، ثم حاول مرة أخرى.</string>
-  <string name="audio_dialog_offline_positive" fuzzy="true">حسنًا</string>
-  <string name="cellular_data_alert_dialog_okay_button" fuzzy="true">موافق</string>
+  <string name="audio_dialog_offline_positive">نعم</string>
+  <string name="cellular_data_alert_dialog_okay_button">نعم</string>
   <string name="cellular_data_alert_dialog_cancel_button">إلغاء</string>
   <string name="cellular_data_alert_dialog_title">متصل بالإنترنت عن طريق بيانات الهاتف</string>
   <string name="cellular_data_alert_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
@@ -92,10 +92,10 @@
   <string name="topic_name">الموضوع: %s</string>
   <string name="topic">موضوع</string>
   <string name="ongoing_topic_list_activity_title">المواضيع قيد التقدم</string>
-  <string name="chapter_name">فصل %s: %s</string>
-  <string name="chapter_completed">تم انهاء الفصل %s الذي يحمل عنوان %s</string>
-  <string name="chapter_in_progress">الفصل %s الذي يحمل عنوان %s ما زال قيد التقدم</string>
-  <string name="chapter_prerequisite_title_label">قم بإنهاء الفصل %s: %s لكي تفتح هذا الفصل.</string>
+  <string name="chapter_name">الفصل %1$s: %2$s</string>
+  <string name="chapter_completed">تم الانتهاء من الفصل %1$s بعنوان %2$s</string>
+  <string name="chapter_in_progress">الفصل %1$s بعنوان %2$s قيد التنفيذ</string>
+  <string name="chapter_prerequisite_title_label">أكمل الفصل %1$s : %2$s لفتح هذا الفصل.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">أكمل الفصل السابق لفتح هذا الفصل.</string>
   <string name="text_input_default_content_description">أدخل النص.</string>
   <string name="fractions_default_hint_text">أدخل كسر عشري في الصيغة (بسط/مقام)، أو عدد كسري في الصيغة (عدد بسط/مقام).</string>
@@ -150,7 +150,7 @@
   <string name="topic_downloaded">المواضيع التي تم تنزيلها</string>
   <string name="downloaded">تم التنزيل</string>
   <string name="question_player_title">وضع الممارسة</string>
-  <string name="question_training_session_progress">السؤال %s من أصل %s</string>
+  <string name="question_training_session_progress">السؤال %1$s من %2$s</string>
   <string name="question_training_session_progress_finished">تمّ</string>
   <string name="question_training_session_finished_header">تم الإنتهاء</string>
   <string name="question_training_session_finished_message">تم الإنتهاء من جميع الأسئلة! يمكنك بدأ مجموعة أسئلة أخرى، أو العودة للموضوع.</string>
@@ -169,11 +169,11 @@
   <string name="number_error_starting_with_floating_point">من فضلك إبدأ إجابتك برقم (0 او 0.5 على سبيل المثال)</string>
   <string name="number_error_invalid_format">من فضلك قم بإدخال رقم صالح.</string>
   <string name="number_error_larger_than_fifteen_characters">(–يمكن أن تحتوي الإجابة على 15 رقمًا (0-9) على الأكثر أو الرموز (. أو</string>
-  <string name="ratio_error_invalid_chars" fuzzy="true">من فضلك قم بكتابة نسبة تتكون من أرقام مفصولة بنقطتين رأسيتين (1:2 أو 1:2:3 على سبيل المثال).</string>
-  <string name="ratio_error_invalid_format" fuzzy="true">من فضلك أدخل نسبة صحيحة (1:2 أو 1:2:3 على سبيل المثال)</string>
-  <string name="ratio_error_invalid_colons" fuzzy="true">إجابتك تحتوي على نقطتين رأسيتين (:) متتاليتين.</string>
-  <string name="ratio_error_invalid_size" fuzzy="true">عدد الحدود لا يساوي العدد المطلوب.</string>
-  <string name="ratio_error_includes_zero" fuzzy="true">لا يمكن أن تحتوي النسب على 0 كعنصر.</string>
+  <string name="ratio_error_invalid_chars">يرجى كتابة نسبة تتكون من أرقام مفصولة بعلامات نقطية (على سبيل المثال 1:2 أو 1:2:3).</string>
+  <string name="ratio_error_invalid_format">الرجاء إدخال نسبة صالحة (على سبيل المثال 1:2 أو 1:2:3).</string>
+  <string name="ratio_error_invalid_colons">إجابتك تحتوي على علامتي نقطتين (:) بجانب بعضهما البعض.</string>
+  <string name="ratio_error_invalid_size">عدد المصطلحات لا يساوي عدد المصطلحات المطلوبة.</string>
+  <string name="ratio_error_includes_zero">لا يمكن للنسب أن تحتوي على 0 كعنصر.</string>
   <string name="unknown_size">الحجم مجهول</string>
   <string name="size_bytes">%s بايت</string>
   <string name="size_kb">%s ك.ب</string>
@@ -181,7 +181,7 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
-  <plurals name="chapter_count" fuzzy="true">
+  <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
     <item quantity="two">فصلان</item>
@@ -189,7 +189,7 @@
     <item quantity="many">%s من الفصول</item>
     <item quantity="other">%s من الفصول</item>
   </plurals>
-  <plurals name="story_count" fuzzy="true">
+  <plurals name="story_count">
     <item quantity="zero">و لا قصة</item>
     <item quantity="one">قصة واحدة</item>
     <item quantity="two">قصتان</item>
@@ -198,14 +198,14 @@
     <item quantity="other">%s من القصص</item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="zero">و لا فصل مكتمل</item>
-    <item quantity="one">فصل %s مكتمل من %s</item>
-    <item quantity="two">فصلان %s مكتملان من %s</item>
-    <item quantity="few">%sفصول مكتملة من %s</item>
-    <item quantity="many">%s فصول مكتملة من %s</item>
-    <item quantity="other">%s فصول مكتملة من %s</item>
+    <item quantity="zero">لا فصل</item>
+    <item quantity="one">%1$s من %2$s فصل مكتمل</item>
+    <item quantity="two">فصلان</item>
+    <item quantity="few">فصول قليلة</item>
+    <item quantity="many">فصول كثيرة</item>
+    <item quantity="other"> %1$s من %2$s فصل مكتمل</item>
   </plurals>
-  <plurals name="lesson_count" fuzzy="true">
+  <plurals name="lesson_count">
     <item quantity="zero">و لا درس</item>
     <item quantity="one">درسًا واحدًا</item>
     <item quantity="two">درسان</item>
@@ -213,7 +213,7 @@
     <item quantity="many">%s درس</item>
     <item quantity="other">%s درس</item>
   </plurals>
-  <plurals name="completed_story_count" fuzzy="true">
+  <plurals name="completed_story_count">
     <item quantity="zero">و لا قصة مكتملة</item>
     <item quantity="one">قصة واحدة مكتملة</item>
     <item quantity="two">قصتان مكتملتان</item>
@@ -221,7 +221,7 @@
     <item quantity="many">%s قصة مكتملة</item>
     <item quantity="other">%s قصة مكتملة</item>
   </plurals>
-  <plurals name="ongoing_topic_count" fuzzy="true">
+  <plurals name="ongoing_topic_count">
     <item quantity="zero">و لا موضوع في تقدم</item>
     <item quantity="one">موضوع واحد في تقدم</item>
     <item quantity="two">موضوعان في تقدم</item>
@@ -286,7 +286,7 @@
   <string name="skip">تخطي</string>
   <string name="next_arrow">التالي</string>
   <string name="get_started">ابدأ</string>
-  <string name="onboarding_slide_dots_content_description">شاشة العرض %s من %s</string>
+  <string name="onboarding_slide_dots_content_description">الشريحة %1$s من %2$s</string>
   <string name="pin_password_hello">أهلًا، %s!</string>
   <string name="pin_password_admin_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
   <string name="pin_password_user_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بك.</string>
@@ -351,7 +351,7 @@
   <string name="profile_picture_edit_alert_dialog_choose_from_library">اختيار من المعرض</string>
   <string name="profile_rename_activity_title">إعادة تسمية الملف الشخصي</string>
   <string name="profile_rename_label">الاسم الجديد</string>
-  <string name="profile_rename_save" fuzzy="true">حفظ</string>
+  <string name="profile_rename_save">يحفظ</string>
   <string name="profile_reset_pin_activity_title">إعادة ضبط رقم التعريف الشخصي</string>
   <string name="profile_reset_pin_main">أدخل رقم تعريف شخصي جديد للمستخدم كي يستخدمه عند الدخول إلى ملفه الشخصي.</string>
   <string name="profile_reset_pin_user_pin_label">رقم تعريف شخصي مكون من 3 أرقام</string>
@@ -384,12 +384,12 @@
   <string name="app_last_update_date">تم تثبيت آخر إصدار في %s. قم باستخدام رقم الإصدار في الأعلى للإبلاغ عن أعطال التطبيق.</string>
   <string name="app_version_activity_title">إصدار التطبيق</string>
   <string name="app_language_activity_title">لغة التطبيق</string>
-  <string name="audio_language_activity_title" fuzzy="true">لغة الصوت الافتراضية</string>
+  <string name="audio_language_activity_title">لغة الصوت المفضلة</string>
   <string name="reading_text_size_activity_title">حجم النص المقروء</string>
   <string name="title_reading_text_size">حجم النص المقروء</string>
   <string name="story_text_will_look_like_this">سيظهر نص القصة بهذا الشكل.</string>
   <string name="constant_string_for_text_size">أ</string>
-  <string name="audio_language" fuzzy="true">الصوت الافتراضي</string>
+  <string name="audio_language">اللغة الصوتية المفضلة</string>
   <string name="app_language">لغة التطبيق</string>
   <string name="reading_text_size">حجم النص المقروء</string>
   <string name="reading_text_size_small">صغير</string>
@@ -419,7 +419,7 @@
   <string name="no_new_hint_available">لا يوجد تلميح جديد متاح</string>
   <string name="show_hints_and_solution">إظهار الملاحظات والحل</string>
   <string name="hint_list_item_number">تلميح %s</string>
-  <string name="hints_and_solution_close_icon_description" fuzzy="true">العودة للسابق</string>
+  <string name="hints_and_solution_close_icon_description">يغلق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="show_solution">عرض الحل</string>
   <string name="reveal_solution">عرض الحل</string>
@@ -444,26 +444,26 @@
   <string name="move_item_up_content_description">تحريك العنصر إلى الأعلى عند %s</string>
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
-  <string name="unsupported_app_version_dialog_title" fuzzy="true">إصدار تطبيق غير مدعوم</string>
-  <string name="unsupported_app_version_dialog_message" fuzzy="true">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
-  <string name="unsupported_app_version_dialog_close_button_text" fuzzy="true">إغلاق التطبيق</string>
+  <string name="unsupported_app_version_dialog_title">إصدار التطبيق غير مدعوم</string>
+  <string name="unsupported_app_version_dialog_message">لم يعد هذا الإصدار من التطبيق مدعومًا. يرجى تحديثه عبر متجر Play.</string>
+  <string name="unsupported_app_version_dialog_close_button_text">إغلاق التطبيق</string>
   <string name="splash_screen_developer_label">بناء المطور</string>
   <string name="splash_screen_alpha_label">ألفا</string>
   <string name="splash_screen_beta_label">بيتا</string>
   <string name="beta_notice_dialog_title">إشعار بيتا</string>
   <string name="beta_notice_dialog_message">مرحبًا! يتم الآن تحديث تطبيقك إلى الإصدار التجريبي. إذا واجهت مشاكل أثناء استخدام التطبيق ، أو كانت لديك أسئلة ، فيرجى الاتصال بنا على android-feedback@oppia.org.</string>
   <string name="beta_notice_dialog_do_not_show_again_text">لا تظهر هذه الرسالة مرة أخرى</string>
-  <string name="beta_notice_dialog_close_button_text" fuzzy="true">نعم</string>
+  <string name="beta_notice_dialog_close_button_text">نعم</string>
   <string name="general_availability_notice_dialog_title">إشعار التوفر العام</string>
   <string name="general_availability_notice_dialog_message">مرحبًا! يتم الآن تحديث تطبيقك إلى إصدار التوفر العام. إذا واجهت مشاكل أثناء استخدام التطبيق ، أو كانت لديك أسئلة ، فيرجى الاتصال بنا على android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">لا تظهر هذه الرسالة مرة أخرى</string>
-  <string name="general_availability_notice_dialog_close_button_text" fuzzy="true">نعم</string>
-  <string name="ratio_content_description_separator" fuzzy="true">إلى</string>
-  <string name="ratio_default_hint_text" fuzzy="true">أدخل نسبة في الصيغة س:ص.</string>
+  <string name="general_availability_notice_dialog_close_button_text">نعم</string>
+  <string name="ratio_content_description_separator">ل</string>
+  <string name="ratio_default_hint_text">أدخل النسبة بالصيغة x:y.</string>
   <string name="text_input_default_hint_text">انقر هنا لإدخال نص.</string>
   <string name="smallest_text_size_content_description">أصغر حجمًا للنص</string>
   <string name="largest_text_size_content_description">أكبر حجمًا للنص</string>
@@ -502,26 +502,26 @@
   <string name="faq_question_whats_oppia">ما هي %s؟</string>
   <string name="faq_question_whos_an_admin">من هو المشرف؟</string>
   <string name="faq_question_create_profile">كيف يمكنني إنشاء ملف تعريف(حساب) جديد؟</string>
-  <string name="faq_question_app_language" fuzzy="true">كيف يمكنني الحصول على التطبيق بلغتي؟</string>
-  <string name="faq_question_bug_reporting" fuzzy="true">وجدت خلل. كيف يمكنني الإبلاغ عنه؟</string>
-  <string name="faq_question_math_lessons" fuzzy="true">لماذا هناك فقط دروس رياضيات؟</string>
-  <string name="faq_question_more_lessons" fuzzy="true">هل ستقومون بإنشاء مزيد من الدروس؟</string>
+  <string name="faq_question_app_language">كيف أحصل على التطبيق باللغة الخاصة بي؟</string>
+  <string name="faq_question_bug_reporting">لقد وجدت خطأً. كيف يمكنني الإبلاغ عنه؟</string>
+  <string name="faq_question_math_lessons">لماذا هناك دروس الرياضيات فقط؟</string>
+  <string name="faq_question_more_lessons">هل ستقوم بعمل المزيد من الدروس؟</string>
   <string name="faq_question_exploration_player">لماذا لا يتم تحميل مشغل الاستكشاف؟</string>
   <string name="faq_question_audio_not_playing">لماذا لا يتم تشغيل الصوت الخاص بي؟</string>
   <string name="faq_question_delete_profile">كيف يمكنني حذف ملف التعريف(حساب)؟</string>
-  <string name="faq_question_update_app" fuzzy="true">كيف يمكنني تحديث التطبيق؟</string>
-  <string name="faq_question_update_os" fuzzy="true">كيف يمكنني تحديث نظام التشغيل Android الخاص بي؟</string>
+  <string name="faq_question_update_app">كيف أقوم بتحديث التطبيق؟</string>
+  <string name="faq_question_update_os">كيف أقوم بتحديث نظام التشغيل Android الخاص بي؟</string>
   <string name="faq_question_cant_find_question">لا أجد سؤالي هنا.  ماذا الان؟</string>
   <string name="faq_answer_whats_oppia">&lt;p&gt;%1$s &lt;i&gt;\"أو-بي-يا\"&lt;/i&gt;(فنلندية) - \"للتعلم\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$sمهمتنا هي مساعدة أي شخص على تعلم أي شيء يريده بطريقة فعالة وممتعة.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;من خلال إنشاء مجموعة من الدروس المجانية عالية الجودة والفعالة بشكل واضح بمساعدة معلمين من جميع أنحاء العالم ، تهدف %1$s إلى تزويد الطلاب بتعليم جيد - بغض النظر عن مكان وجودهم أو الموارد التقليدية التي يمكنهم الوصول إليها.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;كطالب ، يمكنك أن تبدأ مغامرتك التعليمية من خلال تصفح الموضوعات المدرجة في الصفحة الرئيسية!&lt;/p&gt;</string>
-  <string name="faq_answer_whos_an_admin" fuzzy="true">&lt;p&gt;المشرف هو المستخدم الرئيسي الذي يدير ملفات التعريف والإعدادات لكل ملف تعريف على حسابه. هم على الأرجح والدك أو معلمك أو وصي عليك الذي أنشأ هذا الملف الشخصي لك.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;يمكن للمسؤولين إدارة الملفات الشخصية وتعيين أرقام التعريف الشخصية وتغيير الإعدادات الأخرى ضمن حساباتهم. بناءً على ملف التعريف الخاص بك ، قد تكون أذونات المسؤول مطلوبة لبعض الميزات مثل تنزيل الموضوعات وتغيير رقم التعريف الشخصي وغير ذلك.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;لمعرفة من هو المسؤول لديك ، انتقل إلى منتقي الملف الشخصي. الملف الشخصي الأول المدرج ولديه \"المسؤول\" مكتوب باسمه هو المسؤول.&lt;/p&gt;</string>
-  <string name="faq_answer_create_profile" fuzzy="true">&lt;p&gt;إذا كانت هذه هي المرة الأولى التي تنشئ فيها ملفًا شخصيًا وليس لديك رقم تعريف شخصي: &lt;ol&gt;&lt;li&gt; من منتقي الملف الشخصي ، اضغط على&lt;strong&gt; قم بإعداد ملفات تعريف متعددة&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; قم بإنشاء رقم تعريف شخصي و&lt;strong&gt;احفظ&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; املأ جميع البيانات للملف الشخصي.&lt;ol&gt;&lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; &lt;li&gt;إدخال اسم.&lt;/li&gt; &lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt; اضغط&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt; إذا قمت بإنشاء ملف تعريف من قبل ولديك رقم تعريف شخصي:&lt;ol&gt;&lt;li&gt; من منتقي الملف الشخصي ، اضغط على&lt;strong&gt;إضافة الملف الشخصي&lt;/strong&gt;&lt;/li&gt; &lt;li&gt; أدخل رقم التعريف الشخصي الخاص بك وانقر فوق&lt;strong&gt;إرسال&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; املأ جميع الحقول للملف الشخصي. &lt;ol&gt; &lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; &lt;li&gt;إدخال اسم.&lt;/li&gt; &lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام. &lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt; اضغط&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt; ملاحظة: فقط ال&lt;u&gt;مدير&lt;/u&gt; قادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
+  <string name="faq_answer_whos_an_admin">&lt;p&gt;المدير هو المستخدم الرئيسي الذي يدير الملفات الشخصية وإعدادات كل ملف على حسابه. من المحتمل أن يكونوا والديك أو معلمك أو وليكك الشخص الذي قام بإنشاء هذا الملف الشخصي لك.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;لدى المديرين القدرة على إدارة الملفات الشخصية وتعيين الرمز الرقمية والتحديد الإعدادات الأخرى تحت حسابهم. اعتمادا على ملفك الشخصي، قد تكون هناك حاجة إلى إذنات الإدارة لميزات معينة مثل تغيير رمز الرقم الشخصي، وغيرها.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;لمعرفة من هو مديرك، اذهب إلى خيار الملفات الشخصية. أول ملف تعريف مدرج ويتم كتابة \"المنظم\" تحت اسمهم هو المدير.&lt;/p&gt;</string>
+  <string name="faq_answer_create_profile">&lt;p&gt;إذا كانت هذه هي المرة الأولى التي تقوم فيها بإنشاء ملف تعريف و لم يكن لديك رمز PIN: من خيار الملف تعريف، اضغط على إعداد ملف تعبير عدة. إخلق رقم PIN و حفظ. املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي. اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;ol&gt;&lt;li&gt;من اختيار الملفات الشخصية، اضغط على إعداد الملفات الملفات الأخرى.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;إبق&lt;/strong&gt; رقم PIN و حفظ.&lt;/li&gt;&lt;li&gt;املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي.&lt;ol&gt;&lt;li&gt; (اختياري) تحميل صورة.&lt;/li&gt;&lt;li&gt;أدخل اسمك&lt;/li&gt;&lt;li&gt; (اختياري) تعيين رقم PIN 3 رقمي.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;إذا كنت قد أنشأت ملفاً ملفاَ ملفاُ ملفاٌ ملفاٍ ملفاِ ملفا ً ملفا (PIN): من خيار الملفاً الملفاَ، اضغط على إضافة الملفاُ الملفاِ. أدخل رقم رسومك وتقرّب على \"إرسال\". املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي. اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;ol&gt;&lt;li&gt;من اختيار الملفات الشخصية، اضغط على إضافة الملفات.&lt;/li&gt;&lt;li&gt;أدخل رقم رسومك وتقرّب على \"&lt;strong&gt;إرسال&lt;/strong&gt;\".&lt;/li&gt;&lt;li&gt;املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي.&lt;ol&gt;&lt;li&gt; (اختياري) تحميل صورة.&lt;/li&gt;&lt;li&gt;أدخل اسمك&lt;/li&gt;&lt;li&gt; (اختياري) تعيين رقم PIN 3 رقمي.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;ملاحظة: إدارة الملفات الشخصية يمكن &lt;u&gt;المدير&lt;/u&gt; فقط.&lt;/p&gt;</string>
   <string name="faq_answer_app_language">&lt;p&gt;التطبيق %s يدعم حاليا اللغة الإنجليزية والبرتغالية البرازيلية والعربية والسواحيلية والبيدجينية النيجيرية. اختر إحدى هذه اللغات من القائمة، في الخيارات. لطلب التطبيق باللغة التي تتحدث بها، يرجى الاتصال بنا على   &lt;strong&gt;admin@oppia.org&lt;/strong&gt;.&lt;/p&gt;</string>
   <string name="faq_answer_bug_reporting">&lt;p&gt;&lt;ol&gt;&lt;li&gt;من خلال %s شاشة التطبيق الرئيسية، اضغط على القائمة في أعلى الزاوية اليسرى&lt;/li&gt;&lt;li&gt;اضغط على &lt;strong&gt;مشاركة التعليقات&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;اتبع التعليمات للإبلاغ عن الأخطاء أو مشاركة التعليقات&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_math_lessons">&lt;p&gt;%1$s مهمتها مساعدة المتعلمين على اكتساب المهارات الحياتية اللازمة. الرياضيات مهارة أساسية في الحياة اليومية1%$s سوف تقدم دروسا جديدة في العلوم وغيرها من المواد قريبا!&lt;/p&gt;</string>
   <string name="faq_answer_more_lessons">&lt;p&gt;أجل, %s سوف تقدم دروسا جديدة في العلوم وفي مواد أخرى قريبا. الرجاء زيارتنا مجددا لمعرفة كل ماهو جديد!&lt;/p&gt;</string>
-  <string name="faq_answer_exploration_player" fuzzy="true">&lt;p&gt;إذا لم يتم تحميل مشغل الاستكشاف&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;p&gt; &lt;ul&gt; &lt;li&gt; انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;اطلب من المشرف التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; اطلب من المشرف استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_audio_not_playing" fuzzy="true">&lt;p&gt;إذا لم يتم تشغيل الصوت الخاص بك&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. قد يتسبب الإنترنت البطيء في تحميل الصوت بشكل غير منتظم ، مما يجعل من الصعب تشغيله.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;اطلب من المسؤول التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اطلب من المسؤول استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_delete_profile" fuzzy="true">&lt;p&gt;بمجرد حذف ملف التعريف:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;لا يمكن استعادة ملف التعريف.&lt;/li&gt;&lt;li&gt;سيتم حذف معلومات الملف الشخصي مثل الاسم والصور والتقدم بشكل دائم.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;لحذف ملف تعريف (باستثناء&lt;u&gt;المسؤول&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt; من الصفحة الرئيسية للمسؤول ، اضغط على زر القائمة أعلى اليسار.&lt;/li&gt;&lt;li&gt; اضغط على&lt;strong&gt;ضوابط المسؤول&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt; اضغط على&lt;strong&gt;تحرير ملفات التعريف&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt; اضغط على الملف الشخصي الذي ترغب في حذفه.&lt;/li&gt;&lt;li&gt; في الجزء السفلي من الشاشة ، انقر فوق&lt;strong&gt;حذف الملف الشخصي&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt; اضغط&lt;strong&gt;حذف&lt;/strong&gt;لتأكيد الحذف. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt; ملاحظة:&lt;u&gt;المسؤول&lt;/u&gt;فقط هو القادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
+  <string name="faq_answer_exploration_player">&lt;p&gt;إذا لم يتم تحميل جهاز التحقيق&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من تحديث التطبيق:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اذهب إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصال الإنترنت بطيء، حاول إعادة الاتصال بشبكة واي فاي الخاصة بك أو الاتصال بشبك آخر.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;اطلب من المدير التحقق من جهازك و اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;احصل على المدير لإصلاح المشاكل باستخدام الخطوات أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كان لديك مشاكل مع الحملة:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إبلاغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_audio_not_playing">&lt;p&gt;إذا كان صوتك لا يعزف&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من تحديث التطبيق:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اذهب إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصال الإنترنت بطيء، حاول إعادة الاتصال بشبكة واي فاي الخاصة بك أو الاتصال بشبك آخر. إن الإنترنت البطيء قد يسبب تحميل الصوت بشكل غير منتظم مما يجعل من الصعب تشغيله.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;اطلب من المدير التحقق من جهازك و اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;احصل على المدير لإصلاح المشاكل باستخدام الخطوات أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كان لديك مشاكل مع الحملة:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إبلاغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_delete_profile">&lt;p&gt;بمجرد حذف الملف الشخصي:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;لا يمكن استعادة الملف&lt;/li&gt;&lt;li&gt;سيتم حذف معلومات الملف الشخصي مثل الاسم والصور والتقدم بشكل دائم.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;لإزالة ملف تعريف (باستثناء &lt;u&gt;المدير&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt;من صفحة الرئيسية للمدير، اضغط على زر القائمة في الجزء العلوي اليسرى.&lt;/li&gt;&lt;li&gt;اضغط على &lt;strong&gt;التحكمات الإدارية&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;اضغط على &lt;strong&gt;تحرير الملفات الشخصية&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;اضغط على الملف الشخصي الذي تريد حذفه.&lt;/li&gt;&lt;li&gt;في أسفل الشاشة، اضغط على &lt;strong&gt;حذف الملف الشخصي&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;اضغط على حذف لتأكيد الحذف.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;ملاحظة: إدارة الملفات الشخصية يمكن &lt;u&gt;المدير&lt;/u&gt; فقط.&lt;/p&gt;</string>
   <string name="faq_answer_update_app">&lt;p&gt;&lt;ol&gt;&lt;li&gt;افتح تطبيق Google Play Store&lt;/li&gt;&lt;li&gt;ابحث عن %s التطبيق&lt;/li&gt;&lt;li&gt;اضغط على تحديث&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_update_os">&lt;p&gt;&lt;ol&gt;&lt;li&gt;اضغط على تطبيق الإعدادات في هاتفك&lt;/li&gt;&lt;li&gt;اضغط على تحديثات النظام&lt;/li&gt;&lt;li&gt;اضغط على تحديثات النظام واتبع التعليمات لتحديث نظام تشغيل Android الخاص بك&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_cant_find_question">&lt;p&gt; إذا لم تتمكن من العثور على سؤالك أو كنت ترغب في الإبلاغ عن خطأ ، فاتصل بنا على admin@oppia.org. &lt;/p&gt;</string>

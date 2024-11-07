@@ -77,10 +77,10 @@
   <string name="topic_name">mada: %s</string>
   <string name="topic">mada</string>
   <string name="ongoing_topic_list_activity_title">mada zinazoendelea</string>
-  <string name="chapter_name">Sura ya %s: %s</string>
-  <string name="chapter_completed">Sura ya %s yenye kichwa %s imekamilika</string>
-  <string name="chapter_in_progress">Sura ya %s yenye kichwa %s inaendelea</string>
-  <string name="chapter_prerequisite_title_label">Kamilisha Sura ya %s: %s ili kufungua sura hii.</string>
+  <string name="chapter_name" fuzzy="true">Sura ya %s: %s</string>
+  <string name="chapter_completed" fuzzy="true">Sura ya %s yenye kichwa %s imekamilika</string>
+  <string name="chapter_in_progress" fuzzy="true">Sura ya %s yenye kichwa %s inaendelea</string>
+  <string name="chapter_prerequisite_title_label" fuzzy="true">Kamilisha Sura ya %s: %s ili kufungua sura hii.</string>
   <string name="text_input_default_content_description">Ingiza maandishi.</string>
   <string name="fractions_default_hint_text">Ingiza sehemu katika mpangilio huu x/x, au nambari iliyochanganywa katika mpangilio huu x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Ingiza sehemu katika mpangilio huu X/X.</string>
@@ -134,7 +134,7 @@
   <string name="topic_downloaded">Mada Imepakuliwa</string>
   <string name="downloaded">Imepakuliwa</string>
   <string name="question_player_title">Hali ya Mazoezi</string>
-  <string name="question_training_session_progress">Swali %s kati ya %s</string>
+  <string name="question_training_session_progress" fuzzy="true">Swali %s kati ya %s</string>
   <string name="question_training_session_progress_finished">imekamilika</string>
   <string name="question_training_session_finished_header">imekamilika</string>
   <string name="question_training_session_finished_message">Umemaliza maswali yote! Unaweza kuchagua kucheza seti nyingine ya maswali, au kurudi kwenye mada.</string>
@@ -173,7 +173,7 @@
     <item quantity="one">Hadithi 1</item>
     <item quantity="other">Hadithi %s</item>
   </plurals>
-  <plurals name="story_total_chapters">
+  <plurals name="story_total_chapters" fuzzy="true">
     <item quantity="one">%s kati ya Sura %s Imekamilika</item>
     <item quantity="other">%s ya Sura %s Imekamilika</item>
   </plurals>
@@ -238,7 +238,7 @@
   <string name="skip">Ruka</string>
   <string name="next_arrow">Inayofuata</string>
   <string name="get_started">Anza</string>
-  <string name="onboarding_slide_dots_content_description">Slaidi %s ya %s</string>
+  <string name="onboarding_slide_dots_content_description" fuzzy="true">Slaidi %s ya %s</string>
   <string name="pin_password_hello">Habari, %s!</string>
   <string name="pin_password_admin_enter">Tafadhali weka Nambari yako ya Siri ya Msimamizi.</string>
   <string name="pin_password_user_enter">Tafadhali weka Nambari yako ya Siri.</string>
@@ -375,7 +375,7 @@
   <string name="move_item_up_content_description">Hamisha kipengee juu hadi %s</string>
   <string name="up_button_disabled">Juu</string>
   <string name="down_button_disabled">Chini</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited" fuzzy="true">%s %s</string>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">Inaendelea_kuchakata tena_mtazamo_tag</string>
   <string name="item_selection_text" fuzzy="true">Tafadhali chagua angalau chaguo moja.</string>
