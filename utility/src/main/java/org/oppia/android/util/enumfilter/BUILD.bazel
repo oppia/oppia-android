@@ -1,7 +1,6 @@
 """
-General purposes utility for filtering enums.
+General purpose utility for filtering enums.
 """
-
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
@@ -10,10 +9,5 @@ kt_android_library(
     srcs = [
         "EnumFilterUtil.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
-    deps = [
-
-    ],
+    visibility = ["//:oppia_api_visibility"],
 )
