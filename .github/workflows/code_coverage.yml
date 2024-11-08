@@ -328,7 +328,8 @@ jobs:
       - name: Check that coverage status is passed
         if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.evaluate_code_coverage_reports.result != 'success' }}
         run: exit 1
-       - name: Handle action required status
+
+      - name: Handle action required status
         if: ${{ needs.code_coverage_run.result == 'action_required' || needs.evaluate_code_coverage_reports.result == 'action_required' }}
         run: |
           echo "Action required on code coverage. Review manually before proceeding."
