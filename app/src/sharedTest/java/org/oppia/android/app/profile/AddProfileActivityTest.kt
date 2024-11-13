@@ -10,7 +10,6 @@ import android.content.res.Resources
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -40,8 +39,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -129,6 +126,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -1760,82 +1759,81 @@ class AddProfileActivityTest {
       assertThat(activity.isFinishing).isTrue()
     }
   }
-
   private fun createAddProfileActivityIntent(): Intent {
-  return AddProfileActivity.createAddProfileActivityIntent(
-    ApplicationProvider.getApplicationContext(),
-    colorRgb = -10710042
+    return AddProfileActivity.createAddProfileActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      colorRgb = -10710042
+    )
+  }
+
+  private fun createGalleryPickActivityResultStub(): ActivityResult {
+    val resources: Resources = context.resources
+    val imageUri = Uri.parse(
+      ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+        resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
+        resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
+        resources.getResourceEntryName(R.mipmap.launcher_icon)
+    )
+    val resultIntent = Intent()
+    resultIntent.data = imageUri
+    return ActivityResult(RESULT_OK, resultIntent)
+  }
+
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  @Singleton
+  @Component(
+    modules = [
+      RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      TestAuthenticationModule::class
+    ]
   )
-}
+  interface TestApplicationComponent : ApplicationComponent {
+    @Component.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
-private fun createGalleryPickActivityResultStub(): ActivityResult {
-  val resources: Resources = context.resources
-  val imageUri = Uri.parse(
-    ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-      resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
-      resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
-      resources.getResourceEntryName(R.mipmap.launcher_icon)
-  )
-  val resultIntent = Intent()
-  resultIntent.data = imageUri
-  return ActivityResult(RESULT_OK, resultIntent)
-}
-
-// TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-@Singleton
-@Component(
-  modules = [
-    RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
-    TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-    LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-    ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-    GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-    HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-    AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-    ExpirationMetaDataRetrieverModule::class,
-    ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-    ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-    HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-    FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-    ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-    NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-    AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-    NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-    MathEquationInputModule::class, SplitScreenInteractionModule::class,
-    LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-    SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-    EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-    CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-    TestAuthenticationModule::class
-  ]
-)
-interface TestApplicationComponent : ApplicationComponent {
-  @Component.Builder
-  interface Builder : ApplicationComponent.Builder {
-    override fun build(): TestApplicationComponent
+    fun inject(addProfileActivityTest: AddProfileActivityTest)
   }
 
-  fun inject(addProfileActivityTest: AddProfileActivityTest)
-}
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAddProfileActivityTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
+    }
 
-class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-  private val component: TestApplicationComponent by lazy {
-    DaggerAddProfileActivityTest_TestApplicationComponent.builder()
-      .setApplication(this)
-      .build() as TestApplicationComponent
+    fun inject(addProfileActivityTest: AddProfileActivityTest) {
+      component.inject(addProfileActivityTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
-
-  fun inject(addProfileActivityTest: AddProfileActivityTest) {
-    component.inject(addProfileActivityTest)
-  }
-
-  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-  }
-
-  override fun getApplicationInjector(): ApplicationInjector = component
-}
 }
