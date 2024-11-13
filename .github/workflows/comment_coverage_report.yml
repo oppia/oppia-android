@@ -30,6 +30,7 @@ jobs:
             success
             failure
             action_required
+
       - name: Conclusion Analysis
         if: steps.wait-for-coverage.outputs.run-conclusion == 'action_required'
         run: |
