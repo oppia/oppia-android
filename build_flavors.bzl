@@ -3,7 +3,7 @@ Macros & definitions corresponding to Oppia binary build flavors.
 """
 
 load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KENYA_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
@@ -13,7 +13,6 @@ AVAILABLE_FLAVORS = [
     "dev_kitkat",
     "alpha",
     "alpha_kitkat",
-    "alpha_kenya",
     "beta",
     "ga",
 ]
@@ -41,7 +40,6 @@ _PRODUCTION_PROGUARD_SPECS = [
 ]
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
-# TODO(#4419): Remove the Kenya-specific alpha flavor.
 _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -100,20 +98,6 @@ _FLAVOR_METADATA = {
         ],
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
-    },
-    "alpha_kenya": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
-        "target_sdk_version": 33,
-        "multidex": "native",
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "production_release": True,
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/alphakenya:alpha_kenya_application",
-            "//config/src/java/org/oppia/android/config:all_languages_config",
-        ],
-        "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
-        "application_class": ".app.application.alphakenya.AlphaKenyaOppiaApplication",
     },
     "beta": {
         "manifest": "//app:src/main/AndroidManifest.xml",

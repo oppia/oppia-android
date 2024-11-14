@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf.allOf
@@ -93,7 +94,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -102,6 +102,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -441,6 +442,30 @@ class ProfileRenameFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    ActivityScenario.launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context = context,
+        internalProfileId = 1
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileRenameFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_rename_fragment_placeholder) as ProfileRenameFragment
+        val args =
+          checkNotNull(profileRenameFragment.arguments) {
+            "Expected arguments to be passed to ProfileRenameFragment"
+          }
+        val receivedProfileId = args.extractCurrentUserProfileId().internalId
+
+        assertThat(receivedProfileId).isEqualTo(1)
+      }
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -468,7 +493,7 @@ class ProfileRenameFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

@@ -41,6 +41,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -99,9 +100,9 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -273,6 +274,41 @@ class ResumeLessonFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val resumeLessonFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.resume_lesson_fragment_placeholder) as ResumeLessonFragment
+        val args = checkNotNull(resumeLessonFragment.arguments) {
+          "Expected arguments to be provided for fragment."
+        }.getProto(
+          ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+          ResumeLessonFragmentArguments.getDefaultInstance()
+        )
+        val receivedProfileId = args.profileId
+        val receivedClassroomId = args.classroomId
+        val receivedTopicId = args.topicId
+        val receivedStoryId = args.storyId
+        val receivedExplorationId = args.explorationId
+        val receivedParentScreen = args.parentScreen
+        val receivedCheckpoint = args.checkpoint
+
+        assertThat(receivedProfileId)
+          .isEqualTo(ProfileId.newBuilder().apply { internalId = 1 }.build())
+        assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(receivedStoryId).isEqualTo(FRACTIONS_STORY_ID_0)
+        assertThat(receivedExplorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+        assertThat(receivedParentScreen)
+          .isEqualTo(ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED)
+        assertThat(receivedCheckpoint).isEqualTo(ExplorationCheckpoint.getDefaultInstance())
+      }
+    }
+  }
+
   private fun createResumeLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
@@ -382,7 +418,7 @@ class ResumeLessonFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

@@ -2,6 +2,7 @@ package org.oppia.android.app.help
 
 import android.app.Application
 import android.content.Intent
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.equalTo
 import org.junit.After
@@ -50,6 +52,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.model.HelpFragmentArguments
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ProfileId
@@ -104,9 +107,9 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -1374,6 +1377,34 @@ class HelpFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment
+        val isMultipane =
+          activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
+
+        val arguments = checkNotNull(fragment.arguments) {
+          "Expected arguments to be passed to HelpFragment"
+        }
+        val args =
+          arguments.getProto("HelpFragment.arguments", HelpFragmentArguments.getDefaultInstance())
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
+    }
+  }
+
   private fun ActivityScenario<HelpActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))
       .check(matches(isCompletelyDisplayed()))
@@ -1449,7 +1480,7 @@ class HelpFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]
