@@ -13,6 +13,9 @@
 # Move file from script folder to .git/hooks folder
 cp scripts/pre-push.sh .git/hooks/pre-push
 
+# Copy the pre-commit hook from script to .git/hooks folder
+cp scripts/pre-commit.sh .git/hooks/pre-commit
+
 # Create a folder where all the set up files will be downloaded
 mkdir -p ../oppia-android-tools
 cd ../oppia-android-tools

@@ -26,6 +26,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -58,6 +59,7 @@ import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCardActivityParams
+import org.oppia.android.app.model.RevisionCardFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -122,9 +124,9 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -133,6 +135,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -810,6 +813,45 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val revisionCardFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.revision_card_fragment_placeholder) as RevisionCardFragment
+        val arguments = checkNotNull(revisionCardFragment.arguments) {
+          "Expected arguments to be passed to StoryFragment"
+        }
+        val args = arguments.getProto(
+          RevisionCardFragment.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
+          RevisionCardFragmentArguments.getDefaultInstance()
+        )
+        val receivedTopicId =
+          checkNotNull(args?.topicId) {
+            "Expected topicId to be passed to RevisionCardFragment"
+          }
+        val receivedSubtopicId = args?.subtopicId ?: -1
+        val receivedProfileId = arguments.extractCurrentUserProfileId()
+        val receivedSubtopicListSize = args?.subtopicListSize ?: -1
+
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(receivedSubtopicId).isEqualTo(2)
+        assertThat(receivedProfileId).isEqualTo(profileId)
+        assertThat(receivedSubtopicListSize).isEqualTo(FRACTIONS_SUBTOPIC_LIST_SIZE)
+      }
+    }
+  }
+
   /** See the version in StateFragmentTest for documentation details. */
   @Suppress("SameParameterValue")
   private fun openClickableSpan(text: String): ViewAction {
@@ -900,7 +942,7 @@ class RevisionCardFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

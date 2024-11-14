@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +32,8 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
+import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,9 +57,31 @@ class ConsoleLoggerTest {
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
 
+  private lateinit var logFile: File
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    logFile = File(context.filesDir, "oppia_app.log")
+    logFile.delete()
+  }
+
+  @After
+  fun tearDown() {
+    logFile.delete()
+  }
+
+  @Test
+  fun testConsoleLogger_multipleLogCalls_appendsToFile() {
+    consoleLogger.e(testTag, testMessage)
+    consoleLogger.e(testTag, "$testMessage 2")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val logContent = logFile.readText()
+    assertThat(logContent).contains(testMessage)
+    assertThat(logContent).contains("$testMessage 2")
+    assertThat(logContent.indexOf(testMessage))
+      .isLessThan(logContent.indexOf("$testMessage 2"))
   }
 
   @Test
@@ -76,6 +101,26 @@ class ConsoleLoggerTest {
     assertThat(firstErrorContext.fullErrorLog).isEqualTo(testMessage)
   }
 
+  @Test
+  fun testConsoleLogger_closeAndReopen_continuesToAppend() {
+    consoleLogger.e(testTag, "first $testMessage")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Force close the PrintWriter to simulate app restart
+    val printWriterField = ConsoleLogger::class.java.getDeclaredField("printWriter")
+    printWriterField.isAccessible = true
+    (printWriterField.get(consoleLogger) as? PrintWriter)?.close()
+    printWriterField.set(consoleLogger, null)
+
+    consoleLogger.e(testTag, "first $testMessage")
+    consoleLogger.e(testTag, "second $testMessage")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val logContent = logFile.readText()
+    assertThat(logContent).contains("first $testMessage")
+    assertThat(logContent).contains("second $testMessage")
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -84,9 +129,7 @@ class ConsoleLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @Singleton
@@ -96,7 +139,7 @@ class ConsoleLoggerTest {
     @Provides
     @Singleton
     @EnableFileLog
-    fun provideEnableFileLog(): Boolean = false
+    fun provideEnableFileLog(): Boolean = true
 
     @Provides
     @Singleton
@@ -113,7 +156,6 @@ class ConsoleLoggerTest {
       FakeOppiaClockModule::class,
     ]
   )
-
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {

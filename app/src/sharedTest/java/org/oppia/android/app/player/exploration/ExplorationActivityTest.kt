@@ -3,7 +3,9 @@ package org.oppia.android.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.text.Spannable
 import android.text.TextUtils
+import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +50,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -158,7 +161,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -2559,6 +2561,92 @@ class ExplorationActivityTest {
     }
   }
 
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_openConceptCard_selectNavigationUp_conceptCardCloses() {
+    markAllSpotlightsSeen()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      onView(withId(R.id.hints_and_solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Another important skill")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_toolbar)).check(matches(isDisplayed()))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
+    find { text in it.first }?.second
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, feature)
@@ -2814,7 +2902,7 @@ class ExplorationActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

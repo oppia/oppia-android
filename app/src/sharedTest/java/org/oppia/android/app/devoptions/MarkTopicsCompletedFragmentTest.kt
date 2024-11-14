@@ -37,6 +37,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -90,7 +91,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -99,6 +99,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -450,6 +451,56 @@ class MarkTopicsCompletedFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+        val arguments =
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to MarkTopicsCompletedFragment"
+          }
+        val receivedProfileId = arguments.extractCurrentUserProfileId()
+
+        assertThat(receivedProfileId).isEqualTo(profileId)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
+      var actualSelectedTopicsList = ArrayList<String>()
+
+      scenario.onActivity { activity ->
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+        actualSelectedTopicsList =
+          fragment.markTopicsCompletedFragmentPresenter.selectedTopicIdList
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity ->
+        val newFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment
+        val restoredTopicIdList =
+          newFragment.markTopicsCompletedFragmentPresenter.selectedTopicIdList
+
+        assertThat(restoredTopicIdList).isEqualTo(actualSelectedTopicsList)
+      }
+    }
+  }
+
   private fun createMarkTopicsCompletedTestActivityIntent(internalProfileId: Int): Intent {
     return MarkTopicsCompletedTestActivity.createMarkTopicsCompletedTestIntent(
       context, internalProfileId
@@ -550,7 +601,7 @@ class MarkTopicsCompletedFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

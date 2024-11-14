@@ -105,6 +105,7 @@
         app:startIconTint="@color/component_color_shared_black_background_color">
 
         <AutoCompleteTextView
+          android:id="@+id/onboarding_language_dropdown"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:inputType="none"

@@ -19,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -39,7 +40,9 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.model.LicenseListFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -87,9 +90,9 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -340,6 +343,32 @@ class LicenseListFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launch<LicenseListActivity>(createLicenseListActivity(2)).use { scenario ->
+
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.license_list_fragment_placeholder) as LicenseListFragment
+
+        val arguments = checkNotNull(fragment.arguments) {
+          "Expected arguments to be passed to LicenseListFragment"
+        }
+        val args = arguments.getProto(
+          "LicenseListFragment.arguments",
+          LicenseListFragmentArguments.getDefaultInstance()
+        )
+        val receivedDependencyIndex = args.dependencyIndex
+        val receivedIsMultipane = args.isMultipane
+
+        assertThat(receivedDependencyIndex).isEqualTo(2)
+        assertThat(receivedIsMultipane).isEqualTo(false)
+      }
+    }
+  }
+
   private fun createLicenseListActivity(dependencyIndex: Int): Intent {
     return LicenseListActivity.createLicenseListActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -378,7 +407,7 @@ class LicenseListFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

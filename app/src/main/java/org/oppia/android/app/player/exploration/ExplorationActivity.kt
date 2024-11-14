@@ -3,6 +3,7 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -48,7 +49,8 @@ class ExplorationActivity :
   BottomSheetOptionsMenuItemClickListener,
   RequestVoiceOverIconSpotlightListener {
 
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -66,6 +68,14 @@ class ExplorationActivity :
       params.explorationId,
       params.parentScreen,
       params.isCheckpointingEnabled
+    )
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          explorationActivityPresenter.backButtonPressed()
+        }
+      }
     )
   }
 
@@ -112,10 +122,6 @@ class ExplorationActivity :
 
     private fun Intent.extractParams() =
       getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
-  }
-
-  override fun onBackPressed() {
-    explorationActivityPresenter.backButtonPressed()
   }
 
   override fun deleteCurrentProgressAndStopSession(isCompletion: Boolean) {
@@ -190,7 +196,9 @@ class ExplorationActivity :
     this.writtenTranslationContext = writtenTranslationContext
   }
 
-  override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+  override fun dismissConceptCard() {
+    getHintsAndSolution()?.dismissConceptCard()
+  }
 
   override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)

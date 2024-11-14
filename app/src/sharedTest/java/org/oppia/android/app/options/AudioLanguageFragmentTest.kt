@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -19,6 +23,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -35,10 +44,12 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -74,8 +85,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -89,7 +103,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -117,12 +130,17 @@ class AudioLanguageFragmentTest {
     private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 4
   }
 
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @After
   fun tearDown() {
@@ -305,22 +323,13 @@ class AudioLanguageFragmentTest {
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // Do nothing for now, but will fail once navigation is implemented
-      onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
-      )
-      onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
-      )
-      onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-      onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
+      // Verifies that accepting the default language selection works correctly.
+      intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 
@@ -335,19 +344,119 @@ class AudioLanguageFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // Do nothing for now, but will fail once navigation is implemented
-      onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
-      )
-      onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
-      )
-      onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-      onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
+      // Verifies that accepting the default language selection works correctly.
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testFragment_languageSelectionChanged_selectionIsUpdated() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`("Naijá")))
+          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+          .perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.audio_language_dropdown_list)).check(
+          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+        )
+
+        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(HomeActivity::class.java.name))
+      }
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+        onData(
+          CoreMatchers.allOf(
+            `is`(instanceOf(String::class.java)), `is`("Naijá")
+          )
+        )
+          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+          .perform(click())
+
+        onView(isRoot()).perform(orientationLandscape())
+        testCoroutineDispatchers.runCurrent()
+
+        // Verifies that the selected language is still set successfully after configuration change.
+        onView(withId(R.id.audio_language_dropdown_list)).check(
+          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+        )
+
+        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        intended(hasComponent(HomeActivity::class.java.name))
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val receivedAudioLanguage = fragment.arguments?.retrieveLanguageFromArguments()
+
+        assertThat(ENGLISH_AUDIO_LANGUAGE).isEqualTo(receivedAudioLanguage)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      var language: AudioLanguage? = null
+
+      scenario.onActivity { activity ->
+        var fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+      }
+
+      scenario.recreate()
+
+      scenario.onActivity { activity ->
+        val newfragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val restoredAudioLanguage =
+          newfragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+
+        assertThat(restoredAudioLanguage).isEqualTo(language)
+      }
     }
   }
 
@@ -453,16 +562,14 @@ class AudioLanguageFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }
