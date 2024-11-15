@@ -44,10 +44,7 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onSupportNavigateUp(): Boolean {
-    // TODO(#3641): Investigate on using finish instead of intent.
-    val intent = Intent(this, ProfileChooserActivity::class.java)
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-    startActivity(intent)
+    finish()
     return false
   }
 
