@@ -70,7 +70,6 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#3641): Investigate on using finish instead of intent.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         if (!restoreLastCheckedItem) {
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
