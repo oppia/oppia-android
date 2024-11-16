@@ -149,10 +149,10 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-            DeleteProfileSuccessDialogFragment.createNewInstance()
+            ProfileDeleteSuccessDialogFragment.createNewInstance()
               .showNow(
                 fragment.childFragmentManager,
-                DeleteProfileSuccessDialogFragment.DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG
+                ProfileDeleteSuccessDialogFragment.DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG
               )
           }
         }
