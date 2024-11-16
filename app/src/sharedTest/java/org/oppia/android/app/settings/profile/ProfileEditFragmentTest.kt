@@ -181,6 +181,11 @@ class ProfileEditFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_success_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
     }
   }
 
@@ -193,9 +198,50 @@ class ProfileEditFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog()).check(matches(isCompletelyDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_success_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
     }
   }
 
+  @Test
+  @Config(qualifiers = "land")
+  fun testProfileEdit_startWithUserProfile_clickDelete_checkOpensDeletionSuccessDialog() {
+    launchFragmentTestActivity(internalProfileId = 1).use {
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_success_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testProfileEdit_deleteProfile_checkNavigationAfterDeletion() {
+    launchFragmentTestActivity(internalProfileId = 1).use {
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_success_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(android.R.string.ok)).perform(click())
+      if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+        intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      } else {
+        intended(hasComponent(ProfileListActivity::class.java.name))
+      }
+    }
+  }
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)

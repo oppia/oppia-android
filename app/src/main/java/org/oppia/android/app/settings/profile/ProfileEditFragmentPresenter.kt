@@ -151,16 +151,11 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-            if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-              val intent =
-                Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            } else {
-              val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            }
+            DeleteProfileSuccessDialogFragment.createNewInstance()
+              .showNow(
+                fragment.childFragmentManager,
+                DeleteProfileSuccessDialogFragment.DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG
+              )
           }
         }
       )
