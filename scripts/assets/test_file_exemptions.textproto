@@ -4311,6 +4311,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/enumfilter/EnumFilterUtil.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/extensions/StringExtensions.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
