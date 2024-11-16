@@ -56,6 +56,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ConceptCardFragmentArguments
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -116,9 +117,9 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -127,6 +128,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -492,6 +494,38 @@ class ConceptCardFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    launchTestActivity().use { scenario ->
+      scenario.onActivity { activity ->
+
+        ConceptCardFragment.bringToFrontOrCreateIfNew(
+          TEST_SKILL_ID_0,
+          profileId,
+          activity.supportFragmentManager
+        )
+        val fragmentSkill0 =
+          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+
+        val arguments = checkNotNull(fragmentSkill0.arguments) {
+          "Expected arguments to be passed to ConceptCardFragment"
+        }
+        val args = arguments.getProto(
+          ConceptCardFragment.CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+          ConceptCardFragmentArguments.getDefaultInstance()
+        )
+        val skillId =
+          checkNotNull(args.skillId) {
+            "Expected skillId to be passed to ConceptCardFragment"
+          }
+        val receivedProfileId = arguments.extractCurrentUserProfileId()
+
+        assertThat(skillId).isEqualTo(TEST_SKILL_ID_0)
+        assertThat(receivedProfileId).isEqualTo(profileId)
+      }
+    }
+  }
+
   private fun launchTestActivity(): ActivityScenario<ConceptCardFragmentTestActivity> {
     val scenario = ActivityScenario.launch<ConceptCardFragmentTestActivity>(
       ConceptCardFragmentTestActivity.createIntent(context, profileId)
@@ -586,7 +620,7 @@ class ConceptCardFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

@@ -75,7 +75,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -110,8 +109,6 @@ class IntroActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val testProfileNickname = "John"
-
   @Before
   fun setUp() {
     Intents.init()
@@ -126,10 +123,7 @@ class IntroActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      IntroActivity.createIntroActivity(
-        context,
-        testProfileNickname
-      )
+      IntroActivity.createIntroActivity(context)
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.INTRO_ACTIVITY)
@@ -151,10 +145,7 @@ class IntroActivityTest {
   private fun launchOnboardingLearnerIntroActivity():
     ActivityScenario<IntroActivity>? {
       val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(
-          context,
-          testProfileNickname
-        )
+        IntroActivity.createIntroActivity(context)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
@@ -191,7 +182,7 @@ class IntroActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]
