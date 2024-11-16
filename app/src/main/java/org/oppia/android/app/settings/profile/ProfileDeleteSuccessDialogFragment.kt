@@ -1,6 +1,5 @@
 package org.oppia.android.app.settings.profile
 
-
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
