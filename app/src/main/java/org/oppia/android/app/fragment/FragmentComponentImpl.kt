@@ -129,7 +129,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
-  fun inject(deleteProfileSuccessDialogFragment : DeleteProfileSuccessDialogFragment )
+  fun inject(deleteProfileSuccessDialogFragment :DeleteProfileSuccessDialogFragment)
   fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(dragDropTestFragment: DragDropTestFragment)
