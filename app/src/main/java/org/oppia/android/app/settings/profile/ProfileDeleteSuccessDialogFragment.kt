@@ -15,15 +15,15 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** [DialogFragment] that notifies the user after a profile is successfully deleted. */
-class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
+class ProfileDeleteSuccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
     /** Argument key for Profile Deletion Success Dialog in [ProfileEditFragmentPresenter]. */
     const val DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG = "DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT"
 
-    /** This function returns a new instance of [DeleteProfileSuccessDialogFragment]. */
-    fun createNewInstance(): DeleteProfileSuccessDialogFragment {
-      return DeleteProfileSuccessDialogFragment()
+    /** This function returns a new instance of [ProfileDeleteSuccessDialogFragment]. */
+    fun createNewInstance(): ProfileDeleteSuccessDialogFragment {
+      return ProfileDeleteSuccessDialogFragment()
     }
   }
 
