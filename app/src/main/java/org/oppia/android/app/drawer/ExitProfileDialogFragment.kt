@@ -76,7 +76,6 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
         if (soleLearnerProfile) {
           requireActivity().finish()
         } else {
-          // TODO(#3641): Investigate on using finish instead of intent.
           val intent = ProfileChooserActivity.createProfileChooserActivity(requireActivity())
           if (!restoreLastCheckedItem) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

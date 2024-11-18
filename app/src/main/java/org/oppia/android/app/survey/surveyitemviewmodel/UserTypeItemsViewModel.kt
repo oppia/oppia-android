@@ -12,6 +12,7 @@ import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for providing the type of user question options. */
@@ -97,46 +98,36 @@ class UserTypeItemsViewModel @Inject constructor(
 
   private fun getUserTypeOptions(): ObservableArrayList<MultipleChoiceOptionContentViewModel> {
     val observableList = ObservableArrayList<MultipleChoiceOptionContentViewModel>()
-    observableList += UserTypeAnswer.values()
-      .filter { it.isValid() }
-      .mapIndexed { index, userTypeOption ->
-        when (userTypeOption) {
-          UserTypeAnswer.LEARNER ->
-            MultipleChoiceOptionContentViewModel(
-              resourceHandler.getStringInLocale(
-                R.string.user_type_answer_learner
-              ),
-              index,
-              this
-            )
-          UserTypeAnswer.TEACHER -> MultipleChoiceOptionContentViewModel(
-            resourceHandler.getStringInLocale(
-              R.string.user_type_answer_teacher
-            ),
-            index,
-            this
-          )
-
-          UserTypeAnswer.PARENT ->
-            MultipleChoiceOptionContentViewModel(
-              resourceHandler.getStringInLocale(
-                R.string.user_type_answer_parent
-              ),
-              index,
-              this
-            )
-
-          UserTypeAnswer.OTHER ->
-            MultipleChoiceOptionContentViewModel(
-              resourceHandler.getStringInLocale(
-                R.string.user_type_answer_other
-              ),
-              index,
-              this
-            )
-          else -> throw IllegalStateException("Invalid UserTypeAnswer")
-        }
+    val filteredUserTypes = filterByEnumCondition(
+      UserTypeAnswer.values().toList(),
+      { userTypeAnswer -> userTypeAnswer },
+      { userTypeAnswer -> userTypeAnswer.isValid() }
+    )
+    observableList += filteredUserTypes.mapIndexed { index, userTypeOption ->
+      when (userTypeOption) {
+        UserTypeAnswer.LEARNER -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_learner),
+          index,
+          this
+        )
+        UserTypeAnswer.TEACHER -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_teacher),
+          index,
+          this
+        )
+        UserTypeAnswer.PARENT -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_parent),
+          index,
+          this
+        )
+        UserTypeAnswer.OTHER -> MultipleChoiceOptionContentViewModel(
+          resourceHandler.getStringInLocale(R.string.user_type_answer_other),
+          index,
+          this
+        )
+        else -> throw IllegalStateException("Invalid UserTypeAnswer")
       }
+    }
     return observableList
   }
 
