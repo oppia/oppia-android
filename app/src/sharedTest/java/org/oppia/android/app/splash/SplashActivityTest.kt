@@ -1088,15 +1088,24 @@ class SplashActivityTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
-    runInNewTestApplication {
-      profileTestHelper.addOnlyAdminProfileWithoutPin()
-      appStartupStateController.markOnboardingFlowCompleted()
-      testCoroutineDispatchers.advanceUntilIdle()
-    }
+    simulateAppAlreadyOnboarded()
     initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    testCoroutineDispatchers.runCurrent()
+
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
-    profileTestHelper.markProfileOnboardingStarted(profileId)
-    profileTestHelper.markProfileOnboardingEnded(profileId)
+    monitorFactory.ensureDataProviderExecutes(
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+    )
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileTestHelper.markProfileOnboardingStarted(profileId)
+    )
+    monitorFactory.ensureDataProviderExecutes(
+      profileTestHelper.markProfileOnboardingEnded(profileId)
+    )
+    testCoroutineDispatchers.advanceUntilIdle()
+
     launchSplashActivityPartially {
       intended(hasComponent(HomeActivity::class.java.name))
     }

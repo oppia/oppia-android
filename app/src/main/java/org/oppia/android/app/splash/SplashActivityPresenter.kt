@@ -373,7 +373,7 @@ class SplashActivityPresenter @Inject constructor(
         resumeOnboarding(profile.id, profile.name)
       }
       profile.startedProfileOnboarding && profile.completedProfileOnboarding -> {
-        loginToProfile(profile.id)
+        logInToProfile(profile.id)
       }
       else -> launchOnboardingActivity()
     }
@@ -392,7 +392,7 @@ class SplashActivityPresenter @Inject constructor(
     activity.startActivity(intent)
   }
 
-  private fun loginToProfile(profileId: ProfileId) {
+  private fun logInToProfile(profileId: ProfileId) {
     profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) { result ->
       if (result is AsyncResult.Success && !activity.isFinishing) {
         launchHomeScreen(profileId)

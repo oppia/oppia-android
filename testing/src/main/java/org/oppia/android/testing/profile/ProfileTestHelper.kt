@@ -70,14 +70,13 @@ class ProfileTestHelper @Inject constructor(
    *
    * @returns the [AsyncResult] designating the result of attempting to log into the admin profile
    */
-  fun addOnlyAdminProfileWithoutPin(): AsyncResult<Any?> {
+  fun addOnlyAdminProfileWithoutPin() {
     addProfileAndWait(
       name = "Admin",
       pin = "",
       allowDownloadAccess = true,
       isAdmin = true
     )
-    return monitorFactory.createMonitor(logIntoAdmin()).waitForNextResult()
   }
 
   /** Create [numProfiles] number of user profiles. */
