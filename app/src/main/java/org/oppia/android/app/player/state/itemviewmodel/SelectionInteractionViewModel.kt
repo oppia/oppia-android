@@ -125,8 +125,6 @@ class SelectionInteractionViewModel private constructor(
     }
 
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
-    //checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-
   }
 
   override fun getUserAnswerState(): UserAnswerState {
@@ -177,9 +175,6 @@ class SelectionInteractionViewModel private constructor(
         null
       }
       AnswerErrorCategory.SUBMIT_TIME ->
-        //THE situation can happen if this will return a empty string.
-        //now we have to find ,in which possible case, it will return a empty string.
-        //""
         getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
       else -> null
     }
@@ -212,7 +207,6 @@ class SelectionInteractionViewModel private constructor(
     checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
     return when {
       isCurrentlySelected -> {
-        Log.d("testRadio","first time selected case 1")
         selectedItems -= itemIndex
         updateIsAnswerAvailable()
         updateSelectionText()
@@ -220,8 +214,6 @@ class SelectionInteractionViewModel private constructor(
         false
       }
       !areCheckboxesBound() -> {
-        Log.d("testRadio","first time selected case 2")
-        // De-select all other items to simulate a radio button group.
         choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
         selectedItems.clear()
         selectedItems += itemIndex
@@ -229,7 +221,6 @@ class SelectionInteractionViewModel private constructor(
         true
       }
       selectedItems.size < maxAllowableSelectionCount -> {
-        Log.d("testRadio","first time selected case 3")
         selectedItems += itemIndex
         updateIsAnswerAvailable()
         updateSelectionText()
@@ -237,8 +228,6 @@ class SelectionInteractionViewModel private constructor(
         true
       }
       else -> {
-        Log.d("testRadio","first time selected case 4")
-        // Do not change the current status if it isn't valid to do so.
         isCurrentlySelected
       }
     }

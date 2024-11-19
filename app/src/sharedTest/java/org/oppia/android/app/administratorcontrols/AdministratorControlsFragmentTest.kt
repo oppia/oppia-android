@@ -151,7 +151,7 @@ class AdministratorControlsFragmentTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
-   // profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
