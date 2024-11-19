@@ -12,7 +12,7 @@ class SelectionInteractionContentViewModel(
   private val selectionInteractionViewModel: SelectionInteractionViewModel,
   val isEnabled: ObservableBoolean
 ) : ObservableViewModel() {
-  var isAnswerSelected = ObservableBoolean()
+  var isAnswerSelected = ObservableBoolean() //it should be false for disable the submit_button... find how it can be false
 
   fun handleItemClicked() {
     val isCurrentlySelected = isAnswerSelected.get()

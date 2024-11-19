@@ -322,7 +322,7 @@ class LicenseTextViewerFragmentTest {
   }
 
   @Test
-  fun testLicenseTextViewerFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 3,

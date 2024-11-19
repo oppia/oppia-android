@@ -5007,13 +5007,12 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(
       FRACTIONS_EXPLORATION_ID_1,
       shouldSavePartialProgress = false
     ).use { scenario ->
-      testCoroutineDispatchers.unregisterIdlingResource()
       startPlayingExploration()
 
       scenario.onActivity { activity ->

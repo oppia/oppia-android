@@ -1212,7 +1212,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicLessonsFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
@@ -1266,34 +1266,20 @@ class TopicLessonsFragmentTest {
     ).use { scenario ->
       clickLessonTab()
       testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-        val topicFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
-        val viewPager = topicFragment.requireView()
-          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
-        val topicLessonsFragment = topicFragment.childFragmentManager
-          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
 
-        topicLessonsFragment.onExpandListIconClicked(1)
-      }
+      scrollToPosition(position = 2)
+      clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
 
       scenario.recreate()
 
-      scenario.onActivity { activity ->
-        val topicFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
-        val viewPager = topicFragment.requireView()
-          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
-        val topicLessonsFragment = topicFragment.childFragmentManager
-          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
-
-        val receivedCurrentExpandedChapterListIndex = topicLessonsFragment
-          .getCurrentExpandedChapterListIndex()
-        val receivedIsDefaultStoryExpanded = topicLessonsFragment.getIsDefaultStoryExpanded()
-
-        assertThat(receivedCurrentExpandedChapterListIndex).isEqualTo(1)
-        assertThat(receivedIsDefaultStoryExpanded).isEqualTo(true)
-      }
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 2,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 

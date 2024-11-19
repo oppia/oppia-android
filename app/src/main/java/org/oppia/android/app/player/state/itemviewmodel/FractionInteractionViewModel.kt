@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -44,6 +45,7 @@ class FractionInteractionViewModel private constructor(
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          Log.d("testHang","onPendingAnswerErrorOrAvailabilityCheck is called in onPropertychanges ")
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
             true // Allow submit on empty answer.
@@ -86,14 +88,21 @@ class FractionInteractionViewModel private constructor(
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
+        //App got stuck during a student playthrough #5568 -> pendingAnswer can be possible reason
+        //it should be null for enable for submit button.
+        //my observation as per date 11/12/24 -> error found in time of submit answer ->
+        //pendinAnserError is string. -> submit button is disabled.
+        // if again checkPendingAnswerError is called and doesnot match with any category
+        //pendingAnswerError should be null . but this time it was set string previously.
         pendingAnswerError =
           FractionParsingUiError.createFromParsingError(
             fractionParser.getSubmitTimeError(answerText.toString())
           ).getErrorMessageFromStringRes(resourceHandler)
       }
-      else -> {}
+      else -> {} // we are not setting it null like other (RatioExpressionInputInterationviewModel)
     }
     errorMessage.set(pendingAnswerError)
+    Log.d("testHang","errorMessage is set in checkPendingAnswerError ")
     return pendingAnswerError
   }
 

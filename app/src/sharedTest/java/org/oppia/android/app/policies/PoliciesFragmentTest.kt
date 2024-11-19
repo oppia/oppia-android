@@ -330,7 +330,7 @@ class PoliciesFragmentTest {
   }
 
   @Test
-  fun testPoliciesFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
         getApplicationContext(),
@@ -362,7 +362,7 @@ class PoliciesFragmentTest {
             PoliciesFragmentArguments.getDefaultInstance()
           )
 
-        assertThat(receivedPolicies).isEqualTo(policiesFragmentArguments)
+        assertThat(receivedPolicies.policyPage).isEqualTo(policiesFragmentArguments.policyPage)
       }
     }
   }

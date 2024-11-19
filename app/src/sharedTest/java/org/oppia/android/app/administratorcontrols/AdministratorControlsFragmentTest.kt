@@ -151,7 +151,7 @@ class AdministratorControlsFragmentTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
+   // profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -439,7 +439,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId

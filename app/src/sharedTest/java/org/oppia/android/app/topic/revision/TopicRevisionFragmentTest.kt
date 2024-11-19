@@ -293,7 +293,7 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
-  fun testTopicRevisionFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -316,12 +316,9 @@ class TopicRevisionFragmentTest {
           TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,
           TopicRevisionFragmentArguments.getDefaultInstance()
         )
-        val receivedTopicId = checkNotNull(args?.topicId) {
-          "Expected topic ID to be included in arguments for TopicRevisionFragment."
-        }
 
         assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
-        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+        assertThat(args?.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       }
     }
   }

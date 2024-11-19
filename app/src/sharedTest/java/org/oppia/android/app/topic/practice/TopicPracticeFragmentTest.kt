@@ -390,7 +390,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+  fun testFragmentArguments_afterCreation_areCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -433,44 +433,25 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       testCoroutineDispatchers.runCurrent()
 
-      scenario.onActivity { activity ->
-        val topicFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
-        val viewPager = topicFragment.requireView()
-          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
-        val topicPracticeFragment = topicFragment.childFragmentManager
-          .findFragmentByTag("f${viewPager.currentItem}") as TopicPracticeFragment
-
-        topicPracticeFragment.topicPracticeFragmentPresenter
-          .selectedSubtopicIdList = arrayListOf(1, 2, 3)
-        topicPracticeFragment.topicPracticeFragmentPresenter.skillIdHashMap = hashMapOf(
-          1 to mutableListOf("skill_1"),
-          2 to mutableListOf("skill_2", "skill_3")
-        )
-      }
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
 
       scenario.recreate()
 
-      scenario.onActivity { activity ->
-        val topicFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
-        val viewPager = topicFragment.requireView()
-          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
-        val topicPracticeFragment = topicFragment.childFragmentManager
-          .findFragmentByTag("f${viewPager.currentItem}") as TopicPracticeFragment
-
-        val restoredSelectedSubtopicList = topicPracticeFragment.topicPracticeFragmentPresenter
-          .selectedSubtopicIdList
-        val restoredSkillIdHashMap = topicPracticeFragment.topicPracticeFragmentPresenter
-          .skillIdHashMap
-
-        assertThat(restoredSelectedSubtopicList).containsExactly(1, 2, 3)
-        assertThat(restoredSkillIdHashMap)
-          .containsExactly(
-            1, mutableListOf("skill_1"),
-            2, mutableListOf("skill_2", "skill_3")
-          )
-      }
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 2,
+          targetViewId = R.id.subtopic_check_box
+        )
+      ).check(matches(isChecked()))
     }
   }
 
