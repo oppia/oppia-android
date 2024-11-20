@@ -1086,7 +1086,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication(onboardingV2Enabled = true)
