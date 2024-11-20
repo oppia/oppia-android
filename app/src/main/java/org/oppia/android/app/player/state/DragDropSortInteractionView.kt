@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -75,7 +76,11 @@ class DragDropSortInteractionView @JvmOverloads constructor(
    * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
    * since this one takes into account initialization order with other binding properties.
    */
-  fun setDraggableData(dataList: List<DragDropInteractionContentViewModel>) {
+  fun setDraggableData(dataList: List<DragDropInteractionContentViewModel>?) {
+    if (dataList == null) {
+      Log.e("failingtocallobserver", "Received null dataList")
+      return
+    }
     this.dataList = dataList
     maybeInitializeAdapter()
   }
