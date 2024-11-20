@@ -16,18 +16,16 @@ import javax.inject.Inject
 /** [DialogFragment] that notifies the user after a profile is successfully deleted. */
 class ProfileDeleteSuccessDialogFragment : InjectableDialogFragment() {
 
-  companion object {
-    /** Argument key for Profile Deletion Success Dialog in [ProfileEditFragmentPresenter]. */
-    const val DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG = "DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT"
-
-    /** This function returns a new instance of [ProfileDeleteSuccessDialogFragment]. */
-    fun createNewInstance(): ProfileDeleteSuccessDialogFragment {
-      return ProfileDeleteSuccessDialogFragment()
-    }
-  }
-
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
+
+  companion object {
+    /** Tag for [ProfileDeleteSuccessDialogFragment]. */
+    const val DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG = "DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT"
+
+    /** Returns a new instance of [ProfileDeleteSuccessDialogFragment]. */
+    fun createNewInstance(): ProfileDeleteSuccessDialogFragment = ProfileDeleteSuccessDialogFragment()
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -41,7 +39,7 @@ class ProfileDeleteSuccessDialogFragment : InjectableDialogFragment() {
           resourceHandler.getStringInLocale(R.string.profile_edit_delete_successful_message)
         )
         setPositiveButton(
-          resourceHandler.getStringInLocale(R.string.log_out_dialog_okay_button)
+          resourceHandler.getStringInLocale(R.string.profile_edit_delete_success_dialog_positive_button)
         ) { _, _ ->
           if (requireContext().resources.getBoolean(R.bool.isTablet)) {
             val intent =

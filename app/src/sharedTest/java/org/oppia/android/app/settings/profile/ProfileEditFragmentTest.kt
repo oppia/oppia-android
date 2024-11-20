@@ -164,34 +164,43 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
+  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog_checkOpensSuccessDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land")
-  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
-    launchFragmentTestActivity(internalProfileId = 1).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      onView(withText(R.string.profile_edit_delete_successful_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
+  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog_checkOpensSuccessDialog() {
+    launchFragmentTestActivity(internalProfileId = 1).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      onView(withText(R.string.profile_edit_delete_successful_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkOpensDeletionDialog_checkOpensSuccessDialogIsVisible() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      onView(withText(R.string.profile_edit_delete_successful_message))
         .inRoot(isDialog()).check(matches(isCompletelyDisplayed()))
     }
   }
