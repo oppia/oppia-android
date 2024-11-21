@@ -185,6 +185,7 @@ class ProfileEditFragmentTest {
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_successful_message))
         .inRoot(isDialog()).check(matches(isDisplayed()))
     }
