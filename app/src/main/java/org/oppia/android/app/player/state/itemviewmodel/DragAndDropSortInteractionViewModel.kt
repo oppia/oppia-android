@@ -1,13 +1,17 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -26,12 +30,11 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.translation.TranslationController
-import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** Represents the type of errors that can be thrown by drag and drop sort interaction. */
 enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {
@@ -56,11 +59,12 @@ class DragAndDropSortInteractionViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
   userAnswerState: UserAnswerState,
-  explorationProgressController: ExplorationProgressController
+  private val explorationProgressController: ExplorationProgressController
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
   InteractionAnswerHandler,
   OnItemDragListener,
   OnDragEndedListener {
+
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
@@ -84,28 +88,31 @@ class DragAndDropSortInteractionViewModel private constructor(
   private var _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeOriginalChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
 
-  private var _choiceItems = computeSelectedChoiceItems(
-    contentIdHtmlMap,
-    choiceSubtitledHtmls,
-    this,
-    resourceHandler,
-    userAnswerState
-  )
-
-  private val choiceItemsLiveData: LiveData<List<DragDropInteractionContentViewModel>> by lazy {
-    Transformations.map(
-      explorationProgressController.getCurrentState().toLiveData(),
-      ::processChoiceItems
-    )
-  }
-
-  val choiceItems = choiceItemsLiveData
+  private var _choiceItems: MutableList<DragDropInteractionContentViewModel> = mutableListOf()
+  private var _choiceItemsLiveData = MutableLiveData<List<DragDropInteractionContentViewModel>>()
+  var choiceItems: LiveData<List<DragDropInteractionContentViewModel>> = _choiceItemsLiveData
 
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
   var errorMessage = ObservableField<String>("")
 
   init {
+    Log.d("checkingchoiceitems", "init: _originalChoiceItems - $_originalChoiceItems")
+    Log.d("checkingchoiceitems", "init: _choiceItems - $_choiceItems")
+    Log.d("checkingchoiceitems", "init: _choiceItemsLiveData value - ${_choiceItemsLiveData.value}")
+    Log.d("checkingchoiceitems", "init: choiceItems value - ${choiceItems.value}")
+
+    _choiceItems = computeSelectedChoiceItems(
+      contentIdHtmlMap,
+      this,
+      resourceHandler
+    )
+
+    _choiceItemsLiveData.value = _choiceItems
+
+    Log.d("checkingchoiceitems", "init: after setting _choiceItems - $_choiceItems")
+    Log.d("checkingchoiceitems", "init: after setting _choiceItemsLiveData value - ${_choiceItemsLiveData.value}")
+
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
@@ -341,66 +348,102 @@ class DragAndDropSortInteractionViewModel private constructor(
 
   private fun computeSelectedChoiceItems(
     contentIdHtmlMap: Map<String, String>,
-    choiceStrings: List<SubtitledHtml>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-    resourceHandler: AppLanguageResourceHandler,
-    userAnswerState: UserAnswerState
+    resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
-    return if (userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount == 0) {
-      _originalChoiceItems.toMutableList()
-    } else {
-      userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
-        .mapIndexed { index, contentId ->
-          DragDropInteractionContentViewModel(
-            contentIdHtmlMap = contentIdHtmlMap,
-            htmlContent = contentId,
-            itemIndex = index,
-            listSize = choiceStrings.size,
-            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-            resourceHandler = resourceHandler
-          )
-        }.toMutableList()
+    val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
+      explorationProgressController.getCurrentState().toLiveData()
     }
+    Log.d("checkingchoiceitems", "computeSelectedChoices ephemeral state live data - $ephemeralStateLiveData")
+
+    /*ephemeralStateLiveData.observe(fragment) { result ->
+      _choiceItems = processEphemeralStateResult(
+        result,
+        contentIdHtmlMap,
+        dragAndDropSortInteractionViewModel,
+        resourceHandler
+      )
+      _choiceItemsLiveData.value = _choiceItems
+      _originalChoiceItems = _choiceItems.toMutableList()
+    }*/
+
+    Log.d("checkingchoiceitems", "computeSelectedChoices choiceItems before switch map- ${choiceItems.value}")
+
+    choiceItems = Transformations.switchMap(ephemeralStateLiveData) { result ->
+      Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map")
+      MutableLiveData<List<DragDropInteractionContentViewModel>>().apply {
+        value = when (result) {
+          is AsyncResult.Failure, is AsyncResult.Pending -> _originalChoiceItems
+          is AsyncResult.Success -> {
+            Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map success case")
+            // try choice items here
+            _choiceItems = processEphemeralStateResult(
+              result.value,
+              contentIdHtmlMap,
+              dragAndDropSortInteractionViewModel,
+              resourceHandler
+            )
+            _choiceItemsLiveData.value = _choiceItems
+            _originalChoiceItems = _choiceItems.toMutableList()
+            _choiceItems
+          }
+        }
+      Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map")
+      Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map _choiceItems - $_choiceItems")
+      Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map _choiceItemsLiveData - ${_choiceItemsLiveData.value}")
+      Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map _originalChoiceItems - $_originalChoiceItems")
+      }
+    }
+
+    Log.d("checkingchoiceitems", "computeSelectedChoices choiceItems after switch map- ${choiceItems.value}")
+    Log.d("checkingchoiceitems", "computeSelectedChoices _choiceItems after switch map- $_choiceItems")
+    Log.d("checkingchoiceitems", "computeSelectedChoices _originalChoiceItems after switch map - $_originalChoiceItems")
+
+    /*if (choiceItems.value != null) {
+      _choiceItems = choiceItems.value as MutableList<DragDropInteractionContentViewModel>
+    }*/
+
+    Log.d("swichmapchoiceitems", "computeSelectedChoiceItems: _choiceItems $_choiceItems")
+
+    /*choiceItems = _choiceItemsLiveData
+    _choiceItems = _choiceItemsLiveData.value?.toMutableList()!!*/
+
+    return _choiceItems.takeIf { it.isNotEmpty() }
+      ?: _originalChoiceItems.toMutableList()
   }
 
-  private fun processChoiceItems(stateResult: AsyncResult<EphemeralState>): List<DragDropInteractionContentViewModel> {
-    return when(stateResult) {
-      is AsyncResult.Pending -> _originalChoiceItems
-      is AsyncResult.Failure -> _originalChoiceItems
-      is AsyncResult.Success -> {
-        val state = stateResult.value
-        val wrongAnswerList = state.pendingState.wrongAnswerList
-
-        if (wrongAnswerList.isNotEmpty()) {
-          val latestWrongAnswerContentIdList = wrongAnswerList.last()
-            .userAnswer
-            .answer
-            .listOfSetsOfTranslatableHtmlContentIds
-            .contentIdListsList
-
-          _choiceItems = latestWrongAnswerContentIdList.mapIndexed { index, setOfTranslatableHtmlContentIds ->
-            DragDropInteractionContentViewModel(
-              contentIdHtmlMap = contentIdHtmlMap,
-              htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-                for (contentIds in setOfTranslatableHtmlContentIds.contentIdsList) {
-                  addContentIds(
-                    TranslatableHtmlContentId.newBuilder().apply {
-                      contentId = contentIds.contentId
-                    }
-                  )
+  private fun processEphemeralStateResult(
+    state: EphemeralState,
+    contentIdHtmlMap: Map<String, String>,
+    dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+    resourceHandler: AppLanguageResourceHandler
+  ): MutableList<DragDropInteractionContentViewModel> {
+    Log.d("checkingchoiceitems", "In process ephemeral state result")
+    val wrongAnswerList = state.pendingState.wrongAnswerList
+    return if (wrongAnswerList.isNotEmpty()) {
+      val latestWrongAnswerContentIdList = wrongAnswerList.last()
+        .userAnswer.answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+      latestWrongAnswerContentIdList.mapIndexed { index, setOfTranslatableHtmlContentIds ->
+        DragDropInteractionContentViewModel(
+          contentIdHtmlMap = contentIdHtmlMap,
+          htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+            for (contentIds in setOfTranslatableHtmlContentIds.contentIdsList) {
+              addContentIds(
+                TranslatableHtmlContentId.newBuilder().apply {
+                  contentId = contentIds.contentId
                 }
-              }.build(),
-              itemIndex = index,
-              listSize = latestWrongAnswerContentIdList.size,
-              dragAndDropSortInteractionViewModel = this,
-              resourceHandler = resourceHandler
-            )
-          }.toMutableList()
-          _choiceItems
-        } else {
-          _originalChoiceItems
-        }
-      }
+              )
+            }
+          }.build(),
+          itemIndex = index,
+          listSize = latestWrongAnswerContentIdList.size,
+          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+          resourceHandler = resourceHandler
+        )
+      }.toMutableList()
+    } else {
+      Log.d("checkingchoiceitems", "In else of process ephemeral state result")
+      _originalChoiceItems.toMutableList()
     }
   }
 }
