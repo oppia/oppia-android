@@ -76,11 +76,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
    * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
    * since this one takes into account initialization order with other binding properties.
    */
-  fun setDraggableData(dataList: List<DragDropInteractionContentViewModel>?) {
-    if (dataList == null) {
-      Log.e("failingtocallobserver", "Received null dataList")
-      return
-    }
+  fun setDraggableData(dataList: List<DragDropInteractionContentViewModel>) {
     this.dataList = dataList
     maybeInitializeAdapter()
   }
