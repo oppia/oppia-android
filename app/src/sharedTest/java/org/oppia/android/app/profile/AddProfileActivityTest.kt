@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -1748,6 +1749,15 @@ class AddProfileActivityTest {
     assertThat(currentScreenName).isEqualTo(ScreenName.ADD_PROFILE_ACTIVITY)
   }
 
+  @Test
+  fun testAddProfileActivity_onBackPressed_finishActivity() {
+    val scenario = launch(AddProfileActivity::class.java)
+    onView(isRoot()).perform(ViewActions.pressBack())
+    testCoroutineDispatchers.runCurrent()
+    scenario.onActivity { activity ->
+      assertThat(activity.isFinishing).isTrue()
+    }
+  }
   private fun createAddProfileActivityIntent(): Intent {
     return AddProfileActivity.createAddProfileActivityIntent(
       ApplicationProvider.getApplicationContext(),
