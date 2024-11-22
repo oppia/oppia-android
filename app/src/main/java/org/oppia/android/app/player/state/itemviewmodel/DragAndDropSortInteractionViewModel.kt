@@ -340,28 +340,28 @@ class DragAndDropSortInteractionViewModel private constructor(
     val explorationEphemeralStateLiveData = MediatorLiveData<AsyncResult<EphemeralState>>().apply {
       value = AsyncResult.Pending()
       addSource(explorationProgressController.getCurrentState().toLiveData()) { result ->
-          value = result
+        value = result
       }
     }
 
     choiceItems = Transformations.map(explorationEphemeralStateLiveData) { result ->
-        when (result) {
-          is AsyncResult.Failure, is AsyncResult.Pending -> {
-            _originalChoiceItems
-          }
-          is AsyncResult.Success -> {
-            _choiceItems = processEphemeralStateResult(
-              result.value,
-              contentIdHtmlMap,
-              dragAndDropSortInteractionViewModel,
-              resourceHandler
-            )
-            _originalChoiceItems = _choiceItems.toMutableList()
-            _choiceItems
-          }
-          else -> _originalChoiceItems
+      when (result) {
+        is AsyncResult.Failure, is AsyncResult.Pending -> {
+          _originalChoiceItems
         }
+        is AsyncResult.Success -> {
+          _choiceItems = processEphemeralStateResult(
+            result.value,
+            contentIdHtmlMap,
+            dragAndDropSortInteractionViewModel,
+            resourceHandler
+          )
+          _originalChoiceItems = _choiceItems.toMutableList()
+          _choiceItems
+        }
+        else -> _originalChoiceItems
       }
+    }
 
     return _choiceItems.takeIf { !it.isNullOrEmpty() }
       ?: _originalChoiceItems.toMutableList()
