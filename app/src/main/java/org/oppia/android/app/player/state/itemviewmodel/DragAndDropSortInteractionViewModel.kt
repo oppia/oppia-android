@@ -1,13 +1,10 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
@@ -89,31 +86,19 @@ class DragAndDropSortInteractionViewModel private constructor(
   private var _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeOriginalChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
 
-  private var _choiceItems: MutableList<DragDropInteractionContentViewModel> = mutableListOf()
-  private var _choiceItemsLiveData = MutableLiveData<List<DragDropInteractionContentViewModel>>(_originalChoiceItems)
-  var choiceItems: LiveData<List<DragDropInteractionContentViewModel>> = _choiceItemsLiveData
+  lateinit var choiceItems: LiveData<List<DragDropInteractionContentViewModel>>
+  private var _choiceItems: MutableList<DragDropInteractionContentViewModel> =
+    computeSelectedChoiceItems(
+      contentIdHtmlMap,
+      this,
+      resourceHandler
+    )
 
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
   var errorMessage = ObservableField<String>("")
 
   init {
-    Log.d("checkingchoiceitems", "init: _originalChoiceItems - $_originalChoiceItems")
-    Log.d("checkingchoiceitems", "init: _choiceItems - $_choiceItems")
-    Log.d("checkingchoiceitems", "init: _choiceItemsLiveData value - ${_choiceItemsLiveData.value}")
-    Log.d("checkingchoiceitems", "init: choiceItems value - ${choiceItems.value}")
-
-    _choiceItems = computeSelectedChoiceItems(
-      contentIdHtmlMap,
-      this,
-      resourceHandler
-    )
-
-    _choiceItemsLiveData.value = _choiceItems
-
-    Log.d("checkingchoiceitems", "init: after setting _choiceItems - $_choiceItems")
-    Log.d("checkingchoiceitems", "init: after setting _choiceItemsLiveData value - ${_choiceItemsLiveData.value}")
-
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
@@ -352,131 +337,25 @@ class DragAndDropSortInteractionViewModel private constructor(
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
     resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
-    /*val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
-      explorationProgressController.getCurrentState().toLiveData()
-    }*/
-
-    val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> = explorationProgressController.getCurrentState().toLiveData()
-
-    Log.d("checkingchoiceitems", "computeSelectedChoices ephemeral state live data - $ephemeralStateLiveData")
-    Log.d("checkingchoiceitems", "computeSelectedChoices ephemeral state live data value - ${ephemeralStateLiveData.value}")
-
-    /*ephemeralStateLiveData.observe(fragment) { result ->
-      _choiceItems = processEphemeralStateResult(
-        result,
-        contentIdHtmlMap,
-        dragAndDropSortInteractionViewModel,
-        resourceHandler
-      )
-      _choiceItemsLiveData.value = _choiceItems
-      _originalChoiceItems = _choiceItems.toMutableList()
-    }*/
-
-    Log.d("checkingchoiceitems", "computeSelectedChoices choiceItems before switch map- ${choiceItems.value}")
-
-
-    /*val filteredEphemeralStateLiveData = MediatorLiveData<AsyncResult<EphemeralState>>().apply {
-      addSource(ephemeralStateLiveData) { result ->
-        if (result != null) {
-          value = result
-        }
-      }
-    }
-
-
-//    choiceItems = Transformations.switchMap(ephemeralStateLiveData) { result ->
-//    choiceItems = Transformations.switchMap(ephemeralStateLiveData) { result ->
-    choiceItems = Transformations.switchMap(filteredEphemeralStateLiveData) { result ->
-      Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map")
-      MutableLiveData<List<DragDropInteractionContentViewModel>>().apply {
-        value = when (result) {
-          is AsyncResult.Failure, is AsyncResult.Pending -> _originalChoiceItems
-          is AsyncResult.Success -> {
-            Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map ephemeral live data - ${ephemeralStateLiveData.value}")
-            Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map success case")
-            // try choice items here
-            _choiceItems = processEphemeralStateResult(
-              result.value,
-              contentIdHtmlMap,
-              dragAndDropSortInteractionViewModel,
-              resourceHandler
-            )
-            _choiceItemsLiveData.value = _choiceItems
-            Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins ephemeral _choiceItemsLiveData - ${_choiceItemsLiveData.value}")
-            _originalChoiceItems = _choiceItems.toMutableList()
-            _choiceItems
-          }
-        }
-        Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map")
-        Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map _choiceItems - $_choiceItems")
-        Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map _choiceItemsLiveData - ${_choiceItemsLiveData.value}")
-        Log.d("checkingchoiceitems", "computeSelectedChoices end of transformatins switch map _originalChoiceItems - $_originalChoiceItems")
-      }
-    } as MutableLiveData<List<DragDropInteractionContentViewModel>>*/
-
-
-
-
-
-
-
-
-    // Create a MediatorLiveData that only updates when the value is non-null
-    val filteredEphemeralStateLiveData = MediatorLiveData<AsyncResult<EphemeralState>>().apply {
+    val explorationEphemeralStateLiveData = MediatorLiveData<AsyncResult<EphemeralState>>().apply {
       value = AsyncResult.Pending()
-      addSource(ephemeralStateLiveData) { result ->
-//        if (result != null) {
+      addSource(explorationProgressController.getCurrentState().toLiveData()) { result ->
           value = result
-//        }
       }
     }
 
-    // this works
-// Now switchMap with the filtered LiveData
-//    choiceItems = Transformations.switchMap(filteredEphemeralStateLiveData) { result ->
-    /*choiceItems = Transformations.switchMap(filteredEphemeralStateLiveData) { result ->
-      Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map")
-      MutableLiveData<List<DragDropInteractionContentViewModel>>().apply {
-        value = when (result) {
-          is AsyncResult.Failure, is AsyncResult.Pending -> {
-            _originalChoiceItems
-          }
-          is AsyncResult.Success -> {
-            Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map success case")
-            _choiceItems = processEphemeralStateResult(
-              result.value,
-              contentIdHtmlMap,
-              dragAndDropSortInteractionViewModel,
-              resourceHandler
-            )
-            _choiceItemsLiveData.value = _choiceItems
-            _originalChoiceItems = _choiceItems.toMutableList()
-            _choiceItems // Return the processed choice items
-          }
-          else -> _originalChoiceItems
-        }
-        Log.d("checkingchoiceitems", "computeSelectedChoices end of transformations switch map")
-      }
-    }*/
-
-
-
-    choiceItems = Transformations.map(filteredEphemeralStateLiveData) { result ->
-      Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map")
+    choiceItems = Transformations.map(explorationEphemeralStateLiveData) { result ->
         when (result) {
           is AsyncResult.Failure, is AsyncResult.Pending -> {
-            Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map pending case")
             _originalChoiceItems
           }
           is AsyncResult.Success -> {
-            Log.d("checkingchoiceitems", "computeSelectedChoices in transformations switch map success case")
             _choiceItems = processEphemeralStateResult(
               result.value,
               contentIdHtmlMap,
               dragAndDropSortInteractionViewModel,
               resourceHandler
             )
-            _choiceItemsLiveData.value = _choiceItems
             _originalChoiceItems = _choiceItems.toMutableList()
             _choiceItems
           }
@@ -484,26 +363,7 @@ class DragAndDropSortInteractionViewModel private constructor(
         }
       }
 
-
-
-
-
-
-
-    Log.d("checkingchoiceitems", "computeSelectedChoices choiceItems after switch map- ${choiceItems.value}")
-    Log.d("checkingchoiceitems", "computeSelectedChoices _choiceItems after switch map- $_choiceItems")
-    Log.d("checkingchoiceitems", "computeSelectedChoices _originalChoiceItems after switch map - $_originalChoiceItems")
-
-    /*if (choiceItems.value != null) {
-      _choiceItems = choiceItems.value as MutableList<DragDropInteractionContentViewModel>
-    }*/
-
-    Log.d("swichmapchoiceitems", "computeSelectedChoiceItems: _choiceItems $_choiceItems")
-
-    /*choiceItems = _choiceItemsLiveData
-    _choiceItems = _choiceItemsLiveData.value?.toMutableList()!!*/
-
-    return _choiceItems.takeIf { it.isNotEmpty() }
+    return _choiceItems.takeIf { !it.isNullOrEmpty() }
       ?: _originalChoiceItems.toMutableList()
   }
 
@@ -513,7 +373,6 @@ class DragAndDropSortInteractionViewModel private constructor(
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
     resourceHandler: AppLanguageResourceHandler
   ): MutableList<DragDropInteractionContentViewModel> {
-    Log.d("checkingchoiceitems", "In process ephemeral state result")
     val wrongAnswerList = state.pendingState.wrongAnswerList
     return if (wrongAnswerList.isNotEmpty()) {
       val latestWrongAnswerContentIdList = wrongAnswerList.last()
@@ -537,7 +396,6 @@ class DragAndDropSortInteractionViewModel private constructor(
         )
       }.toMutableList()
     } else {
-      Log.d("checkingchoiceitems", "In else of process ephemeral state result")
       _originalChoiceItems.toMutableList()
     }
   }
