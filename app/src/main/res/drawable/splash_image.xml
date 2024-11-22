@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:drawable="@color/component_color_splash_activity_background_color" />
+  <item android:drawable="@drawable/splash_page" android:gravity="center"/>
+</layer-list>
