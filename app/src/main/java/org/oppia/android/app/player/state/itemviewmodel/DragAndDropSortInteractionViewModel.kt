@@ -81,7 +81,7 @@ class DragAndDropSortInteractionViewModel private constructor(
       subtitledHtml.contentId to translatedHtml
     }
 
-  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
+  private var answerErrorCategory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
 
   private var _originalChoiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeOriginalChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
@@ -178,7 +178,7 @@ class DragAndDropSortInteractionViewModel private constructor(
    * updates the error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    answerErrorCetegory = category
+    answerErrorCategory = category
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME ->
@@ -293,7 +293,7 @@ class DragAndDropSortInteractionViewModel private constructor(
   override fun getUserAnswerState(): UserAnswerState {
     if (_choiceItems == _originalChoiceItems) {
       return UserAnswerState.newBuilder().apply {
-        this.answerErrorCategory = answerErrorCetegory
+        this.answerErrorCategory = answerErrorCategory
       }.build()
     }
     return UserAnswerState.newBuilder().apply {
@@ -302,7 +302,7 @@ class DragAndDropSortInteractionViewModel private constructor(
         ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
           addAllContentIdLists(htmlContentIds)
         }.build()
-      answerErrorCategory = answerErrorCetegory
+      answerErrorCategory = answerErrorCategory
     }.build()
   }
 
