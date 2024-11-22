@@ -2,12 +2,12 @@
 
 name: Comment Coverage Report
 
-# Controls when the action will run. Triggers the workflow  on pull request events 
-# (assigned, opened, synchronize, reopened)
+# Controls when the action will run. Triggers the workflow  on pull request events
+# (opened, synchronize, reopened)
 
 on:
   pull_request_target:
-    types: [assigned, opened, synchronize, reopened]
+    types: [opened, synchronize, reopened]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
@@ -17,6 +17,8 @@ jobs:
   check_code_coverage_completed:
     name: Check code coverage completed
     runs-on: ubuntu-latest
+    outputs:
+      conclusion: ${{ steps.wait-for-coverage.outputs.run-conclusion }}
     steps:
       - name: Wait for code coverage to complete
         id: wait-for-coverage
@@ -27,6 +29,13 @@ jobs:
           allowed-conclusions: |
             success
             failure
+            action_required
+            
+      - name: Conclusion Analysis
+        if: steps.wait-for-coverage.outputs.run-conclusion == 'action_required'
+        run: |
+          echo "::error::First-time contributor workflows require manual approval. After approval, please re-run the comment coverage workflows to post the coverage report."
+          exit 1
 
   comment_coverage_report:
     name: Comment Code Coverage Report
@@ -36,8 +45,8 @@ jobs:
 
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-    if: ${{ !cancelled() }}  
-    runs-on: ubuntu-latest   
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
     steps:
       - name: Find the latest Code Coverage Report Comment 
         uses: actions/github-script@v6
@@ -68,7 +77,7 @@ jobs:
             const runsResponse = await github.rest.actions.listWorkflowRuns({
               owner,
               repo,
-              workflow_id: 'code_coverage.yml', 
+              workflow_id: 'code_coverage.yml',
               event: 'pull_request',
               head_sha: '${{ github.event.pull_request.head.sha }}',
             });
@@ -78,7 +87,7 @@ jobs:
 
             const run = runs[0];
             if(!run) {
-              core.setFailed('Could not find a succesful workflow run for the PR');
+              core.setFailed('Could not find a successful workflow run for the PR');
               return;
             }
 
@@ -116,4 +125,4 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body-path: 'CoverageReport.md'          
+          body-path: 'CoverageReport.md'
