@@ -30,7 +30,7 @@ jobs:
             success
             failure
             action_required
-            
+
       - name: Conclusion Analysis
         if: steps.wait-for-coverage.outputs.run-conclusion == 'action_required'
         run: |
@@ -81,7 +81,7 @@ jobs:
               event: 'pull_request',
               head_sha: '${{ github.event.pull_request.head.sha }}',
             });
-            
+
             const runs = runsResponse.data.workflow_runs;
             runs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
@@ -92,7 +92,7 @@ jobs:
             }
 
             core.setOutput('run-id', run.id);
-            
+
       - name: Download Generated Markdown Report
         uses: actions/download-artifact@v4
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
