@@ -7,6 +7,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
@@ -128,9 +129,11 @@ class PerformanceMetricsController @Inject constructor(
    * priority is returned.
    */
   private fun getLeastRecentMetricLogIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
-    oppiaMetricLogs.oppiaMetricLogList.withIndex()
-      .filter { it.value.priority == Priority.LOW_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index
+    filterByEnumCondition(
+      oppiaMetricLogs.oppiaMetricLogList.withIndex().toList(),
+      { it.value.priority },
+      { it == Priority.LOW_PRIORITY }
+    ).minByOrNull { it.value.timestampMillis }?.index
       ?: getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs)
 
   /**
@@ -142,9 +145,11 @@ class PerformanceMetricsController @Inject constructor(
    * priority is returned.
    */
   private fun getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
-    oppiaMetricLogs.oppiaMetricLogList.withIndex()
-      .filter { it.value.priority == Priority.MEDIUM_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index
+    filterByEnumCondition(
+      oppiaMetricLogs.oppiaMetricLogList.withIndex().toList(),
+      { it.value.priority },
+      { it == Priority.MEDIUM_PRIORITY }
+    ).minByOrNull { it.value.timestampMillis }?.index
       ?: getLeastRecentGeneralEventIndex(oppiaMetricLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */

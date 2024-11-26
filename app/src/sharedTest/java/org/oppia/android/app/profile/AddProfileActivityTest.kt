@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -114,7 +115,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -1749,6 +1749,15 @@ class AddProfileActivityTest {
     assertThat(currentScreenName).isEqualTo(ScreenName.ADD_PROFILE_ACTIVITY)
   }
 
+  @Test
+  fun testAddProfileActivity_onBackPressed_finishActivity() {
+    val scenario = launch(AddProfileActivity::class.java)
+    onView(isRoot()).perform(ViewActions.pressBack())
+    testCoroutineDispatchers.runCurrent()
+    scenario.onActivity { activity ->
+      assertThat(activity.isFinishing).isTrue()
+    }
+  }
   private fun createAddProfileActivityIntent(): Intent {
     return AddProfileActivity.createAddProfileActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -1795,7 +1804,7 @@ class AddProfileActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

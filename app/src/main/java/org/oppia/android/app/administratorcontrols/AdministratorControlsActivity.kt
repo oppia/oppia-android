@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -83,6 +84,15 @@ class AdministratorControlsActivity :
       isProfileDeletionDialogVisible
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
+
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          this@AdministratorControlsActivity.handleBackPress()
+        }
+      }
+    )
   }
 
   override fun routeToAppVersion() {
@@ -121,7 +131,7 @@ class AdministratorControlsActivity :
     }
   }
 
-  override fun onBackPressed() {
+  private fun handleBackPress() {
     val fragment =
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
@@ -134,8 +144,7 @@ class AdministratorControlsActivity :
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
     } else {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      super.onBackPressed()
+      finish()
     }
   }
 

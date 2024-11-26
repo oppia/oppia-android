@@ -30,6 +30,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -161,18 +162,18 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
     val chapterSummaries = storySummaryViewModel
       .storySummary.chapterList
-    val completedChapterCount =
-      chapterSummaries.map(ChapterSummary::getChapterPlayState)
-        .filter {
-          it == ChapterPlayState.COMPLETED
-        }
-        .size
+    val completedChapterCount = filterByEnumCondition(
+      chapterSummaries.map(ChapterSummary::getChapterPlayState),
+      { it },
+      { it == ChapterPlayState.COMPLETED }
+    ).size
+
     val inProgressChapterCount =
-      chapterSummaries.map(ChapterSummary::getChapterPlayState)
-        .filter {
-          it == ChapterPlayState.IN_PROGRESS_SAVED
-        }
-        .size
+      filterByEnumCondition(
+        chapterSummaries.map(ChapterSummary::getChapterPlayState),
+        { it },
+        { it == ChapterPlayState.IN_PROGRESS_SAVED }
+      ).size
 
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount

@@ -68,15 +68,14 @@ public final class TextViewBindingAdapters {
   }
 
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
-    long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
     AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
 
-    if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
+    if (lastVisitedTimestamp > currentTimeMillis || lastVisitedTimestamp <= 0) {
       return resourceHandler.getStringInLocale(R.string.last_logged_in_recently);
     }
 
-    long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
+    long timeDifferenceMillis = currentTimeMillis - lastVisitedTimestamp;
 
     if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
       return resourceHandler.getStringInLocale(R.string.just_now);
@@ -110,15 +109,6 @@ public final class TextViewBindingAdapters {
     return resourceHandler.getQuantityStringInLocaleWithWrapping(
             pluralsResId, count, String.valueOf(count)
         );
-  }
-
-  private static long ensureTimestampIsInMilliseconds(long lastVisitedTimestamp) {
-    // TODO(#3842): Investigate & remove this check.
-    if (lastVisitedTimestamp < 1000000000000L) {
-      // If timestamp is given in seconds, convert that to milliseconds.
-      return TimeUnit.SECONDS.toMillis(lastVisitedTimestamp);
-    }
-    return lastVisitedTimestamp;
   }
 
   private static AppLanguageResourceHandler getResourceHandler(View view) {
