@@ -1727,6 +1727,85 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testProfileMigration_getExistingNonAdminProfile_checkProfileTypeIsAdditionalLearner() {
+    // Simulate profiles already created in a previous app instance.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getProfileManagementController().addProfile(
+        name = "Admin",
+        isAdmin = true,
+        allowDownloadAccess = true,
+        pin = "12345",
+        colorRgb = -1,
+        avatarImagePath = null
+      )
+      testComponent.getProfileManagementController().addProfile(
+        name = "John",
+        isAdmin = false,
+        allowDownloadAccess = true,
+        pin = "",
+        colorRgb = -1,
+        avatarImagePath = null
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestWithOnboardingV2Enabled(true)
+    val getProfileProvider = profileManagementController.getProfile(PROFILE_ID_1)
+    val profile = monitorFactory.waitForNextSuccessfulResult(getProfileProvider)
+    assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+  }
+
+  @Test
+  fun testProfileMigration_getExistingAdminWithPin_checkProfileTypeIsSupervisor() {
+    // Simulate profiles already created in a previous app instance.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getProfileManagementController().addProfile(
+        name = "Admin",
+        isAdmin = true,
+        allowDownloadAccess = true,
+        pin = "12345",
+        colorRgb = -1,
+        avatarImagePath = null
+      )
+      testComponent.getProfileManagementController().addProfile(
+        name = "John",
+        isAdmin = false,
+        allowDownloadAccess = true,
+        pin = "",
+        colorRgb = -1,
+        avatarImagePath = null
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestWithOnboardingV2Enabled(true)
+    val getProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val profile = monitorFactory.waitForNextSuccessfulResult(getProfileProvider)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+  }
+
+  @Test
+  fun testProfileMigration_getExistingAdminWithoutPin_checkProfileTypeIsSoleLearner() {
+    // Simulate profiles already created in a previous app instance.
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getProfileManagementController().addProfile(
+        name = "Admin",
+        isAdmin = true,
+        allowDownloadAccess = true,
+        pin = "",
+        colorRgb = -1,
+        avatarImagePath = null
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestWithOnboardingV2Enabled(true)
+    val getProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
+    val profile = monitorFactory.waitForNextSuccessfulResult(getProfileProvider)
+    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
   fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
@@ -2002,6 +2081,19 @@ class ProfileManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
+    val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
+    testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
+    block(
+      DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
+        .setApplication(testApplication)
+        .build()
+    )
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -2099,6 +2191,10 @@ class ProfileManagementControllerTest {
     }
 
     fun inject(profileManagementControllerTest: ProfileManagementControllerTest)
+
+    fun getProfileManagementController(): ProfileManagementController
+
+    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
@@ -2110,6 +2206,10 @@ class ProfileManagementControllerTest {
 
     fun inject(profileManagementControllerTest: ProfileManagementControllerTest) {
       component.inject(profileManagementControllerTest)
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
