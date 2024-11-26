@@ -333,6 +333,11 @@ todo_open_exemption {
   line_number: 689
   line_number: 737
   line_number: 741
+  line_number: 790
+  line_number: 791
+  line_number: 792
+  line_number: 798
+  line_number: 800
 }
 todo_open_exemption {
   exempted_file_path: "scripts/static_checks.sh"
