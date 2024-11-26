@@ -21,4 +21,4 @@ Example in the below check the second job has some error or failure
 Navigate to logs or search the keyword ‘error’ to find the error message to understand what might have caused the failure in the checks.
 
 ### Developer Video - Understanding CI check failures
-Learn how to interpret and troubleshoot oppia-android CI check failures in this insightful [developer video](https://youtu.be/I2bRf6fvgJ0?si=35sAagbUFSk6bOBA).
+Learn how to interpret and troubleshoot oppia-android CI check failures in this insightful [developer video](https://youtu.be/HLzHQULZbJE?si=RLY9_8Yzv5cjYM7q).
