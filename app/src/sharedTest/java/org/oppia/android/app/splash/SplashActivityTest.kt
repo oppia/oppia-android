@@ -1092,7 +1092,6 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplication(onboardingV2Enabled = true)
-    testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
 

@@ -26,6 +26,7 @@ import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -56,7 +57,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val appStartupStateController: AppStartupStateController
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private val exitProfileListener = activity as ExitProfileListener
@@ -121,13 +123,15 @@ class HomeFragmentPresenter @Inject constructor(
     when (result) {
       is AsyncResult.Success -> {
         val profile = result.value
-        if (enableOnboardingFlowV2.value) {
-          if (!profile.completedProfileOnboarding) {
-            profileManagementController.markProfileOnboardingEnded(profileId)
+        val profileType = profile.profileType
+        if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
+          profileManagementController.markProfileOnboardingEnded(profileId)
+          if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
+            appStartupStateController.markOnboardingFlowCompleted(profileId)
           }
         }
 
-        handleBackPress(profile.profileType)
+        handleBackPress(profileType)
       }
       is AsyncResult.Failure -> {
         oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)

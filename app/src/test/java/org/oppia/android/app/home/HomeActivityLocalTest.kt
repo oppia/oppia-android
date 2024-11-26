@@ -27,9 +27,11 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -142,6 +144,83 @@ class HomeActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getOldestEvent()
 
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_soleProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId,
+      profileType = ProfileType.SOLE_LEARNER
+    )
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasCompleteAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
+      assertThat(hasCompleteAppOnboardingEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_supervisorProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId,
+      profileType = ProfileType.SUPERVISOR
+    )
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasCompleteAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
+      assertThat(hasCompleteAppOnboardingEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_nonAdminProfile_onInitialLaunch_doesNotLogAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(1)
+    val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    profileTestHelper.updateProfileType(
+      profileId = profileId1,
+      profileType = ProfileType.SOLE_LEARNER
+    )
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      val event = fakeAnalyticsEventLogger.getOldestEvent()
+
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_adminProfile_onSubsequentLaunch_doesNotLogAppOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getProfileTestHelper().updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+      testComponent.getProfileTestHelper().markProfileOnboardingStarted(profileId)
+      testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestWithOnboardingV2Enabled(false)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      val eventCount = fakeAnalyticsEventLogger.getEventListCount()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+      assertThat(eventCount).isEqualTo(1)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
