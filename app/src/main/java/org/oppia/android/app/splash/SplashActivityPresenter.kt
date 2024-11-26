@@ -347,15 +347,27 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun fetchProfile() {
-    profileManagementController.getProfiles().toLiveData().observe(activity) { result ->
-      when (result) {
-        is AsyncResult.Success -> handleProfiles(result.value)
-        is AsyncResult.Failure -> oppiaLogger.e(
-          "SplashActivity", "Failed to retrieve the list of profiles", result.error
-        )
-        is AsyncResult.Pending -> {} // no-op
+    val liveData = profileManagementController.getProfiles().toLiveData()
+    liveData.observe(
+      activity,
+      object : Observer<AsyncResult<List<Profile>>> {
+        override fun onChanged(result: AsyncResult<List<Profile>>) {
+          when (result) {
+            is AsyncResult.Success -> {
+              handleProfiles(result.value)
+              // Changes to underlying DataProviders will update the profiles result,
+              // causing an infinite login loop. At this point we are not interested in further
+              // updates to the profiles DataProvider.
+              liveData.removeObserver(this)
+            }
+            is AsyncResult.Failure -> oppiaLogger.e(
+              "SplashActivity", "Failed to retrieve the list of profiles", result.error
+            )
+            is AsyncResult.Pending -> {} // no-op
+          }
+        }
       }
-    }
+    )
   }
 
   private fun handleProfiles(profiles: List<Profile>) {
