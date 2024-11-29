@@ -50,6 +50,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.ProfileId
@@ -219,7 +220,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  fun testFragment_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
+  fun testFragment_onboardingV2_soleLearner_onInitialLaunch_logsEndProfileOnboardingEvent() {
     setUpTestApplicationComponent(onboardingV2Enabled = true)
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
 
@@ -228,10 +229,108 @@ class ClassroomListFragmentTest {
       profileId = profileId, profileType = ProfileType.SOLE_LEARNER
     )
 
-    val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
-      it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+    val profileOnboardingEndedEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(profileOnboardingEndedEvent.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(profileOnboardingEndedEvent.context.activityContextCase)
+      .isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+  }
+
+  @Test
+  fun testFragment_onboardingV2_supervisorProfile_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestApplicationComponent(onboardingV2Enabled = true)
+    scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId, profileType = ProfileType.SUPERVISOR
+    )
+
+    val profileOnboardingEndedEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(profileOnboardingEndedEvent.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(profileOnboardingEndedEvent.context.activityContextCase)
+      .isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+  }
+
+  @Test
+  fun testFragment_onboardingV2_nonAdminProfile_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestApplicationComponent(onboardingV2Enabled = true)
+    scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId, profileType = ProfileType.ADDITIONAL_LEARNER
+    )
+
+    val profileOnboardingEndedEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+    assertThat(profileOnboardingEndedEvent.priority).isEqualTo(EventLog.Priority.OPTIONAL)
+    assertThat(profileOnboardingEndedEvent.context.activityContextCase)
+      .isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+  }
+
+  @Test
+  fun testFragment_onboardingV2_soleLearner_onInitialLaunch_logsAppOnboardingEvent() {
+    setUpTestApplicationComponent(onboardingV2Enabled = true)
+
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId, profileType = ProfileType.SOLE_LEARNER
+    )
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+
+    scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+
+    testCoroutineDispatchers.runCurrent()
+
+    val hasAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == COMPLETE_APP_ONBOARDING
     }
-    assertThat(hasProfileOnboardingEndedEvent).isTrue()
+
+    assertThat(hasAppOnboardingEvent).isTrue()
+  }
+
+  @Test
+  fun testFragment_onboardingV2_supervisorProfile_onInitialLaunch_logsAppOnboardingEvent() {
+    setUpTestApplicationComponent(onboardingV2Enabled = true)
+
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId, profileType = ProfileType.SUPERVISOR
+    )
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+
+    scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+
+    testCoroutineDispatchers.runCurrent()
+
+    val hasAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+    }
+
+    assertThat(hasAppOnboardingEvent).isTrue()
+  }
+
+  @Test
+  fun testFragment_onboardingV2_nonAdmin_onInitialLaunch_doesNotLogAppOnboardingEvent() {
+    setUpTestApplicationComponent(onboardingV2Enabled = true)
+
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId, profileType = ProfileType.ADDITIONAL_LEARNER
+    )
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+
+    scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
+
+    testCoroutineDispatchers.runCurrent()
+
+    val hasAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+    }
+
+    assertThat(hasAppOnboardingEvent).isFalse()
   }
 
   @Test

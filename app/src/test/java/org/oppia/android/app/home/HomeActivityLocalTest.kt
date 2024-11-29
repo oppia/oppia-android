@@ -193,14 +193,18 @@ class HomeActivityLocalTest {
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
     profileTestHelper.updateProfileType(
       profileId = profileId1,
-      profileType = ProfileType.SOLE_LEARNER
+      profileType = ProfileType.ADDITIONAL_LEARNER
     )
     launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getOldestEvent()
+      val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+      val eventCount = fakeAnalyticsEventLogger.getEventListCount()
 
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+      assertThat(eventCount).isEqualTo(2)
+      assertThat(events.first().priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(events.first().context.activityContextCase).isEqualTo(OPEN_HOME)
+      assertThat(events.last().priority).isEqualTo(EventLog.Priority.OPTIONAL)
+      assertThat(events.last().context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
     }
   }
 
