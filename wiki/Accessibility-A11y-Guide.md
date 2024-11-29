@@ -32,7 +32,7 @@ There are various manual and automated tests to check if app is accessible by al
 
 **[Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en)** : Using Accessibility Scanner we can take screenshots of each and every screen in the Oppia-app manually and the Accessibility Scanner app will give the output for the individual screenshot mentioning all the errors.
 
-[Here](https://youtu.be/LF5AgGI5H3A) is a video tutorial on how to set up and use the Accessibility Scanner.
+[Here](https://youtu.be/zCIlMlbFf7I?si=Xn1L5iCJ-TJ4DRVq) is a video tutorial on how to set up and use the Accessibility Scanner.
 
 **Screen Reader**: Screen readers like **Talkback** can be used to test the app manually. Talkback app is used by blind people to navigate to different items in the screen and get audio based output. This app will not give any error like Accessibility Scanner. 
 
@@ -80,7 +80,7 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 5. Read all the instructions written on the screen as using Talkback requires specific steps.
 6. Turn on **Use Service** -> **Allow**
 
-[Here](https://youtu.be/xpIM9xlowjs) is a video tutorial on "How to use Talkback and what does its output mean?".
+[Here](https://youtu.be/JBRV1dauxyI?si=VzrxFJSpU9r3pdqq) is a video tutorial on "How to use Talkback and what does its output mean?".
 
 ### Useful Resources
 * [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
@@ -89,9 +89,9 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 * [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
 
 ### Developer Videos
-* [How to use Accessibility Scanner? - Tutorial](https://youtu.be/LF5AgGI5H3A)
+* [How to use Accessibility Scanner? - Tutorial](https://youtu.be/zCIlMlbFf7I?si=Xn1L5iCJ-TJ4DRVq)
   * [Presentation Slides](https://docs.google.com/presentation/d/1PM_gs3TV2LVKFv6WuF9CUQHWbK7koepAxypzxeZTFzE/edit?usp=sharing)
-* [How to use Talkback and what does its output mean? - Tutorial](https://youtu.be/xpIM9xlowjs)
+* [How to use Talkback and what does its output mean? - Tutorial](https://youtu.be/JBRV1dauxyI?si=VzrxFJSpU9r3pdqq)
   * [Presentation Slides](https://docs.google.com/presentation/d/17SeKJLKT-rUNa_Yupe97bMFSsjTNzp83jX-lZPKEtnQ/edit?usp=sharing)
 
 ## Using AccessibilityTestRule in Espresso Tests

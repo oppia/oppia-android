@@ -153,7 +153,7 @@ jobs:
         run: |
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: oppia-bazel.apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
@@ -425,19 +425,6 @@ jobs:
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
           bazel build --compilation_mode=opt -- //:oppia_alpha_kitkat
-
-      # Note that caching only works on non-forks.
-      - name: Build Oppia alpha Kenya-specific AAB (with caching, non-fork only)
-        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-        run: |
-          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha_kenya
-
-      - name: Build Oppia alpha Kenya-specific AAB (without caching, or on a fork)
-        if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
-        run: |
-          bazel build --compilation_mode=opt -- //:oppia_alpha_kenya
 
   build_oppia_beta_aab:
     name: Build Oppia AAB (beta flavor)

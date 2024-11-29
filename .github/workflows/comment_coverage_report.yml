@@ -17,6 +17,8 @@ jobs:
   check_code_coverage_completed:
     name: Check code coverage completed
     runs-on: ubuntu-latest
+    outputs:
+      conclusion: ${{ steps.wait-for-coverage.outputs.run-conclusion }}
     steps:
       - name: Wait for code coverage to complete
         id: wait-for-coverage
@@ -27,6 +29,13 @@ jobs:
           allowed-conclusions: |
             success
             failure
+            action_required
+
+      - name: Conclusion Analysis
+        if: steps.wait-for-coverage.outputs.run-conclusion == 'action_required'
+        run: |
+          echo "::error::First-time contributor workflows require manual approval. After approval, please re-run the comment coverage workflows to post the coverage report."
+          exit 1
 
   comment_coverage_report:
     name: Comment Code Coverage Report
@@ -60,7 +69,7 @@ jobs:
 
             const run = runs[0];
             if(!run) {
-              core.setFailed('Could not find a succesful workflow run for the PR');
+              core.setFailed('Could not find a successful workflow run for the PR');
               return;
             }
 

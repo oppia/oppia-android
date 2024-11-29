@@ -163,6 +163,7 @@
 # Utilities that are primarily used for frontend/UI purposes.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/statusbar/ @oppia/android-frontend-reviewers
+/utility/src/main/java/org/oppia/android/util/enumfilter/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/extensions/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/parser/html @oppia/android-frontend-reviewers
 /utility/src/*/res/**/*.xml @oppia/android-frontend-reviewers
